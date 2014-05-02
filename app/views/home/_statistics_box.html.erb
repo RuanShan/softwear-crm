@@ -1,0 +1,67 @@
+<div class="row">
+  <div class="col-sm-8">
+    <!-- Website statistic -->
+    <div class="box-info">
+      <h2><strong>Website</strong> Statistic</h2>
+
+      <!-- Additional buttons -->
+      <div class="additional-btn">
+        <a class="additional-icon" href="#fakelink"><i class="fa fa-refresh fa-spin"></i></a>
+        <a class="additional-icon" id="dropdownMenu1" data-toggle="dropdown">
+          <i class="fa fa-cog"></i>
+        </a>
+        <ul class="dropdown-menu pull-right animated half fadeInDown" role="menu" aria-labelledby="dropdownMenu1">
+          <li role="presentation"><a role="menuitem" tabindex="-1" href="#fakelink">Action</a></li>
+          <li role="presentation"><a role="menuitem" tabindex="-1" href="#fakelink">Another action</a></li>
+          <li role="presentation"><a role="menuitem" tabindex="-1" href="#fakelink">Something else here</a></li>
+          <li role="presentation" class="divider"></li>
+          <li role="presentation"><a role="menuitem" tabindex="-1" href="#fakelink">Separated link</a></li>
+        </ul>
+        <a class="additional-icon" href="#fakelink" data-toggle="collapse" data-target="#website-statistic"><i class="fa fa-chevron-down"></i></a>
+        <a class="additional-icon" href="#fakelink"><i class="fa fa-question-circle"></i></a>
+      </div><!-- End div .additional-button -->
+      <!-- Statistic inner -->
+      <div id="website-statistic" class="statistic-chart collapse in">
+        <!-- Button group -->
+        <div class="btn-group btn-group-xs pull-right">
+          <button class="btn btn-default">All time</button>
+          <button class="btn btn-default">This year</button>
+          <button class="btn btn-default">This month</button>
+          <button class="btn btn-default">Today</button>
+        </div><!-- End div .btn-group -->
+
+        <!-- Call morris cart with selector #morris-home -->
+        <div id="morris-home" style="height: 200px;"></div>
+        <!-- End morris cart with selector -->
+      </div><!-- End div #website-statistic -->
+    </div><!-- End div .box-info -->
+  </div>
+
+  <div class="col-sm-4">
+    <!-- Begin user profile -->
+    <div class="box-info text-center user-profile-2">
+      <div class="header-cover">
+        <%= image_tag 'user-bg.jpg', alt: 'User cover' %>
+        <img src="images/user-bg.jpg" alt="User cover">
+      </div>
+      <div class="user-profile-inner">
+        <h4 class="white">Howdy, Mas Bro</h4>
+        <%= image_tag 'avatar/masarie.jpg', alt: 'User avatar', class: 'img-circle profile-avatar' %>
+        <h5>Administrator</h5>
+
+        <!-- User button -->
+        <div class="user-button">
+          <div class="row">
+            <div class="col-md-6">
+              <button type="button" class="btn btn-primary btn-sm btn-block"><i class="fa fa-envelope"></i> Send Message</button>
+            </div>
+            <div class="col-md-6">
+              <button type="button" class="btn btn-default btn-sm btn-block"><i class="fa fa-user"></i> Add as friend</button>
+            </div>
+          </div>
+        </div><!-- End div .user-button -->
+      </div><!-- End div .user-profile-inner -->
+    </div><!-- End div .box-info -->
+    <!-- End user profile -->
+  </div><!-- End div .col-sm-4 -->
+</div><!-- End div .row -->

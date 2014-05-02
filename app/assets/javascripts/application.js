@@ -9,8 +9,15 @@
 //
 // Read Sprockets README (https://github.com/sstephenson/sprockets#sprockets-directives) for details
 // about supported directives.
-//
+
 //= require jquery
 //= require jquery_ujs
 //= require turbolinks
+//= require slimscroll/jquery.slimscroll
+//= require summernote/summernote
+//= require summernote/lang-id
+//= require select/bootstrap-select
+//= require input/bootstrap.file-input
+//= require datepicker/bootstrap-datepicker
+//= require icheck/icheck
 //= require_tree .
