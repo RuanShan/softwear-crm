@@ -3,8 +3,8 @@
     <li><a href="/"><i class="fa fa-home"></i> Dashboard</a></li>
     <li><a href="#fakelink"><i class="fa fa-shopping-cart"></i><i class="fa fa-angle-double-down i-right"></i> Orders</a>
       <ul>
-        <li><a href="#fakelink"><i class="fa fa-angle-right"></i> List</a></li>
-        <li><a href="#fakelink"><i class="fa fa-angle-right"></i> New</a></li>
+        <li><%= link_to orders_path do %><i class="fa fa-angle-right"></i> List<% end %></li>
+        <li><%= link_to new_order_path do %><i class="fa fa-angle-right"></i> New<% end %></li>
       </ul>
     </li>
     <li><a href="#fakelink"><i class="fa fa-users"></i> Customers</a>

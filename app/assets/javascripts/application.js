@@ -20,4 +20,5 @@
 //= require input/bootstrap.file-input
 //= require datepicker/bootstrap-datepicker
 //= require icheck/icheck
+//= require wizard/jquery.easyWizard
 //= require_tree .
