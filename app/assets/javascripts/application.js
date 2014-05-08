@@ -12,7 +12,6 @@
 
 //= require jquery
 //= require jquery_ujs
-//= require turbolinks
 //= require slimscroll/jquery.slimscroll
 //= require summernote/summernote
 //= require summernote/lang-id

@@ -1,5 +1,7 @@
 <h1>Custom Print Orders</h1>
 
+<%= render partial: 'search' %>
+
 <div>
   <ul class="pagination pagination-lg">
     <li><a href="#fakelink">&laquo;</a></li>
@@ -20,7 +22,6 @@
       <thead>
       <tr>
         <th style="width: 30px">ID</th>
-        <th style="width: 30px">Log</th>
         <th>Order</th>
         <th>Salesperson</th>
         <th>Sales</th>
@@ -38,11 +39,6 @@
       <tr>
         <td>12345</td>
         <td>
-          <div class="btn-group btn-group-xs">
-            <a data-toggle="tooltip" title="Show Order Log" class="btn btn-default"><i class="fa fa-list-alt"></i></a>
-          </div>
-        </td>
-        <td>
           Michigan Football Camp<br />
           Ricky Winowiecki<br />
           slikstir@umich.edu
@@ -57,19 +53,15 @@
         <td><span class="label label-warning">Pending</span></td>
         <td>
           <div class="btn-group btn-group-xs">
-            <a data-toggle="tooltip" title="Edit" class="btn btn-default"><i class="fa fa-edit"></i></a>
+            <a data-toggle="tooltip" title="Edit" class="btn btn-default" href="orders/edit/demo"><i class="fa fa-edit"></i></a>
             <a data-toggle="tooltip" title="Quick View" class="btn btn-default"><i class="fa fa-eye"></i></a>
             <a data-toggle="tooltip" title="Printable Invoice" class="btn btn-default"><i class="fa fa-print"></i></a>
+            <a data-toggle="tooltip" data-modal="md-fade-in-scale-up"  title="Order Timeline" class="btn btn-default md-trigger"><i class="fa fa-clock-o"></i></a>
           </div>
         </td>
       </tr>
       <tr>
         <td>2</td>
-        <td>
-          <div class="btn-group btn-group-xs">
-            <a data-toggle="tooltip" title="Show Order Log" class="btn btn-default"><i class="fa fa-list-alt"></i></a>
-          </div>
-        </td>
         <td>
           Custom T-shirt Order<br />
           Chet McGillicutty<br />
@@ -88,19 +80,15 @@
         </td>
         <td>
           <div class="btn-group btn-group-xs">
-            <a data-toggle="tooltip" title="Edit" class="btn btn-default"><i class="fa fa-edit"></i></a>
+            <a data-toggle="tooltip" title="Edit" class="btn btn-default" href="orders/edit/demo"><i class="fa fa-edit"></i></a>
             <a data-toggle="tooltip" title="Quick View" class="btn btn-default"><i class="fa fa-eye"></i></a>
             <a data-toggle="tooltip" title="Printable Invoice" class="btn btn-default"><i class="fa fa-print"></i></a>
+            <a data-toggle="tooltip" data-modal="md-fade-in-scale-up" title="Order Timeline" class="btn btn-default md-trigger"><i class="fa fa-clock-o"></i></a>
           </div>
         </td>
       </tr>
       <tr>
         <td>3</td>
-        <td>
-          <div class="btn-group btn-group-xs">
-            <a data-toggle="tooltip" title="Show Order Log" class="btn btn-default"><i class="fa fa-list-alt"></i></a>
-          </div>
-        </td>
         <td>
           Custom Print Order<br />
           Bob Ross<br />
@@ -118,9 +106,10 @@
         <td><span class="label label-warning">Pending</span></td>
         <td>
           <div class="btn-group btn-group-xs">
-            <a data-toggle="tooltip" title="Edit" class="btn btn-default"><i class="fa fa-edit"></i></a>
+            <a data-toggle="tooltip" title="Edit" class="btn btn-default" href="/orders/edit/demo"><i class="fa fa-edit"></i></a>
             <a data-toggle="tooltip" title="Quick View" class="btn btn-default"><i class="fa fa-eye"></i></a>
             <a data-toggle="tooltip" title="Printable Invoice" class="btn btn-default"><i class="fa fa-print"></i></a>
+            <a data-toggle="tooltip" data-modal="md-fade-in-scale-up"  title="Order Timeline" class="btn btn-default md-trigger"><i class="fa fa-clock-o"></i></a>
           </div>
         </td>
       </tr>

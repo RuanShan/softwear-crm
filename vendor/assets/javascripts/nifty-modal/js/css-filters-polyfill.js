@@ -10,6 +10,7 @@
  * https://github.com/Schepp/
  *
  */
+//var polyfilter_scriptpath = '/assets/nifty-modal/js/css-filters-polyfill.js';
 ;(function(window){
 	var polyfilter = {
 		// Detect if we are dealing with IE <= 9

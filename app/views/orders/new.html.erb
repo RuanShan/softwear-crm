@@ -12,30 +12,9 @@
     <section class="step" data-step-title="Customer Information">
       <div class="row">
         <div class="col-sm-6">
-          <div class="form-group">
-            <label for="inputEmail">Email</label>
-            <input type="text" id="inputEmail" placeholder="Email" class="form-control">
-          </div>
-          <div class="form-group">
-            <label for="inputFirstName">First Name</label>
-            <input type="text" id="inputFirstName" placeholder="First Name" class="form-control">
-          </div>
-          <div class="form-group">
-            <label for="inputLastName">Last Name</label>
-            <input type="text" id="inputLastName" placeholder="Last Name" class="form-control">
-          </div>
-          <div class="form-group">
-            <label for="inputCompany">Company</label>
-            <input type="text" id="inputCompany" placeholder="Company" class="form-control">
-          </div>
-          <div class="form-group">
-            <label for="twitter">Twitter</label>
-            <div class="input-group">
-                <span class="input-group-addon">@</span>
-                <input type="text" class="form-control" placeholder="twitteralias">
-            </div>
-          </div>
-        </div><!-- End div. col-sm-6 -->
+          <%= render partial: 'customer_detail_fields' %>
+        </div>
+
         <div class="col-sm-6">
           <!-- Wizard notes -->
           <div class="notes">
@@ -61,47 +40,7 @@
     <section class="step" data-step-title="Order Details">
       <div class="row">
         <div class="col-sm-6">
-          <div class="form-group">
-            <label for="inputUsername">Title</label>
-            <input type="text" id="inputUsername" placeholder="Title Used by Company" class="form-control">
-          </div>
-          <div class="form-group">
-            <label for="inputUsername">P.O. Number</label>
-            <input type="text" id="inputUsername" placeholder="Purchase Order If Required" class="form-control">
-          </div>
-          <div class="form-group">
-            <label for="inputUsername">In Hand By Date</label>
-            <input type="datetime" id="inputUsername" placeholder="In Hand By" class="form-control datepicker-input">
-          </div>
-          <div class="form-group">
-            <label for="inputUsername">Payment Terms</label>
-            <select class="form-control">
-              <option></option>
-              <option>Paid in full on purchase</option>
-              <option>Half down on purchase</option>
-              <option>Paid in full on pick up</option>
-              <option>Net 30</option>
-              <option>Net 60</option>
-            </select>
-          </div>
-          <div class="form-group">
-            <label for="Tax Exempt">Tax Exempt?</label>
-            <div class="input-group">
-                <span class="input-group-addon">
-                    <input type="checkbox">
-                </span>
-              <input type="text" class="form-control" placeholder="Tax ID Number">
-            </div>
-          </div>
-          <div class="form-group">
-            <label for="redo">Is this order a redo?</label>
-            <div class="input-group">
-                <span class="input-group-addon">
-                    <input type="checkbox">
-                </span>
-              <textarea class="form-control" placeholder="Redo Explanation"></textarea>
-            </div>
-          </div>
+          <%= render partial: 'order_detail_fields' %>
         </div><!-- End div .col-sm-6 -->
         <div class="col-sm-6">
           <!-- Wizard notes -->
@@ -124,7 +63,8 @@
               <option></option>
               <option>Pick Up in Ann Arbor Location</option>
               <option>Pick Up in Ypsilanti Location</option>
-              <option>Ship to Customer</option>
+              <option>Ship to One Location</option>
+              <option>Ship to Multiple Locations</option>
             </select>
           </div>
           <div class="form-group">

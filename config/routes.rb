@@ -1,6 +1,8 @@
 CrmSoftwearcrmCom::Application.routes.draw do
   root "home#index"
   resources :orders
+  get 'orders/edit/demo' => 'orders#edit'
+  get 'orders/show/demo' => 'orders#show'
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".
 
