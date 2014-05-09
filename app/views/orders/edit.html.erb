@@ -9,17 +9,17 @@
         <div class="box-info full">
 
             <ul class="nav nav-tabs nav-justified">
-              <li><a href="#timeline" data-toggle="tab"><i class="fa fa-clock-o"></i> Timeline</a></li>
+              <li class="active"><a href="#timeline" data-toggle="tab"><i class="fa fa-clock-o"></i> Timeline</a></li>
               <li><a href="#details" data-toggle="tab"><i class="fa fa-shopping-cart"></i> Details</a></li>
               <li><a href="#jobs" data-toggle="tab"><i class="fa fa-tasks"></i> Jobs</a></li>
-              <li class="active"><a href="#payments" data-toggle="tab"><i class="fa fa-money"></i> Payments</a></li>
+              <li><a href="#payments" data-toggle="tab"><i class="fa fa-money"></i> Payments</a></li>
               <li><a href="#shipments" data-toggle="tab"><i class="fa fa-archive"></i> Shipments</a></li>
               <li><a href="#artwork" data-toggle="tab"><i class="fa fa-picture-o"></i> Artwork</a></li>
             </ul>
 
             <div class="tab-content">
 
-                <div class="tab-pane animated fadeInRight" id="timeline">
+                <div class="tab-pane animated fadeInRight active" id="timeline">
                   <%= render partial: 'timeline' %>
                 </div>
 
@@ -35,7 +35,7 @@
                   <%= render partial: 'artwork' %>
                 </div>
 
-                <div class="tab-pane animated active fadeInRight" id="payments">
+                <div class="tab-pane animated fadeInRight" id="payments">
                   <%= render partial: 'payments' %>
                 </div>
 
