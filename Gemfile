@@ -32,15 +32,22 @@ group :doc do
   gem 'sdoc', require: false
 end
 
-group :development, :test do
+group :development do
   gem 'capistrano', '~> 3.2.0'
   gem 'capistrano-rvm'
   gem 'capistrano-rails'
   gem 'capistrano-bundler'
+  gem 'better_errors', '>= 0.3.2'
 end
 
-group :development do
+group :test do
   gem 'rspec-rails', '~> 3.0.0.beta'
+  gem 'factory_girl_rails', '>= 4.2.0'
+  gem 'capybara', '>= 2.0.2'
+  gem 'shoulda-matchers'
+  gem 'rspec-mocks'
+  gem 'database_cleaner'
+  gem 'selenium-webdriver'
 end
 
 # Use ActiveModel has_secure_password
