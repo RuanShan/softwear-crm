@@ -22,7 +22,7 @@ gem 'coffee-rails', '~> 4.0.0'
 gem 'jquery-rails'
 
 # Turbolinks makes following links in your web application faster. Read more: https://github.com/rails/turbolinks
-gem 'turbolinks'
+#gem 'turbolinks'
 
 # Build JSON APIs with ease. Read more: https://github.com/rails/jbuilder
 gem 'jbuilder', '~> 1.2'
@@ -32,16 +32,25 @@ group :doc do
   gem 'sdoc', require: false
 end
 
-group :development, :test do
+group :development do
   gem 'capistrano', '~> 3.2.0'
   gem 'capistrano-rvm'
   gem 'capistrano-rails'
   gem 'capistrano-bundler'
+  gem 'better_errors', '>= 0.3.2'
 end
 
-group :development do
+group :test do
   gem 'rspec-rails', '~> 3.0.0.beta'
+  gem 'factory_girl_rails', '>= 4.2.0'
+  gem 'capybara', '>= 2.0.2'
+  gem 'shoulda-matchers'
+  gem 'rspec-mocks'
+  gem 'database_cleaner'
+  gem 'selenium-webdriver'
 end
+
+gem 'inherited_resources'
 
 # Use ActiveModel has_secure_password
 # gem 'bcrypt', '~> 3.1.7'
