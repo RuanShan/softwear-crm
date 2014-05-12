@@ -35,6 +35,9 @@ config/secrets.yml
 /.bundle
 /vendor/bundle
 
+## Don't upload schema file
+/db/schema.rb
+
 # these should all be checked in to normalise the environment:
 # Gemfile.lock, .ruby-version, .ruby-gemset
 
