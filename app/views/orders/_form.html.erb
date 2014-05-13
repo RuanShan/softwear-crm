@@ -1,0 +1,161 @@
+<!-- FOrm selector #myWizard -->
+<%= form_for :order, builder: OrderFormBuilder, html: { id: 'myWizard'} do |f| %>
+  <!-- First step -->
+  <section class="step" data-step-title="Customer Information">
+    <div class="row">
+      <div class="col-sm-6">
+        <div class="form-group">
+          <%= f.label :email %>
+          <%= f.text_field :email, placeholder: 'Email' %>
+        </div>
+        <div class="form-group">
+          <%= f.label :firstname %>
+          <%= f.text_field :firstname, placeholder: 'First Name' %>
+        </div>
+        <div class="form-group">
+          <%= f.label :lastname %>
+          <%= f.text_field :lastname, placeholder: 'Last Name' %>
+        </div>
+        <div class="form-group">
+          <%= f.label :company %>
+          <%= f.text_field :company, placeholder: 'Company' %>
+        </div>
+        <div class="form-group">
+          <%= f.label :twitter %>
+          <div class="input-group">
+              <span class="input-group-addon">@</span>
+              <%= f.text_field :twitter, placeholder: 'twitteralias' %>
+          </div>
+        </div>
+      </div><!-- End div. col-sm-6 -->
+      <div class="col-sm-6">
+        <!-- Wizard notes -->
+        <div class="notes">
+          <h4>Customer Information Instructions</h4>
+          <p style="text-align: justify">
+              If the customers e-mail address exists in the system, <strong>be sure to still confirm their name and company</strong>
+          </p>
+          <p style="text-align: justify">
+              When asking the customer for their information, be sure to inform them of the following:
+          </p>
+          <ol>
+            <li><strong>Always ask for a phone number</strong>. Their phone number will only be used to contact them in the event of an emergency, and never for soliciting purposes.</li>
+            <li>If they provide a twitter alias, we will tweet at them upon completion of their order</li>
+          </ol>
+        </div><!-- End div .notes -->
+      </div><!-- End div .col-sm-6 -->
+    </div><!-- End div .row -->
+  </section>
+  <!-- End first step -->
+
+
+  <!-- Second step -->
+  <section class="step" data-step-title="Order Details">
+    <div class="row">
+      <div class="col-sm-6">
+        <div class="form-group">
+          <label for="inputUsername">Title</label>
+          <%= f.label :name %>
+          <%= f.text_field :name, placeholder: 'Title Used by Company' %>
+        </div>
+        <div class="form-group">
+          <%= f.label :po, 'P.O. Number' %>
+          <%= f.text_field :po, placeholder: 'Purchase Order If Required' %>
+        </div>
+        <div class="form-group">
+          <%= f.label :in_hand_by, 'In Hand By Date' %>
+          <%= f.datetime :in_hand_by, placeholder: 'In Hand By' %>
+        </div>
+        <div class="form-group">
+          <%= f.label :terms %>
+          <%= f.select :terms, order_payment_terms %>
+        </div>
+        <div class="form-group">
+          <%= f.label :tax_exempt %>
+          <%= f.check_box_with_text_field :tax_exempt, :tax_id_number, placeholder: 'Tax ID Number' %>
+        </div>
+        <div class="form-group">
+          <%= f.label :redo_reason, 'Is this order a redo?' %>
+          <%= f.check_box_with_text_field :is_redo, :redo_reason, placeholder: 'Redo Explanation' %>
+        </div>
+      </div><!-- End div .col-sm-6 -->
+      <div class="col-sm-6">
+        <!-- Wizard notes -->
+        <div class="notes">
+          <h4>Order Information Instructions</h4>
+        </div><!-- End div .notes -->
+      </div><!-- End div .col-sm-6 -->
+    </div><!-- End div .row -->
+  </section>
+  <!-- End second step -->
+
+
+  <!-- Third step -->
+  <section class="step" data-step-title="Delivery Information">
+    <div class="row">
+      <div class="col-sm-6">
+        <div class="form-group">
+          <label for="inputFirstname">Delivery Method</label>
+          <select class="form-control">
+            <option></option>
+            <option>Pick Up in Ann Arbor Location</option>
+            <option>Pick Up in Ypsilanti Location</option>
+            <option>Ship to Customer</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="inputCity">Shipping Method</label>
+          <select class="form-control">
+            <option></option>
+            <option>In House Delivery</option>
+            <option>UPS Ground</option>
+            <option>UPS 3 Day Select</option>
+            <option>UPS 2nd Day Air</option>
+            <option>UPS Next Day Air</option>
+            <option>USPS First Class or Priority</option>
+            <option>USPS Express</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="inputFirstName">Attn: </label>
+          <input type="text" id="inputFirstName" placeholder="name" class="form-control">
+        </div>
+        <div class="form-group">
+          <label for="inputFirstName">Company:</label>
+          <input type="text" id="inputFirstName" placeholder="name" class="form-control">
+        </div>
+        <div class="form-group">
+          <label for="inputFirstName">Address 1:</label>
+          <input type="text" id="inputFirstName" placeholder="address" class="form-control">
+        </div>
+        <div class="form-group">
+          <label for="inputFirstName">Address 2:</label>
+          <input type="text" id="inputFirstName" class="form-control">
+        </div>
+        <div class="form-group">
+          <label for="inputFirstName">Address 3:</label>
+          <input type="text" id="inputFirstName" class="form-control">
+        </div>
+        <div class="form-group">
+          <label for="inputFirstName">City:</label>
+          <input type="text" id="inputFirstName" placeholder="city" class="form-control">
+        </div>
+        <div class="form-group">
+          <label for="inputFirstName">State:</label>
+          <input type="text" id="inputFirstName" placeholder="state" class="form-control">
+        </div>
+        <div class="form-group">
+          <label for="inputFirstName">ZIP code:</label>
+          <input type="text" id="inputFirstName" placeholder="state" class="form-control">
+        </div>
+      </div><!-- End div .col-sm-6 -->
+      <div class="col-sm-6">
+        <!-- Wizard notes -->
+        <div class="notes">
+          <h4>Shipping Information Instructions</h4>
+        </div><!-- End div .notes -->
+      </div><!-- End div .col-sm-6 -->
+    </div><!-- End div .row -->
+  </section>
+  <!-- End third step -->
+<% end %>
