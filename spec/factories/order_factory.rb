@@ -24,7 +24,7 @@ FactoryGirl.define do
     in_hand_by Time.now + 1.day
     terms "Don't suck"
     tax_exempt false
-    needs_redo false
+    is_redo false
     sales_status :pending
     delivery_method :ship_to_one
     phone_number '123-456-7890'

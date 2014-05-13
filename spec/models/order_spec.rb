@@ -25,11 +25,11 @@ describe Order do
       expect(build(:order, tax_exempt: true, tax_id_number: 12)).to be_valid
     end
 
-    it 'requires a redo reason if needs_redo? is true' do
-      expect(build(:order, needs_redo: true)).to_not be_valid
+    it 'requires a redo reason if is_redo? is true' do
+      expect(build(:order, is_redo: true)).to_not be_valid
     end
-    it 'is valid when needs_redo? is true and a redo reason is present' do
-      expect(build(:order, needs_redo: true, redo_reason: 'because')).to be_valid
+    it 'is valid when is_redo? is true and a redo reason is present' do
+      expect(build(:order, is_redo: true, redo_reason: 'because')).to be_valid
     end
 
     it { should ensure_inclusion_of(:delivery_method).in_array(
