@@ -15,5 +15,6 @@
  *= require_tree .
  *= require font-awesome/font-awesome
  *= require icheck/skins/minimal/grey.css
+ *= require nifty-modal/css/component
 
  */
