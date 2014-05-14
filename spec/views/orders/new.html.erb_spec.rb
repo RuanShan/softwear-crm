@@ -1,5 +1,7 @@
 require 'spec_helper'
 
+# TODO this might be more suited for the _form partial
+
 describe "orders/new.html.erb" do
   it 'should display all appropriate fields for creating an order' do
   	render
