@@ -1,10 +1,8 @@
 require 'spec_helper'
 
-# TODO this might be more suited for the _form partial
-
-describe "orders/new.html.erb" do
+describe "orders/_form.html.erb" do
   it 'should display all appropriate fields for creating an order' do
-  	render
+    render
   	within_form_for Order do
   		expect(rendered).to have_field_for :email
   		expect(rendered).to have_field_for :firstname

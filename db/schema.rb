@@ -11,7 +11,28 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140509190832) do
+ActiveRecord::Schema.define(version: 20140513173551) do
+
+  create_table "orders", force: true do |t|
+    t.string   "email"
+    t.string   "firstname"
+    t.string   "lastname"
+    t.string   "company"
+    t.string   "twitter"
+    t.string   "name"
+    t.string   "po"
+    t.datetime "in_hand_by"
+    t.string   "terms"
+    t.boolean  "tax_exempt"
+    t.string   "tax_id_number"
+    t.boolean  "is_redo"
+    t.text     "redo_reason"
+    t.string   "sales_status"
+    t.string   "delivery_method"
+    t.decimal  "total",           precision: 10, scale: 2
+    t.datetime "deleted_at"
+    t.string   "phone_number"
+  end
 
   create_table "shipping_methods", force: true do |t|
     t.string   "name"
