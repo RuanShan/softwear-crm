@@ -1,0 +1,14 @@
+<table id="imprintables_list">
+  <tr>
+    <th>Name</th>
+    <th>Catalog Number</th>
+    <th>Description</th>
+  </tr>
+  <% @imprintables.each do |imprintable| %>
+  <tr>
+    <td><%= imprintable.name %></td>
+    <td><%= imprintable.catalog_number %></td>
+    <td><%= imprintable.description %></td>
+  </tr>
+  <% end %>
+</table>

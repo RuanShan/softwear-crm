@@ -11,7 +11,15 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140509190832) do
+ActiveRecord::Schema.define(version: 20140514182515) do
+
+  create_table "imprintables", force: true do |t|
+    t.string   "name"
+    t.string   "catalog_number"
+    t.text     "description"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
 
   create_table "shipping_methods", force: true do |t|
     t.string   "name"

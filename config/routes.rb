@@ -1,7 +1,14 @@
 CrmSoftwearcrmCom::Application.routes.draw do
 
+  get "imprintables/index"
+  get "imprintables/show"
+  get "imprintables/new"
+  get "imprintables/create"
+  get "imprintables/edit"
+  get "imprintables/update"
+  get "imprintables/destroy"
   root "home#index"
-  resources :orders, :shipping_methods
+  resources :orders, :shipping_methods, :imprintables
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".
 
