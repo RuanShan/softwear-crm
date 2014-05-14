@@ -6,7 +6,7 @@ set :repo_url, 'git@github.com:annarbortees/softwear-crm.git'
 set :rvm_ruby_string, 'ruby-2.1.1'
 
 # Default branch is :master
-# ask :branch, proc { `git rev-parse --abbrev-ref HEAD`.chomp }.call
+ask :branch, proc { `git rev-parse --abbrev-ref HEAD`.chomp }.call
 
 # Default deploy_to directory is /var/www/my_app
 set :deploy_to, '/home/ubuntu/RailsApps/crm.softwearcrm.com'
