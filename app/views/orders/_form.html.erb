@@ -1,5 +1,5 @@
 <!-- FOrm selector #myWizard -->
-<%= form_for :order, builder: OrderFormBuilder, html: { id: 'myWizard'} do |f| %>
+<%= form_for (defined?(order) ? order : :order) , builder: OrderFormBuilder, html: { id: 'myWizard'} do |f| %>
   <!-- First step -->
   <section class="step" data-step-title="Customer Information">
     <div class="row">
@@ -54,7 +54,6 @@
     <div class="row">
       <div class="col-sm-6">
         <div class="form-group">
-          <label for="inputUsername">Title</label>
           <%= f.label :name %>
           <%= f.text_field :name, placeholder: 'Title Used by Company' %>
         </div>
