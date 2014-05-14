@@ -9,4 +9,21 @@ describe ApplicationHelper do
     end
 
   end
+
+  describe "#create_or_edit_text" do
+
+    context 'object is a new record' do
+      it 'returns Create' do
+        expect(create_or_edit_text(ShippingMethod.new)).to eq('Create')
+      end
+    end
+
+    context 'object is an existing record' do
+      let! (:shipping_method) { create(:valid_shipping_method) }
+
+      it 'returns Update' do
+        expect(create_or_edit_text(shipping_method)).to eq('Update')
+      end
+    end
+  end
 end

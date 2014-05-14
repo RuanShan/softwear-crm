@@ -1,6 +1,6 @@
 
 <div class="box-info">
-<%= form_for @shipping_method do |f| %>
+<%= form_for shipping_method do |f| %>
   <!-- Horizontal form body -->
       <div id="horizontal-form" class="collapse in">
 
@@ -22,7 +22,7 @@
 
         <div class="form-group">
           <div class="col-sm-offset-2 col-sm-10">
-            <button type="submit" class="btn btn-info"><%= create_or_edit_text(@shipping_method) %> Shipping Method</button>
+            <button type="submit" class="btn btn-info"><%= create_or_edit_text(shipping_method) %> Shipping Method</button>
           </div>
         </div>
 
