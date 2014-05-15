@@ -18,7 +18,7 @@ feature 'Shipping Methods management' do
     fill_in 'Tracking url', with: 'http://www.tracking-url.com'
     click_button 'Create Shipping Method'
     expect(ShippingMethod.where(name: 'New Shipping Method')).to exist
-    #TODO: Flash Notice
+    expect(page).to have_selector('#flash_notice', text: 'Shipping method was successfully created.')
   end
 
   scenario 'User deletes an existing shipping method', js: true do
@@ -35,6 +35,7 @@ feature 'Shipping Methods management' do
     fill_in 'Name', with: 'Edited Shipping Method Name'
     click_button 'Update Shipping Method'
     expect(shipping_method.reload.name).to eq('Edited Shipping Method Name')
+    expect(page).to have_selector('#flash_notice', text: 'Shipping method was successfully updated.')
   end
 
 end
