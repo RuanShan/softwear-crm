@@ -16,7 +16,7 @@ describe Order do
     it { should allow_value('123-654-9871').for :phone_number }
     it { should_not allow_value('135184e6').for :phone_number }
 
-    it { should ensure_inclusion_of(:sales_status).in_array [:pending, :terms_set, :terms_set_and_met, :paid] }
+    it { should ensure_inclusion_of(:sales_status).in_array Order::VALID_SALES_STATUSES }
 
     it 'requires a tax id number if tax_exempt? is true' do
       expect(build(:order, tax_exempt: true)).to_not be_valid
@@ -32,9 +32,7 @@ describe Order do
       expect(build(:order, is_redo: true, redo_reason: 'because')).to be_valid
     end
 
-    it { should ensure_inclusion_of(:delivery_method).in_array(
-                            [:pick_up_in_ann_arbor, :pick_up_in_ypsilanti, 
-                             :ship_to_one, :ship_to_multiple]) }
+    it { should ensure_inclusion_of(:delivery_method).in_array Order::VALID_DELIVERY_METHODS }
 
   end
 

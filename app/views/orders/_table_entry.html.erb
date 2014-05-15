@@ -1,4 +1,4 @@
-<tr>
+<tr id="order_<%= order.id %>">
   <td><% order.id %></td>
   <td>
     <div class="btn-group btn-group-xs">
@@ -20,7 +20,7 @@
   <td><span class="label label-warning">Pending</span></td>
   <td>
     <div class="btn-group btn-group-xs">
-      <a data-toggle="tooltip" title="Edit" class="btn btn-default"><i class="fa fa-edit"></i></a>
+      <%= link_to edit_order_path(order), 'data-action' => 'edit', 'data-toggle' => 'tooltip', 'title' => 'Edit', class: 'btn btn-default' do %><i class="fa fa-edit"></i><% end %>
       <a data-toggle="tooltip" title="Quick View" class="btn btn-default"><i class="fa fa-eye"></i></a>
       <a data-toggle="tooltip" title="Printable Invoice" class="btn btn-default"><i class="fa fa-print"></i></a>
     </div>

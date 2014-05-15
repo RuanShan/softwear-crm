@@ -1,5 +1,7 @@
 require 'spec_helper'
 
+# TODO shipping method stuff has not been added yet
+
 describe "orders/_form.html.erb" do
   it 'should display all appropriate fields for creating an order' do
     render
@@ -17,6 +19,7 @@ describe "orders/_form.html.erb" do
   		expect(rendered).to have_field_for :tax_id_number
   		expect(rendered).to have_field_for :is_redo
   		expect(rendered).to have_field_for :redo_reason
+      expect(rendered).to have_field_for :delivery_method
   	end
   end
 end

@@ -86,7 +86,10 @@
 						paginationHtml = '<div class="easyWizardButtons">';
 							paginationHtml += '<button class="prev '+thisSettings.buttonsClass+'">'+thisSettings.prevButton+'</button>';
 							paginationHtml += '<button class="next '+thisSettings.buttonsClass+'">'+thisSettings.nextButton+'</button>';
+							//                 ************************ Changed submit button generation to appease Rails *************************
 							paginationHtml += thisSettings.submitButton?'<button type="submit" class="submit '+thisSettings.submitButtonClass+'">'+thisSettings.submitButtonText+'</button>':'';
+							//                 ************************ Actually looks like it doesn't matter ************************
+							// paginationHtml += thisSettings.submitButton?'<input type="submit" name="commit" class="submit '+thisSettings.submitButtonClass+'" value="'+thisSettings.submitButtonText+'">':'';
 						paginationHtml	+= '</div>';
 						$paginationBloc = $(paginationHtml);
 						$paginationBloc.css('clear', 'both');

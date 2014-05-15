@@ -20,13 +20,12 @@ FactoryGirl.define do
     lastname { generate :lastname }
     email { generate :email }
     twitter '@test'
-    po '123 test'
     in_hand_by Time.now + 1.day
-    terms "Don't suck"
+    terms "Half down on purchase"
     tax_exempt false
     is_redo false
-    sales_status :pending
-    delivery_method :ship_to_one
+    sales_status 'Pending'
+    delivery_method 'Ship to one'
     phone_number '123-456-7890'
   end
 end

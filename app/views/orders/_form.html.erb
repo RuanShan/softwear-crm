@@ -1,5 +1,5 @@
 <!-- FOrm selector #myWizard -->
-<%= form_for (defined?(order) ? order : :order) , builder: OrderFormBuilder, html: { id: 'myWizard'} do |f| %>
+<%= form_for (local_assigns[:order].nil? ? Order.new : order) , builder: OrderFormBuilder, html: { id: 'myWizard'} do |f| %>
   <!-- First step -->
   <section class="step" data-step-title="Customer Information">
     <div class="row">
@@ -7,6 +7,10 @@
         <div class="form-group">
           <%= f.label :email %>
           <%= f.text_field :email, placeholder: 'Email' %>
+        </div>
+        <div class="form-group">
+          <%= f.label :phone_number %>
+          <%= f.text_field :phone_number, placeholder: '000-000-0000', class: 'format-phone' %>
         </div>
         <div class="form-group">
           <%= f.label :firstname %>
@@ -67,7 +71,7 @@
         </div>
         <div class="form-group">
           <%= f.label :terms %>
-          <%= f.select :terms, order_payment_terms %>
+          <%= f.select :terms, Order::VALID_PAYMENT_TERMS %>
         </div>
         <div class="form-group">
           <%= f.label :tax_exempt %>
@@ -94,13 +98,8 @@
     <div class="row">
       <div class="col-sm-6">
         <div class="form-group">
-          <label for="inputFirstname">Delivery Method</label>
-          <select class="form-control">
-            <option></option>
-            <option>Pick Up in Ann Arbor Location</option>
-            <option>Pick Up in Ypsilanti Location</option>
-            <option>Ship to Customer</option>
-          </select>
+          <%= f.label :delivery_method, 'Delivery Method' %>
+          <%= f.select :delivery_method, Order::VALID_DELIVERY_METHODS, include_blank: true %>
         </div>
         <div class="form-group">
           <label for="inputCity">Shipping Method</label>

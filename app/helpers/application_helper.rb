@@ -8,4 +8,9 @@ module ApplicationHelper
     object.new_record? ? 'Create' : 'Update'
   end
 
+  def unhide_dashboard
+  	find('button.button-menu-mobile.show-sidebar').click
+  	wait_for_ajax
+  end
+
 end

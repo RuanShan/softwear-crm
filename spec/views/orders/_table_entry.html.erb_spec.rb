@@ -7,7 +7,7 @@ describe 'orders/_table_entry.html.erb' do
 			firstname: 'o firstname',
 			lastname: 'o lastname',
 			email: 'o@email.com',
-			sales_status: :pending,
+			sales_status: 'Pending',
 			total: 9.50) }
 	end
 
