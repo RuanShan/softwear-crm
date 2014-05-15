@@ -65,7 +65,7 @@ feature 'Order management', order_spec: true, js: true do
     expect(phone_number_field.value).to eq '123-___-____'
   end
 
-  scenario 'User edits an existing order', wip: true do
+  scenario 'User edits an existing order', wip: false do
     visit orders_path
     find("a[title='Edit']").click
     wait_for_ajax

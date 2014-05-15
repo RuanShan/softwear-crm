@@ -31,7 +31,7 @@ private
       :in_hand_by, :terms, :tax_exempt,
       :tax_id_number, :is_redo, :redo_reason,
       :delivery_method, :phone_number, 
-      :sales_status, :commmission_amount
+      :sales_status, :commission_amount
     ])
   end
 end

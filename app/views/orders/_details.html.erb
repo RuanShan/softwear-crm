@@ -1,28 +1,23 @@
-<div class="user-profile-content">
-
+<%= form_for order, builder: OrderFormBuilder, html: { class: 'user-profile-content' } do |f| %>
   <div class="row">
     <div class="col-sm-6">
 
       <h3><strong>Order</strong> Details</h3>
 
       <div class="form-group">
-        <label for="inputUsername">Sales Status</label>
-        <select class="form-control">
-          <option>Pending</option>
-          <option>Terms set, awaiting customer</option>
-          <option>Terms set and met</option>
-          <option>Paid</option>
-        </select>
+        <%= f.label :sales_status %>
+        <%= f.error_for :sales_status %>
+        <%= f.select :sales_status, Order::VALID_SALES_STATUSES %>
       </div>
 
-      <%= render partial: 'order_detail_fields' %>
+      <%= render partial: 'order_detail_fields', locals: { f: f, order: order } %>
 
 
       <div class="form-group">
-        <label for="commmission_amount">Commission Amount</label>
+        <%= f.label :commission_amount %>
         <div class="input-group">
           <span class="input-group-addon">$</span>
-          <input type="text" class="form-control">
+          <%= f.text_field :commission_amount %>
           <span class="input-group-addon">.00</span>
         </div>
       </div>
@@ -32,10 +27,10 @@
 
       <h3><strong>Customer</strong> Details</h3>
 
-      <%= render partial: 'customer_detail_fields' %>
+      <%= render partial: 'customer_detail_fields', locals: { f: f, order: order } %>
 
     </div>
   </div>
 
 
-</div>
+<% end %>
