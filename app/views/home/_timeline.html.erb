@@ -1,0 +1,21 @@
+<div class="col-md-6 box-info">
+  <!-- Begin timeline -->
+  <h4>Timeline</h4>
+  <div class="the-timeline dashboard-timeline">
+    <ul>
+      <% activities.each do |activity| %>
+          <li>
+            <div class="the-date">
+              <span><%= activity.created_at.strftime('%d') %></span>
+              <small><%= activity.created_at.strftime('%b') %></small>
+            </div>
+            <h4>Ricky Winowiecki</h4>
+            <p>
+                <%= render_activity activity %>
+            </p>
+            <p class="time"><%= activity.created_at.strftime('%Y-%m-%d %I:%M%p') %></p>
+          </li>
+      <% end %>
+    </ul>
+  </div>
+</div>

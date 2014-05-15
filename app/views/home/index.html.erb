@@ -2,4 +2,6 @@
   <h1>Dashboard <small>your first page</small></h1>
 </div>
 
-
+<div class="row clear">
+  <%= render partial: 'timeline', locals: {activities: @activities} %>
+</div>

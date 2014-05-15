@@ -1,4 +1,7 @@
 class ShippingMethod < ActiveRecord::Base
+  include PublicActivity::Model
+  tracked
+
   validates :name, uniqueness: true, presence: true
   validates :tracking_url, format: {with: URI::regexp(%w(http https)), message: 'should be in format http://www.url.com/path'}
 
@@ -10,7 +13,7 @@ class ShippingMethod < ActiveRecord::Base
   end
 
   def destroy
-    update_attribute(:deleted_at, Time.now)
+    update_columns(deleted_at: Time.now, updated_at: Time.now)
   end
 
   def destroy!
