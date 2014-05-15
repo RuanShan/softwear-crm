@@ -1,0 +1,41 @@
+<div class="user-profile-content">
+
+  <div class="row">
+    <div class="col-sm-6">
+
+      <h3><strong>Order</strong> Details</h3>
+
+      <div class="form-group">
+        <label for="inputUsername">Sales Status</label>
+        <select class="form-control">
+          <option>Pending</option>
+          <option>Terms set, awaiting customer</option>
+          <option>Terms set and met</option>
+          <option>Paid</option>
+        </select>
+      </div>
+
+      <%= render partial: 'order_detail_fields' %>
+
+
+      <div class="form-group">
+        <label for="commmission_amount">Commission Amount</label>
+        <div class="input-group">
+          <span class="input-group-addon">$</span>
+          <input type="text" class="form-control">
+          <span class="input-group-addon">.00</span>
+        </div>
+      </div>
+
+    </div>
+    <div class="col-sm-6">
+
+      <h3><strong>Customer</strong> Details</h3>
+
+      <%= render partial: 'customer_detail_fields' %>
+
+    </div>
+  </div>
+
+
+</div>
