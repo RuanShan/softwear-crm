@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe 'orders/_details.html.erb', order_spec: true do
+describe 'orders/_details.html.erb', order_spec: true, wip: true do
   it 'should display the correct fields' do
     render partiel: 'orders/details', locals: { order: create(:order) }
     within_form_for Order do
