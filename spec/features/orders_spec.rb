@@ -1,7 +1,7 @@
 require 'spec_helper'
 include ApplicationHelper
 
-feature 'Order management', js: true do
+feature 'Order management', order_spec: true, js: true do
   given!(:order) { create(:order) }
 
   scenario 'user views the index of orders' do
@@ -65,15 +65,13 @@ feature 'Order management', js: true do
     expect(phone_number_field.value).to eq '123-___-____'
   end
 
-  scenario 'User edits an existing order' do
+  scenario 'User edits an existing order', wip: true do
     visit orders_path
     find("a[title='Edit']").click
     wait_for_ajax
-    fill_in 'Firstname', with: 'Someone else'
-
-    2.times { click_button 'Next'; wait_for_ajax }
-
-    click_button 'Submit'
-    expect(order.reload.firstname).to eq('Someone else')
+    click_link 'Details'
+    wait_for_ajax
+    
+    sleep 120
   end
 end

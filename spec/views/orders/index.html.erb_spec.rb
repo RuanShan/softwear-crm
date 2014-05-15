@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe "orders/index.html.erb" do
+describe "orders/index.html.erb", order_spec: true do
   it 'displays all 3 orders' do
   	assign :orders, [
   		create(:order, name: 'first'),

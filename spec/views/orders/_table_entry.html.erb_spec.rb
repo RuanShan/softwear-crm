@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe 'orders/_table_entry.html.erb' do
+describe 'orders/_table_entry.html.erb', order_spec: true do
 	before :each do
 		render partial: 'orders/table_entry', locals: { order: create(:order,
     	name: 'o name',

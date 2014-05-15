@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe "orders/_form.html.erb", wip: true do
+describe "orders/_form.html.erb", order_spec: true, wip: false do
   it 'should display all appropriate fields for creating an order' do
     render
   	within_form_for Order do
