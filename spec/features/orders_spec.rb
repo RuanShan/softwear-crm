@@ -37,7 +37,7 @@ feature 'Order management', js: true do
     click_button 'Next'
     wait_for_ajax
 
-    select 'Pick up in Ypsilanti', from: 'Delivery Method'
+    select 'Pick up in Ypsilanti', from: 'Delivery method'
     # select 'In House Delivery', from: 'Shipping Method'
 
     click_button 'Submit'

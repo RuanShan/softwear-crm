@@ -6,6 +6,19 @@ class OrdersController < InheritedResources::Base
     end
   end
 
+  def create
+    super do |success, failure|
+      success.html do
+        flash[:notice] = "Order successfully created!"
+        redirect_to orders_path
+      end
+      failure.html do
+        flash[:notice] = "Failed to create order."
+        redirect_to edit_order_path(Order.new permitted_params)
+      end
+    end
+  end
+
   def show
     redirect_to action: :edit
   end

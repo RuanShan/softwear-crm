@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140513173551) do
+ActiveRecord::Schema.define(version: 20140515151202) do
 
   create_table "orders", force: true do |t|
     t.string   "email"
@@ -27,11 +27,13 @@ ActiveRecord::Schema.define(version: 20140513173551) do
     t.string   "tax_id_number"
     t.boolean  "is_redo"
     t.text     "redo_reason"
-    t.string   "sales_status"
+    t.string   "sales_status",                             default: "pending"
     t.string   "delivery_method"
     t.decimal  "total",           precision: 10, scale: 2
     t.datetime "deleted_at"
     t.string   "phone_number"
+    t.datetime "created_at"
+    t.datetime "updated_at"
   end
 
   create_table "shipping_methods", force: true do |t|

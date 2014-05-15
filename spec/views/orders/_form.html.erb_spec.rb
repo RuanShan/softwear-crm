@@ -1,8 +1,6 @@
 require 'spec_helper'
 
-# TODO shipping method stuff has not been added yet
-
-describe "orders/_form.html.erb" do
+describe "orders/_form.html.erb", wip: true do
   it 'should display all appropriate fields for creating an order' do
     render
   	within_form_for Order do
@@ -21,5 +19,15 @@ describe "orders/_form.html.erb" do
   		expect(rendered).to have_field_for :redo_reason
       expect(rendered).to have_field_for :delivery_method
   	end
+  end
+
+  it 'should display errors for invalid fields' do
+    pending "Waiting until we get ahold of Ricky's error handling stuff"
+    order = build :order, email: 'bad-email'
+    render partial: 'orders/form', locals: { order: order }
+    within_form_for Order do
+      puts 'actually doing this'
+      expect(rendered).to have_error_for :email
+    end
   end
 end

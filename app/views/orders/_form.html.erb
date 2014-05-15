@@ -6,26 +6,32 @@
       <div class="col-sm-6">
         <div class="form-group">
           <%= f.label :email %>
+          <%= f.error_for :email %>
           <%= f.text_field :email, placeholder: 'Email' %>
         </div>
         <div class="form-group">
           <%= f.label :phone_number %>
+          <%= f.error_for :phone_number %>
           <%= f.text_field :phone_number, placeholder: '000-000-0000', class: 'format-phone' %>
         </div>
         <div class="form-group">
           <%= f.label :firstname %>
+          <%= f.error_for :firstname %>
           <%= f.text_field :firstname, placeholder: 'First Name' %>
         </div>
         <div class="form-group">
           <%= f.label :lastname %>
+          <%= f.error_for :lastname %>
           <%= f.text_field :lastname, placeholder: 'Last Name' %>
         </div>
         <div class="form-group">
           <%= f.label :company %>
+          <%= f.error_for :company %>
           <%= f.text_field :company, placeholder: 'Company' %>
         </div>
         <div class="form-group">
           <%= f.label :twitter %>
+          <%= f.error_for :twitter %>
           <div class="input-group">
               <span class="input-group-addon">@</span>
               <%= f.text_field :twitter, placeholder: 'twitteralias' %>
@@ -59,26 +65,34 @@
       <div class="col-sm-6">
         <div class="form-group">
           <%= f.label :name %>
+          <%= f.error_for :name %>
           <%= f.text_field :name, placeholder: 'Title Used by Company' %>
         </div>
         <div class="form-group">
           <%= f.label :po, 'P.O. Number' %>
+          <%= f.error_for :po %>
           <%= f.text_field :po, placeholder: 'Purchase Order If Required' %>
         </div>
         <div class="form-group">
           <%= f.label :in_hand_by, 'In Hand By Date' %>
+          <%= f.error_for :in_hand_by %>
           <%= f.datetime :in_hand_by, placeholder: 'In Hand By' %>
         </div>
         <div class="form-group">
           <%= f.label :terms %>
+          <%= f.error_for :terms %>
           <%= f.select :terms, Order::VALID_PAYMENT_TERMS %>
         </div>
         <div class="form-group">
           <%= f.label :tax_exempt %>
+          <%= f.error_for :tax_exempt %>
+          <%= f.error_for :tax_id_number %>
           <%= f.check_box_with_text_field :tax_exempt, :tax_id_number, placeholder: 'Tax ID Number' %>
         </div>
         <div class="form-group">
           <%= f.label :redo_reason, 'Is this order a redo?' %>
+          <%= f.error_for :is_redo %>
+          <%= f.error_for :redo_reason %>
           <%= f.check_box_with_text_field :is_redo, :redo_reason, placeholder: 'Redo Explanation' %>
         </div>
       </div><!-- End div .col-sm-6 -->
@@ -98,7 +112,8 @@
     <div class="row">
       <div class="col-sm-6">
         <div class="form-group">
-          <%= f.label :delivery_method, 'Delivery Method' %>
+          <%= f.label :delivery_method %>
+          <%= f.error_for :delivery_method %>
           <%= f.select :delivery_method, Order::VALID_DELIVERY_METHODS, include_blank: true %>
         </div>
         <div class="form-group">

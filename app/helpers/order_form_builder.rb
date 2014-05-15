@@ -15,11 +15,18 @@ class OrderFormBuilder < ActionView::Helpers::FormBuilder
 
   def check_box_with_text_field(check_method, text_method, options={})
     @template.content_tag(:div, class: 'input-group') do
+      add_class options, 'form-control'
       @template.content_tag(:span, class: 'input-group-addon') do
         @template.check_box @object_name, check_method
       end +
       @template.text_area(@object_name, text_method, options)
     end
+  end
+
+  def error_for(method)
+    @template.content_tag(:span, class: 'field-error', for: "#{@object_name}[#{method.to_s}]") do
+      @object.errors[method].collect { |e| e.message+'<br />' }.join ' | '
+    end if @object.errors[method] and !@object.errors[method].empty?
   end
 
   def datetime(method, options={})
