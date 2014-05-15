@@ -7,6 +7,8 @@ CrmSoftwearcrmCom::Application.routes.draw do
   get "imprintables/edit"
   get "imprintables/update"
   get "imprintables/destroy"
+  post "imprintables/create"
+  post "imprintables/new"
   root "home#index"
   resources :orders, :shipping_methods, :imprintables
   # The priority is based upon order of creation: first created -> highest priority.
