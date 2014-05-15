@@ -13,7 +13,7 @@ class Order < ActiveRecord::Base
 
   validates_presence_of :email, :firstname, :lastname, :name, :terms, :delivery_method
   validates :email, format: { with: /\A([^@\s]+)@((?:[-a-z0-9]+\.)+[a-z]{2,})\Z/i }
-  validates :phone_number, format: { with: /\d{3}-\d{3}-\d{4}/, message: "is incorrectly formatted, use 734-555-1212" }
+  validates :phone_number, format: { with: /\d{3}-\d{3}-\d{4}/, message: "is incorrectly formatted, use 000-000-0000" }
   
   validates_inclusion_of(:sales_status, 
       in: VALID_SALES_STATUSES,

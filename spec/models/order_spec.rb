@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Order do
+describe Order, order_spec: true do
   context 'when validating' do
     it { should validate_presence_of :email }
     it { should validate_presence_of :firstname }
@@ -14,7 +14,7 @@ describe Order do
     it { should_not allow_value('not_an-email').for :email }
 
     it { should allow_value('123-654-9871').for :phone_number }
-    it { should_not allow_value('135184e6').for :phone_number }
+    it { should_not allow_value('135184e6').for(:phone_number).with_message("is incorrectly formatted, use 000-000-0000") }
 
     it { should ensure_inclusion_of(:sales_status).in_array Order::VALID_SALES_STATUSES }
 
