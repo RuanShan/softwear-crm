@@ -20,6 +20,4 @@
 //= require datepicker/bootstrap-datepicker
 //= require icheck/icheck
 //= require wizard/jquery.easyWizard
-//= require nifty-modal/js/classie
-//= require nifty-modal/js/modalEffects
 //= require_tree .
