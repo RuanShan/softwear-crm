@@ -1,6 +1,6 @@
 class ShippingMethod < ActiveRecord::Base
-  validates_uniqueness_of :name
-  validates :tracking_url, :format => URI::regexp(%w(http https))
+  validates :name, uniqueness: true
+  validates :tracking_url, format: URI::regexp(%w(http https))
 
   default_scope -> { where(deleted_at: nil) }
   scope :deleted, -> { unscoped.where.not(deleted_at: nil)}
