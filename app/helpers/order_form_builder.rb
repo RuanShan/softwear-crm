@@ -33,9 +33,9 @@ class OrderFormBuilder < ActionView::Helpers::FormBuilder
   end
 
   def error_for(method)
-    @template.content_tag(:span, class: 'field-error', for: "#{@object_name}[#{method.to_s}]") do
-      @object.errors[method].collect { |e| e.message+'<br />' }.join ' | '
-    end if @object.errors[method] and !@object.errors[method].empty?
+    @object.errors.full_messages_for(method).each do |message|
+      @template.content_tag(:p, message, class: 'text-danger')
+    end if @object.errors.include? method
   end
 
   def datetime(method, options={})

@@ -13,7 +13,7 @@ feature 'Order management', order_spec: true, js: true do
     expect(page).to have_css("tr#order_#{order.id}")
   end
 
-  scenario 'user creates a new order' do
+  scenario 'user creates a new order', wip: true do
     visit root_path
     unhide_dashboard
     click_link 'Orders'
@@ -43,6 +43,27 @@ feature 'Order management', order_spec: true, js: true do
     click_button 'Submit'
 
     expect(Order.where(firstname: 'Guy')).to exist
+  end
+
+  scenario 'user sees an error message when submitting invalid information', wip: true do
+    visit root_path
+    unhide_dashboard
+    click_link 'Orders'
+    wait_for_ajax
+    click_link 'New'
+
+    fill_in 'Email', with: 'nope'
+
+    before_path = current_path
+
+    2.times { click_button 'Next'; wait_for_ajax }
+    click_button 'Submit'
+
+    # expect(current_path).to eq before_path
+
+    # expect(page).to have_content 'error'
+
+    sleep 15
   end
 
   scenario 'phone number field enforces proper format' do
@@ -77,5 +98,6 @@ feature 'Order management', order_spec: true, js: true do
     click_button 'Save'
 
     expect(Order.where(name: 'New Title')).to exist
+    sleep 10
   end
 end

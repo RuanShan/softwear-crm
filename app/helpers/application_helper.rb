@@ -23,4 +23,8 @@ module ApplicationHelper
       when :warning then "modal-content-warning"
     end
   end
+
+  def render_error_modal_for(object)
+    render partial: 'shared/modal_errors', locals: { object: object }
+  end
 end
