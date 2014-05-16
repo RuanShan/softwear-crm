@@ -2699,3 +2699,18 @@ a:focus .icon-vimeo {
 .weatherseparator:after {
   clear: both;
 }
+
+
+/*
+  RAILS Stylings
+*/
+
+.field_with_errors {
+    color: #a94442;
+
+    input {
+      color: #a94442;
+      background-color: #f2dede;
+      border: solid 1px #a94442;
+    }
+}

@@ -1,7 +1,7 @@
 CrmSoftwearcrmCom::Application.routes.draw do
 
   root "home#index"
-  resources :orders, :shipping_methods
+  resources :orders, :shipping_methods, :imprintables
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".
 

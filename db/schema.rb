@@ -36,6 +36,16 @@ ActiveRecord::Schema.define(version: 20140515163524) do
     t.datetime "updated_at"
     t.decimal  "commission_amount", precision: 10, scale: 2
   end
+ActiveRecord::Schema.define(version: 20140515142240) do
+
+  create_table "imprintables", force: true do |t|
+    t.string   "name"
+    t.string   "catalog_number"
+    t.text     "description"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.datetime "deleted_at"
+  end
 
   create_table "shipping_methods", force: true do |t|
     t.string   "name"

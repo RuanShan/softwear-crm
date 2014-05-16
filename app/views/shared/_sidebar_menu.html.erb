@@ -10,7 +10,7 @@
     <li><a href="#fakelink"><i class="fa fa-users"></i> Customers</a>
     <li><a href="#fakelink"><i class="fa fa-archive"></i><i class="fa fa-angle-double-down i-right"></i> Imprintables</a>
       <ul>
-        <li><a href="#fakelink"><i class="fa fa-angle-right"></i> List</a></li>
+        <li><%= link_to imprintables_path, id: 'imprintables_list_link' do %><i class="fa fa-angle-right"></i> List<% end %></li>
         <li><a href="#fakelink"><i class="fa fa-angle-right"></i> Brands</a></li>
         <li><a href="#fakelink"><i class="fa fa-angle-right"></i> Colors</a></li>
         <li><a href="#fakelink"><i class="fa fa-angle-right"></i> Styles</a></li>

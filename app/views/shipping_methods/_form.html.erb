@@ -1,5 +1,6 @@
 
 <div class="box-info">
+ <%= render partial: 'shared/modal_errors', locals: {object: shipping_method} %>
 <%= form_for shipping_method do |f| %>
   <!-- Horizontal form body -->
       <div id="horizontal-form" class="collapse in">
@@ -7,14 +8,24 @@
         <div class="form-group">
           <%= f.label :name, class: 'col-sm-2 control-label' %>
           <div class="col-sm-10">
+            <% if shipping_method.errors.include?(:name) %>
+                <% shipping_method.errors.full_messages_for(:name).each do |message| %>
+                    <p class="text-danger"><%= message %></p>
+                <% end %>
+            <% end %>
             <%= f.text_field :name, class: 'form-control' %>
-            <p class="help-block">The name of the shipping method (UPS Ground, for example)</p>
+            <p class="help-block">The name of the shipping method (UPS Ground, for example)
            </div>
         </div>
 
         <div class="form-group">
           <%= f.label :tracking_url, class: 'col-sm-2 control-label' %>
           <div class="col-sm-10">
+            <% if shipping_method.errors.include?(:tracking_url) %>
+                <% shipping_method.errors.full_messages_for(:tracking_url).each do |message| %>
+                    <p class="text-danger"><%= message %></p>
+                <% end %>
+            <% end %>
             <%= f.text_field :tracking_url, class: 'form-control' %>
             <p class="help-block">URL At which you can enter in a tracking number to track your shipment</p>
           </div>

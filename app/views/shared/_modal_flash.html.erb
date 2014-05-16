@@ -1,0 +1,17 @@
+<% if !flash.empty? %>
+    <div class="modal fade" id="flashModal" tabindex="-1" role="dialog" aria-labelledby="flashModalLabel" aria-hidden="true">
+      <div class="modal-dialog">
+        <% flash.each do |key, value| %>
+        <div class="modal-content <%= modal_flash_class(key) %>">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+            <h4 class="modal-title" id="myModalLabel">Notice</h4>
+          </div>
+          <div class="modal-body" id="flash_<%= key %>">
+            <%= value %>
+          </div>
+        </div>
+        <% end %>
+      </div>
+    </div>
+<% end %>

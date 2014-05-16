@@ -3,8 +3,9 @@ require 'spec_helper'
 describe ShippingMethod do
   describe 'Validations' do
     it { should validate_uniqueness_of(:name) }
+    it { should validate_presence_of(:name) }
     it { should allow_value('http://www.foo.com', 'http://www.foo.com/shipping').for(:tracking_url) }
-    it { should_not allow_value('bad_url.com').for(:tracking_url) }
+    it { should_not allow_value('bad_url.com', '').for(:tracking_url).with_message('should be in format http://www.url.com/path') }
   end
 
   describe 'Scopes' do

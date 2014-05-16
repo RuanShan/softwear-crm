@@ -1,0 +1,21 @@
+<% if !object.errors.empty?  %>
+    <div class="modal fade" id="errorsModal" tabindex="-1" role="dialog" aria-labelledby="errorsModalLabel" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content modal-content-error">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+            <h4 class="modal-title" id="myModalLabel">
+              <strong>There was an error saving the <%= object.class.name.underscore.humanize.downcase %></strong>
+            </h4>
+          </div>
+          <div class="modal-body" id="error_messages">
+            <ul>
+              <% object.errors.full_messages.each do |msg| %>
+                  <li><%= msg %></li>
+              <% end %>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+<% end %>

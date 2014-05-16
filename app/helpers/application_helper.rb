@@ -13,4 +13,14 @@ module ApplicationHelper
   	wait_for_ajax
   end
 
+  def modal_flash_class(level)
+    case level
+      when :info then "modal-content-info"
+      when :notice then "modal-content-success"
+      when :success then "modal-content-success"
+      when :error then "modal-content-error"
+      when :alert then "modal-content-error"
+      when :warning then "modal-content-warning"
+    end
+  end
 end
