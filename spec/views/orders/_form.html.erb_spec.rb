@@ -22,11 +22,9 @@ describe "orders/_form.html.erb", order_spec: true, wip: false do
   end
 
   it 'should display errors for invalid fields' do
-    pending "Waiting until we get ahold of Ricky's error handling stuff"
     order = build :order, email: 'bad-email'
     render partial: 'orders/form', locals: { order: order }
     within_form_for Order do
-      puts 'actually doing this'
       expect(rendered).to have_error_for :email
     end
   end

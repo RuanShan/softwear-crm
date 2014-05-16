@@ -36,7 +36,7 @@ ActiveRecord::Schema.define(version: 20140515163524) do
     t.string   "tax_id_number"
     t.boolean  "is_redo"
     t.text     "redo_reason"
-    t.string   "sales_status",                               default: "pending"
+    t.string   "sales_status"
     t.string   "delivery_method"
     t.decimal  "total",             precision: 10, scale: 2
     t.datetime "deleted_at"

@@ -34,7 +34,7 @@ class OrderFormBuilder < ActionView::Helpers::FormBuilder
 
   def error_for(method)
     @object.errors.full_messages_for(method).each do |message|
-      @template.content_tag(:p, message, class: 'text-danger')
+      @template.content_tag(:p, message, class: 'text-danger', for: "#{@object_name}[#{method}]")
     end if @object.errors.include? method
   end
 

@@ -13,7 +13,7 @@ module FormHelpers
     match do |page|
       doc = Nokogiri::HTML page
       css_pre = (@@model_form_context && @@scope_to_form ? 
-          "form[id*='#{@@model_form_context}'] " :
+          "form[class*='#{@@model_form_context}'],form[id*='#{@@model_form_context}'] " :
           "")
       css_attr = (@@model_form_context ? 
                   "name='#{@@model_form_context}[#{field_name}]'" :
@@ -33,7 +33,7 @@ module FormHelpers
     match do |page|
       if @@model_form_context
         doc = Nokogiri::HTML page
-        result = doc.css("span.field-error[for='#{@@model_form_context}[#{field_name}]']")
+        result = doc.css("p.text-danger[for='#{@@model_form_context}[#{field_name}]']")
         unless result.empty? then
           define_method :error do
             result.first.text

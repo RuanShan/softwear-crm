@@ -1,22 +1,28 @@
 class OrdersController < InheritedResources::Base
   def update
-    super do |success, failure|
-      success.html { redirect_to orders_path }
-      failure.html { redirect_to root_path }
+    super do |format|
+      format.html { redirect_to edit_order_path params[:id] }
     end
   end
 
   def create
-    super do |success, failure|
-      success.html do
-        flash[:notice] = "Order successfully created!"
-        redirect_to orders_path
-      end
-      failure.html do
-        flash[:notice] = "Failed to create order."
-        redirect_to edit_order_path(Order.new permitted_params)
-      end
-    end
+    ##
+    # TODO
+    super # Ask Ricky for help on this one
+    # It doesn't redirect the same as the 
+    # shipping methods one and therefore 
+    # doesn't show the error message(s)
+    # despite rendering it in the view
+    ##
+
+    # super do |success, failure|
+    #   success.html do
+    #     redirect_to edit_order_path # 
+    #   end
+    #   failure.html do
+    #     redirect_to new_order_path
+    #   end
+    # end
   end
 
   def show

@@ -13,7 +13,7 @@ feature 'Order management', order_spec: true, js: true do
     expect(page).to have_css("tr#order_#{order.id}")
   end
 
-  scenario 'user creates a new order', wip: true do
+  scenario 'user creates a new order' do
     visit root_path
     unhide_dashboard
     click_link 'Orders'
@@ -45,7 +45,7 @@ feature 'Order management', order_spec: true, js: true do
     expect(Order.where(firstname: 'Guy')).to exist
   end
 
-  scenario 'user sees an error message when submitting invalid information', wip: true do
+  scenario 'user sees an error message when submitting invalid information', pending: 'need to fix' do
     visit root_path
     unhide_dashboard
     click_link 'Orders'
@@ -59,11 +59,9 @@ feature 'Order management', order_spec: true, js: true do
     2.times { click_button 'Next'; wait_for_ajax }
     click_button 'Submit'
 
-    # expect(current_path).to eq before_path
+    expect(current_path).to eq before_path
 
-    # expect(page).to have_content 'error'
-
-    sleep 15
+    expect(page).to have_content 'error'
   end
 
   scenario 'phone number field enforces proper format' do
@@ -86,7 +84,7 @@ feature 'Order management', order_spec: true, js: true do
     expect(phone_number_field.value).to eq '123-___-____'
   end
 
-  scenario 'user edits an existing order', wip: true do
+  scenario 'user edits an existing order' do
     visit orders_path
     find("a[title='Edit']").click
     wait_for_ajax
@@ -98,6 +96,5 @@ feature 'Order management', order_spec: true, js: true do
     click_button 'Save'
 
     expect(Order.where(name: 'New Title')).to exist
-    sleep 10
   end
 end
