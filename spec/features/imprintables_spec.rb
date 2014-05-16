@@ -1,7 +1,7 @@
 require 'spec_helper'
+include ApplicationHelper
 
-
-feature 'Imprintables Management' do
+feature 'Imprintables management' do
 
   let!(:imprintable) { create(:valid_imprintable)}
 
@@ -10,41 +10,39 @@ feature 'Imprintables Management' do
     visit root_path
     click_link 'imprintables_list_link'
     expect(current_path).to eq(imprintables_path)
-    expect(find_by_id('imprintables_list')).to_not be_nil
+    expect(page).to have_selector('.box-info')
   end
 
   scenario 'A user can create a new imprintable' do
-    visit root_path
-    click_link 'imprintables_list_link'
-    click_link('new_imprintable_link')
+    visit imprintables_path
+    click_link('Add an Imprintable')
     fill_in 'imprintable_name', :with => 'Sample Name'
     fill_in 'imprintable_catalog_number', :with => '42'
     fill_in 'imprintable_description', :with => 'Sample description'
     click_button('Create Imprintable')
-    expect(current_path).to eq(imprintables_index_path)
-    expect(find_by_id('notice')).to_not be_nil
-    expect(Imprintable.find_by name: 'Sample Name')
+    expect(current_path).to eq(imprintables_path)
+    expect(page).to have_selector '.modal-content-success', text: 'Imprintable was successfully created.'
+    expect(Imprintable.find_by name: 'Sample Name').to_not be_nil
   end
 
   scenario 'A user can edit an existing imprintable' do
-    visit root_path
-    click_link 'imprintables_list_link'
-    click_button  'edit_imprintable_link'
-    # edit selected imprintable's form data
-    fill_in 'imprintable_name', :with => 'Edited Name'
-    # submit form data
-    # receive confirmation message
-    # updated data reflected in database
+    visit imprintables_path
+    find("tr#imprintable_#{imprintable.id} a[data-action='edit']").click
+    fill_in 'imprintable_name', :with => 'Edited Imprintable Name'
+    click_button 'Update Imprintable'
+    expect(current_path).to eq(imprintables_path)
+    expect(page).to have_selector '.modal-content-success', text: 'Imprintable was successfully updated.'
+    expect(imprintable.reload.name).to eq('Edited Imprintable Name')
   end
 
-  @wip
-  scenario 'A user can delete an existing imprintable' do
-    # navigate to homepage
-    # navigate to imprintable page
-    # select an existing imprintable
-    # delete imprintable
-    # receive confirmation message
-    # imprintable removed from database
+  scenario 'A user can delete an existing imprintable', js: true do
+    visit imprintables_path
+    find("tr#imprintable_#{imprintable.id} a[data-action='destroy']").click
+    page.driver.browser.switch_to.alert.accept
+    wait_for_ajax
+    expect(current_path).to eq(imprintables_path)
+    expect(page).to have_selector '.modal-content-success', text: 'Imprintable was successfully destroyed.'
+    expect(imprintable.reload.destroyed? ).to be_truthy
   end
 
 end

@@ -1,5 +1,7 @@
-<h1>New Imprintable</h1>
+<div class="page-heading animated fadeInDownBig">
+    <h1>Imprintables <small>Create a new imprintable</small></h1>
+</div>
 
-<%= render 'form' %>
-
-<%= link_to 'Back', imprintables_path %>
+<div class="row full">
+  <%= render partial: 'form', locals: {imprintable: @imprintable } %>
+</div>

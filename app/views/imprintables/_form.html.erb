@@ -1,29 +1,55 @@
-<%= form_for(@imprintable) do |f| %>
-    <% if @imprintable.errors.any? %>
-        <div id="error_explanation">
-          <h2><%= pluralize(@imprintable.errors.count, 'error') %> prohibited this product from being saved:</h2>
 
-          <ul>
-            <% @imprintable.errors.full_messages.each do |msg| %>
-                <li><%= msg %></li>
-            <% end %>
-          </ul>
+<div class="box-info">
+  <%= render partial: 'shared/modal_errors', locals: {object: imprintable} %>
+    <%= form_for(imprintable) do |f| %>
+      <!-- Horizontal form body -->
+        <div id="horizontal-form" class="collapse in">
+
+          <div class="form-group">
+            <%= f.label :name, class: 'col-sm-2 control-label' %>
+            <div class="col-sm-10">
+              <% if imprintable.errors.include?(:name) %>
+                  <% imprintable.errors.full_messages_for(:name).each do |message| %>
+                      <p class="text-danger"><%= message %></p>
+                  <% end %>
+              <% end %>
+              <%= f.text_field :name, class: 'form-control' %>
+              <p class="help-block">The name of the imprintable
+            </div>
+          </div>
+
+          <div class="form-group">
+            <%= f.label :catalog_number, class: 'col-sm-2 control-label' %>
+            <div class="col-sm-10">
+              <% if imprintable.errors.include?(:catalog_number) %>
+                  <% imprintable.errors.full_messages_for(:catalog_number).each do |message| %>
+                      <p class="text-danger"><%= message %></p>
+                  <% end %>
+              <% end %>
+              <%= f.text_field :catalog_number, class: 'form-control' %>
+              <p class="help-block">The catalog number of the imprintable
+            </div>
+          </div>
+
+          <div class="form-group">
+            <%= f.label :description, class: 'col-sm-2 control-label' %>
+            <div class="col-sm-10">
+              <% if imprintable.errors.include?(:description) %>
+                  <% imprintable.errors.full_messages_for(:description).each do |message| %>
+                      <p class="text-danger"><%= message %></p>
+                  <% end %>
+              <% end %>
+              <%= f.text_field :description, class: 'form-control' %>
+              <p class="help-block">The description of the imprintable
+            </div>
+          </div>
+
+          <div class="form-group">
+            <div class="col-sm-offset-2 col-sm-10">
+              <button type="submit" class="btn btn-info"><%= create_or_edit_text(imprintable) %> Imprintable</button>
+            </div>
+          </div>
+
         </div>
     <% end %>
-
-    <div class="field">
-      <%= f.label :name %><br>
-      <%= f.text_field :name %>
-    </div>
-    <div class="field">
-      <%= f.label :catalog_number %><br>
-      <%= f.text_field :catalog_number %>
-    </div>
-    <div class="field">
-      <%= f.label :description %><br>
-      <%= f.text_area :description, rows: 6 %>
-    </div>
-    <div class="actions">
-      <%= f.submit %>
-    </div>
-<% end %>
+</div>

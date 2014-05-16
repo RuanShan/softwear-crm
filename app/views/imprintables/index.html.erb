@@ -1,23 +1,10 @@
-<% if flash[:notice] %>
-    <div id="notice"><%= flash[:notice] %></div>
-<% end %>
+<div class="page-heading animated fadeInDownBig col-lg-9">
+  <h1>Imprintables <small>View and edit imprintables</small></h1>
+</div>
+<div class="col-lg-3 text-right">
+  <%= link_to "Add an Imprintable", new_imprintable_path, class:'btn btn-primary', role: 'button' %>
+</div>
 
-
-<table id="imprintables_list">
-  <tr>
-    <th>Name</th>
-    <th>Catalog Number</th>
-    <th>Description</th>
-  </tr>
-  <% @imprintables.each do |imprintable| %>
-  <tr>
-    <td><%= imprintable.name %></td>
-    <td><%= imprintable.catalog_number %></td>
-    <td><%= imprintable.description %></td>
-    <td><%= button_to edit_imprintable_path(imprintable), id: 'edit_imprintable_link' do %> Edit<% end %></td>
-  </tr>
-  <% end %>
-</table>
-<p>
-  <%= link_to imprintables_new_path, id: 'new_imprintable_link' do %><i class="fa fa-angle-right"> New Imprintable</i><% end %>
-</p>
+<div class="box-info row clear">
+  <%= render partial: 'table', locals: {imprintables: @imprintables } %>
+</div>
