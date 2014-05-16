@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe 'orders/_order_customer_fields.html.erb', order_spec: true, wip: true do
+describe 'orders/_order_customer_fields.html.erb', order_spec: true do
   it 'should display the correct fields' do
     order = create(:order)
     f = OrderFormBuilder.dummy_for order

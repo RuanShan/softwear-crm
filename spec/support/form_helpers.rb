@@ -19,8 +19,6 @@ module FormHelpers
                   "name='#{@@model_form_context}[#{field_name}]'" :
                   "name='#{field_name}'")
 
-      # css_for = -> { |x| "#{css_pre}#{x}[#{css_attr}]" }
-
       !(doc.css("#{css_pre}input[#{css_attr}]").empty? and
         doc.css("#{css_pre}select[#{css_attr}]").empty? and
         doc.css("#{css_pre}textarea[#{css_attr}]").empty? and

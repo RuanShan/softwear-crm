@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe 'orders/edit.html.erb', order_spec: true, wip: true do
+describe 'orders/edit.html.erb', order_spec: true do
 	let!(:order) {create(:order)}
 	before :each do
 		assign :order, order
