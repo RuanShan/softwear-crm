@@ -97,4 +97,17 @@ feature 'Order management', order_spec: true, js: true do
 
     expect(Order.where(name: 'New Title')).to exist
   end
+
+  scenario 'user deletes an existing order' do
+      visit orders_path
+      find("a[title='Edit'").click
+      wait_for_ajax
+      click_link 'Details'
+      wait_for_ajax
+
+      click_button 'Delete'
+      page.driver.browser.switch_to.alert.accept
+      wait_for_ajax
+      expect(order.reload.destroyed?).to be_truthy
+  end
 end

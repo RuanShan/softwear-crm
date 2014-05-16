@@ -17,4 +17,8 @@ describe 'orders/_details.html.erb', order_spec: true do
   		expect(rendered).to have_css '.submit[value="Save"]'
   	end
   end
+
+  it 'should have a delete button' do
+    expect(rendered).to have_css '#delete-order'
+  end
 end
