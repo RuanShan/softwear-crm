@@ -45,7 +45,7 @@ feature 'Order management', order_spec: true, js: true do
     expect(Order.where(firstname: 'Guy')).to exist
   end
 
-  scenario 'user sees an error message when submitting invalid information', pending: 'need to fix' do
+  scenario 'user sees an error message when submitting invalid information', pending: 'error messages need to be dealt with' do
     visit root_path
     unhide_dashboard
     click_link 'Orders'

@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe 'LancengFormBuilder', helper_spec: true, wip: true do
+describe 'LancengFormBuilder', helper_spec: true do
   let!(:object) { mock_model('DummyObject', name: 'test', do_it: true) }
 
   it 'can create a dummy form builder' do
