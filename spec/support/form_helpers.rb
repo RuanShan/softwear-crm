@@ -1,33 +1,25 @@
 require 'rspec/expectations'
 
 module FormHelpers
-  def within_form_for(model)
-    if model.respond_to? :underscore
-      @@model_form_context = model.underscore
-    else
-      @@model_form_context = model.to_s.downcase
-    end
+  def within_form_for(model, options={})
+    @@model_form_context = model.to_s.underscore
+    @@scope_to_form = options[:noscope].nil?
     yield
     @@model_form_context = nil
+    @@scope_to_form = nil
   end
 
   RSpec::Matchers.define :have_field_for do |field_name|
     match do |page|
       doc = Nokogiri::HTML page
-      css_pre = (@@model_form_context ? 
+      css_pre = (@@model_form_context && @@scope_to_form ? 
           "form[id*='#{@@model_form_context}'] " :
           "")
       css_attr = (@@model_form_context ? 
                   "name='#{@@model_form_context}[#{field_name}]'" :
                   "name='#{field_name}'")
 
-      if page.include? 'order[sales_status]'
-        puts "#{css_pre}input[#{css_attr}]"
-      else
-        puts "#{css_pre}input[#{css_attr}]"
-        puts css_pre
-        puts css_attr
-      end
+      # css_for = -> { |x| "#{css_pre}#{x}[#{css_attr}]" }
 
       !(doc.css("#{css_pre}input[#{css_attr}]").empty? and
         doc.css("#{css_pre}select[#{css_attr}]").empty? and

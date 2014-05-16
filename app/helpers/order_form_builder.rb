@@ -1,4 +1,13 @@
 class OrderFormBuilder < ActionView::Helpers::FormBuilder
+  def self.dummy_for(object)
+    temp = Class.new do
+      include ActionView::Helpers::FormHelper
+      include ActionView::Helpers::FormOptionsHelper
+      attr_accessor :output_buffer
+    end.new
+    return self.new object.class.name.underscore.to_sym, object, temp, {}, nil
+  end
+
   def text_field(method, options={})
     add_class options, 'form-control'
     super
@@ -36,6 +45,11 @@ class OrderFormBuilder < ActionView::Helpers::FormBuilder
     add_class options, 'form-control', 'datepicker-input'
     
     @template.content_tag(:input, options) {}
+  end
+
+  def submit(value=nil, options={})
+    add_class options, 'submit', 'btn', 'btn-primary'
+    super
   end
 
 private

@@ -29,6 +29,10 @@
 
       <%= render partial: 'customer_detail_fields', locals: { f: f, order: order } %>
 
+      <div class='form-group'>
+        <%= f.submit 'Save', class: 'order-details input-group' %>
+      </div>
+
     </div>
   </div>
 

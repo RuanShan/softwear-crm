@@ -1,6 +1,6 @@
 <!-- Page header -->
 <div class="page-heading animated fadeInDownBig">
-  <h1>Edit Order #1234 <small>Michigan Hockey Jerseys</small></h1>
+  <h1>Edit Order #<%= @order.id %> <small><%= @order.name %></small></h1>
 </div>
 <!-- End page header -->
 
@@ -24,7 +24,7 @@
                 </div>
 
                 <div class="tab-pane animated  fadeInRight" id="details">
-                  <%= render partial: 'details' %>
+                  <%= render partial: 'details', locals: { order: @order } %>
                 </div>
 
                 <div class="tab-pane animated fadeInRight" id="jobs">

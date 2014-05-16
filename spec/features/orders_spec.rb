@@ -21,9 +21,9 @@ feature 'Order management', order_spec: true, js: true do
     click_link 'New'
 
     fill_in 'Email', with: 'test@example.com'
+    fill_in 'Phone number', with: '321-654-9870'
     fill_in 'Firstname', with: 'Guy'
     fill_in 'Lastname', with: 'Fieri'
-    fill_in 'Phone number', with: '321-654-9870'
     fill_in 'Company', with: 'Probably Nothing'
     fill_in 'Twitter', with: 'stuff'
 
@@ -60,18 +60,22 @@ feature 'Order management', order_spec: true, js: true do
 
     visit current_path
 
-    fill_in 'Phone number', with: 'abc123'
+    fill_in 'Phone number', with: 'abc123!@#$-'
     wait_for_ajax
     expect(phone_number_field.value).to eq '123-___-____'
   end
 
-  scenario 'User edits an existing order', wip: false do
+  scenario 'user edits an existing order', wip: true do
     visit orders_path
     find("a[title='Edit']").click
     wait_for_ajax
     click_link 'Details'
     wait_for_ajax
     
-    sleep 120
+    fill_in 'Name', with: 'New Title'
+
+    click_button 'Save'
+
+    expect(Order.where(name: 'New Title')).to exist
   end
 end
