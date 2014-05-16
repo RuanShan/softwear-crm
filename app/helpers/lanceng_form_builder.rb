@@ -1,4 +1,4 @@
-class OrderFormBuilder < ActionView::Helpers::FormBuilder
+class LancengFormBuilder < ActionView::Helpers::FormBuilder
   def self.dummy_for(object)
     temp = Class.new do
       include ActionView::Helpers::FormHelper

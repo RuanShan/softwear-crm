@@ -1,5 +1,5 @@
 <!-- FOrm selector #myWizard -->
-<%= form_for (local_assigns[:order].nil? ? Order.new : order) , builder: OrderFormBuilder, html: { id: 'myWizard'} do |f| %>
+<%= form_for (local_assigns[:order].nil? ? Order.new : order) , builder: LancengFormBuilder, html: { id: 'myWizard'} do |f| %>
   <%= render_error_modal_for order if local_assigns[:order] %>
   <!-- First step -->
   <section class="step" data-step-title="Customer Information">
