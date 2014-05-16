@@ -26,6 +26,8 @@ class Order < ActiveRecord::Base
   validates_presence_of :tax_id_number, if: :tax_exempt?
   validates_presence_of :redo_reason, if: :is_redo?
 
+  belongs_to :user
+
   # non-deletable stuff
   default_scope -> { where(deleted_at: nil) }
   scope :deleted, -> { unscoped.where.not(deleted_at: nil) }
