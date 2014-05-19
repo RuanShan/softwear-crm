@@ -6,8 +6,8 @@ class Order < ActiveRecord::Base
      'Net 30',
      'Net 60']
 
-  VALID_SALES_STATUSES = %w(Pending Terms\ Set Terms\ Set\ And\ Met Paid )
-  VALID_DELIVERY_METHODS = %w(Pick\ up\ in\ Ann\ Arbor Pick\ up\ in\ Ypsilanti Ship\ to\ one Ship\ to\ multiple)
+  VALID_SALES_STATUSES   = ['Pending', 'Terms Set And Met', 'Paid', 'Cancelled']
+  VALID_DELIVERY_METHODS = ['Pick up in Ann Arbor', 'Pick up in Ypsilanti', 'Ship to one', 'Ship to multiple']
   
   before_validation :initialize_fields, on: :create
 

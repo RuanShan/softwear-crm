@@ -2,7 +2,8 @@ require 'spec_helper'
 
 describe "orders/_form.html.erb", order_spec: true, wip: false do
   it 'should display all appropriate fields for creating an order' do
-    render
+    order = create :order
+    render partial: 'orders/form', locals: { order: order }
   	within_form_for Order do
   		expect(rendered).to have_field_for :email
   		expect(rendered).to have_field_for :firstname
