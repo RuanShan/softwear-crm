@@ -12,6 +12,13 @@ class LancengFormBuilder < ActionView::Helpers::FormBuilder
     add_class options, 'form-control'
     super
   end
+  alias_method :email_field, :text_field
+
+  def password_field(method, options={})
+    add_class options, 'form-control'
+    super
+  end
+
   def text_area(method, options={})
     add_class options, 'form-control'
     super
