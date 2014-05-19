@@ -1,6 +1,6 @@
+<%= render_error_modal_for order %>
 <!-- FOrm selector #myWizard -->
-<%= form_for (local_assigns[:order].nil? ? Order.new : order) , builder: LancengFormBuilder, html: { id: 'myWizard'} do |f| %>
-  <%= render_error_modal_for order if local_assigns[:order] %>
+<%= form_for order, builder: LancengFormBuilder, html: { id: 'myWizard'} do |f| %>
   <!-- First step -->
   <section class="step" data-step-title="Customer Information">
     <div class="row">
@@ -117,51 +117,7 @@
           <%= f.error_for :delivery_method %>
           <%= f.select :delivery_method, Order::VALID_DELIVERY_METHODS, include_blank: true %>
         </div>
-        <div class="form-group">
-          <label for="inputCity">Shipping Method</label>
-          <select class="form-control">
-            <option></option>
-            <option>In House Delivery</option>
-            <option>UPS Ground</option>
-            <option>UPS 3 Day Select</option>
-            <option>UPS 2nd Day Air</option>
-            <option>UPS Next Day Air</option>
-            <option>USPS First Class or Priority</option>
-            <option>USPS Express</option>
-          </select>
-        </div>
-        <div class="form-group">
-          <label for="inputFirstName">Attn: </label>
-          <input type="text" id="inputFirstName" placeholder="name" class="form-control">
-        </div>
-        <div class="form-group">
-          <label for="inputFirstName">Company:</label>
-          <input type="text" id="inputFirstName" placeholder="name" class="form-control">
-        </div>
-        <div class="form-group">
-          <label for="inputFirstName">Address 1:</label>
-          <input type="text" id="inputFirstName" placeholder="address" class="form-control">
-        </div>
-        <div class="form-group">
-          <label for="inputFirstName">Address 2:</label>
-          <input type="text" id="inputFirstName" class="form-control">
-        </div>
-        <div class="form-group">
-          <label for="inputFirstName">Address 3:</label>
-          <input type="text" id="inputFirstName" class="form-control">
-        </div>
-        <div class="form-group">
-          <label for="inputFirstName">City:</label>
-          <input type="text" id="inputFirstName" placeholder="city" class="form-control">
-        </div>
-        <div class="form-group">
-          <label for="inputFirstName">State:</label>
-          <input type="text" id="inputFirstName" placeholder="state" class="form-control">
-        </div>
-        <div class="form-group">
-          <label for="inputFirstName">ZIP code:</label>
-          <input type="text" id="inputFirstName" placeholder="state" class="form-control">
-        </div>
+
       </div><!-- End div .col-sm-6 -->
       <div class="col-sm-6">
         <!-- Wizard notes -->

@@ -33,9 +33,13 @@ class LancengFormBuilder < ActionView::Helpers::FormBuilder
   end
 
   def error_for(method)
-    @object.errors.full_messages_for(method).each do |message|
-      @template.content_tag(:p, message, class: 'text-danger', for: "#{@object_name}[#{method}]")
-    end if @object.errors.include? method
+    if @object.errors.include? method
+      c = @object.errors.full_messages_for(method).collect do |message|
+        @template.content_tag(:p, message, class: 'text-danger', for: "#{@object_name}[#{method}]")
+      end.join
+
+      @template.content_tag(:div, c, {class: 'error'}, false)
+    end
   end
 
   def datetime(method, options={})
