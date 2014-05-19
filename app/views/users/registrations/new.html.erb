@@ -1,6 +1,6 @@
 <div class='box-info'>
 
-  <h2>Sign up</h2>
+  <h2>Create new user</h2>
 
   <%= form_for(resource, as: resource_name, url: registration_path(resource_name), builder: LancengFormBuilder) do |f| %>
     <%= render_error_modal_for resource %>
@@ -20,18 +20,8 @@
     </div>
 
     <div class='form-group'>
-    <%= f.label :password %>
-    <%= f.password_field :password, autocomplete: "off" %>
+    <%= f.submit "Create", confirm: "Are you sure you'd like to create this account?" %>
     </div>
-
-    <div class='form-group'>
-    <%= f.label :password_confirmation %>
-    <%= f.password_field :password_confirmation, autocomplete: "off" %>
-    </div>
-
-    <div class='form-group'><%= f.submit "Sign up" %></div>
   <% end %>
-
-  <%= render "users/shared/links" %>
 
 </div>
