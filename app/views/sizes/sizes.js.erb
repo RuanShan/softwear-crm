@@ -1,0 +1,14 @@
+// Code taken from an example hosted publicly on
+// http://www.foliotek.com/devblog/make-table-rows-sortable-using-jquery-ui-sortable/
+
+// Return a helper with preserved width of cells
+var fixHelper = function(e, ui) {
+    ui.children().each(function() {
+        $(this).width($(this).width());
+    });
+    return ui;
+};
+
+$("#sizes_list tbody").sortable({
+    helper: fixHelper
+}).disableSelection();

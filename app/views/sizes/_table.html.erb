@@ -1,0 +1,39 @@
+<meta name="keywords" content="admin, bootstrap,admin template, bootstrap admin, simple, awesome">
+
+<div class="box-info full">
+  <div class="table-responsive">
+    <table data-sortable class="table table-hover" id="sizes_list">
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Stock Keeping Unit</th>
+          <th>Sort Order</th>
+        </tr>
+      </thead>
+        <tbody>
+        <% sizes.each do |size| %>
+          <tr id="<%= model_table_row_id size %>">
+            <td><%= size.name %></td>
+            <td><%= size.sku %></td>
+            <td><%= size.sort_order %></td>
+            <td>
+              <div class="btn-group btn-group-xs">
+                <%= link_to edit_size_path(size), 'data-action' => 'edit', 'data-toggle' => 'tooltip', 'title' => 'Edit', class: 'btn btn-default' do %><i class="fa fa-edit"></i><% end %>
+                <%= link_to size_path(size), 'data-action' => 'destroy', 'data-toggle' => 'tooltip', 'title' => 'Destroy', class: 'btn btn-default', method: :delete, data: {confirm: 'Are you sure you would like to delete the size?'} do %><i class="fa fa-times"></i><% end %>
+              </div>
+            </td>
+          </tr>
+      <% end %>
+      </tbody>
+
+
+    </table>
+  </div>
+</div>
+
+<!--
+===========================
+JAVASCRIPT
+===========================
+<script src="app/assets/javascripts/sizes.js"></script>
+-->

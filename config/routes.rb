@@ -1,5 +1,9 @@
 CrmSoftwearcrmCom::Application.routes.draw do
 
+  resources :sizes
+
+  resources :styles
+
   resources :brands
 
   resources :colors
