@@ -8,6 +8,11 @@ module ApplicationHelper
     object.new_record? ? 'Create' : 'Update'
   end
 
+  def unhide_dashboard
+  	find('button.button-menu-mobile.show-sidebar').click
+  	wait_for_ajax
+  end
+
   def modal_flash_class(level)
     case level
       when :info then "modal-content-info"
@@ -17,5 +22,9 @@ module ApplicationHelper
       when :alert then "modal-content-error"
       when :warning then "modal-content-warning"
     end
+  end
+
+  def render_error_modal_for(object)
+    render partial: 'shared/modal_errors', locals: { object: object }
   end
 end

@@ -1,0 +1,28 @@
+<tr id="order_<%= order.id %>">
+  <td><% order.id %></td>
+  <td>
+    <div class="btn-group btn-group-xs">
+      <a data-toggle="tooltip" title="Show Order Log" class="btn btn-default"><i class="fa fa-list-alt"></i></a>
+    </div>
+  </td>
+  <td>
+    <%= order.name %><br />
+    <%= order.firstname %> <%= order.lastname %><br />
+    <%= order.email %>
+  </td>
+  <td>Jack Koch</td>
+  <td><span class="label label-success">Terms Finalized and Met</span> <div class="btn-group btn-group-xs"><a data-toggle="tooltip" title="Email Payment Request to Customer" class="btn btn-default"><i class="fa fa-envelope"></i></a></div></td>
+  <td><%= number_to_currency order.total, unit: '$' %></td>
+  <td>$99.99</td>
+  <td><span class="label label-warning">Approved</span> <div class="btn-group btn-group-xs"><a data-toggle="tooltip" title="Print Order Slip" class="btn btn-default"><i class="fa fa-print"></i></a></div></td>
+  <td><span class="label label-warning">Awaiting Customer</span> <div class="btn-group btn-group-xs"><a data-toggle="tooltip" title="Re-notify customer of artwork" class="btn btn-default"><i class="fa fa-envelope"></i></a></div></td>
+  <td><span class="label label-warning">Pending</span></td>
+  <td><span class="label label-warning">Pending</span></td>
+  <td>
+    <div class="btn-group btn-group-xs">
+      <%= link_to edit_order_path(order), 'data-action' => 'edit', 'data-toggle' => 'tooltip', 'title' => 'Edit', class: 'btn btn-default' do %><i class="fa fa-edit"></i><% end %>
+      <a data-toggle="tooltip" title="Quick View" class="btn btn-default"><i class="fa fa-eye"></i></a>
+      <a data-toggle="tooltip" title="Printable Invoice" class="btn btn-default"><i class="fa fa-print"></i></a>
+    </div>
+  </td>
+</tr>
