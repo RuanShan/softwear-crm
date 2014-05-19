@@ -45,7 +45,7 @@ feature 'Order management', order_spec: true, js: true do
     expect(Order.where(firstname: 'Guy')).to exist
   end
 
-  scenario 'user sees an error message when submitting invalid information', pending: 'error messages need to be dealt with' do
+  scenario 'user sees an error message when submitting invalid information' do
     visit root_path
     unhide_dashboard
     click_link 'Orders'
@@ -54,14 +54,11 @@ feature 'Order management', order_spec: true, js: true do
 
     fill_in 'Email', with: 'nope'
 
-    before_path = current_path
-
     2.times { click_button 'Next'; wait_for_ajax }
     click_button 'Submit'
 
-    expect(current_path).to eq before_path
-
-    expect(page).to have_content 'error'
+    wait_for_ajax
+    expect(page).to have_content 'Email is invalid'
   end
 
   scenario 'phone number field enforces proper format' do
@@ -96,18 +93,5 @@ feature 'Order management', order_spec: true, js: true do
     click_button 'Save'
 
     expect(Order.where(name: 'New Title')).to exist
-  end
-
-  scenario 'user deletes an existing order' do
-      visit orders_path
-      find("a[title='Edit'").click
-      wait_for_ajax
-      click_link 'Details'
-      wait_for_ajax
-
-      click_button 'Delete'
-      page.driver.browser.switch_to.alert.accept
-      wait_for_ajax
-      expect(order.reload.destroyed?).to be_truthy
   end
 end
