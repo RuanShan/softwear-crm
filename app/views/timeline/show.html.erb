@@ -1,0 +1,7 @@
+<div class="page-heading animated fadeInDownBig">
+  <h1>Order #<%= @order.id %> <small><%= @order.name %></small></h1>
+</div>
+
+<div class="box-info">
+  <%= render partial: 'shared/timeline', locals: {activities: @order.activities} %>
+</div>

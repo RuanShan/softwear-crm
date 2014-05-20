@@ -1,11 +1,12 @@
 CrmSoftwearcrmCom::Application.routes.draw do
 
-  resources :brands
-
-  resources :colors
+  resources :brands, :colors, :shipping_methods, :imprintables
 
   root "home#index"
-  resources :orders, :shipping_methods, :imprintables
+  resources :orders do
+    get 'timeline', to: 'timeline#show'
+  end
+
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".
 
