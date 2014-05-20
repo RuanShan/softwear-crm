@@ -35,95 +35,9 @@
       </thead>
 
       <tbody>
-      <tr>
-        <td>12345</td>
-        <td>
-          <div class="btn-group btn-group-xs">
-            <a data-toggle="tooltip" title="Show Order Log" class="btn btn-default"><i class="fa fa-list-alt"></i></a>
-          </div>
-        </td>
-        <td>
-          Michigan Football Camp<br />
-          Ricky Winowiecki<br />
-          slikstir@umich.edu
-        </td>
-        <td>Jack Koch</td>
-        <td><span class="label label-success">Terms Finalized and Met</span> <div class="btn-group btn-group-xs"><a data-toggle="tooltip" title="Email Payment Request to Customer" class="btn btn-default"><i class="fa fa-envelope"></i></a></div></td>
-        <td>$198.99</td>
-        <td>$99.99</td>
-        <td><span class="label label-warning">Approved</span> <div class="btn-group btn-group-xs"><a data-toggle="tooltip" title="Print Order Slip" class="btn btn-default"><i class="fa fa-print"></i></a></div></td>
-        <td><span class="label label-warning">Awaiting Customer</span> <div class="btn-group btn-group-xs"><a data-toggle="tooltip" title="Re-notify customer of artwork" class="btn btn-default"><i class="fa fa-envelope"></i></a></div></td>
-        <td><span class="label label-warning">Pending</span></td>
-        <td><span class="label label-warning">Pending</span></td>
-        <td>
-          <div class="btn-group btn-group-xs">
-            <a data-toggle="tooltip" title="Edit" class="btn btn-default"><i class="fa fa-edit"></i></a>
-            <a data-toggle="tooltip" title="Quick View" class="btn btn-default"><i class="fa fa-eye"></i></a>
-            <a data-toggle="tooltip" title="Printable Invoice" class="btn btn-default"><i class="fa fa-print"></i></a>
-          </div>
-        </td>
-      </tr>
-      <tr>
-        <td>2</td>
-        <td>
-          <div class="btn-group btn-group-xs">
-            <a data-toggle="tooltip" title="Show Order Log" class="btn btn-default"><i class="fa fa-list-alt"></i></a>
-          </div>
-        </td>
-        <td>
-          Custom T-shirt Order<br />
-          Chet McGillicutty<br />
-          another-name@gmail.edu
-        </td>
-        <td>Barrie Rupp</td>
-        <td><span class="label label-success">Paid</span></td>
-        <td>$198.99</td>
-        <td>$0.00</td>
-        <td><span class="label label-success">Staged</span></td>
-        <td><span class="label label-success">Approved</span></td>
-        <td><span class="label label-success">Packaged</span></td>
-        <td>
-
-          <span class="label label-danger">Awaiting pick up</span> <div class="btn-group btn-group-xs"><a data-toggle="tooltip" title="Notify Customer for Pick Up" class="btn btn-default"><i class="fa fa-envelope"></i></a></div>
-        </td>
-        <td>
-          <div class="btn-group btn-group-xs">
-            <a data-toggle="tooltip" title="Edit" class="btn btn-default"><i class="fa fa-edit"></i></a>
-            <a data-toggle="tooltip" title="Quick View" class="btn btn-default"><i class="fa fa-eye"></i></a>
-            <a data-toggle="tooltip" title="Printable Invoice" class="btn btn-default"><i class="fa fa-print"></i></a>
-          </div>
-        </td>
-      </tr>
-      <tr>
-        <td>3</td>
-        <td>
-          <div class="btn-group btn-group-xs">
-            <a data-toggle="tooltip" title="Show Order Log" class="btn btn-default"><i class="fa fa-list-alt"></i></a>
-          </div>
-        </td>
-        <td>
-          Custom Print Order<br />
-          Bob Ross<br />
-          bobross@prettylittletree.com
-        </td>
-        <td>Jerry Kozak</td>
-        <td>
-          <span class="label label-danger">Terms Finalized Awaiting Payment</span>
-          <div class="btn-group btn-group-xs"><a data-toggle="tooltip" title="Email Payment Request to Customer" class="btn btn-default"><i class="fa fa-envelope"></i></a></div>
-        <td>$1904.72</td>
-        <td>$1904.72</td>
-        <td><span class="label label-warning">Pending</span></td>
-        <td><span class="label label-warning">Pending</span></td>
-        <td><span class="label label-warning">Pending</span></td>
-        <td><span class="label label-warning">Pending</span></td>
-        <td>
-          <div class="btn-group btn-group-xs">
-            <a data-toggle="tooltip" title="Edit" class="btn btn-default"><i class="fa fa-edit"></i></a>
-            <a data-toggle="tooltip" title="Quick View" class="btn btn-default"><i class="fa fa-eye"></i></a>
-            <a data-toggle="tooltip" title="Printable Invoice" class="btn btn-default"><i class="fa fa-print"></i></a>
-          </div>
-        </td>
-      </tr>
+      <% @orders.each do |order| %>
+        <%= render partial: 'table_entry', locals: {order: order} %>
+      <% end %>
       <!--
   <tr>
     <td>5</td><td><input type="checkbox" class="rows-check"></td><td><strong>Jenny Doe</strong></td>
