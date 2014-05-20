@@ -21,7 +21,9 @@ I18n.enforce_available_locales = false
 RSpec.configure do |config|
   config.include FactoryGirl::Syntax::Methods
   config.include FormHelpers
+  config.include AuthenticationHelpers
   config.include Devise::TestHelpers, type: :controller
+  
 
   # ## Mock Framework
   #

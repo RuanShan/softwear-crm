@@ -2,6 +2,10 @@ require 'spec_helper'
 include ApplicationHelper
 
 feature 'Imprintables management' do
+  given!(:valid_user) { create(:alternate_user) }
+  before(:each) do
+    login_as(valid_user)
+  end
 
   let!(:imprintable) { create(:valid_imprintable)}
 

@@ -3,6 +3,14 @@ FactoryGirl.define do
 		firstname 'Test'
 		lastname 'User'
 		email 'nobody@annarbortees.com'
-		after(:build) { |u| u.password_confirmation = u.password = 'pw4test' }
+		password '1234567890'
+
+		factory :alternate_user do
+			firstname 'First'
+			lastname 'Last'
+			email 'testing@softwearcrm.com'
+		end
+
+		after(:create) { |u| u.confirm! }
 	end
 end

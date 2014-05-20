@@ -2,11 +2,16 @@ require 'spec_helper'
 include ApplicationHelper
 
 feature 'Shipping Methods management' do
+  given!(:valid_user) { create(:user) }
+  before(:each) do
+    login_as(valid_user) 
+  end
 
   let!(:shipping_method) { create(:valid_shipping_method)}
 
-  scenario 'User views list of existing shipping methods' do
+  scenario 'User views list of existing shipping methods', wip: true do
     visit root_path
+    click_link 'Administration'
     click_link 'Shipping Methods'
     expect(page).to have_css("tr##{model_table_row_id(shipping_method)}")
   end
