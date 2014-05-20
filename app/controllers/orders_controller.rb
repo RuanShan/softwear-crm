@@ -5,26 +5,6 @@ class OrdersController < InheritedResources::Base
     end
   end
 
-  def create
-    ##
-    # TODO
-    super # Ask Ricky for help on this one
-    # It doesn't redirect the same as the 
-    # shipping methods one and therefore 
-    # doesn't show the error message(s)
-    # despite rendering it in the view
-    ##
-
-    # super do |success, failure|
-    #   success.html do
-    #     redirect_to edit_order_path # 
-    #   end
-    #   failure.html do
-    #     redirect_to new_order_path
-    #   end
-    # end
-  end
-
   def show
     redirect_to action: :edit
   end
