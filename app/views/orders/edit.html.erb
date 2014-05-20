@@ -1,2 +1,49 @@
-<h1>Orders#edit</h1>
-<p>Find me in app/views/orders/edit.html.erb</p>
+<!-- Page header -->
+<div class="page-heading animated fadeInDownBig">
+  <h1>Edit Order #<%= @order.id %> <small><%= @order.name %></small></h1>
+</div>
+<!-- End page header -->
+
+<div class="row">
+    <div class="col-sm-12">
+        <div class="box-info full">
+
+            <ul class="nav nav-tabs nav-justified">
+              <li class="active"><a href="#timeline" data-toggle="tab"><i class="fa fa-clock-o"></i> Timeline</a></li>
+              <li><a href="#details" data-toggle="tab"><i class="fa fa-shopping-cart"></i> Details</a></li>
+              <li><a href="#jobs" data-toggle="tab"><i class="fa fa-tasks"></i> Jobs</a></li>
+              <li><a href="#payments" data-toggle="tab"><i class="fa fa-money"></i> Payments</a></li>
+              <li><a href="#shipments" data-toggle="tab"><i class="fa fa-archive"></i> Shipments</a></li>
+              <li><a href="#artwork" data-toggle="tab"><i class="fa fa-picture-o"></i> Artwork</a></li>
+            </ul>
+
+            <div class="tab-content">
+
+                <div class="tab-pane animated fadeInRight active" id="timeline">
+                  <%= render partial: 'timeline' %>
+                </div>
+
+                <div class="tab-pane animated  fadeInRight" id="details">
+                  <%= render partial: 'details', locals: { order: @order } %>
+                </div>
+
+                <div class="tab-pane animated fadeInRight" id="jobs">
+                  <%= render partial: 'jobs' %>
+                </div>
+
+                <div class="tab-pane animated fadeInRight" id="artwork">
+                  <%= render partial: 'artwork' %>
+                </div>
+
+                <div class="tab-pane animated fadeInRight" id="payments">
+                  <%= render partial: 'payments' %>
+                </div>
+
+                <div class="tab-pane animated fadeInRight" id="shipments">
+                    <%= render partial: 'shipments' %>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>

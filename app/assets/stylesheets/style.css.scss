@@ -184,6 +184,15 @@ blockquote.reply-message{
 }
 .form-group .checkbox{margin-left: 0; padding-left: 0;}
 
+.imprintable-line-item-input {
+    text-align: center;
+}
+
+.imprintable-line-item-input input {
+    padding: 1px;
+    min-width: 3em;
+    text-align: center;
+}
 /** Button **/
 .btn{border-radius: 2px;}
 
