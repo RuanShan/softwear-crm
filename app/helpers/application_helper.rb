@@ -18,4 +18,28 @@ module ApplicationHelper
       when :warning then "modal-content-warning"
     end
   end
+
+  def nav_active_or_visible_class(tag, which, controller)
+    if controller == 'imprintables' or controller == 'sizes' or
+        controller == 'brands' or controller == 'colors' or
+        controller == 'styles'
+      if which == 'active'
+        result = tag(tag, {class: 'active'}, true)
+      else
+        result = tag(tag, {class: 'visible'}, true)
+      end
+    else
+      result = tag(tag, nil, true)
+    end
+    result.html_safe
+  end
+
+  def nav_active_li(controller, title)
+    if controller == title
+      result = tag :li, class: 'active'
+    else
+      result = tag :li
+    end
+    result.html_safe
+  end
 end

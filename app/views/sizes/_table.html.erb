@@ -1,19 +1,26 @@
-<meta name="keywords" content="admin, bootstrap,admin template, bootstrap admin, simple, awesome">
+<style type="text/css">
+    /* show the move cursor as the user moves the mouse over the panel header.*/
+    #sizes_list tbody tr {
+        cursor: move;
+    }
+</style>
 
 <div class="box-info full">
   <div class="table-responsive">
-    <table data-sortable class="table table-hover" id="sizes_list">
+    <table class="table table-hover" id="sizes_list">
       <thead>
-        <tr>
-          <th>Name</th>
-          <th>Stock Keeping Unit</th>
-          <th>Sort Order</th>
-        </tr>
+      <tr>
+        <th>Name</th>
+        <th>Display Value</th>
+        <th>Stock Keeping Unit</th>
+        <th>Sort Order</th>
+      </tr>
       </thead>
-        <tbody>
-        <% sizes.each do |size| %>
+      <tbody>
+      <% sizes.each do |size| %>
           <tr id="<%= model_table_row_id size %>">
             <td><%= size.name %></td>
+            <td><%= size.display_value%></td>
             <td><%= size.sku %></td>
             <td><%= size.sort_order %></td>
             <td>
@@ -25,15 +32,6 @@
           </tr>
       <% end %>
       </tbody>
-
-
     </table>
   </div>
 </div>
-
-<!--
-===========================
-JAVASCRIPT
-===========================
-<script src="app/assets/javascripts/sizes.js"></script>
--->

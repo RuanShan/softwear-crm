@@ -7,16 +7,18 @@ describe 'sizes/_table.html.erb' do
     assign(:sizes, Size.all)
   end
 
-  it 'has table with name, sku and sort order columns' do
+  it 'has table with name, display_value, sku and sort order columns' do
     render partial: 'sizes/table', locals: {sizes: sizes}
     expect(rendered).to have_selector('th', text: 'Name')
+    expect(rendered).to have_selector('th', text: 'Display Value')
     expect(rendered).to have_selector('th', text: 'Stock Keeping Unit')
     expect(rendered).to have_selector('th', text: 'Sort Order')
   end
 
-  it 'displays the name, sku and sort order of that size' do
+  it 'displays the name, display_value, sku and sort order of that size' do
     render partial: 'sizes/table', locals: {sizes: sizes}
     expect(rendered).to have_selector('td', text: sizes.first.name)
+    expect(rendered).to have_selector('td', text: sizes.first.display_value)
     expect(rendered).to have_selector('td', text: sizes.first.sku)
     expect(rendered).to have_selector('td', text: sizes.first.sort_order)
   end

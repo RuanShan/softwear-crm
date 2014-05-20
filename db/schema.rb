@@ -48,6 +48,7 @@ ActiveRecord::Schema.define(version: 20140516194416) do
 
   create_table "sizes", force: true do |t|
     t.string   "name"
+    t.string   "display_value"
     t.string   "sku"
     t.integer  "sort_order"
     t.datetime "deleted_at"
