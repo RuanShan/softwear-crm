@@ -5,3 +5,10 @@
 #
 #   cities = City.create([{ name: 'Chicago' }, { name: 'Copenhagen' }])
 #   Mayor.create(name: 'Emanuel', city: cities.first)
+
+pw = 'pw4admin'
+default_user = User.new(firstname: 'Admin', lastname: 'User', 
+												email: 'admin@softwearcrm.com',
+												password: pw, password_confirmation: pw)
+default_user.confirm!
+default_user.save
