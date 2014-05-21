@@ -1,6 +1,9 @@
 require 'spec_helper'
 
 describe TimelineController do
+  let!(:valid_user) { create :user }
+  before(:each) { sign_in valid_user }
+
   let!(:order) { create(:order) }
 
   describe 'GET show' do
