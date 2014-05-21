@@ -19,7 +19,7 @@
             <div class="tab-content">
 
                 <div class="tab-pane animated fadeInRight active" id="timeline">
-                  <%= render partial: 'shared/timeline', locals: {activities: @order.activities.order('created_at DESC')} %>
+                  <%= render partial: 'shared/timeline', locals: {activities: nil} %>
                 </div>
 
                 <div class="tab-pane animated  fadeInRight" id="details">

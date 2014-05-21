@@ -3,6 +3,7 @@
   <h4>Timeline</h4>
   <div class="the-timeline dashboard-timeline">
     <ul>
+      <% if !activities.nil? %>
       <% activities.each do |activity| %>
           <li>
             <div class="the-date">
@@ -15,6 +16,7 @@
             </p>
             <p class="time"><%= activity.created_at.strftime('%Y-%m-%d %I:%M%p') %></p>
           </li>
+      <% end %>
       <% end %>
     </ul>
   </div>

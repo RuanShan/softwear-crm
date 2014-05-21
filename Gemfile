@@ -51,7 +51,6 @@ group :test do
 end
 
 gem 'inherited_resources'
-gem 'public_activity'
 
 # Use ActiveModel has_secure_password
 # gem 'bcrypt', '~> 3.1.7'

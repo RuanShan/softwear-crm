@@ -1,6 +1,4 @@
 class Order < ActiveRecord::Base
-  include PublicActivity::Model
-  tracked
 
   VALID_PAYMENT_TERMS = ['', 
      'Paid in full on purchase',
