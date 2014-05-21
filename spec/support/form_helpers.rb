@@ -9,23 +9,32 @@ module FormHelpers
     @@scope_to_form = nil
   end
 
+  RSpec::Matchers.define :have_button_or_link_to do |location|
+    match do |page|
+      doc = Nokogiri::HTML page
+      !(doc.css("#{css_pre}a[href='#{location}']").empty? && doc.css("#{css_pre}button[href='#{location}']").empty?)
+    end
+    failure_message do |page|
+      doc = Nokogiri::HTML page
+      buttons = doc.css("#{css_pre}a,#{css_pre}button")
+      "Found no button leading to #{location}. Found buttons: #{buttons}"
+    end
+  end
+
   RSpec::Matchers.define :have_field_for do |field_name|
     match do |page|
       doc = Nokogiri::HTML page
-      css_pre = (@@model_form_context && @@scope_to_form ? 
-          "form[class*='#{@@model_form_context}'],form[id*='#{@@model_form_context}'] " :
-          "")
       css_attr = (@@model_form_context ? 
                   "name='#{@@model_form_context}[#{field_name}]'" :
                   "name='#{field_name}'")
 
-      !(doc.css("#{css_pre}input[#{css_attr}]").empty? and
-        doc.css("#{css_pre}select[#{css_attr}]").empty? and
-        doc.css("#{css_pre}textarea[#{css_attr}]").empty? and
-        doc.css("#{css_pre}datetime[#{css_attr}]").empty?)
+      !doc.css("#{css_pre}*[#{css_attr}]").empty?
     end
     failure_message do |page|
-      "Couldn't find field for #{@@model_form_context}[#{field_name}] in page: #{page}"
+      css_attr = (@@model_form_context ? 
+                  "name='#{@@model_form_context}[#{field_name}]'" :
+                  "name='#{field_name}'")
+      "Couldn't find field for #{css_pre}*#{css_attr} in page: #{page}"
     end
   end
 
@@ -45,5 +54,12 @@ module FormHelpers
         "Found no errors for #{@@model_form_context}[#{field_name}] in page: #{page}"
       end
     end
+  end
+
+# private
+  def css_pre
+    (defined?(@@model_form_context) && @@model_form_context && @@scope_to_form ? 
+      "form[class*='#{@@model_form_context}'] " :
+      "")
   end
 end

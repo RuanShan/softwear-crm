@@ -2,6 +2,11 @@ require 'spec_helper'
 include ApplicationHelper
 
 feature 'Order management', order_spec: true, js: true do
+  given!(:valid_user) { create(:user) }
+  before(:each) do
+    login_as valid_user
+  end
+
   given!(:order) { create(:order) }
 
   scenario 'user views the index of orders' do

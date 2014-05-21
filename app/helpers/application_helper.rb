@@ -9,7 +9,9 @@ module ApplicationHelper
   end
 
   def unhide_dashboard
-  	find('button.button-menu-mobile.show-sidebar').click
+    selector = 'button.button-menu-mobile.show-sidebar'
+    return if all(selector).empty?
+  	find(selector).click
   	wait_for_ajax
   end
 
@@ -26,5 +28,29 @@ module ApplicationHelper
 
   def render_error_modal_for(object)
     render partial: 'shared/modal_errors', locals: { object: object }
+  end
+
+  def nav_active_or_visible_class(tag, which, controller)
+    if controller == 'imprintables' or controller == 'sizes' or
+        controller == 'brands' or controller == 'colors' or
+        controller == 'styles'
+      if which == 'active'
+        result = tag(tag, {class: 'active'}, true)
+      else
+        result = tag(tag, {class: 'visible'}, true)
+      end
+    else
+      result = tag(tag, nil, true)
+    end
+    result.html_safe
+  end
+
+  def nav_active_li(controller, title)
+    if controller == title
+      result = tag :li, class: 'active'
+    else
+      result = tag :li
+    end
+    result.html_safe
   end
 end

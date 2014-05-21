@@ -20,6 +20,12 @@ CrmSoftwearcrmCom::Application.configure do
   config.consider_all_requests_local       = true
   config.action_controller.perform_caching = false
 
+  config.action_mailer.delivery_method = :test
+  config.action_mailer.default_url_options = {
+    host: '0.0.0.0',
+    port: '3000'
+  }
+
   # Raise exceptions instead of rendering exception templates.
   config.action_dispatch.show_exceptions = false
 

@@ -1,8 +1,8 @@
 $(document).ready(function(){
-	
+
 	$(window).load(function() { $("#loading").fadeOut("slow"); })
-	
-	
+
+
 	//SLIM SCROLL
 	$('.slimscroller').slimscroll({
 		height: 'auto',
@@ -51,9 +51,9 @@ $(document).ready(function(){
 
 
 	//KNOB
-	/*$(function() {
+	$(function() {
 		$(".dial").knob();
-	});*/
+	});
 
 
 
@@ -71,25 +71,25 @@ $(document).ready(function(){
 	});
 
 
-	//SIDEBAR MENU
-	$('#sidebar-menu > ul > li > a').click(function() {
-		$('#sidebar-menu li').removeClass('selected');
-		$(this).closest('li').addClass('selected');	
-		var checkElement = $(this).next();
-			if((checkElement.is('ul')) && (checkElement.is(':visible'))) {
-				$(this).closest('li').removeClass('selected');
-				checkElement.slideUp('fast');
-			}
-			if((checkElement.is('ul')) && (!checkElement.is(':visible'))) {
-				$('#sidebar-menu ul ul:visible').slideUp('fast');
-				checkElement.slideDown('fast');
-			}
-			if($(this).closest('li').find('ul').children().length == 0) {
-				return true;
-				} else {
-				return false;	
-			}		
-	});
+    //SIDEBAR MENU
+    $('#sidebar-menu > ul > li > a').click(function() {
+        $('#sidebar-menu li').removeClass('selected');
+        $(this).closest('li').addClass('selected');
+        var checkElement = $(this).next();
+        if((checkElement.is('ul')) && (checkElement.is(':visible'))) {
+            $(this).closest('li').removeClass('selected');
+            checkElement.slideUp('fast');
+        }
+        if((checkElement.is('ul')) && (!checkElement.is(':visible'))) {
+            $('#sidebar-menu ul ul:visible').slideUp('fast');
+            checkElement.slideDown('fast');
+        }
+        if($(this).closest('li').find('ul').children().length == 0) {
+            return true;
+        } else {
+            return false;
+        }
+    });
 
 
 	//SUMMERNOTE
@@ -171,14 +171,14 @@ $(document).ready(function(){
 
   var Inputmask = function (element, options) {
     if (isAndroid) return // No support because caret positioning doesn't work on Android
-    
+
     this.$element = $(element)
     this.options = $.extend({}, Inputmask.DEFAULS, options)
     this.mask = String(this.options.mask)
-    
+
     this.init()
     this.listen()
-        
+
     this.checkVal() //Perform initial check for existing values
   }
 
@@ -197,7 +197,7 @@ $(document).ready(function(){
     var defs = this.options.definitions
     var len = this.mask.length
 
-    this.tests = [] 
+    this.tests = []
     this.partialPosition = this.mask.length
     this.firstNonMaskPos = null
 
@@ -226,7 +226,7 @@ $(document).ready(function(){
       }).join('')
     }, this))
   }
-    
+
   Inputmask.prototype.listen = function() {
     if (this.$element.attr("readonly")) return
 
@@ -270,19 +270,19 @@ $(document).ready(function(){
         end = begin + range.text.length
       }
       return {
-        begin: begin, 
+        begin: begin,
         end: end
       }
     }
   }
-  
+
   Inputmask.prototype.seekNext = function(pos) {
     var len = this.mask.length
     while (++pos <= len && !this.tests[pos]);
 
     return pos
   }
-  
+
   Inputmask.prototype.seekPrev = function(pos) {
     while (--pos >= 0 && !this.tests[pos]);
 
@@ -332,7 +332,7 @@ $(document).ready(function(){
 
   Inputmask.prototype.focusEvent = function() {
     this.focusText = this.$element.val()
-    var len = this.mask.length 
+    var len = this.mask.length
     var pos = this.checkVal()
     this.writeBuffer()
 
@@ -462,17 +462,17 @@ $(document).ready(function(){
     return (this.partialPosition ? i : this.firstNonMaskPos)
   }
 
-  
+
   // INPUTMASK PLUGIN DEFINITION
   // ===========================
 
   var old = $.fn.inputmask
-  
+
   $.fn.inputmask = function (options) {
     return this.each(function () {
       var $this = $(this)
       var data = $this.data('inputmask')
-      
+
       if (!data) $this.data('inputmask', (data = new Inputmask(this, options)))
     })
   }

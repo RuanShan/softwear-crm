@@ -1,0 +1,47 @@
+require 'spec_helper'
+
+describe Style do
+  describe 'Validations' do
+    it { should validate_presence_of(:name)}
+    it { should validate_uniqueness_of(:name)}
+    it { should validate_presence_of(:sku)}
+    it { should validate_uniqueness_of(:sku)}
+    it { should validate_presence_of(:catalog_no)}
+  end
+
+  describe 'Scopes' do
+    let!(:style) { create(:valid_style)}
+    let!(:deleted_style) { create(:valid_style, deleted_at: Time.now, name: 'Deleted')}
+
+    describe 'default_scope' do
+      it 'includes only styles where deleted_at is nil' do
+        expect(Style.all).to eq([style])
+      end
+    end
+
+    describe 'deleted' do
+      it 'includes only styles where deleted_at is not nil' do
+        expect(Style.all).to eq([style])
+      end
+    end
+  end
+
+  describe '#destroyed?' do
+    let! (:style) { create(:valid_style, deleted_at: Time.now)}
+
+    it 'returns true if deleted_at is set' do
+      expect(style.destroyed?).to be_truthy
+    end
+  end
+
+  describe '#destroy' do
+    let!(:style) { create(:valid_style)}
+
+    it 'sets deleted_at to the current time' do
+      updated_at = style.updated_at
+      style.destroy!
+      expect(style.deleted_at).to_not be_nil
+      expect(style.updated_at).to eq(updated_at)
+    end
+  end
+end
