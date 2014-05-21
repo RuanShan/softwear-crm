@@ -39,7 +39,7 @@
     <li><a href="gallery.html"><i class="fa fa-dollar"></i> Cash Drawer</a></li>
     <li><a href="#fakelink"><i class="fa fa-wrench"></i><i class="fa fa-angle-double-down i-right"></i> Administration</a>
       <ul>
-        <li><a href="#fakelink"><i class="fa fa-angle-right"></i> Users</a></li>
+        <li><%= link_to users_path do %><i class="fa fa-angle-right"></i> Users<% end %></li>
         <li><a href="#fakelink"><i class="fa fa-angle-right"></i> Cash Drawer</a></li>
         <li><a href="#fakelink"><i class="fa fa-angle-right"></i> Print Schedule</a></li>
         <li><%= link_to shipping_methods_path do %><i class="fa fa-angle-right"></i> Shipping Methods<% end %></li>

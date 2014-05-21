@@ -9,7 +9,9 @@ module ApplicationHelper
   end
 
   def unhide_dashboard
-  	find('button.button-menu-mobile.show-sidebar').click
+    selector = 'button.button-menu-mobile.show-sidebar'
+    return if all(selector).empty?
+  	find(selector).click
   	wait_for_ajax
   end
 

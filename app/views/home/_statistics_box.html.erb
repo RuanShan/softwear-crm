@@ -45,7 +45,7 @@
         <img src="images/user-bg.jpg" alt="User cover">
       </div>
       <div class="user-profile-inner">
-        <h4 class="white">Howdy, Mas Bro</h4>
+        <h4 class="white">Howdy, <%= @current_user.full_name %></h4>
         <%= image_tag 'avatar/masarie.jpg', alt: 'User avatar', class: 'img-circle profile-avatar' %>
         <h5>Administrator</h5>
 
