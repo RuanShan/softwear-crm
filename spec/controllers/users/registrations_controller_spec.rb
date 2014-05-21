@@ -5,6 +5,9 @@ describe Users::RegistrationsController, user_spec: true do
 	before :each do
 	  setup_controller_for_warden
 		request.env['devise.mapping'] = Devise.mappings[:user]
+		# current_user is stubbed in here because the standard Devise
+		# sign_in function doesn't appear to work inside specs for
+		# overridden Devise controllers.
 		controller.stub(:current_user).and_return valid_user
 	end
 
