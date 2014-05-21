@@ -28,4 +28,14 @@ describe 'users/index.html.erb', user_spec: true do
     render
     expect(rendered).to have_button_or_link_to new_user_registration_path
   end
+
+  it 'has an edit button for each user' do
+    render
+    expect(rendered).to have_selector 'a[data-action=edit]'
+  end
+
+  it 'has a delete button for each user' do
+    render
+    expect(rendered).to have_selector 'a[data-action=delete]'
+  end
 end
