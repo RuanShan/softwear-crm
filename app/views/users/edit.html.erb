@@ -1,0 +1,16 @@
+<div class='box-info'>
+  <%= form_for @user, url: user_path(@user), builder: LancengFormBuilder do |f| %>
+
+    <%= render partial: 'users/fields', locals: { f: f } %>
+
+    <div class='form-group'>
+    <%= f.submit "Submit" %>
+    </div>
+
+  <% end %>
+
+  <% if @current_user && @current_user == @user %>
+    <%= link_to 'Change password', edit_user_password_path %>
+  <% end %>
+
+</div>

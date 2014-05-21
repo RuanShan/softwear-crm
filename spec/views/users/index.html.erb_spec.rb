@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe 'users/index.html.erb' do
+describe 'users/index.html.erb', user_spec: true do
   before :each do
     assign(:users, [
       create(:user, 
