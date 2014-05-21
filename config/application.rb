@@ -27,7 +27,6 @@ module CrmSoftwearcrmCom
 
     config.to_prepare do
       Devise::SessionsController.layout 'no_overlay'
-      Devise::RegistrationsController.layout 'no_overlay'
     end
   end
 end

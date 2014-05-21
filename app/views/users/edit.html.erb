@@ -1,5 +1,8 @@
 <div class='box-info'>
-  <%= form_for @user, url: user_path(@user), builder: LancengFormBuilder do |f| %>
+<%= link_to 'Back', :back %>
+	<h3>Update User</h3>
+  <%= form_for @user, url: user_path(@user), html: { method: :put }, builder: LancengFormBuilder do |f| %>
+  <%= render_error_modal_for @user %>
 
     <%= render partial: 'users/fields', locals: { f: f } %>
 
@@ -10,7 +13,7 @@
   <% end %>
 
   <% if @current_user && @current_user == @user %>
-    <%= link_to 'Change password', edit_user_password_path %>
+    <%= link_to 'Change password', edit_user_registration_path %>
   <% end %>
 
 </div>

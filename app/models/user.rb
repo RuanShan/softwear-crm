@@ -7,6 +7,10 @@ class User < ActiveRecord::Base
   validates_presence_of :firstname, :lastname
   validates :email, format: { with: /\A([^@\s]+)@((?:[-a-z0-9]+\.)+[a-z]{2,})\Z/i }
 
+  def full_name
+    "#{firstname} #{lastname}"
+  end
+
   # non-deletable stuff
   default_scope -> { where(deleted_at: nil) }
   scope :deleted, -> { unscoped.where.not(deleted_at: nil) }

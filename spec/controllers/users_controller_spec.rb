@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 describe UsersController, user_spec: true do
-	let!(:valid_user) { create :alternate_user }
+	let!(:valid_user) { create :user }
 	before(:each) { sign_in valid_user }
 	
 	context '#new' do

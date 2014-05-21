@@ -2,7 +2,7 @@ require 'spec_helper'
 include ApplicationHelper
 
 feature 'Order management', order_spec: true, js: true do
-  given!(:valid_user) { create(:alternate_user) }
+  given!(:valid_user) { create(:user) }
   before(:each) do
     login_as valid_user
   end
