@@ -23,4 +23,9 @@ describe 'users/index.html.erb', user_spec: true do
     expect(rendered).to have_selector '*', text: 'test1@example.com'
     expect(rendered).to have_selector '*', text: 'test2@example.com'
   end
+
+  it 'has a "new user" button' do
+    render
+    expect(rendered).to have_button_or_link_to new_user_registration_path
+  end
 end
