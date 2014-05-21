@@ -1,17 +1,17 @@
 CrmSoftwearcrmCom::Application.routes.draw do
 
   devise_for :users, controllers: { registrations: 'users/registrations' }, path_names: { sign_up: 'create_user' }
-  resources :sizes
-
-  resources :styles
-
-  resources :brands
-
-  resources :colors
+  
+  resources :sizes, :styles, :brands, :colors,
+            :shipping_methods, :imprintables,
+            :users
 
   root "home#index"
-  resources :orders, :shipping_methods, :imprintables, :users
   
+  resources :orders do
+    get 'timeline', to: 'timeline#show'
+  end
+
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".
 

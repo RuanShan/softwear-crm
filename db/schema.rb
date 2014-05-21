@@ -13,7 +13,7 @@
 
 ActiveRecord::Schema.define(version: 20140516194416) do
 
-  create_table "brands", force: true do |t|
+    create_table "brands", force: true do |t|
     t.string   "name"
     t.string   "sku"
     t.datetime "deleted_at"

@@ -1,4 +1,5 @@
 class Order < ActiveRecord::Base
+
   VALID_PAYMENT_TERMS = ['', 
      'Paid in full on purchase',
      'Half down on purchase',
@@ -7,7 +8,7 @@ class Order < ActiveRecord::Base
      'Net 60']
 
   VALID_SALES_STATUSES   = ['Pending', 'Terms Set And Met', 'Paid', 'Cancelled']
-  VALID_DELIVERY_METHODS = ['Pick up in Ann Arbor', 'Pick up in Ypsilanti', 'Ship to one', 'Ship to multiple']
+  VALID_DELIVERY_METHODS = ['Pick up in Ann Arbor', 'Pick up in Ypsilanti', 'Ship to one location', 'Ship to multiple locations']
   
   before_validation :initialize_fields, on: :create
 

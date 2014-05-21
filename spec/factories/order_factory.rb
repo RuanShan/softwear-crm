@@ -25,7 +25,7 @@ FactoryGirl.define do
     tax_exempt false
     is_redo false
     sales_status 'Pending'
-    delivery_method 'Ship to one'
+    delivery_method 'Ship to one location'
     phone_number '123-456-7890'
   end
 end
