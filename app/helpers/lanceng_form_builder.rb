@@ -39,6 +39,10 @@ class LancengFormBuilder < ActionView::Helpers::FormBuilder
     end
   end
 
+  def has_errors_on?(method)
+    @object.errors.include? method
+  end
+
   def error_for(method)
     if @object.errors.include? method
       c = @object.errors.full_messages_for(method).collect do |message|

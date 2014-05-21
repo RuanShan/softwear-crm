@@ -8,7 +8,7 @@ describe Users::RegistrationsController, user_spec: true do
 		# current_user is stubbed in here because the standard Devise
 		# sign_in function doesn't appear to work inside specs for
 		# overridden Devise controllers.
-		controller.stub(:current_user).and_return valid_user
+		allow(controller).to receive(:current_user).and_return valid_user
 	end
 
 	context 'logged in as a valid user' do

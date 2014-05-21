@@ -17,6 +17,12 @@ feature 'Users', user_spec: true, js: true, wip: true do
 	    login_as valid_user
 	  end
 
+	  scenario 'I see my name on the dashboard' do
+	  	visit root_path
+	  	unhide_dashboard
+	  	expect(page).to have_css '*', text: "Welcome back, #{valid_user.full_name}"
+	  end
+
 	  scenario 'I can view a list of users' do
 	  	visit root_path
 	  	unhide_dashboard
@@ -24,7 +30,7 @@ feature 'Users', user_spec: true, js: true, wip: true do
 	  	wait_for_ajax
 	  	click_link 'Users'
 	  	wait_for_ajax
-	  	expect(page).to have_css '*', text: valid_user.full_name
+	  	expect(page).to have_css "tr#user_#{valid_user.id} > td", text: valid_user.full_name
 	  end
 
 	  scenario "I can edit a user's info" do
@@ -35,6 +41,17 @@ feature 'Users', user_spec: true, js: true, wip: true do
 	  	wait_for_ajax
 	  	expect(page).to have_css '*', text: 'success'
 	  	expect(User.where(lastname: 'NewLastname')).to exist
+	  end
+
+	  scenario "I can change my password" do
+	  	visit edit_user_path(valid_user)
+	  	click_link 'Change password'
+	  	fill_in 'Password',              with: 'NewPassword'
+	  	fill_in 'Password confirmation', with: 'NewPassword'
+	  	fill_in 'Current password',      with: '1234567890'
+	  	click_button 'Update'
+	  	wait_for_ajax
+	  	expect(page).to have_css '*', text: 'success'
 	  end
 	end
 end
