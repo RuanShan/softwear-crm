@@ -1,10 +1,12 @@
 CrmSoftwearcrmCom::Application.routes.draw do
 
-  devise_for :users, controllers: { registrations: 'users/registrations' }, path_names: { sign_up: 'create_user' }
+  devise_for :users, skip: 'registration'
+
   root "home#index"
+  get '/users/change_password', to: 'users#edit_password', as: :change_password
+  put '/users/change_password', to: 'users#update_password', as: :update_password
   resources :orders, :shipping_methods, :imprintables, :users
   get '/logout' => 'users#logout'
-  
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".
 

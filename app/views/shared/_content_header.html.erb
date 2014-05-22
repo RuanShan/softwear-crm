@@ -138,14 +138,11 @@
           <li class="dropdown">
             <a href="#fakelink" class="dropdown-toggle" data-toggle="dropdown">Howdy, <strong>Mas Bro</strong> <i class="fa fa-chevron-down i-xs"></i></a>
             <ul class="dropdown-menu animated half flipInX">
-              <li><a href="#fakelink">My Profile</a></li>
-              <li><a href="#fakelink">Change Password</a></li>
-              <li><a href="#fakelink">Account Setting</a></li>
-              <li class="divider"></li>
-              <li class="dropdown-header">Another action</li>
-              <li><a href="#fakelink">Help</a></li>
+              <li><%= link_to 'Account Settings', edit_user_path(@current_user) %></li>
+              <!--<li class="divider"></li>-->
+              <!--<li class="dropdown-header">Another action</li>-->
               <li><a href="lock-screen.html">Lock me</a></li>
-              <%= link_to 'Logout', destroy_user_session_path, method: :delete, class: 'md-trigger', 'data-model'=>'logout-modal-alt' %>
+              <li><%= link_to 'Logout', destroy_user_session_path, method: :delete, class: 'md-trigger', 'data-model'=>'logout-modal-alt' %></li>
             </ul>
           </li>
           <!-- End Dropdown User session -->

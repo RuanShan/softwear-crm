@@ -43,18 +43,28 @@ feature 'Users', user_spec: true, js: true do
 	  	expect(User.where(lastname: 'NewLastname')).to exist
 	  end
 
-	  scenario "I can change my password" do
+	  scenario "I can create a new user account" do
+	  	visit users_path
+	  	click_link 'Create new user'
+	  	fill_in 'Email', with: 'newguy@example.com'
+	  	fill_in 'First name', with: 'New'
+	  	fill_in 'Last name', with: 'Last'
+	  	click_button 'Create'
+	  	page.driver.browser.switch_to.alert.accept
+	  	expect(page).to have_css '*', text: 'success'
+	  end
+
+	  scenario "I can change my password", wip: true, donow: true do
 	  	visit edit_user_path(valid_user)
 	  	click_link 'Change password'
 	  	fill_in 'Password',              with: 'NewPassword'
 	  	fill_in 'Password confirmation', with: 'NewPassword'
 	  	fill_in 'Current password',      with: '1234567890'
 	  	click_button 'Update'
-	  	wait_for_ajax
 	  	expect(page).to have_css '*', text: 'success'
 	  end
 
-	  scenario 'I can log out', wip: true do
+	  scenario 'I can log out' do
 	  	visit root_path
 	  	unhide_dashboard
 	  	first('a', text: 'Logout').click

@@ -26,7 +26,7 @@ describe 'users/index.html.erb', user_spec: true do
 
   it 'has a "new user" button' do
     render
-    expect(rendered).to have_button_or_link_to new_user_registration_path
+    expect(rendered).to have_button_or_link_to new_user_path
   end
 
   it 'has an edit button for each user' do
