@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <%= render partial: 'shared/head' %>
+</head>
+
+<body class='full-content'>
+
+
+<div id="loading">
+  <div class="loading-inner">
+    <div class="spinner">
+      <div class="cube1"></div>
+      <div class="cube2"></div>
+    </div>
+  </div>
+</div>
+
+
+<div class="container">
+    <div class="body">
+      <%= yield %>
+      <%= render partial: 'shared/footer'  %>
+    </div>
+
+  <%= render partial: 'shared/modal_flash' %>
+</div>
+
+
+</body>
+</html>
+

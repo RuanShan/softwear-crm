@@ -184,6 +184,15 @@ blockquote.reply-message{
 }
 .form-group .checkbox{margin-left: 0; padding-left: 0;}
 
+.imprintable-line-item-input {
+    text-align: center;
+}
+
+.imprintable-line-item-input input {
+    padding: 1px;
+    min-width: 3em;
+    text-align: center;
+}
 /** Button **/
 .btn{border-radius: 2px;}
 
@@ -912,7 +921,7 @@ form.input-chat{margin-top: 20px;}
 	padding: 10px;
 	color: #677179;
 }
-.chat-widget .media-list .media .media-body p.time{
+.chat-widget .media-list .media .media-body p.time, .the-timeline p.time{
 	text-align: right;
 	color: #909090;
 	font-size: 11px;

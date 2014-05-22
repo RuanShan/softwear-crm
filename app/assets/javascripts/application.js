@@ -20,4 +20,6 @@
 //= require datepicker/bootstrap-datepicker
 //= require icheck/icheck
 //= require wizard/jquery.easyWizard
+//= require jquery.maskedinput.min.js
 //= require_tree .
+

@@ -1,0 +1,15 @@
+<div class='box-info'>
+
+  <h2>Create new user</h2>
+
+  <%= form_for(resource, as: resource_name, url: registration_path(resource_name), builder: LancengFormBuilder) do |f| %>
+    <%= render_error_modal_for resource %>
+
+    <%= render partial: 'users/fields', locals: { f: f } %>
+
+    <div class='form-group'>
+    <%= f.submit "Create", data: { confirm: "Create new account?" } %>
+    </div>
+  <% end %>
+
+</div>
