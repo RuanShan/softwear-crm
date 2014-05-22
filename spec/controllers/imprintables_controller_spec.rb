@@ -1,6 +1,8 @@
 require 'spec_helper'
 
 describe ImprintablesController do
+	let!(:valid_user) { create :alternate_user }
+	before(:each) { sign_in valid_user }
 
   describe 'GET index' do
     let(:imprintable) { create(:valid_imprintable) }

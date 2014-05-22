@@ -50,6 +50,16 @@ $(document).ready(function(){
 	});
 
 
+    $('.dashboard-timeline').slimScroll({
+        height: '300px',
+        position: 'right',
+        color: '#868686',
+        size: '3px',
+        railOpacity: 0.3,
+        wheelStep: 5
+    });
+
+
 	//KNOB
 	$(function() {
 		$(".dial").knob();

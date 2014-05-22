@@ -1,0 +1,15 @@
+<div class='form-group'>
+  <%= f.label :email %>
+  <%= f.error_for :email %>
+  <%= f.email_field :email, autofocus: true %>
+</div>
+<div class='form-group'>
+  <%= f.label :firstname, 'First name' %>
+  <%= f.error_for :firstname %>
+  <%= f.text_field :firstname %>
+</div>
+<div class='form-group'>
+  <%= f.label :lastname, 'Last name' %>
+  <%= f.error_for :lastname %>
+  <%= f.text_field :lastname %>
+</div>

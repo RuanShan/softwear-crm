@@ -12,6 +12,13 @@ class LancengFormBuilder < ActionView::Helpers::FormBuilder
     add_class options, 'form-control'
     super
   end
+  alias_method :email_field, :text_field
+
+  def password_field(method, options={})
+    add_class options, 'form-control'
+    super
+  end
+
   def text_area(method, options={})
     add_class options, 'form-control'
     super
@@ -30,6 +37,10 @@ class LancengFormBuilder < ActionView::Helpers::FormBuilder
       end +
       @template.text_area(@object_name, text_method, options)
     end
+  end
+
+  def has_errors_on?(method)
+    @object.errors.include? method
   end
 
   def error_for(method)

@@ -3,6 +3,11 @@ include ApplicationHelper
 
 feature 'Styles management' do
 
+  given!(:valid_user) { create(:alternate_user) }
+  before(:each) do
+    login_as(valid_user)
+  end
+
   let!(:style) { create(:valid_style)}
 
 

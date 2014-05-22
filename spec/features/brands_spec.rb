@@ -3,8 +3,12 @@ include ApplicationHelper
 
 feature 'Brands management' do
 
-  let!(:brand) { create(:valid_brand)}
+  given!(:valid_user) { create(:alternate_user) }
+  before(:each) do
+    login_as(valid_user)
+  end
 
+  let!(:brand) { create(:valid_brand)}
 
   scenario 'A user can see a list of brands' do
     visit root_path

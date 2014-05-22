@@ -1,8 +1,8 @@
 <tr id="order_<%= order.id %>">
-  <td><% order.id %></td>
+  <td><%= order.id %></td>
   <td>
     <div class="btn-group btn-group-xs">
-      <a data-toggle="tooltip" title="Show Order Log" class="btn btn-default"><i class="fa fa-list-alt"></i></a>
+      <%= link_to order_timeline_path(order), remote: true, 'data-toggle'=> 'tooltip', title: 'Show Order Timeline', class: 'btn btn-default modalLink' do  %><i class="fa fa-list-alt"></i><% end %>
     </div>
   </td>
   <td>

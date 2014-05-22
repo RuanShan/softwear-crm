@@ -3,10 +3,16 @@ include ApplicationHelper
 
 feature 'sizes management' do
 
+  given!(:valid_user) { create(:alternate_user) }
+  before(:each) do
+    login_as(valid_user)
+  end
+
   let!(:size) do
     create(:valid_size)
     create(:valid_size)
   end
+
 
   scenario 'A user can see a list of sizes' do
     visit root_path
@@ -63,3 +69,4 @@ feature 'sizes management' do
     save_and_open_page
   end
 end
+

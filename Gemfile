@@ -54,6 +54,7 @@ group :test do
 end
 
 gem 'inherited_resources'
+gem 'devise'
 
 
 # Use ActiveModel has_secure_password
