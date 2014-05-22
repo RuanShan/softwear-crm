@@ -37,6 +37,10 @@ RSpec.configure do |config|
     Capybara::Selenium::Driver.new(app, :browser => :chrome)
   end
 
+  # Capybara.javascript_driver = :webkit_debug
+  # Capubara.current_driver = Capybara.javascript_driver
+
+
   # If you're not using ActiveRecord, or you'd prefer not to run each of your
   # examples within a transaction, remove the following line or assign false
   # instead of true.

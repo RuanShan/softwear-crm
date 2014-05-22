@@ -6,6 +6,13 @@ $(document).ready(function() {
         });
         return ui;
     };
-
-    $("#sizes_list tbody").sortable({helper: fixHelper}).disableSelection();
+    var sel = "#sizes_list tbody";
+    $(sel).sortable({
+        helper: fixHelper,
+        update: function(event, ui) {
+            var itm_arr = $(sel).sortable('toArray');
+            var pobj = {categories: itm_arr};
+            $.post("/sizes/update_size_order", pobj);
+        }
+    });
 });

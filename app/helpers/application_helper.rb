@@ -28,27 +28,35 @@ module ApplicationHelper
     render partial: 'shared/modal_errors', locals: { object: object }
   end
 
-  def nav_active_or_visible_class(tag, which, controller)
-    if controller == 'imprintables' or controller == 'sizes' or
-        controller == 'brands' or controller == 'colors' or
-        controller == 'styles'
-      if which == 'active'
+  # This function creates an open "tag" element in your view, with appropriate classes
+  # Pass along the name of the tag you wish to use, whether you want 'active'
+  # or 'visible' used for the class, and either an array of controllers or a single controller
+  # and this bad boy takes care of the rest, adding the active or visible class
+  # to the element if necessary
+  def nav_helper(tag, which, controllers)
+    if controllers.respond_to? 'each'
+      controllers.each do |controller_item|
+        if controller.controller_name == controller_item
+          if which == 'active'
+            result = tag(tag, {class: 'active'}, true)
+          else
+            result = tag(tag, {class: 'visible'}, true)
+          end
+          result.html_safe
+          return result
+        end
+      end
+      result = tag(tag, nil, true)
+      result.html_safe
+      result
+    else
+      if controller.controller_name == controllers
         result = tag(tag, {class: 'active'}, true)
       else
-        result = tag(tag, {class: 'visible'}, true)
+        result = tag(tag, nil, true)
       end
-    else
-      result = tag(tag, nil, true)
+      result.html_safe
+      result
     end
-    result.html_safe
-  end
-
-  def nav_active_li(controller, title)
-    if controller == title
-      result = tag :li, class: 'active'
-    else
-      result = tag :li
-    end
-    result.html_safe
   end
 end

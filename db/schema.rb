@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140516194416) do
+ActiveRecord::Schema.define(version: 20140522132542) do
 
   create_table "brands", force: true do |t|
     t.string   "name"
@@ -29,6 +29,14 @@ ActiveRecord::Schema.define(version: 20140516194416) do
     t.datetime "updated_at"
   end
 
+  create_table "imprintable_variants", force: true do |t|
+    t.integer  "imprintable_id"
+    t.string   "weight"
+    t.datetime "deleted_at"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
   create_table "imprintables", force: true do |t|
     t.string   "name"
     t.string   "catalog_number"
@@ -36,6 +44,30 @@ ActiveRecord::Schema.define(version: 20140516194416) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.datetime "deleted_at"
+  end
+
+  create_table "orders", force: true do |t|
+    t.string   "email"
+    t.string   "firstname"
+    t.string   "lastname"
+    t.string   "company"
+    t.string   "twitter"
+    t.string   "name"
+    t.string   "po"
+    t.datetime "in_hand_by"
+    t.string   "terms"
+    t.boolean  "tax_exempt"
+    t.string   "tax_id_number"
+    t.boolean  "is_redo"
+    t.text     "redo_reason"
+    t.string   "sales_status"
+    t.string   "delivery_method"
+    t.decimal  "total",             precision: 10, scale: 2
+    t.datetime "deleted_at"
+    t.string   "phone_number"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.decimal  "commission_amount", precision: 10, scale: 2
   end
 
   create_table "shipping_methods", force: true do |t|
@@ -54,6 +86,7 @@ ActiveRecord::Schema.define(version: 20140516194416) do
     t.datetime "deleted_at"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.integer  "sequence"
   end
 
   create_table "styles", force: true do |t|

@@ -3,8 +3,10 @@ include ApplicationHelper
 
 feature 'sizes management' do
 
-  let!(:size) { create(:valid_size)}
-
+  let!(:size) do
+    create(:valid_size)
+    create(:valid_size)
+  end
 
   scenario 'A user can see a list of sizes' do
     visit root_path
@@ -44,20 +46,20 @@ feature 'sizes management' do
     expect(size.reload.destroyed? ).to be_truthy
   end
 
-  scenario 'A user can sort a column in ascending order', js: true do
+  @wip
+  scenario 'A user can reorganize a row', js: true, wip: true do
     visit sizes_path
-    first('#sizes_list thead tr th').click
-    wait_for_ajax
-    expect(current_path).to eq(sizes_path)
-    expect(page).to have_css("*[data-sorted-direction='ascending']")
-  end
-
-  scenario 'A user can sort a column in descending order', js: true do
-    visit sizes_path
-    first('#sizes_list thead tr th').click
-    first('#sizes_list thead tr th').click
-    wait_for_ajax
-    expect(current_path).to eq(sizes_path)
-    expect(page).to have_css("*[data-sorted-direction='descending']")
+    source = page.find('#size_1')
+    target = page.find('#size_2')
+    source.drag_to(target)
+    # page.execute_script %{
+    #   $(document).ready(function(){
+    #     $.getScript("assets/jquery.simulate.drag-sortable.js", function() {
+    #       $("tr#size_#{size.id}").simulateDragSortable({ move: -1});
+    #     });
+    #   });
+    # }
+    expect(page.first('tbody tr')).to eq(page.find('#size_2'))
+    save_and_open_page
   end
 end

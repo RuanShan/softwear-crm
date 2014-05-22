@@ -8,22 +8,22 @@
       </ul>
     </li>
     <li><a href="#fakelink"><i class="fa fa-users"></i> Customers</a>
-    <%= nav_active_or_visible_class(:li, 'active', controller_name) %>
+    <%= nav_helper(:li, 'active', %w[imprintables brands colors styles sizes]) %>
       <a href="#fakelink"><i class="fa fa-archive"></i><i class="fa fa-angle-double-down i-right"></i> Imprintables</a>
-      <%= nav_active_or_visible_class(:ul, 'visible', controller_name) %>
-        <%= nav_active_li controller_name, 'imprintables' %>
+      <%= nav_helper(:ul, 'visible', %w[imprintables brands colors styles sizes]) %>
+        <%= nav_helper :li, 'active', 'imprintables' %>
           <%= link_to imprintables_path, id: 'imprintables_list_link' do %><i class="fa fa-angle-right"></i> List<% end %>
         </li>
-        <%= nav_active_li controller_name, 'brands' %>
+        <%= nav_helper :li, 'active', 'brands' %>
           <%= link_to brands_path, id: 'brands_list_link' do %><i class="fa fa-angle-right"></i> Brands<% end %>
         </li>
-        <%= nav_active_li controller_name, 'colors' %>
+        <%= nav_helper :li, 'active', 'colors' %>
           <%= link_to colors_path, id: 'colors_list_link' do %><i class="fa fa-angle-right"></i> Colors<% end %>
         </li>
-        <%= nav_active_li controller_name, 'styles' %>
+        <%= nav_helper :li, 'active', 'styles' %>
           <%= link_to styles_path, id: 'styles_list_link' do %><i class="fa fa-angle-right"></i> Styles<% end %>
         </li>
-        <%= nav_active_li controller_name, 'sizes' %>
+        <%= nav_helper :li, 'active', 'sizes' %>
           <%= link_to sizes_path, id: 'sizes_list_link' do %><i class="fa fa-angle-right"></i> Sizes<% end %>
         </li>
       </ul>

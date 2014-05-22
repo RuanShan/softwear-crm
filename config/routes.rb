@@ -1,6 +1,10 @@
 CrmSoftwearcrmCom::Application.routes.draw do
 
-  resources :sizes
+  resources :sizes do
+    collection do
+      post 'update_size_order'
+    end
+  end
 
   resources :styles
 

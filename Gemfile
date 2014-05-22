@@ -21,6 +21,8 @@ gem 'coffee-rails', '~> 4.0.0'
 # Use jquery as the JavaScript library
 gem 'jquery-rails'
 
+gem 'hirb', '~> 0.7.1'
+
 # Turbolinks makes following links in your web application faster. Read more: https://github.com/rails/turbolinks
 #gem 'turbolinks'
 
@@ -48,9 +50,11 @@ group :test do
   gem 'rspec-mocks'
   gem 'database_cleaner'
   gem 'selenium-webdriver'
+  gem 'capybara-webkit'
 end
 
 gem 'inherited_resources'
+
 
 # Use ActiveModel has_secure_password
 # gem 'bcrypt', '~> 3.1.7'
