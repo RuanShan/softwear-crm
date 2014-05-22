@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-feature 'Users', user_spec: true, js: true, wip: true do
+feature 'Users', user_spec: true, js: true do
 	given!(:valid_user) { create(:user) }
 
 	context 'with valid credentials' do
@@ -52,6 +52,13 @@ feature 'Users', user_spec: true, js: true, wip: true do
 	  	click_button 'Update'
 	  	wait_for_ajax
 	  	expect(page).to have_css '*', text: 'success'
+	  end
+
+	  scenario 'I can log out', wip: true do
+	  	visit root_path
+	  	unhide_dashboard
+	  	first('a', text: 'Logout').click
+	  	expect(current_path).to eq '/users/sign_in'
 	  end
 	end
 end

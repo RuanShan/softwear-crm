@@ -11,8 +11,9 @@ describe UsersController, user_spec: true do
 		end
 	end
 	context '#show' do
-		it 'should not work' do
-			expect{get :show}.to raise_error ActionController::UrlGenerationError
+		it 'redirects to #index' do
+			get :show, id: valid_user.id
+			expect(response).to redirect_to users_path
 		end
 	end
 end

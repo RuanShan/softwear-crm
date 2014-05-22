@@ -8,7 +8,9 @@ class UsersController < InheritedResources::Base
     super
   end
 
-  undef show
+  def show
+    redirect_to users_path
+  end
 
 private
   def permitted_params

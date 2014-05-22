@@ -145,7 +145,7 @@
               <li class="dropdown-header">Another action</li>
               <li><a href="#fakelink">Help</a></li>
               <li><a href="lock-screen.html">Lock me</a></li>
-              <li><a class="md-trigger" data-modal="logout-modal">Logout</a></li>
+              <%= link_to 'Logout', destroy_user_session_path, method: :delete, class: 'md-trigger', 'data-model'=>'logout-modal-alt' %>
             </ul>
           </li>
           <!-- End Dropdown User session -->
