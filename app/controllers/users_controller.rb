@@ -40,6 +40,17 @@ class UsersController < InheritedResources::Base
     redirect_to users_path
   end
 
+  def lock
+    session[:lock] = {
+      email: @current_user.email,
+      location: params[:location]
+    }
+    session[:lock][:location] = root_path if params[:location].include? lock_user_path
+
+    sign_out @current_user
+    redirect_to new_user_session_path
+  end
+
   def edit
     super
   end

@@ -1,3 +1,6 @@
+idleTimeoutMs = 5000
+idleWarningSec = 10
+
 $(window).load ->
   if $('#contentModal').length == 0 then return
 
@@ -10,17 +13,17 @@ $(window).load ->
       clearInterval inter
       on_timeout()
 
-  count = 60
+  count = idleWarningSec
   inter = null
   
   timer = $.timer ->
     timer.stop()
-    count = 60
+    count = idleWarningSec
     inter = null
     inter = setInterval set_countdown_timer, 1000
 
   begin = ->
-    timer.set { time: 5000, autostart: true }
+    timer.set { time: idleTimeoutMs, autostart: true }
   cancel = ->
     timer.stop()
     if inter then clearInterval inter
@@ -32,4 +35,7 @@ $(window).load ->
     begin()
 
   on_timeout = ->
-    alert 'bang'
+    form = $('<form/>', action: '/users/lock', method: 'get')
+    form.append $('<input/>', type: 'submit', name: 'location', value: document.URL, id: 'lock_go')
+    $('body').append form
+    $('#lock_go').click()

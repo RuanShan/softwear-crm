@@ -1,10 +1,11 @@
 CrmSoftwearcrmCom::Application.routes.draw do
 
-  devise_for :users, skip: 'registration'
+  devise_for :users, controllers: { sessions: 'users/sessions' }, skip: 'registration'
 
   root "home#index"
   get '/users/change_password', to: 'users#edit_password', as: :change_password
   put '/users/change_password', to: 'users#update_password', as: :update_password
+  get '/users/lock', to: 'users#lock', as: :lock_user
   resources :sizes, :styles, :brands, :colors, :imprintables, :users
   get '/logout' => 'users#logout'
   

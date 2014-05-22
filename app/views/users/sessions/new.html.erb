@@ -8,7 +8,7 @@
         <div class="form-group login-input">
           <i class="fa fa-sign-in overlay"></i>
           <%= f.error_for :email %>
-          <%= f.text_field :email, class: 'text-input', placeholder: 'Email' %>
+          <%= f.text_field :email, class: 'text-input', value: (@lock ? @lock[:email] : nil), placeholder: 'Email' %>
         </div>
         <div class="form-group login-input">
           <i class="fa fa-key overlay"></i>
