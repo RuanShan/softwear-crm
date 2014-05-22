@@ -23,6 +23,3 @@
 //= require jquery.maskedinput.min.js
 //= require_tree .
 
-$(document).ready(function(){
-    $('.format-phone').mask("999-999-9999");
-});

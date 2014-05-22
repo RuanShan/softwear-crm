@@ -5,8 +5,16 @@ CrmSoftwearcrmCom::Application.routes.draw do
   root "home#index"
   get '/users/change_password', to: 'users#edit_password', as: :change_password
   put '/users/change_password', to: 'users#update_password', as: :update_password
-  resources :orders, :shipping_methods, :imprintables, :users
+  resources :sizes, :styles, :brands, :colors, :imprintables, :users
   get '/logout' => 'users#logout'
+  
+  scope 'configuration' do
+    resources :shipping_methods
+  end
+  
+  resources :orders do
+    get 'timeline', to: 'timeline#show'
+  end
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".
 

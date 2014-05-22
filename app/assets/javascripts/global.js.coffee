@@ -1,7 +1,9 @@
 $(window).load ->
   $("#flashModal").modal "show"
+  $("#errorsModal").modal "show"
   return
 
-$(window).load ->
-  $("#errorsModal").modal "show"
+
+$(document).ready ->
+  $('.format-phone').mask("999-999-9999")
   return

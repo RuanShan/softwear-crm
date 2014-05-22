@@ -1,0 +1,10 @@
+<div class="page-heading animated fadeInDownBig col-lg-9">
+  <h1>Colors <small>View and edit colors available for imprintables</small></h1>
+</div>
+<div class="col-lg-3 text-right">
+  <%= link_to "Add a color", new_color_path, class:'btn btn-primary', role: 'button' %>
+</div>
+
+<div class="box-info row clear">
+  <%= render partial: 'table', locals: {colors: @colors } %>
+</div>
