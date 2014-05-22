@@ -2,9 +2,12 @@ CrmSoftwearcrmCom::Application.routes.draw do
 
   devise_for :users, controllers: { registrations: 'users/registrations' }, path_names: { sign_up: 'create_user' }
   
-  resources :sizes, :styles, :brands, :colors,
-            :shipping_methods, :imprintables,
+  resources :sizes, :styles, :brands, :colors, :imprintables,
             :users
+
+  scope 'configuration' do
+    resources :shipping_methods
+  end
 
   root "home#index"
   
