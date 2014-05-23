@@ -1,0 +1,28 @@
+
+<div class="box-info full">
+  <div class="table-responsive">
+    <table class="table table-hover" id="shipping_methods_list">
+      <thead>
+      <tr>
+        <th>Name</th>
+        <th>Tracking URL</th>
+        <th>Actions</th>
+      </tr>
+      </thead>
+      <tbody>
+      <% shipping_methods.each do |shipping_method| %>
+      <tr id="<%= model_table_row_id shipping_method %>">
+        <td><%= shipping_method.name %></td>
+        <td><%= link_to shipping_method.tracking_url, shipping_method.tracking_url, target: '_blank' %></td>
+        <td>
+          <div class="btn-group btn-group-xs">
+            <%= link_to edit_shipping_method_path(shipping_method), 'data-action' => 'edit', 'data-toggle' => 'tooltip', 'title' => 'Edit', class: 'btn btn-default' do %><i class="fa fa-edit"></i><% end %>
+            <%= link_to shipping_method_path(shipping_method), 'data-action' => 'destroy', 'data-toggle' => 'tooltip', 'title' => 'Destroy', class: 'btn btn-default', method: :delete, data: {confirm: 'Are you sure you would like to delete the shipping method?'} do %><i class="fa fa-times"></i><% end %>
+          </div>
+        </td>
+      </tr>
+      <% end %>
+      </tbody>
+    </table>
+  </div>
+</div>
