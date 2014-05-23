@@ -1,10 +1,5 @@
-# This file should contain all the record creation needed to seed the database with its default values.
-# The data can then be loaded with the rake db:seed (or created alongside the db with db:setup).
-#
-# Examples:
-#
-#   cities = City.create([{ name: 'Chicago' }, { name: 'Copenhagen' }])
-#   Mayor.create(name: 'Emanuel', city: cities.first)
+# USER SEEDING
+# ----------------
 
 pw = 'pw4admin'
 exists = !User.where(email: 'admin@softwearcrm.com').empty?
@@ -31,7 +26,33 @@ else
 	puts "Default user already exists! Email is admin@softwearcrm.com and password is #{pw}"
 end
 
-3.times do |i|
-  Size.create(name: "Size #{i}", display_value: "Display #{i}",
-                sku: "Sku #{i}", sort_order: "Sort Order #{i}")
+# Size SEEDING
+# ----------------
+sizes = [
+    { name: 'Small', display_value: 'S', sku: '02', sort_order: 1 },
+    { name: 'Medium', display_value: 'M', sku: '03', sort_order: 2 },
+    { name: 'Large', display_value: 'L', sku: '04', sort_order: 3 },
+    { name: 'Extra Large', display_value: 'XL', sku: '05', sort_order: 4 }
+]
+sizes.each do |size|
+  if Size.create(size)
+    puts "Created size #{size[:name]}"
+  else
+    puts "[ERROR] Can't create size #{shipping_method[:name]}"
+  end
+end
+
+# ShippingMethod SEEDING
+# ----------------
+
+shipping_methods = [
+    { name: 'USPS First Class', tracking_url: 'https://tools.usps.com/go/TrackConfirmAction!input.action'},
+    { name: 'UPS Ground', tracking_url: 'http://www.ups.com/tracking/tracking.html'}
+]
+shipping_methods.each do |shipping_method|
+  if ShippingMethod.create(shipping_method)
+    puts "Created shipping method #{shipping_method[:name]}"
+  else
+    puts "[ERROR] Can't create shipping method #{shipping_method[:name]}"
+  end
 end
