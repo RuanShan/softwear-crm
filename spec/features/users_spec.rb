@@ -50,7 +50,6 @@ feature 'Users', user_spec: true, js: true do
 	  	fill_in 'First name', with: 'New'
 	  	fill_in 'Last name', with: 'Last'
 	  	click_button 'Create'
-	  	page.driver.browser.switch_to.alert.accept
 	  	expect(page).to have_css '*', text: 'success'
 	  end
 
