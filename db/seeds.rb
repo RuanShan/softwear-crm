@@ -1,6 +1,22 @@
 # USER SEEDING
 # ----------------
 
+def create_records(params_array, model)
+  params_array.each do |params|
+    record = model.new(params)
+    if record.save
+      puts "Created shipping method #{params[:name]}"
+    else
+      puts "[ERROR] Can't create #{model}"
+      record.errors.full_messages.each do |e|
+        puts "[ERROR] #{e}"
+      end
+      puts '[ERROR] -----------------------'
+    end
+  end
+end
+
+
 pw = 'pw4admin'
 exists = !User.where(email: 'admin@softwearcrm.com').empty?
 deleted_exists = !User.deleted.where(email: 'admin@softwearcrm.com').empty?
@@ -26,33 +42,21 @@ else
 	puts "Default user already exists! Email is admin@softwearcrm.com and password is #{pw}"
 end
 
+
 # Size SEEDING
 # ----------------
-sizes = [
-    { name: 'Small', display_value: 'S', sku: '02', sort_order: 1 },
-    { name: 'Medium', display_value: 'M', sku: '03', sort_order: 2 },
-    { name: 'Large', display_value: 'L', sku: '04', sort_order: 3 },
-    { name: 'Extra Large', display_value: 'XL', sku: '05', sort_order: 4 }
-]
-sizes.each do |size|
-  if Size.create(size)
-    puts "Created size #{size[:name]}"
-  else
-    puts "[ERROR] Can't create size #{shipping_method[:name]}"
-  end
-end
+create_records([
+                   { name: 'Small', display_value: 'S', sku: '02', sort_order: 1 },
+                   { name: 'Medium', display_value: 'M', sku: '03', sort_order: 2 },
+                   { name: 'Large', display_value: 'L', sku: '04', sort_order: 3 },
+                   { name: 'Extra Large', display_value: 'XL', sku: '05', sort_order: 4 }
+               ], Size)
 
 # ShippingMethod SEEDING
 # ----------------
 
-shipping_methods = [
+create_records([
     { name: 'USPS First Class', tracking_url: 'https://tools.usps.com/go/TrackConfirmAction!input.action'},
-    { name: 'UPS Ground', tracking_url: 'http://www.ups.com/tracking/tracking.html'}
-]
-shipping_methods.each do |shipping_method|
-  if ShippingMethod.create(shipping_method)
-    puts "Created shipping method #{shipping_method[:name]}"
-  else
-    puts "[ERROR] Can't create shipping method #{shipping_method[:name]}"
-  end
-end
+    { name: 'UPS Ground', tracking_url: 'http://www.ups.com/tracking/tracking.html'}    ,
+    { name: 'Bad Shipping Method', tracking_url: 'Bad Seed'}
+], ShippingMethod)
