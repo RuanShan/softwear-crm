@@ -1,6 +1,8 @@
-<div class='box-info'>
-<%= link_to 'Back', :back %>
-	<h3>Update User</h3>
+<div class="page-heading animated fadeInDownBig col-lg-9">
+  <h1>Users <small>Editing user <i><%= @user.full_name %></i></small></h1>
+</div>
+
+<div class='box-info row clear'>
   <%= form_for @user, url: user_path(@user), html: { method: :put }, builder: LancengFormBuilder do |f| %>
   <%= render_error_modal_for @user %>
 
