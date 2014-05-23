@@ -12,7 +12,7 @@ CrmSoftwearcrmCom::Application.routes.draw do
   get '/logout' => 'users#logout'
   
   scope 'configuration' do
-    resources :shipping_methods
+    resources :shipping_methods, :stores
   end
 
   resources :sizes do

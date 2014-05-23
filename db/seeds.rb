@@ -58,3 +58,11 @@ create_records([
     { name: 'USPS First Class', tracking_url: 'https://tools.usps.com/go/TrackConfirmAction!input.action'},
     { name: 'UPS Ground', tracking_url: 'http://www.ups.com/tracking/tracking.html'}
 ], ShippingMethod)
+
+# Store SEEDING
+# ----------------
+
+create_records([
+                   { name: 'Ann Arbor Tees'},
+                   { name: 'Ypsilanti Tees'}
+], Store)
