@@ -15,7 +15,7 @@ describe 'shared/_sidebar.html.erb', pending: 'waiting on Ricky' do
     end
   end
 
-  context 'when visiting root path' do
+  context 'when visiting root path', pending: 'waiting on Ricky'  do
     it 'Only highlights dashboard' do
       render partial: 'shared/sidebar_menu', locals: {controller_name: 'home'}
       expect(response).to_not have_css('li.active')
