@@ -1,11 +1,8 @@
-# USER SEEDING
-# ----------------
-
 def create_records(params_array, model)
   params_array.each do |params|
     record = model.new(params)
     if record.save
-      puts "Created shipping method #{params[:name]}"
+      puts "Created #{model} #{params[:name]}"
     else
       puts "[ERROR] Can't create #{model}"
       record.errors.full_messages.each do |e|
@@ -16,6 +13,8 @@ def create_records(params_array, model)
   end
 end
 
+# USER SEEDING
+# ----------------
 
 pw = 'pw4admin'
 exists = !User.where(email: 'admin@softwearcrm.com').empty?
@@ -57,6 +56,5 @@ create_records([
 
 create_records([
     { name: 'USPS First Class', tracking_url: 'https://tools.usps.com/go/TrackConfirmAction!input.action'},
-    { name: 'UPS Ground', tracking_url: 'http://www.ups.com/tracking/tracking.html'}    ,
-    { name: 'Bad Shipping Method', tracking_url: 'Bad Seed'}
+    { name: 'UPS Ground', tracking_url: 'http://www.ups.com/tracking/tracking.html'}
 ], ShippingMethod)
