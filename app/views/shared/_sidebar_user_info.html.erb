@@ -4,8 +4,8 @@
     <%= image_tag 'avatar/masarie.jpg', class: 'media-object img-circle', alt: 'Avatar' %>
   </a>
   <div class="media-body">
-    Welcome back,
-    <h4 class="media-heading"><strong><%= @current_user.full_name %></strong></h4>
+    Welcome,
+    <h4 class="media-heading"><strong><%= @current_user.firstname %> <%= @current_user.lastname[0,1] %>.</strong></h4>
     <%= link_to 'Edit', edit_user_path(@current_user) %>
     <%= link_to 'Logout', destroy_user_session_path, method: :delete, class: 'md-trigger', 'data-model'=>'logout-modal-alt' %>
   </div>
