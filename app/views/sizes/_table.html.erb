@@ -13,7 +13,6 @@
         <th>Name</th>
         <th>Display Value</th>
         <th>Stock Keeping Unit</th>
-        <th>Sort Order</th>
       </tr>
       </thead>
       <tbody>
@@ -22,7 +21,6 @@
             <td><%= size.name %></td>
             <td><%= size.display_value%></td>
             <td><%= size.sku %></td>
-            <td><%= size.sort_order %></td>
             <td>
               <div class="btn-group btn-group-xs">
                 <%= link_to edit_size_path(size), 'data-action' => 'edit', 'data-toggle' => 'tooltip', 'title' => 'Edit', class: 'btn btn-default' do %><i class="fa fa-edit"></i><% end %>
