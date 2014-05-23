@@ -9,6 +9,7 @@ CrmSoftwearcrmCom::Application.routes.draw do
   get '/users/lock', to: 'users#lock', as: :lock_user
 
   resources :styles, :brands, :colors, :imprintables, :users
+  resources :jobs, only: [:create, :update, :destroy]
   get '/logout' => 'users#logout'
   
   scope 'configuration' do
