@@ -6,8 +6,8 @@ class ApplicationController < ActionController::Base
   before_action :authenticate_user!
   before_action :configure_user_parameters, if: :devise_controller?
   # These allow current_user and the current url to be available to views
-  before_action :assign_current_user, unless: :devise_controller?
-  before_action :assign_current_url, unless: :devise_controller?
+  before_action :assign_current_user
+  before_action :assign_current_url
 
 protected
   def configure_user_parameters

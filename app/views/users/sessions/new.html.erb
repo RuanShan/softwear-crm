@@ -17,11 +17,12 @@
         </div>
         <div class="checkbox">
         <label>
-          <% if defined?(devise_mapping) && devise_mapping.rememberable? %>
+          <!--<% if defined?(devise_mapping) && devise_mapping.rememberable? %>
             <div class='form-group'>
             <%= f.check_box :remember_me %> <%= f.label :remember_me %>
             </div>
           <% end %>
+          -->
         </div>
         
         <div class="row">
@@ -30,11 +31,8 @@
           </div>
         </div>
       <% end %>
-      <% if Rails.env.development? %>
-        <%= link_to 'Create user', '/users/sign_up' %>
-      <% end %>
       
     </div>
-    <p class="text-center"><a href="forgot-password.html"><i class="fa fa-lock"></i> Forgot password?</a></p>
+    <p class="text-center"><%= link_to new_user_password_path do %><i class="fa fa-lock"></i> Forgot password?<% end %></p>
   </div>
 </div>

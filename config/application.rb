@@ -27,7 +27,10 @@ module CrmSoftwearcrmCom
     # config.i18n.default_locale = :de
 
     config.to_prepare do
-      Devise::SessionsController.layout 'no_overlay'
+      [
+        Devise::SessionsController,
+        Devise::PasswordsController
+      ].each { |c| c.layout 'no_overlay' }
     end
   end
 end
