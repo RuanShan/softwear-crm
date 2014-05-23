@@ -8,6 +8,13 @@ module WaitForAjax
   def finished_all_ajax_requests?
     page.evaluate_script('jQuery.active').zero?
   end
+
+  def wait_for_redirect
+  	original_url = current_path
+  	until current_path != original_url
+  		sleep(1)
+  	end
+  end
 end
 
 RSpec.configure do |config|

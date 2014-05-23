@@ -23,13 +23,13 @@ describe 'users/edit.html.erb', user_spec: true do
 	it 'shows change password button if the user is viewing their own edit page' do
 		assign(:current_user, user)
 		render
-		expect(rendered).to have_button_or_link_to edit_user_registration_path
+		expect(rendered).to have_button_or_link_to change_password_path
 	end
 
 	it "does not show change password button if user is viewing someone else's page" do
 		assign(:current_user, create(:alternate_user))
 		render
-		expect(rendered).to_not have_button_or_link_to edit_user_registration_path
+		expect(rendered).to_not have_button_or_link_to change_password_path
 	end
 
 end

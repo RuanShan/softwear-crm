@@ -5,11 +5,13 @@ class ApplicationController < ActionController::Base
 
   before_action :authenticate_user!
   before_action :configure_user_parameters, if: :devise_controller?
-  before_action :assign_current_user, unless: :devise_controller?
+  # These allow current_user and the current url to be available to views
+  before_action :assign_current_user
+  before_action :assign_current_url
 
 protected
   def configure_user_parameters
-    sanitizer = devise_parameter_sanitizer.for(:sign_up) do |u|
+    devise_parameter_sanitizer.for(:sign_up) do |u|
       u.permit :email, :firstname, :lastname
     end
   end
@@ -22,5 +24,9 @@ protected
         def full_name; 'Error User'; end
       end.new
     end
+  end
+
+  def assign_current_url
+    @current_url = request.original_url
   end
 end

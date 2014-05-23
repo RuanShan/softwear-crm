@@ -1,8 +1,9 @@
 require 'spec_helper'
 
-describe 'users/registrations/new.html.erb', user_spec: true do
+describe 'users/new.html.erb', user_spec: true do
   before :each do
-    render template: 'users/registrations/new.html.erb', locals: { resource: User.new, resource_name: 'user' }
+    assign(:user, create(:user))
+    render
   end
 
   it 'should have fields for email and first/last names' do
