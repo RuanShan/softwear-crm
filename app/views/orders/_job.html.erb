@@ -1,41 +1,43 @@
 <div id="job-1" class="box-info">
     <div class="box-info" style="background-color: #eeeeee">
-      <h3 class="job-title">
-        <span contenteditable>Wayne Jetski Jerseys</span>
-      </h3>
-      <p class="job-description">
-        Description: <span contenteditable>Description here about the wayne jetskis jerseys</span>
-      </p>
+      <%= form_for job, builder: LancengFormBuilder do |f| %>
+        <h3 class="job-title">
+          <%= f.inline_field :name, 'Job Name Here' %>
+        </h3>
+        <p class="job-description">
+          Description: <%= f.inline_field :description, 'Job Description Here' %>
+        </p>
 
-      <h4>Line Items</h4>
-      <%= render partial: 'line_item_imprintable_edit' %>
-      <%= render partial: 'line_item_imprintable_edit' %>
-      <%= render partial: 'line_items_edit' %>
+        <h4>Line Items</h4>
+        <%= render partial: 'line_item_imprintable_edit' %>
+        <%= render partial: 'line_item_imprintable_edit' %>
+        <%= render partial: 'line_items_edit' %>
 
-      <div class="form-group box-info">
-        <div class="col-sm-4">
-            <button type="submit" class="btn btn-info btn-lg btn-block"><i class="fa fa-list-alt"></i> Add Line Item </button>
+        <div class="form-group box-info">
+          <div class="col-sm-4">
+              <button type="submit" class="btn btn-info btn-lg btn-block"><i class="fa fa-list-alt"></i> Add Line Item </button>
+          </div>
+          <div class="col-sm-4 col-xs-offset-4">
+            <button type="submit" class="btn btn-info btn-lg btn-block"><i class="fa fa-list-alt"></i> Update Line Items</button>
+          </div>
         </div>
-        <div class="col-sm-4 col-xs-offset-4">
-          <button type="submit" class="btn btn-info btn-lg btn-block"><i class="fa fa-list-alt"></i> Update Line Items</button>
-        </div>
-      </div>
 
-      <h4>Imprints</h4>
-      <%= render partial: 'imprints' %>
+        <h4>Imprints</h4>
+        <%= render partial: 'imprints' %>
 
-      <div class="form-group box-info">
-        <div class="col-sm-4">
-          <button type="submit" class="btn btn-info btn-lg btn-block"><i class="fa fa-pagelines"></i> Add Imprint </button>
+        <div class="form-group box-info">
+          <div class="col-sm-4">
+            <button type="submit" class="btn btn-info btn-lg btn-block"><i class="fa fa-pagelines"></i> Add Imprint </button>
+          </div>
+          <div class="col-sm-4 col-xs-offset-4">
+            <button type="submit" class="btn btn-info btn-lg btn-block"><i class="fa fa-pagelines"></i> Update Imprints</button>
+          </div>
         </div>
-        <div class="col-sm-4 col-xs-offset-4">
-          <button type="submit" class="btn btn-info btn-lg btn-block"><i class="fa fa-pagelines"></i> Update Imprints</button>
+        <div class="form-group box-info">
+          <div class="col-sm-4 col-xs-offset-4">
+            <button type="submit" class="btn btn-danger btn-lg btn-block"><i class="fa fa-times-circle"></i> Delete Job</button>
+          </div>
         </div>
-      </div>
-      <div class="form-group box-info">
-        <div class="col-sm-4 col-xs-offset-4">
-          <button type="submit" class="btn btn-danger btn-lg btn-block"><i class="fa fa-times-circle"></i> Delete Job</button>
-        </div>
-      </div>
+      <% end %>
     </div>
 </div>
