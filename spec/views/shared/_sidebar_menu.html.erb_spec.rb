@@ -1,15 +1,16 @@
 require 'spec_helper'
 
-describe 'shared/_sidebar.html.erb' do
+describe 'shared/_sidebar.html.erb', pending: 'waiting on Ricky' do
   context 'viewing the imprintables controller' do
     before(:each) do
       render partial: 'shared/sidebar_menu', locals: {controller_name: 'imprintables'}
     end
+
     it 'displays imprintables dropdown menu' do
       expect(response).to have_css('li.active ul.visible')
     end
 
-    it 'highlights the active thing' do
+    it 'highlights the active controller' do
       expect(response).to have_css('li.active ul.visible li.active')
     end
   end

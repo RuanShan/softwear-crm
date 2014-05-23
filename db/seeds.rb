@@ -30,3 +30,8 @@ else
 	default_user.save
 	puts "Default user already exists! Email is admin@softwearcrm.com and password is #{pw}"
 end
+
+3.times do |i|
+  Size.create(name: "Size #{i}", display_value: "Display #{i}",
+                sku: "Sku #{i}", sort_order: "Sort Order #{i}")
+end

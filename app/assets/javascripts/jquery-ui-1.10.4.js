@@ -4938,10 +4938,10 @@ $.extend(Datepicker.prototype, {
 });
 
 /*
- * Bind hover events for datepicker elements.
- * Done via delegate so the binding only occurs once in the lifetime of the parent div.
- * Global instActive, set by _updateDatepicker allows the handlers to find their way back to the active picker.
- */
+* Bind hover events for datepicker elements.
+* Done via delegate so the binding only occurs once in the lifetime of the parent div.
+* Global instActive, set by _updateDatepicker allows the handlers to find their way back to the active picker.
+*/
 function bindHover(dpDiv) {
 	var selector = "button, .ui-datepicker-prev, .ui-datepicker-next, .ui-datepicker-calendar td a";
 	return dpDiv.delegate(selector, "mouseout", function() {
@@ -7152,15 +7152,15 @@ $.effects = {
 };
 
 /*!
- * jQuery Color Animations v2.1.2
- * https://github.com/jquery/jquery-color
- *
- * Copyright 2013 jQuery Foundation and other contributors
- * Released under the MIT license.
- * http://jquery.org/license
- *
- * Date: Wed Jan 16 08:47:09 2013 -0600
- */
+* jQuery Color Animations v2.1.2
+* https://github.com/jquery/jquery-color
+*
+* Copyright 2013 jQuery Foundation and other contributors
+* Released under the MIT license.
+* http://jquery.org/license
+*
+* Date: Wed Jan 16 08:47:09 2013 -0600
+*/
 (function( jQuery, undefined ) {
 
 	var stepHooks = "backgroundColor borderBottomColor borderLeftColor borderRightColor borderTopColor color columnRuleColor outlineColor textDecorationColor textEmphasisColor",
@@ -10774,8 +10774,8 @@ $.widget("ui.resizable", $.ui.mouse, {
 });
 
 /*
- * Resizable Extensions
- */
+* Resizable Extensions
+*/
 
 $.ui.plugin.add("resizable", "animate", {
 

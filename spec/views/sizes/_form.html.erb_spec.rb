@@ -1,15 +1,16 @@
 require 'spec_helper'
 
 describe 'sizes/_form.html.erb' do
-  before(:each){ render partial: 'sizes/form', locals: { size: Size.new}}
 
   it 'has text_field for name, catalog_no, description, sku and a submit button' do
-    expect(rendered).to have_selector('input#size_name')
-    expect(rendered).to have_field_for('text')
-    expect(rendered).to have_selector('input#size_sku')
-    expect(rendered).to have_text_input('size_sku')
-    expect(rendered).to have_selector('input#size_sort_order')
-    expect(rendered).to have_text_input('size_sort_order')
-    expect(rendered).to have_selector('button')
+    size = Size.new
+    f = LancengFormBuilder.dummy_for size
+    render partial: 'sizes/form', locals: { size: size, f: f }
+    within_form_for Size, noscope: true do
+      expect(rendered).to have_field_for :name
+      expect(rendered).to have_field_for :sku
+      expect(rendered).to have_field_for :sort_order
+      expect(rendered).to have_selector('button')
+    end
   end
 end

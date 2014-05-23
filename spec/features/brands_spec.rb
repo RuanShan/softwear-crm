@@ -27,7 +27,7 @@ feature 'Brands management' do
     expect(Brand.find_by name: 'Sample Name').to_not be_nil
   end
 
-  scenario 'A user can edit an existing brand' do
+  scenario 'A user can edit an existing brand'do
     visit brands_path
     find("tr#brand_#{brand.id} a[data-action='edit']").click
     fill_in 'brand_name', :with => 'Edited Brand Name'

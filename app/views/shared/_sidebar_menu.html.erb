@@ -8,22 +8,29 @@
       </ul>
     </li>
     <li><a href="#fakelink"><i class="fa fa-users"></i> Customers</a>
-    <%= nav_helper(:li, 'active', %w[imprintables brands colors styles sizes]) %>
+    <!-- <li> -->
+    <%= nav_helper(:li, 'active', %w(imprintables brands colors styles sizes)) %>
 
       <a href="#fakelink"><i class="fa fa-archive"></i><i class="fa fa-angle-double-down i-right"></i> Imprintables</a>
-      <%= nav_helper(:ul, 'visible', %w[imprintables brands colors styles sizes]) %>
+      <!-- <ul> -->
+      <%= nav_helper(:ul, 'visible', %w(imprintables brands colors styles sizes)) %>
+        <!-- <li>  -->
         <%= nav_helper :li, 'active', 'imprintables' %>
           <%= link_to imprintables_path, id: 'imprintables_list_link' do %><i class="fa fa-angle-right"></i> List<% end %>
         </li>
+        <!-- <li> -->
         <%= nav_helper :li, 'active', 'brands' %>
           <%= link_to brands_path, id: 'brands_list_link' do %><i class="fa fa-angle-right"></i> Brands<% end %>
         </li>
+        <!-- <li> -->
         <%= nav_helper :li, 'active', 'colors' %>
           <%= link_to colors_path, id: 'colors_list_link' do %><i class="fa fa-angle-right"></i> Colors<% end %>
         </li>
+        <!-- <li> -->
         <%= nav_helper :li, 'active', 'styles' %>
           <%= link_to styles_path, id: 'styles_list_link' do %><i class="fa fa-angle-right"></i> Styles<% end %>
         </li>
+        <!-- <li> -->
         <%= nav_helper :li, 'active', 'sizes' %>
           <%= link_to sizes_path, id: 'sizes_list_link' do %><i class="fa fa-angle-right"></i> Sizes<% end %>
         </li>
@@ -38,20 +45,31 @@
     </li>
     <li><a href="gallery.html"><i class="fa fa-picture-o"></i> Artwork</a></li>
     <li><a href="gallery.html"><i class="fa fa-dollar"></i> Cash Drawer</a></li>
-    <li><a href="#fakelink"><i class="fa fa-wrench"></i><i class="fa fa-angle-double-down i-right"></i> Administration</a>
-      <ul>
-        <li><%= link_to users_path do %><i class="fa fa-angle-right"></i> Users<% end %></li>
+    <!-- <li> -->
+    <%= nav_helper(:li, 'active', %w(administration users)) %>
+
+      <a href="#fakelink"><i class="fa fa-wrench"></i><i class="fa fa-angle-double-down i-right"></i> Administration</a>
+      <!-- <ul> -->
+      <%= nav_helper(:ul, 'visible', %w(users)) %>
+         <!-- <li> -->
+         <%= nav_helper(:li, 'active', 'users') %>
+            <%= link_to users_path do %><i class="fa fa-angle-right"></i> Users<% end %>
+         </li>
       </ul>
     </li>
 
-    <li>
-        <a href="#fakelink"><i class="fa fa-wrench"></i><i class="fa fa-angle-double-down i-right"></i> Configuration</a>
-        <ul>
-          <%= nav_active_li controller_name, 'shipping_methods' %>
-            <%= link_to shipping_methods_path do %><i class="fa fa-angle-right"></i> Shipping Methods<% end %>
-          </li>
-        </ul>
-      </li>
+    <!-- <li> -->
+    <%= nav_helper(:li, 'active', %w(configuration shipping_methods)) %>
+
+      <a href="#fakelink"><i class="fa fa-wrench"></i><i class="fa fa-angle-double-down i-right"></i> Configuration</a>
+      <!-- <ul> -->
+      <%= nav_helper(:ul, 'visible', %w(configuration shipping_methods)) %>
+        <!-- <li> -->
+        <%= nav_helper :li, 'active', 'shipping_methods' %>
+          <%= link_to shipping_methods_path do %><i class="fa fa-angle-right"></i> Shipping Methods<% end %>
+        </li>
+      </ul>
+    </li>
   </ul>
   <div class="clear"></div>
 </div>

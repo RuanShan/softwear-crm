@@ -4,8 +4,13 @@ describe 'colors/_form.html.erb' do
   before(:each){ render partial: 'colors/form', locals: { color: Color.new}}
 
   it 'has text_field for name, sku and a submit button' do
-    expect(rendered).to have_selector("input#color_name")
-    expect(rendered).to have_selector("input#color_sku")
-    expect(rendered).to have_selector("button")
+    color = Color.new
+    f = LancengFormBuilder.dummy_for color
+    render partial: 'colors/form', locals: {color: color, f: f}
+    within_form_for Color, noscope: true do
+      expect(rendered).to have_field_for :name
+      expect(rendered).to have_field_for :sku
+      expect(rendered).to have_selector('button')
+    end
   end
 end

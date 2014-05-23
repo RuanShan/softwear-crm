@@ -52,21 +52,17 @@ feature 'sizes management' do
     expect(size.reload.destroyed? ).to be_truthy
   end
 
-  @wip
-  scenario 'A user can reorganize a row', js: true, wip: true do
+  scenario 'A user can reorganize a row', js: true, pending: true do
     visit sizes_path
-    source = page.find('#size_1')
-    target = page.find('#size_2')
-    source.drag_to(target)
-    # page.execute_script %{
-    #   $(document).ready(function(){
-    #     $.getScript("assets/jquery.simulate.drag-sortable.js", function() {
-    #       $("tr#size_#{size.id}").simulateDragSortable({ move: -1});
-    #     });
-    #   });
-    # }
+    page.execute_script '
+      $(document).ready(function(){
+        $.getScript("assets/jquery.simulate.drag-sortable.js", function() {
+          $("tr#size_2").simulateDragSortable({ move: -1});
+        });
+      });
+    '
+    sleep 1
     expect(page.first('tbody tr')).to eq(page.find('#size_2'))
-    save_and_open_page
   end
 end
 
