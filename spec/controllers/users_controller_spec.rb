@@ -70,6 +70,22 @@ describe UsersController, user_spec: true do
 		end
 	end
 
+	context '#lock' do
+		before(:each) do
+			sign_in valid_user
+		end
+
+		it 'redirects to the sign in page' do
+			get :lock, location: orders_path
+			expect(response).to redirect_to new_user_session_path
+		end
+
+		it 'reassigns session[:lock][:location] to root_path if set to /lock' do
+			get :lock, location: lock_user_path
+			expect(session[:lock][:location]).to eq root_path
+		end
+	end
+
 	context '#show' do
 		it 'redirects to #index' do
 			sign_in valid_user

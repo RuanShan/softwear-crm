@@ -54,7 +54,7 @@ feature 'Users', user_spec: true, js: true do
 	  	expect(page).to have_css '*', text: 'success'
 	  end
 
-	  scenario "I can change my password", wip: true, donow: true do
+	  scenario "I can change my password" do
 	  	visit edit_user_path(valid_user)
 	  	click_link 'Change password'
 	  	fill_in 'Password',              with: 'NewPassword'
@@ -62,6 +62,39 @@ feature 'Users', user_spec: true, js: true do
 	  	fill_in 'Current password',      with: '1234567890'
 	  	click_button 'Update'
 	  	expect(page).to have_css '*', text: 'success'
+	  end
+
+	  scenario 'I can lock myself' do
+	  	visit orders_path
+	  	find("a#account-menu").click
+	  	wait_for_ajax
+	  	click_link 'Lock me'
+	  	wait_for_ajax
+	  	expect(current_path).to eq '/users/sign_in'
+	  end
+
+	  scenario 'I am locked out if I idle for too long' do
+	  	visit orders_path
+	  	wait_for_ajax
+	  	execute_script "idleTimeoutMs = 1000; idleWarningSec = 5;"
+	  	sleep 0.1
+	  	find('th', text: 'Salesperson').click
+	  	sleep 1.5
+	  	expect(page).to have_css '.modal-body'
+	  	sleep 6
+	  	expect(current_path).to eq new_user_session_path
+	  end
+
+	  scenario 'If I see the lock-out warning, I can cancel it by clicking' do
+	  	visit orders_path
+	  	wait_for_ajax
+	  	execute_script "idleTimeoutMs = 1000; idleWarningSec = 5;"
+	  	sleep 0.1
+	  	find('th', text: 'Salesperson').click
+	  	sleep 1.3
+	  	find('.modal-title').click
+	  	wait_for_ajax
+	  	expect(page).to_not have_css '.modal-body'
 	  end
 
 	  scenario 'I can log out' do

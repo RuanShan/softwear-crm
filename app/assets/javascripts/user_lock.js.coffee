@@ -1,6 +1,3 @@
-idleTimeoutMs = 5000
-idleWarningSec = 10
-
 $(window).load ->
   if $('#contentModal').length == 0 then return
 
@@ -22,17 +19,17 @@ $(window).load ->
     inter = null
     inter = setInterval set_countdown_timer, 1000
 
-  begin = ->
-    timer.set { time: idleTimeoutMs, autostart: true }
   cancel = ->
     timer.stop()
     if inter then clearInterval inter
     $("#contentModal").modal 'hide'
+  begin = ->
+    cancel()
+    timer.set { time: idleTimeoutMs, autostart: true }
 
   begin()
-  $(window).mouseup ->
-    cancel()
-    begin()
+  $(window).mouseup begin
+  $(window).keypress begin
 
   on_timeout = ->
     form = $('<form/>', action: '/users/lock', method: 'get')

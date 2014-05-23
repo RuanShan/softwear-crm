@@ -22,7 +22,7 @@ class UsersController < InheritedResources::Base
       redirect_to '/'
     end
 
-    flash[:notice] = "User successfully created with email #{user.email} and password #{password}"
+    flash[:notice] = "User #{user.full_name} successfully created with email #{user.email}. Their password has been emailed to them."
     redirect_to users_path
   end
 
@@ -43,9 +43,12 @@ class UsersController < InheritedResources::Base
   def lock
     session[:lock] = {
       email: @current_user.email,
-      location: params[:location]
+      location: if params[:location] && !params[:location].include?(lock_user_path)
+                  params[:location]
+                else
+                  root_path
+                end
     }
-    session[:lock][:location] = root_path if params[:location].include? lock_user_path
 
     sign_out @current_user
     redirect_to new_user_session_path
