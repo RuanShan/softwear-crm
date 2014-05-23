@@ -62,7 +62,8 @@ $(document).ready(function(){
 
 	//KNOB
 	$(function() {
-		$(".dial").knob();
+    if($(".dial").knob)
+		  $(".dial").knob();
 	});
 
 

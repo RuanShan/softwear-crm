@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140522132542) do
+ActiveRecord::Schema.define(version: 20140516194416) do
 
   create_table "brands", force: true do |t|
     t.string   "name"
@@ -24,14 +24,6 @@ ActiveRecord::Schema.define(version: 20140522132542) do
   create_table "colors", force: true do |t|
     t.string   "name"
     t.string   "sku"
-    t.datetime "deleted_at"
-    t.datetime "created_at"
-    t.datetime "updated_at"
-  end
-
-  create_table "imprintable_variants", force: true do |t|
-    t.integer  "imprintable_id"
-    t.string   "weight"
     t.datetime "deleted_at"
     t.datetime "created_at"
     t.datetime "updated_at"
@@ -87,7 +79,6 @@ ActiveRecord::Schema.define(version: 20140522132542) do
     t.datetime "deleted_at"
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.integer  "sequence"
   end
 
   create_table "styles", force: true do |t|

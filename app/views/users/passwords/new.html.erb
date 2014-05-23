@@ -1,12 +1,22 @@
-<h2>Forgot your password?</h2>
+<div class='full-content-center animated fadeInDownBig'>
 
-<%= form_for(resource, as: resource_name, url: password_path(resource_name), html: { method: :post }) do |f| %>
-  <%= devise_error_messages! %>
+<div class='box-info'>
 
-  <div><%= f.label :email %><br />
-  <%= f.email_field :email, autofocus: true %></div>
+	<h2>Forgot your password?</h2>
 
-  <div><%= f.submit "Send me reset password instructions" %></div>
-<% end %>
+	<%= form_for(resource, as: resource_name, url: password_path(resource_name), html: { method: :post }, builder: LancengFormBuilder) do |f| %>
 
-<%= render "users/shared/links" %>
+	  <div class='text-left'>
+		  <%= f.label :email %>
+		  <%= f.error_for :email %>
+		  <%= f.email_field :email, autofocus: true, class: 'text-input' %>
+	  </div>
+
+	  <div><%= f.submit "Send me reset password instructions" %></div>
+	<% end %>
+
+	<%= link_to 'Back', :back %>
+
+</div>
+
+</div>

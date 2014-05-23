@@ -1,5 +1,5 @@
 class NewUserMailer < ActionMailer::Base
-  default from: "softwearcrm@annarbortees.com"
+  default from: "noreply@softwearcrm.com"
 
   def confirm_user(new_user, password, granter)
   	@user = new_user
