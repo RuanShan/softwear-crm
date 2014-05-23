@@ -52,12 +52,12 @@ feature 'sizes management' do
     expect(size.reload.destroyed? ).to be_truthy
   end
 
-  scenario 'A user can reorganize a row', js: true, pending: true do
+  scenario 'A user can reorganize a row', js: true do
     visit sizes_path
     page.execute_script '
       $(document).ready(function(){
         $.getScript("assets/jquery.simulate.drag-sortable.js", function() {
-          $("tr#size_2").simulateDragSortable({ move: -1});
+          $("#size_2").simulateDragSortable({ move: -1});
         });
       });
     '
