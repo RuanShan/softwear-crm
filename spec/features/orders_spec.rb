@@ -27,8 +27,8 @@ feature 'Order management', order_spec: true, js: true do
 
     fill_in 'Email', with: 'test@example.com'
     fill_in 'Phone number', with: '321-654-9870'
-    fill_in 'Firstname', with: 'Guy'
-    fill_in 'Lastname', with: 'Fieri'
+    fill_in 'First name', with: 'Guy'
+    fill_in 'Last name', with: 'Fieri'
     fill_in 'Company', with: 'Probably Nothing'
     fill_in 'Twitter', with: 'stuff'
 
@@ -37,7 +37,7 @@ feature 'Order management', order_spec: true, js: true do
 
     fill_in 'Name', with: 'Whatever this should be'
     fill_in 'In Hand By Date', with: (Time.now + 1.month).to_s
-    select 'Half down on purchase', from: 'Terms'
+    select 'Half down on purchase', from: 'Payment terms'
 
     click_button 'Next'
     wait_for_ajax
