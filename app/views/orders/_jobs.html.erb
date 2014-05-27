@@ -1,4 +1,6 @@
-<%= render partial: 'job', locals: { job: Job.new } %>
+<% order.jobs.each do |job| %>
+	<%= render partial: 'job', locals: { job: job } %>
+<% end %>
 
 <div class="form-group box-info">
   <div class="col-sm-4 col-xs-offset-4">

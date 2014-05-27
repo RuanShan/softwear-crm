@@ -25,14 +25,14 @@ if !deleted_exists && !exists
 													password: pw, password_confirmation: pw)
 	default_user.confirm!
 	default_user.save
-	puts "Created user #{default_user.full_name} (#{default_user.email})"
+	puts "Created default user (email: #{default_user.email}, password: #{pw})"
 elsif deleted_exists
 	default_user = User.deleted.where(email: 'admin@softwearcrm.com').first
 	default_user.deleted_at = nil
 	default_user.password = pw
 	default_user.password_confirmation = pw
 	default_user.save
-	puts "Revived user #{default_user.full_name} (#{default_user.email})"
+	puts "Revived user #{default_user.full_name} (#{default_user.email}, #{pw})"
 else
 	default_user = User.where(email: 'admin@softwearcrm.com').first
 	default_user.password = pw
@@ -58,3 +58,7 @@ create_records([
     { name: 'USPS First Class', tracking_url: 'https://tools.usps.com/go/TrackConfirmAction!input.action'},
     { name: 'UPS Ground', tracking_url: 'http://www.ups.com/tracking/tracking.html'}
 ], ShippingMethod)
+
+create_records([
+    name: 'Test Job', description: "I hope these fields can be edited one day", order_id: 1
+  ], Job)
