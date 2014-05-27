@@ -1,5 +1,5 @@
-<div id="job-1" class="box-info">
-    <div class="box-info" style="background-color: #eeeeee">
+<div id="job-<%= job.id %>" class="box-info">
+    <div class="box-info <%= 'animated fadeInLeft' if local_assigns[:animated] %>" style="background-color: #eeeeee">
       <%= form_for job, builder: LancengFormBuilder do |f| %>
         <h3 class="job-title">
           <%= f.inline_field :name, 'Job Name Here' %>
@@ -9,9 +9,9 @@
         </p>
 
         <h4>Line Items</h4>
-        <%= render partial: 'line_item_imprintable_edit' %>
-        <%= render partial: 'line_item_imprintable_edit' %>
-        <%= render partial: 'line_items_edit' %>
+        <%= render partial: 'orders/line_item_imprintable_edit' %>
+        <%= render partial: 'orders/line_item_imprintable_edit' %>
+        <%= render partial: 'orders/line_items_edit' %>
 
         <div class="form-group box-info">
           <div class="col-sm-4">
@@ -23,7 +23,7 @@
         </div>
 
         <h4>Imprints</h4>
-        <%= render partial: 'imprints' %>
+        <%= render partial: 'orders/imprints' %>
 
         <div class="form-group box-info">
           <div class="col-sm-4">

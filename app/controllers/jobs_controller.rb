@@ -1,5 +1,5 @@
 class JobsController < InheritedResources::Base
-  [:create, :update, :destroy].each do |action|
+  [:update, :destroy].each do |action|
     define_method action do
       send(action.to_s+'!') do |success, failure|
         success.json { render json: {result: 'success'} }
@@ -10,6 +10,19 @@ class JobsController < InheritedResources::Base
           }
         end
       end
+    end
+  end
+
+  def create
+    @job = Job.new(permitted_params[:job].merge(order_id: session[:order]))
+    @job.save
+    if @job.valid?
+      render partial: 'orders/job', locals: { job: @job, animated: true }
+    else
+      render json: {
+        result: 'failure',
+        errors: @job.errors.messages
+      }
     end
   end
 

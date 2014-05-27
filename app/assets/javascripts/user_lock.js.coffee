@@ -1,3 +1,5 @@
+@idleTimeoutMs = 600000 # 10 minutes
+@idleWarningSec = 60    # 1 minute
 $(window).load ->
   if $('#contentModal').length == 0 then return
 
