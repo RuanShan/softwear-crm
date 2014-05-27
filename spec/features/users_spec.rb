@@ -20,7 +20,7 @@ feature 'Users', user_spec: true, js: true do
 	  scenario 'I see my name on the dashboard' do
 	  	visit root_path
 	  	unhide_dashboard
-	  	expect(page).to have_css '*', text: "Welcome back, #{valid_user.full_name}"
+	  	expect(page).to have_css '*', text: "Welcome, #{valid_user.firstname} #{valid_user.lastname[0,1]}."
 	  end
 
 	  scenario 'I can view a list of users' do

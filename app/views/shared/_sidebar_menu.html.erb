@@ -7,7 +7,7 @@
         <li><%= link_to new_order_path do %><i class="fa fa-angle-right"></i> New<% end %></li>
       </ul>
     </li>
-    <li><a href="#fakelink"><i class="fa fa-users"></i> Customers</a>
+    <li><a href="#fakelink"><i class="fa fa-users"></i> Customers <span class="label label-danger new-circle">W.I.P.</span></a>
     <!-- <li> -->
     <%= nav_helper(:li, 'active', %w(imprintables brands colors styles sizes)) %>
 
@@ -36,37 +36,38 @@
         </li>
       </ul>
     </li>
-    <li><a href="#fakelink"><i class="fa fa-bar-chart-o"></i><i class="fa fa-angle-double-down i-right"></i> Reports</a>
+    <li><a href="#fakelink"><i class="fa fa-bar-chart-o"></i><i class="fa fa-angle-double-down i-right"></i> Reports <span class="label label-danger new-circle">W.I.P.</span></a>
       <ul>
         <li><a href="#fakelink"><i class="fa fa-angle-right"></i> Receivables</a></li>
         <li><a href="#fakelink"><i class="fa fa-angle-right"></i> Sales Tax</a></li>
         <li><a href="#fakelink"><i class="fa fa-angle-right"></i> Location</a></li>
       </ul>
     </li>
-    <li><a href="gallery.html"><i class="fa fa-picture-o"></i> Artwork</a></li>
-    <li><a href="gallery.html"><i class="fa fa-dollar"></i> Cash Drawer</a></li>
+    <li><a href="#fakelink"><i class="fa fa-picture-o"></i> Artwork <span class="label label-danger new-circle">W.I.P.</span></a></li>
     <!-- <li> -->
     <%= nav_helper(:li, 'active', %w(administration users)) %>
 
-      <a href="#fakelink"><i class="fa fa-wrench"></i><i class="fa fa-angle-double-down i-right"></i> Administration</a>
+      <a href="#fakelink"><i class="fa fa-folder-open"></i><i class="fa fa-angle-double-down i-right"></i> Administration</a>
       <!-- <ul> -->
       <%= nav_helper(:ul, 'visible', %w(users)) %>
          <!-- <li> -->
          <%= nav_helper(:li, 'active', 'users') %>
             <%= link_to users_path do %><i class="fa fa-angle-right"></i> Users<% end %>
          </li>
+         <li><a href="gallery.html"><i class="fa fa-dollar"></i> Cash Drawer</a></li>
       </ul>
     </li>
 
     <!-- <li> -->
     <%= nav_helper(:li, 'active', %w(configuration shipping_methods)) %>
 
-      <a href="#fakelink"><i class="fa fa-wrench"></i><i class="fa fa-angle-double-down i-right"></i> Configuration</a>
+      <a href="#fakelink"><i class="fa fa-gears"></i><i class="fa fa-angle-double-down i-right"></i> Configuration</a>
       <!-- <ul> -->
       <%= nav_helper(:ul, 'visible', %w(configuration shipping_methods)) %>
         <!-- <li> -->
         <%= nav_helper :li, 'active', 'shipping_methods' %>
           <%= link_to shipping_methods_path do %><i class="fa fa-angle-right"></i> Shipping Methods<% end %>
+          <%= link_to stores_path do %><i class="fa fa-angle-right"></i> Stores<% end %>
         </li>
       </ul>
     </li>
