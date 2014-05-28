@@ -27,5 +27,10 @@ FactoryGirl.define do
     sales_status 'Pending'
     delivery_method 'Ship to one location'
     phone_number '123-456-7890'
+
+    factory :order_with_job do
+      after(:create) { |o| o.jobs << create(:job) }
+    end
+
   end
 end

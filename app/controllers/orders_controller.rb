@@ -10,6 +10,11 @@ class OrdersController < InheritedResources::Base
     redirect_to action: :edit
   end
 
+  def edit
+    super
+    session[:order] = @order.id
+  end
+
   private
 
   def permitted_params
