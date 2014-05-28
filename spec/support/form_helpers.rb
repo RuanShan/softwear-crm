@@ -1,12 +1,21 @@
 require 'rspec/expectations'
 
 module FormHelpers
+
   def within_form_for(model, options={})
     @@model_form_context = model.to_s.underscore
     @@scope_to_form = options[:noscope].nil?
     yield
     @@model_form_context = nil
     @@scope_to_form = nil
+  end
+
+  def fill_in_inline(field, options)
+    unless options[:with]
+      return
+    end
+    selector = "#{css_pre}span.inline-field[resource-method='#{field}']"
+    find(selector).set options[:with]
   end
 
   RSpec::Matchers.define :have_button_or_link_to do |location|
@@ -27,14 +36,16 @@ module FormHelpers
       css_attr = (@@model_form_context ? 
                   "name='#{@@model_form_context}[#{field_name}]'" :
                   "name='#{field_name}'")
+      inl_css_attr = ("resource-method='#{field_name}'")
 
-      !doc.css("#{css_pre}*[#{css_attr}]").empty?
+      !(doc.css("#{css_pre}*[#{css_attr}]").empty? &&
+        doc.css("#{css_pre}*[#{css_attr}]").empty?)
     end
     failure_message do |page|
       css_attr = (@@model_form_context ? 
                   "name='#{@@model_form_context}[#{field_name}]'" :
                   "name='#{field_name}'")
-      "Couldn't find field for #{css_pre}*#{css_attr} in page: #{page}"
+      "Couldn't find field for #{css_pre}*[#{css_attr}] in page: #{page}"
     end
   end
 

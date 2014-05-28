@@ -11,6 +11,8 @@
 	# the database
 	updateDelay = 1000
 
+	capitalize = (str) -> str.charAt(0).toUpperCase() + str.substr(1)
+
 	createObj = ($this) ->
 		resourceName: $this.attr('resource-name'),
 		resourceId:   $this.attr('resource-id'),
@@ -38,20 +40,36 @@
 					dataType: 'json'
 
 				ajax.done (response) ->
+					# Clean up error stuff if present
+					$(".error[for='#{self.getErrorFor()}']").remove()
+					$this.unwrap() if $this.parent().attr('class') == 'field_with_errors'
+					$(".error-modal[for='#{self.getErrorFor()}']").remove()
+
 					if response.result == 'success'
 						console.log "Successfully updated #{self.resourceName}[#{self.field}]"
-						$(".error-container[for='#{self.getErrorFor()}']").remove()
 					else if response.result == 'failure'
-						container = $this.before $('<div/>',
-							class: 'error-container', 
+						console.log "Error updating #{self.resourceName}[#{self.field}]"
+						console.log response.modal
+
+						# Add error stuff
+						$this.before $('<div/>',
+							class: 'error', 
 							for:   self.getErrorFor()
 						)
-						# probably won't work; errors.messages probably requires field keys
-						for error in response.errors
-							container.append $('<p/>',
-								class: 'text-danger'
-								text:  error
-							)
+						container = $(".error[for='#{self.getErrorFor()}']")
+						$this.wrap $("<div/>", class: 'field_with_errors')
+						$('body').children().last().after $("<div/>", 
+							class: 'error-modal', 
+							for: self.getErrorFor())
+						$(".error-modal[for='#{self.getErrorFor()}']").append $(response.modal)
+						$('#errorsModal').modal 'show'
+
+						for field, fieldErrors of response.errors
+							for error in fieldErrors
+								container.append $('<p/>',
+									class: 'text-danger'
+									text:  "#{capitalize field} #{error}"
+								)
 
 				ajax.fail (jqXHR, textStatus) ->
 					alert "Something went wrong with the server and 

@@ -5,7 +5,6 @@ $(window).load ->
 		setTimeout (-> self.removeAttr 'disabled'), 1000
 
 		params = {}
-		params['job[name]'] = 'Job Name'
 		params['job[description]'] = 'Job description'
 		ajax = $.ajax
 			type: 'POST',
@@ -17,8 +16,13 @@ $(window).load ->
 				alert "Error creating new job!"
 			else
 				$('#new-job-button').before().parent().parent().before $(response)
+
+				$('.scroll-y').scrollTo $('h3.job-title').last(),
+					duration: 1000,
+					offsetTop: 100
+
 				refresh_inlines()
 
 		ajax.fail (jqXHR, textStatus) ->
 			alert "Something went wrong with the server and
-						 a new job couldn't be created"
+						 the new job couldn't be created"
