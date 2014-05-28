@@ -81,9 +81,9 @@ feature 'Order management', order_spec: true, js: true do
 
     visit current_path
 
-    fill_in 'Phone number', with: 'abc123!@#$-'
+    fill_in 'Phone number', with: 'a1b2c3!@5#$-'
     wait_for_ajax
-    expect(phone_number_field.value).to eq '123-___-____'
+    expect(phone_number_field.value).to eq '123-5__-____'
   end
 
   scenario 'user edits an existing order' do
@@ -99,4 +99,6 @@ feature 'Order management', order_spec: true, js: true do
 
     expect(Order.where(name: 'New Title')).to exist
   end
+
+  scenario 'when editing, submitting invalid information displays error content'
 end

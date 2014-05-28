@@ -1,20 +1,17 @@
 class JobsController < InheritedResources::Base
-  [:update, :destroy].each do |action|
-    define_method action do
-      send(action.to_s+'!') do |success, failure|
-        success.json { render json: {result: 'success'} }
-        failure.json do
-          modal_html = "didn't work"
-          with_format :html do
-            modal_html = render_to_string(partial: 'shared/modal_errors', locals: { object: @job })
-          end
-          puts modal_html
-          render json: {
-            result: 'failure',
-            errors: @job.errors.messages,
-            modal: modal_html
-          }
+  def update
+    super do |success, failure|
+      success.json { render json: {result: 'success'} }
+      failure.json do
+        modal_html = "didn't work"
+        with_format :html do
+          modal_html = render_to_string(partial: 'shared/modal_errors', locals: { object: @job })
         end
+        render json: {
+          result: 'failure',
+          errors: @job.errors.messages,
+          modal: modal_html
+        }
       end
     end
   end
@@ -34,9 +31,17 @@ class JobsController < InheritedResources::Base
     else
       render json: {
         result: 'failure',
-        errors: @job.errors.messages
+        errors: @job.errors.full_messages
       }
     end
+  end
+
+  def destroy
+    @job = Job.find params[:id]
+    @job.destroy
+    render json: {
+      result: @job.destroyed? ? 'success' : 'failure'
+    }
   end
 
   private

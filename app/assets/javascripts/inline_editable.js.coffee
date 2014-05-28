@@ -3,13 +3,15 @@
 # There is a helper method for inline fields in the LancengFormBuilder.
 
 @registeredInlines = []
+
+# Milliseconds to wait after the user types a key before updating
+# the database
+updateDelay = 1000
+
 # If you update the DOM with new inline fields, call this method.
 @refresh_inlines = ->
 	fields = {}
 	timers = {}
-	# Milliseconds to wait after the user types a key before updating
-	# the database
-	updateDelay = 1000
 
 	capitalize = (str) -> str.charAt(0).toUpperCase() + str.substr(1)
 

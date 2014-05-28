@@ -44,11 +44,33 @@ feature 'Jobs management', js: true, job_spec: true do
   	expect(Job.all.count).to eq 3
   end
 
-  scenario 'two jobs with the same name causes error modal + text to show up' do
+  scenario 'two jobs with the same name causes error stuff to happen' do
+    order.jobs << create(:job, name: 'Okay Job')
     visit '/orders/1/edit#jobs'
     click_button 'New Job'
     wait_for_ajax
 
-    
+    within_form_for job do
+      fill_in_inline 'name', with: 'Okay Job'
+    end
+    wait_for_ajax
+
+    expect(page).to have_content 'Name has already been taken'
+  end
+
+  scenario 'a job can be deleted' do
+    visit '/orders/1/edit#jobs'
+    click_button 'Delete Job'
+    wait_for_ajax
+    expect(order.jobs.count).to eq 0
+  end
+
+  scenario 'a job can be created and deleted without refreshing the page' do
+    visit '/orders/1/edit#jobs'
+    click_button 'New Job'
+    wait_for_ajax
+    all('button', text: 'Delete Job').last.click
+    wait_for_ajax
+    expect(order.jobs.count).to eq 1
   end
 end

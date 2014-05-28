@@ -6,6 +6,7 @@ class CreateJobs < ActiveRecord::Migration
 
       t.belongs_to :order
 
+      t.datetime :deleted_at
       t.timestamps
     end
   end
