@@ -1,8 +1,9 @@
 class ShippingMethodsController < InheritedResources::Base
 
   def update
-    super do |format|
-      format.html { redirect_to shipping_methods_path }
+    super do |success, failure|
+      success.html { redirect_to shipping_methods_path }
+      failure.html { render action: :edit }
     end
   end
 

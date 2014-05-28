@@ -3,7 +3,7 @@ class JobsController < InheritedResources::Base
     super do |success, failure|
       success.json { render json: {result: 'success'} }
       failure.json do
-        modal_html = "didn't work"
+        modal_html = 'ERROR'
         with_format :html do
           modal_html = render_to_string(partial: 'shared/modal_errors', locals: { object: @job })
         end
