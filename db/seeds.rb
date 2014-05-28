@@ -1,4 +1,5 @@
 def create_records(params_array, model)
+  return if Rails.env.test?
   params_array.each do |params|
     record = model.new(params)
     if record.save
