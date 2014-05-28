@@ -18,7 +18,7 @@ class JobsController < InheritedResources::Base
 
   def create
     new_job_name = 'New Job'
-    name_counter = 0
+    name_counter = 2
     relevant_jobs = Job.where order_id: session[:order]
     while relevant_jobs.reject { |j| j.name != new_job_name }.count > 0
       new_job_name = "New Job #{name_counter}"

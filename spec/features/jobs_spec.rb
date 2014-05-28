@@ -12,7 +12,7 @@ feature 'Jobs management', js: true, job_spec: true do
   scenario 'user visits /orders/1/edit#jobs and is switched to the jobs tab' do
   	visit '/orders/1/edit#jobs'
   	wait_for_ajax
-  	expect(page).to have_content 'Test Job'
+  	expect(page).to have_css '*', text: 'Test Job'
   end
 
   scenario 'user can edit the title in place, and it is saved in the database' do
@@ -55,7 +55,7 @@ feature 'Jobs management', js: true, job_spec: true do
     end
     wait_for_ajax
 
-    expect(page).to have_content 'Name has already been taken'
+    expect(page).to have_css '*', text: 'Name has already been taken'
   end
 
   scenario 'a job can be deleted' do
