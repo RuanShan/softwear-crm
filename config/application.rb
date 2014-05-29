@@ -35,6 +35,8 @@ module CrmSoftwearcrmCom
       config.action_mailer.smtp_settings = smtp_settings
     end
 
+    config.autoload_paths += Dir[config.root + "app/models/injectables/**/"]
+
     config.to_prepare do
       [
         Devise::SessionsController,

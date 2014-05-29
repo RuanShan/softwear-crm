@@ -4,6 +4,13 @@ class Job < ActiveRecord::Base
   validates_presence_of :name
   validates :name, uniqueness: { scope: :order_id }
 
+  inject TestInjection
+
+  def test_func
+    original_test_func
+    puts 'AND THIS'
+  end
+
   # non-deletable stuff
   default_scope -> { where(deleted_at: nil) }
   scope :deleted, -> { unscoped.where.not(deleted_at: nil) }
