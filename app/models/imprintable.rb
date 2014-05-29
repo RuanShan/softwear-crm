@@ -1,5 +1,8 @@
 class Imprintable < ActiveRecord::Base
-  validates_presence_of :name, :description
+  belongs_to :style
+  has_one :brand, through: :style
+
+  validates_presence_of :style
 
   default_scope -> { where(deleted_at: nil) }
   scope :deleted, -> { unscoped.where.not(deleted_at: nil)}
@@ -14,5 +17,9 @@ class Imprintable < ActiveRecord::Base
 
   def destroy!
     update_column(:deleted_at, Time.now)
+  end
+
+  def name
+    "#{style.catalog_no} #{style.name}"
   end
 end

@@ -54,15 +54,15 @@ feature 'sizes management' do
 
   scenario 'A user can reorganize a row', js: true do
     visit sizes_path
+    first_child = find(:css, '.size_row:first-child')
     page.execute_script '
       $(document).ready(function(){
-        $.getScript("assets/jquery.simulate.drag-sortable.js", function() {
-          $("#size_2").simulateDragSortable({ move: -1});
+        $.getScript("/assets/jquery.simulate.drag-sortable.js", function() {
+          $(".size_row:first-child").simulateDragSortable({ move: 1});
         });
       });
     '
     sleep 1
-    expect(page.first('tbody tr')).to eq(page.find('#size_2'))
+    expect(find(:css, '.size_row:nth-child(2)')).to eq(first_child)
   end
 end
-

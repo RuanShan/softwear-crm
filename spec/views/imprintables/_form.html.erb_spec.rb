@@ -8,9 +8,9 @@ describe 'imprintables/_form.html.erb' do
     f = LancengFormBuilder.dummy_for imprintable
     render partial: 'imprintables/form', locals: {imprintable: imprintable, f: f}
     within_form_for Imprintable, noscope: true do
-      expect(rendered).to have_field_for :name
-      expect(rendered).to have_field_for :catalog_number
-      expect(rendered).to have_field_for :description
+      expect(rendered).to have_field_for :special_considerations
+      expect(rendered).to have_field_for :flashable
+      expect(rendered).to have_field_for :polyester
       expect(rendered).to have_selector('button')
     end
   end

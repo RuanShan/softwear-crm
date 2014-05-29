@@ -20,23 +20,25 @@ feature 'Imprintables management' do
   scenario 'A user can create a new imprintable' do
     visit imprintables_path
     click_link('Add an Imprintable')
-    fill_in 'imprintable_name', :with => 'Sample Name'
-    fill_in 'imprintable_catalog_number', :with => '42'
-    fill_in 'imprintable_description', :with => 'Sample description'
+    fill_in 'Special considerations', :with => 'Special Consideration'
+    page.find_by_id('imprintable_brand_id').find("option[value='1']").click
+    page.find_by_id('imprintable_style_id').find("option[value='1']").click
+    find(:css, '#imprintable_flashable').click
+    find(:css, '#imprintable_polyester').click
     click_button('Create Imprintable')
     expect(current_path).to eq(imprintables_path)
     expect(page).to have_selector '.modal-content-success', text: 'Imprintable was successfully created.'
-    expect(Imprintable.find_by name: 'Sample Name').to_not be_nil
+    expect(Imprintable.find_by special_considerations: 'Special Consideration').to_not be_nil
   end
 
   scenario 'A user can edit an existing imprintable' do
     visit imprintables_path
     find("tr#imprintable_#{imprintable.id} a[data-action='edit']").click
-    fill_in 'imprintable_name', :with => 'Edited Imprintable Name'
+    fill_in 'Special considerations', :with => 'Edited Special Consideration'
     click_button 'Update Imprintable'
-    expect(current_path).to eq(imprintables_path)
+    expect(current_path).to eq(edit_imprintable_path imprintable.id)
     expect(page).to have_selector '.modal-content-success', text: 'Imprintable was successfully updated.'
-    expect(imprintable.reload.name).to eq('Edited Imprintable Name')
+    expect(imprintable.reload.special_considerations).to eq('Edited Special Consideration')
   end
 
   scenario 'A user can delete an existing imprintable', js: true do

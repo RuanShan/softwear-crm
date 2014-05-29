@@ -2,7 +2,7 @@ class ImprintablesController < InheritedResources::Base
 
   def update
     super do |format|
-      format.html { redirect_to imprintables_path }
+      format.html { redirect_to edit_imprintable_path params[:id] }
     end
   end
 
@@ -14,13 +14,13 @@ class ImprintablesController < InheritedResources::Base
 
   def create
     super do |format|
-      format.html { redirect_to imprintables_path }
+      format.html { redirect_to imprintables_path params }
     end
   end
 
   private
 
   def permitted_params
-    params.permit(imprintable: [:name, :catalog_number, :description])
+    params.permit(imprintable: [:flashable, :polyester, :special_considerations, :style_id])
   end
 end

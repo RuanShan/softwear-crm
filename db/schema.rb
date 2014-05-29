@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140522132542) do
+ActiveRecord::Schema.define(version: 20140523184713) do
 
   create_table "brands", force: true do |t|
     t.string   "name"
@@ -27,23 +27,24 @@ ActiveRecord::Schema.define(version: 20140522132542) do
     t.datetime "deleted_at"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.integer  "imprintable_variant_id"
   end
 
   create_table "imprintable_variants", force: true do |t|
     t.integer  "imprintable_id"
-    t.string   "weight"
     t.datetime "deleted_at"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
 
   create_table "imprintables", force: true do |t|
-    t.string   "name"
-    t.string   "catalog_number"
-    t.text     "description"
     t.datetime "created_at"
     t.datetime "updated_at"
     t.datetime "deleted_at"
+    t.boolean  "flashable"
+    t.text     "special_considerations"
+    t.boolean  "polyester"
+    t.integer  "style_id"
   end
 
   create_table "orders", force: true do |t|
@@ -88,6 +89,7 @@ ActiveRecord::Schema.define(version: 20140522132542) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.integer  "sequence"
+    t.integer  "imprintable_variant_id"
   end
 
   create_table "styles", force: true do |t|
@@ -98,6 +100,7 @@ ActiveRecord::Schema.define(version: 20140522132542) do
     t.datetime "deleted_at"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.integer  "brand_id"
   end
 
   create_table "users", force: true do |t|

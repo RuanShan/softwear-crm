@@ -12,7 +12,7 @@ $(document).ready(function() {
         update: function(event, ui) {
             var itm_arr = $(sel).sortable('toArray');
             var pobj = {categories: itm_arr};
-            $.post("/sizes/update_size_order", pobj);
+            $.post("/imprintables/sizes/update_size_order", pobj);
         }
     });
 });

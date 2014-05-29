@@ -6,14 +6,24 @@
         <th>Name</th>
         <th>Catalog Number</th>
         <th>Description</th>
+        <th>Brand</th>
+        <th>Style</th>
+        <th>Flashable</th>
+        <th>Special Considerations</th>
+        <th>Polyester</th>
       </tr>
       </thead>
       <tbody>
       <% @imprintables.each do |imprintable| %>
       <tr id="<%= model_table_row_id imprintable %>">
         <td><%= imprintable.name %></td>
-        <td><%= imprintable.catalog_number %></td>
-        <td><%= imprintable.description %></td>
+        <td><%= imprintable.style.catalog_no %></td>
+        <td><%= imprintable.style.description %></td>
+        <td><%= imprintable.brand.name %></td>
+        <td><%= imprintable.style.name %></td>
+        <td><%= imprintable.flashable %></td>
+        <td><%= imprintable.special_considerations %></td>
+        <td><%= imprintable.polyester %></td>
         <td>
           <div class="btn-group btn-group-xs">
             <%= link_to edit_imprintable_path(imprintable), 'data-action' => 'edit', 'data-toggle' => 'tooltip', 'title' => 'Edit', class: 'btn btn-default' do %><i class="fa fa-edit"></i><% end %>

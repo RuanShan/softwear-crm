@@ -62,3 +62,7 @@ module ApplicationHelper
     end
   end
 end
+
+def test(imprintable)
+  imprintable.style.description
+end

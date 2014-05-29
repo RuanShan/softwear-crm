@@ -33,7 +33,7 @@ feature 'Colors management' do
     find("tr#color_#{color.id} a[data-action='edit']").click
     fill_in 'color_name', :with => 'Edited Color Name'
     click_button 'Update Color'
-    expect(current_path).to eq(colors_path)
+    expect(current_path).to eq(edit_color_path(color.id))
     expect(page).to have_selector '.modal-content-success', text: 'Color was successfully updated.'
     expect(color.reload.name).to eq('Edited Color Name')
   end
@@ -47,5 +47,4 @@ feature 'Colors management' do
     expect(page).to have_selector '.modal-content-success', text: 'Color was successfully destroyed.'
     expect(color.reload.destroyed? ).to be_truthy
   end
-
 end

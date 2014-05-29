@@ -58,3 +58,33 @@ create_records([
     { name: 'USPS First Class', tracking_url: 'https://tools.usps.com/go/TrackConfirmAction!input.action'},
     { name: 'UPS Ground', tracking_url: 'http://www.ups.com/tracking/tracking.html'}
 ], ShippingMethod)
+
+# Brand SEEDING
+# ----------------
+create_records([
+    { name: 'American Eagle', sku: '06'},
+    { name: 'Gildan', sku: '07'}
+], Brand)
+
+# Color SEEDING
+# ----------------
+create_records([
+    { name: 'Blue', sku: '08'},
+    { name: 'Red', sku: '09'}
+], Color)
+
+# Style SEEDING
+# ----------------
+create_records([
+    { name: 'Short sleeve', catalog_no: 'style_1', description: 'description', sku: '10', brand_id: 1},
+    { name: 'Long sleeve', catalog_no: 'style_2', description: 'description', sku: '11', brand_id: 1},
+    { name: 'Tank top', catalog_no: 'style_3', description: 'description', sku: '12', brand_id: 2}
+], Style)
+
+# Imprintable SEEDING
+# ---------------
+create_records([
+    { flashable: false, special_considerations: 'none', polyester: false, style_id: 1},
+    { flashable: false, special_considerations: 'line dry', polyester: true, style_id: 2},
+    { flashable: true, special_considerations: 'do not print', polyester: false, style_id: 3}
+], Imprintable)

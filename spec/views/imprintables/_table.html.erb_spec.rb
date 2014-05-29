@@ -17,8 +17,8 @@ describe 'imprintables/_table.html.erb' do
   it 'displays the name, catalog number, and description of that imprintable' do
     render partial: 'imprintables/table', locals: {imprintables: imprintables}
     expect(rendered).to have_selector('td', text: imprintables.first.name)
-    expect(rendered).to have_selector('td', text: imprintables.first.catalog_number)
-    expect(rendered).to have_selector('td', text: imprintables.first.description)
+    expect(rendered).to have_selector('td', text: imprintables.first.style.catalog_no)
+    expect(rendered).to have_selector('td', text: imprintables.first.style.description)
   end
 
   it 'actions column has a link to edit and a link to destroy' do
