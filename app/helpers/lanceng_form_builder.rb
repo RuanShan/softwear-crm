@@ -40,6 +40,7 @@ class LancengFormBuilder < ActionView::Helpers::FormBuilder
           :contenteditable   => true,
           :class             => 'inline-field',
           'resource-name'    => @object_name,
+          'resource-plural'  => @object_name.pluralize,
           'resource-id'      => @object.id,
           'resource-method'  => method
         })

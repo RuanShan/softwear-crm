@@ -47,7 +47,7 @@ class JobsController < InheritedResources::Base
   private
   def permitted_params
     params.permit(job: [
-      :name, :description
+      :id, :name, :description
     ])
   end
 
