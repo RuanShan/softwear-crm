@@ -3,6 +3,9 @@ ActiveRecord::Base.instance_eval do
     unless injectable.is_a? Injectable
       raise ArgumentError.new "#{injectable.inspect} is not injectable."
     end
+    if injectable.block == nil
+      raise ArgumentError.new "#{injectable.inspect} has no block."
+    end
     tracked_methods = injectable.options[:track_methods]
 
     # if we're tracking all methods, record the methods added
