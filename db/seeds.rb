@@ -1,4 +1,5 @@
 def create_records(params_array, model)
+  return if Rails.env.test?
   params_array.each do |params|
     record = model.new(params)
     if record.save
@@ -25,14 +26,14 @@ if !deleted_exists && !exists
 													password: pw, password_confirmation: pw)
 	default_user.confirm!
 	default_user.save
-	puts "Created user #{default_user.full_name} (#{default_user.email})"
+	puts "Created default user (email: #{default_user.email}, password: #{pw})"
 elsif deleted_exists
 	default_user = User.deleted.where(email: 'admin@softwearcrm.com').first
 	default_user.deleted_at = nil
 	default_user.password = pw
 	default_user.password_confirmation = pw
 	default_user.save
-	puts "Revived user #{default_user.full_name} (#{default_user.email})"
+	puts "Revived user #{default_user.full_name} (#{default_user.email}, #{pw})"
 else
 	default_user = User.where(email: 'admin@softwearcrm.com').first
 	default_user.password = pw
@@ -88,3 +89,24 @@ create_records([
     { flashable: false, special_considerations: 'line dry', polyester: true, style_id: 2},
     { flashable: true, special_considerations: 'do not print', polyester: false, style_id: 3}
 ], Imprintable)
+
+create_records([
+    {
+      name: 'Test Order',
+      firstname: 'Test',
+      lastname: 'Tlast',
+      email: 'test@test.com',
+      twitter: '@test',
+      in_hand_by: '1/2/1015',
+      terms: 'Half down on purchase',
+      tax_exempt: false,
+      is_redo: false,
+      sales_status: 'Pending',
+      delivery_method: 'Ship to one location',
+      phone_number: '123-456-8456'
+    }
+  ], Order)
+
+create_records([
+    name: 'Test Job', description: "I hope these fields can be edited one day", order_id: 1
+  ], Job)

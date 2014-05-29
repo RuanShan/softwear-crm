@@ -1,6 +1,8 @@
-<div class='box-info'>
+<div class="page-heading animated fadeInDownBig">
+  <h1>Users <small>Create a new user</small></h1>
+</div>
 
-  <h2>Create new user</h2>
+<div class='box-info row clear'>
 
   <%= form_for(@user, url: {action: 'create'}, builder: LancengFormBuilder) do |f| %>
     <%= render_error_modal_for @user %>
@@ -8,7 +10,7 @@
     <%= render partial: 'users/fields', locals: { f: f } %>
 
     <div class='form-group'>
-    <%= f.submit "Create", data: { confirm: "Create new account?" } %>
+    <%= f.submit "Create" %>
     </div>
   <% end %>
 

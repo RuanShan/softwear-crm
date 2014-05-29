@@ -6,7 +6,7 @@ feature 'Users', user_spec: true, js: true do
 	context 'with valid credentials' do
 		scenario 'I can log in' do
 			login_through_form_as(valid_user).with('1234567890') do
-				expect(page).to have_css '*', text: 'success'
+				expect(page).to have_content 'success'
 			end
 			expect(current_path).to eq '/'
 		end
@@ -20,7 +20,7 @@ feature 'Users', user_spec: true, js: true do
 	  scenario 'I see my name on the dashboard' do
 	  	visit root_path
 	  	unhide_dashboard
-	  	expect(page).to have_css '*', text: "Welcome, #{valid_user.firstname}"
+	  	expect(page).to have_content "Welcome, #{valid_user.firstname} #{valid_user.lastname[0,1]}."
 	  end
 
 	  scenario 'I can view a list of users' do
@@ -39,7 +39,7 @@ feature 'Users', user_spec: true, js: true do
 	  	fill_in 'Last name', with: 'NewLastname'
 	  	click_button 'Submit'
 	  	wait_for_ajax
-	  	expect(page).to have_css '*', text: 'success'
+	  	expect(page).to have_content 'success'
 	  	expect(User.where(lastname: 'NewLastname')).to exist
 	  end
 
@@ -50,8 +50,7 @@ feature 'Users', user_spec: true, js: true do
 	  	fill_in 'First name', with: 'New'
 	  	fill_in 'Last name', with: 'Last'
 	  	click_button 'Create'
-	  	page.driver.browser.switch_to.alert.accept
-	  	expect(page).to have_css '*', text: 'success'
+	  	expect(page).to have_content 'success'
 	  end
 
 	  scenario "I can change my password" do
@@ -61,7 +60,7 @@ feature 'Users', user_spec: true, js: true do
 	  	fill_in 'Password confirmation', with: 'NewPassword'
 	  	fill_in 'Current password',      with: '1234567890'
 	  	click_button 'Update'
-	  	expect(page).to have_css '*', text: 'success'
+	  	expect(page).to have_content 'success'
 	  end
 
 	  scenario 'I can lock myself' do

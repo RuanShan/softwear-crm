@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140523184713) do
+ActiveRecord::Schema.define(version: 20140523192339) do
 
   create_table "brands", force: true do |t|
     t.string   "name"
@@ -45,6 +45,15 @@ ActiveRecord::Schema.define(version: 20140523184713) do
     t.text     "special_considerations"
     t.boolean  "polyester"
     t.integer  "style_id"
+  end
+
+  create_table "jobs", force: true do |t|
+    t.string   "name"
+    t.text     "description"
+    t.integer  "order_id"
+    t.datetime "deleted_at"
+    t.datetime "created_at"
+    t.datetime "updated_at"
   end
 
   create_table "orders", force: true do |t|
@@ -90,6 +99,13 @@ ActiveRecord::Schema.define(version: 20140523184713) do
     t.datetime "updated_at"
     t.integer  "sequence"
     t.integer  "imprintable_variant_id"
+  end
+
+  create_table "stores", force: true do |t|
+    t.string   "name"
+    t.string   "deleted_at"
+    t.datetime "created_at"
+    t.datetime "updated_at"
   end
 
   create_table "styles", force: true do |t|

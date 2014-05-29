@@ -27,8 +27,8 @@ feature 'Order management', order_spec: true, js: true do
 
     fill_in 'Email', with: 'test@example.com'
     fill_in 'Phone number', with: '321-654-9870'
-    fill_in 'Firstname', with: 'Guy'
-    fill_in 'Lastname', with: 'Fieri'
+    fill_in 'First name', with: 'Guy'
+    fill_in 'Last name', with: 'Fieri'
     fill_in 'Company', with: 'Probably Nothing'
     fill_in 'Twitter', with: 'stuff'
 
@@ -37,7 +37,7 @@ feature 'Order management', order_spec: true, js: true do
 
     fill_in 'Name', with: 'Whatever this should be'
     fill_in 'In Hand By Date', with: (Time.now + 1.month).to_s
-    select 'Half down on purchase', from: 'Terms'
+    select 'Half down on purchase', from: 'Payment terms'
 
     click_button 'Next'
     wait_for_ajax
@@ -81,9 +81,9 @@ feature 'Order management', order_spec: true, js: true do
 
     visit current_path
 
-    fill_in 'Phone number', with: 'abc123!@#$-'
+    fill_in 'Phone number', with: 'a1b2c3!@5#$-'
     wait_for_ajax
-    expect(phone_number_field.value).to eq '123-___-____'
+    expect(phone_number_field.value).to eq '123-5__-____'
   end
 
   scenario 'user edits an existing order' do
@@ -98,5 +98,13 @@ feature 'Order management', order_spec: true, js: true do
     click_button 'Save'
 
     expect(Order.where(name: 'New Title')).to exist
+  end
+
+  scenario 'when editing, submitting invalid information displays error content', donow: true do
+    visit edit_order_path(order)+'#details'
+    fill_in 'Email', with: 'bad email!'
+    click_button 'Save'
+
+    expect(page).to have_content 'Email is invalid'
   end
 end

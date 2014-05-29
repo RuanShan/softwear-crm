@@ -1,2 +1,9 @@
-<%= render partial: 'job' %>
-<%= render partial: 'job' %>
+<% order.jobs.each do |job| %>
+	<%= render partial: 'job', locals: { job: job } %>
+<% end %>
+
+<div class="form-group box-info">
+  <div class="col-sm-4 col-xs-offset-4">
+    <button id='new-job-button' class="btn btn-info btn-lg btn-block"><i class="fa fa-plus-square"></i> New Job</button>
+  </div>
+</div>

@@ -1,4 +1,4 @@
-
+<%= render_error_modal_for @order %>
 <div class="page-heading animated fadeInDownBig">
   <h1>Edit Order #<%= @order.id %> <small><%= @order.name %></small></h1>
 </div>
@@ -27,7 +27,7 @@
                 </div>
 
                 <div class="tab-pane animated fadeInRight" id="jobs">
-                  <%= render partial: 'jobs' %>
+                  <%= render partial: 'jobs', locals: { order: @order } %>
                 </div>
 
                 <div class="tab-pane animated fadeInRight" id="artwork">

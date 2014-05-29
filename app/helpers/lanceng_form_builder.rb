@@ -8,27 +8,48 @@ class LancengFormBuilder < ActionView::Helpers::FormBuilder
     return self.new object.class.name.underscore.to_sym, object, temp, {}, nil
   end
 
+  # Adding form-control class to standard field functions
   def text_field(method, options={})
     add_class options, 'form-control'
     super
-  end
+  end  
   alias_method :email_field, :text_field
-
   def password_field(method, options={})
     add_class options, 'form-control'
     super
   end
-
   def text_area(method, options={})
     add_class options, 'form-control'
     super
   end
-
   def select(method, choices, o={}, options={})
     add_class options, 'form-control'
     super method, choices, o, options
   end
 
+  # Creates a contenteditable span that is updated through ajax
+  def inline_field(method, default_or_options={}, options={})
+    default = nil
+    if default_or_options.is_a? Hash
+      options = default_or_options
+      default = method.to_s.gsub(/_/, ' ')
+    else
+      default = default_or_options
+    end
+    options.merge! ({
+          :contenteditable   => true,
+          :class             => 'inline-field',
+          'resource-name'    => @object_name,
+          'resource-plural'  => @object_name.pluralize,
+          'resource-id'      => @object.id,
+          'resource-method'  => method
+        })
+    content = @object.send(method) || default
+    @template.content_tag(:span, content, options)
+  end
+
+  # Gives you a checkbox with a textfield attached to it.
+  # Useful for a condition and a reason
   def check_box_with_text_field(check_method, text_method, options={})
     @template.content_tag(:div, class: 'input-group') do
       add_class options, 'form-control'

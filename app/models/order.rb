@@ -28,6 +28,7 @@ class Order < ActiveRecord::Base
   validates_presence_of :redo_reason, if: :is_redo?
 
   belongs_to :user
+  has_many :jobs
 
   # non-deletable stuff
   default_scope -> { where(deleted_at: nil) }

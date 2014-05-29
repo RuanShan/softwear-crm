@@ -1,13 +1,19 @@
 class OrdersController < InheritedResources::Base
 
   def update
-    super do |format|
-      format.html { redirect_to edit_order_path params[:id] }
+    super do |success, failure|
+      success.html { redirect_to edit_order_path(params[:id])+'#details' }
+      failure.html { render action: :edit, anchor: 'details' }
     end
   end
 
   def show
     redirect_to action: :edit
+  end
+
+  def edit
+    super
+    session[:order] = @order.id
   end
 
   private

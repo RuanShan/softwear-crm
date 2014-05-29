@@ -22,9 +22,18 @@ module CrmSoftwearcrmCom
     config.time_zone = 'Eastern Time (US & Canada)'
     config.active_record.default_timezone = :utc
 
-    # The default locale is :en and all translations from config/locales/*.rb,yml are auto loaded.
-    # config.i18n.load_path += Dir[Rails.root.join('my', 'locales', '*.{rb,yml}').to_s]
-    # config.i18n.default_locale = :de
+    if ENV['action_mailer_delivery_method'] == 'smtp'
+      smtp_settings = {}
+      config.action_mailer.delivery_method = :smtp
+      smtp_settings[:address] = ENV['smtp_address'] unless !ENV.key? 'smtp_address'
+      smtp_settings[:port] = ENV['smtp_port'] unless !ENV.key? 'smtp_port'
+      smtp_settings[:domain] = ENV['smtp_domain'] unless !ENV.key? 'smtp_domain'
+      smtp_settings[:user_name] = ENV['smtp_user_name'] unless !ENV.key? 'smtp_user_name'
+      smtp_settings[:password] = ENV['smtp_password'] unless !ENV.key? 'smtp_password'
+      smtp_settings[:authentication] = ENV['smtp_authentication'] unless !ENV.key? 'smtp_authentication'
+      smtp_settings[:enable_starttls_auto] = ENV['smtp_enable_starttls_auto'] unless !ENV.key? 'smtp_enable_starttls_auto'
+      config.action_mailer.smtp_settings = smtp_settings
+    end
 
     config.to_prepare do
       [

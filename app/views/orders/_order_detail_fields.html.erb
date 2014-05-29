@@ -1,24 +1,30 @@
 <div class="form-group">
   <%= f.label :name %>
+  <%= f.error_for :name %>
   <%= f.text_field :name, placeholder: 'Title used internally by company' %>
 </div>
 <div class="form-group">
   <%= f.label :po, 'P.O. Number' %>
+  <%= f.error_for :po %>
   <%= f.text_field :po, placeholder: 'Purchase Order if required by customer' %>
 </div>
 <div class="form-group">
   <%= f.label :in_hand_by, 'In Hand By Date' %>
+  <%= f.error_for :in_hand_by %>
   <%= f.datetime :in_hand_by, placeholder: 'In Hand By' %>
 </div>
 <div class="form-group">
   <%= f.label :terms, 'Payment terms' %>
+  <%= f.error_for :terms %>
   <%= f.select :terms, Order::VALID_PAYMENT_TERMS %>
 </div>
 <div class="form-group">
   <%= f.label :tax_exempt, 'Tax exempt?' %>
+  <%= f.error_for :tax_exempt %>
   <%= f.check_box_with_text_field :tax_exempt, :tax_id_number, placeholder: 'Tax ID Number' %>
 </div>
 <div class="form-group">
   <%= f.label :is_redo, 'Is this order a redo?' %>
+  <%= f.error_for :is_redo %>
   <%= f.check_box_with_text_field :is_redo, :redo_reason, placeholder: 'Redo Explanation' %>
 </div>

@@ -79,6 +79,9 @@ GEM
       factory_girl (~> 4.4.0)
       railties (>= 3.0.0)
     ffi (1.9.3)
+    figaro (0.7.0)
+      bundler (~> 1.0)
+      rails (>= 3, < 5)
     has_scope (0.6.0.rc)
       actionpack (>= 3.2, < 5)
       activesupport (>= 3.2, < 5)
@@ -215,6 +218,7 @@ DEPENDENCIES
   database_cleaner
   devise
   factory_girl_rails (>= 4.2.0)
+  figaro
   hirb (~> 0.7.1)
   inherited_resources
   jbuilder (~> 1.2)
