@@ -1,3 +1,45 @@
+##
+# Injectables are awfully similar to Concerns, except they actually work, and
+# are more concise.
+# 
+# Injectables go in the helpers/injectables folder, and are defined like so:
+# 
+# -Injectable.TestInjectable do
+# -  attr_reader :thing
+# -  def do_thing(str)
+# -    @thing = "hello "+str
+# -  end
+# -  def self.static_thing
+# -    puts 'static '+@thing
+# -  end
+# -end
+# 
+# This defines an Injectable called TestInjectable that any class or module that
+# extends Injector can inject with the inject function. (ActiveRecord::Base is
+# automatically extended with Injector.)
+# 
+# -class TestClass
+# -  extend Injector
+# -  def initialize
+# -    @thing = "none"
+# -  end
+# -  inject TestInjectable
+# -end
+# 
+# This gives the TestClass the do_thing instance method, an attr_reader on 
+# @thing, and the static_thing class method as expected.
+# 
+# There's also options (only 1 for now) you can define with the Injectable:
+# -Injectable.TestInjectable track_methods: false do ...
+# Will turn off the detault track_methods behavior.
+# 
+# You can also namespace these:
+# 
+# -Injectable.SomeScope.TestInjectable do ...
+# 
+# Will give you an injectable you can inject with 
+# -inject SomeScope.TestInjectable
+##
 class Injectable
   attr_reader :block
   attr_reader :options
@@ -37,14 +79,17 @@ class Injectable
     end
     unless block_given?
       if scope.const_defined?(name)
-        return scope.const_get(name)
-      else
-        raise ArgumentError.new "An Injectable is useless without a block!"
+        if !scope.const_get(name).is_a? Injectable
+          raise ArgumentError.new "#{scope.const_get(name).inspect} is not an Injectable."
+        else
+          return scope.const_get(name)
+        end
       end
     end
     options = {}
     options = args.first if args.first && args.first.kind_of?(Hash)
 
     scope.const_set name, Injectable.new(options, &block)
+    scope.const_get name
   end
 end

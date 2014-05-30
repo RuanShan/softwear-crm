@@ -1,4 +1,4 @@
-ActiveRecord::Base.instance_eval do
+module Injector
   def inject(injectable)
     unless injectable.is_a? Injectable
       raise ArgumentError.new "#{injectable.inspect} is not injectable."
@@ -20,6 +20,9 @@ ActiveRecord::Base.instance_eval do
         alias_method "original_#{m}".to_sym, m
       end
     end
-    
   end
+end
+
+ActiveRecord::Base.instance_eval do
+  extend Injector
 end
