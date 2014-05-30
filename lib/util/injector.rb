@@ -1,12 +1,13 @@
 module Injector
-  def inject(injectable)
+  def inject(injectable, option_overrides={})
     unless injectable.is_a? Injectable
       raise ArgumentError.new "#{injectable.inspect} is not injectable."
     end
     if injectable.block == nil
       raise ArgumentError.new "#{injectable.inspect} has no block."
     end
-    tracked_methods = injectable.options[:track_methods]
+    options = injectables.options.merge option_overrides
+    tracked_methods = options[:track_methods]
 
     # if we're tracking all methods, record the methods added
     before_methods = self.instance_methods if tracked_methods == true

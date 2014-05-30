@@ -33,6 +33,9 @@
 # -Injectable.TestInjectable track_methods: false do ...
 # Will turn off the detault track_methods behavior.
 # 
+# Additionally, you can change the options when injecting, like:
+# -inject TestInjectable, track_methods: false
+# 
 # You can also namespace these:
 # 
 # -Injectable.SomeScope.TestInjectable do ...
