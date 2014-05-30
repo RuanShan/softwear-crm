@@ -31,20 +31,7 @@ class Order < ActiveRecord::Base
   has_many :jobs
 
   # non-deletable stuff
-  default_scope -> { where(deleted_at: nil) }
-  scope :deleted, -> { unscoped.where.not(deleted_at: nil) }
-
-  def destroyed?
-    !deleted_at.nil?
-  end
-
-  def destroy
-    update_attribute(:deleted_at, Time.now)
-  end
-
-  def destroy!
-    update_column(:deleted_at, Time.now)
-  end
+  inject NonDeletable
 
   def revive
     update_attribute(:deleted_at, nil) if !deleted_at.nil?

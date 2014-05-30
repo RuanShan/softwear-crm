@@ -42,6 +42,10 @@
 # 
 # Will give you an injectable you can inject with 
 # -inject SomeScope.TestInjectable
+
+# Though, "namespacing" these won't do too well if there's already a module 
+# of any of the names. I'm guessing it's not worth the effort at this point 
+# to make these play nicely with modules.
 ##
 class Injectable
   attr_reader :block
@@ -52,10 +56,10 @@ class Injectable
     # define a method called :original_<methodname>.
     # Useful if you might want to override but not rewrite 
     # functionality, but could be costly if used a lot.
-    track_methods: true
+    track_methods: false
   }
 
-  def initialize(options, &block)
+  def initialize(options={}, &block)
     @options = DEFAULT_OPTIONS.merge options
     @children = {}
     @block = block if block_given?

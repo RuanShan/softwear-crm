@@ -4,32 +4,16 @@ class Job < ActiveRecord::Base
   validates_presence_of :name
   validates :name, uniqueness: { scope: :order_id }
 
-  inject TestInjection
-
-  def test_func
-    original_test_func
-    puts 'AND THIS'
-  end
-
   # non-deletable stuff
-  default_scope -> { where(deleted_at: nil) }
-  scope :deleted, -> { unscoped.where.not(deleted_at: nil) }
-
-  def destroyed?
-    !deleted_at.nil?
-  end
+  inject NonDeletable, track_methods: true
 
   def destroy
-  	update_attributes({
-  		name: "#{name} #{Time.now}",
-  		deleted_at: Time.now
-  	})
+    original_destroy
+    update_attribute :name, "#{name} #{Time.now.to_s}"
   end
 
   def destroy!
-    update_columns({
-  		name: "#{name} #{Time.now}",
-  		deleted_at: Time.now
-  	})
+    original_destroy!
+    update_column update_attribute :name, "#{name} #{Time.now.to_s}"
   end
 end

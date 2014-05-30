@@ -6,13 +6,14 @@ module Injector
     if injectable.block == nil
       raise ArgumentError.new "#{injectable.inspect} has no block."
     end
-    options = injectables.options.merge option_overrides
+    options = injectable.options.merge option_overrides
     tracked_methods = options[:track_methods]
 
-    # if we're tracking all methods, record the methods added
-    before_methods = self.instance_methods if tracked_methods == true
+    # if we're tracking all methods, record the methods added by the injectable 
+    # (only instance for now) (will bother with singleton if necessary)
+    before_methods = self.instance_methods(false) if tracked_methods == true
     self.class_eval &injectable.block
-    after_methods = self.instance_methods if tracked_methods == true
+    after_methods = self.instance_methods(false) if tracked_methods == true
     
     if tracked_methods
       tracked_methods = after_methods - before_methods if tracked_methods == true
