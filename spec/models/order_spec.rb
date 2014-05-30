@@ -64,4 +64,36 @@ describe Order, order_spec: true do
     end
 
   end
+
+  context 'relationships' do
+    let!(:order) {create :order}
+
+    it 'has a list of line items thorugh its jobs' do
+      expect{order.line_items}.to_not raise_error
+      expect(order.line_items).to be_a ActiveRecord::Relation
+    end
+
+    it 'has a list of imprintables through its jobs' do
+      expect{order.imprintables}.to_not raise_error
+      expect(order.imprintables).to be_a ActiveRecord::Relation
+    end
+
+    it 'has a tax constant that returns 0.6 for now' do
+      expect(order.tax).to eq 0.6
+    end
+
+    it 'has a subtotal that returns the sum of all its line item prices' do
+      expect{order.subtotal}.to_not raise_error
+      sum = 0
+      order.line_items.each do |line_item|
+        sum += line_item.price
+      end
+      expect(order.subtotal).to eq sum
+    end
+
+    it 'has a total that returns the subtotal plus tax' do
+      expect{order.total}.to_not raise_error
+      expect(order.total).to eq order.subtotal + order.subtotal * order.tax
+    end
+  end
 end

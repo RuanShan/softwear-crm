@@ -4,6 +4,13 @@ feature 'Line Items managements', line_item_spec: true do
   given!(:order) { create(:order_with_job) }
   given(:job) { order.jobs.first }
 
+  given!(:brand) { create :valid_brand }
+  given!(:style) { create :valid_style }
+  given!(:color) { create :valid_color }
+
+  given!(:imprintable) { create :valid_imprintable }
+  given!(:imprintable_variant) { create :valid_imprintable_variant }
+
   given!(:valid_user) { create(:user) }
   before(:each) do
     login_as valid_user
@@ -42,7 +49,13 @@ feature 'Line Items managements', line_item_spec: true do
     within('.line_item_form') do
       check 'Yes'
       wait_for_ajax
-      
+      select brand.name, from: 'Brand'
+      select style.name, from: 'Style'
+      select color.name, from: 'Color'
+      fill_in 'Name', with: 'Test Item'
+      fill_in 'Description', with: 'Incredibly informative info'
+      click_button 'Add'
+      wait_for_ajax
     end
   end
 end

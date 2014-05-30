@@ -43,7 +43,6 @@ feature 'Order management', order_spec: true, js: true do
     wait_for_ajax
 
     select 'Pick up in Ypsilanti', from: 'Delivery method'
-    # select 'In House Delivery', from: 'Shipping Method'
 
     click_button 'Submit'
 
