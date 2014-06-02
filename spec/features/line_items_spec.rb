@@ -35,6 +35,8 @@ feature 'Line Items managements', line_item_spec: true do
       wait_for_ajax
 
       expect(LineItem.where(name: 'New Item')).to exist
+      expect(page).to have_content 'success'
+      expect(page).to have_content 'New Item'
     end
   end
 
@@ -52,10 +54,14 @@ feature 'Line Items managements', line_item_spec: true do
       select brand.name, from: 'Brand'
       select style.name, from: 'Style'
       select color.name, from: 'Color'
-      fill_in 'Name', with: 'Test Item'
-      fill_in 'Description', with: 'Incredibly informative info'
+      # expect name and description to equal name and description of 
+      # imprintable variant factory you will put up there
       click_button 'Add'
       wait_for_ajax
     end
+
+    expect(LineItem.where(name: 'Test Item')).to exist
+    expect(page).to have_content 'success'
+    expect(page).to have_content 'Test Item'
   end
 end
