@@ -3,13 +3,13 @@ require 'spec_helper'
 feature 'Line Items managements', line_item_spec: true do
   given!(:order) { create(:order_with_job) }
   given(:job) { order.jobs.first }
-
-  given!(:brand) { create :valid_brand }
-  given!(:style) { create :valid_style }
   given!(:color) { create :valid_color }
 
-  given!(:imprintable) { create :valid_imprintable }
   given!(:imprintable_variant) { create :valid_imprintable_variant }
+  given(:imprintable) { imprintable_variant.imprintable }
+
+  given(:brand) { imprintable_variant.brand }
+  given(:style) { imprintable_variant.style }
 
   given!(:valid_user) { create(:user) }
   before(:each) do
@@ -54,8 +54,9 @@ feature 'Line Items managements', line_item_spec: true do
       select brand.name, from: 'Brand'
       select style.name, from: 'Style'
       select color.name, from: 'Color'
-      # expect name and description to equal name and description of 
-      # imprintable variant factory you will put up there
+      expect(page).to have_content imprintable.name
+      expect(page).to have_content imprintable.description
+
       click_button 'Add'
       wait_for_ajax
     end
