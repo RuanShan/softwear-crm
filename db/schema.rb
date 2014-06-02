@@ -35,6 +35,8 @@ ActiveRecord::Schema.define(version: 20140602150112) do
     t.datetime "deleted_at"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.integer  "size_id"
+    t.integer  "color_id"
   end
 
   create_table "imprintables", force: true do |t|
