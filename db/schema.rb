@@ -64,7 +64,8 @@ ActiveRecord::Schema.define(version: 20140602150112) do
     t.boolean "taxable"
     t.text    "description"
     t.integer "jobs_id"
-    t.decimal "unit_price",  precision: 10, scale: 2
+    t.integer "imprintable_variant_id"
+    t.decimal "unit_price",             precision: 10, scale: 2
   end
 
   add_index "line_items", ["jobs_id"], name: "index_line_items_on_jobs_id", using: :btree

@@ -24,7 +24,7 @@ feature 'Line Items managements', line_item_spec: true, js: true do
     wait_for_ajax
     expect(page).to have_content 'Add a Line Item'
 
-    within('.line_item_form') do
+    within('.line-item-form') do
       check 'No'
       wait_for_ajax
       fill_in 'Name', with: 'New Item'
@@ -48,7 +48,7 @@ feature 'Line Items managements', line_item_spec: true, js: true do
     wait_for_ajax
     expect(page).to have_content 'Add a Line Item'
 
-    within('.line_item_form') do
+    within('.line-item-form') do
       check 'Yes'
       wait_for_ajax
       select brand.name, from: 'Brand'

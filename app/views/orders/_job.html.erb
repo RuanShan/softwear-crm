@@ -13,12 +13,13 @@
         <%= render partial: 'orders/line_item_imprintable_edit' %>
         <%= render partial: 'orders/line_items_edit' %>
 
+        <%= render partial: 'line_item_new', locals: { job: job } %>
         <div class="form-group box-info">
           <div class="col-sm-4">
-              <button type="submit" class="btn btn-info btn-lg btn-block"><i class="fa fa-list-alt"></i> Add Line Item </button>
+              <button type="button" class="btn btn-info btn-lg btn-block add-line-item" data-id="<%=job.id%>"><i class="fa fa-list-alt"></i> Add Line Item </button>
           </div>
           <div class="col-sm-4 col-xs-offset-4">
-            <button type="submit" class="btn btn-info btn-lg btn-block"><i class="fa fa-list-alt"></i> Update Line Items</button>
+            <button type="button" class="btn btn-info btn-lg btn-block"><i class="fa fa-list-alt"></i> Update Line Items</button>
           </div>
         </div>
 

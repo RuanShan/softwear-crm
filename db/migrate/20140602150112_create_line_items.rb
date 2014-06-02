@@ -7,6 +7,7 @@ class CreateLineItems < ActiveRecord::Migration
       t.text :description
 
       t.belongs_to :jobs, index: true
+      t.integer :imprintable_variant_id
     end
     add_column :line_items, :unit_price, :decimal, precision: 10, scale: 2
   end
