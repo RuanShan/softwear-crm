@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe 'orders/_line_item_new_imprintable.html.erb', line_item_spec: true, pending: true do
+describe 'orders/_line_item_new_imprintable.html.erb', line_item_spec: true do
   it 'displays the correct fields' do
     render partial: 'orders/_line_item_new_imprintable', locals: {line_item: LineItem.new}
     within_form_for LineItem do
