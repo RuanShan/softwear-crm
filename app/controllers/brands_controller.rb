@@ -12,13 +12,11 @@ class BrandsController < InheritedResources::Base
     end
   end
 
-  # same thing here as in controller
-
-  # def create
-  #   super do |format|
-  #     format.html { redirect_to brands_path params[:id] }
-  #   end
-  # end
+  def create
+    super do |format|
+      format.html { redirect_to brands_path params }
+    end
+  end
 
   private
 

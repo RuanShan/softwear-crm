@@ -13,9 +13,6 @@ class SizesController < InheritedResources::Base
   end
 
   def update_size_order
-    params.each do |key, value|
-      Rails.logger.warn "Param #{key}: #{value}"
-    end
     @size_ids = params[:categories]
     n = 0
     ActiveRecord::Base.transaction do

@@ -8,18 +8,28 @@ CrmSoftwearcrmCom::Application.routes.draw do
   put '/users/change_password', to: 'users#update_password', as: :update_password
   get '/users/lock', to: 'users#lock', as: :lock_user
 
-  resources :styles, :brands, :colors, :imprintables, :users
+  resources :users
+
+  resources :imprintables do
+    collection do
+      resources :styles, :brands, :colors
+
+      resources :sizes do
+        collection do
+          post 'update_size_order'
+        end
+        get '/imprintables/assets' => redirect('/assets')
+      end
+    end
+  end
+
+  resources :styles, :brands, :colors, :users
   resources :jobs, only: [:create, :update, :destroy]
+
   get '/logout' => 'users#logout'
   
   scope 'configuration' do
     resources :shipping_methods, :stores
-  end
-
-  resources :sizes do
-    collection do
-      post 'update_size_order'
-    end
   end
   
   resources :orders do

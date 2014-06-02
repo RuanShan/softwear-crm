@@ -2,13 +2,12 @@ require 'spec_helper'
 
 describe Imprintable do
   describe 'Validations' do
-    it { should validate_presence_of(:name) }
-    it { should validate_presence_of(:description)}
+    it { should validate_presence_of(:style)}
   end
 
   describe 'Scopes' do
     let!(:imprintable) { create(:valid_imprintable)}
-    let!(:deleted_imprintable) { create(:valid_imprintable, deleted_at: Time.now, name: 'Deleted')}
+    let!(:deleted_imprintable) { create(:valid_imprintable, deleted_at: Time.now)}
 
     describe 'default_scope' do
       it 'includes only imprintables where deleted_at is nil' do
@@ -22,6 +21,14 @@ describe Imprintable do
       end
     end
   end
+
+  describe '#name' do
+    let(:imprintable) {create(:valid_imprintable)}
+    it 'returns a string of the style.catalog_no and style.name' do
+      expect(imprintable.name).to eq("#{imprintable.style.catalog_no} #{imprintable.style.name}")
+    end
+  end
+
 
   describe '#destroyed?' do
     let! (:imprintable) { create(:valid_imprintable, deleted_at: Time.now)}

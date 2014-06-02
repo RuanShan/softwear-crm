@@ -17,7 +17,7 @@
       </thead>
       <tbody>
       <% sizes.each do |size| %>
-          <tr id="<%= model_table_row_id size %>">
+          <tr class="size_row" id="<%= model_table_row_id size %>">
             <td><%= size.name %></td>
             <td><%= size.display_value%></td>
             <td><%= size.sku %></td>
