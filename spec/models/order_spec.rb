@@ -65,7 +65,7 @@ describe Order, order_spec: true do
 
   end
 
-  context 'relationships' do
+  context 'relationships', line_item_spec: true do
     let!(:order) {create :order}
 
     it 'has a list of line items thorugh its jobs' do

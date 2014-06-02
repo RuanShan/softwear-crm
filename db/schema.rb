@@ -61,10 +61,10 @@ ActiveRecord::Schema.define(version: 20140602150112) do
   create_table "line_items", force: true do |t|
     t.string  "name"
     t.integer "quantity"
-    t.decimal "unit_price",  precision: 10, scale: 0
     t.boolean "taxable"
     t.text    "description"
     t.integer "jobs_id"
+    t.decimal "unit_price",  precision: 10, scale: 2
   end
 
   add_index "line_items", ["jobs_id"], name: "index_line_items_on_jobs_id", using: :btree

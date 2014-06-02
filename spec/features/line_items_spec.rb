@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-feature 'Line Items managements', line_item_spec: true do
+feature 'Line Items managements', line_item_spec: true, js: true do
   given!(:order) { create(:order_with_job) }
   given(:job) { order.jobs.first }
   given!(:color) { create :valid_color }
