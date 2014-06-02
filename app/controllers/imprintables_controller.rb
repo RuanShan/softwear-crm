@@ -18,6 +18,13 @@ class ImprintablesController < InheritedResources::Base
     end
   end
 
+  def edit
+    super do
+      @sizes = Size.all
+      @colors = Color.all
+    end
+  end
+
   private
 
   def permitted_params

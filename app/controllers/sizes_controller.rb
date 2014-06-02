@@ -20,7 +20,7 @@ class SizesController < InheritedResources::Base
         temp = temp.split('_')
         id = temp[1]
         size = Size.find(id)
-        size.sequence = n
+        size.sort_order = n
         n += 1
         size.save
       end
@@ -31,6 +31,6 @@ class SizesController < InheritedResources::Base
   private
 
   def permitted_params
-    params.permit(size: [:name, :display_value, :sku, :sort_order, :sequence])
+    params.permit(size: [:name, :display_value, :sku, :sort_order])
   end
 end

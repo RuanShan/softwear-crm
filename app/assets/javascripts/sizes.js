@@ -11,6 +11,7 @@ $(document).ready(function() {
         helper: fixHelper,
         update: function(event, ui) {
             var itm_arr = $(sel).sortable('toArray');
+            alert('updated');
             var pobj = {categories: itm_arr};
             $.post("/imprintables/sizes/update_size_order", pobj);
         }

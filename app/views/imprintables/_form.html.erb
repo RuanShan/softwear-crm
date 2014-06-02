@@ -75,6 +75,8 @@
         </div>
       </div>
 
+      <%= render partial: 'grid', locals: {sizes: @sizes, colors: @colors, imprintable: imprintable} %>
+
       <div class="form-group">
         <div class="col-sm-offset-2 col-sm-10">
           <button type="submit" class="btn btn-info"><%= create_or_edit_text(imprintable) %> Imprintable</button>

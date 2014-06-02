@@ -1,4 +1,5 @@
 class Color < ActiveRecord::Base
+  has_many :imprintable_variants
   validates :name, uniqueness: true, presence: true
   validates :sku, uniqueness: true, presence: true
 

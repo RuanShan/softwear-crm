@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140523192339) do
+ActiveRecord::Schema.define(version: 20140529185033) do
 
   create_table "brands", force: true do |t|
     t.string   "name"
@@ -30,11 +30,15 @@ ActiveRecord::Schema.define(version: 20140523192339) do
     t.integer  "imprintable_variant_id"
   end
 
+  add_index "colors", ["imprintable_variant_id"], name: "color_imprintable_variant_id_ix", using: :btree
+
   create_table "imprintable_variants", force: true do |t|
     t.integer  "imprintable_id"
     t.datetime "deleted_at"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.integer  "size_id"
+    t.integer  "color_id"
   end
 
   create_table "imprintables", force: true do |t|
@@ -46,6 +50,8 @@ ActiveRecord::Schema.define(version: 20140523192339) do
     t.boolean  "polyester"
     t.integer  "style_id"
   end
+
+  add_index "imprintables", ["style_id"], name: "style_id_ix", using: :btree
 
   create_table "jobs", force: true do |t|
     t.string   "name"
@@ -97,9 +103,10 @@ ActiveRecord::Schema.define(version: 20140523192339) do
     t.datetime "deleted_at"
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.integer  "sequence"
     t.integer  "imprintable_variant_id"
   end
+
+  add_index "sizes", ["imprintable_variant_id"], name: "size_imprintable_variant_id_ix", using: :btree
 
   create_table "stores", force: true do |t|
     t.string   "name"
@@ -118,6 +125,8 @@ ActiveRecord::Schema.define(version: 20140523192339) do
     t.datetime "updated_at"
     t.integer  "brand_id"
   end
+
+  add_index "styles", ["brand_id"], name: "brand_id_ix", using: :btree
 
   create_table "users", force: true do |t|
     t.string   "email",                  default: "", null: false

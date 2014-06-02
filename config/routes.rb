@@ -8,7 +8,6 @@ CrmSoftwearcrmCom::Application.routes.draw do
   put '/users/change_password', to: 'users#update_password', as: :update_password
   get '/users/lock', to: 'users#lock', as: :lock_user
 
-<<<<<<< HEAD
   resources :users
 
   resources :imprintables do
@@ -24,10 +23,7 @@ CrmSoftwearcrmCom::Application.routes.draw do
     end
   end
 
-=======
-  resources :styles, :brands, :colors, :imprintables, :users
   resources :jobs, only: [:create, :update, :destroy]
->>>>>>> fc4732eae6e48063ca383d56eca82e228f819a90
   get '/logout' => 'users#logout'
   
   scope 'configuration' do

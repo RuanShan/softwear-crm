@@ -9,7 +9,6 @@ feature 'Imprintables management' do
 
   let!(:imprintable) { create(:valid_imprintable)}
 
-
   scenario 'A user can see a list of imprintables' do
     visit root_path
     click_link 'imprintables_list_link'

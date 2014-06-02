@@ -1,7 +1,7 @@
 require 'spec_helper'
 include ApplicationHelper
 
-feature 'Order management', order_spec: true, js: true do
+feature 'Order management', order_spec: true,  js: true do
   given!(:valid_user) { create(:user) }
   before(:each) do
     login_as valid_user
@@ -43,9 +43,10 @@ feature 'Order management', order_spec: true, js: true do
     wait_for_ajax
 
     select 'Pick up in Ypsilanti', from: 'Delivery method'
-    # select 'In House Delivery', from: 'Shipping Method'
 
+    sleep 1
     click_button 'Submit'
+    sleep 1
 
     expect(Order.where(firstname: 'Guy')).to exist
   end

@@ -2,7 +2,7 @@ require 'spec_helper'
 
 describe 'Scopes' do
   let!(:imprintable_variant) { create(:valid_imprintable_variant)}
-  let!(:deleted_imprintable_variant) { create(:valid_imprintable_variant, deleted_at: Time.now, imprintable_id: 'Deleted')}
+  let!(:deleted_imprintable_variant) { create(:valid_imprintable_variant, deleted_at: Time.now)}
 
   describe 'default_scope' do
     it 'includes only imprintable variants where deleted_at is nil' do
