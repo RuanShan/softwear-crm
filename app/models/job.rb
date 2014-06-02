@@ -1,6 +1,8 @@
 class Job < ActiveRecord::Base
   belongs_to :order
 
+  has_many :line_items
+
   validates_presence_of :name
   validates :name, uniqueness: { scope: :order_id }
 
