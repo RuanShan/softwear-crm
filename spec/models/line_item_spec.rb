@@ -1,5 +1,4 @@
 require 'spec_helper'
-include LineItemHelpers
 
 describe LineItem, line_item_spec: true do
   context 'when imprintable_variant_id is nil' do
@@ -34,20 +33,4 @@ describe LineItem, line_item_spec: true do
     line_item = create :non_imprintable_line_item
     expect(line_item.price).to eq line_item.unit_price * line_item.quantity
   end
-
-  context '.retrieve_for', donow: true do
-    let!(:job) { create(:job) }
-    [:red, :blue, :green].each { |c| let!(c) { create(:valid_color, name: c) } }
-    [:shirt, :hat].each { |s| let!(s) { create(:valid_imprintable) } }
-    make_variant :green, :shirt
-    make_variant :red, :shirt
-    make_variant :red, :hat
-    make_variant :blue, :hat
-
-    it 'will sort out the line items for the job' do
-      result = LineItem.retrieve_for job
-      
-    end
-  end
-
 end

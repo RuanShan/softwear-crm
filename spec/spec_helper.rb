@@ -22,6 +22,7 @@ RSpec.configure do |config|
   config.include FactoryGirl::Syntax::Methods
   config.include FormHelpers
   config.include AuthenticationHelpers
+  config.include GeneralHelpers
   config.include Devise::TestHelpers, type: :controller
   
 
