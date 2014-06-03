@@ -22,9 +22,6 @@ CrmSoftwearcrmCom::Application.routes.draw do
   end
 
   resources :styles, :brands, :colors, :users, :line_items
-  resources :jobs, only: [:create, :update, :destroy] do
-    resources :line_items
-  end
 
   get '/logout' => 'users#logout'
   
@@ -32,8 +29,11 @@ CrmSoftwearcrmCom::Application.routes.draw do
     resources :shipping_methods, :stores
   end
   
-  resources :orders do
+  resources :orders, shallow: true do
     get 'timeline', to: 'timeline#show'
+    resources :jobs, only: [:create, :update, :destroy] do
+      resources :line_items
+    end
   end
 
 end

@@ -21,15 +21,15 @@
 
 $(window).load ->
 	$('#new-job-button').click ->
-		self = $(this)
-		self.attr 'disabled', 'disabled'
-		setTimeout (-> self.removeAttr 'disabled'), 1000
+		$this = $(this)
+		$this.attr 'disabled', 'disabled'
+		setTimeout (-> $this.removeAttr 'disabled'), 1000
 
 		params = {}
 		params['job[description]'] = 'Job description'
 		ajax = $.ajax
 			type: 'POST',
-			url: "/jobs", 
+			url: "/orders/#{$this.attr 'data-order-id'}/jobs"
 			data: params
 
 		ajax.done (response) ->
