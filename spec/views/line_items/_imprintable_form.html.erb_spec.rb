@@ -1,8 +1,8 @@
 require 'spec_helper'
 
-describe 'orders/_line_item_new_imprintable.html.erb', line_item_spec: true do
+describe 'line_items/_imprintable_form.html.erb', line_item_spec: true do
   it 'displays the correct fields' do
-    render partial: 'orders/_line_item_new_imprintable', locals: {line_item: LineItem.new}
+    render partial: 'line_items/imprintable_form', locals: {line_item: LineItem.new}
     within_form_for LineItem do
       expect(rendered).to have_field_for 'brand'
       expect(rendered).to have_field_for 'style'

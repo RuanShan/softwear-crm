@@ -63,12 +63,12 @@ ActiveRecord::Schema.define(version: 20140602150112) do
     t.integer "quantity"
     t.boolean "taxable"
     t.text    "description"
-    t.integer "jobs_id"
+    t.integer "job_id"
     t.integer "imprintable_variant_id"
     t.decimal "unit_price",             precision: 10, scale: 2
   end
 
-  add_index "line_items", ["jobs_id"], name: "index_line_items_on_jobs_id", using: :btree
+  add_index "line_items", ["job_id"], name: "index_line_items_on_job_id", using: :btree
 
   create_table "orders", force: true do |t|
     t.string   "email"

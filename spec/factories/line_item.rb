@@ -4,7 +4,7 @@ FactoryGirl.define do
     quantity 3
 
     factory :non_imprintable_line_item do
-      name 'Test Non-Imprintable'
+      sequence(:name) { |n| "line_item_#{n}" }
       description 'Incredibly informative text'
       imprintable_variant_id nil
     end
