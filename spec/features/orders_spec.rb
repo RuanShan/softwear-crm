@@ -99,7 +99,7 @@ feature 'Order management', order_spec: true, js: true do
     expect(Order.where(name: 'New Title')).to exist
   end
 
-  scenario 'when editing, submitting invalid information displays error content', donow: true do
+  scenario 'when editing, submitting invalid information displays error content' do
     visit edit_order_path(order)+'#details'
     fill_in 'Email', with: 'bad email!'
     click_button 'Save'
