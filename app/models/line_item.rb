@@ -14,6 +14,10 @@ class LineItem < ActiveRecord::Base
     imprintable_variant_id != nil
   end
 
+  def imprintable
+    imprintable_variant.imprintable
+  end
+
   def description
     if imprintable?
       imprintable_variant.description

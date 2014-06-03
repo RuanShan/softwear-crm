@@ -59,13 +59,16 @@ ActiveRecord::Schema.define(version: 20140602150112) do
   end
 
   create_table "line_items", force: true do |t|
-    t.string  "name"
-    t.integer "quantity"
-    t.boolean "taxable"
-    t.text    "description"
-    t.integer "job_id"
-    t.integer "imprintable_variant_id"
-    t.decimal "unit_price",             precision: 10, scale: 2
+    t.string   "name"
+    t.integer  "quantity"
+    t.boolean  "taxable"
+    t.text     "description"
+    t.integer  "job_id"
+    t.integer  "imprintable_variant_id"
+    t.datetime "deleted_at"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.decimal  "unit_price",             precision: 10, scale: 2
   end
 
   add_index "line_items", ["job_id"], name: "index_line_items_on_job_id", using: :btree

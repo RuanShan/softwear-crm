@@ -18,4 +18,23 @@ class Job < ActiveRecord::Base
     original_destroy!
     update_column update_attribute :name, "#{name} #{Time.now.to_s}"
   end
+
+  def sort_line_items
+    result = {}
+    LineItem.includes(
+      imprintable_variant: [
+        { imprintable: :style }, :color, :size
+      ]
+    ).where(job_id: id)
+    .where.not(imprintable_variant_id: nil).each do |line_item|
+      imprintable_name = line_item.imprintable.name
+      variant = line_item.imprintable_variant
+      color_name = variant.color.name
+
+      result[imprintable_name] ||= {}
+      result[imprintable_name][color_name] ||= []
+      result[imprintable_name][color_name] << line_item
+    end
+    result
+  end
 end

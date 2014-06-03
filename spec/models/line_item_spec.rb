@@ -33,4 +33,22 @@ describe LineItem, line_item_spec: true do
     line_item = create :non_imprintable_line_item
     expect(line_item.price).to eq line_item.unit_price * line_item.quantity
   end
+
+  context '#<=>' do
+    context 'on standard line items' do
+      ['a', 'b', 'c'].each_with_index do |v,i|
+        let!("line_item_#{i}".to_sym) do
+          create :non_imprintable_line_item, name: "line_item_#{v}"
+        end
+      end
+
+      it 'should sort them alphabetically' do
+        expect([line_item_1, line_item_3, line_item_2].sort)
+        .to eq [line_item_1, line_item_2, line_item_3]
+      end
+    end
+    context 'on imprintable line items' do
+      let!(:line_item_1) { create :imprintable_line_item }
+    end
+  end
 end
