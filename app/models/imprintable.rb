@@ -9,4 +9,6 @@ class Imprintable < ActiveRecord::Base
   def name
     "#{style.catalog_no} #{style.name}"
   end
+
+  def description; style.description; end
 end

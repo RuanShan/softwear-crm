@@ -6,4 +6,6 @@ class ImprintableVariant < ActiveRecord::Base
   validates_presence_of :imprintable, :size, :color
 
   inject NonDeletable
+
+  def description; imprintable.description; end
 end
