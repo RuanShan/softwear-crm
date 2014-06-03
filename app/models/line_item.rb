@@ -18,11 +18,28 @@ class LineItem < ActiveRecord::Base
     imprintable_variant.imprintable
   end
 
-  def description
+  [:name, :description].each do |method|
+    define_method(method) do
+      if imprintable?
+        imprintable_variant.send method
+      else
+        read_attribute method
+      end
+    end
+  end
+
+  def <=>(other)
+    return 0 if other == self
     if imprintable?
-      imprintable_variant.description
+      unless other.imprintable?
+        return -1
+      end
+      self.imprintable_variant.size.sort_order <=> other.imprintable_variant.size.sort_order
     else
-      read_attribute :description
+      if other.imprintable?
+        return +1
+      end
+      self.name <=> other.name
     end
   end
 

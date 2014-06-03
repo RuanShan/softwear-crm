@@ -8,4 +8,5 @@ class ImprintableVariant < ActiveRecord::Base
   inject NonDeletable
 
   def description; imprintable.description; end
+  def name; imprintable.name; end
 end

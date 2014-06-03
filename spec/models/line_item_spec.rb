@@ -1,4 +1,5 @@
 require 'spec_helper'
+include LineItemHelpers
 
 describe LineItem, line_item_spec: true do
   context 'when imprintable_variant_id is nil' do
@@ -8,9 +9,12 @@ describe LineItem, line_item_spec: true do
   	it { should validate_presence_of :description }
   	it { should validate_presence_of :name }
 
-  	it 'description should return the description stored in the database' do
-  		expect(subject.description).to eq subject.read_attribute :description
-  	end
+    it 'name should return the name stored in the database' do
+      expect(subject.name).to eq subject.read_attribute :name
+    end
+    it 'description should return the description stored in the database' do
+      expect(subject.description).to eq subject.read_attribute :description
+    end
   end
   context 'when imprintable_variant_id is not nil' do
   	let!(:subject) { create :imprintable_line_item }
@@ -24,9 +28,12 @@ describe LineItem, line_item_spec: true do
   	it { should_not validate_presence_of :description }
   	it { should_not validate_presence_of :name }
 
-  	it 'description should return the description of its imprintable_variant' do
-  		expect(subject.description).to eq subject.imprintable_variant.imprintable.style.description
-  	end
+    it 'name should return the name of its imprintable_variant' do
+      expect(subject.name).to eq subject.imprintable_variant.imprintable.name
+    end
+    it 'description should return the description of its imprintable_variant' do
+      expect(subject.description).to eq subject.imprintable_variant.imprintable.style.description
+    end
   end
 
   it '#price returns quantity times unit price' do
@@ -36,19 +43,36 @@ describe LineItem, line_item_spec: true do
 
   context '#<=>' do
     context 'on standard line items' do
-      ['a', 'b', 'c'].each_with_index do |v,i|
-        let!("line_item_#{i}".to_sym) do
+      ['c', 'a', 'b'].each do |v|
+        let!("line_item_#{v}".to_sym) do
           create :non_imprintable_line_item, name: "line_item_#{v}"
         end
       end
 
       it 'should sort them alphabetically' do
-        expect([line_item_1, line_item_3, line_item_2].sort)
-        .to eq [line_item_1, line_item_2, line_item_3]
+        expect([line_item_a, line_item_c, line_item_b].sort)
+        .to eq [line_item_a, line_item_b, line_item_c]
       end
     end
     context 'on imprintable line items' do
-      let!(:line_item_1) { create :imprintable_line_item }
+      let!(:job) { create(:job) }
+      let!(:white) { create(:valid_color, name: 'white') }
+      let!(:shirt) { create(:valid_imprintable) }
+      make_variants :white, :shirt, [:M, :S, :L]
+
+      before(:each) do
+        size_s.sort_order = 1
+        size_m.sort_order = 2
+        size_l.sort_order = 3
+        [size_s, size_m, size_l].each do |s|
+          s.save
+        end
+      end
+
+      it 'should sort them by the size sort order' do
+        expect([white_shirt_m_item, white_shirt_l_item, white_shirt_s_item].sort)
+        .to eq [white_shirt_s_item, white_shirt_m_item, white_shirt_l_item]
+      end
     end
   end
 end

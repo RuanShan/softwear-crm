@@ -57,6 +57,19 @@ describe Job, job_spec: true do
       end
     end
 
+    it 'should sort the resulting arrays properly' do
+      sizes = [size_xl, size_m, size_s]
+      sizes.each_with_index do |s,i|
+        s.sort_order = i+1
+      end
+      sizes.each { |s| s.save }
+
+      result = job.sort_line_items
+
+      expect(result[shirt.name]['red'])
+      .to eq [red_shirt_xl_item, red_shirt_m_item, red_shirt_s_item]
+    end
+
     it 'should take 6 SQL queries' do
       expect(queries_after{job.sort_line_items}).to eq 6
     end

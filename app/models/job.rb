@@ -35,6 +35,7 @@ class Job < ActiveRecord::Base
       result[imprintable_name][color_name] ||= []
       result[imprintable_name][color_name] << line_item
     end
+    result.each { |k, v| v.each { |k, v| v.sort! } }
     result
   end
 end
