@@ -25,8 +25,7 @@ class Job < ActiveRecord::Base
       imprintable_variant: [
         { imprintable: :style }, :color, :size
       ]
-    ).where(job_id: id)
-    .where.not(imprintable_variant_id: nil).each do |line_item|
+    ).where(job_id: id).where.not(imprintable_variant_id: nil).each do |line_item|
       imprintable_name = line_item.imprintable.name
       variant = line_item.imprintable_variant
       color_name = variant.color.name
