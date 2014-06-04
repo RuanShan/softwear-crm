@@ -33,9 +33,21 @@ class Order < ActiveRecord::Base
   # non-deletable stuff
   inject NonDeletable
 
-  def revive
-    update_attribute(:deleted_at, nil) if !deleted_at.nil?
+  def line_items
+    LineItem.where(job_id: job_ids)
   end
+
+  def tax; 0.6; end
+
+  def subtotal
+    sum = 0
+    line_items.each do |line_item|
+      sum += line_item.price
+    end
+    sum
+  end
+
+  def total; subtotal + subtotal * tax; end
 
 private
   def initialize_fields

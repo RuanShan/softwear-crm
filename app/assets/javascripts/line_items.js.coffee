@@ -22,6 +22,8 @@ $(window).ready ->
       alert "Internal server error! Can't process request."
 
 initializeLineItemModal = (lineItemModal) ->
+  currentForm = null
+
   $('input:radio[name="is_imprintable"]').change ->
     $radio = $(this)
     $radio.attr 'disabled', 'disabled'
@@ -37,6 +39,15 @@ initializeLineItemModal = (lineItemModal) ->
       $in  = $('#li-standard-form')
 
     $out.fadeOut 400, ->
+      currentForm = $in
       $in.fadeIn 400
+
+  $('#line-item-submit').click ->
+    $add = $(this)
+    $add.attr 'disabled', 'disabled'
+    setTimeout (-> $add.removeAttr 'disabled'), 5000
+
+    # TODO change to ajaxSubmit/ajaxForm
+    currentForm.submit()
 
   lineItemModal.modal 'show'

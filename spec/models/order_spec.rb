@@ -56,26 +56,29 @@ describe Order, order_spec: true do
       expect(Order.all).to_not include order
     end
 
-    it 'can be revived after being deleted' do
-      order.destroy
-      expect(order.destroyed?).to eq true
-      order.revive
-      expect(order.destroyed?).to eq false
-    end
-
   end
 
   context 'relationships', line_item_spec: true do
     let!(:order) {create :order}
 
-    it 'has a list of line items thorugh its jobs' do
-      expect{order.line_items}.to_not raise_error
-      expect(order.line_items).to be_a ActiveRecord::Relation
-    end
+    context '#line_items' do
+      it 'is an ActiveRecord::Relation' do
+        expect{order.line_items}.to_not raise_error
+        expect(order.line_items).to be_a ActiveRecord::Relation
+      end
 
-    it 'has a list of imprintables through its jobs' do
-      expect{order.imprintables}.to_not raise_error
-      expect(order.imprintables).to be_a ActiveRecord::Relation
+      it 'actually works' do
+        job1 = create(:job)
+        job2 = create(:job)
+        [job1, job2].each do |job|
+          2.times { job.line_items << create(:non_imprintable_line_item) }
+          order.jobs << job
+        end
+
+        expect(order.line_items.count).to eq 4
+        expect(order.line_items).to include job1.line_items.first
+        expect(order.line_items).to include job2.line_items.first
+      end
     end
 
     it 'has a tax constant that returns 0.6 for now' do

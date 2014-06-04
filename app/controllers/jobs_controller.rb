@@ -52,12 +52,4 @@ class JobsController < InheritedResources::Base
     ])
   end
 
-  def with_format(format)
-    old_formats = formats
-    self.formats = [format]
-    yield
-    self.formats = old_formats
-    nil
-  end
-
 end
