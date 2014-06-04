@@ -118,14 +118,24 @@ private
   end
 
   def proxy(method_name, *extras)
+    @proxy_stack ||= []
+    @proxy_stack << { func: method_name, args: extras }
     Class.new do
-      def initialize(f, m, e)
-        @f = f; @func = m, @extras = e
+      def initialize(f); @f = f; end
+      def is_proxy?; true; end
+      def method_missing(name, *args, &block)
+        result = @f.send(name, *args, &block)
+        if result.respond_to? :is_proxy?
+          result
+        else
+          r = ActiveSupport::SafeBuffer.new
+          @f.instance_variable_get('@proxy_stack')[0..-1].each do |e|
+             r.send :original_concat, @f.send(e[:func], *([args.first] + e[:args]).compact) || ''
+          end
+          @f.instance_variable_get('@proxy_stack').clear()
+          r.send :original_concat, result
+        end
       end
-      def method_missing(func, *args, &block)
-        @f.send(@func, args.first, *@extras)
-        @f.send(func, *args, &block)
-      end
-    end.new(self, method_name, extras)
+    end.new(self)
   end
 end
