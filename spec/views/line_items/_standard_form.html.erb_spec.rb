@@ -9,7 +9,7 @@ describe 'line_items/_standard_form.html.erb', line_item_spec: true do
       expect(rendered).to have_field_for 'quantity'
       expect(rendered).to have_field_for 'unit_price'
 
-      expect(rendered).to have_selector 'button', text: 'Add'
+      expect(rendered).to have_selector 'input[type="submit"][value="Add"]'
     end
   end
 end

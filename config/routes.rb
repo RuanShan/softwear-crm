@@ -21,7 +21,7 @@ CrmSoftwearcrmCom::Application.routes.draw do
     end
   end
 
-  resources :styles, :brands, :colors, :users, :line_items
+  resources :styles, :brands, :colors, :users
 
   get '/logout' => 'users#logout'
   

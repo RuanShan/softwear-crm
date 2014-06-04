@@ -27,6 +27,26 @@ class LancengFormBuilder < ActionView::Helpers::FormBuilder
     super method, choices, o, options
   end
 
+  # Quick method for adding a label to a field. Can be called like
+  # f.label.text_area :name
+  def label(*args)
+    if args.count == 0 || args.first.is_a?(String)
+      l = args.first.is_a?(String) ? args.first : nil
+      proxy :label, l
+    else
+      super
+    end
+  end
+  # Another quick method, this time for errors. Potential use:
+  # f.label.error.text_area :name
+  def error(*args)
+    if args.count == 0
+      proxy :error_for
+    else
+      error_for *args
+    end
+  end
+
   # Creates a contenteditable span that is updated through ajax
   def inline_field(method, default_or_options={}, options={})
     default = nil
@@ -95,5 +115,17 @@ private
       options[:class] << ' ' unless options[:class].empty?
       options[:class] << v
     end
+  end
+
+  def proxy(method_name, *extras)
+    Class.new do
+      def initialize(f, m, e)
+        @f = f; @func = m, @extras = e
+      end
+      def method_missing(func, *args, &block)
+        @f.send(@func, args.first, *@extras)
+        @f.send(func, *args, &block)
+      end
+    end.new(self, method_name, extras)
   end
 end

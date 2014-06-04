@@ -18,7 +18,7 @@ describe Job, job_spec: true do
     expect(job.line_items).to be_a ActiveRecord::Relation # I think
   end
 
-  context '#sort_line_items', donow: true do
+  context '#sort_line_items', line_item_spec: true do
     let!(:job) { create(:job) }
     [:red, :blue, :green].each { |c| let!(c) { create(:valid_color, name: c) } }
     [:shirt, :hat].each { |s| let!(s) { create(:valid_imprintable) } }
