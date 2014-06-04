@@ -133,7 +133,7 @@ private
              r.send :original_concat, @f.send(e[:func], *([args.first] + e[:args]).compact) || ''
           end
           @f.instance_variable_get('@proxy_stack').clear()
-          r.send :original_concat, result
+          r.send :original_concat, result || ''
         end
       end
     end.new(self)
