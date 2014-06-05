@@ -81,4 +81,8 @@ initializeLineItemModal = (lineItemModal) ->
   lineItemModal.keyup (key) ->
     submitForm() if key.which is 13
 
+  handleImprintableForm = ($form) ->
+    
+
+  handleImprintableForm $('#li-imprintable-form')
   lineItemModal.modal 'show'
