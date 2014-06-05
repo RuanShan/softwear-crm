@@ -8,7 +8,7 @@ feature 'Line Items management', line_item_spec: true, js: true do
   given!(:white) { create(:valid_color, name: 'white') }
   given!(:shirt) { create(:valid_imprintable) }
 
-  make_variants :white, :shirt, [:S, :M, :L]
+  make_variants :white, :shirt, [:S, :M, :L], not: [:line_item, :job]
 
   given(:style) { shirt.style }
   given(:brand) { shirt.brand }
@@ -83,9 +83,12 @@ feature 'Line Items management', line_item_spec: true, js: true do
       wait_for_ajax
     end
 
-    # expect(LineItem.where(imprintable_variant_id: imprintable_variant)).to exist
-    expect()
+    expect(LineItem.where(imprintable_variant_id: white_shirt_s.id).to exist)
+    expect(LineItem.where(imprintable_variant_id: white_shirt_m.id).to exist)
+    expect(LineItem.where(imprintable_variant_id: white_shirt_l.id).to exist)
+
     expect(page).to have_content 'success'
-    expect(page).to have_content 'Test Item'
+    expect(page).to have_content white_shirt_s.name
+    expect(page).to have_content white_shirt_s.description
   end
 end
