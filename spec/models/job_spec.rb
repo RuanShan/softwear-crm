@@ -22,7 +22,7 @@ describe Job, job_spec: true do
     let!(:job) { create(:job) }
     [:red, :blue, :green].each { |c| let!(c) { create(:valid_color, name: c) } }
     [:shirt, :hat].each { |s| let!(s) { create(:valid_imprintable) } }
-    # mark_variants is defined in support/line_item_helpers.rb
+    
     make_variants :green, :shirt, [:S, :M, :L]
     make_variants :red,   :shirt, [:S, :M, :XL]
     make_variants :red,   :hat,   [:OSFA]
