@@ -54,18 +54,21 @@ initializeLineItemModal = (lineItemModal) ->
     handler.clear() if handler != null
 
     $currentFormDiv ||= $('#li-standard-form')
+    action = currentForm().attr('action')
 
     ajax = $.ajax
       type: 'POST'
-      url: currentForm().attr('action')
+      url: action
       data: currentForm().serialize()
       dataType: 'json'
 
     ajax.done (response) ->
       if response.result == 'success'
         console.log 'Successfully created line item!'
+        jobId = action.charAt(action.indexOf('jobs/')+'jobs/'.length)
+        refreshJob jobId
         lineItemModal.modal 'hide'
-        # TODO update job view
+
       else if response.result == 'failure'
         console.log 'Failed to create'
         handler ||= ErrorHandler('line_item', currentForm())

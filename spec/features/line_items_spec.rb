@@ -41,6 +41,25 @@ feature 'Line Items managements', line_item_spec: true, js: true do
     expect(page).to have_content 'New Item'
   end
 
+  scenario 'user sees errors when inputting bad info for a standard line item' do
+    visit '/orders/1/edit#jobs'
+    wait_for_ajax
+
+    form('.add-line-item').click
+    wait_for_ajax
+
+    within('.line-item-form') do
+      choose 'No'
+      wait_for_ajax
+
+      find('.line-item-submit').click
+      wait_for_ajax
+
+      expect(page).to have_content "Unit price can't be blank"
+      expect(page).to have_content "Quantity can't be blank"
+    end
+  end
+
   scenario 'user can add a new imprintable line item' do
     visit '/orders/1/edit#jobs'
     wait_for_ajax

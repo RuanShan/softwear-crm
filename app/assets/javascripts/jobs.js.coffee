@@ -17,7 +17,24 @@
 
   ajax.fail (jqXHR, textStatus) ->
     alert "Something went wrong with the server and
-        the new job couldn't be deleted for some reason."
+        the job couldn't be deleted for some reason."
+
+@refreshJob = (jobId) ->
+  $job = $("#job-#{jobId}")
+  if $job.length == 0
+    console.log "Error! Couldn't find panel for job #{jobId}"
+    return
+  
+  ajax = $.ajax
+    type: 'GET'
+    url: "/jobs/#{jobId}"
+
+  ajax.done (response) ->
+    console.log "Updated job #{jobID}"
+    $job.replaceWith response
+
+  ajax.failure (jqXHR, textStatus) ->
+    alert "Failed to re-render job #{jobId}. Refresh the page to view changes."
 
 $(window).load ->
   $('#new-job-button').click ->
@@ -28,7 +45,7 @@ $(window).load ->
     params = {}
     params['job[description]'] = 'Job description'
     ajax = $.ajax
-      type: 'POST',
+      type: 'POST'
       url: "/orders/#{$this.attr 'data-order-id'}/jobs"
       data: params
 

@@ -45,6 +45,14 @@ class JobsController < InheritedResources::Base
     }
   end
 
+  def show
+    super do |format|
+      format.html do
+        render partial: 'orders/job', locals: { job: @job }
+      end
+    end
+  end
+
   private
   def permitted_params
     params.permit(job: [
