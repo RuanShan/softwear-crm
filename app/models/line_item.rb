@@ -2,6 +2,8 @@ class LineItem < ActiveRecord::Base
   belongs_to :job
   belongs_to :imprintable_variant
 
+  validates_presence_of :unit_price
+  validates_presence_of :quantity
   validates_presence_of :name, unless: :imprintable?
   validates_presence_of :description, unless: :imprintable?
   validate :imprintable_variant_exists, if: :imprintable?

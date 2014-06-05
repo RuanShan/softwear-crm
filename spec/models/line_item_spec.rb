@@ -2,6 +2,9 @@ require 'spec_helper'
 include LineItemHelpers
 
 describe LineItem, line_item_spec: true do
+  it { should validate_presence_of :unit_price }
+  it { should validate_presence_of :quantity }
+
   context 'when imprintable_variant_id is nil' do
   	before(:each) { allow(subject).to receive(:imprintable_variant_id).and_return nil }
 

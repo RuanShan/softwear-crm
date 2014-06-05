@@ -11,7 +11,6 @@ $(window).ready ->
       dataType: 'html'
 
     ajax.done (response) ->
-      console.log response
       $('body').children().last().after $(response)
       lineItemModal = $('#lineItemModal')
       initializeLineItemModal lineItemModal
@@ -22,7 +21,10 @@ $(window).ready ->
       alert "Internal server error! Can't process request."
 
 initializeLineItemModal = (lineItemModal) ->
-  currentForm = null
+  $currentFormDiv = null
+  currentForm = -> $currentFormDiv.find('form')
+
+  handler = null
 
   $('input:radio[name="is_imprintable"]').change ->
     $radio = $(this)
@@ -39,15 +41,41 @@ initializeLineItemModal = (lineItemModal) ->
       $in  = $('#li-standard-form')
 
     $out.fadeOut 400, ->
-      currentForm = $in
+      handler.clear() if handler != null
+      handler = null
+      $currentFormDiv = $in
       $in.fadeIn 400
 
-  $('#line-item-submit').click ->
+  submitForm = ->
     $add = $(this)
     $add.attr 'disabled', 'disabled'
     setTimeout (-> $add.removeAttr 'disabled'), 5000
 
-    # TODO change to ajaxSubmit/ajaxForm
-    currentForm.submit()
+    handler.clear() if handler != null
+
+    $currentFormDiv ||= $('#li-standard-form')
+
+    ajax = $.ajax
+      type: 'POST'
+      url: currentForm().attr('action')
+      data: currentForm().serialize()
+      dataType: 'json'
+
+    ajax.done (response) ->
+      if response.result == 'success'
+        console.log 'Successfully created line item!'
+        lineItemModal.modal 'hide'
+        # TODO update job view
+      else if response.result == 'failure'
+        console.log 'Failed to create'
+        handler ||= ErrorHandler('line_item', currentForm())
+        handler.handleErrors(response.errors, response.modal)
+
+    ajax.fail (jqXHR, textStatus) ->
+      alert 'Failed to create line item.'
+
+  $('#line-item-submit').click submitForm
+  lineItemModal.keyup (key) ->
+    submitForm() if key.which is 13
 
   lineItemModal.modal 'show'

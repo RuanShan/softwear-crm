@@ -9,22 +9,33 @@ class LancengFormBuilder < ActionView::Helpers::FormBuilder
   end
 
   # Adding form-control class to standard field functions
-  def text_field(method, options={})
-    add_class options, 'form-control'
-    super
-  end  
-  alias_method :email_field, :text_field
-  def password_field(method, options={})
-    add_class options, 'form-control'
-    super
-  end
-  def text_area(method, options={})
-    add_class options, 'form-control'
-    super
-  end
+  # def text_field(method, options={})
+  #   add_class options, 'form-control'
+  #   super
+  # end  
+  # alias_method :email_field, :text_field
+  # def password_field(method, options={})
+  #   add_class options, 'form-control'
+  #   super
+  # end
+  # def text_area(method, options={})
+  #   add_class options, 'form-control'
+  #   super
+  # end
   def select(method, choices, o={}, options={})
     add_class options, 'form-control'
     super method, choices, o, options
+  end
+  # Super efficient mass method reassignment, go!
+  [:text_field, :password_field, :text_area, 
+  :number_field].each do |method_name|
+    alias_method "original_#{method_name}".to_sym, method_name
+    define_method method_name do |*args|
+      options = args.count == 2 ? args.last.merge({}) : {}
+      add_class options, 'form-control'
+      actual_args = [args.first, options]
+      send("original_#{method_name}".to_sym, *actual_args)
+    end
   end
 
   # Quick method for adding a label to a field. Can be called like

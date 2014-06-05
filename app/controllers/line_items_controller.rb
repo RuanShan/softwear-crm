@@ -7,7 +7,9 @@ class LineItemsController < InheritedResources::Base
 
 	def create
 		super do |success, failure|
-			success.json { render { result: 'success' } }
+			success.json do
+        render json: { result: 'success' }
+      end
 			failure.json do
 				modal_html = 'ERROR'
         with_format :html do

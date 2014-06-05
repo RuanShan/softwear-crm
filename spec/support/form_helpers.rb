@@ -37,22 +37,24 @@ module FormHelpers
     end
   end
 
-  RSpec::Matchers.define :have_field_for do |field_name|
+  RSpec::Matchers.define :have_field_for do |field_name, options={}|
     match do |page|
       doc = Nokogiri::HTML page
-      css_attr = (@@model_form_context ? 
-                  "name='#{@@model_form_context}[#{field_name}]'" :
-                  "name='#{field_name}'")
-      inl_css_attr = ("resource-method='#{field_name}'")
+      css_attr = (@@model_form_context ?
+                  "[name='#{@@model_form_context}[#{field_name}]']" :
+                  "[name='#{field_name}']")
+      inl_css_attr = ("[resource-method='#{field_name}']")
 
-      !(doc.css("#{css_pre}*[#{css_attr}]").empty? &&
-        doc.css("#{css_pre}*[#{css_attr}]").empty?)
+      css_attr += "[type='#{options[:type]}']" if options[:type]
+
+      !(doc.css("#{css_pre}*#{css_attr}").empty? &&
+        doc.css("#{css_pre}*#{inl_css_attr}").empty?)
     end
     failure_message do |page|
       css_attr = (@@model_form_context ? 
                   "name='#{@@model_form_context}[#{field_name}]'" :
                   "name='#{field_name}'")
-      "Couldn't find field for #{css_pre}*[#{css_attr}] in page: #{page}"
+      "Couldn't find field for #{css_pre}*#{css_attr} in page: #{page}"
     end
   end
 
