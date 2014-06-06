@@ -1,4 +1,3 @@
-<!-- we'll probably have to move this to a stylesheet -->
 <style type="text/css">
   .fa-plus {
     position:absolute;
@@ -63,12 +62,16 @@
     <thead>
     <tr>
       <th></th>
-
-      <% @sizes.each do |size| %>
-        <th>
+      <% variants =  imprintable.find_variants %>
+      <% variants_array = variants.to_a %>
+      <% size_variants = variants_array.uniq { |v| v.size_id } %>
+      <% size_variants.sort! { |x,y| x.size.sort_order <=> y.size.sort_order } %>
+      <% size_variants.each_with_index do |size_variant, size_index| %>
+        <% size = size_variant.size %>
+        <th id="col_<%= size_index+1%>" data-size-id="<%= size.id%>">
           <%= size.name %>
-          <i class="fa fa-plus" id="col_plus_<%=size.id%>"></i>
-          <i class="fa fa-minus" id="col_minus_<%=size.id%>"></i>
+          <i class="fa fa-plus" id="col_plus_<%=size_index+1%>"></i>
+          <i class="fa fa-minus" id="col_minus_<%=size_index+1%>"></i>
         </th>
       <% end %>
       <th id="add_a_size">
@@ -82,32 +85,32 @@
     </tr>
     </thead>
     <tbody>
-    <% puts '===================================================' %>
-    <% @colors.each do |color| %>
-      <% puts color %>
-    <% end %>
-    <% variants = imprintable.find_variants %>
-    <% @colors.each do |color| %>
-      <tr id="<%= model_table_row_id color %>">
+    <% variants_array = variants.to_a %>
+    <% color_variants = variants_array.uniq { |v| v.color_id } %>
+    <% color_variants.each_with_index do |color_variant, color_index| %>
+      <% color = color_variant.color %>
+      <tr id="row_<%= color_index+1%>" data-color-id="<%=color.id%>">
         <th>
           <%= color.name %>
-          <i class="fa fa-plus" id="row_plus_<%=color.id%>"></i>
-          <i class="fa fa-minus" id="row_minus_<%=color.id%>"></i>
+          <i class="fa fa-plus" id="row_plus_<%=color_index+1%>"></i>
+          <i class="fa fa-minus" id="row_minus_<%=color_index+1%>"></i>
         </th>
-        <% @sizes.each do |size| %>
-          <td id="cell">
-          <% if variants.find { |v| (v.color_id == color.id) && (v.size_id == size.id) } %>
-            <i class="fa fa-check" id="cell_<%=color.id%>_<%=size.id%>"></i>
+        <% size_variants = variants_array.uniq { |v| v.size_id } %>
+        <% size_variants.sort! { |x,y| x.size.sort_order <=> y.size.sort_order } %>
+        <% size_variants.each_with_index do |size_variant, size_index| %>
+          <% size = size_variant.size %>
+          <td id="cell_<%=color_index+1%>_<%=size_index+1%>">
+          <% v = variants_array.find { |v| (v.color_id == color.id) && (v.size_id == size.id) } %>
+          <% if v %>
+            <i class="fa fa-check" id="image_<%=color_index+1%>_<%=size_index+1%>" data-variant-id="<%=v.id%>"></i>
           <% else %>
-            <i class="fa fa-times" id="cell_<%=color.id%>_<%=size.id%>"></i>
+            <i class="fa fa-times" id="image_<%=color_index+1%>_<%=size_index+1%>"></i>
           <% end %>
             <i class="fa fa-plus cell"></i>
             <i class="fa fa-minus cell"></i>
           </td>
         <% end %>
       </tr>
-    <% end %>
-    <%= content_tag 'div', id: 'color_and_style', data: { colors: colors, sizes: sizes } do %>
     <% end %>
     <tr>
       <th id="add_a_color">
@@ -118,7 +121,7 @@
                          id: 'color_select'
                      } %>
       </th>
-      <% if @sizes.empty? || @colors.empty? %>
+      <% if variants_array.empty? %>
         <td><a class="button" id="select_button">Select</a></td>
       <% end %>
     </tr>

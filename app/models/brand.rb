@@ -1,6 +1,5 @@
 class Brand < ActiveRecord::Base
   has_many :styles
-  # has_one :imprintable, through: :style
 
   validates :name, uniqueness: true, presence: true
   validates :sku, uniqueness: true, presence: true
@@ -19,5 +18,9 @@ class Brand < ActiveRecord::Base
 
   def destroy!
     update_column(:deleted_at, Time.now)
+  end
+
+  def each(&block)
+    @brand.each(&block)
   end
 end

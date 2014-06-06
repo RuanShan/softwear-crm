@@ -4,6 +4,8 @@ class Size < ActiveRecord::Base
   validates :sku, uniqueness: true, presence: true
   validates :sort_order, presence: true
 
+  attr_accessor :valid_imprintable_variants_count
+
   default_scope { order(:sort_order)}
   before_validation :set_sort_order
 

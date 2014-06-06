@@ -13,12 +13,12 @@ CrmSoftwearcrmCom::Application.routes.draw do
   resources :imprintables do
     collection do
       resources :styles, :brands, :colors
+      post 'update_imprintable_variants'
 
       resources :sizes do
         collection do
           post 'update_size_order'
         end
-        get '/imprintables/assets' => redirect('/assets')
       end
     end
   end
@@ -33,5 +33,4 @@ CrmSoftwearcrmCom::Application.routes.draw do
   resources :orders do
     get 'timeline', to: 'timeline#show'
   end
-
 end

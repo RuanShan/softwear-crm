@@ -26,7 +26,7 @@
               <p class="text-danger"><%= message %></p>
             <% end %>
           <% end %>
-          <%=  check_box_tag 'imprintable[flashable]', 1, imprintable.flashable.present?, { class: 'checkbox' } %>
+          <%=  f.check_box :flashable, { class: 'checkbox' }, 'true', 'false' %>
           <p class="help-block">Check if the imprintable is flashable
         </div>
       </div>
@@ -39,7 +39,7 @@
               <p class="text-danger"><%= message %></p>
             <% end %>
           <% end %>
-          <%= check_box_tag 'imprintable[polyester]', 1, imprintable.polyester.present?, { class: 'checkbox' } %>
+          <%= f.check_box :polyester, { class: 'checkbox' }, 'true', 'false' %>
           <p class="help-block">Check if the imprintable contains polyester
         </div>
       </div>
@@ -52,7 +52,7 @@
               <p class="text-danger"><%= message %></p>
             <% end %>
           <% end %>
-          <%= select_tag nil,
+          <%= select_tag :brand,
                          options_for_select(['Select a Brand'] + Brand.order(:name).collect{ |b| [b.name, b.id] }, find_brand(imprintable)),
                          {
                              class: 'form-control',
@@ -75,11 +75,20 @@
         </div>
       </div>
 
-      <%= render partial: 'grid', locals: {sizes: @sizes, colors: @colors, imprintable: imprintable} %>
+      <% text = create_or_edit_text(imprintable) %>
+      <% if text == 'Update' %>
+        <% variants = imprintable.find_variants %>
+        <% if variants.empty? %>
+          <%= render partial: 'variant_select', locals: {imprintable: imprintable, f: f} %>
+        <% else %>
+          <%= render partial: 'grid', locals: {imprintable: imprintable, variants: variants} %>
+        <% end %>
+      <% end %>
+
 
       <div class="form-group">
         <div class="col-sm-offset-2 col-sm-10">
-          <button type="submit" class="btn btn-info"><%= create_or_edit_text(imprintable) %> Imprintable</button>
+          <button type="submit" id="submit_button" class="btn btn-info"><%= text %> Imprintable</button>
         </div>
       </div>
 

@@ -26,7 +26,6 @@ feature 'sizes management' do
     click_link('Add a Size')
     fill_in 'size_name', :with => 'Sample Name'
     fill_in 'size_sku', :with => '1234'
-    fill_in 'size_sort_order', :with => '1'
     click_button('Create Size')
     expect(page).to have_selector '.modal-content-success', text: 'Size was successfully created.'
     expect(Size.find_by name: 'Sample Name').to_not be_nil

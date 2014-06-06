@@ -63,7 +63,7 @@ feature 'Order management', order_spec: true,  js: true do
     2.times { click_button 'Next'; wait_for_ajax }
     click_button 'Submit'
 
-    wait_for_ajax
+    sleep 1
     expect(page).to have_content 'Email is invalid'
   end
 

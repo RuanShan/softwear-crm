@@ -70,7 +70,7 @@ feature 'Jobs management', js: true, job_spec: true do
     click_button 'New Job'
     wait_for_ajax
     all('button', text: 'Delete Job').last.click
-    wait_for_ajax
+    sleep 1
     expect(order.jobs.count).to eq 1
   end
 end

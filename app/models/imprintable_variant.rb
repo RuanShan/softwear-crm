@@ -8,6 +8,10 @@ class ImprintableVariant < ActiveRecord::Base
   default_scope -> { where(deleted_at: nil)}
   scope :deleted, -> { unscoped.where.not(deleted_at: nil)}
 
+  def full_name
+    "#{imprintable.brand.name} #{imprintable.style.catalog_no} #{size.name} #{color.name}"
+  end
+
   def destroyed?
     !deleted_at.nil?
   end

@@ -20,8 +20,8 @@ feature 'Imprintables management' do
     visit imprintables_path
     click_link('Add an Imprintable')
     fill_in 'Special considerations', :with => 'Special Consideration'
-    page.find_by_id('imprintable_brand_id').find("option[value='1']").click
-    page.find_by_id('imprintable_style_id').find("option[value='1']").click
+    page.find_by_id('imprintable_brand_id').find("option[value='#{imprintable.brand.id}']").click
+    page.find_by_id('imprintable_style_id').find("option[value='#{imprintable.style.id}']").click
     find(:css, '#imprintable_flashable').click
     find(:css, '#imprintable_polyester').click
     click_button('Create Imprintable')

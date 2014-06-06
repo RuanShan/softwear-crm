@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140529185033) do
+ActiveRecord::Schema.define(version: 20140602130739) do
 
   create_table "brands", force: true do |t|
     t.string   "name"
@@ -49,6 +49,7 @@ ActiveRecord::Schema.define(version: 20140529185033) do
     t.text     "special_considerations"
     t.boolean  "polyester"
     t.integer  "style_id"
+    t.string   "sizing_category"
   end
 
   add_index "imprintables", ["style_id"], name: "style_id_ix", using: :btree

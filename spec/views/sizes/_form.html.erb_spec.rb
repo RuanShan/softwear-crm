@@ -9,7 +9,6 @@ describe 'sizes/_form.html.erb' do
     within_form_for Size, noscope: true do
       expect(rendered).to have_field_for :name
       expect(rendered).to have_field_for :sku
-      expect(rendered).to have_field_for :sort_order
       expect(rendered).to have_selector('button')
     end
   end
