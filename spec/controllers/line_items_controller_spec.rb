@@ -2,6 +2,8 @@ require 'spec_helper'
 
 describe LineItemsController, line_item_spec: true, dear_god: true do
   render_views
+  let!(:valid_user) { create :alternate_user }
+  before(:each) { sign_in valid_user }
 
   describe '#select_options' do
 
@@ -10,7 +12,7 @@ describe LineItemsController, line_item_spec: true, dear_god: true do
 
       it 'responds with a select tag for brands' do
         get :select_options
-        expect(response.body).to include '<select>'
+        expect(response.body).to include '<select'
         expect(response.body).to include brand0.name
         expect(response.body).to include brand1.name
       end
@@ -21,7 +23,7 @@ describe LineItemsController, line_item_spec: true, dear_god: true do
         context 'when there are matching styles' do
           it 'responds with a select tag for styles' do
             get :select_options, brand_id: brand1.id
-            expect(response.body).to include '<select>'
+            expect(response.body).to include '<select'
             expect(response.body).to include style0.name
             expect(response.body).to include style1.name
           end
@@ -29,7 +31,7 @@ describe LineItemsController, line_item_spec: true, dear_god: true do
         context 'where there are no matching styles' do
           it 'responds with error message html' do
             get :select_options, brand_id: brand0.id
-            expect(response.body).to include 'error'
+            expect(response.body).to include "Couldn't find"
           end
         end
 
@@ -48,7 +50,7 @@ describe LineItemsController, line_item_spec: true, dear_god: true do
           context 'when there are matching colors' do
             it 'responds with a select tag for colors' do
               get :select_options, style_id: style1.id
-              expect(response.body).to include '<select>'
+              expect(response.body).to include '<select'
               expect(response.body).to include color0.name
               expect(response.body).to include color1.name
             end
@@ -56,7 +58,7 @@ describe LineItemsController, line_item_spec: true, dear_god: true do
           context 'when there are no matching colors' do
             it 'responds with error message html' do
               get :select_options, style_id: style0.id
-              expect(response.body).to include 'error'
+              expect(response.body).to include "Couldn't find"
             end
           end
 
@@ -64,7 +66,8 @@ describe LineItemsController, line_item_spec: true, dear_god: true do
             context 'when there are matching variants' do
               it 'responds with the name, description, and a list of sizes' do
                 get :select_options, style_id: style1.id, color_id: color1.id
-                expect(response.body).to include imp.name
+                expect(response.body).to include style1.name
+                expect(response.body).to include style1.catalog_no
                 expect(response.body).to include imp.description
                 expect(response.body).to include size0.name
                 expect(response.body).to include size1.name
@@ -72,8 +75,8 @@ describe LineItemsController, line_item_spec: true, dear_god: true do
             end
             context 'when there is no matching variant' do
               it 'responds with error message html' do
-                get :select_options, style_id: style1.id, color_id: color0.id
-                expect(response.body).to include 'no matching'
+                get :select_options, style_id: style0.id, color_id: color0.id
+                expect(response.body).to include "Couldn't find"
               end
             end
           end
@@ -83,7 +86,7 @@ describe LineItemsController, line_item_spec: true, dear_god: true do
     context 'when there are no brands' do
       it 'responds with error message html' do
         get :select_options
-        expect(response.body).to include 'error'
+        expect(response.body).to include "Couldn't find"
       end
     end
   end

@@ -75,14 +75,59 @@ initializeLineItemModal = (lineItemModal) ->
         handler.handleErrors(response.errors, response.modal)
 
     ajax.fail (jqXHR, textStatus) ->
-      alert 'Failed to create line item.'
+      alert "Something's wrong with the server!"
 
   $('#line-item-submit').click submitForm
   lineItemModal.keyup (key) ->
     submitForm() if key.which is 13
 
   handleImprintableForm = ($form) ->
-    
+    $select_level = (num) -> $(".select-level[data-level='#{num}']")
+    clearSelectLevel = (num) -> $select_level(num).children().filter('*:not(div)').remove()
+    getOptions = (data=null, done) -> 
+      a = $.ajax
+        type: 'GET'
+        url: '/line_items/select_options'
+        data: data
+      a.fail (jqXHR, textStatus) ->
+        alert('Internal server error. Sorry!')
+      a.done done
+
+    ajax = getOptions()
+
+    ajax.done (response) ->
+      data =
+        brand_id: null
+        style_id: null
+        color_id: null
+      $response = $(response)
+      clearSelectLevel(1)
+      $select_level(1).prepend $response
+      $response.change ->
+        data.brand_id = $(this).val()
+        ajax = getOptions data, (response) ->
+          $response = $(response)
+          $response.attr 'disabled', 'disabled'
+          clearSelectLevel(2)
+          $select_level(2).prepend $response
+          $response.fadeIn
+          $response.change ->
+            data.style_id = $(this).val()
+            ajax = getOptions data, (response) ->
+              $response = $(response)
+              $response.attr 'disabled', 'disabled'
+              clearSelectLevel(3)
+              $select_level(3).prepend $response
+              $response.fadeIn
+              $response.change ->
+                data.color_id = $(this).val()
+                ajax = getOptions data, (response) ->
+                  $response = $(response)
+                  $response.attr 'disabled', 'disabled'
+                  clearSelectLevel(4)
+                  $select_level(4).prepend $response
+                  $response.fadeIn
+
 
   handleImprintableForm $('#li-imprintable-form')
   lineItemModal.modal 'show'

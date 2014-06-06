@@ -8,5 +8,13 @@ class ImprintableVariant < ActiveRecord::Base
   inject NonDeletable
 
   def description; imprintable.description; end
-  def name; imprintable.name; end
+  def name 
+    "#{color.name} #{imprintable.name}"
+  end
+  def style_name
+    imprintable.style.name
+  end
+  def style_catalog_no
+    imprintable.style.catalog_no
+  end
 end

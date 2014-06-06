@@ -20,7 +20,7 @@ module LineItemHelpers
     
     excluded = [options[:not]].flatten.compact
     letfunc = -> (category) { 
-      if options[:lazy] || excluded.include?(category)
+      if options[:lazy] || excluded.include?(category) || excluded.include?(category.to_s.pluralize.to_sym)
         method(:let)
       else
         method(:let!)

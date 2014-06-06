@@ -8,7 +8,7 @@ feature 'Line Items management', line_item_spec: true, js: true do
   given!(:white) { create(:valid_color, name: 'white') }
   given!(:shirt) { create(:valid_imprintable) }
 
-  make_variants :white, :shirt, [:S, :M, :L], not: [:line_item, :job]
+  make_variants :white, :shirt, [:S, :M, :L], not: [:line_items, :jobs]
 
   given(:style) { shirt.style }
   given(:brand) { shirt.brand }
