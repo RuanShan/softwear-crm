@@ -24,6 +24,7 @@ CrmSoftwearcrmCom::Application.routes.draw do
   end
 
   resources :jobs, only: [:create, :update, :destroy]
+
   get '/logout' => 'users#logout'
   
   scope 'configuration' do
