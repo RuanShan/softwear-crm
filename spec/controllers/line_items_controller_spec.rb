@@ -1,9 +1,29 @@
 require 'spec_helper'
+include LineItemHelpers
 
 describe LineItemsController, line_item_spec: true, dear_god: true do
   render_views
   let!(:valid_user) { create :alternate_user }
   before(:each) { sign_in valid_user }
+
+  describe '#create', wip: true do
+    context 'with an imprintable_id and a color_id' do
+      let!(:job) { create(:job) }
+      let!(:white) { create(:valid_color, name: 'white') }
+      let!(:shirt) { create(:valid_imprintable) }
+      make_variants :white, :shirt, [:S, :M, :L, :XL], not: [:job, :line_items]
+
+      it 'creates line items for each relevant size' do
+        post :create, job_id: job.id, imprintable_id: shirt.id, color_id: white.id
+        json_response = JSON.parse response.body
+        expect(json_response['result']).to eq 'success'
+        expect(LineItem.where(imprintable_variant_id: white_shirt_s.id)).to exist
+        expect(LineItem.where(imprintable_variant_id: white_shirt_m.id)).to exist
+        expect(LineItem.where(imprintable_variant_id: white_shirt_l.id)).to exist
+        expect(LineItem.where(imprintable_variant_id: white_shirt_xl.id)).to exist
+      end
+    end
+  end
 
   describe '#select_options' do
 

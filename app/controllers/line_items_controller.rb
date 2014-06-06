@@ -6,20 +6,48 @@ class LineItemsController < InheritedResources::Base
   end
 
   def create
-    super do |success, failure|
-      success.json do
-        render json: { result: 'success' }
-      end
-      failure.json do
-        modal_html = 'ERROR'
-        with_format :html do
-          modal_html = render_to_string(partial: 'shared/modal_errors', locals: { object: @line_item })
+    if param_okay?(:imprintable_id) && param_okay?(:color_id)
+      line_items = ImprintableVariant.where(
+        imprintable_id: params[:imprintable_id],
+        color_id: params[:color_id]
+      ).map { |variant|
+        LineItem.new(
+          imprintable_variant_id: variant.id,
+          unit_price: 0,
+          quantity: 0
+      )}
+
+      line_items.each do |line_item|
+        unless line_item.valid?
+          with_format :html do
+            render_to_string(partial: 'shared/modal_errors', locals: { object: line_item })
+          end
+          render json: {
+            result: 'failure',
+            errors: line_item.errors.messages,
+            modal: modal_html
+          }
+          return
         end
-        render json: {
-          result: 'failure',
-          errors: @line_item.errors.messages,
-          modal: modal_html
-        }
+      end
+      line_items.each { |l| l.save }
+      render json: { result: 'success' }
+    else
+      super do |success, failure|
+        success.json do
+          render json: { result: 'success' }
+        end
+        failure.json do
+          modal_html = 'ERROR'
+          with_format :html do
+            modal_html = render_to_string(partial: 'shared/modal_errors', locals: { object: @line_item })
+          end
+          render json: {
+            result: 'failure',
+            errors: @line_item.errors.messages,
+            modal: modal_html
+          }
+        end
       end
     end
   end
@@ -72,7 +100,7 @@ class LineItemsController < InheritedResources::Base
 
 private
   def permitted_params
-    params.permit(:brand_id, :style_id, :color_id, 
+    params.permit(:brand_id, :style_id, :color_id, :imprintable_id,
       line_item: [
       :id, :name, :description, :quantity, 
       :unit_price, :imprintable_variant_id
