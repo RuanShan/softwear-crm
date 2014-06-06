@@ -34,7 +34,7 @@ feature 'Line Items management', line_item_spec: true, js: true do
       fill_in 'Quantity', with: '3'
       fill_in 'Unit price', with: '5.00'
 
-      find('.line-item-submit').click
+      find('button', text: 'Add').click
       wait_for_ajax
     end
 
@@ -47,14 +47,13 @@ feature 'Line Items management', line_item_spec: true, js: true do
     visit '/orders/1/edit#jobs'
     wait_for_ajax
 
-    form('.add-line-item').click
+    first('.add-line-item').click
     wait_for_ajax
 
     within('.line-item-form') do
       choose 'No'
-      wait_for_ajax
 
-      find('.line-item-submit').click
+      find('button', text: 'Add').click
       wait_for_ajax
 
       expect(page).to have_content "Unit price can't be blank"
@@ -76,8 +75,8 @@ feature 'Line Items management', line_item_spec: true, js: true do
       select brand.name, from: 'Brand'
       select style.name, from: 'Style'
       select white.name, from: 'Color'
-      expect(page).to have_content shirt.name
-      expect(page).to have_content shirt.description
+      expect(page).to have_content shirt.style.name
+      expect(page).to have_content shirt.style.description
 
       click_button 'Add'
       wait_for_ajax

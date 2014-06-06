@@ -3,7 +3,7 @@ $(window).ready ->
     $this = $(this)
     $this.attr 'disabled', 'disabled'
     setTimeout (-> $this.removeAttr 'disabled'), 1000
-    # TODO if modal is already present, kill it and return maybe
+    # TODO if modal is already present, kill it and return maybe?
 
     ajax = $.ajax
       type: 'GET',
@@ -83,50 +83,72 @@ initializeLineItemModal = (lineItemModal) ->
 
   handleImprintableForm = ($form) ->
     $select_level = (num) -> $(".select-level[data-level='#{num}']")
-    clearSelectLevel = (num) -> $select_level(num).children().filter('*:not(div)').remove()
-    getOptions = (data=null, done) -> 
+    # clearSelectLevel = (num) -> $select_level(num).children('*:not(div.select-level)').remove()
+    clearSelectLevel = (num, after) ->
+      $selected = $(".select-level[data-level='#{num}'] *:not(div.select-level)")
+      if $selected.size() > 0
+        console.log 'clearing after fade out'
+        did_callback = false
+        $selected.fadeOut ->
+          after() unless after is null or did_callback
+          did_callback = true
+      else
+        console.log 'clearing before fade out'
+        after() if after
+    getOptions = (data, done) ->
       a = $.ajax
         type: 'GET'
-        url: '/line_items/select_options'
+        url: '/line_item/select_options'
         data: data
       a.fail (jqXHR, textStatus) ->
         alert('Internal server error. Sorry!')
-      a.done done
+      a.done(done) unless done is null
+      a
 
     ajax = getOptions()
-
     ajax.done (response) ->
       data =
         brand_id: null
         style_id: null
         color_id: null
+        clear: (attrs...) -> this[attr] = null for attr in attrs
       $response = $(response)
-      clearSelectLevel(1)
-      $select_level(1).prepend $response
-      $response.change ->
-        data.brand_id = $(this).val()
-        ajax = getOptions data, (response) ->
-          $response = $(response)
-          $response.attr 'disabled', 'disabled'
-          clearSelectLevel(2)
-          $select_level(2).prepend $response
-          $response.fadeIn
-          $response.change ->
-            data.style_id = $(this).val()
-            ajax = getOptions data, (response) ->
-              $response = $(response)
-              $response.attr 'disabled', 'disabled'
-              clearSelectLevel(3)
-              $select_level(3).prepend $response
-              $response.fadeIn
-              $response.change ->
-                data.color_id = $(this).val()
+      clearSelectLevel 1, ->
+        $response.hide()
+        $select_level(1).prepend $response
+        $response.fadeIn()
+        $responseSelect = $response.find('select')
+        $responseSelect.change ->
+          data.brand_id = $(this).val()
+          data.clear 'style_id', 'color_id'
+
+          ajax = getOptions data, (response) ->
+            $response = $(response)
+            clearSelectLevel 2, ->
+              $response.hide()
+              $select_level(2).prepend $response
+              $response.fadeIn()
+              $responseSelect = $response.find('select')
+              $responseSelect.change ->
+                data.style_id = $(this).val()
+                data.clear 'color_id'
+
                 ajax = getOptions data, (response) ->
                   $response = $(response)
-                  $response.attr 'disabled', 'disabled'
-                  clearSelectLevel(4)
-                  $select_level(4).prepend $response
-                  $response.fadeIn
+                  clearSelectLevel 3, ->
+                    $response.hide()
+                    $select_level(3).prepend $response
+                    $response.fadeIn()
+                    $responseSelect = $response.find('select')
+                    $responseSelect.change ->
+                      data.color_id = $(this).val()
+
+                      ajax = getOptions data, (response) ->
+                        $response = $(response)
+                        clearSelectLevel 4, ->
+                          $response.hide()
+                          $select_level(4).prepend $response
+                          $response.fadeIn()
 
 
   handleImprintableForm $('#li-imprintable-form')

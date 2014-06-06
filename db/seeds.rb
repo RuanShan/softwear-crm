@@ -90,6 +90,26 @@ create_records([
     { flashable: true, special_considerations: 'do not print', polyester: false, style_id: 3}
 ], Imprintable)
 
+# Imprintable Variant SEEDING
+# -----------------------
+create_records([
+    { imprintable_id: 1, size_id: 1, color_id: 1 },
+    { imprintable_id: 1, size_id: 2, color_id: 1 },
+    { imprintable_id: 1, size_id: 3, color_id: 1 },
+    { imprintable_id: 1, size_id: 4, color_id: 1 },
+
+    { imprintable_id: 1, size_id: 1, color_id: 2 },
+    { imprintable_id: 1, size_id: 2, color_id: 2 },
+    { imprintable_id: 1, size_id: 3, color_id: 2 },
+
+    { imprintable_id: 2, size_id: 2, color_id: 2 },
+    { imprintable_id: 2, size_id: 3, color_id: 2 },
+
+    { imprintable_id: 2, size_id: 1, color_id: 1 },
+    { imprintable_id: 2, size_id: 2, color_id: 1 },
+    { imprintable_id: 2, size_id: 4, color_id: 1 },
+], ImprintableVariant)
+
 create_records([
     {
       name: 'Test Order',

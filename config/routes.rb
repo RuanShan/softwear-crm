@@ -35,6 +35,6 @@ CrmSoftwearcrmCom::Application.routes.draw do
       resources :line_items
     end
   end
-  get '/line_items/select_options', to: 'line_items#select_options'
+  get '/line_item/select_options', to: 'line_items#select_options'
 
 end

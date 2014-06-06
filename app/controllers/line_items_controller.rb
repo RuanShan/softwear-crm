@@ -27,7 +27,7 @@ class LineItemsController < InheritedResources::Base
   def select_options
     render_options = { layout: nil }
 
-    if params[:style_id]
+    if param_okay? :style_id
       # Get colors from style
       imprintable = Imprintable.where(style_id: params[:style_id]).first
       if imprintable.nil?
@@ -39,7 +39,7 @@ class LineItemsController < InheritedResources::Base
         variants = ImprintableVariant.includes(:color).where(
           imprintable_id: imprintable.id
         )
-        if params[:color_id]
+        if param_okay? :color_id
           # Get imprintable variants from the imprintable + color id
           render_options[:locals] = {
             objects: variants.includes(:size).where(color_id: params[:color_id]),
@@ -49,12 +49,12 @@ class LineItemsController < InheritedResources::Base
           render_options[:template] = 'line_items/selected_variants'
         else
           render_options[:locals] = {
-            objects: variants.map { |v| v.color },
+            objects: variants.map { |v| v.color }.uniq,
             type_name: Color.name
           }
         end
       end
-    elsif params[:brand_id]
+    elsif param_okay? :brand_id
       # Get styles from brand
       render_options[:locals] = {
         objects: Style.where(brand_id: params[:brand_id]),
@@ -77,5 +77,9 @@ private
       :id, :name, :description, :quantity, 
       :unit_price, :imprintable_variant_id
     ])
+  end
+
+  def param_okay?(param)
+    params[param] && !params[param].empty?
   end
 end
