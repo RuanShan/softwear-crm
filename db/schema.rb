@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140604163155) do
+ActiveRecord::Schema.define(version: 20140606142840) do
 
   create_table "activities", force: true do |t|
     t.integer  "trackable_id"
@@ -114,6 +114,16 @@ ActiveRecord::Schema.define(version: 20140604163155) do
     t.datetime "updated_at"
     t.decimal  "commission_amount", precision: 10, scale: 2
     t.integer  "user_id"
+  end
+
+  create_table "print_locations", force: true do |t|
+    t.string   "name"
+    t.integer  "imprint_method_id"
+    t.decimal  "max_height",        precision: 8, scale: 2
+    t.decimal  "max_width",         precision: 8, scale: 2
+    t.datetime "deleted_at"
+    t.datetime "created_at"
+    t.datetime "updated_at"
   end
 
   create_table "shipping_methods", force: true do |t|

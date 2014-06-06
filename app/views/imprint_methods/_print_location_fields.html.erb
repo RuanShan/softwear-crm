@@ -1,0 +1,10 @@
+<div>
+  <%= f.label 'Location' %>
+  <%= f.text_field :name %><br>
+  <%= f.label 'Max Height' %>
+  <%= f.text_field :max_height %> <br>
+  <%= f.label 'Max Width' %>
+  <%= f.text_field :max_width %>
+  <%= f.hidden_field :_destroy %>
+  <%= link_to "x", '#', class: "btn btn-info remove_fields"%>
+</div>

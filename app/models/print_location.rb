@@ -3,7 +3,7 @@ class PrintLocation < ActiveRecord::Base
 
   belongs_to :imprint_method
 
-  validates_presence_of :name, :max_width, :max_height
+  validates_presence_of :name, :max_height, :max_width
   validates_uniqueness_of :name, { scope: :imprint_method, conditions: -> { where(deleted_at: nil)} }
 
 end

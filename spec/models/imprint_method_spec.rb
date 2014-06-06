@@ -10,11 +10,10 @@ describe ImprintMethod do
 
   describe 'Relationships' do
     it { should have_many(:ink_colors) }
-    # figure out a way to test accepts_nested_attr
   end
 
   describe 'Scopes' do
-    let!(:imprint_method) { create(:valid_imprint_method_with_color)}
+    let!(:imprint_method) { create(:valid_imprint_method_with_color_and_location)}
     let!(:deleted_imprint_method) { create(:valid_imprint_method, deleted_at: Time.now, name: 'Deleted')}
 
     describe 'default_scope' do
@@ -31,7 +30,7 @@ describe ImprintMethod do
   end
 
   describe 'really_destroy!' do
-    let!(:imprint_method) { create(:valid_imprint_method_with_color, deleted_at: Time.now)}
+    let!(:imprint_method) { create(:valid_imprint_method_with_color_and_location, deleted_at: Time.now)}
 
     it 'returns true if deleted_at is set' do
       expect(imprint_method.really_destroy!).to eq(imprint_method)
@@ -39,7 +38,7 @@ describe ImprintMethod do
   end
 
   describe '#destroyed?' do
-    let!(:imprint_method) { create(:valid_imprint_method_with_color, deleted_at: Time.now)}
+    let!(:imprint_method) { create(:valid_imprint_method_with_color_and_location, deleted_at: Time.now)}
 
     it 'returns true if deleted_at is set' do
       expect(imprint_method.destroyed?).to be_truthy
@@ -47,7 +46,7 @@ describe ImprintMethod do
   end
 
   describe '#destroy' do
-    let!(:imprint_method) { create(:valid_imprint_method_with_color)}
+    let!(:imprint_method) { create(:valid_imprint_method_with_color_and_location)}
 
     it 'sets deleted_at to the current time' do
       imprint_method.destroy

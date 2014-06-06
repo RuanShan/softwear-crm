@@ -2,13 +2,14 @@ require 'spec_helper'
 
 describe 'imprint_methods/_table.html.erb' do
 
-  let(:imprint_methods){ [create(:valid_imprint_method_with_color)] }
+  let(:imprint_methods){ [create(:valid_imprint_method_with_color_and_location)] }
 
   it 'has a table with the name, production_name, ink colors, and actions' do
     render partial: 'imprint_methods/table', locals: {imprint_methods: imprint_methods}
     expect(rendered).to have_selector('th', text: 'Name')
     expect(rendered).to have_selector('th', text: 'Production Name')
     expect(rendered).to have_selector('th', text: 'Ink Colors')
+    expect(rendered).to have_selector('th', text: 'Print Locations')
     expect(rendered).to have_selector('th', text: 'Actions')
   end
 
@@ -17,6 +18,7 @@ describe 'imprint_methods/_table.html.erb' do
     expect(rendered).to have_selector('td', text: imprint_methods.first.name)
     expect(rendered).to have_selector('td', text: imprint_methods.first.production_name)
     expect(rendered).to have_selector('td', text: imprint_methods.first.ink_colors.first.name)
+    expect(rendered).to have_selector('td', text: imprint_methods.first.print_locations.first.name)
   end
 
   it 'actions column has a link to edit and a link to destroy' do
