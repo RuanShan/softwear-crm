@@ -33,10 +33,10 @@ feature 'Line Items management', line_item_spec: true, js: true do
       fill_in 'Description', with: 'Insert deeply descriptive text here'
       fill_in 'Quantity', with: '3'
       fill_in 'Unit price', with: '5.00'
-
-      find('button', text: 'Add').click
-      wait_for_ajax
     end
+
+    find('#line-item-submit').click
+    sleep 3
 
     expect(LineItem.where(name: 'New Item')).to exist
     expect(page).to have_content 'success'
@@ -49,16 +49,13 @@ feature 'Line Items management', line_item_spec: true, js: true do
 
     first('.add-line-item').click
     wait_for_ajax
+    choose 'No'
+    wait_for_ajax
+    find('#line-item-submit').click
+    wait_for_ajax
 
-    within('.line-item-form') do
-      choose 'No'
-
-      find('button', text: 'Add').click
-      wait_for_ajax
-
-      expect(page).to have_content "Unit price can't be blank"
-      expect(page).to have_content "Quantity can't be blank"
-    end
+    expect(page).to have_content "Unit price can't be blank"
+    expect(page).to have_content "Quantity can't be blank"
   end
 
   scenario 'user can add a new imprintable line item' do
@@ -73,18 +70,20 @@ feature 'Line Items management', line_item_spec: true, js: true do
       choose 'Yes'
       wait_for_ajax
       select brand.name, from: 'Brand'
+      wait_for_ajax
       select style.name, from: 'Style'
+      wait_for_ajax
       select white.name, from: 'Color'
+      wait_for_ajax
       expect(page).to have_content shirt.style.name
       expect(page).to have_content shirt.style.description
-
-      click_button 'Add'
-      wait_for_ajax
     end
 
-    expect(LineItem.where(imprintable_variant_id: white_shirt_s.id).to exist)
-    expect(LineItem.where(imprintable_variant_id: white_shirt_m.id).to exist)
-    expect(LineItem.where(imprintable_variant_id: white_shirt_l.id).to exist)
+    find('#line-item-submit').click
+
+    expect(LineItem.where(imprintable_variant_id: white_shirt_s.id)).to exist
+    expect(LineItem.where(imprintable_variant_id: white_shirt_m.id)).to exist
+    expect(LineItem.where(imprintable_variant_id: white_shirt_l.id)).to exist
 
     expect(page).to have_content 'success'
     expect(page).to have_content white_shirt_s.name
