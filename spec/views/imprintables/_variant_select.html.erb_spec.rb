@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe 'imprintables/_variant_select.html.erb' do
+describe 'imprintables/_variant_select.html.erb', imprintable_variant_spec: true do
   it 'has checkboxes to select a color and a size' do
     imprintable = FactoryGirl.create(:valid_imprintable)
     size = FactoryGirl.create(:valid_size)

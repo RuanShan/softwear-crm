@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe 'styles/new.html.erb' do
+describe 'styles/new.html.erb', style_spec: true do
   it 'has a form to create a new style' do
     assign(:style, Style.new)
     render

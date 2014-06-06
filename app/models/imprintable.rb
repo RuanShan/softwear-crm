@@ -36,4 +36,14 @@ class Imprintable < ActiveRecord::Base
       []
     end
   end
+
+  def create_variants_hash
+    variants = self.find_variants
+    variants_array = variants.to_a
+    size_variants = variants_array.uniq{ |v| v.size_id }
+    size_variants.sort! { |x,y| x.size.sort_order <=> y.size.sort_order }
+
+    color_variants = variants_array.uniq{ |v| v.color_id }
+    { :size_variants => size_variants, :color_variants => color_variants, :variants_array => variants_array}
+  end
 end

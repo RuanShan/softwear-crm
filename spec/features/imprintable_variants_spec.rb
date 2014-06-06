@@ -2,7 +2,7 @@ require 'spec_helper'
 require 'database_cleaner'
 include ApplicationHelper
 
-feature 'Imprintable Variant Management' do
+feature 'Imprintable Variant Management', imprintable_variant_spec: true do
   given!(:valid_user) { create(:alternate_user) }
   before (:each) do
     login_as(valid_user)

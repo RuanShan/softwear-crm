@@ -74,15 +74,6 @@ jQuery ->
       newCell.appendChild(cellPlus);
       newCell.appendChild(cellMinus);
     }
-  }
-  function deleteColumn(tblId)
-  {
-    var allRows = document.getElementById(tblId).rows;
-    for (var i=0; i<allRows.length; i++) {
-      if (allRows[i].cells.length > 1) {
-        allRows[i].deleteCell(-1);
-      }
-    }
   }`
 
   $('#size_select').click ->
@@ -231,21 +222,24 @@ jQuery ->
     change_cells('fa fa-times', $(this))
   )
 
+  get_id = ->
+    url_array = document.URL.split('/')
+    id = url_array[url_array.length-2]
+    return id
+
   $(document).on('click', '#submit_button', ->
     if $('#imprintable_variants_list').length
       # variants already exist
       # aggregate all the variants and populate params
       variant_hash = aggregate_variants()
-      url_array = document.URL.split('/')
-      id = url_array[url_array.length-2]
+      id = get_id()
       pobj = {update: variant_hash, id: id}
       $.post("/imprintables/update_imprintable_variants", pobj)
     else
       # variants don't exist yet
       # populate color_ids and size_ids
       ids_hash = populate_color_and_size_ids()
-      url_array = document.URL.split('/')
-      id = url_array[url_array.length-2]
+      id = get_id()
       pobj = {update: ids_hash, id: id}
       $.post('/imprintables/update', pobj)
   )

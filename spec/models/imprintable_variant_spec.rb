@@ -1,5 +1,5 @@
 require 'spec_helper'
-describe ImprintableVariant do
+describe ImprintableVariant, imprintable_variant_spec: true do
 
   describe 'Relationships' do
     it {should belong_to(:imprintable)}

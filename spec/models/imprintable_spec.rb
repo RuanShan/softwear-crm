@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Imprintable do
+describe Imprintable, imprintable_spec: true do
   describe 'Validations' do
     it { should validate_presence_of(:style)}
   end

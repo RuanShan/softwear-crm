@@ -1,7 +1,7 @@
 require 'spec_helper'
 include ApplicationHelper
 
-feature 'sizes management' do
+feature 'sizes management', size_spec: true do
 
   given!(:valid_user) { create(:alternate_user) }
   before(:each) do

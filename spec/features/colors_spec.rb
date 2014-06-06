@@ -1,7 +1,7 @@
 require 'spec_helper'
 include ApplicationHelper
 
-feature 'Colors management' do
+feature 'Colors management', color_spec: true do
 
   given!(:valid_user) { create(:alternate_user) }
   before(:each) do

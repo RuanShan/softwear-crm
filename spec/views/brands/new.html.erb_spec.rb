@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe 'brands/new.html.erb' do
+describe 'brands/new.html.erb', brand_spec: true do
   it 'has a form to create a new brand' do
     assign(:brand, Brand.new)
     render

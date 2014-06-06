@@ -55,12 +55,12 @@ feature 'Order management', order_spec: true,  js: true do
     visit root_path
     unhide_dashboard
     click_link 'Orders'
-    wait_for_ajax
+    sleep 1
     click_link 'New'
 
     fill_in 'Email', with: 'nope'
 
-    2.times { click_button 'Next'; wait_for_ajax }
+    2.times { click_button 'Next'; sleep 1 }
     click_button 'Submit'
 
     sleep 1

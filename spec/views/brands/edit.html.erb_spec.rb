@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe 'brands/edit.html.erb' do
+describe 'brands/edit.html.erb', brand_spec: true do
   let(:brand){ create(:valid_brand) }
 
   it 'has a form to create a new mockup group' do

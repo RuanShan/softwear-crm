@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe 'styles/_form.html.erb' do
+describe 'styles/_form.html.erb', style_spec: true do
   before(:each){ render partial: 'styles/form', locals: { style: Style.new}}
 
   it 'has text_field for name, catalog_no, description, sku and a submit button' do

@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe 'colors/edit.html.erb' do
+describe 'colors/edit.html.erb', color_spec: true do
   let(:color){ create(:valid_color) }
 
   it 'has a form to create a new mockup group' do

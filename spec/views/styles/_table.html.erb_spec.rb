@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe 'styles/_table.html.erb' do
+describe 'styles/_table.html.erb', style_spec: true do
 
   let!(:styles) do
     [create(:valid_style)]

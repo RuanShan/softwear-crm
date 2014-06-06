@@ -1,7 +1,7 @@
 require 'spec_helper'
 include ApplicationHelper
 
-feature 'Styles management' do
+feature 'Styles management', style_spec: true do
 
   given!(:valid_user) { create(:alternate_user) }
   before(:each) do

@@ -1,7 +1,7 @@
 require 'spec_helper'
 include ApplicationHelper
 
-feature 'Brands management' do
+feature 'Brands management', brand_spec: true do
 
   given!(:valid_user) { create(:alternate_user) }
   before(:each) do

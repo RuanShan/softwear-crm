@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Style do
+describe Style, style_spec: true do
   describe 'Validations' do
     it { should validate_presence_of(:name)}
     it { should validate_uniqueness_of(:name)}

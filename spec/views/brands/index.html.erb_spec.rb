@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe 'brands/index.html.erb' do
+describe 'brands/index.html.erb', brand_spec: true do
 
   it 'has a table of brands' do
     assign(:brands, Brand.all)

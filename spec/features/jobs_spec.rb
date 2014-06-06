@@ -32,12 +32,12 @@ feature 'Jobs management', js: true, job_spec: true do
   scenario 'user can create a new job, and the form immediately shows up' do
   	visit '/orders/1/edit#jobs'
   	click_button 'New Job'
-  	wait_for_ajax
+  	sleep 1
   	expect(all('form[id*="job"]').count).to eq 2
   	expect(Job.all.count).to eq 2
   end
 
-  scenario 'creating two jobs in a row does not fail on account of duplicate name' do
+  scenario 'creating two jobs in a row does not fail on account of duplicate name', my_tag: true do
   	visit '/orders/1/edit#jobs'
   	2.times { click_button 'New Job'; wait_for_ajax }
   	expect(all('form[id*="job"').count).to eq 3
@@ -68,7 +68,7 @@ feature 'Jobs management', js: true, job_spec: true do
   scenario 'a job can be created and deleted without refreshing the page' do
     visit '/orders/1/edit#jobs'
     click_button 'New Job'
-    wait_for_ajax
+    sleep 1
     all('button', text: 'Delete Job').last.click
     sleep 1
     expect(order.jobs.count).to eq 1

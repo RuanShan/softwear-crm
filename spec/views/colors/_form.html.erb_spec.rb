@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe 'colors/_form.html.erb' do
+describe 'colors/_form.html.erb', color_spec: true do
   before(:each){ render partial: 'colors/form', locals: { color: Color.new}}
 
   it 'has text_field for name, sku and a submit button' do
