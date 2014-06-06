@@ -42,7 +42,7 @@ describe ImprintMethodsController do
   describe 'POST create' do
      context 'with valid input' do
        it 'creates a new imprint method' do
-         expect{post :create, imprint_method: attributes_for(:valid_imprint_method)}.to_not change(ImprintMethod, :count)
+         expect{post :create, imprint_method: attributes_for(:valid_imprint_method)}.to change(ImprintMethod, :count).by(1)
          expect(imprint_method.name).to eq('Imprint Method')
       end
      end

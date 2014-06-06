@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 describe 'imprint_methods/edit.html.erb' do
-  let(:imprint_method){ create(:valid_imprint_method) }
+  let(:imprint_method){ create(:valid_imprint_method_with_color) }
 
   it 'has a form to create a new mockup group' do
     assign(:imprint_method, imprint_method)

@@ -29,7 +29,8 @@ CrmSoftwearcrmCom::Application.routes.draw do
   get '/logout' => 'users#logout'
   
   scope 'configuration' do
-    resources :shipping_methods, :imprint_methods, :stores
+    resources :shipping_methods, :stores
+    resources :imprint_methods
   end
   
   resources :orders do

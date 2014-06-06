@@ -56,6 +56,7 @@ end
 gem 'inherited_resources'
 gem 'devise'
 gem 'figaro'
+gem 'paranoia', '~> 2.0'
 
 
 # Use ActiveModel has_secure_password

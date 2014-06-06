@@ -16,6 +16,6 @@ class ImprintMethodsController < InheritedResources::Base
   private
 
    def permitted_params
-    params.permit(imprint_method: [:name, :production_name])
+    params.permit(imprint_method: [:name, :production_name, ink_colors_attributes: [:name, :imprint_method_id, :id, :_destroy]])
   end
 end
