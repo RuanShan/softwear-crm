@@ -1,12 +1,21 @@
 class Style < ActiveRecord::Base
-  validates :name, uniqueness: true, presence: true
-  validates :sku, uniqueness: true, presence: true
-  validates :catalog_no, presence: true
-  belongs_to :brand
-  has_one :imprintable
-
   default_scope -> { where(deleted_at: nil) }
   scope :deleted, -> { unscoped.where.not(deleted_at: nil)}
+
+  belongs_to :brand
+
+  has_one :imprintable
+
+  validates :name, :uniqueness =>  { :scope => :brand_id }, presence: true
+  validates :sku, presence: true, uniqueness: true, length: { is: 2}
+  validates :catalog_no, :uniqueness => { :scope => :brand_id }, presence: true
+  validates :brand, presence: true
+
+  def find_brand
+    if self.brand_id
+      Brand.find(self.brand_id)
+    end
+  end
 
   def destroyed?
     !deleted_at.nil?

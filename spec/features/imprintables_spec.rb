@@ -7,7 +7,7 @@ feature 'Imprintables management', imprintable_spec: true do
     login_as(valid_user)
   end
 
-  let!(:imprintable) { create(:valid_imprintable)}
+  let!(:imprintable) { create(:valid_imprintable) }
 
   scenario 'A user can see a list of imprintables' do
     visit root_path

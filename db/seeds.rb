@@ -70,8 +70,8 @@ create_records([
 # Color SEEDING
 # ----------------
 create_records([
-    { name: 'Blue', sku: '08'},
-    { name: 'Red', sku: '09'}
+    { name: 'Blue', sku: '008'},
+    { name: 'Red', sku: '009'}
 ], Color)
 
 # Style SEEDING

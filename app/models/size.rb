@@ -1,16 +1,13 @@
 class Size < ActiveRecord::Base
-  has_many :imprintable_variants
-  validates :name, uniqueness: true, presence: true
-  validates :sku, uniqueness: true, presence: true
-  validates :sort_order, presence: true
-
-  attr_accessor :valid_imprintable_variants_count
-
-  default_scope { order(:sort_order)}
+  default_scope { order(:sort_order).where(:deleted_at => nil)}
   before_validation :set_sort_order
-
-  default_scope { where(:deleted_at => nil)}
   scope :deleted, -> { unscoped.where.not(deleted_at: nil)}
+
+  has_many :imprintable_variants
+
+  validates :name, uniqueness: true, presence: true
+  validates :sku, uniqueness: true, presence: true, length: { is: 2 }
+  validates :sort_order, uniqueness: true, presence: true
 
   def destroyed?
     !deleted_at.nil?

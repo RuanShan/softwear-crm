@@ -1,12 +1,17 @@
 require 'spec_helper'
 
 describe Style, style_spec: true do
+
+  describe 'Relationships' do
+    it { should belong_to(:brand) }
+  end
   describe 'Validations' do
     it { should validate_presence_of(:name)}
     it { should validate_uniqueness_of(:name)}
     it { should validate_presence_of(:sku)}
     it { should validate_uniqueness_of(:sku)}
     it { should validate_presence_of(:catalog_no)}
+    it { should validate_presence_of(:brand) }
   end
 
   describe 'Scopes' do

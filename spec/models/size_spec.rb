@@ -6,6 +6,7 @@ describe Size, size_spec: true do
     it { should validate_presence_of(:sku)}
     it { should validate_uniqueness_of(:name)}
     it { should validate_uniqueness_of(:sku)}
+    it { should validate_uniqueness_of(:sort_order)}
   end
 
   describe 'Scopes' do

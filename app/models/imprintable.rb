@@ -1,4 +1,6 @@
 class Imprintable < ActiveRecord::Base
+  default_scope -> { where(deleted_at: nil) }
+  scope :deleted, -> { unscoped.where.not(deleted_at: nil) }
 
   belongs_to :style
   has_one :brand, through: :style
@@ -6,12 +8,7 @@ class Imprintable < ActiveRecord::Base
   has_many :colors, through: :imprintable_variants
   has_many :sizes, through: :imprintable_variants
 
-  attr_accessor :valid_imprintable_variants_count
-
-  validates_presence_of :style
-
-  default_scope -> { where(deleted_at: nil) }
-  scope :deleted, -> { unscoped.where.not(deleted_at: nil)}
+  validates :style, presence: true
 
   def destroyed?
     !deleted_at.nil?
@@ -31,9 +28,7 @@ class Imprintable < ActiveRecord::Base
 
   def find_variants
     if self.id
-      ImprintableVariant.includes(:size, :color).where("imprintable_id = #{self.id}")
-    else
-      []
+      ImprintableVariant.includes(:size, :color).where(imprintable_id: self.id)
     end
   end
 
@@ -44,6 +39,6 @@ class Imprintable < ActiveRecord::Base
     size_variants.sort! { |x,y| x.size.sort_order <=> y.size.sort_order }
 
     color_variants = variants_array.uniq{ |v| v.color_id }
-    { :size_variants => size_variants, :color_variants => color_variants, :variants_array => variants_array}
+    { :size_variants => size_variants, :color_variants => color_variants, :variants_array => variants_array }
   end
 end
