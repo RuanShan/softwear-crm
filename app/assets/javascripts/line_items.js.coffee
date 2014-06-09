@@ -83,7 +83,6 @@ initializeLineItemModal = (lineItemModal) ->
 
   handleImprintableForm = ($form) ->
     $select_level = (num) -> $(".select-level[data-level='#{num}']")
-    # clearSelectLevel = (num) -> $select_level(num).children('*:not(div.select-level)').remove()
     clearSelectLevel = (num, after) ->
       $selected = $(".select-level[data-level='#{num}'] *:not(div.select-level)")
       if $selected.size() > 0
