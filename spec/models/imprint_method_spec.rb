@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe ImprintMethod do
+describe ImprintMethod do 
 
   describe 'Validations' do
     it { should validate_presence_of(:name) }
@@ -10,47 +10,9 @@ describe ImprintMethod do
 
   describe 'Relationships' do
     it { should have_many(:ink_colors) }
+    it { should have_many(:print_locations) }
+    it { should accept_nested_attributes_for(:ink_colors) }
+    it { should accept_nested_attributes_for(:print_locations) }
   end
 
-  describe 'Scopes' do
-    let!(:imprint_method) { create(:valid_imprint_method_with_color_and_location)}
-    let!(:deleted_imprint_method) { create(:valid_imprint_method, deleted_at: Time.now, name: 'Deleted')}
-
-    describe 'default_scope' do
-      it 'includes only imprint_methods where deleted_at is nil' do
-        expect(ImprintMethod.all).to eq([imprint_method])
-      end
-    end
-
-    describe 'deleted' do
-      it 'includes only imprint_methods where deleted_at is not nil' do
-        expect(ImprintMethod.all).to eq([imprint_method])
-      end
-    end
-  end
-
-  describe 'really_destroy!' do
-    let!(:imprint_method) { create(:valid_imprint_method_with_color_and_location, deleted_at: Time.now)}
-
-    it 'returns true if deleted_at is set' do
-      expect(imprint_method.really_destroy!).to eq(imprint_method)
-    end
-  end
-
-  describe '#destroyed?' do
-    let!(:imprint_method) { create(:valid_imprint_method_with_color_and_location, deleted_at: Time.now)}
-
-    it 'returns true if deleted_at is set' do
-      expect(imprint_method.destroyed?).to be_truthy
-    end
-  end
-
-  describe '#destroy' do
-    let!(:imprint_method) { create(:valid_imprint_method_with_color_and_location)}
-
-    it 'sets deleted_at to the current time' do
-      imprint_method.destroy
-      expect(imprint_method.deleted_at).to_not be_nil
-    end
-  end
 end

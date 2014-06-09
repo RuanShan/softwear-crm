@@ -60,6 +60,20 @@ create_records([
     { name: 'UPS Ground', tracking_url: 'http://www.ups.com/tracking/tracking.html'}
 ], ShippingMethod)
 
+# ImprintMethod SEEDING
+# ----------------
+
+create_records([
+                   {name: 'Screen Printing', production_name: 'Screen Printing'}
+               ], ImprintMethod)
+im = ImprintMethod.all.first
+create_records([
+                   {name: 'Red', imprint_method_id: im.id}
+               ], InkColor)
+create_records([
+                   {name: 'Chest', max_height: 5.5, max_width: 5.5, imprint_method_id: im.id}
+               ], PrintLocation)
+
 # Brand SEEDING
 # ----------------
 create_records([

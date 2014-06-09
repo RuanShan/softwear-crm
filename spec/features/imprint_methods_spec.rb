@@ -7,18 +7,22 @@ feature 'Imprint Method Features' do
     login_as(valid_user)
   end
 
-  let!(:imprint_method) { create(:valid_imprint_method)}
+  given!(:imprint_method) { create(:valid_imprint_method_with_color_and_location)}
 
-  scenario 'A user can add an imprint method' , js: true, wip: true do
+  scenario 'A user can add an imprint method' , js: true do
     visit imprint_methods_path
     click_link 'Add an Imprint Method'
     fill_in 'Name', with: 'New Imprint Method Name'
     fill_in 'Production name', with: 'New Production Name'
     click_link 'Add Ink color'
     find(:css, "input[id^='imprint_method_ink_colors_attributes_'][id$='_name']").set('Red')
-    # find("input#id^$='imprint_method_ink_colors_attributes_").set('Red')
+    click_link 'Add Print Location'
+    find(:css, "input[id^='imprint_method_print_locations_attributes_'][id$='_name']").set('Chest')
+    find(:css, "input[id^='imprint_method_print_locations_attributes_'][id$='_max_height']").set('5.5')
+    find(:css, "input[id^='imprint_method_print_locations_attributes_'][id$='_max_width']").set('5.5')
     click_button 'Create Imprint Method'
     expect(ImprintMethod.where(name: 'New Imprint Method Name')).to exist
+    expect(ImprintMethod.where(production_name: 'New Production Name')).to exist
     expect(page).to have_selector('#flash_notice', text: 'Imprint method was successfully created.')
   end
 
@@ -30,7 +34,7 @@ feature 'Imprint Method Features' do
     expect( imprint_method.reload.destroyed? ).to be_truthy
   end
 
-  scenario 'A user can edit an imprint method feature' do
+  scenario 'A user can edit an imprint method feature', js: true do
     visit imprint_methods_path
     find("tr#imprint_method_#{imprint_method.id} a[data-action='edit']").click
     fill_in 'Name', with: 'Edited Imprint Method Name'
