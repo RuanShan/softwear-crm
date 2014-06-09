@@ -59,14 +59,20 @@
     </li>
 
     <!-- <li> -->
-    <%= nav_helper(:li, 'active', %w(configuration shipping_methods)) %>
+    <%= nav_helper(:li, 'active', %w(configuration shipping_methods imprint_methods)) %>
 
       <a href="#fakelink"><i class="fa fa-gears"></i><i class="fa fa-angle-double-down i-right"></i> Configuration</a>
       <!-- <ul> -->
-      <%= nav_helper(:ul, 'visible', %w(configuration shipping_methods)) %>
+      <%= nav_helper(:ul, 'visible', %w(configuration shipping_methods imprint_methods)) %>
         <!-- <li> -->
+        <%= nav_helper :li, 'active', 'imprint_methods' %>
+            <%= link_to imprint_methods_path do %><i class="fa fa-angle-right"></i> Imprint Methods <% end %>
+         </li>
         <%= nav_helper :li, 'active', 'shipping_methods' %>
           <%= link_to shipping_methods_path do %><i class="fa fa-angle-right"></i> Shipping Methods<% end %>
+         </li>
+
+         <%= nav_helper :li, 'active', 'stores' %>
           <%= link_to stores_path do %><i class="fa fa-angle-right"></i> Stores<% end %>
         </li>
       </ul>

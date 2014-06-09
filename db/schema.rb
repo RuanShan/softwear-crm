@@ -11,7 +11,19 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140523192339) do
+ActiveRecord::Schema.define(version: 20140609173442) do
+
+  create_table "artwork_requests", force: true do |t|
+    t.text     "description"
+    t.integer  "artist_id"
+    t.integer  "imprint_method_id"
+    t.integer  "print_location_id"
+    t.integer  "salesperson_id"
+    t.datetime "deadline"
+    t.datetime "deleted_at"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
 
   create_table "brands", force: true do |t|
     t.string   "name"
@@ -20,6 +32,8 @@ ActiveRecord::Schema.define(version: 20140523192339) do
     t.datetime "created_at"
     t.datetime "updated_at"
   end
+
+  add_index "brands", ["deleted_at"], name: "index_brands_on_deleted_at", using: :btree
 
   create_table "colors", force: true do |t|
     t.string   "name"
@@ -30,12 +44,28 @@ ActiveRecord::Schema.define(version: 20140523192339) do
     t.integer  "imprintable_variant_id"
   end
 
+  add_index "colors", ["deleted_at"], name: "index_colors_on_deleted_at", using: :btree
+
+  create_table "imprint_methods", force: true do |t|
+    t.string   "name"
+    t.string   "production_name"
+    t.datetime "deleted_at"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "imprint_methods", ["deleted_at"], name: "index_imprint_methods_on_deleted_at", using: :btree
+
   create_table "imprintable_variants", force: true do |t|
     t.integer  "imprintable_id"
     t.datetime "deleted_at"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.integer  "size_id"
+    t.integer  "color_id"
   end
+
+  add_index "imprintable_variants", ["deleted_at"], name: "index_imprintable_variants_on_deleted_at", using: :btree
 
   create_table "imprintables", force: true do |t|
     t.datetime "created_at"
@@ -47,6 +77,19 @@ ActiveRecord::Schema.define(version: 20140523192339) do
     t.integer  "style_id"
   end
 
+  add_index "imprintables", ["deleted_at"], name: "index_imprintables_on_deleted_at", using: :btree
+
+  create_table "ink_colors", force: true do |t|
+    t.string   "name"
+    t.integer  "imprint_method_id"
+    t.datetime "deleted_at"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "ink_colors", ["deleted_at"], name: "index_ink_colors_on_deleted_at", using: :btree
+  add_index "ink_colors", ["imprint_method_id"], name: "index_ink_colors_on_imprint_method_id", using: :btree
+
   create_table "jobs", force: true do |t|
     t.string   "name"
     t.text     "description"
@@ -55,6 +98,8 @@ ActiveRecord::Schema.define(version: 20140523192339) do
     t.datetime "created_at"
     t.datetime "updated_at"
   end
+
+  add_index "jobs", ["deleted_at"], name: "index_jobs_on_deleted_at", using: :btree
 
   create_table "orders", force: true do |t|
     t.string   "email"
@@ -81,6 +126,21 @@ ActiveRecord::Schema.define(version: 20140523192339) do
     t.integer  "user_id"
   end
 
+  add_index "orders", ["deleted_at"], name: "index_orders_on_deleted_at", using: :btree
+
+  create_table "print_locations", force: true do |t|
+    t.string   "name"
+    t.integer  "imprint_method_id"
+    t.decimal  "max_height",        precision: 8, scale: 2
+    t.decimal  "max_width",         precision: 8, scale: 2
+    t.datetime "deleted_at"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "print_locations", ["deleted_at"], name: "index_print_locations_on_deleted_at", using: :btree
+  add_index "print_locations", ["imprint_method_id"], name: "index_print_locations_on_imprint_method_id", using: :btree
+
   create_table "shipping_methods", force: true do |t|
     t.string   "name"
     t.string   "tracking_url"
@@ -88,6 +148,8 @@ ActiveRecord::Schema.define(version: 20140523192339) do
     t.datetime "created_at"
     t.datetime "updated_at"
   end
+
+  add_index "shipping_methods", ["deleted_at"], name: "index_shipping_methods_on_deleted_at", using: :btree
 
   create_table "sizes", force: true do |t|
     t.string   "name"
@@ -101,12 +163,16 @@ ActiveRecord::Schema.define(version: 20140523192339) do
     t.integer  "imprintable_variant_id"
   end
 
+  add_index "sizes", ["deleted_at"], name: "index_sizes_on_deleted_at", using: :btree
+
   create_table "stores", force: true do |t|
     t.string   "name"
     t.string   "deleted_at"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
+
+  add_index "stores", ["deleted_at"], name: "index_stores_on_deleted_at", using: :btree
 
   create_table "styles", force: true do |t|
     t.string   "name"
@@ -118,6 +184,8 @@ ActiveRecord::Schema.define(version: 20140523192339) do
     t.datetime "updated_at"
     t.integer  "brand_id"
   end
+
+  add_index "styles", ["deleted_at"], name: "index_styles_on_deleted_at", using: :btree
 
   create_table "users", force: true do |t|
     t.string   "email",                  default: "", null: false
@@ -145,6 +213,7 @@ ActiveRecord::Schema.define(version: 20140523192339) do
   end
 
   add_index "users", ["confirmation_token"], name: "index_users_on_confirmation_token", unique: true, using: :btree
+  add_index "users", ["deleted_at"], name: "index_users_on_deleted_at", using: :btree
   add_index "users", ["email"], name: "index_users_on_email", unique: true, using: :btree
   add_index "users", ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true, using: :btree
   add_index "users", ["unlock_token"], name: "index_users_on_unlock_token", unique: true, using: :btree
