@@ -1,6 +1,6 @@
 
 <div class="box-info">
-  <%= render partial: 'shared/modal_errors', locals: {object: imprintable} %>
+  <%= render partial: 'shared/modal_errors', locals: { object: imprintable } %>
   <%= form_for(imprintable) do |f| %>
     <!-- Horizontal form body -->
     <div id="horizontal-form" class="collapse in">
@@ -8,11 +8,6 @@
       <div class="form-group">
         <%= f.label :special_considerations, class: 'col-sm-2 control-label' %>
         <div class="col-sm-10">
-          <% if imprintable.errors.include?(:special_considerations) %>
-            <% imprintable.errors.full_messages_for(:special_considerations).each do |message| %>
-              <p class="text-danger"><%= message %></p>
-            <% end %>
-          <% end %>
           <%= f.text_field :special_considerations, class: 'form-control' %>
           <p class="help-block">Special considerations for the imprintable
         </div>
@@ -21,11 +16,6 @@
       <div class="form-group">
         <%= f.label :flashable, class: 'col-sm-2 control-label' %>
         <div class="col-sm-10">
-          <% if imprintable.errors.include?(:flashable) %>
-            <% imprintable.errors.full_messages_for(:flashable).each do |message| %>
-              <p class="text-danger"><%= message %></p>
-            <% end %>
-          <% end %>
           <%=  f.check_box :flashable, { class: 'checkbox' }, 'true', 'false' %>
           <p class="help-block">Check if the imprintable is flashable
         </div>
@@ -34,11 +24,6 @@
       <div class="form-group">
         <%= f.label :polyester, class: 'col-sm-2 control-label' %>
         <div class="col-sm-10">
-          <% if imprintable.errors.include?(:polyester) %>
-            <% imprintable.errors.full_messages_for(:polyester).each do |message| %>
-              <p class="text-danger"><%= message %></p>
-            <% end %>
-          <% end %>
           <%= f.check_box :polyester, { class: 'checkbox' }, 'true', 'false' %>
           <p class="help-block">Check if the imprintable contains polyester
         </div>
@@ -47,11 +32,6 @@
       <div class="form-group">
         <%= f.label :brand, class: 'col-sm-2 control-label' %>
         <div class="col-sm-10">
-          <% if imprintable.errors.include?(:brand) %>
-            <% imprintable.errors.full_messages_for(:brand).each do |message| %>
-              <p class="text-danger"><%= message %></p>
-            <% end %>
-          <% end %>
           <%= select_tag :brand,
                          options_for_select(['Select a Brand'] + Brand.order(:name).collect{ |b| [b.name, b.id] }, find_brand(imprintable)),
                          {
@@ -65,12 +45,7 @@
       <div class="form-group">
         <%= f.label :style, class: 'col-sm-2 control-label' %>
         <div class="col-sm-10">
-          <% if imprintable.errors.include?(:style) %>
-            <% imprintable.errors.full_messages_for(:style).each do |message| %>
-              <p class="text-danger"><%= message %></p>
-            <% end %>
-          <% end %>
-          <%= f.grouped_collection_select(:style_id, Brand.order(:name), :styles, :name, :id, :name, {}, {:class => 'form-control', :id => 'imprintable_style_id'}) %>
+          <%= f.grouped_collection_select(:style_id, Brand.order(:name), :styles, :name, :id, :name, {}, { :class => 'form-control', :id => 'imprintable_style_id' }) %>
           <p class="help-block">The catalog number of the imprintable
         </div>
       </div>
@@ -79,9 +54,9 @@
       <% if text == 'Update' %>
         <% variants = imprintable.find_variants %>
         <% if variants.empty? %>
-          <%= render partial: 'variant_select', locals: {imprintable: imprintable, f: f} %>
+          <%= render partial: 'variant_select', locals: { imprintable: imprintable, f: f } %>
         <% else %>
-          <%= render partial: 'grid', locals: {imprintable: imprintable, variants: variants} %>
+          <%= render partial: 'grid', locals: { imprintable: imprintable, variants: variants } %>
         <% end %>
       <% end %>
 

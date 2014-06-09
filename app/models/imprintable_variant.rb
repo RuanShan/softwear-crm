@@ -11,7 +11,7 @@ class ImprintableVariant < ActiveRecord::Base
   validates :color, presence: true
 
   def full_name
-    "#{imprintable.brand.name} #{imprintable.style.catalog_no} #{size.name} #{color.name}"
+    "#{brand.name} #{style.catalog_no} #{size.name} #{color.name}"
   end
 
   def destroyed?
@@ -24,5 +24,13 @@ class ImprintableVariant < ActiveRecord::Base
 
   def destroy!
     update_column(:deleted_at, Time.now)
+  end
+
+  def brand
+    self.imprintable.brand
+  end
+
+  def style
+    self.imprintable.style
   end
 end

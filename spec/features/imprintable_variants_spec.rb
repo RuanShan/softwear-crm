@@ -11,7 +11,7 @@ feature 'Imprintable Variant Management', imprintable_variant_spec: true do
   let!(:color) { create(:valid_color) }
   let!(:size) { create(:valid_size) }
 
-  context 'There are no imprintable variants', something: true do
+  context 'There are no imprintable variants' do
     let!(:imprintable) { create(:valid_imprintable) }
     scenario 'A user can create an initial size and color' do
       visit imprintables_path
@@ -24,7 +24,7 @@ feature 'Imprintable Variant Management', imprintable_variant_spec: true do
     end
   end
 
-  context 'There is an imprintable invariant' do
+  context 'There is an imprintable invariant', js: true do
 
     DatabaseCleaner.clean
 
@@ -39,35 +39,38 @@ feature 'Imprintable Variant Management', imprintable_variant_spec: true do
       expect(page).to have_css('#imprintable_variants_list')
     end
 
-    scenario 'A user can add a size column', js: true do
+    scenario 'A user can add a size column' do
+      find('#size_button').click
+      sleep 1
       find('#size_select').find("option[value='#{size.id}']").click
       sleep 1
       expect(page).to have_css('#col_2')
     end
 
-    scenario 'A user can add a color row', js: true do
-      find('#color_select').find("option[value='#{color.id}']").select_option
+    scenario 'A user can add a color row' do
+      find('#color_button').click
+      sleep 1
+      find('#color_select').find("option[value='#{color.id}']").click
       sleep 1
       expect(page).to have_css('#row_2')
     end
 
-    scenario 'A user can toggle a column', js: true do
+    scenario 'A user can toggle a column' do
       find('#col_plus_1').click
       sleep 1
       expect(page).to have_css('.fa-check')
     end
 
-    scenario 'A user can toggle a cell', js: true do
+    scenario 'A user can toggle a cell' do
       first('.cell').click
       sleep 1
       expect(page).to have_css('.fa-check')
     end
 
-    scenario 'A user can toggle a row', js: true do
+    scenario 'A user can toggle a row' do
       find('#row_plus_1').click
       sleep 1
       expect(page).to have_css('.fa-check')
     end
-
   end
 end

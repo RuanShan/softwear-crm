@@ -10,8 +10,8 @@ describe 'imprintables/_grid.html.erb', imprintable_variant_spec: true do
       render partial: 'grid', locals: {imprintable: imprintable, f: f}
       within_form_for ImprintableVariant, noscope: true do
         expect(rendered).to have_css('#imprintable_variants_list')
-        expect(rendered).to have_css('#size_select')
-        expect(rendered).to have_css('#color_select')
+        expect(rendered).to have_css('#size_button')
+        expect(rendered).to have_css('#color_button')
       end
     end
   end

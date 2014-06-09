@@ -67,18 +67,20 @@
       <% color_variants = variants_hash[:color_variants] %>
       <% size_variants.each_with_index do |size_variant, size_index| %>
         <% size = size_variant.size %>
-        <th id="col_<%= size_index+1%>" data-size-id="<%= size.id%>">
-          <%= size.name %>
-          <i class="fa fa-plus" id="col_plus_<%=size_index+1%>"></i>
-          <i class="fa fa-minus" id="col_minus_<%=size_index+1%>"></i>
+        <th id="col_<%= size_index + 1 %>" data-size-id="<%= size.id%>">
+          <%= size.display_value %>
+          <i class="fa fa-plus" id="col_plus_<%= size_index + 1 %>"></i>
+          <i class="fa fa-minus" id="col_minus_<%= size_index + 1 %>"></i>
         </th>
       <% end %>
       <th id="add_a_size">
+        <button type="button" id="size_button">Add a size</button>
         <%= select_tag nil,
-                       options_for_select(['Select a Size'] + Size.order(:sort_order).collect{ |s| [s.name, s.id] }),
+                       options_for_select(['Select a Size'] + Size.order(:sort_order).collect{ |s| [s.display_value, s.id] }),
                        {
                            class: 'form-control',
-                           id: 'size_select'
+                           id: 'size_select',
+                           style: 'display:none'
                        } %>
       </th>
     </tr>
@@ -86,20 +88,20 @@
     <tbody>
     <% color_variants.each_with_index do |color_variant, color_index| %>
       <% color = color_variant.color %>
-      <tr id="row_<%= color_index+1%>" data-color-id="<%=color.id%>">
+      <tr id="row_<%= color_index + 1 %>" data-color-id="<%=color.id%>">
         <th>
           <%= color.name %>
-          <i class="fa fa-plus" id="row_plus_<%=color_index+1%>"></i>
-          <i class="fa fa-minus" id="row_minus_<%=color_index+1%>"></i>
+          <i class="fa fa-plus" id="row_plus_<%= color_index + 1 %>"></i>
+          <i class="fa fa-minus" id="row_minus_<%= color_index + 1%>"></i>
         </th>
         <% size_variants.each_with_index do |size_variant, size_index| %>
           <% size = size_variant.size %>
-          <td id="cell_<%=color_index+1%>_<%=size_index+1%>">
+          <td id="cell_<%= color_index + 1 %>_<%= size_index + 1 %>">
           <% v = variants_hash[:variants_array].find { |v| (v.color_id == color.id) && (v.size_id == size.id) } %>
           <% if v %>
-            <i class="fa fa-check" id="image_<%=color_index+1%>_<%=size_index+1%>" data-variant-id="<%=v.id%>"></i>
+            <i class="fa fa-check" id="image_<%= color_index + 1 %>_<%= size_index + 1 %>" data-variant-id="<%=v.id%>"></i>
           <% else %>
-            <i class="fa fa-times" id="image_<%=color_index+1%>_<%=size_index+1%>"></i>
+            <i class="fa fa-times" id="image_<%= color_index + 1 %>_<%= size_index + 1 %>"></i>
           <% end %>
             <i class="fa fa-plus cell"></i>
             <i class="fa fa-minus cell"></i>
@@ -109,11 +111,13 @@
     <% end %>
     <tr>
       <th id="add_a_color">
+        <button type="button" id="color_button">Add a color</button>
       <%= select_tag nil,
                      options_for_select(['Select a Color'] + Color.order(:name).collect{ |c| [c.name, c.id] }),
                      {
                          class: 'form-control',
-                         id: 'color_select'
+                         id: 'color_select',
+                         style: 'display:none'
                      } %>
       </th>
       <% if variants_hash[:variants_array].empty? %>
