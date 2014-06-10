@@ -6,6 +6,7 @@ FactoryGirl.define do
     factory :non_imprintable_line_item do
       sequence(:name) { |n| "line_item_#{n}" }
       description 'Incredibly informative text'
+      taxable [true,false].sample
       imprintable_variant_id nil
     end
 

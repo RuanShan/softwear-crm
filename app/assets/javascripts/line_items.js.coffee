@@ -1,30 +1,8 @@
-$(window).ready ->
-  $('.add-line-item').click ->
-    $this = $(this)
-    $this.attr 'disabled', 'disabled'
-    setTimeout (-> $this.removeAttr 'disabled'), 1000
-    # TODO if modal is already present, kill it and return maybe?
-
-    ajax = $.ajax
-      type: 'GET',
-      url: "/jobs/#{$this.attr 'data-id'}/line_items/new"
-      dataType: 'html'
-
-    ajax.done (response) ->
-      $('body').children().last().after $(response)
-      lineItemModal = $('#lineItemModal')
-      initializeLineItemModal lineItemModal
-      lineItemModal.on 'hidden.bs.modal', (e) ->
-        lineItemModal.remove()
-
-    ajax.fail (jqXHR, textStatus) ->
-      alert "Internal server error! Can't process request."
-
 initializeLineItemModal = (lineItemModal) ->
   $currentFormDiv = null
   currentForm = -> $currentFormDiv.find('form')
 
-  handler = null
+  errorHandler = null
 
   $('input:radio[name="is_imprintable"]').change ->
     $radio = $(this)
@@ -41,17 +19,17 @@ initializeLineItemModal = (lineItemModal) ->
       $in  = $('#li-standard-form')
 
     $out.fadeOut 400, ->
-      handler.clear() if handler != null
-      handler = null
+      errorHandler.clear() if errorHandler != null
+      errorHandler = null
       $currentFormDiv = $in
       $in.fadeIn 400
 
-  submitForm = ->
+  $('#line-item-submit').click ->
     $add = $(this)
     $add.attr 'disabled', 'disabled'
     setTimeout (-> $add.removeAttr 'disabled'), 5000
 
-    handler.clear() if handler != null
+    errorHandler.clear() if errorHandler != null
 
     $currentFormDiv ||= $('#li-standard-form')
     action = currentForm().attr('action')
@@ -71,28 +49,28 @@ initializeLineItemModal = (lineItemModal) ->
 
       else if response.result == 'failure'
         console.log 'Failed to create'
-        handler ||= ErrorHandler('line_item', currentForm())
-        handler.handleErrors(response.errors, response.modal)
+        errorHandler ||= ErrorHandler('line_item', currentForm())
+        errorHandler.handleErrors(response.errors, response.modal)
 
     ajax.fail (jqXHR, textStatus) ->
       alert "Something's wrong with the server!"
 
-  $('#line-item-submit').click submitForm
   lineItemModal.keyup (key) ->
-    submitForm() if key.which is 13
+    $('#line-item-submit').click() if key.which is 13 # enter key
 
   handleImprintableForm = ($form) ->
     $select_level = (num) -> $(".select-level[data-level='#{num}']")
     clearSelectLevel = (num, after) ->
       $selected = $(".select-level[data-level='#{num}'] *:not(div.select-level)")
       if $selected.size() > 0
-        console.log 'clearing after fade out'
+        # console.log 'clearing after fade out'
         did_callback = false
         $selected.fadeOut ->
+          $selected.remove()
           after() unless after is null or did_callback
           did_callback = true
       else
-        console.log 'clearing before fade out'
+        # console.log 'clearing before fade out'
         after() if after
     getOptions = (data, done) ->
       a = $.ajax
@@ -152,3 +130,99 @@ initializeLineItemModal = (lineItemModal) ->
 
   handleImprintableForm $('#li-imprintable-form')
   lineItemModal.modal 'show'
+
+loadLineItemView = (lineItemId, url) ->
+  $row = $("#line-item-#{lineItemId}")
+  $oldChildren = $row.children()
+  $row.load url, ->
+    $oldChildren.each -> $(this).remove()
+
+@editLineItem = (lineItemId) ->
+  loadLineItemView lineItemId, "/line_items/#{lineItemId}/edit"
+
+@cancelEditLineItem = (lineItemId) ->
+  loadLineItemView lineItemId, "/line_items/#{lineItemId}"
+
+@deleteLineItem = (lineItemId) ->
+  $(this).attr 'disabled', 'disabled'
+
+  $row = $("#line-item-#{lineItemId}")
+  ajax = $.ajax
+    type: 'DELETE'
+    url: "/line_items/#{lineItemId}"
+    dataType: 'json'
+
+  ajax.done (response) ->
+    if response.result == 'success'
+      $row.fadeOut -> $row.remove() 
+    else if response.result == 'failure'
+      alert "Something weird happened and the line item couldn't be deleted."
+
+@deleteLineItems = (lineItemIds, imprintableName) ->
+  $(this).attr 'disabled', 'disabled'
+
+  $row = $('#'+imprintableName)
+  ajax = $.ajax
+    type: 'DELETE'
+    url: "/line_items/#{lineItemIds}"
+    dataType: 'json'
+
+  ajax.done (response) ->
+    if response.result == 'success'
+      $row.fadeOut -> $row.remove()
+    else
+      alert 'Something weird happened and the line items could not be deleted.'
+
+@updateLineItems = (jobId) ->
+  $("#job-#{jobId} .editing-line-item").each (i) ->
+    $this = $(this)
+    ajax = $.ajax
+      type: 'PUT'
+      url: $this.attr 'action'
+      data: $this.serialize()
+      dataType: 'json'
+
+    ajax.done (response) ->
+      $container = $this.parent()
+      $container.children().each -> $(this).remove()
+      $content = $(response.content)
+      $container.append $content
+      if response.result == 'failure'
+        eh = ErrorHandler('line_item', $container.find('form'))
+        eh.handleErrors(response.errors, response.modal)
+      else
+        $inputs = $content.find 'input'
+        contentBaseColor = $content.css 'background-color'
+        inputsBaseColor = $inputs.css 'background-color'
+        it.css('background-color', '#99ffbb') for it in [$content, $inputs]
+        $content.animate {backgroundColor: contentBaseColor}, 1000
+        $inputs.animate {backgroundColor: 'default'}, 1000
+
+    ajax.fail (jqXHR, errorText) ->
+      alert "Internal server error! Can't process request."
+
+# TODO deprecate this
+@registerAddLineItemButton = ($button) ->
+  $button.click ->
+    $this = $(this)
+    $this.attr 'disabled', 'disabled'
+    setTimeout (-> $this.removeAttr 'disabled'), 1000
+    # TODO if modal is already present, kill it and return maybe?
+
+    ajax = $.ajax
+      type: 'GET'
+      url: "/jobs/#{$this.attr 'data-id'}/line_items/new"
+      dataType: 'html'
+
+    ajax.done (response) ->
+      $('body').append $(response)
+      lineItemModal = $('#lineItemModal')
+      initializeLineItemModal lineItemModal
+      lineItemModal.on 'hidden.bs.modal', (e) ->
+        lineItemModal.remove()
+
+    ajax.fail (jqXHR, textStatus) ->
+      alert "Internal server error! Can't process request."
+
+$(window).ready ->
+  registerAddLineItemButton $('.add-line-item')

@@ -37,4 +37,8 @@ class Job < ActiveRecord::Base
     result.each { |k, v| v.each { |k, v| v.sort! } }
     result
   end
+
+  def standard_line_items
+    LineItem.non_imprintable.where job_id: id
+  end
 end

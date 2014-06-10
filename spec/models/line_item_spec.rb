@@ -26,13 +26,13 @@ describe LineItem, line_item_spec: true do
     it 'should validate the existance of imprintable_variant' do
       subject.imprintable_variant_id = 99
       subject.save
-      expect(subject.errors[:imprintable_variant]).to include("Imprintable Variant does not exist")
+      expect(subject.errors[:imprintable_variant]).to include("does not exist")
     end
   	it { should_not validate_presence_of :description }
   	it { should_not validate_presence_of :name }
 
     it 'name should return the name of its imprintable_variant' do
-      expect(subject.name).to eq subject.imprintable_variant.imprintable.name
+      expect(subject.name).to eq subject.imprintable_variant.name
     end
     it 'description should return the description of its imprintable_variant' do
       expect(subject.description).to eq subject.imprintable_variant.imprintable.style.description

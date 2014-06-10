@@ -4,7 +4,7 @@
   setTimeout (-> $this.removeAttr 'disabled'), 30000
 
   ajax = $.ajax
-    type: 'DELETE',
+    type: 'DELETE'
     url: "/jobs/#{jobId}"
 
   ajax.done (response) ->
@@ -30,10 +30,12 @@
     url: "/jobs/#{jobId}"
 
   ajax.done (response) ->
-    console.log "Updated job #{jobID}"
+    console.log "Updated job #{jobId}"
     $job.replaceWith response
+    refresh_inlines()
+    registerAddLineItemButton($("#job-#{jobId} .add-line-item"))
 
-  ajax.failure (jqXHR, textStatus) ->
+  ajax.fail (jqXHR, textStatus) ->
     alert "Failed to re-render job #{jobId}. Refresh the page to view changes."
 
 $(window).load ->
@@ -55,14 +57,18 @@ $(window).load ->
         msg += "#{error}\n" for error in response.errors
         alert msg
       else
+        $newJob = $(response)
         # The last child is the new button
-        $('#jobs').children().last().before $(response)
+        $('#jobs').children().last().before $newJob
 
         $('.scroll-y').scrollTo $('h3.job-title').last(),
           duration: 1000,
           offsetTop: 100
 
+        # This should be called when .contenteditable fields are 
+        # added through js
         refresh_inlines()
+        registerAddLineItemButton($newJob.find '.add-line-item')
 
     ajax.fail (jqXHR, textStatus) ->
       alert "Something went wrong with the server and

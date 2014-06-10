@@ -19,6 +19,7 @@
     $modal.on 'hidden.bs.modal', (e) -> $modal.remove()
     # Mark fields
     for field, fieldErrors of errors
+      continue if fieldErrors.length == 0
       handler.errorFields.push(field)
       # Grab the input field element
       $field = $form.find("*[name='#{getParamName(field)}']")

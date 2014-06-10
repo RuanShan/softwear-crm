@@ -6,7 +6,7 @@ describe LineItemsController, line_item_spec: true, dear_god: true do
   let!(:valid_user) { create :alternate_user }
   before(:each) { sign_in valid_user }
 
-  describe '#create', wip: true do
+  describe '#create' do
     context 'with an imprintable_id and a color_id' do
       let!(:job) { create(:job) }
       let!(:white) { create(:valid_color, name: 'white') }
@@ -21,6 +21,28 @@ describe LineItemsController, line_item_spec: true, dear_god: true do
         expect(LineItem.where(imprintable_variant_id: white_shirt_m.id)).to exist
         expect(LineItem.where(imprintable_variant_id: white_shirt_l.id)).to exist
         expect(LineItem.where(imprintable_variant_id: white_shirt_xl.id)).to exist
+        expect(LineItem.where(job_id: job.id)).to exist
+      end
+    end
+  end
+
+  describe '#destroy', destroy: true do
+    context 'with a 4-size imprintable line item group' do
+      let!(:job) { create(:job) }
+      let!(:white) { create(:valid_color, name: 'white') }
+      let!(:shirt) { create(:valid_imprintable) }
+      make_variants :white, :shirt, [:S, :M, :L, :XL]
+
+      it 'destroys them all when supplied with their ids' do
+        line_items = job.line_items.to_a
+        delete :destroy, ids: line_items.map { |e| e.id }
+
+        json_response = JSON.parse response.body
+        expect(json_response['result']).to eq 'success'
+
+        line_items.each do |line_item|
+          expect(LineItem.where(id: line_item.id)).to_not exist
+        end
       end
     end
   end

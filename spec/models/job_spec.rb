@@ -74,4 +74,29 @@ describe Job, job_spec: true do
       expect(queries_after{job.sort_line_items}).to eq 6
     end
   end
+
+  context '#standard_line_items', line_item_spec: true do
+    let!(:job) { create(:job) }
+
+    let!(:white) { create(:valid_color, name: 'white') }
+    let!(:shirt) { create(:valid_imprintable) }
+
+    make_variants :white, :shirt, [:S, :M, :L]
+
+    5.times { |n| let!("standard#{n}".to_sym) { create(:non_imprintable_line_item, job_id: job.id) } }
+
+    it 'should return all the non-imprintable line items' do
+      result = job.standard_line_items
+      5.times do |n|
+        expect(result).to include send("standard#{n}")
+      end
+    end
+
+    it 'should not contain any imprintable line items' do
+      result = job.standard_line_items
+      ['s', 'm', 'l'].each do |s|
+        expect(result).to_not include send("white_shirt_#{s}_item")
+      end
+    end
+  end
 end

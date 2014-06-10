@@ -77,9 +77,9 @@ create_records([
 # Style SEEDING
 # ----------------
 create_records([
-    { name: 'Short sleeve', catalog_no: 'style_1', description: 'description', sku: '10', brand_id: 1},
-    { name: 'Long sleeve', catalog_no: 'style_2', description: 'description', sku: '11', brand_id: 1},
-    { name: 'Tank top', catalog_no: 'style_3', description: 'description', sku: '12', brand_id: 2}
+    { name: 'Short sleeve', catalog_no: 'style_1', description: 'Short sleeved shirt.', sku: '10', brand_id: 1},
+    { name: 'Long sleeve', catalog_no: 'style_2', description: 'Long sleeved shirt.', sku: '11', brand_id: 1},
+    { name: 'Tank top', catalog_no: 'style_3', description: 'Tank top. It has no sleeves!!!', sku: '12', brand_id: 2}
 ], Style)
 
 # Imprintable SEEDING

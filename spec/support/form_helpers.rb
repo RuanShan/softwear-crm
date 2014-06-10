@@ -46,9 +46,11 @@ module FormHelpers
       inl_css_attr = ("[resource-method='#{field_name}']")
 
       css_attr += "[type='#{options[:type]}']" if options[:type]
+      pre = css_pre
+      pre += "#{options[:inside]} " if options[:inside]
 
-      !(doc.css("#{css_pre}*#{css_attr}").empty? &&
-        doc.css("#{css_pre}*#{inl_css_attr}").empty?)
+      !(doc.css("#{pre}*#{css_attr}").empty? &&
+        doc.css("#{pre}*#{inl_css_attr}").empty?)
     end
     failure_message do |page|
       css_attr = (@@model_form_context ? 

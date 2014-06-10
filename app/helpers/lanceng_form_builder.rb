@@ -8,6 +8,11 @@ class LancengFormBuilder < ActionView::Helpers::FormBuilder
     return self.new object.class.name.underscore.to_sym, object, temp, {}, nil
   end
 
+  def common_attr(attrs)
+    @common_attrs ||= {}
+    @common_attrs.merge! attrs
+  end
+
   # Adding form-control class to standard field functions
   # def text_field(method, options={})
   #   add_class options, 'form-control'
@@ -28,11 +33,12 @@ class LancengFormBuilder < ActionView::Helpers::FormBuilder
   end
   # Super efficient mass method reassignment, go!
   [:text_field, :password_field, :text_area, 
-  :number_field].each do |method_name|
+  :number_field, :check_box].each do |method_name|
     alias_method "original_#{method_name}".to_sym, method_name
     define_method method_name do |*args|
       options = args.count == 2 ? args.last.merge({}) : {}
       add_class options, 'form-control'
+      options.merge!(style: 'width: 75px') if method_name == :number_field
       actual_args = [args.first, options]
       send("original_#{method_name}".to_sym, *actual_args)
     end
@@ -40,6 +46,10 @@ class LancengFormBuilder < ActionView::Helpers::FormBuilder
 
   # Quick method for adding a label to a field. Can be called like
   # f.label.text_area :name
+  # OR
+  # f.label("Display Text").text_field :name
+  # 
+  # or just used normally
   def label(*args)
     if args.count == 0 || args.first.is_a?(String)
       l = args.first.is_a?(String) ? args.first : nil
@@ -48,7 +58,8 @@ class LancengFormBuilder < ActionView::Helpers::FormBuilder
       super
     end
   end
-  # Another quick method, this time for errors. Potential use:
+  # Another quick method, this time for errors. Stacks with label.
+  # Potential use:
   # f.label.error.text_area :name
   def error(*args)
     if args.count == 0
@@ -125,6 +136,7 @@ private
     values.each do |v|
       options[:class] << ' ' unless options[:class].empty?
       options[:class] << v
+      options.merge!(@common_attrs) unless @common_attrs.nil?
     end
   end
 

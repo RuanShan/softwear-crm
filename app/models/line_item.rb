@@ -10,7 +10,16 @@ class LineItem < ActiveRecord::Base
 
   inject NonDeletable
 
-  def price; unit_price * quantity; end
+  scope :non_imprintable, -> { where imprintable_variant_id: nil }
+  scope :imprintable, -> { where.not imprintable_variant_id: nil }
+
+  def price
+    if unit_price && quantity
+      unit_price * quantity
+    else
+      'NAN'
+    end
+  end
 
   def imprintable?
     imprintable_variant_id != nil
@@ -18,6 +27,10 @@ class LineItem < ActiveRecord::Base
 
   def imprintable
     imprintable_variant.imprintable
+  end
+
+  def style
+    imprintable_variant.imprintable.style
   end
 
   [:name, :description].each do |method|
@@ -28,6 +41,10 @@ class LineItem < ActiveRecord::Base
         read_attribute method
       end
     end
+  end
+
+  def size_display
+    imprintable_variant.size.display_value
   end
 
   def <=>(other)
@@ -48,7 +65,7 @@ class LineItem < ActiveRecord::Base
 private
   def imprintable_variant_exists
     if ImprintableVariant.where(id: imprintable_variant_id).count < 1
-      errors.add :imprintable_variant, "Imprintable Variant does not exist"
+      errors.add :imprintable_variant, "does not exist"
     end
   end
 end

@@ -7,37 +7,58 @@
         <p class="job-description">
           Description: <%= f.inline_field :description, 'Job Description Here' %>
         </p>
-
-        <h4>Line Items</h4>
-        <%= render partial: 'orders/line_item_imprintable_edit' %>
-        <%= render partial: 'orders/line_item_imprintable_edit' %>
-        <%= render partial: 'orders/line_items_edit' %>
-
-        <div class="form-group box-info">
-          <div class="col-sm-4">
-              <a class="btn btn-info btn-lg btn-block add-line-item" data-id="<%=job.id%>"><i class="fa fa-list-alt"></i> Add Line Item </a>
-          </div>
-          <div class="col-sm-4 col-xs-offset-4">
-            <button type="button" class="btn btn-info btn-lg btn-block"><i class="fa fa-list-alt"></i> Update Line Items</button>
-          </div>
-        </div>
-
-        <h4>Imprints</h4>
-        <%= render partial: 'orders/imprints' %>
-
-        <div class="form-group box-info">
-          <div class="col-sm-4">
-            <button type="submit" class="btn btn-info btn-lg btn-block"><i class="fa fa-pagelines"></i> Add Imprint </button>
-          </div>
-          <div class="col-sm-4 col-xs-offset-4">
-            <button type="submit" class="btn btn-info btn-lg btn-block"><i class="fa fa-pagelines"></i> Update Imprints</button>
-          </div>
-        </div>
-        <div class="form-group box-info">
-          <div class="col-sm-4 col-xs-offset-4">
-            <button for="<%= job.id %>" type='button' onclick="deleteJob(<%= job.id %>)" class="delete-job-button btn btn-danger btn-lg btn-block"><i class="fa fa-times-circle"></i> Delete Job</button>
-          </div>
-        </div>
       <% end %>
+
+      <% unless job.line_items.empty? %>
+        <h4>Line Items</h4>
+      <% end %>
+      <% using(job.sort_line_items) do |sorted_line_items| %>
+        <% unless sorted_line_items.empty? %>
+          <% sorted_line_items.each do |imprintable_name, by_color| %>
+            <% by_color.each do |color_name, line_items| %>
+              <% unless line_items.empty? %>
+                <%= render partial: 'line_items/imprintable_edit', locals: {
+                  color_name: color_name,
+                  style_name: line_items.first.style.name,
+                  style_catalog_no: line_items.first.style.catalog_no,
+                  description: line_items.first.description,
+                  max_columns: 10,
+                  line_items: line_items
+                } %>
+              <% end %>
+            <% end %>
+          <% end %>
+        <% end %>
+      <% end %>
+
+      <% unless job.standard_line_items.empty? %>
+        <%= render partial: 'line_items/standard_view', locals: {line_items: job.standard_line_items} %>
+      <% end %>
+
+      <div class="form-group box-info">
+        <div class="col-sm-4">
+            <a class="btn btn-info btn-lg btn-block add-line-item" data-id="<%=job.id%>"><i class="fa fa-list-alt"></i> Add Line Item </a>
+        </div>
+        <div class="col-sm-4 col-xs-offset-4">
+          <a class="btn btn-info btn-lg btn-block update-line-items" onclick="updateLineItems(<%=job.id%>)"><i class="fa fa-list-alt"></i> Update Line Items</a>
+        </div>
+      </div>
+
+      <h4>Imprints</h4>
+      <%= render partial: 'orders/imprints' %>
+
+      <div class="form-group box-info">
+        <div class="col-sm-4">
+          <button type="submit" class="btn btn-info btn-lg btn-block"><i class="fa fa-pagelines"></i> Add Imprint </button>
+        </div>
+        <div class="col-sm-4 col-xs-offset-4">
+          <button type="submit" class="btn btn-info btn-lg btn-block"><i class="fa fa-pagelines"></i> Update Imprints</button>
+        </div>
+      </div>
+      <div class="form-group box-info">
+        <div class="col-sm-4 col-xs-offset-4">
+          <button for="<%= job.id %>" type='button' onclick="deleteJob(<%= job.id %>)" class="delete-job-button btn btn-danger btn-lg btn-block"><i class="fa fa-times-circle"></i> Delete Job</button>
+        </div>
+      </div>
     </div>
 </div>

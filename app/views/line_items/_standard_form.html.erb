@@ -1,6 +1,7 @@
 <%= form_for [job, line_item], url: job_line_items_path(job, line_item), builder: LancengFormBuilder do |f| %>
 	<%= f.label.error.text_field :name %>
 	<%= f.label.error.text_area :description %>
+	<%= f.label.error.check_box :taxable, style: "width: 34px; height: 34px;" %>
 	<%= f.label.error.number_field :quantity %>
 	<%= f.label.error.number_field :unit_price %>
 <% end %>

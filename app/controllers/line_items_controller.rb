@@ -5,8 +5,69 @@ class LineItemsController < InheritedResources::Base
     end
   end
 
+  def edit
+    super do |format|
+      format.html { render partial: 'standard_edit_entry', locals: { line_item: @line_item } }
+    end
+  end
+
+  def show
+    super do |format|
+      format.html { render partial: 'standard_view_entry', locals: { line_item: @line_item } }
+    end
+  end
+
+  def destroy
+    if params[:ids]
+      LineItem.destroy params[:ids].split('/').flatten.map { |e| e.to_i }
+      render json: { result: 'success' }
+    else
+      super do |success, failure|
+        success.json do
+          render json: { result: 'success' }
+        end
+        failure.json do
+          render json: { result: 'failure' }
+        end
+      end
+    end
+  end
+
+  def update
+    super do |success, failure|
+      line_item_locals = { line_item: @line_item }
+
+      success.json do
+        content_html = ''
+        with_format :html do
+          content_html = render_to_string(partial: entry_partial('view'), locals: line_item_locals)
+        end
+        render json: { result: 'success', content: content_html }
+      end
+      success.html { render partial: 'standard_view_entry', locals: line_item_locals }
+
+      failure.json do
+        modal_html = ''
+        form_html = ''
+        with_format :html do
+          form_html = render_to_string(partial: entry_partial('edit'), locals: line_item_locals(true))
+        end
+        with_format :html do
+          modal_html = render_to_string(partial: 'shared/modal_errors', locals: { object: @line_item })
+        end
+        render json: { 
+          result: 'failure',
+          errors: @line_item.errors.messages,
+          modal: modal_html,
+          content: form_html
+        }
+      end
+      failure.html { render partial: entry_partial('edit'), locals: line_item_locals(true) }
+    end
+  end
+
   def create
-    if param_okay?(:imprintable_id) && param_okay?(:color_id)
+    if param_okay? :imprintable_id, :color_id
       line_items = ImprintableVariant.where(
         imprintable_id: params[:imprintable_id],
         color_id: params[:color_id]
@@ -14,13 +75,15 @@ class LineItemsController < InheritedResources::Base
         LineItem.new(
           imprintable_variant_id: variant.id,
           unit_price: 0,
-          quantity: 0
+          quantity: 0,
+          job_id: params[:job_id]
       )}
 
       line_items.each do |line_item|
         unless line_item.valid?
+          modal_html = ''
           with_format :html do
-            render_to_string(partial: 'shared/modal_errors', locals: { object: line_item })
+            modal_html = render_to_string(partial: 'shared/modal_errors', locals: { object: line_item })
           end
           render json: {
             result: 'failure',
@@ -35,6 +98,8 @@ class LineItemsController < InheritedResources::Base
     else
       super do |success, failure|
         success.json do
+          @line_item.job_id = params[:job_id]
+          @line_item.save
           render json: { result: 'success' }
         end
         failure.json do
@@ -100,14 +165,28 @@ class LineItemsController < InheritedResources::Base
 
 private
   def permitted_params
-    params.permit(:brand_id, :style_id, :color_id, :imprintable_id,
+    params.permit(
+      :brand_id, :style_id, :color_id, :imprintable_id, :job_id,
+      :ids,
       line_item: [
       :id, :name, :description, :quantity, 
-      :unit_price, :imprintable_variant_id
+      :unit_price, :imprintable_variant_id,
+      :taxable
     ])
   end
 
-  def param_okay?(param)
-    params[param] && !params[param].empty?
+  def param_okay?(*args)
+    result = true
+    args.each do |param|
+      result &&= params[param] && !params[param].empty?
+    end
+    result
+  end
+
+  def entry_partial(kind)
+    @line_item.imprintable? ? 'imprintable_edit_entry' : "standard_#{kind}_entry"
+  end
+  def line_item_locals(edit = false)
+    {line_item: @line_item, edit: edit}
   end
 end

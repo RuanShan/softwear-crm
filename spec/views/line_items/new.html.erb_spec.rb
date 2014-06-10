@@ -12,6 +12,6 @@ describe 'line_items/new.html.erb', line_item_spec: true do
   end
 
   it 'should have a cancel button' do
-  	expect(rendered).to have_selector 'button', text: 'Cancel'
+  	expect(rendered).to have_selector 'a', text: 'Cancel'
   end
 end
