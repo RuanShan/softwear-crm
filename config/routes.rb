@@ -29,6 +29,7 @@ CrmSoftwearcrmCom::Application.routes.draw do
   
   scope 'configuration' do
     resources :shipping_methods, :stores
+    resources :imprint_methods
   end
   
   resources :orders do

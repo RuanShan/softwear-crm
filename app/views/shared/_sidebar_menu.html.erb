@@ -65,12 +65,17 @@
       <!-- <ul> -->
       <%= nav_helper(:ul, false, %w(configuration shipping_methods)) %>
         <!-- <li> -->
-        <%= nav_helper :li, true, 'shipping_methods' %>
-          <%= link_to shipping_methods_path do %><i class="fa fa-angle-right"></i> Shipping Methods<% end %>
-          <%= link_to stores_path do %><i class="fa fa-angle-right"></i> Stores<% end %>
-        </li>
-      </ul>
-    </li>
-  </ul>
+      <%= nav_helper :li, true, 'imprint_methods' %>
+        <%= link_to imprint_methods_path do %><i class="fa fa-angle-right"></i> Imprint Methods <% end %>
+      </li>
+      <%= nav_helper :li, true, 'shipping_methods' %>
+        <%= link_to shipping_methods_path do %><i class="fa fa-angle-right"></i> Shipping Methods<% end %>
+      </li>
+      <%= nav_helper :li, true, 'stores' %>
+        <%= link_to stores_path do %><i class="fa fa-angle-right"></i> Stores<% end %>
+      </li>
+    </ul>
+  </li>
+</ul>
   <div class="clear"></div>
 </div>
