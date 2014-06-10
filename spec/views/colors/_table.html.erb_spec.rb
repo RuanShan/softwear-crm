@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe 'colors/_table.html.erb' do
+describe 'colors/_table.html.erb', color_spec: true do
 
   let!(:colors) do
     [create(:valid_color)]

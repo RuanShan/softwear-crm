@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe 'imprintables/_form.html.erb' do
+describe 'imprintables/_form.html.erb', imprintable_spec: true do
   before(:each){ render partial: 'imprintables/form', locals: { imprintable: Imprintable.new}}
 
   it 'has text_field for name, catalog_number, description and a submit button' do

@@ -12,15 +12,9 @@ class StylesController < InheritedResources::Base
     end
   end
 
-  # def create
-  #   super do |format|
-  #     format.html { redirect_to styles_path params[:id] }
-  #   end
-  # end
-
   private
 
   def permitted_params
-    params.permit(style: [:name, :catalog_no, :description, :sku])
+    params.permit(style: [:name, :catalog_no, :description, :sku, :brand_id])
   end
 end

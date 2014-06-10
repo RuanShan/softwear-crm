@@ -1,7 +1,7 @@
 require 'spec_helper'
 include ApplicationHelper
 
-feature 'Brands management' do
+feature 'Brands management', brand_spec: true do
 
   given!(:valid_user) { create(:alternate_user) }
   before(:each) do
@@ -46,5 +46,4 @@ feature 'Brands management' do
     expect(page).to have_selector '.modal-content-success', text: 'Brand was successfully destroyed.'
     expect(brand.reload.destroyed? ).to be_truthy
   end
-
 end

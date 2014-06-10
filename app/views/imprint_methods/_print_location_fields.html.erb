@@ -1,0 +1,32 @@
+<div class="row">
+  <div class="removeable">
+    <div class="col-md-1">
+      <%= f.label 'Location' %>
+    </div>
+    <div class="col-md-10">
+      <%= f.text_field :name, class: 'form-control' %>
+    </div>
+    <div class="col-md-1">
+      <%= f.hidden_field :_destroy %>
+      <%= link_to "x", '#', class: "btn btn-info remove_fields pull-right" %>
+    </div>
+    <div class="col-md-1">
+      <%= f.label 'Max Height' %>
+    </div>
+    <div class="col-md-11">
+      <div class="input-group">
+        <%= f.text_field :max_height, class: 'form-control', placeholder: 'Height (0.00) in inches' %>
+        <%= raw("<span class='input-group-addon'>inches</span>") %>
+      </div>
+    </div>
+    <div class="col-md-1">
+      <%= f.label 'Max Width' %>
+    </div>
+    <div class="col-md-11">
+      <div class="input-group">
+        <%= f.text_field :max_width, class: 'form-control', placeholder: 'Width (0.00) in inches' %>
+        <%= raw("<span class='input-group-addon'>inches</span>") %>
+      </div>
+    </div>
+  </div>
+</div>

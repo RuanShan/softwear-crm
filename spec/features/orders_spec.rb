@@ -1,7 +1,7 @@
 require 'spec_helper'
 include ApplicationHelper
 
-feature 'Order management', order_spec: true, js: true do
+feature 'Order management', order_spec: true,  js: true do
   given!(:valid_user) { create(:user) }
   before(:each) do
     login_as valid_user
@@ -44,7 +44,9 @@ feature 'Order management', order_spec: true, js: true do
 
     select 'Pick up in Ypsilanti', from: 'Delivery method'
 
+    sleep 1
     click_button 'Submit'
+    sleep 1
 
     expect(Order.where(firstname: 'Guy')).to exist
   end
@@ -53,15 +55,15 @@ feature 'Order management', order_spec: true, js: true do
     visit root_path
     unhide_dashboard
     click_link 'Orders'
-    wait_for_ajax
+    sleep 1
     click_link 'New'
 
     fill_in 'Email', with: 'nope'
 
-    2.times { click_button 'Next'; wait_for_ajax }
+    2.times { click_button 'Next'; sleep 1 }
     click_button 'Submit'
 
-    wait_for_ajax
+    sleep 1
     expect(page).to have_content 'Email is invalid'
   end
 

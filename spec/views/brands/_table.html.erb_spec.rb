@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe 'brands/_table.html.erb' do
+describe 'brands/_table.html.erb', brand_spec: true do
 
   let!(:brands) do
     [create(:valid_brand)]

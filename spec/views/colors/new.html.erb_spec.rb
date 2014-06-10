@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe 'colors/new.html.erb' do
+describe 'colors/new.html.erb', color_spec: true do
   it 'has a form to create a new color' do
     assign(:color, Color.new)
     render

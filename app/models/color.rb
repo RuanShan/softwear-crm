@@ -1,6 +1,8 @@
 class Color < ActiveRecord::Base
-  validates :name, uniqueness: true, presence: true
-  validates :sku, uniqueness: true, presence: true
+  acts_as_paranoid
 
-  inject NonDeletable
+  has_many :imprintable_variants
+
+  validates :name, uniqueness: true, presence: true
+  validates :sku, uniqueness: true, presence: true, length: { is: 3 }
 end

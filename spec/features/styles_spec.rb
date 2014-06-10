@@ -1,14 +1,14 @@
 require 'spec_helper'
 include ApplicationHelper
 
-feature 'Styles management' do
+feature 'Styles management', style_spec: true do
 
   given!(:valid_user) { create(:alternate_user) }
   before(:each) do
     login_as(valid_user)
   end
 
-  let!(:style) { create(:valid_style)}
+  let!(:style) { create(:valid_style) }
 
 
   scenario 'A user can see a list of styles' do
@@ -18,13 +18,14 @@ feature 'Styles management' do
     expect(page).to have_selector('.box-info')
   end
 
-  scenario 'A user can create a new style' do
+  scenario 'A user can create a new style', js: true do
     visit styles_path
     click_link('Add a Style')
     fill_in 'style_name', :with => 'Sample Name'
     fill_in 'style_catalog_no', :with => '42'
     fill_in 'style_description', :with => 'Description'
-    fill_in 'style_sku', :with => '1234'
+    fill_in 'style_sku', :with => '99'
+    page.find_by_id('style_brand_id').find("option[value='#{style.brand.id}']").click
     click_button('Create Style')
     expect(page).to have_selector '.modal-content-success', text: 'Style was successfully created.'
     expect(Style.find_by name: 'Sample Name').to_not be_nil
@@ -49,5 +50,4 @@ feature 'Styles management' do
     expect(page).to have_selector '.modal-content-success', text: 'Style was successfully destroyed.'
     expect(style.reload.destroyed? ).to be_truthy
   end
-
 end

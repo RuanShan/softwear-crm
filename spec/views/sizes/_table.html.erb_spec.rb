@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe 'sizes/_table.html.erb' do
+describe 'sizes/_table.html.erb', size_spec: true do
 
   let!(:sizes) do
     [create(:valid_size)]

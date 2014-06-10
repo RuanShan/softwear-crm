@@ -1,0 +1,129 @@
+<style type="text/css">
+  .fa-plus {
+    position:absolute;
+    bottom:5px;
+    right:15px;
+    text-align:left;
+    vertical-align:bottom;
+    cursor:pointer;
+    color:green;
+  }
+  .fa-minus{
+    position:absolute;
+    bottom:5px;
+    left:15px;
+    cursor:pointer;
+    color:red;
+  }
+  .fa-check{
+    color:green;
+    position:absolute;
+  }
+  .fa-times{
+    color:red;
+    position:absolute;
+  }
+  .table-hover th {
+    border:1px solid #CCCCCC;
+    text-align:center;
+    vertical-align:middle;
+    position:relative;
+  }
+  .table-hover td {
+    border:1px solid #CCCCCC;
+    text-align:center;
+    vertical-align:middle;
+    position:relative;
+  }
+  .table-hover {
+    border:1px solid #CCCCCC;
+    position:relative;
+  }
+  #add_a_color {
+    cursor:pointer;
+  }
+  #add_a_size {
+    cursor:pointer;
+  }
+  .button {
+    padding:5px;
+    position: relative;
+    vertical-align: center;
+    background-color: #DCDCDC;
+    border: 1px solid #666;
+    color:#000;
+    cursor: pointer;
+    text-decoration:none;
+  }
+</style>
+
+<div class="table-responsive">
+  <table class="table table-hover" id="imprintable_variants_list">
+    <thead>
+    <tr>
+      <th></th>
+      <% variants_hash =  imprintable.create_variants_hash %>
+      <% size_variants = variants_hash[:size_variants] %>
+      <% color_variants = variants_hash[:color_variants] %>
+      <% size_variants.each_with_index do |size_variant, size_index| %>
+        <% size = size_variant.size %>
+        <th id="col_<%= size_index + 1 %>" data-size-id="<%= size.id%>">
+          <%= size.display_value %>
+          <i class="fa fa-plus" id="col_plus_<%= size_index + 1 %>"></i>
+          <i class="fa fa-minus" id="col_minus_<%= size_index + 1 %>"></i>
+        </th>
+      <% end %>
+      <th id="add_a_size">
+        <button type="button" id="size_button">Add a size</button>
+        <%= select_tag nil,
+                       options_for_select(['Select a Size'] + Size.order(:sort_order).collect{ |s| [s.display_value, s.id] }),
+                       {
+                           class: 'form-control',
+                           id: 'size_select',
+                           style: 'display:none'
+                       } %>
+      </th>
+    </tr>
+    </thead>
+    <tbody>
+    <% color_variants.each_with_index do |color_variant, color_index| %>
+      <% color = color_variant.color %>
+      <tr id="row_<%= color_index + 1 %>" data-color-id="<%=color.id%>">
+        <th>
+          <%= color.name %>
+          <i class="fa fa-plus" id="row_plus_<%= color_index + 1 %>"></i>
+          <i class="fa fa-minus" id="row_minus_<%= color_index + 1%>"></i>
+        </th>
+        <% size_variants.each_with_index do |size_variant, size_index| %>
+          <% size = size_variant.size %>
+          <td id="cell_<%= color_index + 1 %>_<%= size_index + 1 %>">
+          <% v = variants_hash[:variants_array].find { |v| (v.color_id == color.id) && (v.size_id == size.id) } %>
+          <% if v %>
+            <i class="fa fa-check" id="image_<%= color_index + 1 %>_<%= size_index + 1 %>" data-variant-id="<%=v.id%>"></i>
+          <% else %>
+            <i class="fa fa-times" id="image_<%= color_index + 1 %>_<%= size_index + 1 %>"></i>
+          <% end %>
+            <i class="fa fa-plus cell"></i>
+            <i class="fa fa-minus cell"></i>
+          </td>
+        <% end %>
+      </tr>
+    <% end %>
+    <tr>
+      <th id="add_a_color">
+        <button type="button" id="color_button">Add a color</button>
+      <%= select_tag nil,
+                     options_for_select(['Select a Color'] + Color.order(:name).collect{ |c| [c.name, c.id] }),
+                     {
+                         class: 'form-control',
+                         id: 'color_select',
+                         style: 'display:none'
+                     } %>
+      </th>
+      <% if variants_hash[:variants_array].empty? %>
+        <td><a class="button" id="select_button">Select</a></td>
+      <% end %>
+    </tr>
+    </tbody>
+  </table>
+</div>

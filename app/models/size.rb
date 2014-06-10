@@ -1,23 +1,25 @@
 class Size < ActiveRecord::Base
-  validates :name, uniqueness: true, presence: true
-  validates :sku, uniqueness: true, presence: true
-  validates :sequence, presence: true
+  acts_as_paranoid
+  default_scope { order(:sort_order).where(:deleted_at => nil) }
+  scope :deleted, -> { unscoped.where.not(deleted_at: nil) }
+  before_validation :set_sort_order
 
-  default_scope { order(:sequence)}
-  before_validation :set_sequence
+  has_many :imprintable_variants
 
-  inject NonDeletable
+  validates :name, presence: true, uniqueness: true
+  validates :sku, presence: true, uniqueness: true, length: { is: 2 }
+  validates :sort_order, presence: true, uniqueness: true
 
   private
 
-  def set_sequence
-    if self.sequence.nil?
-      if Size.order(:sequence).last
-        last_sequence = Size.order(:sequence).last.sequence
+  def set_sort_order
+    if self.sort_order.nil?
+      if Size.order(:sort_order).last
+        last_sort_order = Size.order(:sort_order).last.sort_order
       else
-        last_sequence = 0
+        last_sort_order = 0
       end
-      self.sequence = 1 + (last_sequence.nil? ? 0 : last_sequence)
+      self.sort_order = 1 + (last_sort_order.nil? ? 0 : last_sort_order)
     end
   end
 end

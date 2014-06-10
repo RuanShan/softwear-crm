@@ -11,12 +11,12 @@ CrmSoftwearcrmCom::Application.routes.draw do
   resources :imprintables do
     collection do
       resources :styles, :brands, :colors
+      post 'update_imprintable_variants'
 
       resources :sizes do
         collection do
           post 'update_size_order'
         end
-        get '/imprintables/assets' => redirect('/assets')
       end
     end
   end
@@ -27,6 +27,7 @@ CrmSoftwearcrmCom::Application.routes.draw do
   
   scope 'configuration' do
     resources :shipping_methods, :stores
+    resources :imprint_methods
   end
   
   resources :orders, shallow: true do

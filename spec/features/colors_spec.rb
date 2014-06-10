@@ -1,7 +1,7 @@
 require 'spec_helper'
 include ApplicationHelper
 
-feature 'Colors management' do
+feature 'Colors management', color_spec: true do
 
   given!(:valid_user) { create(:alternate_user) }
   before(:each) do
@@ -22,7 +22,7 @@ feature 'Colors management' do
     visit colors_path
     click_link('Add a color')
     fill_in 'color_name', :with => 'Sample Name'
-    fill_in 'color_sku', :with => '42'
+    fill_in 'color_sku', :with => '042'
     click_button('Create Color')
     expect(page).to have_selector '.modal-content-success', text: 'Color was successfully created.'
     expect(Color.find_by name: 'Sample Name').to_not be_nil

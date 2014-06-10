@@ -1,20 +1,23 @@
 class ImprintableVariant < ActiveRecord::Base
+  acts_as_paranoid
+
   belongs_to :imprintable
   belongs_to :size
   belongs_to :color
 
-  validates_presence_of :imprintable, :size, :color
+  validates :imprintable, presence: true
+  validates :size, presence: true
+  validates :color, presence: true
 
-  inject NonDeletable
+  def full_name
+    "#{brand.name} #{style.catalog_no} #{size.name} #{color.name}"
+  end
 
-  def description; imprintable.description; end
-  def name 
-    "#{color.name} #{imprintable.name}"
+  def brand
+    self.imprintable.brand
   end
-  def style_name
-    imprintable.style.name
-  end
-  def style_catalog_no
-    imprintable.style.catalog_no
+
+  def style
+    self.imprintable.style
   end
 end

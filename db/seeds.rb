@@ -60,6 +60,20 @@ create_records([
     { name: 'UPS Ground', tracking_url: 'http://www.ups.com/tracking/tracking.html'}
 ], ShippingMethod)
 
+# ImprintMethod SEEDING
+# ----------------
+
+create_records([
+                   {name: 'Screen Printing', production_name: 'Screen Printing'}
+               ], ImprintMethod)
+im = ImprintMethod.all.first
+create_records([
+                   {name: 'Red', imprint_method_id: im.id}
+               ], InkColor)
+create_records([
+                   {name: 'Chest', max_height: 5.5, max_width: 5.5, imprint_method_id: im.id}
+               ], PrintLocation)
+
 # Brand SEEDING
 # ----------------
 create_records([
@@ -70,8 +84,8 @@ create_records([
 # Color SEEDING
 # ----------------
 create_records([
-    { name: 'Blue', sku: '08'},
-    { name: 'Red', sku: '09'}
+    { name: 'Blue', sku: '008'},
+    { name: 'Red', sku: '009'}
 ], Color)
 
 # Style SEEDING
@@ -85,29 +99,19 @@ create_records([
 # Imprintable SEEDING
 # ---------------
 create_records([
-    { flashable: false, special_considerations: 'none', polyester: false, style_id: 1},
-    { flashable: false, special_considerations: 'line dry', polyester: true, style_id: 2},
-    { flashable: true, special_considerations: 'do not print', polyester: false, style_id: 3}
+    { flashable: false, special_considerations: 'none', polyester: false, style_id: 1, sizing_category: 'Adult Unisex'},
+    { flashable: false, special_considerations: 'line dry', polyester: true, style_id: 2, sizing_category: 'Ladies'},
+    { flashable: true, special_considerations: 'do not print', polyester: false, style_id: 3, sizing_category: 'Toddler'}
 ], Imprintable)
 
 # Imprintable Variant SEEDING
-# -----------------------
+# ---------------
 create_records([
-    { imprintable_id: 1, size_id: 1, color_id: 1 },
     { imprintable_id: 1, size_id: 2, color_id: 1 },
-    { imprintable_id: 1, size_id: 3, color_id: 1 },
-    { imprintable_id: 1, size_id: 4, color_id: 1 },
-
-    { imprintable_id: 1, size_id: 1, color_id: 2 },
     { imprintable_id: 1, size_id: 2, color_id: 2 },
-    { imprintable_id: 1, size_id: 3, color_id: 2 },
-
-    { imprintable_id: 2, size_id: 2, color_id: 2 },
-    { imprintable_id: 2, size_id: 3, color_id: 2 },
-
     { imprintable_id: 2, size_id: 1, color_id: 1 },
-    { imprintable_id: 2, size_id: 2, color_id: 1 },
-    { imprintable_id: 2, size_id: 4, color_id: 1 },
+    { imprintable_id: 2, size_id: 1, color_id: 2 },
+    { imprintable_id: 2, size_id: 4, color_id: 1 }
 ], ImprintableVariant)
 
 create_records([
