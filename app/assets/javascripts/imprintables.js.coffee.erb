@@ -76,19 +76,18 @@ jQuery ->
     }
   }`
 
-  $('#size_select').click ->
+  $(document).on('click', '#size_button', ->
     size = $('#size_select :selected').text()
     size_id = $('#size_select :selected').val()
     if size == 'Select a Size'
-      alert('Please select a size')
       return
     addColumn('imprintable_variants_list', size, size_id)
+  )
 
-  $('#color_select').click ->
+  $(document).on('click', '#color_button', ->
     color = $('#color_select :selected').text()
     color_id = $('#color_select :selected').val()
     if color == 'Select a Color'
-      alert('Please select a color')
       return
 
     table = document.getElementById('imprintable_variants_list')
@@ -151,6 +150,7 @@ jQuery ->
       newCell.appendChild(cellTimes)
       newCell.appendChild(cellMinus)
       newCell.appendChild(cellPlus)
+  )
 
   intersect_arrays = (x, y) ->
     z = []
@@ -244,18 +244,4 @@ jQuery ->
         id = get_id()
         pobj = { update: ids_hash, id: id }
         $.post('/imprintables/update', pobj)
-  )
-
-  $(document).on('click', '#size_button', ->
-    size_select = document.getElementById('size_select')
-    size_button = document.getElementById('size_button')
-    size_button.style.display = 'none'
-    $(size_select).fadeIn()
-  )
-
-  $(document).on('click', '#color_button', ->
-    color_select = document.getElementById('color_select')
-    color_button = document.getElementById('color_button')
-    color_button.style.display = 'none'
-    $(color_select).fadeIn()
   )

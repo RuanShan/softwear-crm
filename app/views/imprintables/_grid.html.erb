@@ -79,8 +79,7 @@
                        options_for_select(['Select a Size'] + Size.order(:sort_order).collect{ |s| [s.display_value, s.id] }),
                        {
                            class: 'form-control',
-                           id: 'size_select',
-                           style: 'display:none'
+                           id: 'size_select'
                        } %>
       </th>
     </tr>
@@ -116,8 +115,7 @@
                      options_for_select(['Select a Color'] + Color.order(:name).collect{ |c| [c.name, c.id] }),
                      {
                          class: 'form-control',
-                         id: 'color_select',
-                         style: 'display:none'
+                         id: 'color_select'
                      } %>
       </th>
       <% if variants_hash[:variants_array].empty? %>

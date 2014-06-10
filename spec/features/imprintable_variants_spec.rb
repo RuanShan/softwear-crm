@@ -40,17 +40,17 @@ feature 'Imprintable Variant Management', imprintable_variant_spec: true do
     end
 
     scenario 'A user can add a size column' do
-      find('#size_button').click
-      sleep 1
       find('#size_select').find("option[value='#{size.id}']").click
+      sleep 1
+      find('#size_button').click
       sleep 1
       expect(page).to have_css('#col_2')
     end
 
     scenario 'A user can add a color row' do
-      find('#color_button').click
-      sleep 1
       find('#color_select').find("option[value='#{color.id}']").click
+      sleep 1
+      find('#color_button').click
       sleep 1
       expect(page).to have_css('#row_2')
     end
