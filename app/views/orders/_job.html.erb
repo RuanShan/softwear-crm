@@ -37,7 +37,7 @@
 
       <div class="form-group box-info">
         <div class="col-sm-4">
-            <a class="btn btn-info btn-lg btn-block add-line-item" data-id="<%=job.id%>"><i class="fa fa-list-alt"></i> Add Line Item </a>
+            <a class="btn btn-info btn-lg btn-block add-line-item" data-id="<%=job.id%>" onclick="addLineItem(<%=job.id%>)"><i class="fa fa-list-alt"></i> Add Line Item </a>
         </div>
         <div class="col-sm-4 col-xs-offset-4">
           <a class="btn btn-info btn-lg btn-block update-line-items" onclick="updateLineItems(<%=job.id%>)"><i class="fa fa-list-alt"></i> Update Line Items</a>

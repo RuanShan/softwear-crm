@@ -201,28 +201,23 @@ loadLineItemView = (lineItemId, url) ->
     ajax.fail (jqXHR, errorText) ->
       alert "Internal server error! Can't process request."
 
-# TODO deprecate this
-@registerAddLineItemButton = ($button) ->
-  $button.click ->
-    $this = $(this)
-    $this.attr 'disabled', 'disabled'
-    setTimeout (-> $this.removeAttr 'disabled'), 1000
-    # TODO if modal is already present, kill it and return maybe?
+@addLineItem = (jobId) ->
+  $this = $(this)
+  $this.attr 'disabled', 'disabled'
+  setTimeout (-> $this.removeAttr 'disabled'), 1000
+  # TODO if modal is already present, kill it and return maybe?
 
-    ajax = $.ajax
-      type: 'GET'
-      url: "/jobs/#{$this.attr 'data-id'}/line_items/new"
-      dataType: 'html'
+  ajax = $.ajax
+    type: 'GET'
+    url: "/jobs/#{jobId}/line_items/new"
+    dataType: 'html'
 
-    ajax.done (response) ->
-      $('body').append $(response)
-      lineItemModal = $('#lineItemModal')
-      initializeLineItemModal lineItemModal
-      lineItemModal.on 'hidden.bs.modal', (e) ->
-        lineItemModal.remove()
+  ajax.done (response) ->
+    $('body').append $(response)
+    lineItemModal = $('#lineItemModal')
+    initializeLineItemModal lineItemModal
+    lineItemModal.on 'hidden.bs.modal', (e) ->
+      lineItemModal.remove()
 
-    ajax.fail (jqXHR, textStatus) ->
-      alert "Internal server error! Can't process request."
-
-$(window).ready ->
-  registerAddLineItemButton $('.add-line-item')
+  ajax.fail (jqXHR, textStatus) ->
+    alert "Internal server error! Can't process request."

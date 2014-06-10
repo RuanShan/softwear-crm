@@ -33,7 +33,6 @@
     console.log "Updated job #{jobId}"
     $job.replaceWith response
     refresh_inlines()
-    registerAddLineItemButton($("#job-#{jobId} .add-line-item"))
 
   ajax.fail (jqXHR, textStatus) ->
     alert "Failed to re-render job #{jobId}. Refresh the page to view changes."

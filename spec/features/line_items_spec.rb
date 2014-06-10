@@ -13,6 +13,10 @@ feature 'Line Items management', line_item_spec: true, js: true do
   given(:style) { shirt.style }
   given(:brand) { shirt.brand }
 
+  given(:hat) { create(:valid_imprintable) }
+  given(:hat_brand) { hat.brand }
+  given(:hat_style) { hat.style }
+
   given!(:valid_user) { create(:user) }
   before(:each) do
     login_as valid_user
@@ -59,7 +63,7 @@ feature 'Line Items management', line_item_spec: true, js: true do
     expect(page).to have_content "Quantity can't be blank"
   end
 
-  scenario 'user can add a new imprintable line item', what: true do
+  scenario 'user can add a new imprintable line item' do
     visit '/orders/1/edit#jobs'
     wait_for_ajax
 
@@ -110,6 +114,28 @@ feature 'Line Items management', line_item_spec: true, js: true do
     find('#line-item-submit').click
 
     expect(page).to have_content 'error'
+  end
+
+  scenario 'creating an imprintable line item, user can switch a lower-level select and it will reset the higher levels' do
+    hat_brand; hat_style
+    visit '/orders/1/edit#jobs'
+    wait_for_ajax
+
+    first('.add-line-item').click
+    wait_for_ajax
+    expect(page).to have_content 'Add'
+
+    within('.line-item-form') do
+      choose 'Yes'
+      wait_for_ajax
+      select hat_brand.name, from: 'Brand'
+      wait_for_ajax
+      expect(page).to have_content hat_style.name
+      select brand.name, from: 'Brand'
+      wait_for_ajax
+      expect(page).to_not have_content hat_style.name
+      expect(page).to have_content style.name
+    end
   end
 
   context 'editing a non-imprintable line item' do
