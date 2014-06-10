@@ -77,22 +77,25 @@ create_records([
 # Brand SEEDING
 # ----------------
 create_records([
-    { name: 'American Eagle', sku: '06'},
-    { name: 'Gildan', sku: '07'}
+    { name: 'American Apparel', sku: '01'},
+    { name: 'Gildan', sku: '03'}
 ], Brand)
 
 # Color SEEDING
 # ----------------
 create_records([
-    { name: 'Blue', sku: '008'},
-    { name: 'Red', sku: '009'}
+    { name: 'White', sku: '000'},
+    { name: 'Black', sku: '001'},
+    { name: 'Royal', sku: '002'},
+    { name: 'Navy', sku: '003'},
+    { name: 'Red', sku: '004'}
 ], Color)
 
 # Style SEEDING
 # ----------------
 create_records([
-    { name: 'Short sleeve', catalog_no: 'style_1', description: 'description', sku: '10', brand_id: 1},
-    { name: 'Long sleeve', catalog_no: 'style_2', description: 'description', sku: '11', brand_id: 1},
+    { name: 'Unisex Fine Jersey Short Sleeve T-Shirt', catalog_no: '2001', description: 'The softest, smoothest, best-looking T-shirt available anywhere.', sku: '00', brand_id: Brand.find_by(name: 'American Apparel').id} ,
+    { name: "Fine Jersey Short Sleeve Women's T-Shirt", catalog_no: '2102', description: 'This classic fitted t-shirt for women. Ultra soft and smooth 100% Fine Jersey Cotton', sku: '01', brand_id: Brand.find_by(name: 'American Apparel').id},
     { name: 'Tank top', catalog_no: 'style_3', description: 'description', sku: '12', brand_id: 2}
 ], Style)
 
