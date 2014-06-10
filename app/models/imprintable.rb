@@ -1,6 +1,7 @@
 class Imprintable < ActiveRecord::Base
-  default_scope -> { where(deleted_at: nil) }
-  scope :deleted, -> { unscoped.where.not(deleted_at: nil) }
+  acts_as_paranoid
+
+  SIZING_CATEGORIES = ['Adult Unisex', 'Ladies', 'Youth Unisex', 'Girls', 'Toddler', 'Infant']
 
   belongs_to :style
   has_one :brand, through: :style
@@ -9,18 +10,7 @@ class Imprintable < ActiveRecord::Base
   has_many :sizes, through: :imprintable_variants
 
   validates :style, presence: true
-
-  def destroyed?
-    !deleted_at.nil?
-  end
-
-  def destroy
-    update_attribute(:deleted_at, Time.now)
-  end
-
-  def destroy!
-    update_column(:deleted_at, Time.now)
-  end
+  validates :sizing_category, inclusion: { in: SIZING_CATEGORIES, message: 'Invalid sizing category' }
 
   def name
     "#{style.catalog_no} #{style.name}"

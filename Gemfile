@@ -25,6 +25,8 @@ gem 'hirb', '~> 0.7.1'
 
 gem 'launchy', '~> 2.4.2'
 
+gem 'paranoia', '~>2.0'
+
 # Turbolinks makes following links in your web application faster. Read more: https://github.com/rails/turbolinks
 #gem 'turbolinks'
 

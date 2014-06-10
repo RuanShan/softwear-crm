@@ -7,6 +7,7 @@ FactoryGirl.define do
     end
     sequence(:name) { |n| "style_#{n}" }
     sequence(:sku) { |n|
+      n %= 100
       if n < 10
         "0#{n}"
       else

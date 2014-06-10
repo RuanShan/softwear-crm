@@ -9,7 +9,7 @@
         <%= f.label :special_considerations, class: 'col-sm-2 control-label' %>
         <div class="col-sm-10">
           <%= f.text_field :special_considerations, class: 'form-control' %>
-          <p class="help-block">Special considerations for the imprintable
+          <p class="help-block">Special considerations for the imprintable</p>
         </div>
       </div>
 
@@ -17,7 +17,7 @@
         <%= f.label :flashable, class: 'col-sm-2 control-label' %>
         <div class="col-sm-10">
           <%=  f.check_box :flashable, { class: 'checkbox' }, 'true', 'false' %>
-          <p class="help-block">Check if the imprintable is flashable
+          <p class="help-block">Check if the imprintable is flashable</p>
         </div>
       </div>
 
@@ -25,7 +25,21 @@
         <%= f.label :polyester, class: 'col-sm-2 control-label' %>
         <div class="col-sm-10">
           <%= f.check_box :polyester, { class: 'checkbox' }, 'true', 'false' %>
-          <p class="help-block">Check if the imprintable contains polyester
+          <p class="help-block">Check if the imprintable contains polyester</p>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <%= f.label :sizing_category, class: 'col-sm-2 control-label' %>
+        <div class="col-sm-10">
+          <%= f.select :sizing_category,
+                       Imprintable::SIZING_CATEGORIES,
+                       { :prompt => 'Please select a sizing category' },
+                       {
+                         class: 'form-control',
+                         id: 'imprintable_sizing_category'
+                       } %>
+          <p class="help-block">Select the sizing category for the imprintable</p>
         </div>
       </div>
 
@@ -38,7 +52,7 @@
                              class: 'form-control',
                              id: 'imprintable_brand_id'
                          } %>
-          <p class="help-block">The brand of the imprintable
+          <p class="help-block">The brand of the imprintable</p>
         </div>
       </div>
 
@@ -46,7 +60,7 @@
         <%= f.label :style, class: 'col-sm-2 control-label' %>
         <div class="col-sm-10">
           <%= f.grouped_collection_select(:style_id, Brand.order(:name), :styles, :name, :id, :name, {}, { :class => 'form-control', :id => 'imprintable_style_id' }) %>
-          <p class="help-block">The catalog number of the imprintable
+          <p class="help-block">The catalog number of the imprintable</p>
         </div>
       </div>
 

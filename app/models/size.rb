@@ -1,30 +1,18 @@
 class Size < ActiveRecord::Base
-  default_scope { order(:sort_order).where(:deleted_at => nil)}
+  acts_as_paranoid
+  default_scope { order(:sort_order).where(:deleted_at => nil) }
+  scope :deleted, -> { unscoped.where.not(deleted_at: nil) }
   before_validation :set_sort_order
-  scope :deleted, -> { unscoped.where.not(deleted_at: nil)}
 
   has_many :imprintable_variants
 
-  validates :name, uniqueness: true, presence: true
-  validates :sku, uniqueness: true, presence: true, length: { is: 2 }
-  validates :sort_order, uniqueness: true, presence: true
-
-  def destroyed?
-    !deleted_at.nil?
-  end
-
-  def destroy
-    update_attribute(:deleted_at, Time.now)
-  end
-
-  def destroy!
-    update_column(:deleted_at, Time.now)
-  end
+  validates :name, presence: true, uniqueness: true
+  validates :sku, presence: true, uniqueness: true, length: { is: 2 }
+  validates :sort_order, presence: true, uniqueness: true
 
   private
 
   def set_sort_order
-
     if self.sort_order.nil?
       if Size.order(:sort_order).last
         last_sort_order = Size.order(:sort_order).last.sort_order

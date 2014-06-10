@@ -85,9 +85,9 @@ create_records([
 # Imprintable SEEDING
 # ---------------
 create_records([
-    { flashable: false, special_considerations: 'none', polyester: false, style_id: 1},
-    { flashable: false, special_considerations: 'line dry', polyester: true, style_id: 2},
-    { flashable: true, special_considerations: 'do not print', polyester: false, style_id: 3}
+    { flashable: false, special_considerations: 'none', polyester: false, style_id: 1, sizing_category: 'Adult Unisex'},
+    { flashable: false, special_considerations: 'line dry', polyester: true, style_id: 2, sizing_category: 'Ladies'},
+    { flashable: true, special_considerations: 'do not print', polyester: false, style_id: 3, sizing_category: 'Toddler'}
 ], Imprintable)
 
 # Imprintable Variant SEEDING

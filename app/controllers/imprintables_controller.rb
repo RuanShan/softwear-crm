@@ -28,7 +28,6 @@ class ImprintablesController < InheritedResources::Base
   end
 
   def update_imprintable_variants
-    # update the imprintable_variants
     variants_to_add = params[:update][:variants_to_add]
     variants_to_remove = params[:update][:variants_to_remove]
     if !variants_to_add.nil?
@@ -49,6 +48,13 @@ class ImprintablesController < InheritedResources::Base
   private
 
   def permitted_params
-    params.permit(imprintable: [:flashable, :polyester, :special_considerations, :style_id, :color_check, :size_check])
+    params.permit(imprintable:
+                    [:flashable,
+                     :polyester,
+                     :special_considerations,
+                     :style_id,
+                     :color_check,
+                     :size_check,
+                     :sizing_category])
   end
 end

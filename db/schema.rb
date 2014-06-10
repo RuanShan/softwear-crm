@@ -11,47 +11,53 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140602130739) do
+ActiveRecord::Schema.define(version: 20140609180515) do
 
   create_table "brands", force: true do |t|
     t.string   "name"
     t.string   "sku"
-    t.datetime "deleted_at"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.datetime "deleted_at"
   end
+
+  add_index "brands", ["deleted_at"], name: "index_brands_on_deleted_at", using: :btree
 
   create_table "colors", force: true do |t|
     t.string   "name"
     t.string   "sku"
-    t.datetime "deleted_at"
     t.datetime "created_at"
     t.datetime "updated_at"
     t.integer  "imprintable_variant_id"
+    t.datetime "deleted_at"
   end
 
+  add_index "colors", ["deleted_at"], name: "index_colors_on_deleted_at", using: :btree
   add_index "colors", ["imprintable_variant_id"], name: "color_imprintable_variant_id_ix", using: :btree
 
   create_table "imprintable_variants", force: true do |t|
     t.integer  "imprintable_id"
-    t.datetime "deleted_at"
     t.datetime "created_at"
     t.datetime "updated_at"
     t.integer  "size_id"
     t.integer  "color_id"
+    t.datetime "deleted_at"
   end
+
+  add_index "imprintable_variants", ["deleted_at"], name: "index_imprintable_variants_on_deleted_at", using: :btree
 
   create_table "imprintables", force: true do |t|
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.datetime "deleted_at"
     t.boolean  "flashable"
     t.text     "special_considerations"
     t.boolean  "polyester"
     t.integer  "style_id"
     t.string   "sizing_category"
+    t.datetime "deleted_at"
   end
 
+  add_index "imprintables", ["deleted_at"], name: "index_imprintables_on_deleted_at", using: :btree
   add_index "imprintables", ["style_id"], name: "style_id_ix", using: :btree
 
   create_table "jobs", force: true do |t|
@@ -101,12 +107,13 @@ ActiveRecord::Schema.define(version: 20140602130739) do
     t.string   "display_value"
     t.string   "sku"
     t.integer  "sort_order"
-    t.datetime "deleted_at"
     t.datetime "created_at"
     t.datetime "updated_at"
     t.integer  "imprintable_variant_id"
+    t.datetime "deleted_at"
   end
 
+  add_index "sizes", ["deleted_at"], name: "index_sizes_on_deleted_at", using: :btree
   add_index "sizes", ["imprintable_variant_id"], name: "size_imprintable_variant_id_ix", using: :btree
 
   create_table "stores", force: true do |t|
@@ -121,13 +128,14 @@ ActiveRecord::Schema.define(version: 20140602130739) do
     t.string   "catalog_no"
     t.text     "description"
     t.string   "sku"
-    t.datetime "deleted_at"
     t.datetime "created_at"
     t.datetime "updated_at"
     t.integer  "brand_id"
+    t.datetime "deleted_at"
   end
 
   add_index "styles", ["brand_id"], name: "brand_id_ix", using: :btree
+  add_index "styles", ["deleted_at"], name: "index_styles_on_deleted_at", using: :btree
 
   create_table "users", force: true do |t|
     t.string   "email",                  default: "", null: false

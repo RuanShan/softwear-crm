@@ -50,5 +50,4 @@ feature 'Styles management', style_spec: true do
     expect(page).to have_selector '.modal-content-success', text: 'Style was successfully destroyed.'
     expect(style.reload.destroyed? ).to be_truthy
   end
-
 end

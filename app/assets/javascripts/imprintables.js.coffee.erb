@@ -228,20 +228,22 @@ jQuery ->
     return id
 
   $(document).on('click', '#submit_button', ->
-    if $('#imprintable_variants_list').length
-      # variants already exist
-      # aggregate all the variants and populate params
-      variant_hash = aggregate_variants()
-      id = get_id()
-      pobj = {update: variant_hash, id: id}
-      $.post('/imprintables/update_imprintable_variants', pobj)
-    else
-      # variants don't exist yet
-      # populate color_ids and size_ids
-      ids_hash = populate_color_and_size_ids()
-      id = get_id()
-      pobj = {update: ids_hash, id: id}
-      $.post('/imprintables/update', pobj)
+    innerHtml = document.getElementById('submit_button').innerHTML
+    if innerHtml == 'Update Imprintable'
+      if $('#imprintable_variants_list').length
+        # variants already exist
+        # aggregate all the variants and populate params
+        variant_hash = aggregate_variants()
+        id = get_id()
+        pobj = { update: variant_hash, id: id }
+        $.post('/imprintables/update_imprintable_variants', pobj)
+      else
+        # variants don't exist yet
+        # populate color_ids and size_ids
+        ids_hash = populate_color_and_size_ids()
+        id = get_id()
+        pobj = { update: ids_hash, id: id }
+        $.post('/imprintables/update', pobj)
   )
 
   $(document).on('click', '#size_button', ->

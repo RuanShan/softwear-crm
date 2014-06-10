@@ -1,17 +1,15 @@
 FactoryGirl.define do
   factory :valid_color, class: Color do
     sequence(:name) { |n| "color_#{n}" }
-    sequence(:sku) { |n| "sku_#{n}" }
-
-    factory :valid_color_with_valid_imprintable_variants do
-      transient do
-        valid_imprintable_variants_count 5
+    sequence(:sku) { |n|
+      n %= 1000
+      if n < 10
+        "00#{n}"
+      elsif n < 100 and n >= 10
+        "0#{n}"
+      else
+        n
       end
-
-      after(:create) do |valid_color, evaluator|
-        create_list(:valid_imprintable_variant, evaluator.valid_imprintable_variants_count, valid_color: valid_color)
-        valid_color.reload
-      end
-    end
+    }
   end
 end

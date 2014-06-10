@@ -46,5 +46,4 @@ feature 'Brands management', brand_spec: true do
     expect(page).to have_selector '.modal-content-success', text: 'Brand was successfully destroyed.'
     expect(brand.reload.destroyed? ).to be_truthy
   end
-
 end
