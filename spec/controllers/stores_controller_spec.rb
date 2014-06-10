@@ -9,7 +9,7 @@ describe StoresController do
 
     it 'assigns Stores' do
       get :index
-      expect(assigns(:stores)).to eq([store])
+      expect(assigns(:stores)).to eq(Store.all)
     end
   end
 

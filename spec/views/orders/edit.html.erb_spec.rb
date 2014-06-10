@@ -1,6 +1,8 @@
 require 'spec_helper'
 
 describe 'orders/edit.html.erb', order_spec: true do
+  login_user
+
 	let!(:order) {create(:order)}
 	before :each do
 		assign :order, order

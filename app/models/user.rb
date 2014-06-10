@@ -3,6 +3,7 @@ class User < ActiveRecord::Base
           :rememberable, :trackable, :timeoutable, :validatable, :lockable
 
   has_many :orders
+  belongs_to :store
 
   validates_presence_of :firstname, :lastname
   validates :email, format: { with: /\A([^@\s]+)@((?:[-a-z0-9]+\.)+[a-z]{2,})\Z/i }

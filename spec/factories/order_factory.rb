@@ -28,6 +28,12 @@ FactoryGirl.define do
     delivery_method 'Ship to one location'
     phone_number '123-456-7890'
 
+    before(:create) do |order|
+      store = FactoryGirl.create(:valid_store)
+      order.store = store
+      order.store_id = store.id
+    end
+
     factory :order_with_job do
       after(:create) { |o| o.jobs << create(:job) }
     end

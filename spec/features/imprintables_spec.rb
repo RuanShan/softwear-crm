@@ -16,7 +16,7 @@ feature 'Imprintables management', imprintable_spec: true do
     expect(page).to have_selector('.box-info')
   end
 
-  scenario 'A user can create a new imprintable', new: true, js: true do
+  scenario 'A user can create a new imprintable', js: true do
     visit imprintables_path
     click_link('Add an Imprintable')
     fill_in 'Special considerations', :with => 'Special Consideration'

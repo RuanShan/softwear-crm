@@ -16,6 +16,11 @@ class OrdersController < InheritedResources::Base
     session[:order] = @order.id
   end
 
+  def new
+    super
+    @current_user = current_user
+  end
+
   private
 
   def permitted_params
@@ -25,7 +30,8 @@ class OrdersController < InheritedResources::Base
       :in_hand_by, :terms, :tax_exempt,
       :tax_id_number, :is_redo, :redo_reason,
       :delivery_method, :phone_number,
-      :sales_status, :commission_amount
+      :sales_status, :commission_amount,
+      :store_id
     ])
   end
 

@@ -37,6 +37,7 @@ feature 'Order management', order_spec: true,  js: true do
 
     fill_in 'Name', with: 'Whatever this should be'
     fill_in 'In Hand By Date', with: (Time.now + 1.month).to_s
+    select order.store.name, from: 'Store'
     select 'Half down on purchase', from: 'Payment terms'
 
     click_button 'Next'

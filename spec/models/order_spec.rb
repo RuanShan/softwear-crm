@@ -1,10 +1,17 @@
 require 'spec_helper'
 
 describe Order, order_spec: true do
+  describe 'Relationships' do
+    it { should belong_to :store }
+  end
+
+  let!(:store) { create(:valid_store) }
+
   context 'when validating' do
     it { should validate_presence_of :email }
     it { should validate_presence_of :firstname }
     it { should validate_presence_of :lastname }
+    it { should validate_presence_of :store }
 
     it { should validate_presence_of :name }
     it { should validate_presence_of :terms }
@@ -19,17 +26,17 @@ describe Order, order_spec: true do
     it { should ensure_inclusion_of(:sales_status).in_array Order::VALID_SALES_STATUSES }
 
     it 'requires a tax id number if tax_exempt? is true' do
-      expect(build(:order, tax_exempt: true)).to_not be_valid
+      expect(build(:order, store_id: store.id, store: store, tax_exempt: true)).to_not be_valid
     end
     it 'is valid when tax_exempt? is true and a tax id number is present' do
-      expect(build(:order, tax_exempt: true, tax_id_number: 12)).to be_valid
+      expect(build(:order, store_id: store.id, store: store, tax_exempt: true, tax_id_number: 12)).to be_valid
     end
 
     it 'requires a redo reason if is_redo? is true' do
-      expect(build(:order, is_redo: true)).to_not be_valid
+      expect(build(:order, store_id: store.id, store: store, is_redo: true)).to_not be_valid
     end
     it 'is valid when is_redo? is true and a redo reason is present' do
-      expect(build(:order, is_redo: true, redo_reason: 'because')).to be_valid
+      expect(build(:order, store_id: store.id, store: store, is_redo: true, redo_reason: 'because')).to be_valid
     end
 
     it { should ensure_inclusion_of(:delivery_method).in_array Order::VALID_DELIVERY_METHODS }

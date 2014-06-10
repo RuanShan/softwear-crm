@@ -12,5 +12,10 @@ FactoryGirl.define do
 		end
 
 		after(:create) { |u| u.confirm! }
+    before(:create) { |u|
+      store = FactoryGirl.create(:valid_store)
+      u.store = store
+      u.store_id = store.id
+    }
 	end
 end

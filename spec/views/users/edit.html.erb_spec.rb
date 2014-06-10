@@ -12,6 +12,7 @@ describe 'users/edit.html.erb', user_spec: true do
 			expect(rendered).to have_field_for :firstname
 			expect(rendered).to have_field_for :lastname
 			expect(rendered).to have_field_for :email
+      expect(rendered).to have_field_for :store_id
 		end
 	end
 

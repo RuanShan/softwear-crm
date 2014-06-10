@@ -14,6 +14,12 @@
   <%= f.datetime :in_hand_by, placeholder: 'In Hand By' %>
 </div>
 <div class="form-group">
+  <%= f.label :store_id, 'Store' %>
+  <% f.error_for :store_id %>
+  <% store_id = get_store_id(params[:id]) %>
+  <%= f.select :store_id, options_for_select(Store.order(:name).collect{ |s| [s.name, s.id] }, store_id), { :prompt => 'Please select a store' } %>
+</div>
+<div class="form-group">
   <%= f.label :terms, 'Payment terms' %>
   <%= f.error_for :terms %>
   <%= f.select :terms, Order::VALID_PAYMENT_TERMS %>

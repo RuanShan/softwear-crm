@@ -1,6 +1,8 @@
 require 'spec_helper'
 
 describe 'orders/_details.html.erb', order_spec: true do
+  login_user
+
   before :each do
   	render partial: 'orders/details', locals: { order: create(:order) }
   end

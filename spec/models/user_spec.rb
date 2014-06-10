@@ -1,6 +1,10 @@
 require 'spec_helper'
 
 describe User, user_spec: true do
+  describe 'Relationships' do
+    it { should belong_to :store }
+  end
+
   context 'when validating' do
     it { should validate_presence_of :firstname }
     it { should validate_presence_of :lastname }

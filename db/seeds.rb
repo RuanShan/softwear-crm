@@ -23,7 +23,8 @@ deleted_exists = !User.deleted.where(email: 'admin@softwearcrm.com').empty?
 if !deleted_exists && !exists
 	default_user = User.new(firstname: 'Admin', lastname: 'User', 
 													email: 'admin@softwearcrm.com',
-													password: pw, password_confirmation: pw)
+													password: pw, password_confirmation: pw,
+                          store_id: 1)
 	default_user.confirm!
 	default_user.save
 	puts "Created default user (email: #{default_user.email}, password: #{pw})"
@@ -114,6 +115,13 @@ create_records([
     { imprintable_id: 2, size_id: 4, color_id: 1 }
 ], ImprintableVariant)
 
+# Store SEEDING
+# ---------------
+create_records([
+    { name: 'Ann Arbor Store' },
+    { name: 'Ypsilanti Store' }
+], Store)
+
 create_records([
     {
       name: 'Test Order',
@@ -127,7 +135,8 @@ create_records([
       is_redo: false,
       sales_status: 'Pending',
       delivery_method: 'Ship to one location',
-      phone_number: '123-456-8456'
+      phone_number: '123-456-8456',
+      store_id: 1
     }
   ], Order)
 
