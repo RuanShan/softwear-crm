@@ -8,19 +8,7 @@ class Job < ActiveRecord::Base
 
   # non-deletable stuff
   acts_as_paranoid
-
-  alias_method :original_destroy, :destroy
-  def destroy
-    original_destroy
-    update_attribute :name, "#{name} #{Time.now.to_s}"
-  end
-
-  alias_method :original_destroy!, :destroy!
-  def destroy!
-    original_destroy!
-    update_column update_attribute :name, "#{name} #{Time.now.to_s}"
-  end
-
+  
   def sort_line_items
     result = {}
     LineItem.includes(

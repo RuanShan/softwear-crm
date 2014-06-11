@@ -5,7 +5,7 @@ describe Job, job_spec: true do
   it { should validate_presence_of :name }
   it { should validate_uniqueness_of(:name).scoped_to(:order_id) }
 
-  it 'should allow two jobs with the same name if one is deleted' do
+  it 'should allow two jobs with the same name if one is deleted', wip: true do
     job1 = create(:job, name: 'Job Name')
     job1.destroy
 
