@@ -7,53 +7,41 @@
         <div class="form-group">
           <%= f.label :name, class: 'col-sm-2 control-label' %>
           <div class="col-sm-10">
-            <% if imprint_method.errors.include?(:name) %>
-                <% imprint_method.errors.full_messages_for(:name).each do |message| %>
-                    <p class="text-danger"><%= message %></p>
-                <% end %>
-            <% end %>
-            <div class="row">
               <%= f.text_field :name, class: 'form-control' %>
+              <% if imprint_method.errors.include?(:name) %>
+                  <% imprint_method.errors.full_messages_for(:name).each do |message| %>
+                      <p class="text-danger"><%= message %></p>
+                  <% end %>
+              <% end %>
               <p class="help-block">The name of the imprint method (Embroidery, for example)</p>
-            </div>
           </div>
         </div>
 
         <div class="form-group">
           <%= f.label :production_name, class: 'col-sm-2 control-label' %>
           <div class="col-sm-10">
-            <% if imprint_method.errors.include?(:production_name) %>
-                <% imprint_method.errors.full_messages_for(:production_name).each do |message| %>
-                    <p class="text-danger"><%= message %></p>
-                <% end %>
-            <% end %>
-            <div class="row">
               <%= f.text_field :production_name, class: 'form-control' %>
+              <% if imprint_method.errors.include?(:production_name) %>
+                  <% imprint_method.errors.full_messages_for(:production_name).each do |message| %>
+                      <p class="text-danger"><%= message %></p>
+                  <% end %>
+              <% end %>
               <p class="help-block">The production name of the imprint method (Digital In-House, for example)</p>
             </div>
-          </div>
         </div>
 
         <div class="form-group">
           <%= f.label :ink_colors, class: 'col-sm-2 control-label' %>
           <div class="col-sm-10">
-            <% if imprint_method.errors.include?(:ink_colors) %>
-                <% imprint_method.errors.full_messages_for(:ink_colors).each do |message| %>
-                    <p class="text-danger"><%= message %></p>
-                <% end %>
-            <% end %>
+
           </div>
-          <div class="row">
-            <%= f.fields_for :ink_colors do |ff| %>
-                <%= render partial: 'ink_color_fields', locals: {f: ff} %>
-            <% end %>
-          </div>
-          <div class="row">
             <div class="col-md-10 col-md-offset-2">
-              <%= link_to_add_fields "Add Ink color", f, :ink_colors %>
-              <p class="help-block">The ink colors (wavelengths from about 400 to 700 nm, for example)</p>
+
+              <%= f.fields_for :ink_colors do |ff| %>
+                  <%= render partial: 'ink_color_fields', locals: {f: ff} %>
+              <% end %>
+              <%= link_to_add_fields "<i class='fa fa-plus'></i> Add Ink color".html_safe, f, :ink_colors %>
             </div>
-          </div>
         </div>
 
         <div class="form-group">
@@ -66,13 +54,11 @@
             <% end %>
           </div>
           <div class="row">
-            <%= f.fields_for :print_locations do |ff| %>
-                <%= render partial: 'print_location_fields', locals: {f: ff} %>
-            <% end %>
-          </div>
-          <div class="row">
             <div class="col-md-10 col-md-offset-2">
-              <%= link_to_add_fields "Add Print Location", f, :print_locations %>
+              <%= f.fields_for :print_locations do |ff| %>
+                  <%= render partial: 'print_location_fields', locals: {f: ff} %>
+              <% end %>
+              <%= link_to_add_fields "<i class='fa fa-plus'></i> Add Print Location".html_safe, f, :print_locations %>
               <p class="help-block">The location and size of the print</p>
             </div>
           </div>

@@ -1,32 +1,46 @@
-<div class="row">
-  <div class="removeable">
-    <div class="col-md-1">
-      <%= f.label 'Location' %>
-    </div>
-    <div class="col-md-10">
-      <%= f.text_field :name, class: 'form-control' %>
-    </div>
-    <div class="col-md-1">
-      <%= f.hidden_field :_destroy %>
-      <%= link_to "x", '#', class: "btn btn-info remove_fields pull-right" %>
-    </div>
-    <div class="col-md-1">
-      <%= f.label 'Max Height' %>
-    </div>
-    <div class="col-md-11">
-      <div class="input-group">
-        <%= f.text_field :max_height, class: 'form-control', placeholder: 'Height (0.00) in inches' %>
-        <%= raw("<span class='input-group-addon'>inches</span>") %>
+<div class="removeable clearfix">
+  <div class="col-xs-11">
+      <br clear="all" />
+        <div class="form-group">
+            <div class="input-group full">
+              <%= f.label :location, class: 'input-group-addon' %>
+              <%= f.text_field :name, class: 'form-control', placeholder: "What you call the imprint location. 'Full chest', for example." %>
+            </div>
+          <% if f.object.errors.include?(:name) %>
+              <% f.object.errors.full_messages_for(:name).each do |message| %>
+                  <p class="text-danger"><%= message %></p>
+              <% end %>
+          <% end %>
+        </div>
+        <div class="form-group">
+            <div class="input-group clear">
+              <%= f.label :max_width, class: 'input-group-addon' %>
+              <%= f.text_field :max_width, class: 'form-control', placeholder: 'Width (0.00) in inches' %>
+              <span class='input-group-addon'>inches</span>
+            </div>
+          <% if f.object.errors.include?(:max_width) %>
+              <% f.object.errors.full_messages_for(:max_width).each do |message| %>
+                  <p class="text-danger"><%= message %></p>
+              <% end %>
+          <% end %>
+          </div>
+      <div class="form-group">
+        <div class="input-group">
+          <%= f.label :max_height, class: 'input-group-addon' %>
+          <%= f.text_field :max_height, class: 'form-control', placeholder: 'Height (0.00) in inches' %>
+          <span class='input-group-addon'>inches</span>
+        </div>
+        <% if f.object.errors.include?(:max_height) %>
+            <% f.object.errors.full_messages_for(:max_height).each do |message| %>
+                <p class="text-danger"><%= message %></p>
+            <% end %>
+        <% end %>
       </div>
-    </div>
-    <div class="col-md-1">
-      <%= f.label 'Max Width' %>
-    </div>
-    <div class="col-md-11">
-      <div class="input-group">
-        <%= f.text_field :max_width, class: 'form-control', placeholder: 'Width (0.00) in inches' %>
-        <%= raw("<span class='input-group-addon'>inches</span>") %>
-      </div>
-    </div>
   </div>
+  <div class="col-xs-1">
+    <%= f.hidden_field :_destroy %>
+    <%= link_to "x", '#', class: "btn btn-danger remove_fields pull-right" %>
+  </div>
+  <br clear="all" />
+  <hr />
 </div>
