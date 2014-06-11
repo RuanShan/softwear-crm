@@ -65,12 +65,47 @@ describe Order, order_spec: true do
       expect(Order.all).to_not include order
     end
 
-    it 'can be revived after being deleted' do
-      order.destroy
-      expect(order.destroyed?).to eq true
-      order.revive
-      expect(order.destroyed?).to eq false
+  end
+
+  context 'relationships', line_item_spec: true do
+    let!(:order) {create :order}
+
+    context '#line_items' do
+      it 'is an ActiveRecord::Relation' do
+        expect{order.line_items}.to_not raise_error
+        expect(order.line_items).to be_a ActiveRecord::Relation
+      end
+
+      it 'actually works' do
+        job1 = create(:job)
+        job2 = create(:job)
+        [job1, job2].each do |job|
+          2.times { job.line_items << create(:non_imprintable_line_item) }
+          order.jobs << job
+        end
+
+        expect(order.line_items.count).to eq 4
+        expect(order.line_items).to include job1.line_items.first
+        expect(order.line_items).to include job2.line_items.first
+      end
     end
 
+    it 'has a tax constant that returns 0.6 for now' do
+      expect(order.tax).to eq 0.6
+    end
+
+    it 'has a subtotal that returns the sum of all its line item prices' do
+      expect{order.subtotal}.to_not raise_error
+      sum = 0
+      order.line_items.each do |line_item|
+        sum += line_item.price
+      end
+      expect(order.subtotal).to eq sum
+    end
+
+    it 'has a total that returns the subtotal plus tax' do
+      expect{order.total}.to_not raise_error
+      expect(order.total).to eq order.subtotal + order.subtotal * order.tax
+    end
   end
 end

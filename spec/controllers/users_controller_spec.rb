@@ -34,7 +34,7 @@ describe UsersController, user_spec: true do
 		end
 	end
 
-	context '#update_password', wip: true do
+	context '#update_password' do
 		context 'signed in' do
 			before(:each) { sign_in valid_user }
 

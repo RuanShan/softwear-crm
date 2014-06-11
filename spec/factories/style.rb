@@ -1,10 +1,5 @@
 FactoryGirl.define do
-  factory :valid_style, class: Style do
-    before(:create) do |style|
-      brand = FactoryGirl.create(:valid_brand)
-      style.brand = brand
-      style.brand_id = brand.id
-    end
+  factory :style do
     sequence(:name) { |n| "style_#{n}" }
     sequence(:sku) { |n|
       n %= 100
@@ -14,7 +9,19 @@ FactoryGirl.define do
         n
       end
     }
-    catalog_no '1234'
+    sequence(:catalog_no) { |n| (1234+n).to_s }
     description 'description'
+
+    factory :valid_style do
+      before(:create) do |style|
+        brand = FactoryGirl.create(:valid_brand)
+        style.brand = brand
+        style.brand_id = brand.id
+      end
+    end
+
+    factory :associated_style do
+      brand { |b| b.association(:valid_brand) }
+    end
   end
 end

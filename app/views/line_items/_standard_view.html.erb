@@ -1,0 +1,14 @@
+<div>
+  <div class="row">
+    <div class="col-sm-3">NON IMPRINTABLE ITEMS</div>
+    <div class="col-sm-2">TAXABLE</div>
+    <div class="col-sm-2">QTY</div>
+    <div class="col-sm-2">UNIT PRICE</div>
+    <div class="col-sm-2">TOTAL</div>
+  </div>
+  <% line_items.each do |l| %>
+    <div id="line-item-<%=l.id%>" class="row" style="margin-top: 10px; border-bottom: solid 1px #dddddd;">
+      <%= render partial: 'line_items/standard_view_entry', locals: {line_item: l} %>
+    </div>
+  <% end %>
+</div>

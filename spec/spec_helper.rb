@@ -22,6 +22,7 @@ RSpec.configure do |config|
   config.include FactoryGirl::Syntax::Methods
   config.include FormHelpers
   config.include AuthenticationHelpers
+  config.include GeneralHelpers
   config.include Devise::TestHelpers, type: :controller
   config.extend ControllerMacros, type: :view
   config.include Devise::TestHelpers, type: :view
@@ -61,6 +62,9 @@ RSpec.configure do |config|
     DatabaseCleaner.start
   end
   config.after(:each) do
+    # I found that sometimes, the database cleaner would start truncating tables
+    # before the last test was finished.
+    sleep 0.5
     DatabaseCleaner.clean
   end
 

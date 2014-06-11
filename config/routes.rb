@@ -8,8 +8,6 @@ CrmSoftwearcrmCom::Application.routes.draw do
   put '/users/change_password', to: 'users#update_password', as: :update_password
   get '/users/lock', to: 'users#lock', as: :lock_user
 
-  resources :users
-
   resources :imprintables do
     collection do
       resources :styles, :brands, :colors
@@ -23,7 +21,7 @@ CrmSoftwearcrmCom::Application.routes.draw do
     end
   end
 
-  resources :jobs, only: [:create, :update, :destroy]
+  resources :styles, :brands, :colors, :users
 
   get '/logout' => 'users#logout'
   
@@ -32,7 +30,13 @@ CrmSoftwearcrmCom::Application.routes.draw do
     resources :imprint_methods
   end
   
-  resources :orders do
+  resources :orders, shallow: true do
     get 'timeline', to: 'timeline#show'
+    resources :jobs, only: [:create, :update, :destroy, :show] do
+      resources :line_items
+    end
   end
+  get '/line_item/select_options', to: 'line_items#select_options'
+  delete '/line_items/*ids', to: 'line_items#destroy'
+
 end

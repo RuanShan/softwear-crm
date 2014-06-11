@@ -1,0 +1,12 @@
+<%= form_for [job, line_item], url: job_line_items_path(job, line_item), html: { id: 'new_imprintable_line_item' }, builder: LancengFormBuilder do |f| %>
+	<div class='select-level', data-level='1'>
+		<div class='select-level', data-level='2'>
+			<div class='select-level', data-level='3'>
+				<div class='select-level', data-level='4'>
+					
+				</div>
+			</div>
+		</div>
+	</div>
+	<%= f.hidden_field :imprintable_variant_id %>
+<% end %>

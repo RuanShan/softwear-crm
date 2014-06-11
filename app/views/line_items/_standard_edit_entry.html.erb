@@ -1,0 +1,13 @@
+<%= form_for line_item, html: {id: "edit-line-item-#{line_item.id}", 
+  class: 'line_item editing-line-item'}, builder: LancengFormBuilder do |f| %>
+  <div class="col-sm-3"><%= f.text_field :name %></div>
+  <div class="col-sm-2"><%= f.check_box :taxable, style: 'width: 24px; height: 24px;' %></div>
+  <div class="col-sm-2"><%= f.number_field :quantity %></div>
+  <div class="col-sm-2"><%= f.number_field :unit_price %></div>
+  <div class="col-sm-2">
+    <span class='total'><%= number_to_currency line_item.price %></span>
+    <span style="float: right;">
+      <span class='line-item-button' title="Delete" onclick="cancelEditLineItem(<%=line_item.id%>)"><i class="fa fa-2x danger fa-times-circle"></i></span>
+    </span>
+  </div>
+<% end %>
