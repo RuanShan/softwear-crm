@@ -11,11 +11,6 @@ class OrdersController < InheritedResources::Base
     redirect_to action: :edit
   end
 
-  def edit
-    super
-    session[:order] = @order.id
-  end
-
   def new
     super
     @current_user = current_user

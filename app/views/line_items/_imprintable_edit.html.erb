@@ -1,0 +1,31 @@
+<div class="row" style="border-bottom: solid 1px #dddddd" id="<%= line_items.first.name.gsub(/\s/, '-') %>">
+  <div class="col-lg-5">
+    <h6>
+      <strong>
+        <%= color_name %> <%= style_name %>
+      </strong> <%= style_catalog_no %>
+    </h6>
+    <p>
+      <%= description %>
+    </p>
+  </div>
+  <div class="col-lg-7">
+    <%= content_tag(:div, class: "col-sm-#{10 - line_items.count}") {} %>
+
+    <div class="col-sm-1" style="border-right: solid 1px #dddddd;" align='center'>
+      <label style="margin-bottom: 12px;">SIZE:</label>
+      <label style="margin-bottom: 17px;">X:</label><br />
+      <label>$:</label>
+    </div>
+
+    <% line_items.each do |line_item| %>
+      <div>
+        <%= render partial: 'line_items/imprintable_edit_entry', locals: { line_item: line_item } %>
+      </div>
+    <% end %>
+
+    <div class="col-sm-1">
+      <span class='line-item-button' title='Delete' onclick='deleteLineItems("<%= line_items.map { |e| e.id }.join('/') %>", "<%= line_items.first.name.gsub(/\s/, '-') %>")'><i class="fa fa-2x danger fa-times-circle"></i></a>
+    </div>
+  </div>
+</div>

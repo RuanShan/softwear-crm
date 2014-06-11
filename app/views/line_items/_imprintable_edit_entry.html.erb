@@ -1,0 +1,9 @@
+<%= form_for line_item, html: {id: "edit-line-item-#{line_item.id}", class: 'line_item imprintable-line-item' + (local_assigns[:edit] ? ' editing-line-item' : '')}, builder: LancengFormBuilder do |f| %>
+  <div class="col-sm-1 imprintable-line-item-input">
+    <%= content_tag(:label, line_item.size_display) %>
+    <% f.common_attr onchange: '$(this).parentsUntil("form").parent().addClass("editing-line-item")' %>
+    <% f.common_attr onfocus: '$(this).numeric()' %>
+    <%= f.text_field :quantity %>
+    <%= f.text_field :unit_price, value: (number_with_precision(line_item.unit_price, precision: 2) || 0) %>
+  </div>
+<% end %>

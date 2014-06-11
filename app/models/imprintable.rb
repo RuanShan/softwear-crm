@@ -16,6 +16,10 @@ class Imprintable < ActiveRecord::Base
     "#{style.catalog_no} #{style.name}"
   end
 
+  def description
+    style.description
+  end
+
   def find_variants
     if self.id
       ImprintableVariant.includes(:size, :color).where(imprintable_id: self.id)

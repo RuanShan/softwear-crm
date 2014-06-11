@@ -9,7 +9,7 @@ feature 'Shipping Methods management' do
 
   let!(:shipping_method) { create(:valid_shipping_method)}
 
-  scenario 'User views list of existing shipping methods', wip: true do
+  scenario 'User views list of existing shipping methods' do
     visit root_path
     click_link 'Administration'
     click_link 'Shipping Methods'

@@ -103,7 +103,9 @@ create_records([
 create_records([
     { name: 'Unisex Fine Jersey Short Sleeve T-Shirt', catalog_no: '2001', description: 'The softest, smoothest, best-looking T-shirt available anywhere.', sku: '00', brand_id: Brand.find_by(name: 'American Apparel').id} ,
     { name: "Fine Jersey Short Sleeve Women's T-Shirt", catalog_no: '2102', description: 'This classic fitted t-shirt for women. Ultra soft and smooth 100% Fine Jersey Cotton', sku: '01', brand_id: Brand.find_by(name: 'American Apparel').id},
-    { name: 'Tank top', catalog_no: 'style_3', description: 'description', sku: '12', brand_id: 2}
+    { name: 'Tank top', catalog_no: 'style_3', description: 'description', sku: '12', brand_id: 2},
+    { name: 'Short sleeve', catalog_no: 'style_1', description: 'Short sleeved shirt.', sku: '10', brand_id: 1},
+    { name: 'Long sleeve', catalog_no: 'style_2', description: 'Long sleeved shirt.', sku: '11', brand_id: 1}
 ], Style)
 
 # Imprintable SEEDING

@@ -34,24 +34,23 @@ class Order < ActiveRecord::Base
   has_many :jobs
 
   # non-deletable stuff
-  default_scope -> { where(deleted_at: nil) }
-  scope :deleted, -> { unscoped.where.not(deleted_at: nil) }
+  acts_as_paranoid
 
-  def destroyed?
-    !deleted_at.nil?
+  def line_items
+    LineItem.where(job_id: job_ids)
   end
 
-  def destroy
-    update_attribute(:deleted_at, Time.now)
+  def tax; 0.6; end
+
+  def subtotal
+    sum = 0
+    line_items.each do |line_item|
+      sum += line_item.price
+    end
+    sum
   end
 
-  def destroy!
-    update_column(:deleted_at, Time.now)
-  end
-
-  def revive
-    update_attribute(:deleted_at, nil) if !deleted_at.nil?
-  end
+  def total; subtotal + subtotal * tax; end
 
 private
   def initialize_fields

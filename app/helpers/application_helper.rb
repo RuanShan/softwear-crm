@@ -36,6 +36,10 @@ module ApplicationHelper
     end
   end
 
+  def using(something)
+    yield something
+  end
+
   def render_error_modal_for(object)
     render partial: 'shared/modal_errors', locals: { object: object }
   end
@@ -71,8 +75,8 @@ module ApplicationHelper
       result
     end
   end
+end
 
-  def human_boolean(bool)
-    bool ? 'Yes' : 'No'
-  end
+def human_boolean(bool)
+  bool ? 'Yes' : 'No'
 end

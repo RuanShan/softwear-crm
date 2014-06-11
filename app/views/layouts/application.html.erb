@@ -38,5 +38,8 @@
 
 
 </body>
+<% if Rails.env.development? %>
+  <script type='text/javascript'>idleTimeoutMs = 2147483647;</script>
+<% end %>
 </html>
 
