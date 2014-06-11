@@ -1,15 +1,15 @@
 <div class="form-group removeable">
       <div class="input-group">
-        <%= f.text_field :name, class: 'form-control' %>
+        <%= f.text_field :name, class: 'form-control', placeholder: 'The ink color name (wavelengths from about 400 to 700nm, for example)' %>
         <span class="input-group-btn">
            <%= button_tag "x", class: 'btn btn-danger remove_fields' %>
         </span>
 
         <%= f.hidden_field :_destroy %>
       </div>
-        <% if f.object.errors.include?(:name) %>
-            <%  f.object.errors.full_messages_for(:name).each do |message| %>
-                <p class="text-danger"><%= message %></p>
-            <% end %>
+    <% if f.object.errors.include?(:name) %>
+        <%  f.object.errors.full_messages_for(:name).each do |message| %>
+            <p class="text-danger"><%= message %></p>
         <% end %>
+    <% end %>
 </div>

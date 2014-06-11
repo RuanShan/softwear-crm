@@ -40,8 +40,6 @@
               <%= f.fields_for :ink_colors do |ff| %>
                   <%= render partial: 'ink_color_fields', locals: {f: ff} %>
               <% end %>
-
-              <p class="help-block">The ink colors (wavelengths from about 400 to 700nm, for example)</p>
               <%= link_to_add_fields "<i class='fa fa-plus'></i> Add Ink color".html_safe, f, :ink_colors %>
             </div>
         </div>
