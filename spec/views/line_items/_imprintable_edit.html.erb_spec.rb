@@ -20,7 +20,6 @@ describe 'line_items/_imprintable_edit.html.erb', line_item_spec: true do
         style_name: style.name,
         style_catalog_no: style.catalog_no,
         description: white_shirt_s_item.description,
-        max_columns: 10,
         line_items: line_items
       }
   end

@@ -63,7 +63,7 @@ describe LineItemsController, line_item_spec: true, dear_god: true do
         2.times { |i| let!("style#{i}".to_sym) { create(:style, brand_id: brand1.id) } }
 
         context 'when there are matching styles' do
-          it 'responds with a select tag for styles', broken: true do
+          it 'responds with a select tag for styles' do
             get :select_options, brand_id: brand1.id
             expect(response.body).to include '<select'
             expect(response.body).to include style0.name
