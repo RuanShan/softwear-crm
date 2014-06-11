@@ -1,4 +1,4 @@
-module UserHelper
+module OrderHelper
   def get_store_id(id)
     if id
       store_id = Order.find(params[:id]).store_id
