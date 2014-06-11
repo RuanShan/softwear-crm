@@ -43,10 +43,10 @@ else
 	puts "Default user already exists! Email is admin@softwearcrm.com and password is #{pw}"
 end
 create_records([
-  { firstname: 'Ricky', lastname: 'Winowiecki', email: 'ricky@annarbortees.com', password: 'something' },
-  { firstname: 'Nigel', lastname: 'Baillie', email: 'nigel@annarbortees.com', password: 'something' },
-  { firstname: 'Nicholas', lastname: 'Catoni', email: 'nick@annarbortees.com', password: 'something' },
-  { firstname: 'David', lastname: 'Suckstorff', email: 'david.s@annarbortees.com', password: 'something' }
+  { firstname: 'Ricky', lastname: 'Winowiecki', email: 'something@somethingelse.com', password: 'something' },
+  { firstname: 'Nigel', lastname: 'Baillie', email: 'somethingelse@something.com', password: 'something' },
+  { firstname: 'Nicholas', lastname: 'Catoni', email: 'some@thing.com', password: 'something' },
+  { firstname: 'David', lastname: 'Suckstorff', email: 'something@else.com', password: 'something' }
 ], User)
 
 
