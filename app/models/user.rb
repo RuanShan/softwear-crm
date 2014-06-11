@@ -12,5 +12,5 @@ class User < ActiveRecord::Base
   end
 
   # non-deletable stuff
-  inject NonDeletable
+  acts_as_paranoid
 end
