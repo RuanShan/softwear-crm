@@ -11,8 +11,8 @@ class ImprintablesController < InheritedResources::Base
           end
         end
       end
-      success.html { redirect_to edit_imprintable_path params[:id]+'details' }
-      failure.html { render action: :edit, anchor: 'details' }
+      success.html { redirect_to edit_imprintable_path params[:id] }
+      failure.html { render action: :edit }
     end
   end
 

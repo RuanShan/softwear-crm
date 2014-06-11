@@ -19,7 +19,6 @@ module WaitForAjax
 
   def wait_for_jquery
     until page.evaluate_script('jQuery.active') == 0
-      puts "Page.evaluate is #{page.evaluate_script('jQuery.active')}"
       sleep(0.1)
     end
   end
