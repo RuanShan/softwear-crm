@@ -1,6 +1,6 @@
 class Store < ActiveRecord::Base
   validates_presence_of :name
 
-  inject NonDeletable
+  acts_as_paranoid
 
 end
