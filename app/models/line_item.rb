@@ -9,7 +9,7 @@ class LineItem < ActiveRecord::Base
   validate :imprintable_variant_exists, if: :imprintable?
   validates :imprintable_variant_id, uniqueness: { scope: :job_id }, if: :imprintable?
 
-  inject NonDeletable
+  acts_as_paranoid
 
   scope :non_imprintable, -> { where imprintable_variant_id: nil }
   scope :imprintable, -> { where.not imprintable_variant_id: nil }
