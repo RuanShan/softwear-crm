@@ -31,7 +31,7 @@ class Order < ActiveRecord::Base
   has_many :jobs
 
   # non-deletable stuff
-  inject NonDeletable
+  acts_as_paranoid
 
   def line_items
     LineItem.where(job_id: job_ids)

@@ -33,7 +33,7 @@ module LineItemHelpers
       end if Size.where(name: size).count <= 0
 
       letfunc.call(:imprintable_variant).call("#{color}_#{imprintable}_#{size.to_s.downcase}".to_sym) do
-        create :valid_imprintable_variant, color: send(color), imprintable: send(imprintable), size: send("size_#{size.to_s.downcase}")
+        create :imprintable_variant, color: send(color), imprintable: send(imprintable), size: send("size_#{size.to_s.downcase}")
       end
       letfunc.call(:line_item).call("#{color}_#{imprintable}_#{size.to_s.downcase}_item".to_sym) do
         create :imprintable_line_item, imprintable_variant: send("#{color}_#{imprintable}_#{size.to_s.downcase}")

@@ -75,10 +75,8 @@ module ApplicationHelper
       result
     end
   end
-
 end
 
-  def human_boolean(bool)
-    bool ? 'Yes' : 'No'
-  end
+def human_boolean(bool)
+  bool ? 'Yes' : 'No'
 end

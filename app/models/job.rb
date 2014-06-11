@@ -7,13 +7,15 @@ class Job < ActiveRecord::Base
   validates :name, uniqueness: { scope: :order_id }
 
   # non-deletable stuff
-  inject NonDeletable, track_methods: true
+  acts_as_paranoid
 
+  alias_method :original_destroy, :destroy
   def destroy
     original_destroy
     update_attribute :name, "#{name} #{Time.now.to_s}"
   end
 
+  alias_method :original_destroy!, :destroy!
   def destroy!
     original_destroy!
     update_column update_attribute :name, "#{name} #{Time.now.to_s}"

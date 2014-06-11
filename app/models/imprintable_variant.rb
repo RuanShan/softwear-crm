@@ -13,11 +13,14 @@ class ImprintableVariant < ActiveRecord::Base
     "#{brand.name} #{style.catalog_no} #{size.name} #{color.name}"
   end
 
-  def brand
-    self.imprintable.brand
+  def description; imprintable.description; end
+  def name 
+    "#{color.name} #{imprintable.name}"
   end
-
-  def style
-    self.imprintable.style
+  def style_name
+    imprintable.style.name
+  end
+  def style_catalog_no
+    imprintable.style.catalog_no
   end
 end
