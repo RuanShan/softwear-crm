@@ -11,6 +11,7 @@ describe LineItem, line_item_spec: true do
   	it { should_not validate_presence_of :imprintable_variant }
   	it { should validate_presence_of :description }
   	it { should validate_presence_of :name }
+    it { should_not validate_uniqueness_of(:imprintable_variant_id) }
 
     it 'name should return the name stored in the database' do
       expect(subject.name).to eq subject.read_attribute :name

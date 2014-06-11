@@ -96,6 +96,35 @@ feature 'Line Items management', line_item_spec: true, js: true do
     expect(page).to have_content shirt.description
   end
 
+  scenario 'user cannot add duplicate imprintable line items', wip: true do
+    2.times do
+      visit '/orders/1/edit#jobs'
+      wait_for_ajax
+
+      first('.add-line-item').click
+      wait_for_ajax
+      expect(page).to have_content 'Add'
+
+      within('.line-item-form') do
+        choose 'Yes'
+        wait_for_ajax
+        select brand.name, from: 'Brand'
+        wait_for_ajax
+        select style.name, from: 'Style'
+        wait_for_ajax
+        select white.name, from: 'Color'
+        wait_for_ajax
+      end
+
+      find('#line-item-submit').click
+      wait_for_ajax
+    end
+
+    ['s', 'm', 'l'].each do |s|
+      expect(page).to have_css '.imprintable-line-item-input > label', text: send('size_'+s).display_value, count: 1
+    end
+  end
+
   scenario 'user cannot submit an imprintable line item without completing the form' do
     visit '/orders/1/edit#jobs'
     wait_for_ajax

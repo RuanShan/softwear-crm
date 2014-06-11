@@ -78,23 +78,22 @@ class LineItemsController < InheritedResources::Base
           quantity: 0,
           job_id: params[:job_id]
       )}
-
-      line_items.each do |line_item|
-        unless line_item.valid?
-          modal_html = ''
-          with_format :html do
-            modal_html = render_to_string(partial: 'shared/modal_errors', locals: { object: line_item })
-          end
-          render json: {
-            result: 'failure',
-            errors: line_item.errors.messages,
-            modal: modal_html
-          }
-          return
+      valid_line_items = line_items.map { |l| l.valid? ? 1 : 0 }.sum
+      if valid_line_items > 0
+        line_items.each { |l| l.save if l.valid? }
+        render json: { result: 'success' }
+      else
+        modal_html = ''
+        line_item = nil; line_items.each { |l| line_item = l unless l.valid? }
+        with_format :html do
+          modal_html = render_to_string(partial: 'shared/modal_errors', locals: { object: line_item })
         end
+        render json: {
+          result: 'failure',
+          errors: line_item.errors.messages,
+          modal: modal_html
+        }
       end
-      line_items.each { |l| l.save }
-      render json: { result: 'success' }
     else
       super do |success, failure|
         success.json do

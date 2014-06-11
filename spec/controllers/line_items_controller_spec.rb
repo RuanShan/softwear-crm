@@ -23,6 +23,29 @@ describe LineItemsController, line_item_spec: true, dear_god: true do
         expect(LineItem.where(imprintable_variant_id: white_shirt_xl.id)).to exist
         expect(LineItem.where(job_id: job.id)).to exist
       end
+
+      context 'and the job already has some line items', wip: true do
+        before(:each) do
+          job.line_items << white_shirt_m_item
+          job.line_items << white_shirt_l_item
+        end
+
+        it "still succeeds and only adds new ones" do
+          post :create, job_id: job.id, imprintable_id: shirt.id, color_id: white.id
+          json_response = JSON.parse response.body
+          expect(json_response['result']).to eq 'success'
+          expect(LineItem.where(imprintable_variant_id: white_shirt_s.id)).to exist
+          expect(LineItem.where(imprintable_variant_id: white_shirt_xl.id)).to exist
+        end
+
+        it 'fails when the job has all line items' do
+          job.line_items << white_shirt_s_item
+          job.line_items << white_shirt_xl_item
+          post :create, job_id: job.id, imprintable_id: shirt.id, color_id: white.id
+          json_response = JSON.parse response.body
+          expect(json_response['result']).to eq 'failure'
+        end
+      end
     end
   end
 

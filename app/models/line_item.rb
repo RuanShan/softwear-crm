@@ -7,6 +7,7 @@ class LineItem < ActiveRecord::Base
   validates_presence_of :name, unless: :imprintable?
   validates_presence_of :description, unless: :imprintable?
   validate :imprintable_variant_exists, if: :imprintable?
+  validates :imprintable_variant_id, uniqueness: { scope: :job_id }, if: :imprintable?
 
   inject NonDeletable
 
