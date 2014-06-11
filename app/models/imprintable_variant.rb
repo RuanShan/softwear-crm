@@ -23,4 +23,10 @@ class ImprintableVariant < ActiveRecord::Base
   def style_catalog_no
     imprintable.style.catalog_no
   end
+  def style
+    imprintable.style
+  end
+  def brand
+    imprintable.brand
+  end
 end

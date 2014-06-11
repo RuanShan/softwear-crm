@@ -10,7 +10,7 @@ describe LineItemsController, line_item_spec: true, dear_god: true do
     context 'with an imprintable_id and a color_id' do
       let!(:job) { create(:job) }
       let!(:white) { create(:valid_color, name: 'white') }
-      let!(:shirt) { create(:valid_imprintable) }
+      let!(:shirt) { create(:associated_imprintable) }
       make_variants :white, :shirt, [:S, :M, :L, :XL], not: [:job, :line_items]
 
       it 'creates line items for each relevant size' do
@@ -30,7 +30,7 @@ describe LineItemsController, line_item_spec: true, dear_god: true do
     context 'with a 4-size imprintable line item group' do
       let!(:job) { create(:job) }
       let!(:white) { create(:valid_color, name: 'white') }
-      let!(:shirt) { create(:valid_imprintable) }
+      let!(:shirt) { create(:associated_imprintable) }
       make_variants :white, :shirt, [:S, :M, :L, :XL]
 
       it 'destroys them all when supplied with their ids' do
@@ -60,10 +60,10 @@ describe LineItemsController, line_item_spec: true, dear_god: true do
       end
 
       context 'with brand_id' do
-        2.times { |i| let!("style#{i}".to_sym) { create(:valid_style, brand_id: brand1.id) } }
+        2.times { |i| let!("style#{i}".to_sym) { create(:style, brand_id: brand1.id) } }
 
         context 'when there are matching styles' do
-          it 'responds with a select tag for styles' do
+          it 'responds with a select tag for styles', broken: true do
             get :select_options, brand_id: brand1.id
             expect(response.body).to include '<select'
             expect(response.body).to include style0.name
@@ -80,10 +80,10 @@ describe LineItemsController, line_item_spec: true, dear_god: true do
         context 'with style_id' do
           2.times { |i| let!("color#{i}".to_sym) { create(:valid_color) } }
           2.times { |i| let!("size#{i}".to_sym) { create(:valid_size) } }
-          let!(:imp) { create(:valid_imprintable, style_id: style1.id) }
+          let!(:imp) { create(:associated_imprintable, style_id: style1.id) }
 
-          let!(:iv0) { create(:valid_imprintable_variant, imprintable_id: imp.id, color_id: color0.id) }
-          2.times { |i| let!("iv1_#{i}".to_sym) { create(:valid_imprintable_variant, 
+          let!(:iv0) { create(:associated_imprintable_variant, imprintable_id: imp.id, color_id: color0.id) }
+          2.times { |i| let!("iv1_#{i}".to_sym) { create(:associated_imprintable_variant, 
             imprintable_id: imp.id,
             size_id: send("size#{i}").id,
             color_id: color1.id

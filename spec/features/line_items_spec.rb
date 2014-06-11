@@ -6,14 +6,14 @@ feature 'Line Items management', line_item_spec: true, js: true do
   given(:job) { order.jobs.first }
 
   given!(:white) { create(:valid_color, name: 'white') }
-  given!(:shirt) { create(:valid_imprintable) }
+  given!(:shirt) { create(:associated_imprintable) }
 
   make_variants :white, :shirt, [:S, :M, :L], not: [:line_items, :job]
 
   given(:style) { shirt.style }
   given(:brand) { shirt.brand }
 
-  given(:hat) { create(:valid_imprintable) }
+  given(:hat) { create(:associated_imprintable) }
   given(:hat_brand) { hat.brand }
   given(:hat_style) { hat.style }
 

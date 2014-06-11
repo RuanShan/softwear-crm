@@ -11,7 +11,7 @@ FactoryGirl.define do
     end
 
     factory :imprintable_line_item do
-      imprintable_variant { |i| i.association :imprintable_variant }
+      imprintable_variant { |i| i.association :associated_imprintable_variant }
     end
   end
 end

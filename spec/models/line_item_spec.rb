@@ -21,7 +21,7 @@ describe LineItem, line_item_spec: true do
   end
   context 'when imprintable_variant_id is not nil' do
   	let!(:subject) { create :imprintable_line_item }
-  	before(:each) { subject.imprintable_variant = create(:valid_imprintable_variant) }
+  	before(:each) { subject.imprintable_variant = create(:associated_imprintable_variant) }
 
     it 'should validate the existance of imprintable_variant' do
       subject.imprintable_variant_id = 99
@@ -60,7 +60,7 @@ describe LineItem, line_item_spec: true do
     context 'on imprintable line items' do
       let!(:job) { create(:job) }
       let!(:white) { create(:valid_color, name: 'white') }
-      let!(:shirt) { create(:valid_imprintable) }
+      let!(:shirt) { create(:associated_imprintable) }
       make_variants :white, :shirt, [:M, :S, :L]
 
       before(:each) do

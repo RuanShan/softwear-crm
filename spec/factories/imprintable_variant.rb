@@ -12,4 +12,10 @@ FactoryGirl.define do
       variant.imprintable_id = imprintable.id
     end
   end
+
+  factory :associated_imprintable_variant, class: ImprintableVariant do
+    color { |c| c.association(:valid_color) }
+    size { |s| s.association(:valid_size) }
+    imprintable { |i| i.association(:associated_imprintable) }
+  end
 end

@@ -21,7 +21,7 @@ describe Job, job_spec: true do
   context '#sort_line_items', line_item_spec: true do
     let!(:job) { create(:job) }
     [:red, :blue, :green].each { |c| let!(c) { create(:valid_color, name: c) } }
-    [:shirt, :hat].each { |s| let!(s) { create(:valid_imprintable) } }
+    [:shirt, :hat].each { |s| let!(s) { create(:associated_imprintable) } }
     
     make_variants :green, :shirt, [:S, :M, :L]
     make_variants :red,   :shirt, [:S, :M, :XL]
@@ -79,7 +79,7 @@ describe Job, job_spec: true do
     let!(:job) { create(:job) }
 
     let!(:white) { create(:valid_color, name: 'white') }
-    let!(:shirt) { create(:valid_imprintable) }
+    let!(:shirt) { create(:associated_imprintable) }
 
     make_variants :white, :shirt, [:S, :M, :L]
 
