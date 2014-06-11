@@ -6,6 +6,7 @@ describe Order, order_spec: true do
   end
 
   let!(:store) { create(:valid_store) }
+  let!(:user) { create(:user) }
 
   context 'when validating' do
     it { should validate_presence_of :email }
@@ -16,6 +17,7 @@ describe Order, order_spec: true do
     it { should validate_presence_of :name }
     it { should validate_presence_of :terms }
     it { should validate_presence_of :delivery_method }
+    it { should validate_presence_of :salesperson_id }
 
     it { should allow_value('test@example.com').for :email }
     it { should_not allow_value('not_an-email').for :email }
@@ -26,17 +28,17 @@ describe Order, order_spec: true do
     it { should ensure_inclusion_of(:sales_status).in_array Order::VALID_SALES_STATUSES }
 
     it 'requires a tax id number if tax_exempt? is true' do
-      expect(build(:order, store_id: store.id, store: store, tax_exempt: true)).to_not be_valid
+      expect(build(:order, store_id: store.id, store: store, salesperson_id: user.id, tax_exempt: true)).to_not be_valid
     end
     it 'is valid when tax_exempt? is true and a tax id number is present' do
-      expect(build(:order, store_id: store.id, store: store, tax_exempt: true, tax_id_number: 12)).to be_valid
+      expect(build(:order, store_id: store.id, store: store, salesperson_id: user.id, tax_exempt: true, tax_id_number: 12)).to be_valid
     end
 
     it 'requires a redo reason if is_redo? is true' do
-      expect(build(:order, store_id: store.id, store: store, is_redo: true)).to_not be_valid
+      expect(build(:order, store_id: store.id, store: store, salesperson_id: user.id, is_redo: true)).to_not be_valid
     end
     it 'is valid when is_redo? is true and a redo reason is present' do
-      expect(build(:order, store_id: store.id, store: store, is_redo: true, redo_reason: 'because')).to be_valid
+      expect(build(:order, store_id: store.id, store: store, salesperson_id: user.id, is_redo: true, redo_reason: 'because')).to be_valid
     end
 
     it { should ensure_inclusion_of(:delivery_method).in_array Order::VALID_DELIVERY_METHODS }

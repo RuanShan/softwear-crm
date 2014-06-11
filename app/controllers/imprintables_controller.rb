@@ -1,7 +1,7 @@
 class ImprintablesController < InheritedResources::Base
 
   def update
-    super do |format|
+    super do |success, failure|
       color_ids = params[:color_ids]
       size_ids = params[:size_ids]
       if color_ids && size_ids
@@ -11,7 +11,8 @@ class ImprintablesController < InheritedResources::Base
           end
         end
       end
-      format.html { redirect_to edit_imprintable_path params[:id] }
+      success.html { redirect_to edit_imprintable_path params[:id]+'details' }
+      failure.html { render action: :edit, anchor: 'details' }
     end
   end
 

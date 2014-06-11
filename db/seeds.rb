@@ -42,16 +42,22 @@ else
 	default_user.save
 	puts "Default user already exists! Email is admin@softwearcrm.com and password is #{pw}"
 end
+create_records([
+  { firstname: 'Ricky', lastname: 'Winowiecki', email: 'ricky@annarbortees.com', password: 'something' },
+  { firstname: 'Nigel', lastname: 'Baillie', email: 'nigel@annarbortees.com', password: 'something' },
+  { firstname: 'Nicholas', lastname: 'Catoni', email: 'nick@annarbortees.com', password: 'something' },
+  { firstname: 'David', lastname: 'Suckstorff', email: 'david.s@annarbortees.com', password: 'something' }
+], User)
 
 
 # Size SEEDING
 # ----------------
 create_records([
-                   { name: 'Small', display_value: 'S', sku: '02', sort_order: 1 },
-                   { name: 'Medium', display_value: 'M', sku: '03', sort_order: 2 },
-                   { name: 'Large', display_value: 'L', sku: '04', sort_order: 3 },
-                   { name: 'Extra Large', display_value: 'XL', sku: '05', sort_order: 4 }
-               ], Size)
+  { name: 'Small', display_value: 'S', sku: '02', sort_order: 1 },
+  { name: 'Medium', display_value: 'M', sku: '03', sort_order: 2 },
+  { name: 'Large', display_value: 'L', sku: '04', sort_order: 3 },
+  { name: 'Extra Large', display_value: 'XL', sku: '05', sort_order: 4 }
+], Size)
 
 # ShippingMethod SEEDING
 # ----------------
@@ -136,7 +142,8 @@ create_records([
       sales_status: 'Pending',
       delivery_method: 'Ship to one location',
       phone_number: '123-456-8456',
-      store_id: 1
+      store_id: 1,
+      salesperson_id: 1
     }
   ], Order)
 

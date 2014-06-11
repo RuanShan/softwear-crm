@@ -1,12 +1,13 @@
 
 <div class="box-info">
   <%= render partial: 'shared/modal_errors', locals: { object: imprintable } %>
-  <%= form_for(imprintable) do |f| %>
+  <%= form_for imprintable, builder: LancengFormBuilder do |f| %>
     <!-- Horizontal form body -->
     <div id="horizontal-form" class="collapse in">
 
       <div class="form-group">
         <%= f.label :special_considerations, class: 'col-sm-2 control-label' %>
+        <%= f.error_for :special_considerations %>
         <div class="col-sm-10">
           <%= f.text_field :special_considerations, class: 'form-control' %>
           <p class="help-block">Special considerations for the imprintable</p>
@@ -15,6 +16,7 @@
 
       <div class="form-group">
         <%= f.label :flashable, class: 'col-sm-2 control-label' %>
+        <%= f.error_for :flashable %>
         <div class="col-sm-10">
           <%=  f.check_box :flashable, { class: 'checkbox' }, 'true', 'false' %>
           <p class="help-block">Check if the imprintable is flashable</p>
@@ -23,6 +25,7 @@
 
       <div class="form-group">
         <%= f.label :polyester, class: 'col-sm-2 control-label' %>
+        <%= f.error_for :polyester %>
         <div class="col-sm-10">
           <%= f.check_box :polyester, { class: 'checkbox' }, 'true', 'false' %>
           <p class="help-block">Check if the imprintable contains polyester</p>
@@ -31,6 +34,7 @@
 
       <div class="form-group">
         <%= f.label :sizing_category, class: 'col-sm-2 control-label' %>
+        <%= f.error_for :sizing_category %>
         <div class="col-sm-10">
           <%= f.select :sizing_category,
                        Imprintable::SIZING_CATEGORIES,
@@ -45,6 +49,7 @@
 
       <div class="form-group">
         <%= f.label :brand, class: 'col-sm-2 control-label' %>
+        <%= f.error_for :brand %>
         <div class="col-sm-10">
           <%= select_tag :brand,
                          options_for_select(['Select a Brand'] + Brand.order(:name).collect{ |b| [b.name, b.id] }, find_brand(imprintable)),
@@ -58,6 +63,7 @@
 
       <div class="form-group">
         <%= f.label :style, class: 'col-sm-2 control-label' %>
+        <%= f.error_for :style %>
         <div class="col-sm-10">
           <%= f.grouped_collection_select(:style_id, Brand.order(:name), :styles, :name, :id, :name, {}, { :class => 'form-control', :id => 'imprintable_style_id' }) %>
           <p class="help-block">The catalog number of the imprintable</p>

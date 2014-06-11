@@ -1,14 +1,14 @@
 FactoryGirl.define do
 	factory :user do
 		firstname 'Test'
-		lastname 'User'
-		email 'nobody@annarbortees.com'
+		sequence(:lastname) { |n| "Last_#{n}" }
+		sequence(:email) { |n| "email_#{n}@gmail.com" }
 		password '1234567890'
 
 		factory :alternate_user do
 			firstname 'First'
-			lastname 'Last'
-			email 'testing@softwearcrm.com'
+			sequence(:lastname) { |n| "Last_#{n}" }
+			sequence(:email) { |n| "email_#{n}@umich.edu" }
 		end
 
 		after(:create) { |u| u.confirm! }

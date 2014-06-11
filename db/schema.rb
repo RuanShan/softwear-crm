@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140610154859) do
+ActiveRecord::Schema.define(version: 20140610202521) do
 
   create_table "brands", force: true do |t|
     t.string   "name"
@@ -114,8 +114,8 @@ ActiveRecord::Schema.define(version: 20140610154859) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.decimal  "commission_amount", precision: 10, scale: 2
-    t.integer  "user_id"
     t.integer  "store_id"
+    t.integer  "salesperson_id"
   end
 
   add_index "orders", ["deleted_at"], name: "index_orders_on_deleted_at", using: :btree
