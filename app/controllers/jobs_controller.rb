@@ -17,16 +17,7 @@ class JobsController < InheritedResources::Base
   end
 
   def create
-    # TODO move job name generation to model
-    new_job_name = 'New Job'
-    name_counter = 2
-    relevant_jobs = Job.where order_id: params[:order_id]
-    while relevant_jobs.reject { |j| j.name != new_job_name }.count > 0
-      new_job_name = "New Job #{name_counter}"
-      name_counter += 1
-    end
-    @job = Job.new(permitted_params[:job].merge(name: new_job_name, order_id: params[:order_id]))
-    @job.save
+    @job = Job.create((permitted_params[:job] || {}).merge(order_id: params[:order_id]))
     if @job.valid?
       render partial: 'orders/job', locals: { job: @job, animated: true }
     else
@@ -55,7 +46,7 @@ class JobsController < InheritedResources::Base
 
   private
   def permitted_params
-    params.permit(job: [
+    params.permit(:order_id, job: [
       :id, :name, :description
     ])
   end

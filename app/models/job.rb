@@ -3,10 +3,9 @@ class Job < ActiveRecord::Base
 
   has_many :line_items
 
-  validates_presence_of :name
+  validate :assure_name_and_description, on: :create
   validates :name, uniqueness: { scope: :order_id }
 
-  # non-deletable stuff
   acts_as_paranoid
   
   def sort_line_items
@@ -30,5 +29,19 @@ class Job < ActiveRecord::Base
 
   def standard_line_items
     LineItem.non_imprintable.where job_id: id
+  end
+
+private
+  def assure_name_and_description
+    if self.name.nil?
+      new_job_name = 'New Job'
+      counter = 1
+      while Job.where(order_id: self.order_id).where(name: new_job_name).exists?
+        counter += 1
+        new_job_name = "New Job #{counter}"
+      end
+      self.name = new_job_name
+    end
+    self.description = "Click to edit description" if self.description.nil?
   end
 end
