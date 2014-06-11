@@ -10,7 +10,7 @@ ActiveRecord::Validations::UniquenessValidator.class_eval do
     relation = scope_relation(record, table, relation)
     relation = finder_class.unscoped.where(relation)
     relation = relation.merge(options[:conditions]) if options[:conditions]
-    relation = relation.where(record.class.paranoia_column => nil) if record.paranoid? #<- ADDED THIS LINE
+    relation = relation.where(record.class.paranoia_column => nil) if record.class.paranoid? #<- ADDED THIS LINE
 
     if relation.exists?
       error_options = options.except(:case_sensitive, :scope, :conditions)
