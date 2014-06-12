@@ -1,3 +1,19 @@
-<div class="user-profile-content">
-  <h3><strong>Order</strong> Artwork</h3>
+<div class='user-profile-content'>
+  <%= form_for order, remote: true, builder: LancengFormBuilder do |f| %>
+      <div class="row">
+        <div class="col-sm-8">
+          <h3><strong>Order</strong> Artwork</h3>
+
+          <div class="form-group">
+            <%= f.label :job %>
+            <input type="text" class="form-control" id="jobstokenfield" />
+          </div>
+
+          <%= f.fields_for :artwork_requests do |ff| %>
+              <%= render partial: 'imprint_method', locals: {f: ff} %>
+          <% end %>
+
+        </div>
+  <% end %>
+  </div>
 </div>

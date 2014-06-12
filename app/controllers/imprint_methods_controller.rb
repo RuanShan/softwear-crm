@@ -1,4 +1,5 @@
 class ImprintMethodsController < InheritedResources::Base
+  respond_to :js, only: [:show]
 
   def update
     super do |success, failure|
@@ -10,6 +11,7 @@ class ImprintMethodsController < InheritedResources::Base
   def show
     super do |format|
       format.html { redirect_to edit_imprint_method_path params[:id] }
+      format.js { render }
     end
   end
 

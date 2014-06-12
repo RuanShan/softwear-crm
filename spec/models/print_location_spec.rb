@@ -8,7 +8,7 @@ describe PrintLocation do
     it { should validate_presence_of(:max_width) }
     it { should validate_numericality_of (:max_height) }
     it { should validate_numericality_of(:max_width) }
-    # it { should validate_uniqueness_of(:name).scoped_to(:deleted_at)}
+    # it { should validate_uniqueness_of(:name).scoped_to(:deleted_at}
     # figure out a way to include conditions: -> { where(deleted_at: nil)} into the validation
   end
 

@@ -25,6 +25,7 @@ CrmSoftwearcrmCom::Application.routes.draw do
 
   resources :styles, :brands, :colors, :users
   resources :jobs, only: [:create, :update, :destroy]
+  resources :artwork_requests, only: [:create, :update, :destroy]
 
   get '/logout' => 'users#logout'
   

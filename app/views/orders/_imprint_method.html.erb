@@ -1,0 +1,10 @@
+<div class="form-group">
+  <%= f.label :imprint_method %>
+  <%= f.select :imprint_method, ImprintMethod.all.collect{|x|["#{x.name} - #{x.production_name}", x.id]}, include_blank: true%>
+  <div id="imprint_method_ink_colors_and_imprint_locations">
+
+  </div>
+  <%= f.fields_for :imprint_method do |ff| %>
+      <%= render partial: 'fields', locals: {f: ff} %>
+  <% end %>
+</div>

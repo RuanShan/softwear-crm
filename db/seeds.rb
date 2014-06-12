@@ -66,12 +66,14 @@ create_records([
 create_records([
                    {name: 'Screen Printing', production_name: 'Screen Printing'}
                ], ImprintMethod)
-im = ImprintMethod.all.first
 create_records([
-                   {name: 'Red', imprint_method_id: im.id}
+                   {name: 'Red', imprint_method_id: 1}
                ], InkColor)
 create_records([
-                   {name: 'Chest', max_height: 5.5, max_width: 5.5, imprint_method_id: im.id}
+                   {name: 'Blue', imprint_method_id: 1}
+               ], InkColor)
+create_records([
+                   {name: 'Chest', max_height: 5.5, max_width: 5.5, imprint_method_id: 1}
                ], PrintLocation)
 
 # Brand SEEDING

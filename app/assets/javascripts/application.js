@@ -22,3 +22,5 @@
 //= require wizard/jquery.easyWizard
 //= require jquery.maskedinput.min.js
 //= require_tree .
+//= require summernote.min
+//= require bootstrap-tokenfield/bootstrap-tokenfield.js

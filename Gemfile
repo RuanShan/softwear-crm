@@ -57,6 +57,12 @@ gem 'inherited_resources'
 gem 'devise'
 gem 'figaro'
 gem 'paranoia', '~> 2.0'
+gem 'simple_form'
+gem 'bootstrap-sass'
+gem 'font-awesome-sass'
+gem 'summernote-rails'
+gem 'bootstrap_tokenfield_rails'
+gem 'jquery-ui-rails'
 
 
 # Use ActiveModel has_secure_password
