@@ -1,10 +1,7 @@
 .line-item-button:hover {
   cursor: pointer
 }
-/*
-.editing-line-item > div:first-child {
-  display: none !important;
-}*/
+
 form.imprintable-line-item.editing-line-item > div > input {
   background-color: #FFFF99;
 }
