@@ -8,7 +8,7 @@ feature 'Colors management', color_spec: true do
     login_as(valid_user)
   end
 
-  let!(:color) { create(:valid_color)}
+  given!(:color) { create(:valid_color)}
 
 
   scenario 'A user can see a list of colors' do
@@ -33,7 +33,7 @@ feature 'Colors management', color_spec: true do
     find("tr#color_#{color.id} a[data-action='edit']").click
     fill_in 'color_name', :with => 'Edited Color Name'
     click_button 'Update Color'
-    expect(current_path).to eq(edit_color_path(color.id))
+    expect(current_path).to eq(colors_path)
     expect(page).to have_selector '.modal-content-success', text: 'Color was successfully updated.'
     expect(color.reload.name).to eq('Edited Color Name')
   end

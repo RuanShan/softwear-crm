@@ -1,7 +1,6 @@
 require 'spec_helper'
 
 describe 'imprintables/_grid.html.erb', imprintable_variant_spec: true do
-
   context 'there are no variants' do
     it 'has table containing dropdown menus to select size and colors' do
       imprintable = Imprintable.new

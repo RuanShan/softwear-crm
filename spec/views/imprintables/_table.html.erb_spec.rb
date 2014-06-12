@@ -1,7 +1,6 @@
 require 'spec_helper'
 
 describe 'imprintables/_table.html.erb', imprintable_spec: true do
-
   let!(:imprintables) do
     [create(:valid_imprintable)]
     assign(:imprintables, Imprintable.all)

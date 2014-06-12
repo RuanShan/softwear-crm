@@ -8,7 +8,7 @@ feature 'sizes management', size_spec: true do
     login_as(valid_user)
   end
 
-  let!(:size) do
+  given!(:size) do
     create(:valid_size)
     create(:valid_size)
   end
@@ -61,7 +61,7 @@ feature 'sizes management', size_spec: true do
         });
       });
     '
-    sleep 1
+    wait_for_ajax
     expect(find(:css, '.size_row:nth-child(2)')).to eq(first_child)
   end
 end

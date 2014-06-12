@@ -8,7 +8,7 @@ feature 'Styles management', style_spec: true do
     login_as(valid_user)
   end
 
-  let!(:style) { create(:valid_style) }
+  given!(:style) { create(:valid_style) }
 
 
   scenario 'A user can see a list of styles' do

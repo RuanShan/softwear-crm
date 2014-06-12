@@ -3,9 +3,6 @@
     <thead>
     <tr>
       <th></th>
-      <% variants_hash =  imprintable.create_variants_hash %>
-      <% size_variants = variants_hash[:size_variants] %>
-      <% color_variants = variants_hash[:color_variants] %>
       <% size_variants.each_with_index do |size_variant, size_index| %>
         <% size = size_variant.size %>
         <th id="col_<%= size_index + 1 %>" data-size-id="<%= size.id%>">
@@ -37,7 +34,7 @@
         <% size_variants.each_with_index do |size_variant, size_index| %>
           <% size = size_variant.size %>
           <td id="cell_<%= color_index + 1 %>_<%= size_index + 1 %>">
-          <% v = variants_hash[:variants_array].find { |v| (v.color_id == color.id) && (v.size_id == size.id) } %>
+          <% v = variants_array.find { |v| (v.color_id == color.id) && (v.size_id == size.id) } %>
           <% if v %>
             <i class="fa fa-check" id="image_<%= color_index + 1 %>_<%= size_index + 1 %>" data-variant-id="<%=v.id%>"></i>
           <% else %>
@@ -59,7 +56,7 @@
                          id: 'color_select'
                      } %>
       </th>
-      <% if variants_hash[:variants_array].empty? %>
+      <% if variants_array.empty? %>
         <td><a class="button" id="select_button">Select</a></td>
       <% end %>
     </tr>

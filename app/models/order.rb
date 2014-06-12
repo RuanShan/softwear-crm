@@ -52,6 +52,10 @@ class Order < ActiveRecord::Base
 
   def total; subtotal + subtotal * tax; end
 
+  def salesperson_name
+    User.find(self.salesperson_id).full_name
+  end
+
 private
   def initialize_fields
     self.sales_status = 'Pending' if self.sales_status.nil? or self.sales_status.empty?

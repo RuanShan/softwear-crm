@@ -22,9 +22,12 @@ class ImprintablesController < InheritedResources::Base
     end
   end
 
-  def create
-    super do |format|
-      format.html { redirect_to imprintables_path params }
+  def edit
+    super do
+      @variants_hash = Imprintable.find(params[:id]).create_variants_hash
+      @size_variants = @variants_hash[:size_variants]
+      @color_variants = @variants_hash[:color_variants]
+      @variants_array = @variants_hash[:variants_array]
     end
   end
 

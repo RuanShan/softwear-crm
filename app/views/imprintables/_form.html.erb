@@ -76,7 +76,11 @@
         <% if variants.empty? %>
           <%= render partial: 'variant_select', locals: { imprintable: imprintable, f: f } %>
         <% else %>
-          <%= render partial: 'grid', locals: { imprintable: imprintable, variants: variants } %>
+          <%= render partial: 'grid', locals: { imprintable: imprintable,
+                                                variants: variants,
+                                                size_variants: @size_variants,
+                                                color_variants: @color_variants,
+                                                variants_array: @variants_array } %>
         <% end %>
       <% end %>
 

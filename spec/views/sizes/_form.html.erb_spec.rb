@@ -1,7 +1,6 @@
 require 'spec_helper'
 
 describe 'sizes/_form.html.erb', size_spec: true do
-
   it 'has text_field for name, catalog_no, description, sku and a submit button' do
     size = Size.new
     f = LancengFormBuilder.dummy_for size

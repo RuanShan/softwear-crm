@@ -4,10 +4,10 @@ class Imprintable < ActiveRecord::Base
   SIZING_CATEGORIES = ['Adult Unisex', 'Ladies', 'Youth Unisex', 'Girls', 'Toddler', 'Infant']
 
   belongs_to :style
-  has_one :brand, through: :style
-  has_many :imprintable_variants
-  has_many :colors, through: :imprintable_variants
-  has_many :sizes, through: :imprintable_variants
+  has_one :brand, through: :style, dependent: :destroy
+  has_many :imprintable_variants, dependent: :destroy
+  has_many :colors, through: :imprintable_variants, dependent: :destroy
+  has_many :sizes, through: :imprintable_variants, dependent: :destroy
 
   validates :style, presence: true
   validates :sizing_category, inclusion: { in: SIZING_CATEGORIES, message: 'Invalid sizing category' }

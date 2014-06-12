@@ -10,7 +10,7 @@ class ImprintableVariant < ActiveRecord::Base
   validates :color, presence: true
 
   def full_name
-    "#{brand.name} #{style.catalog_no} #{size.name} #{color.name}"
+    "#{brand.name} #{style.catalog_no} #{color.name} #{size.name}"
   end
 
   def description; imprintable.description; end

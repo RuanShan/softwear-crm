@@ -8,11 +8,11 @@ feature 'Imprintable Variant Management', imprintable_variant_spec: true do
     login_as(valid_user)
   end
 
-  let!(:color) { create(:valid_color) }
-  let!(:size) { create(:valid_size) }
+  given!(:color) { create(:valid_color) }
+  given!(:size) { create(:valid_size) }
 
   context 'There are no imprintable variants' do
-    let!(:imprintable) { create(:valid_imprintable) }
+    given!(:imprintable) { create(:valid_imprintable) }
     scenario 'A user can create an initial size and color' do
       visit imprintables_path
       find("tr#imprintable_#{imprintable.id} a[data-action='edit']").click
@@ -26,9 +26,7 @@ feature 'Imprintable Variant Management', imprintable_variant_spec: true do
 
   context 'There is an imprintable invariant', js: true do
 
-    DatabaseCleaner.clean
-
-    let!(:imprintable_variant) { create(:valid_imprintable_variant) }
+    given!(:imprintable_variant) { create(:valid_imprintable_variant) }
 
     before(:each) do
       visit imprintables_path
@@ -40,37 +38,35 @@ feature 'Imprintable Variant Management', imprintable_variant_spec: true do
     end
 
     scenario 'A user can add a size column' do
+      selected = find('#size_select').find("option[value='#{size.id}']").text
       find('#size_select').find("option[value='#{size.id}']").click
-      sleep 1
       find('#size_button').click
-      sleep 1
-      expect(page).to have_css('#col_2')
+      expect(page).to have_selector 'th', text: selected
     end
 
     scenario 'A user can add a color row' do
+      selected = find('#color_select').find("option[value='#{color.id}']").text
       find('#color_select').find("option[value='#{color.id}']").click
-      sleep 1
       find('#color_button').click
-      sleep 1
-      expect(page).to have_css('#row_2')
+      expect(page).to have_selector 'th', text: selected
     end
 
     scenario 'A user can toggle a column' do
-      find('#col_plus_1').click
-      sleep 1
-      expect(page).to have_css('.fa-check')
+      expect(page).to have_css('i.fa-check#image_1_1')
+      find('#col_minus_1').click
+      expect(page).to have_css('i.fa-times#image_1_1')
     end
 
     scenario 'A user can toggle a cell' do
-      first('.cell').click
-      sleep 1
-      expect(page).to have_css('.fa-check')
+      expect(page).to have_css('i.fa-check#image_1_1')
+      first('i.fa.fa-minus.cell').click
+      expect(page).to have_css('i.fa-times#image_1_1')
     end
 
     scenario 'A user can toggle a row' do
-      find('#row_plus_1').click
-      sleep 1
-      expect(page).to have_css('.fa-check')
+      expect(page).to have_css('i.fa-check#image_1_1')
+      find('#row_minus_1').click
+      expect(page).to have_css('i.fa-times#image_1_1')
     end
   end
 end

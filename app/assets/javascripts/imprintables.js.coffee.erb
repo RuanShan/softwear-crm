@@ -66,11 +66,11 @@ jQuery ->
       cellPlus.className = 'fa fa-plus cell';
       cellMinus.className = 'fa fa-minus cell';
 
-      var times = document.createElement('i');
-      times.className = 'fa fa-times';
-      times.id = "image_"+String(i+1)+"_"+String(tblHeadObj.rows[0].cells.length-2);
+      var check = document.createElement('i');
+      check.className = 'fa fa-check';
+      check.id = "image_"+String(i+1)+"_"+String(tblHeadObj.rows[0].cells.length-2);
 
-      newCell.appendChild(times);
+      newCell.appendChild(check);
       newCell.appendChild(cellPlus);
       newCell.appendChild(cellMinus);
     }
@@ -135,21 +135,21 @@ jQuery ->
 
       newCell.id = "cell_"+String(tblBodyObj.rows.length-1)+"_"+String(cellIndex)
 
-      cellTimes = document.createElement('i')
+      cellCheck = document.createElement('i')
       cellMinus = document.createElement('i')
       cellPlus = document.createElement('i')
 
-      cellTimes.className = 'fa fa-times'
-      cellTimes.id = "image_"+String(tblBodyObj.rows.length-1)+"_"+String(cellIndex)
+      cellCheck.className = 'fa fa-check'
+      cellCheck.id = "image_"+String(tblBodyObj.rows.length-1)+"_"+String(cellIndex)
 
       cellIndex += 1
 
       cellPlus.className = 'fa fa-plus cell'
       cellMinus.className = 'fa fa-minus cell'
 
-      newCell.appendChild(cellTimes)
-      newCell.appendChild(cellMinus)
+      newCell.appendChild(cellCheck)
       newCell.appendChild(cellPlus)
+      newCell.appendChild(cellMinus)
   )
 
   intersect_arrays = (x, y) ->
