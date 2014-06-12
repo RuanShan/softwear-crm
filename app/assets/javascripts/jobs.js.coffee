@@ -43,12 +43,9 @@ $(window).load ->
     $this.attr 'disabled', 'disabled'
     setTimeout (-> $this.removeAttr 'disabled'), 1000
 
-    params = {}
-    params['job[description]'] = 'Job description'
     ajax = $.ajax
       type: 'POST'
       url: "/orders/#{$this.attr 'data-order-id'}/jobs"
-      data: params
 
     ajax.done (response) ->
       if typeof response is 'object'

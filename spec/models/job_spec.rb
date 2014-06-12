@@ -2,7 +2,8 @@ require 'spec_helper'
 include LineItemHelpers
 
 describe Job, job_spec: true do
-  it { should validate_presence_of :name }
+  # Setting name to 'New Job' on create makes this obsolete
+  # it { should validate_presence_of :name }
   it { should validate_uniqueness_of(:name).scoped_to(:order_id) }
 
   it 'should allow two jobs with the same name if one is deleted' do
@@ -16,6 +17,27 @@ describe Job, job_spec: true do
   it 'should have many line items' do
     job = create(:job, name: 'job')
     expect(job.line_items).to be_a ActiveRecord::Relation # I think
+  end
+
+  it 'subsequent jobs created with a nil name will be named "New Job #"' do
+    job0 = create(:empty_job)
+    job1 = create(:empty_job)
+    job2 = create(:empty_job)
+    expect(job0.name).to eq 'New Job'
+    expect(job1.name).to eq 'New Job 2'
+    expect(job2.name).to eq 'New Job 3'
+  end
+
+  it "deleting a job doesn't stop subsequent job name generation from working" do
+    job = create(:empty_job)
+    job.destroy
+    
+    job0 = create(:empty_job)
+    job1 = create(:empty_job)
+    job2 = create(:empty_job)
+    expect(job0.name).to eq 'New Job'
+    expect(job1.name).to eq 'New Job 2'
+    expect(job2.name).to eq 'New Job 3'
   end
 
   context '#sort_line_items', line_item_spec: true do
