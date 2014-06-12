@@ -8,7 +8,7 @@ feature 'Brands management', brand_spec: true do
     login_as(valid_user)
   end
 
-  let!(:brand) { create(:valid_brand)}
+  given!(:brand) { create(:valid_brand)}
 
   scenario 'A user can see a list of brands' do
     visit root_path

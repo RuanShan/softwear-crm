@@ -20,44 +20,10 @@ describe Style, style_spec: true do
     it { should validate_presence_of(:brand) }
   end
 
-  describe 'Scopes' do
-    let!(:style) { create(:valid_style) }
-    let!(:deleted_style) { create(:valid_style, deleted_at: Time.now, name: 'Deleted') }
-
-    describe 'default_scope' do
-      it 'includes only styles where deleted_at is nil' do
-        expect(Style.all).to eq([style])
-      end
-    end
-
-    describe 'deleted' do
-      it 'includes only styles where deleted_at is not nil' do
-        expect(Style.all).to eq([style])
-      end
-    end
-  end
-
-  describe '#destroyed?' do
-    let! (:style) { create(:valid_style, deleted_at: Time.now) }
-
-    it 'returns true if deleted_at is set' do
-      expect(style.destroyed?).to be_truthy
-    end
-  end
-
-  describe '#destroy' do
-    let!(:style) { create(:valid_style) }
-
-    it 'sets deleted_at to the current time' do
-      style.destroy
-      expect(style.deleted_at).to_not be_nil
-    end
-  end
-
   describe '#find_brand' do
     let!(:style) { create(:valid_style) }
 
-    it 'returns the correct brand_id' do
+    it 'returns the id of the brand associated with the style' do
       brand = style.find_brand
       expect(brand.id).to eq(style.brand.id)
     end

@@ -107,5 +107,12 @@ describe Order, order_spec: true do
       expect{order.total}.to_not raise_error
       expect(order.total).to eq order.subtotal + order.subtotal * order.tax
     end
+
+    context '#salesperson_name' do
+      it 'returns the salesperson\'s name associated with the order' do
+        salesperson = User.find(order.salesperson_id)
+        expect(salesperson.full_name).to eq(order.salesperson_name)
+      end
+    end
   end
 end

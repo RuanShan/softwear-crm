@@ -1,8 +1,6 @@
 require 'spec_helper'
 
-describe 'imprintables/index.html.erb' do
-
-
+describe 'imprintables/index.html.erb', imprintable_spec: true do
   it 'has a table of imprintables' do
     assign(:imprintables, Imprintable.all)
     render

@@ -1,7 +1,6 @@
 require 'spec_helper'
 
 describe 'styles/_table.html.erb', style_spec: true do
-
   let!(:styles) do
     [create(:valid_style)]
     assign(:styles, Style.all)
@@ -13,7 +12,7 @@ describe 'styles/_table.html.erb', style_spec: true do
     expect(rendered).to have_selector('th', text: 'Catalog Number')
     expect(rendered).to have_selector('th', text: 'Brand Name')
     expect(rendered).to have_selector('th', text: 'Description')
-    expect(rendered).to have_selector('th', text: 'Stock Keeping Unit')
+    expect(rendered).to have_selector('th', text: 'SKU')
   end
 
   it 'displays the name, catalog_no, brand name, description, and sku of that style' do

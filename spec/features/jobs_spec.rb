@@ -65,12 +65,12 @@ feature 'Jobs management', js: true, job_spec: true do
     expect(order.jobs.count).to eq 0
   end
 
-  scenario 'a job can be created and deleted without refreshing the page' do
+  scenario 'a job can be created and deleted without refreshing the page', temp: true do
     visit '/orders/1/edit#jobs'
     click_button 'New Job'
-    sleep 0.5
+    sleep 1
     all('button', text: 'Delete Job').last.click
-    sleep 0.5
+    expect(page).to have_css("#job-#{order.jobs.second.id}", :visible => false)
     expect(order.jobs.count).to eq 1
   end
 end
