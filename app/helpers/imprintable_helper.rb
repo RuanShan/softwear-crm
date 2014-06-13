@@ -7,4 +7,12 @@ module ImprintableHelper
       nil
     end
   end
+
+  def table_entries(table)
+    string = String.new
+    table.all.each do |entry|
+      string += ', ' + entry.name.to_s
+    end
+    string.sub!(/, /, '')
+  end
 end

@@ -1,0 +1,41 @@
+<div class="page-heading animated fadeInDownBig col-lg-9">
+  <h1><%= @imprintable.brand.name %><small> <%= @imprintable.style.name %></small></h1>
+</div>
+<div class="col-lg-3 text-right">
+  <%= link_to 'Edit Imprintable', edit_imprintable_path(@imprintable.id), class:'btn btn-primary', role: 'button' %>
+</div>
+
+<div class="row">
+  <div class="col-sm-12">
+    <div class="box-info full">
+
+      <ul class="nav nav-tabs nav-justified">
+        <li class="active"><a href="#basic_info" data-toggle="tab"><i class="fa fa-info"></i> Basic Info</a></li>
+        <li><a href="#size_color_availability" data-toggle="tab"><i class="fa fa-check-square-o"></i> Size/Color Availability </a></li>
+        <li><a href="#imprint_details" data-toggle="tab"><i class="fa fa-search"></i> Imprint Details</a></li>
+        <li><a href="#supplier_information" data-toggle="tab"><i class="fa fa-info-circle"></i> Supplier Information</a></li>
+      </ul>
+
+      <div class="tab-content">
+
+        <div class="tab-pane animated fadeInRight active" id="basic_info">
+          <%= render partial: 'basic_info', locals: { imprintable: @imprintable } %>
+        </div>
+
+        <div class="tab-pane animated fadeInRight" id="size_color_availability">
+          <%= render partial: 'size_color_availability', locals: { imprintable: @imprintable,
+                                                                   size_variants: @size_variants,
+                                                                   color_varinats: @color_variants,
+                                                                   variants_array: @variants_array } %>
+        </div>
+
+        <div class="tab-pane animated fadeInRight" id="imprint_details">
+          <%= render partial: 'imprint_details', locals: { imprintable: @imprintable } %>
+        </div>
+
+        <div class="tab-pane animated fadeInRight" id="supplier_information">
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

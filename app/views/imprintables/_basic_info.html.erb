@@ -1,0 +1,25 @@
+<div class="user-profile-content">
+  <dl>
+    <dt>Material</dt>
+    <dd>100% Cotton</dd>
+    <br />
+    <dt>Colors Offered (<%= Color.count %>)</dt>
+    <dd><%= table_entries(Color) %></dd>
+    <br />
+    <dt>Sizes Offered(<%= Size.count %>)</dt>
+    <dd><%= table_entries(Size) %></dd>
+    <br />
+    <dt>Sample Locations</dt>
+    <dd>Ann Arbor, Ypsilanti</dd>
+    <br />
+    <dt>Tags</dt>
+    <dd>Athletic, Fashionable, Fitted, Non-Preshrunk</dd>
+    <br />
+    <dt>Description</dt>
+    <dd><%= imprintable.description %></dd>
+    <br />
+    <dt>Coordinates</dt>
+    <dd>American Apparel 2102, American Apparel 2201</dd>
+    <br />
+  </dl>
+</div>

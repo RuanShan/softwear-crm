@@ -25,7 +25,7 @@ feature 'Imprintables management', imprintable_spec: true do
     page.find_by_id('imprintable_style_id').find("option[value='#{imprintable.style.id}']").click
     find_button('Create Imprintable').click
     expect(page).to have_selector '.modal-content-success', text: 'Imprintable was successfully created.'
-    expect(current_path).to eq(edit_imprintable_path 2)
+    expect(current_path).to eq(imprintable_path 2)
     expect(Imprintable.find_by special_considerations: 'Special Consideration').to_not be_nil
   end
 

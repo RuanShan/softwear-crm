@@ -18,10 +18,10 @@ describe ImprintablesController, imprintable_spec: true do
     end
   end
 
-  describe 'GET show' do
-    it 'redirects to edit' do
+  describe 'GET show', new: true do
+    it 'renders show.html.erb' do
       get :show, id: imprintable.to_param
-      expect(response).to redirect_to(edit_imprintable_path(imprintable.to_param))
+      expect(response).to render_template('imprintables/show')
     end
   end
 
