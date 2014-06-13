@@ -71,7 +71,7 @@ ActiveRecord::Schema.define(version: 20140612150707) do
   add_index "imprintables", ["style_id"], name: "style_id_ix", using: :btree
 
   create_table "imprints", force: true do |t|
-    t.integer  "imprint_method_id"
+    t.integer  "print_location_id"
     t.integer  "job_id"
     t.decimal  "ideal_width",       precision: 10, scale: 0
     t.decimal  "ideal_height",      precision: 10, scale: 0

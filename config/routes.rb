@@ -27,7 +27,9 @@ CrmSoftwearcrmCom::Application.routes.draw do
   
   scope 'configuration' do
     resources :shipping_methods, :stores
-    resources :imprint_methods
+    resources :imprint_methods do
+      get '/print_locations', to: 'imprint_methods#print_locations', as: :print_locations
+    end
   end
   
   resources :orders, shallow: true do

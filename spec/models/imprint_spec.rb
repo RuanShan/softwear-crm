@@ -7,24 +7,10 @@ describe Imprint, imprint_spec: true do
   2.times do |n|
     let("imprint_method#{n+1}") { create(:valid_imprint_method) }
   end
+  let(:job) { create :job }
 
-  it 'should have many print_locations' do
-    expect { subject.print_locations }.to_not raise_error
-    expect(subject.print_locations).to be_a ActiveRecord::Relation
-  end
-
-  it 'should assure that its print locations are all valid with its imprint_method' do
-    print_location1.imprint_method_id = imprint_method1.id
-    print_location2.imprint_method_id = imprint_method1.id
-    print_location3.imprint_method_id = imprint_method2.id
-    print_location4.imprint_method_id = imprint_method2.id
-    subject = create(:imprint, imprint_method_id: imprint_method1.id)
-
-    subject.print_locations << print_location1
-    expect(subject).to be_valid
-    subject.print_locations << print_location2
-    expect(subject).to be_valid
-    subject.print_locations << print_location3
-    expect(subject).to_not be_valid
-  end
+  it { should be_paranoid }
+  it { should belong_to :job }
+  it { should belong_to :print_location }
+  it { should have_one(:imprint_method).through(:print_location) }
 end

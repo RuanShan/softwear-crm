@@ -2,6 +2,7 @@ class Job < ActiveRecord::Base
   belongs_to :order
 
   has_many :line_items
+  has_many :imprints
 
   validate :assure_name_and_description, on: :create
   validates :name, uniqueness: { scope: :order_id }

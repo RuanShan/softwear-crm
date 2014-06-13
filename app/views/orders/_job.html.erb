@@ -16,15 +16,13 @@
         <% unless sorted_line_items.empty? %>
           <% sorted_line_items.each do |imprintable_name, by_color| %>
             <% by_color.each do |color_name, line_items| %>
-              <% unless line_items.empty? %>
-                <%= render partial: 'line_items/imprintable_edit', locals: {
-                  color_name: color_name,
-                  style_name: line_items.first.style.name,
-                  style_catalog_no: line_items.first.style.catalog_no,
-                  description: line_items.first.description,
-                  line_items: line_items
-                } %>
-              <% end %>
+              <%= render partial: 'line_items/imprintable_edit', locals: {
+                color_name: color_name,
+                style_name: line_items.first.style.name,
+                style_catalog_no: line_items.first.style.catalog_no,
+                description: line_items.first.description,
+                line_items: line_items
+              } %>
             <% end %>
           <% end %>
         <% end %>
@@ -44,7 +42,7 @@
       </div>
 
       <h4>Imprints</h4>
-      <%= render partial: 'orders/imprints' %>
+      <%= render partial: 'orders/imprints', locals: { job: job } %>
 
       <div class="form-group box-info">
         <div class="col-sm-4">
