@@ -8,6 +8,8 @@ class Imprintable < ActiveRecord::Base
   has_many :imprintable_variants, dependent: :destroy
   has_many :colors, through: :imprintable_variants, dependent: :destroy
   has_many :sizes, through: :imprintable_variants, dependent: :destroy
+  has_and_belongs_to_many :coordinates, class_name: 'Imprintable', association_foreign_key: 'imprintable_id', join_table: 'imprintable_linker_table'
+  has_and_belongs_to_many :sample_locations, class_name: 'Store', association_foreign_key: 'store_id', join_table: 'imprintable_linker_table'
 
   validates :style, presence: true
   validates :sizing_category, inclusion: { in: SIZING_CATEGORIES, message: 'Invalid sizing category' }

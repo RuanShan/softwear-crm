@@ -15,6 +15,33 @@
       </div>
 
       <div class="form-group">
+        <%= f.label :material, class: 'col-sm-2 control-label' %>
+        <%= f.error_for :material %>
+        <div class="col-sm-10">
+          <%= f.text_field :material, class: 'form-control' %>
+          <p class="help-block">The material of the imprintable</p>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <%= f.label :proofing_template_name, class: 'col-sm-2 control-label' %>
+        <%= f.error_for :proofing_template_name %>
+        <div class="col-sm-10">
+          <%= f.text_field :proofing_template_name, class: 'form-control' %>
+          <p class="help-block">The proofing template name of the imprintable</p>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <%= f.label :standard_offering, class: 'col-sm-2 control-label' %>
+        <%= f.error_for :standard_offering %>
+        <div class="col-sm-10">
+          <%= f.check_box :standard_offering, { class: 'checkbox' }, 'true', 'false' %>
+          <p class="help-block">Check if the imprintable is included in the standard product set</p>
+        </div>
+      </div>
+
+      <div class="form-group">
         <%= f.label :flashable, class: 'col-sm-2 control-label' %>
         <%= f.error_for :flashable %>
         <div class="col-sm-10">

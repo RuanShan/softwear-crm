@@ -60,6 +60,7 @@ class ImprintablesController < InheritedResources::Base
                     [:flashable,
                      :polyester,
                      :special_considerations,
+                     :material,
                      :style_id,
                      :color_check,
                      :size_check,
