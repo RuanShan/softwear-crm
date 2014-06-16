@@ -2,7 +2,7 @@
   <% job.imprints.each do |imprint| %>
     <%= render partial: 'orders/imprint', locals: {
       job: job, imprint_method: imprint.imprint_method,
-      imprint.id
+      imprint_id: imprint.id
     } %>
   <% end %>
 </div>

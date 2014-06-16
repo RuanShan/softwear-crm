@@ -1,4 +1,4 @@
-<div id="job-<%= job.id %>" class="box-info">
+<div id="job-<%= job.id %>" class="box-info job-container" data-id="<%=job.id%>">
     <div class="box-info <%= 'animated fadeInLeft' if local_assigns[:animated] %>" style="background-color: #eeeeee">
       <%= form_for job, builder: LancengFormBuilder do |f| %>
         <h3 class="job-title">
@@ -46,10 +46,10 @@
 
       <div class="form-group box-info">
         <div class="col-sm-4">
-          <button type="submit" class="btn btn-info btn-lg btn-block"><i class="fa fa-pagelines"></i> Add Imprint </button>
+          <button type="button" class="btn btn-info btn-lg btn-block add-imprint" onclick="addImprint($(this), <%=job.id%>)"><i class="fa fa-pagelines"></i> Add Imprint </button>
         </div>
         <div class="col-sm-4 col-xs-offset-4">
-          <button type="submit" class="btn btn-info btn-lg btn-block"><i class="fa fa-pagelines"></i> Update Imprints</button>
+          <button type="button" class="btn btn-info btn-lg btn-block update-imprints" onclick="updateImprints($(this))"><i class="fa fa-pagelines"></i> Update Imprints</button>
         </div>
       </div>
       <div class="form-group box-info">

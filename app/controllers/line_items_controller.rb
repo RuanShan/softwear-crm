@@ -35,8 +35,6 @@ class LineItemsController < InheritedResources::Base
 
   def update
     super do |success, failure|
-      line_item_locals = { line_item: @line_item }
-
       success.json do
         content_html = ''
         with_format :html do

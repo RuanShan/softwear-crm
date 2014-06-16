@@ -1,8 +1,12 @@
 module WaitForAjax
   def wait_for_ajax
-    wait_for_jquery
-    Timeout.timeout(Capybara.default_wait_time) do
-      loop until finished_all_ajax_requests?
+    begin
+      Timeout.timeout(Capybara.default_wait_time) do
+        wait_for_jquery
+        loop until finished_all_ajax_requests?
+      end
+    rescue
+      sleep 0.1
     end
   end
 

@@ -78,7 +78,8 @@ create_records([
                    {name: 'Red', imprint_method_id: im.id}
                ], InkColor)
 create_records([
-                   {name: 'Chest', max_height: 5.5, max_width: 5.5, imprint_method_id: im.id}
+                   {name: 'Chest', max_height: 5.5, max_width: 5.5, imprint_method_id: im.id},
+                   {name: 'Back', max_height: 5.5, max_width: 5.5, imprint_method_id: im.id}
                ], PrintLocation)
 pl = PrintLocation.all.first
 

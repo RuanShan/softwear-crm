@@ -1,4 +1,4 @@
 <div class="form-group">
   <%= label_tag :print_location %>
-  <%= select_tag :print_location, options_from_collection_for_select(print_locations, :id, :name), class: 'form-control' %>
+  <%= select_tag :print_location, options_from_collection_for_select(print_locations, :id, :name), class: 'form-control', onchange: 'printLocationSelected($(this))' %>
 </div>

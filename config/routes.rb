@@ -36,6 +36,7 @@ CrmSoftwearcrmCom::Application.routes.draw do
     get 'timeline', to: 'timeline#show'
     resources :jobs, only: [:create, :update, :destroy, :show] do
       resources :line_items
+      resources :imprints, only: [:create, :update, :destroy, :new]
     end
   end
   get '/line_item/select_options', to: 'line_items#select_options'
