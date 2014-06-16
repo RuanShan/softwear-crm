@@ -29,4 +29,12 @@ protected
   def assign_current_url
     @current_url = request.original_url
   end
+
+  def with_format(format)
+    old_formats = formats
+    self.formats = [format]
+    r = yield
+    self.formats = old_formats
+    r
+  end
 end

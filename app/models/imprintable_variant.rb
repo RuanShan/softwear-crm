@@ -1,22 +1,32 @@
 class ImprintableVariant < ActiveRecord::Base
+  acts_as_paranoid
+
   belongs_to :imprintable
   belongs_to :size
   belongs_to :color
 
-  validates_presence_of :imprintable, :size, :color
+  validates :imprintable, presence: true
+  validates :size, presence: true
+  validates :color, presence: true
 
-  default_scope -> { where(deleted_at: nil)}
-  scope :deleted, -> { unscoped.where.not(deleted_at: nil)}
-
-  def destroyed?
-    !deleted_at.nil?
+  def full_name
+    "#{brand.name} #{style.catalog_no} #{color.name} #{size.name}"
   end
 
-  def destroy
-    update_attribute(:deleted_at, Time.now)
+  def description; imprintable.description; end
+  def name 
+    "#{color.name} #{imprintable.name}"
   end
-
-  def destroy!
-    update_column(:deleted_at, Time.now)
+  def style_name
+    imprintable.style.name
+  end
+  def style_catalog_no
+    imprintable.style.catalog_no
+  end
+  def style
+    imprintable.style
+  end
+  def brand
+    imprintable.brand
   end
 end

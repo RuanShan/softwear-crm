@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe 'imprintables/edit.html.erb' do
+describe 'imprintables/edit.html.erb', imprintable_spec: true do
   let(:imprintable){ create(:valid_imprintable) }
 
   it 'has a form to create a new mockup group' do

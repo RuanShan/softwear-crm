@@ -1,20 +1,15 @@
 class ColorsController < InheritedResources::Base
 
   def update
-    super do |format|
-      format.html { redirect_to edit_color_path params[:id] }
+    super do |success, failure|
+      success.html { redirect_to colors_path }
+      failure.html { render action: :edit }
     end
   end
 
   def show
     super do |format|
       format.html { redirect_to edit_color_path params[:id] }
-    end
-  end
-
-  def create
-    super do |format|
-      format.html { redirect_to colors_path params }
     end
   end
 

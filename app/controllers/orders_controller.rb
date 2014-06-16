@@ -11,9 +11,9 @@ class OrdersController < InheritedResources::Base
     redirect_to action: :edit
   end
 
-  def edit
+  def new
     super
-    session[:order] = @order.id
+    @current_user = current_user
   end
 
   private
@@ -25,7 +25,8 @@ class OrdersController < InheritedResources::Base
       :in_hand_by, :terms, :tax_exempt,
       :tax_id_number, :is_redo, :redo_reason,
       :delivery_method, :phone_number,
-      :sales_status, :commission_amount
+      :sales_status, :commission_amount,
+      :store_id, :salesperson_id
     ])
   end
 

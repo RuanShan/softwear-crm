@@ -1,0 +1,22 @@
+<div class="user-profile-content">
+  <dl>
+    <dt>Sizing Category</dt>
+    <dd><%= imprintable.sizing_category %></dd>
+    <br />
+    <dt>Compatible Imprint Methods</dt>
+    <dd>Screen Print, Embroidery</dd>
+    <br />
+    <dt>Flashable?</dt>
+    <dd><%= human_boolean(imprintable.flashable) %></dd>
+    <br />
+    <dt>Polyester?</dt>
+    <dd><%= human_boolean(imprintable.polyester) %></dd>
+    <br />
+    <dt>Special Considerations</dt>
+    <dd><%= imprintable.special_considerations %></dd>
+    <br />
+    <dt>Proofing Template Name</dt>
+    <dd><%= imprintable.proofing_template_name %></dd>
+    <br />
+  </dl>
+</div>

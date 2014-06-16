@@ -23,11 +23,15 @@ gem 'jquery-rails'
 
 gem 'hirb', '~> 0.7.1'
 
+gem 'launchy', '~> 2.4.2'
+
 # Turbolinks makes following links in your web application faster. Read more: https://github.com/rails/turbolinks
 #gem 'turbolinks'
 
 # Build JSON APIs with ease. Read more: https://github.com/rails/jbuilder
 gem 'jbuilder', '~> 1.2'
+
+gem 'js-routes'
 
 group :doc do
   # bundle exec rake doc:rails generates the API under doc/api.
@@ -45,7 +49,7 @@ end
 group :test do
   gem 'rspec-rails', '~> 3.0.0.beta'
   gem 'factory_girl_rails', '>= 4.2.0'
-  gem 'capybara', '>= 2.0.2'
+  gem 'capybara', '>= 2.3.0'
   gem 'shoulda-matchers'
   gem 'rspec-mocks'
   gem 'database_cleaner'

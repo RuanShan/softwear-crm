@@ -26,28 +26,34 @@ class Order < ActiveRecord::Base
 
   validates_presence_of :tax_id_number, if: :tax_exempt?
   validates_presence_of :redo_reason, if: :is_redo?
+  validates :store, presence: true
+  validates :salesperson_id, presence: true
 
   belongs_to :user
+  belongs_to :store
   has_many :jobs
 
   # non-deletable stuff
-  default_scope -> { where(deleted_at: nil) }
-  scope :deleted, -> { unscoped.where.not(deleted_at: nil) }
+  acts_as_paranoid
 
-  def destroyed?
-    !deleted_at.nil?
+  def line_items
+    LineItem.where(job_id: job_ids)
   end
 
-  def destroy
-    update_attribute(:deleted_at, Time.now)
+  def tax; 0.6; end
+
+  def subtotal
+    sum = 0
+    line_items.each do |line_item|
+      sum += line_item.price
+    end
+    sum
   end
 
-  def destroy!
-    update_column(:deleted_at, Time.now)
-  end
+  def total; subtotal + subtotal * tax; end
 
-  def revive
-    update_attribute(:deleted_at, nil) if !deleted_at.nil?
+  def salesperson_name
+    User.find(self.salesperson_id).full_name
   end
 
 private

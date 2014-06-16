@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe 'colors/_table.html.erb' do
+describe 'colors/_table.html.erb', color_spec: true do
 
   let!(:colors) do
     [create(:valid_color)]
@@ -10,7 +10,7 @@ describe 'colors/_table.html.erb' do
   it 'has table with name and sku columns' do
     render partial: 'colors/table', locals: {colors: colors}
     expect(rendered).to have_selector('th', text: 'Name')
-    expect(rendered).to have_selector('th', text: 'Stock Keeping Unit')
+    expect(rendered).to have_selector('th', text: 'SKU')
   end
 
   it 'displays the name and sku of that color' do

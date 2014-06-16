@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe 'colors/index.html.erb' do
+describe 'colors/index.html.erb', color_spec: true do
 
   it 'has a table of colors' do
     assign(:colors, Color.all)

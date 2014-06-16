@@ -1,7 +1,6 @@
 require 'spec_helper'
 
-describe 'sizes/_table.html.erb' do
-
+describe 'sizes/_table.html.erb', size_spec: true do
   let!(:sizes) do
     [create(:valid_size)]
     assign(:sizes, Size.all)
@@ -11,7 +10,7 @@ describe 'sizes/_table.html.erb' do
     render partial: 'sizes/table', locals: {sizes: sizes}
     expect(rendered).to have_selector('th', text: 'Name')
     expect(rendered).to have_selector('th', text: 'Display Value')
-    expect(rendered).to have_selector('th', text: 'Stock Keeping Unit')
+    expect(rendered).to have_selector('th', text: 'SKU')
   end
 
   it 'displays the name, display_value, sku and sort order of that size' do

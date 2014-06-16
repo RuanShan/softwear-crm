@@ -1,24 +1,25 @@
 require 'spec_helper'
 
-describe 'styles/_table.html.erb' do
-
+describe 'styles/_table.html.erb', style_spec: true do
   let!(:styles) do
     [create(:valid_style)]
     assign(:styles, Style.all)
   end
 
-  it 'has table with name, catalog_no, description, and sku columns' do
+  it 'has table with name, catalog_no, brand name, description, and sku columns' do
     render partial: 'styles/table', locals: {styles: styles}
     expect(rendered).to have_selector('th', text: 'Name')
     expect(rendered).to have_selector('th', text: 'Catalog Number')
+    expect(rendered).to have_selector('th', text: 'Brand Name')
     expect(rendered).to have_selector('th', text: 'Description')
-    expect(rendered).to have_selector('th', text: 'Stock Keeping Unit')
+    expect(rendered).to have_selector('th', text: 'SKU')
   end
 
-  it 'displays the name, catalog_no, description, and sku of that style' do
+  it 'displays the name, catalog_no, brand name, description, and sku of that style' do
     render partial: 'styles/table', locals: {styles: styles}
     expect(rendered).to have_selector('td', text: styles.first.name)
     expect(rendered).to have_selector('td', text: styles.first.catalog_no)
+    expect(rendered).to have_selector('td', text: styles.first.brand_id)
     expect(rendered).to have_selector('td', text: styles.first.description)
     expect(rendered).to have_selector('td', text: styles.first.sku)
   end

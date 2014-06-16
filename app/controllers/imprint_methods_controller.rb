@@ -15,9 +15,15 @@ class ImprintMethodsController < InheritedResources::Base
     end
   end
 
+  def print_locations
+    @imprint_method = ImprintMethod.find params[:imprint_method_id]
+    @print_locations = @imprint_method.print_locations
+    render partial: 'print_locations_select', locals: {print_locations: @print_locations}
+  end
+
   private
 
-   def permitted_params
+  def permitted_params
     params.permit(imprint_method: [:name, :production_name, ink_colors_attributes: [:name, :imprint_method_id, :id, :_destroy], print_locations_attributes: [:name, :max_height, :max_width, :imprint_method_id, :id, :_destroy]])
   end
 end

@@ -1,0 +1,16 @@
+<div>
+  <div class="row">
+    <div class="col-sm-2">name</div>
+    <div class="col-sm-5">description</div>
+    <div class="col-sm-1">taxable</div>
+    <div class="col-sm-1">qty</div>
+    <div class="col-sm-1">unit price</div>
+    <div class="col-sm-1">total</div>
+    <div class="col-sm-1"></div>
+  </div>
+  <% line_items.each do |l| %>
+    <div id="line-item-<%=l.id%>" class="row" style="margin-top: 10px; border-bottom: solid 1px #dddddd;">
+      <%= render partial: 'line_items/standard_view_entry', locals: {line_item: l} %>
+    </div>
+  <% end %>
+</div>

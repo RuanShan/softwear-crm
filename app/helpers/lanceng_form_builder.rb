@@ -8,23 +8,65 @@ class LancengFormBuilder < ActionView::Helpers::FormBuilder
     return self.new object.class.name.underscore.to_sym, object, temp, {}, nil
   end
 
+  def common_attr(attrs)
+    @common_attrs ||= {}
+    @common_attrs.merge! attrs
+  end
+
   # Adding form-control class to standard field functions
-  def text_field(method, options={})
-    add_class options, 'form-control'
-    super
-  end  
-  alias_method :email_field, :text_field
-  def password_field(method, options={})
-    add_class options, 'form-control'
-    super
-  end
-  def text_area(method, options={})
-    add_class options, 'form-control'
-    super
-  end
+  # def text_field(method, options={})
+  #   add_class options, 'form-control'
+  #   super
+  # end  
+  # alias_method :email_field, :text_field
+  # def password_field(method, options={})
+  #   add_class options, 'form-control'
+  #   super
+  # end
+  # def text_area(method, options={})
+  #   add_class options, 'form-control'
+  #   super
+  # end
   def select(method, choices, o={}, options={})
     add_class options, 'form-control'
     super method, choices, o, options
+  end
+  # Super efficient mass method reassignment, go!
+  [:text_field, :password_field, :text_area, 
+  :number_field, :check_box].each do |method_name|
+    alias_method "original_#{method_name}".to_sym, method_name
+    define_method method_name do |*args|
+      options = args.count == 2 ? args.last.merge({}) : {}
+      add_class options, 'form-control'
+      options.merge!(style: 'width: 75px') if method_name == :number_field
+      actual_args = [args.first, options]
+      send("original_#{method_name}".to_sym, *actual_args)
+    end
+  end
+
+  # Quick method for adding a label to a field. Can be called like
+  # f.label.text_area :name
+  # OR
+  # f.label("Display Text").text_field :name
+  # 
+  # or just used normally
+  def label(*args)
+    if args.count == 0 || args.first.is_a?(String)
+      l = args.first.is_a?(String) ? args.first : nil
+      proxy :label, l
+    else
+      super
+    end
+  end
+  # Another quick method, this time for errors. Stacks with label.
+  # Potential use:
+  # f.label.error.text_area :name
+  def error(*args)
+    if args.count == 0
+      proxy :error_for
+    else
+      error_for *args
+    end
   end
 
   # Creates a contenteditable span that is updated through ajax
@@ -94,6 +136,29 @@ private
     values.each do |v|
       options[:class] << ' ' unless options[:class].empty?
       options[:class] << v
+      options.merge!(@common_attrs) unless @common_attrs.nil?
     end
+  end
+
+  def proxy(method_name, *extras)
+    @proxy_stack ||= []
+    @proxy_stack << { func: method_name, args: extras }
+    Class.new do
+      def initialize(f); @f = f; end
+      def is_proxy?; true; end
+      def method_missing(name, *args, &block)
+        result = @f.send(name, *args, &block)
+        if result.respond_to? :is_proxy?
+          result
+        else
+          r = ActiveSupport::SafeBuffer.new
+          @f.instance_variable_get('@proxy_stack')[0..-1].each do |e|
+             r.send :original_concat, @f.send(e[:func], *([args.first] + e[:args]).compact) || ''
+          end
+          @f.instance_variable_get('@proxy_stack').clear()
+          r.send :original_concat, result || ''
+        end
+      end
+    end.new(self)
   end
 end

@@ -1,0 +1,46 @@
+#imprintable_variants_list {
+  th {
+    border:1px solid #CCCCCC;
+    text-align:center;
+    vertical-align:middle;
+    position:relative;
+  }
+  td {
+    border:1px solid #CCCCCC;
+    text-align:center;
+    vertical-align:middle;
+    position:relative;
+  }
+  .fa-plus {
+    position:absolute;
+    bottom:5px;
+    right:15px;
+    text-align:left;
+    vertical-align:bottom;
+    cursor:pointer;
+    color:green;
+  }
+  .fa-minus{
+    position:absolute;
+    bottom:5px;
+    left:15px;
+    cursor:pointer;
+    color:red;
+  }
+  .fa-check{
+    color:green;
+    position:absolute;
+  }
+  .fa-times{
+    color:red;
+    position:absolute;
+  }
+  border:1px solid #CCCCCC;
+  position:relative;
+}
+#add_a_color {
+  cursor:pointer;
+}
+#add_a_size {
+  cursor:pointer;
+}

@@ -1,6 +1,8 @@
 require 'spec_helper'
 
 describe 'orders/_order_customer_fields.html.erb', order_spec: true do
+  login_user
+
   it 'should display the correct fields' do
     order = create(:order)
     f = LancengFormBuilder.dummy_for order

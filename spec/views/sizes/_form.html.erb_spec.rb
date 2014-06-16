@@ -1,7 +1,6 @@
 require 'spec_helper'
 
-describe 'sizes/_form.html.erb' do
-
+describe 'sizes/_form.html.erb', size_spec: true do
   it 'has text_field for name, catalog_no, description, sku and a submit button' do
     size = Size.new
     f = LancengFormBuilder.dummy_for size
@@ -9,7 +8,6 @@ describe 'sizes/_form.html.erb' do
     within_form_for Size, noscope: true do
       expect(rendered).to have_field_for :name
       expect(rendered).to have_field_for :sku
-      expect(rendered).to have_field_for :sort_order
       expect(rendered).to have_selector('button')
     end
   end

@@ -15,6 +15,7 @@ describe PrintLocation do
 
   describe 'Relationships' do
     it { should belong_to(:imprint_method) }
+    it { should have_many :imprints }
   end
 
 end

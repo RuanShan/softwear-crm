@@ -1,14 +1,14 @@
 require 'spec_helper'
 include ApplicationHelper
 
-feature 'Brands management' do
+feature 'Brands management', brand_spec: true do
 
   given!(:valid_user) { create(:alternate_user) }
   before(:each) do
     login_as(valid_user)
   end
 
-  let!(:brand) { create(:valid_brand)}
+  given!(:brand) { create(:valid_brand)}
 
   scenario 'A user can see a list of brands' do
     visit root_path
@@ -46,5 +46,4 @@ feature 'Brands management' do
     expect(page).to have_selector '.modal-content-success', text: 'Brand was successfully destroyed.'
     expect(brand.reload.destroyed? ).to be_truthy
   end
-
 end

@@ -35,6 +35,7 @@ ActiveRecord::Schema.define(version: 20140616145749) do
     t.datetime "deleted_at"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.datetime "deleted_at"
   end
 
   add_index "brands", ["deleted_at"], name: "index_brands_on_deleted_at", using: :btree
@@ -46,9 +47,11 @@ ActiveRecord::Schema.define(version: 20140616145749) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.integer  "imprintable_variant_id"
+    t.datetime "deleted_at"
   end
 
   add_index "colors", ["deleted_at"], name: "index_colors_on_deleted_at", using: :btree
+  add_index "colors", ["imprintable_variant_id"], name: "color_imprintable_variant_id_ix", using: :btree
 
   create_table "imprint_methods", force: true do |t|
     t.string   "name"
@@ -62,11 +65,11 @@ ActiveRecord::Schema.define(version: 20140616145749) do
 
   create_table "imprintable_variants", force: true do |t|
     t.integer  "imprintable_id"
-    t.datetime "deleted_at"
     t.datetime "created_at"
     t.datetime "updated_at"
     t.integer  "size_id"
     t.integer  "color_id"
+    t.datetime "deleted_at"
   end
 
   add_index "imprintable_variants", ["deleted_at"], name: "index_imprintable_variants_on_deleted_at", using: :btree
@@ -74,14 +77,29 @@ ActiveRecord::Schema.define(version: 20140616145749) do
   create_table "imprintables", force: true do |t|
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.datetime "deleted_at"
     t.boolean  "flashable"
     t.text     "special_considerations"
     t.boolean  "polyester"
     t.integer  "style_id"
+    t.string   "sizing_category"
+    t.datetime "deleted_at"
+    t.text     "proofing_template_name"
+    t.string   "material"
+    t.boolean  "standard_offering"
   end
 
   add_index "imprintables", ["deleted_at"], name: "index_imprintables_on_deleted_at", using: :btree
+  add_index "imprintables", ["style_id"], name: "style_id_ix", using: :btree
+
+  create_table "imprints", force: true do |t|
+    t.integer  "print_location_id"
+    t.integer  "job_id"
+    t.decimal  "ideal_width",       precision: 10, scale: 0
+    t.decimal  "ideal_height",      precision: 10, scale: 0
+    t.datetime "deleted_at"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
 
   create_table "ink_colors", force: true do |t|
     t.string   "name"
@@ -105,6 +123,21 @@ ActiveRecord::Schema.define(version: 20140616145749) do
 
   add_index "jobs", ["deleted_at"], name: "index_jobs_on_deleted_at", using: :btree
 
+  create_table "line_items", force: true do |t|
+    t.string   "name"
+    t.integer  "quantity"
+    t.boolean  "taxable"
+    t.text     "description"
+    t.integer  "job_id"
+    t.integer  "imprintable_variant_id"
+    t.datetime "deleted_at"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.decimal  "unit_price",             precision: 10, scale: 2
+  end
+
+  add_index "line_items", ["job_id"], name: "index_line_items_on_job_id", using: :btree
+
   create_table "orders", force: true do |t|
     t.string   "email"
     t.string   "firstname"
@@ -127,7 +160,8 @@ ActiveRecord::Schema.define(version: 20140616145749) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.decimal  "commission_amount", precision: 10, scale: 2
-    t.integer  "user_id"
+    t.integer  "store_id"
+    t.integer  "salesperson_id"
   end
 
   add_index "orders", ["deleted_at"], name: "index_orders_on_deleted_at", using: :btree
@@ -160,14 +194,14 @@ ActiveRecord::Schema.define(version: 20140616145749) do
     t.string   "display_value"
     t.string   "sku"
     t.integer  "sort_order"
-    t.datetime "deleted_at"
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.integer  "sequence"
     t.integer  "imprintable_variant_id"
+    t.datetime "deleted_at"
   end
 
   add_index "sizes", ["deleted_at"], name: "index_sizes_on_deleted_at", using: :btree
+  add_index "sizes", ["imprintable_variant_id"], name: "size_imprintable_variant_id_ix", using: :btree
 
   create_table "stores", force: true do |t|
     t.string   "name"
@@ -183,12 +217,13 @@ ActiveRecord::Schema.define(version: 20140616145749) do
     t.string   "catalog_no"
     t.text     "description"
     t.string   "sku"
-    t.datetime "deleted_at"
     t.datetime "created_at"
     t.datetime "updated_at"
     t.integer  "brand_id"
+    t.datetime "deleted_at"
   end
 
+  add_index "styles", ["brand_id"], name: "brand_id_ix", using: :btree
   add_index "styles", ["deleted_at"], name: "index_styles_on_deleted_at", using: :btree
 
   create_table "users", force: true do |t|
@@ -214,6 +249,7 @@ ActiveRecord::Schema.define(version: 20140616145749) do
     t.string   "firstname"
     t.string   "lastname"
     t.datetime "deleted_at"
+    t.integer  "store_id"
   end
 
   add_index "users", ["confirmation_token"], name: "index_users_on_confirmation_token", unique: true, using: :btree

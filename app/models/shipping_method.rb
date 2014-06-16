@@ -17,5 +17,4 @@ class ShippingMethod < ActiveRecord::Base
   def destroy!
     update_column(:deleted_at, Time.now)
   end
-
 end

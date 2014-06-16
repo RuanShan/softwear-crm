@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe 'styles/edit.html.erb' do
+describe 'styles/edit.html.erb', style_spec: true do
   let(:style){ create(:valid_style) }
 
   it 'has a form to create a new mockup group' do

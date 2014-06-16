@@ -8,11 +8,6 @@
         <div class="form-group">
           <%= f.label :name, class: 'col-sm-2 control-label' %>
           <div class="col-sm-10">
-            <% if color.errors.include?(:name) %>
-                <% color.errors.full_messages_for(:name).each do |message| %>
-                    <p class="text-danger"><%= message %></p>
-                <% end %>
-            <% end %>
             <%= f.text_field :name, class: 'form-control' %>
             <p class="help-block">The name of the color
           </div>
@@ -21,11 +16,6 @@
         <div class="form-group">
           <%= f.label :sku, class: 'col-sm-2 control-label' %>
           <div class="col-sm-10">
-            <% if color.errors.include?(:sku) %>
-                <% color.errors.full_messages_for(:sku).each do |message| %>
-                    <p class="text-danger"><%= message %></p>
-                <% end %>
-            <% end %>
             <%= f.text_field :sku, class: 'form-control' %>
             <p class="help-block">SKU of the color
           </div>

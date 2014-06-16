@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe 'sizes/new.html.erb' do
+describe 'sizes/new.html.erb', size_spec: true do
   it 'has a form to create a new size' do
     assign(:size, Size.new)
     render

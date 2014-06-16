@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe 'sizes/edit.html.erb' do
+describe 'sizes/edit.html.erb', size_spec: true do
   let(:size){ create(:valid_size) }
 
   it 'has a form to create a new mockup group' do

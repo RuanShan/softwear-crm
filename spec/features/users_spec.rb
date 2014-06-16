@@ -49,6 +49,7 @@ feature 'Users', user_spec: true, js: true do
 	  	fill_in 'Email', with: 'newguy@example.com'
 	  	fill_in 'First name', with: 'New'
 	  	fill_in 'Last name', with: 'Last'
+      select valid_user.store.name, from: 'Store'
 	  	click_button 'Create'
 	  	expect(page).to have_content 'success'
 	  end

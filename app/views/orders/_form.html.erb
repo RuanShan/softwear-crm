@@ -34,7 +34,7 @@
   <section class="step" data-step-title="Order Details">
     <div class="row">
       <div class="col-sm-6">
-        <%= render partial: 'order_detail_fields', locals: { f:f } %>
+        <%= render partial: 'order_detail_fields', locals: { f:f, current_user:current_user} %>
       </div><!-- End div .col-sm-6 -->
       <div class="col-sm-6">
         <!-- Wizard notes -->

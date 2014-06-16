@@ -9,29 +9,29 @@
     </li>
     <li><a href="#fakelink"><i class="fa fa-users"></i> Customers <span class="label label-danger new-circle">W.I.P.</span></a>
     <!-- <li> -->
-    <%= nav_helper(:li, 'active', %w(imprintables brands colors styles sizes)) %>
+    <%= nav_helper(:li, true, %w(imprintables brands colors styles sizes)) %>
 
       <a href="#fakelink"><i class="fa fa-archive"></i><i class="fa fa-angle-double-down i-right"></i> Imprintables</a>
       <!-- <ul> -->
-      <%= nav_helper(:ul, 'visible', %w(imprintables brands colors styles sizes)) %>
+      <%= nav_helper(:ul, false, %w(imprintables brands colors styles sizes)) %>
         <!-- <li>  -->
-        <%= nav_helper :li, 'active', 'imprintables' %>
+        <%= nav_helper :li, true, 'imprintables' %>
           <%= link_to imprintables_path, id: 'imprintables_list_link' do %><i class="fa fa-angle-right"></i> List<% end %>
         </li>
         <!-- <li> -->
-        <%= nav_helper :li, 'active', 'brands' %>
+        <%= nav_helper :li, true, 'brands' %>
           <%= link_to brands_path, id: 'brands_list_link' do %><i class="fa fa-angle-right"></i> Brands<% end %>
         </li>
         <!-- <li> -->
-        <%= nav_helper :li, 'active', 'colors' %>
+        <%= nav_helper :li, true, 'colors' %>
           <%= link_to colors_path, id: 'colors_list_link' do %><i class="fa fa-angle-right"></i> Colors<% end %>
         </li>
         <!-- <li> -->
-        <%= nav_helper :li, 'active', 'styles' %>
+        <%= nav_helper :li, true, 'styles' %>
           <%= link_to styles_path, id: 'styles_list_link' do %><i class="fa fa-angle-right"></i> Styles<% end %>
         </li>
         <!-- <li> -->
-        <%= nav_helper :li, 'active', 'sizes' %>
+        <%= nav_helper :li, true, 'sizes' %>
           <%= link_to sizes_path, id: 'sizes_list_link' do %><i class="fa fa-angle-right"></i> Sizes<% end %>
         </li>
       </ul>
@@ -45,13 +45,13 @@
     </li>
     <li><a href="#fakelink"><i class="fa fa-picture-o"></i> Artwork <span class="label label-danger new-circle">W.I.P.</span></a></li>
     <!-- <li> -->
-    <%= nav_helper(:li, 'active', %w(administration users)) %>
+    <%= nav_helper(:li, true, %w(administration users)) %>
 
       <a href="#fakelink"><i class="fa fa-folder-open"></i><i class="fa fa-angle-double-down i-right"></i> Administration</a>
       <!-- <ul> -->
-      <%= nav_helper(:ul, 'visible', %w(users)) %>
+      <%= nav_helper(:ul, false, %w(users)) %>
          <!-- <li> -->
-         <%= nav_helper(:li, 'active', 'users') %>
+         <%= nav_helper(:li, true, 'users') %>
             <%= link_to users_path do %><i class="fa fa-angle-right"></i> Users<% end %>
          </li>
          <li><a href="gallery.html"><i class="fa fa-dollar"></i> Cash Drawer</a></li>
@@ -59,24 +59,23 @@
     </li>
 
     <!-- <li> -->
-    <%= nav_helper(:li, 'active', %w(configuration shipping_methods imprint_methods)) %>
+    <%= nav_helper(:li, true, %w(configuration shipping_methods)) %>
 
       <a href="#fakelink"><i class="fa fa-gears"></i><i class="fa fa-angle-double-down i-right"></i> Configuration</a>
       <!-- <ul> -->
-      <%= nav_helper(:ul, 'visible', %w(configuration shipping_methods imprint_methods)) %>
+      <%= nav_helper(:ul, false, %w(configuration shipping_methods)) %>
         <!-- <li> -->
-        <%= nav_helper :li, 'active', 'imprint_methods' %>
-            <%= link_to imprint_methods_path do %><i class="fa fa-angle-right"></i> Imprint Methods <% end %>
-         </li>
-        <%= nav_helper :li, 'active', 'shipping_methods' %>
-          <%= link_to shipping_methods_path do %><i class="fa fa-angle-right"></i> Shipping Methods<% end %>
-         </li>
-
-         <%= nav_helper :li, 'active', 'stores' %>
-          <%= link_to stores_path do %><i class="fa fa-angle-right"></i> Stores<% end %>
-        </li>
-      </ul>
-    </li>
-  </ul>
+      <%= nav_helper :li, true, 'imprint_methods' %>
+        <%= link_to imprint_methods_path do %><i class="fa fa-angle-right"></i> Imprint Methods <% end %>
+      </li>
+      <%= nav_helper :li, true, 'shipping_methods' %>
+        <%= link_to shipping_methods_path do %><i class="fa fa-angle-right"></i> Shipping Methods<% end %>
+      </li>
+      <%= nav_helper :li, true, 'stores' %>
+        <%= link_to stores_path do %><i class="fa fa-angle-right"></i> Stores<% end %>
+      </li>
+    </ul>
+  </li>
+</ul>
   <div class="clear"></div>
 </div>

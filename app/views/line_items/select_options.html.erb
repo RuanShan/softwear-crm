@@ -1,0 +1,8 @@
+<% if objects.empty? %>
+	<p>Uh oh! Couldn't find any <%= type_name.humanize.pluralize %> that fit the given criteria.</p>
+<% else %>
+	<div class='form-group'>
+		<%= label_tag type_name.underscore+'_id', type_name.humanize %>
+		<%= select_tag type_name.underscore+'_id', options_from_collection_for_select(objects, 'id', 'name'), include_blank: true, default: nil, class: 'form-control' %>
+	</div>
+<% end %>

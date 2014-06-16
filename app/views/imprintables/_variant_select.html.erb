@@ -1,0 +1,23 @@
+<div class="form-group">
+  <%= f.label :color, class: 'col-sm-2 control-label' %>
+  <div class="col-sm-10">
+    <% Color.find_each do |color| %>
+      <div class="checkbox">
+      <%= check_box_tag "color_ids[]", color.id, false, { class: 'checkbox' } %>
+        <%= color.name %>
+      </div>
+    <% end %>
+    <p class="help-block">Select colors available for this imprintable</p>
+  </div>
+
+  <%= f.label :size, class: 'col-sm-2 control-label' %>
+  <div class="col-sm-10">
+    <% Size.all.each do |size| %>
+      <div class="checkbox">
+      <%= check_box_tag "size_ids[]", size.id, false, { class: 'checkbox' } %>
+        <%= size.name %>
+      </div>
+    <% end %>
+    <p class="help-block">Select sizes available for this imprintable</p>
+  </div>
+</div>

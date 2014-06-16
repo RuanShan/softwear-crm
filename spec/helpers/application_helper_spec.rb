@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe ApplicationHelper do
+describe ApplicationHelper, application_helper_spec: true do
   describe "#model_table_row_id" do
     let! (:shipping_method) { create(:valid_shipping_method) }
 
@@ -24,6 +24,15 @@ describe ApplicationHelper do
       it 'returns Update' do
         expect(create_or_edit_text(shipping_method)).to eq('Update')
       end
+    end
+  end
+
+  describe 'human boolean' do
+    it 'returns Yes when given a true value' do
+      expect(human_boolean(true)).to eq('Yes')
+    end
+    it 'returns No when given a false value' do
+      expect(human_boolean(false)).to eq('No')
     end
   end
 end

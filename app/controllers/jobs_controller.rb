@@ -17,15 +17,7 @@ class JobsController < InheritedResources::Base
   end
 
   def create
-    new_job_name = 'New Job'
-    name_counter = 2
-    relevant_jobs = Job.where order_id: session[:order]
-    while relevant_jobs.reject { |j| j.name != new_job_name }.count > 0
-      new_job_name = "New Job #{name_counter}"
-      name_counter += 1
-    end
-    @job = Job.new(permitted_params[:job].merge(name: new_job_name, order_id: session[:order]))
-    @job.save
+    @job = Job.create((permitted_params[:job] || {}).merge(order_id: params[:order_id]))
     if @job.valid?
       render partial: 'orders/job', locals: { job: @job, animated: true }
     else
@@ -44,19 +36,58 @@ class JobsController < InheritedResources::Base
     }
   end
 
-  private
-  def permitted_params
-    params.permit(job: [
-      :id, :name, :description
-    ])
+  def show
+    super do |format|
+      format.html do
+        render partial: 'orders/job', locals: { job: @job }
+      end
+    end
   end
 
-  def with_format(format)
-    old_formats = formats
-    self.formats = [format]
-    yield
-    self.formats = old_formats
-    nil
+
+  #def create_imprints
+  #  print_location_ids = params[:ids].split '/'
+  #  result = 'failure'
+  #  errors = []
+  #  print_location_ids.each do |plid|
+  #    imprint = Imprint.new(job_id: params[:job_id])
+  #    if imprint.save
+  #      result = 'success'
+  #    else
+  #      errors << imprint.errors.messages
+  #    end
+  #  end
+  #  render json: {
+  #    result: result,
+  #    errors: (errors.empty? ? nil : errors),
+  #  }
+  #end
+#
+#  #def update_imprint
+#  #  imprint = Imprint.find params[:imprint_id]
+#  #  imprint.print_location_id = params[:imprint][:print_location_id]
+#  #  if imprint.save
+#  #    render json: { result: 'success' }
+#  #  else
+#  #    render json: { result: 'failure', errors: imprint.errors.messages }
+#  #  end
+#  #end
+#
+#  #def destroy_imprints
+#  #  imprint_ids = params[:ids].split '/'
+#  #  imprint_ids.each do |impid|
+#  #    Imprint.find(impid).destroy
+#  #  end
+#  #  render json: {
+#  #    result: 'success'
+#  #  }
+  #end
+
+  private
+  def permitted_params
+    params.permit(:order_id, :job_id, :ids, job: [
+      :id, :name, :description
+    ], imprint: [:print_location_id])
   end
 
 end

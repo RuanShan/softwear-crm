@@ -9,16 +9,12 @@ FactoryGirl.define do
   sequence :lastname do |n|
     ['Winowiecki', 'Baillie', 'McGillicutty', 'Suckstorff', 'Ross', 'Anderson'][n%6]
   end
-  sequence :email do |n|
-    ['test@gmail.com', 'coolguy@example.com', 
-     'whatever@umich.edu', 'nice@yahoo.com'].shuffle[n%4]
-  end
 
   factory :order do
     name { generate :name }
     firstname { generate :firstname }
     lastname { generate :lastname }
-    email { generate :email }
+    sequence(:email) { |n| "email_#{n}@gmail.com" }
     twitter '@test'
     in_hand_by Time.now + 1.day
     terms "Half down on purchase"
@@ -27,6 +23,14 @@ FactoryGirl.define do
     sales_status 'Pending'
     delivery_method 'Ship to one location'
     phone_number '123-456-7890'
+
+    before(:create) do |order|
+      store = FactoryGirl.create(:valid_store)
+      user = FactoryGirl.create(:user)
+      order.store = store
+      order.store_id = store.id
+      order.salesperson_id = user.id
+    end
 
     factory :order_with_job do
       after(:create) { |o| o.jobs << create(:job) }

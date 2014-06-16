@@ -1,14 +1,14 @@
 require 'spec_helper'
 include ApplicationHelper
 
-feature 'Colors management' do
+feature 'Colors management', color_spec: true do
 
   given!(:valid_user) { create(:alternate_user) }
   before(:each) do
     login_as(valid_user)
   end
 
-  let!(:color) { create(:valid_color)}
+  given!(:color) { create(:valid_color)}
 
 
   scenario 'A user can see a list of colors' do
@@ -22,7 +22,7 @@ feature 'Colors management' do
     visit colors_path
     click_link('Add a color')
     fill_in 'color_name', :with => 'Sample Name'
-    fill_in 'color_sku', :with => '42'
+    fill_in 'color_sku', :with => '042'
     click_button('Create Color')
     expect(page).to have_selector '.modal-content-success', text: 'Color was successfully created.'
     expect(Color.find_by name: 'Sample Name').to_not be_nil
@@ -33,7 +33,7 @@ feature 'Colors management' do
     find("tr#color_#{color.id} a[data-action='edit']").click
     fill_in 'color_name', :with => 'Edited Color Name'
     click_button 'Update Color'
-    expect(current_path).to eq(edit_color_path(color.id))
+    expect(current_path).to eq(colors_path)
     expect(page).to have_selector '.modal-content-success', text: 'Color was successfully updated.'
     expect(color.reload.name).to eq('Edited Color Name')
   end

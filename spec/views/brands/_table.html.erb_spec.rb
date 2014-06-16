@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe 'brands/_table.html.erb' do
+describe 'brands/_table.html.erb', brand_spec: true do
 
   let!(:brands) do
     [create(:valid_brand)]
@@ -10,7 +10,7 @@ describe 'brands/_table.html.erb' do
   it 'has table with name and sku columns' do
     render partial: 'brands/table', locals: {brands: brands}
     expect(rendered).to have_selector('th', text: 'Name')
-    expect(rendered).to have_selector('th', text: 'Stock Keeping Unit')
+    expect(rendered).to have_selector('th', text: 'SKU')
   end
 
   it 'displays the name and sku of that brand' do

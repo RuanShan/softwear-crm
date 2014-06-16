@@ -65,7 +65,7 @@ class UsersController < InheritedResources::Base
 private
   def permitted_params
     params.permit(user: [
-      :email, :firstname, :lastname
+      :email, :firstname, :lastname, :store_id
     ])
   end
 
