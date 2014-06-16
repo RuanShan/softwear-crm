@@ -129,13 +129,11 @@ describe LineItemsController, line_item_spec: true, dear_god: true do
 
           context 'and color_id' do
             context 'when there are matching variants' do
-              it 'responds with the name, description, and a list of sizes' do
+              it 'responds with the name and description' do
                 get :select_options, style_id: style1.id, color_id: color1.id
                 expect(response.body).to include style1.name
                 expect(response.body).to include style1.catalog_no
                 expect(response.body).to include imp.description
-                expect(response.body).to include size0.name
-                expect(response.body).to include size1.name
               end
             end
             context 'when there is no matching variant' do

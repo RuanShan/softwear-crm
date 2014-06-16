@@ -62,6 +62,8 @@ feature 'Jobs management', js: true, job_spec: true do
     visit '/orders/1/edit#jobs'
     click_button 'Delete Job'
     sleep 0.5
+    page.driver.browser.switch_to.alert.accept
+    sleep 0.5
     expect(order.jobs.count).to eq 0
   end
 
