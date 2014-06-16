@@ -45,12 +45,6 @@ ActiveRecord::Schema.define(version: 20140613184117) do
 
   add_index "imprint_methods", ["deleted_at"], name: "index_imprint_methods_on_deleted_at", using: :btree
 
-  create_table "imprintable_linker_table", id: false, force: true do |t|
-    t.integer "imprintable_id"
-    t.integer "coordinate_id"
-    t.integer "store_id"
-  end
-
   create_table "imprintable_variants", force: true do |t|
     t.integer  "imprintable_id"
     t.datetime "created_at"
