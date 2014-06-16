@@ -54,7 +54,9 @@
       </div>
       <div class="form-group box-info">
         <div class="col-sm-4 col-xs-offset-4">
-          <button for="<%= job.id %>" type='button' onclick="deleteJob(<%= job.id %>)" class="delete-job-button btn btn-danger btn-lg btn-block"><i class="fa fa-times-circle"></i> Delete Job</button>
+          <%= button_tag onclick: "deleteJob($(this), #{job.id})", class: 'delete-job-button btn btn-danger btn-lg btn-block', type: 'button' do %>
+            <i class="fa fa-times-circle"></i> Delete Job
+          <% end %>
         </div>
       </div>
     </div>

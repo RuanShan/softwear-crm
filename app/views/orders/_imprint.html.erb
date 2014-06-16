@@ -17,7 +17,7 @@
       <%= label_tag :imprint_method %>
       <%= select_tag :imprint_method, options_from_collection_for_select(
         (local_assigns[:imprint_method] ? [imprint_method] + ImprintMethod.where.not(id: imprint_method.id) : ImprintMethod.all), 
-        :id, :name
+        :id, :canonical_name
       ), class: 'form-control', onchange: "imprintMethodSelected($(this))" %>
     </div>
 

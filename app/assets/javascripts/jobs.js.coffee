@@ -1,5 +1,6 @@
-@deleteJob = (jobId) ->
-  $this = $(".delete-job-button[for='#{jobId}']")
+@deleteJob = ($this, jobId) ->
+  return unless confirm 'Are you sure?'
+
   $this.attr 'disabled', 'disabled'
   setTimeout (-> $this.removeAttr 'disabled'), 30000
 

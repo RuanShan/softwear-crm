@@ -29,7 +29,7 @@ feature 'Imprints Management', imprint_spec: true, js: true, imprint_features: t
     first('.add-imprint').click
     wait_for_ajax
 
-    select imprint_method2.name, from: 'Imprint method'
+    select imprint_method2.canonical_name, from: 'Imprint method'
     sleep 1.5
     select print_location2.name, from: 'Print location'
 
@@ -46,7 +46,7 @@ feature 'Imprints Management', imprint_spec: true, js: true, imprint_features: t
     visit edit_order_path(order.id, anchor: 'jobs')
     wait_for_ajax
 
-    select imprint_method2.name, from: 'Imprint method'
+    select imprint_method2.canonical_name, from: 'Imprint method'
     sleep 1.5
     select print_location2.name, from: 'Print location'
 
@@ -68,12 +68,12 @@ feature 'Imprints Management', imprint_spec: true, js: true, imprint_features: t
     wait_for_ajax
 
     within('.imprint-entry[data-id="-1"]') do
-      select imprint_method2.name, from: 'Imprint method'
+      select imprint_method2.canonical_name, from: 'Imprint method'
       select print_location2.name, from: 'Print location'
     end
 
     within(".imprint-entry[data-id='#{job.imprints.first.id}']") do
-      select imprint_method3.name, from: 'Imprint method'
+      select imprint_method3.canonical_name, from: 'Imprint method'
       select print_location3.name, from: 'Print location'
     end
 
