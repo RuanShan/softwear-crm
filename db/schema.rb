@@ -15,12 +15,10 @@ ActiveRecord::Schema.define(version: 20140616145749) do
 
   create_table "artwork_requests", force: true do |t|
     t.text     "description"
-    t.integer  "artist_id"
-    t.integer  "imprint_method_id"
-    t.integer  "print_location_id"
-    t.integer  "salesperson_id"
-    t.datetime "deadline"
-    t.string   "request_status"
+    t.string   "file_file_name"
+    t.string   "file_content_type"
+    t.integer  "file_file_size"
+    t.datetime "file_updated_at"
     t.datetime "deleted_at"
     t.datetime "created_at"
     t.datetime "updated_at"
@@ -32,7 +30,6 @@ ActiveRecord::Schema.define(version: 20140616145749) do
   create_table "brands", force: true do |t|
     t.string   "name"
     t.string   "sku"
-    t.datetime "deleted_at"
     t.datetime "created_at"
     t.datetime "updated_at"
     t.datetime "deleted_at"
@@ -43,7 +40,6 @@ ActiveRecord::Schema.define(version: 20140616145749) do
   create_table "colors", force: true do |t|
     t.string   "name"
     t.string   "sku"
-    t.datetime "deleted_at"
     t.datetime "created_at"
     t.datetime "updated_at"
     t.integer  "imprintable_variant_id"
