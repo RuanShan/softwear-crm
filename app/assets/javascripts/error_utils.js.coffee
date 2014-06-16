@@ -3,26 +3,36 @@
 # adds and removes error content from the page.
 @ErrorHandler = (resourceName, $form) ->
   handler = {}
-  capitalize = (str) -> str.charAt(0).toUpperCase() + str.substr(1)
+  capitalize = (str) -> (str.charAt(0).toUpperCase() + str.substr(1)).replace('_id', '').replace('_', ' ')
   contains = (array, thing) -> 
     return true if entry == thing for entry in array
     false
-  getParamName = (field) -> "#{resourceName}[#{field}]"
+  getParamName = (field) ->
+    if resourceName is null
+      field
+    else
+      "#{resourceName}[#{field}]"
 
   handler.errorFields = []
 
   handler.handleErrors = (errors, modal) ->
     handler.clear() if handler.errorFields.length > 0
     # Add modal
-    $modal = $(modal)
-    $('body').children().last().after $modal
-    $modal.on 'hidden.bs.modal', (e) -> $modal.remove()
+    $modal = null
+    unless modal is null
+      $modal = $(modal)
+      $('body').children().last().after $modal
+      $modal.on 'hidden.bs.modal', (e) -> $modal.remove()
     # Mark fields
     for field, fieldErrors of errors
       continue if fieldErrors.length == 0
       handler.errorFields.push(field)
       # Grab the input field element
       $field = $form.find("*[name='#{getParamName(field)}']")
+      $field = $form.find("*[name='#{getParamName(field.replace('_id', ''))}']") if $field.length == 0
+      if $field.length == 0
+        console.log "Couldn't find field #{field}"
+        continue
       # Create the error message div
       $errorMsgDiv = $ '<div/>',
         class: 'error'
@@ -37,7 +47,7 @@
           class: 'text-danger'
           text:  "#{capitalize field} #{error}"
     # Show the modal
-    $modal.modal 'show'
+    $modal.modal 'show' unless $modal is null
 
   handler.clear = () ->
     for field in handler.errorFields

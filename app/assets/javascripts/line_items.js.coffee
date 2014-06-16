@@ -192,11 +192,9 @@ loadLineItemView = (lineItemId, url) ->
         eh.handleErrors(response.errors, response.modal)
       else
         $inputs = $content.find 'input'
-        contentBaseColor = $content.css 'background-color'
-        inputsBaseColor = $inputs.css 'background-color'
-        it.css('background-color', '#99ffbb') for it in [$content, $inputs]
-        $content.animate {backgroundColor: contentBaseColor}, 1000
-        $inputs.animate {backgroundColor: 'default'}, 1000
+        shine $inputs, true
+        shine $content, false
+
 
     ajax.fail (jqXHR, errorText) ->
       alert "Internal server error! Can't process request."

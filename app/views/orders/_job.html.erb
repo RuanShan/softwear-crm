@@ -1,4 +1,4 @@
-<div id="job-<%= job.id %>" class="box-info">
+<div id="job-<%= job.id %>" class="box-info job-container" data-id="<%=job.id%>">
     <div class="box-info <%= 'animated fadeInLeft' if local_assigns[:animated] %>" style="background-color: #eeeeee">
       <%= form_for job, builder: LancengFormBuilder do |f| %>
         <h3 class="job-title">
@@ -16,15 +16,13 @@
         <% unless sorted_line_items.empty? %>
           <% sorted_line_items.each do |imprintable_name, by_color| %>
             <% by_color.each do |color_name, line_items| %>
-              <% unless line_items.empty? %>
-                <%= render partial: 'line_items/imprintable_edit', locals: {
-                  color_name: color_name,
-                  style_name: line_items.first.style.name,
-                  style_catalog_no: line_items.first.style.catalog_no,
-                  description: line_items.first.description,
-                  line_items: line_items
-                } %>
-              <% end %>
+              <%= render partial: 'line_items/imprintable_edit', locals: {
+                color_name: color_name,
+                style_name: line_items.first.style.name,
+                style_catalog_no: line_items.first.style.catalog_no,
+                description: line_items.first.description,
+                line_items: line_items
+              } %>
             <% end %>
           <% end %>
         <% end %>
@@ -44,19 +42,21 @@
       </div>
 
       <h4>Imprints</h4>
-      <%= render partial: 'orders/imprints' %>
+      <%= render partial: 'orders/imprints', locals: { job: job } %>
 
       <div class="form-group box-info">
         <div class="col-sm-4">
-          <button type="submit" class="btn btn-info btn-lg btn-block"><i class="fa fa-pagelines"></i> Add Imprint </button>
+          <button type="button" class="btn btn-info btn-lg btn-block add-imprint" onclick="addImprint($(this), <%=job.id%>)"><i class="fa fa-pagelines"></i> Add Imprint </button>
         </div>
         <div class="col-sm-4 col-xs-offset-4">
-          <button type="submit" class="btn btn-info btn-lg btn-block"><i class="fa fa-pagelines"></i> Update Imprints</button>
+          <button type="button" class="btn btn-info btn-lg btn-block update-imprints" onclick="updateImprints($(this))"><i class="fa fa-pagelines"></i> Update Imprints</button>
         </div>
       </div>
       <div class="form-group box-info">
         <div class="col-sm-4 col-xs-offset-4">
-          <button for="<%= job.id %>" type='button' onclick="deleteJob(<%= job.id %>)" class="delete-job-button btn btn-danger btn-lg btn-block"><i class="fa fa-times-circle"></i> Delete Job</button>
+          <%= button_tag onclick: "deleteJob($(this), #{job.id})", class: 'delete-job-button btn btn-danger btn-lg btn-block', type: 'button' do %>
+            <i class="fa fa-times-circle"></i> Delete Job
+          <% end %>
         </div>
       </div>
     </div>

@@ -19,6 +19,10 @@ describe Job, job_spec: true do
     expect(job.line_items).to be_a ActiveRecord::Relation # I think
   end
 
+  context 'imprints', imprint_spec: true do
+    it { should have_many :imprints }
+  end
+
   it 'subsequent jobs created with a nil name will be named "New Job #"' do
     job0 = create(:empty_job)
     job1 = create(:empty_job)

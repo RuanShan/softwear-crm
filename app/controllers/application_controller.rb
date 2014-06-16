@@ -33,8 +33,8 @@ protected
   def with_format(format)
     old_formats = formats
     self.formats = [format]
-    yield
+    r = yield
     self.formats = old_formats
-    nil
+    r
   end
 end

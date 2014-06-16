@@ -1,5 +1,6 @@
-@deleteJob = (jobId) ->
-  $this = $(".delete-job-button[for='#{jobId}']")
+@deleteJob = ($this, jobId) ->
+  return unless confirm 'Are you sure?'
+
   $this.attr 'disabled', 'disabled'
   setTimeout (-> $this.removeAttr 'disabled'), 30000
 
@@ -64,7 +65,6 @@ $(window).load ->
         # This should be called when .contenteditable fields are 
         # added through js
         refresh_inlines()
-        registerAddLineItemButton($newJob.find '.add-line-item')
 
     ajax.fail (jqXHR, textStatus) ->
       alert "Something went wrong with the server and

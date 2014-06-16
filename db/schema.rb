@@ -79,6 +79,16 @@ ActiveRecord::Schema.define(version: 20140613184117) do
   add_index "imprintables", ["deleted_at"], name: "index_imprintables_on_deleted_at", using: :btree
   add_index "imprintables", ["style_id"], name: "style_id_ix", using: :btree
 
+  create_table "imprints", force: true do |t|
+    t.integer  "print_location_id"
+    t.integer  "job_id"
+    t.decimal  "ideal_width",       precision: 10, scale: 0
+    t.decimal  "ideal_height",      precision: 10, scale: 0
+    t.datetime "deleted_at"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
   create_table "ink_colors", force: true do |t|
     t.string   "name"
     t.integer  "imprint_method_id"
