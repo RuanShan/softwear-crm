@@ -3,8 +3,17 @@ require 'spec_helper'
 describe ImprintMethodsController do
 
   let!(:imprint_method) { create :valid_imprint_method }
+  let(:print_location) { create :print_location, imprint_method_id: imprint_method.id }
   let!(:valid_user) { create :alternate_user }
   before(:each) { sign_in valid_user }
+
+  describe 'GET print_locations' do
+    it 'assigns @print_locations' do
+      print_location
+      get :print_locations, imprint_method_id: imprint_method.id
+      expect(assigns[:print_locations]).to eq [print_location]
+    end
+  end
 
   describe 'GET index' do
     it 'assigns @imprint_methods' do

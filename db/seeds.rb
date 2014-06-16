@@ -78,8 +78,10 @@ create_records([
                    {name: 'Red', imprint_method_id: im.id}
                ], InkColor)
 create_records([
-                   {name: 'Chest', max_height: 5.5, max_width: 5.5, imprint_method_id: im.id}
+                   {name: 'Chest', max_height: 5.5, max_width: 5.5, imprint_method_id: im.id},
+                   {name: 'Back', max_height: 5.5, max_width: 5.5, imprint_method_id: im.id}
                ], PrintLocation)
+pl = PrintLocation.all.first
 
 # Brand SEEDING
 # ----------------
@@ -133,6 +135,8 @@ create_records([
     { name: 'Ypsilanti Store' }
 ], Store)
 
+# Order SEEDING
+# --------------
 create_records([
     {
       name: 'Test Order',
@@ -152,6 +156,15 @@ create_records([
     }
   ], Order)
 
+# Job SEEDING
+# ---------------
 create_records([
     name: 'Test Job', description: "I hope these fields can be edited one day", order_id: 1
   ], Job)
+j = Job.all.first
+
+# Imprint SEEDING
+# ---------------
+create_records([
+    job_id: j.id, print_location_id: pl.id
+  ], Imprint)
