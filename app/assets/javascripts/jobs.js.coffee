@@ -64,7 +64,6 @@ $(window).load ->
         # This should be called when .contenteditable fields are 
         # added through js
         refresh_inlines()
-        registerAddLineItemButton($newJob.find '.add-line-item')
 
     ajax.fail (jqXHR, textStatus) ->
       alert "Something went wrong with the server and
