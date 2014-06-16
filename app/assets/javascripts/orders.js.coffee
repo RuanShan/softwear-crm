@@ -22,4 +22,4 @@ $(window).load ->
   if window.location.hash != '#artwork'
     tab = $("a[href='#{window.location.hash}']")
     tab.trigger $.Event('click')
-  else if window.location.hash == '#artwork'
+
