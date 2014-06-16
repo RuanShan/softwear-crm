@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140612150707) do
+ActiveRecord::Schema.define(version: 20140613184117) do
 
   create_table "brands", force: true do |t|
     t.string   "name"
@@ -45,6 +45,12 @@ ActiveRecord::Schema.define(version: 20140612150707) do
 
   add_index "imprint_methods", ["deleted_at"], name: "index_imprint_methods_on_deleted_at", using: :btree
 
+  create_table "imprintable_linker_table", id: false, force: true do |t|
+    t.integer "imprintable_id"
+    t.integer "coordinate_id"
+    t.integer "store_id"
+  end
+
   create_table "imprintable_variants", force: true do |t|
     t.integer  "imprintable_id"
     t.datetime "created_at"
@@ -65,6 +71,9 @@ ActiveRecord::Schema.define(version: 20140612150707) do
     t.integer  "style_id"
     t.string   "sizing_category"
     t.datetime "deleted_at"
+    t.text     "proofing_template_name"
+    t.string   "material"
+    t.boolean  "standard_offering"
   end
 
   add_index "imprintables", ["deleted_at"], name: "index_imprintables_on_deleted_at", using: :btree

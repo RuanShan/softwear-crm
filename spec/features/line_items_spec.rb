@@ -96,7 +96,7 @@ feature 'Line Items management', line_item_spec: true, js: true do
     expect(page).to have_content shirt.description
   end
 
-  scenario 'user cannot add duplicate imprintable line items', wip: true do
+  scenario 'user cannot add duplicate imprintable line items' do
     2.times do
       visit edit_order_path(1, anchor: 'jobs')
       wait_for_ajax
@@ -125,7 +125,7 @@ feature 'Line Items management', line_item_spec: true, js: true do
     end
   end
 
-  scenario 'user cannot submit an imprintable line item without completing the form', wip: true do
+  scenario 'user cannot submit an imprintable line item without completing the form' do
     visit edit_order_path(1, anchor: 'jobs')
     wait_for_ajax
 
@@ -197,7 +197,7 @@ feature 'Line Items management', line_item_spec: true, js: true do
     end
   end
 
-  scenario 'user sees errors when inputting bad data on standard line item edit', wip: true do
+  scenario 'user sees errors when inputting bad data on standard line item edit' do
     non_imprintable
     visit edit_order_path(1, anchor: 'jobs')
     wait_for_ajax

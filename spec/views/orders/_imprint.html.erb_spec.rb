@@ -27,7 +27,7 @@ describe 'orders/_imprint.html.erb', order_spec: true, imprint_spec: true do
       expect(rendered).to have_css 'option:first-child', text: imprint_method.name
     end
 
-    it 'should render the print location as the first option', wip: true do
+    it 'should render the print location as the first option' do
       print_location; print_location2
       imprint.print_location = print_location2
       imprint.save

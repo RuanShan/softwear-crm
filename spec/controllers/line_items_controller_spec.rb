@@ -24,7 +24,7 @@ describe LineItemsController, line_item_spec: true, dear_god: true do
         expect(LineItem.where(job_id: job.id)).to exist
       end
 
-      context 'and the job already has some line items', wip: true do
+      context 'and the job already has some line items' do
         before(:each) do
           job.line_items << white_shirt_m_item
           job.line_items << white_shirt_l_item
