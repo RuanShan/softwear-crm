@@ -4,7 +4,8 @@
 	<h6><strong><%= objects.first.color.name %> <%= objects.first.style_name %></strong>
 	<%= objects.first.style_catalog_no %></h6>
 	<p><%= objects.first.description %></p>
-	<!-- TODO base price! -->
+
+	<p>Price: $<%= number_field_tag 'base_unit_price', '0.00', class: 'form-control', style: 'width: 100px; display: inline;' %></p>
 
 	<%= hidden_field_tag 'imprintable_id', objects.first.imprintable.id %>
 	<%= hidden_field_tag 'color_id', objects.first.color.id %>
