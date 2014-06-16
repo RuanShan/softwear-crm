@@ -72,6 +72,8 @@ feature 'Jobs management', js: true, job_spec: true do
     click_button 'New Job'
     sleep 1
     all('button', text: 'Delete Job').last.click
+    sleep 0.3
+    page.driver.browser.switch_to.alert.accept
     expect(page).to have_css("#job-#{order.jobs.second.id}", :visible => false)
     expect(order.jobs.count).to eq 1
   end
