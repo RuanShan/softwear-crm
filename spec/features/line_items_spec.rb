@@ -125,7 +125,7 @@ feature 'Line Items management', line_item_spec: true, js: true do
     end
   end
 
-  scenario 'user cannot submit an imprintable line item without completing the form' do
+  scenario 'user cannot submit an imprintable line item without completing the form', wip: true do
     visit edit_order_path(1, anchor: 'jobs')
     wait_for_ajax
 
@@ -197,7 +197,7 @@ feature 'Line Items management', line_item_spec: true, js: true do
     end
   end
 
-  scenario 'user sees errors when inputting bad data on standard line item edit' do
+  scenario 'user sees errors when inputting bad data on standard line item edit', wip: true do
     non_imprintable
     visit edit_order_path(1, anchor: 'jobs')
     wait_for_ajax

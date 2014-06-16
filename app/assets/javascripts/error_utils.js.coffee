@@ -19,9 +19,9 @@
     handler.clear() if handler.errorFields.length > 0
     # Add modal
     $modal = null
-    if modal is not null
+    unless modal is null
       $modal = $(modal)
-      $('body').append $modal
+      $('body').children().last().after $modal
       $modal.on 'hidden.bs.modal', (e) -> $modal.remove()
     # Mark fields
     for field, fieldErrors of errors
@@ -47,7 +47,7 @@
           class: 'text-danger'
           text:  "#{capitalize field} #{error}"
     # Show the modal
-    $modal.modal 'show' unless modal is null
+    $modal.modal 'show' unless $modal is null
 
   handler.clear = () ->
     for field in handler.errorFields
