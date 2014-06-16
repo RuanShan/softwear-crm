@@ -1,17 +1,21 @@
 <div class='user-profile-content'>
-  <%= form_for order, remote: true, builder: LancengFormBuilder do |f| %>
+  <%= form_for order, builder: LancengFormBuilder do |f| %>
       <div class="row">
-        <div class="col-sm-8">
-          <h3><strong>Order</strong> Artwork</h3>
+        <div class="col-sm-12">
+          <h3><strong>Artwork</strong> Request</h3>
 
           <div class="form-group">
             <%= f.label :job %>
-            <input type="text" class="form-control" id="jobstokenfield" />
+            <input type="text" class="form-control" id="jobstokenfield" data-jobs="<%= order.jobs.all.map { |o| Hash[o.id, o.name] }.to_json %>"/>
           </div>
 
           <%= f.fields_for :artwork_requests do |ff| %>
-              <%= render partial: 'imprint_method', locals: {f: ff} %>
+              <%= render partial: 'artwork_imprint_method', locals: {f: ff} %>
           <% end %>
+
+          <div class="form-group">
+            <button type="submit" class="btn btn-info"> Submit Artwork Request </button>
+          </div>
 
         </div>
   <% end %>

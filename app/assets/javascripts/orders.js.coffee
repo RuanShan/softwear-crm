@@ -19,6 +19,7 @@ $(window).load ->
 
   $("a[data-toggle='tab']").click ->
     window.location.hash = $(this).attr 'href'
-  if window.location.hash != ''
+  if window.location.hash != '#artwork'
     tab = $("a[href='#{window.location.hash}']")
-    tab.trigger $.Event('click')    
+    tab.trigger $.Event('click')
+  else if window.location.hash == '#artwork'

@@ -63,6 +63,7 @@ gem 'font-awesome-sass'
 gem 'summernote-rails'
 gem 'bootstrap_tokenfield_rails'
 gem 'jquery-ui-rails'
+gem 'paperclip', github: 'thoughtbot/paperclip'
 
 
 # Use ActiveModel has_secure_password

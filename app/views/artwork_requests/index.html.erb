@@ -1,0 +1,11 @@
+<div class="page-heading animated fadeInDownBig col-lg-9">
+  <h1>Artwork Requests <small>Configure the artwork requests available for <%= order.id %></small></h1>
+  <% order.jobs.artwork_requests.each do |artwork_request| %>
+      <%= render partial: 'artwork_show', locals: { artwork_request: artwork_request } %>
+  <% end %>
+
+<div class="col-lg-3 text-right">
+  <%= link_to "Add an Artwork Request", new_order_artwork_request_path, class: 'btn btn-primary', role: 'button' %>
+</div>
+
+</div>

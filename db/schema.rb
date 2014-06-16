@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140609184531) do
+ActiveRecord::Schema.define(version: 20140616145749) do
 
   create_table "artwork_requests", force: true do |t|
     t.text     "description"
@@ -19,9 +19,14 @@ ActiveRecord::Schema.define(version: 20140609184531) do
     t.integer  "imprint_method_id"
     t.integer  "print_location_id"
     t.integer  "salesperson_id"
+    t.datetime "deadline"
+    t.string   "request_status"
     t.datetime "deleted_at"
     t.datetime "created_at"
     t.datetime "updated_at"
+  end
+
+  create_table "assets", force: true do |t|
   end
 
   create_table "brands", force: true do |t|

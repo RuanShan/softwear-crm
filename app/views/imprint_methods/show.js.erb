@@ -1,3 +1,2 @@
-alert('From RJS');
-$("#imprint_method_ink_colors_and_imprint_locations").html("<%= (render text: 'this is where you render the partial').html_safe %>");
+$("#imprint_method_print_locations_and_ink_colors").html("<%= escape_javascript(render partial: 'orders/artwork_imprint_method_fields', imprint_methods: @imprint_methods).html_safe %>");
 // Render a partial here that is your checkboxes and your dropdown

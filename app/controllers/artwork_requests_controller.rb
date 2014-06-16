@@ -10,7 +10,7 @@ class ArtworkRequestsController < InheritedResources::Base
 
   def show
     super do |format|
-      format.html { redirect_to edit_artwork_request_path params[:id] }
+      format.html { render partial 'artwork', params[:id] }
     end
   end
 
