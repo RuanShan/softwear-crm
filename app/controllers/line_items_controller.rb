@@ -72,7 +72,7 @@ class LineItemsController < InheritedResources::Base
       ).map { |variant|
         LineItem.new(
           imprintable_variant_id: variant.id,
-          unit_price: 0,
+          unit_price: params[:base_unit_price] || 0,
           quantity: 0,
           job_id: params[:job_id]
       )}

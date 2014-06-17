@@ -125,4 +125,13 @@ describe Job, job_spec: true do
       end
     end
   end
+
+  it 'should not be deletable when it has line items', line_item_spec: true do
+    job = create(:job)
+    line_item = create(:non_imprintable_line_item, job_id: job.id)
+
+    job.destroy
+    expect(job.destroyed?).to_not be_truthy
+    expect(job.errors.messages[:deletion_status]).to include "All line items must be manually removed before a job can be deleted"
+  end
 end

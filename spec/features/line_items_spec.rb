@@ -82,6 +82,7 @@ feature 'Line Items management', line_item_spec: true, js: true do
       wait_for_ajax
       expect(page).to have_content shirt.style.name
       expect(page).to have_content shirt.style.description
+      fill_in 'base_unit_price', with: '2.30'
     end
 
     find('#line-item-submit').click
@@ -94,6 +95,7 @@ feature 'Line Items management', line_item_spec: true, js: true do
     expect(page).to have_content shirt.style.name
     expect(page).to have_content shirt.style.catalog_no
     expect(page).to have_content shirt.description
+    expect(page).to have_css 'input[value="2.30"]'
   end
 
   scenario 'user cannot add duplicate imprintable line items' do
