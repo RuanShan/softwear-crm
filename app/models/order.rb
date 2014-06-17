@@ -55,6 +55,16 @@ class Order < ActiveRecord::Base
     User.find(self.salesperson_id).full_name
   end
 
+  searchable do
+    text :name, :firstname, :lastname, :company, :twitter, :terms, :delivery_method, :sales_status
+    text :jobs do
+      jobs.map { |j| "#{j.name} #{j.description}" }
+    end
+
+    double :total
+    double :commission_amount
+  end
+
 private
   def initialize_fields
     self.sales_status = 'Pending' if self.sales_status.nil? or self.sales_status.empty?
