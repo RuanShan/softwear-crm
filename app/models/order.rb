@@ -33,7 +33,6 @@ class Order < ActiveRecord::Base
   belongs_to :store
   has_many :jobs
 
-  # non-deletable stuff
   acts_as_paranoid
 
   def line_items
@@ -59,6 +58,5 @@ class Order < ActiveRecord::Base
 private
   def initialize_fields
     self.sales_status = 'Pending' if self.sales_status.nil? or self.sales_status.empty?
-    ## Additionally, grab the correct edit template
   end
 end
