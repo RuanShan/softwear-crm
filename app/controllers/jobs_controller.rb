@@ -31,9 +31,11 @@ class JobsController < InheritedResources::Base
   def destroy
     @job = Job.find params[:id]
     @job.destroy
-    render json: {
+    response = {
       result: @job.destroyed? ? 'success' : 'failure'
     }
+    response[:error] = @job.errors.messages[:deletion_status] unless @job.destroyed?
+    render json: response
   end
 
   def show
