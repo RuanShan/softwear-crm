@@ -25,7 +25,7 @@ feature 'Line Items management', line_item_spec: true, js: true do
   given(:non_imprintable) { create(:non_imprintable_line_item, job_id: job.id) }
 
   scenario 'user can add a new non-imprintable line item' do
-    visit '/orders/1/edit#jobs'
+    visit edit_order_path(1, anchor: 'jobs')
     wait_for_ajax
 
     first('.add-line-item').click
@@ -49,7 +49,7 @@ feature 'Line Items management', line_item_spec: true, js: true do
   end
 
   scenario 'user sees errors when inputting bad info for a standard line item' do
-    visit '/orders/1/edit#jobs'
+    visit edit_order_path(1, anchor: 'jobs')
     wait_for_ajax
 
     first('.add-line-item').click
@@ -64,7 +64,7 @@ feature 'Line Items management', line_item_spec: true, js: true do
   end
 
   scenario 'user can add a new imprintable line item' do
-    visit '/orders/1/edit#jobs'
+    visit edit_order_path(1, anchor: 'jobs')
     wait_for_ajax
 
     first('.add-line-item').click
@@ -82,6 +82,7 @@ feature 'Line Items management', line_item_spec: true, js: true do
       wait_for_ajax
       expect(page).to have_content shirt.style.name
       expect(page).to have_content shirt.style.description
+      fill_in 'base_unit_price', with: '2.30'
     end
 
     find('#line-item-submit').click
@@ -94,11 +95,12 @@ feature 'Line Items management', line_item_spec: true, js: true do
     expect(page).to have_content shirt.style.name
     expect(page).to have_content shirt.style.catalog_no
     expect(page).to have_content shirt.description
+    expect(page).to have_css 'input[value="2.30"]'
   end
 
-  scenario 'user cannot add duplicate imprintable line items', wip: true do
+  scenario 'user cannot add duplicate imprintable line items' do
     2.times do
-      visit '/orders/1/edit#jobs'
+      visit edit_order_path(1, anchor: 'jobs')
       wait_for_ajax
 
       first('.add-line-item').click
@@ -126,7 +128,7 @@ feature 'Line Items management', line_item_spec: true, js: true do
   end
 
   scenario 'user cannot submit an imprintable line item without completing the form' do
-    visit '/orders/1/edit#jobs'
+    visit edit_order_path(1, anchor: 'jobs')
     wait_for_ajax
 
     first('.add-line-item').click
@@ -147,7 +149,7 @@ feature 'Line Items management', line_item_spec: true, js: true do
 
   scenario 'creating an imprintable line item, user can switch a lower-level select and it will reset the higher levels' do
     hat_brand; hat_style
-    visit '/orders/1/edit#jobs'
+    visit edit_order_path(1, anchor: 'jobs')
     wait_for_ajax
 
     first('.add-line-item').click
@@ -170,7 +172,7 @@ feature 'Line Items management', line_item_spec: true, js: true do
   context 'editing a non-imprintable line item' do
     before(:each) do
       non_imprintable
-      visit '/orders/1/edit#jobs'
+      visit edit_order_path(1, anchor: 'jobs')
       wait_for_ajax
 
       find('.line-item-button[title="Edit"]').click
@@ -199,7 +201,7 @@ feature 'Line Items management', line_item_spec: true, js: true do
 
   scenario 'user sees errors when inputting bad data on standard line item edit' do
     non_imprintable
-    visit '/orders/1/edit#jobs'
+    visit edit_order_path(1, anchor: 'jobs')
     wait_for_ajax
 
     find('.line-item-button[title="Edit"]').click
@@ -213,11 +215,11 @@ feature 'Line Items management', line_item_spec: true, js: true do
     expect(page).to have_content "Quantity can't be blank"
   end
 
-  scenario 'user can remove imprintable line item', donow: true do
+  scenario 'user can remove imprintable line item' do
     ['s', 'm', 'l'].each do |s|
       job.line_items << send("white_shirt_#{s}_item")
     end
-    visit '/orders/1/edit#jobs'
+    visit edit_order_path(1, anchor: 'jobs')
     wait_for_ajax
 
     expect(page).to have_content shirt.style.name
@@ -235,7 +237,7 @@ feature 'Line Items management', line_item_spec: true, js: true do
 
   scenario 'user can remove standard line item' do
     non_imprintable
-    visit '/orders/1/edit#jobs'
+    visit edit_order_path(1, anchor: 'jobs')
     wait_for_ajax
 
     expect(page).to have_content non_imprintable.name

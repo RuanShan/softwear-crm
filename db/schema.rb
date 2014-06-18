@@ -100,6 +100,17 @@ ActiveRecord::Schema.define(version: 20140617173446) do
 
   add_index "imprintables_stores", ["imprintable_id", "store_id"], name: "index_imprintables_stores_on_imprintable_id_and_store_id", using: :btree
 
+
+  create_table "imprints", force: true do |t|
+    t.integer  "print_location_id"
+    t.integer  "job_id"
+    t.decimal  "ideal_width",       precision: 10, scale: 0
+    t.decimal  "ideal_height",      precision: 10, scale: 0
+    t.datetime "deleted_at"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
   create_table "ink_colors", force: true do |t|
     t.string   "name"
     t.integer  "imprint_method_id"

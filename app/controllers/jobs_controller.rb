@@ -31,9 +31,11 @@ class JobsController < InheritedResources::Base
   def destroy
     @job = Job.find params[:id]
     @job.destroy
-    render json: {
+    response = {
       result: @job.destroyed? ? 'success' : 'failure'
     }
+    response[:error] = @job.errors.messages[:deletion_status] unless @job.destroyed?
+    render json: response
   end
 
   def show
@@ -44,11 +46,50 @@ class JobsController < InheritedResources::Base
     end
   end
 
+
+  #def create_imprints
+  #  print_location_ids = params[:ids].split '/'
+  #  result = 'failure'
+  #  errors = []
+  #  print_location_ids.each do |plid|
+  #    imprint = Imprint.new(job_id: params[:job_id])
+  #    if imprint.save
+  #      result = 'success'
+  #    else
+  #      errors << imprint.errors.messages
+  #    end
+  #  end
+  #  render json: {
+  #    result: result,
+  #    errors: (errors.empty? ? nil : errors),
+  #  }
+  #end
+#
+#  #def update_imprint
+#  #  imprint = Imprint.find params[:imprint_id]
+#  #  imprint.print_location_id = params[:imprint][:print_location_id]
+#  #  if imprint.save
+#  #    render json: { result: 'success' }
+#  #  else
+#  #    render json: { result: 'failure', errors: imprint.errors.messages }
+#  #  end
+#  #end
+#
+#  #def destroy_imprints
+#  #  imprint_ids = params[:ids].split '/'
+#  #  imprint_ids.each do |impid|
+#  #    Imprint.find(impid).destroy
+#  #  end
+#  #  render json: {
+#  #    result: 'success'
+#  #  }
+  #end
+
   private
   def permitted_params
-    params.permit(:order_id, job: [
+    params.permit(:order_id, :job_id, :ids, job: [
       :id, :name, :description
-    ])
+    ], imprint: [:print_location_id])
   end
 
 end

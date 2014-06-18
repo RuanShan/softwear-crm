@@ -1,4 +1,4 @@
-<div class="row" style="border-bottom: solid 1px #dddddd" id="<%= line_items.first.name.gsub(/\s/, '-') %>">
+<div class="row" style="border-bottom: solid 1px #dddddd" id="<%= line_item_id(line_items.first) %>">
   <div class="col-lg-5">
     <h6>
       <strong>
@@ -25,7 +25,7 @@
     <% end %>
 
     <div class="col-sm-1">
-      <span class='line-item-button' title='Delete' onclick='deleteLineItems("<%= line_items.map { |e| e.id }.join('/') %>", "<%= line_items.first.name.gsub(/\s/, '-') %>")'><i class="fa fa-2x danger fa-times-circle"></i></a>
+      <span class='line-item-button' title='Delete' onclick='deleteLineItems("<%= line_items.map { |e| e.id }.join('/') %>", "<%= line_item_id(line_items.first) %>")'><i class="fa fa-2x danger fa-times-circle"></i></a>
     </div>
   </div>
 </div>

@@ -1,6 +1,11 @@
 FactoryGirl.define do
+  sequence :print_location_name do |n|
+    a=%w(Back Front Left\ Chest Right\ Chest)
+    a[n%a.count]
+  end
+
   factory :print_location, class: PrintLocation do
-    name 'Back'
+    name { generate :print_location_name }
     max_height 5.5
     max_width 5.5
 

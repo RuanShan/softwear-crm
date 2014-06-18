@@ -9,28 +9,31 @@ feature 'Jobs management', js: true, job_spec: true do
     login_as valid_user
   end
 
+  given(:standard_line_item) { create(:non_imprintable_line_item, job_id: job.id) }
+  given(:imprintable_line_item) { create(:imprintable_line_item, job_id: job.id) }
+
   scenario 'user visits /orders/1/edit#jobs and is switched to the jobs tab' do
-  	visit '/orders/1/edit#jobs'
+  	visit edit_order_path(1, anchor: 'jobs')
   	sleep 0.5
   	expect(page).to have_content 'Test Job'
   end
 
   scenario 'user can edit the title in place, and it is saved in the database' do
-  	visit '/orders/1/edit#jobs'
+  	visit edit_order_path(1, anchor: 'jobs')
   	fill_in_inline 'name', with: 'New Job Name'
   	sleep 2
   	expect(Job.where name: 'New Job Name').to exist
   end
 
   scenario 'user can edit the description in place, and it is saved in the database' do
-  	visit '/orders/1/edit#jobs'
+  	visit edit_order_path(1, anchor: 'jobs')
   	fill_in_inline 'description', with: 'Nice new description for a lovely job'
   	sleep 2
   	expect(Job.where description: 'Nice new description for a lovely job').to exist
   end
 
   scenario 'user can create a new job, and the form immediately shows up' do
-  	visit '/orders/1/edit#jobs'
+  	visit edit_order_path(1, anchor: 'jobs')
   	click_button 'New Job'
   	sleep 0.5
   	expect(all('form[id*="job"]').count).to eq 2
@@ -38,7 +41,7 @@ feature 'Jobs management', js: true, job_spec: true do
   end
 
   scenario 'creating two jobs in a row does not fail on account of duplicate name' do
-  	visit '/orders/1/edit#jobs'
+  	visit edit_order_path(1, anchor: 'jobs')
   	2.times { click_button 'New Job'; sleep 0.5 }
   	expect(all('form[id*="job"').count).to eq 3
   	expect(Job.all.count).to eq 3
@@ -46,7 +49,7 @@ feature 'Jobs management', js: true, job_spec: true do
 
   scenario 'two jobs with the same name causes error stuff to happen' do
     order.jobs << create(:job, name: 'Okay Job')
-    visit '/orders/1/edit#jobs'
+    visit edit_order_path(1, anchor: 'jobs')
     click_button 'New Job'
     sleep 0.5
 
@@ -58,18 +61,33 @@ feature 'Jobs management', js: true, job_spec: true do
     expect(page).to have_content 'Name has already been taken'
   end
 
-  scenario 'a job can be deleted' do
-    visit '/orders/1/edit#jobs'
+  scenario 'a job cannot be deleted if it has line items' do
+    standard_line_item; imprintable_line_item
+    visit edit_order_path(1, anchor: 'jobs')
     click_button 'Delete Job'
+    sleep 0.5
+    find('#modal-confirm-btn').click
+    sleep 0.5
+    expect(page).to have_content 'Error'
+    expect(job).to_not be_destroyed
+  end
+
+  scenario 'a job can be deleted' do
+    visit edit_order_path(1, anchor: 'jobs')
+    click_button 'Delete Job'
+    sleep 0.5
+    find('#modal-confirm-btn').click
     sleep 0.5
     expect(order.jobs.count).to eq 0
   end
 
-  scenario 'a job can be created and deleted without refreshing the page', temp: true do
-    visit '/orders/1/edit#jobs'
+  scenario 'a job can be created and deleted without refreshing the page' do
+    visit edit_order_path(1, anchor: 'jobs')
     click_button 'New Job'
     sleep 1
     all('button', text: 'Delete Job').last.click
+    sleep 0.5
+    find('a', text: 'Confirm').click
     expect(page).to have_css("#job-#{order.jobs.second.id}", :visible => false)
     expect(order.jobs.count).to eq 1
   end

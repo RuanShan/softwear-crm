@@ -2,9 +2,13 @@ class Job < ActiveRecord::Base
   belongs_to :order
 
   has_many :line_items
+  has_many :imprints
+
+  before_destroy :check_for_line_items
 
   validate :assure_name_and_description, on: :create
   validates :name, uniqueness: { scope: :order_id }
+
 
   acts_as_paranoid
   
@@ -43,5 +47,14 @@ private
       self.name = new_job_name
     end
     self.description = "Click to edit description" if self.description.nil?
+  end
+
+  def check_for_line_items
+    if LineItem.where(job_id: id).exists?
+      self.errors[:deletion_status] = 'All line items must be manually removed before a job can be deleted'
+      false
+    else
+      true
+    end
   end
 end

@@ -23,3 +23,4 @@
 //= require jquery.maskedinput.min.js
 //= require chosen-jquery
 //= require_tree .
+//= require js-routes

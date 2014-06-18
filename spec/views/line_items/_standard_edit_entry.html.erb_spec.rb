@@ -7,6 +7,7 @@ describe '/line_items/_standard_edit_entry.html.erb', line_item_spec: true do
   it 'should render the fields in a div, parented by the form' do
   	within_form_for LineItem do
   		expect(rendered).to have_field_for :name, inside: 'div'
+      expect(rendered).to have_field_for :description, inside: 'div'
   		expect(rendered).to have_field_for :taxable, inside: 'div'
   		expect(rendered).to have_field_for :quantity, inside: 'div'
   		expect(rendered).to have_field_for :unit_price, inside: 'div'

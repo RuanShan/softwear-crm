@@ -1,23 +1,24 @@
-@deleteJob = (jobId) ->
-  $this = $(".delete-job-button[for='#{jobId}']")
+@deleteJob = ($this, jobId) ->
   $this.attr 'disabled', 'disabled'
-  setTimeout (-> $this.removeAttr 'disabled'), 30000
+  setTimeout (-> $this.removeAttr 'disabled'), 10000
+  confirmModal 'Are you sure?', ->
 
-  ajax = $.ajax
-    type: 'DELETE'
-    url: "/jobs/#{jobId}"
+    ajax = $.ajax
+      type: 'DELETE'
+      url: "/jobs/#{jobId}"
 
-  ajax.done (response) ->
-    if response.result == 'success'
-      $("#job-#{jobId}").fadeOut 1000
-    else if response.result == 'failure'
-      alert "Couldn't delete the job for some reason!"
-    else
-      console.log 'No idea what happened'
+    ajax.done (response) ->
+      if response.result == 'success'
+        $("#job-#{jobId}").fadeOut 500
+      else if response.result == 'failure'
+        errorModal response.error
+        $this.removeAttr 'disabled'
+      else
+        console.log 'No idea what happened'
 
-  ajax.fail (jqXHR, textStatus) ->
-    alert "Something went wrong with the server and
-        the job couldn't be deleted for some reason."
+    ajax.fail (jqXHR, textStatus) ->
+      alert "Something went wrong with the server and
+          the job couldn't be deleted for some reason."
 
 @refreshJob = (jobId) ->
   $job = $("#job-#{jobId}")
@@ -64,7 +65,6 @@ $(window).load ->
         # This should be called when .contenteditable fields are 
         # added through js
         refresh_inlines()
-        registerAddLineItemButton($newJob.find '.add-line-item')
 
     ajax.fail (jqXHR, textStatus) ->
       alert "Something went wrong with the server and

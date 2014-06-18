@@ -29,13 +29,16 @@ CrmSoftwearcrmCom::Application.routes.draw do
   
   scope 'configuration' do
     resources :shipping_methods, :stores
-    resources :imprint_methods
+    resources :imprint_methods do
+      get '/print_locations', to: 'imprint_methods#print_locations', as: :print_locations
+    end
   end
   
   resources :orders, shallow: true do
     get 'timeline', to: 'timeline#show'
     resources :jobs, only: [:create, :update, :destroy, :show] do
       resources :line_items
+      resources :imprints, only: [:create, :update, :destroy, :new]
     end
   end
   get '/line_item/select_options', to: 'line_items#select_options'

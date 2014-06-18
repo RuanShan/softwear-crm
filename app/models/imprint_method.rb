@@ -10,4 +10,8 @@ class ImprintMethod < ActiveRecord::Base
   validates :name, presence: true
   validates :production_name, uniqueness: {scope: :name}, presence: true
 
+  def canonical_name
+    "#{name} (#{production_name})"
+  end
+
 end

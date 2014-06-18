@@ -21,12 +21,6 @@ describe 'line_items/selected_variants.html.erb', line_item_spec: true do
   		expect(rendered).to include shirt.description
   	end
 
-  	it 'displays the available sizes' do
-  		['S', 'M', 'L', 'XL'].each do |size|
-  			expect(rendered).to have_css 'li', text: size
-  		end
-  	end
-
   	it 'renders a hidden field for the imprintable_id' do
   		expect(rendered).to have_css(
   			"input[type='hidden'][name='imprintable_id'][value='#{shirt.id}']"

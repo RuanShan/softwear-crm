@@ -19,6 +19,10 @@ describe Job, job_spec: true do
     expect(job.line_items).to be_a ActiveRecord::Relation # I think
   end
 
+  context 'imprints', imprint_spec: true do
+    it { should have_many :imprints }
+  end
+
   it 'subsequent jobs created with a nil name will be named "New Job #"' do
     job0 = create(:empty_job)
     job1 = create(:empty_job)
@@ -120,5 +124,14 @@ describe Job, job_spec: true do
         expect(result).to_not include send("white_shirt_#{s}_item")
       end
     end
+  end
+
+  it 'should not be deletable when it has line items', line_item_spec: true do
+    job = create(:job)
+    line_item = create(:non_imprintable_line_item, job_id: job.id)
+
+    job.destroy
+    expect(job.destroyed?).to_not be_truthy
+    expect(job.errors.messages[:deletion_status]).to include "All line items must be manually removed before a job can be deleted"
   end
 end

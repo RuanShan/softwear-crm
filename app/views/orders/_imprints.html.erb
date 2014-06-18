@@ -1,4 +1,8 @@
-<div class="row full">
-  <%= render partial: 'orders/imprint' %>
-  <%= render partial: 'orders/imprint' %>
+<div class="row full imprints-container">
+  <% job.imprints.each do |imprint| %>
+    <%= render partial: 'orders/imprint', locals: {
+      job: job, imprint_method: imprint.imprint_method,
+      imprint_id: imprint.id
+    } %>
+  <% end %>
 </div>
