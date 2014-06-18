@@ -80,3 +80,7 @@ end
 def human_boolean(bool)
   bool ? 'Yes' : 'No'
 end
+
+def imprintable_modal(imprintable)
+  # create modal link that displays the imprintable/show
+end

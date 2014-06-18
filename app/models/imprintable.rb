@@ -1,5 +1,6 @@
 class Imprintable < ActiveRecord::Base
   acts_as_paranoid
+  acts_as_taggable
 
   SIZING_CATEGORIES = ['Adult Unisex', 'Ladies', 'Youth Unisex', 'Girls', 'Toddler', 'Infant']
 
@@ -8,8 +9,9 @@ class Imprintable < ActiveRecord::Base
   has_many :imprintable_variants, dependent: :destroy
   has_many :colors, through: :imprintable_variants, dependent: :destroy
   has_many :sizes, through: :imprintable_variants, dependent: :destroy
-  has_and_belongs_to_many :coordinates, class_name: 'Imprintable', association_foreign_key: 'imprintable_id', join_table: 'imprintable_linker_table'
-  has_and_belongs_to_many :sample_locations, class_name: 'Store', association_foreign_key: 'store_id', join_table: 'imprintable_linker_table'
+  has_and_belongs_to_many :coordinates, class_name: 'Imprintable', association_foreign_key: 'coordinate_id', join_table: 'coordinates_imprintables'
+  has_and_belongs_to_many :sample_locations, class_name: 'Store', association_foreign_key: 'store_id', join_table: 'imprintables_stores'
+  has_and_belongs_to_many :compatible_imprint_methods, class_name: 'ImprintMethod', association_foreign_key: 'imprint_method_id', join_table: 'imprint_methods_imprintables'
 
   validates :style, presence: true
   validates :sizing_category, inclusion: { in: SIZING_CATEGORIES, message: 'Invalid sizing category' }

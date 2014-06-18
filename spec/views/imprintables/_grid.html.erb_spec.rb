@@ -16,7 +16,7 @@ describe 'imprintables/_grid.html.erb', imprintable_variant_spec: true do
     end
   end
 
-  context 'there is an invariant' do
+  context 'there is a variant' do
     it 'has a table containing size columns and color rows' do
       imprintable_variant = FactoryGirl.create(:valid_imprintable_variant)
       f = LancengFormBuilder.dummy_for :imprintable

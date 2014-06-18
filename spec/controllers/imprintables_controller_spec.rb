@@ -16,9 +16,17 @@ describe ImprintablesController, imprintable_spec: true do
       get :index
       expect(response).to render_template('imprintables/index')
     end
+
+    context 'there are tags that apply to 1 imprintable' do
+      let!(:imprintable_two) { create(:valid_imprintable, :tag_list => ['comfortable']) }
+      it 'only assigns the imprintable with the applicable tag' do
+        get :index, tag: ['comfortable']
+        expect(assigns(:imprintables)).to eq([imprintable_two])
+      end
+    end
   end
 
-  describe 'GET show', new: true do
+  describe 'GET show' do
     it 'renders show.html.erb' do
       get :show, id: imprintable.to_param
       expect(response).to render_template('imprintables/show')
@@ -105,4 +113,6 @@ describe ImprintablesController, imprintable_spec: true do
       end
     end
   end
+
+
 end

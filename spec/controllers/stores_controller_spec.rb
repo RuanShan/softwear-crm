@@ -1,12 +1,11 @@
 require 'spec_helper'
 
-describe StoresController do
+describe StoresController, store_spec: true do
   let(:store) { create(:valid_store) }
   let!(:valid_user) { create :alternate_user }
   before(:each) { sign_in valid_user }
 
   describe 'GET index' do
-
     it 'assigns Stores' do
       get :index
       expect(assigns(:stores)).to eq(Store.all)
@@ -26,5 +25,4 @@ describe StoresController do
       expect(response).to redirect_to(stores_path)
     end
   end
-
 end

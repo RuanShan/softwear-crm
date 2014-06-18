@@ -21,6 +21,8 @@ CrmSoftwearcrmCom::Application.routes.draw do
     end
   end
 
+  get 'tags/:tag', to: 'imprintables#index', as: :tag
+
   resources :styles, :brands, :colors, :users
 
   get '/logout' => 'users#logout'

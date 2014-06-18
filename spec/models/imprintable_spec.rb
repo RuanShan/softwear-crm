@@ -7,6 +7,9 @@ describe Imprintable, imprintable_spec: true do
     it { should have_many(:imprintable_variants) }
     it { should have_many(:colors).through(:imprintable_variants) }
     it { should have_many(:sizes).through(:imprintable_variants) }
+    it { should have_and_belong_to_many(:coordinates) }
+    it { should have_and_belong_to_many(:sample_locations) }
+    it { should have_and_belong_to_many(:compatible_imprint_methods) }
   end
 
   describe 'Validations' do
@@ -18,6 +21,13 @@ describe Imprintable, imprintable_spec: true do
     let!(:imprintable) { create(:valid_imprintable) }
     it 'returns a string of the style.catalog_no and style.name' do
       expect(imprintable.name).to eq("#{ imprintable.style.catalog_no } #{ imprintable.style.name }")
+    end
+  end
+
+  describe '#description' do
+    let!(:imprintable) { create(:valid_imprintable) }
+    it 'returns the description for the associated style' do
+      expect(imprintable.description).to eq("#{imprintable.style.description}")
     end
   end
 

@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140613184117) do
+ActiveRecord::Schema.define(version: 20140617173446) do
 
   create_table "brands", force: true do |t|
     t.string   "name"
@@ -35,6 +35,13 @@ ActiveRecord::Schema.define(version: 20140613184117) do
   add_index "colors", ["deleted_at"], name: "index_colors_on_deleted_at", using: :btree
   add_index "colors", ["imprintable_variant_id"], name: "color_imprintable_variant_id_ix", using: :btree
 
+  create_table "coordinates_imprintables", id: false, force: true do |t|
+    t.integer "coordinate_id"
+    t.integer "imprintable_id"
+  end
+
+  add_index "coordinates_imprintables", ["coordinate_id", "imprintable_id"], name: "coordinate_imprintable_index", using: :btree
+
   create_table "imprint_methods", force: true do |t|
     t.string   "name"
     t.string   "production_name"
@@ -44,6 +51,13 @@ ActiveRecord::Schema.define(version: 20140613184117) do
   end
 
   add_index "imprint_methods", ["deleted_at"], name: "index_imprint_methods_on_deleted_at", using: :btree
+
+  create_table "imprint_methods_imprintables", id: false, force: true do |t|
+    t.integer "imprint_method_id"
+    t.integer "imprintable_id"
+  end
+
+  add_index "imprint_methods_imprintables", ["imprintable_id", "imprint_method_id"], name: "imprint_method_imprintables_index", using: :btree
 
   create_table "imprintable_linker_table", id: false, force: true do |t|
     t.integer "imprintable_id"
@@ -78,6 +92,13 @@ ActiveRecord::Schema.define(version: 20140613184117) do
 
   add_index "imprintables", ["deleted_at"], name: "index_imprintables_on_deleted_at", using: :btree
   add_index "imprintables", ["style_id"], name: "style_id_ix", using: :btree
+
+  create_table "imprintables_stores", id: false, force: true do |t|
+    t.integer "imprintable_id"
+    t.integer "store_id"
+  end
+
+  add_index "imprintables_stores", ["imprintable_id", "store_id"], name: "index_imprintables_stores_on_imprintable_id_and_store_id", using: :btree
 
   create_table "ink_colors", force: true do |t|
     t.string   "name"
@@ -203,6 +224,25 @@ ActiveRecord::Schema.define(version: 20140613184117) do
 
   add_index "styles", ["brand_id"], name: "brand_id_ix", using: :btree
   add_index "styles", ["deleted_at"], name: "index_styles_on_deleted_at", using: :btree
+
+  create_table "taggings", force: true do |t|
+    t.integer  "tag_id"
+    t.integer  "taggable_id"
+    t.string   "taggable_type"
+    t.integer  "tagger_id"
+    t.string   "tagger_type"
+    t.string   "context",       limit: 128
+    t.datetime "created_at"
+  end
+
+  add_index "taggings", ["tag_id", "taggable_id", "taggable_type", "context", "tagger_id", "tagger_type"], name: "taggings_idx", unique: true, using: :btree
+
+  create_table "tags", force: true do |t|
+    t.string  "name"
+    t.integer "taggings_count", default: 0
+  end
+
+  add_index "tags", ["name"], name: "index_tags_on_name", unique: true, using: :btree
 
   create_table "users", force: true do |t|
     t.string   "email",                  default: "", null: false

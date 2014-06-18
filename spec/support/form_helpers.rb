@@ -40,9 +40,13 @@ module FormHelpers
   RSpec::Matchers.define :have_field_for do |field_name, options={}|
     match do |page|
       doc = Nokogiri::HTML page
+
       css_attr = (@@model_form_context ?
                   "[name='#{@@model_form_context}[#{field_name}]']" :
                   "[name='#{field_name}']")
+      if (@@model_form_context && /_ids/.match(field_name))
+        css_attr = "[name='#{@@model_form_context}[#{field_name}][]']"
+      end
       inl_css_attr = ("[resource-method='#{field_name}']")
 
       css_attr += "[type='#{options[:type]}']" if options[:type]
@@ -78,10 +82,18 @@ module FormHelpers
     end
   end
 
-# private
   def css_pre
     (defined?(@@model_form_context) && @@model_form_context && @@scope_to_form ? 
       "form[class*='#{@@model_form_context}'] " :
       "")
+  end
+
+  def select_from_chosen(item_text, options)
+    field = find_field(options[:from])
+    option_value = page.evaluate_script("$(\"##{field[:id]} option:contains('#{item_text}')\").val()")
+    page.execute_script("value = ['#{option_value}']\; if ($('##{field[:id]}').val()) {$.merge(value, $('##{field[:id]}').val())}")
+    option_value = page.evaluate_script("value")
+    page.execute_script("$('##{field[:id]}').val(#{option_value})")
+    page.execute_script("$('##{field[:id]}').trigger('liszt:updated').trigger('change')")
   end
 end

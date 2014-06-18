@@ -11,6 +11,7 @@
         <th>Sizing Category</th>
         <th>Brand</th>
         <th>Style</th>
+        <th>Tags</th>
         <th>Flashable?</th>
         <th>Polyester?</th>
         <th>Special Considerations</th>
@@ -28,6 +29,7 @@
         <td><%= imprintable.sizing_category %></td>
         <td><%= imprintable.brand.name %></td>
         <td><%= imprintable.style.name %></td>
+        <td><%= raw imprintable.tag_list.map { |t| link_to t, tag_path(t) }.join(', ') %></td>
         <td><%= human_boolean(imprintable.flashable) %></td>
         <td><%= human_boolean(imprintable.polyester) %></td>
         <td><%= imprintable.special_considerations %></td>

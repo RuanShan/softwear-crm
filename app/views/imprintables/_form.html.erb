@@ -6,7 +6,7 @@
     <div id="horizontal-form" class="collapse in">
 
       <div class="form-group">
-        <%= f.label :special_considerations, class: 'col-sm-2 control-label' %>
+        <%= f.label :special_considerations, 'Special Considerations', class: 'col-sm-2 control-label' %>
         <%= f.error_for :special_considerations %>
         <div class="col-sm-10">
           <%= f.text_field :special_considerations, class: 'form-control' %>
@@ -24,7 +24,7 @@
       </div>
 
       <div class="form-group">
-        <%= f.label :proofing_template_name, class: 'col-sm-2 control-label' %>
+        <%= f.label :proofing_template_name, 'Proofing Template Name', class: 'col-sm-2 control-label' %>
         <%= f.error_for :proofing_template_name %>
         <div class="col-sm-10">
           <%= f.text_field :proofing_template_name, class: 'form-control' %>
@@ -33,7 +33,7 @@
       </div>
 
       <div class="form-group">
-        <%= f.label :standard_offering, class: 'col-sm-2 control-label' %>
+        <%= f.label :standard_offering, 'Standard Offering', class: 'col-sm-2 control-label' %>
         <%= f.error_for :standard_offering %>
         <div class="col-sm-10">
           <%= f.check_box :standard_offering, { class: 'checkbox' }, 'true', 'false' %>
@@ -60,7 +60,7 @@
       </div>
 
       <div class="form-group">
-        <%= f.label :sizing_category, class: 'col-sm-2 control-label' %>
+        <%= f.label :sizing_category, 'Sizing Category', class: 'col-sm-2 control-label' %>
         <%= f.error_for :sizing_category %>
         <div class="col-sm-10">
           <%= f.select :sizing_category,
@@ -71,6 +71,42 @@
                          id: 'imprintable_sizing_category'
                        } %>
           <p class="help-block">Select the sizing category for the imprintable</p>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <%= f.label :tag_list, 'Tag List (separated by commas)', class: 'col-sm-2 control-label' %>
+        <%= f.error_for :tag_list %>
+        <div class="col-sm-10">
+          <%= f.text_field :tag_list %>
+          <p class="help-block">Tag the imprintable</p>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <%= f.label :sample_location_ids, 'Sample Locations', class: 'col-sm-2 control-label' %>
+        <%= f.error_for :sample_location_ids %>
+        <div class="col-sm-10">
+          <%= f.collection_select :sample_location_ids, Store.order(:name), :id, :name, {}, { multiple: true, data: { placeholder: 'Select sample locations' } } %>
+          <p class="help-block">Sample locations available for the imprintable </p>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <%= f.label :coordinate_ids, 'Coordinates', class: 'col-sm-2 control-label' %>
+        <%= f.error_for :coordinate_ids %>
+        <div class="col-sm-10">
+          <%= f.collection_select :coordinate_ids, Imprintable.all, :id, :name, {}, { multiple: true, data: { placeholder: 'Select coordiantes' } } %>
+          <p class="help-block">Coordinates available for the imprintable </p>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <%= f.label :compatible_imprint_method_ids, 'Compatible Imprint Methods', class: 'col-sm-2 control-label' %>
+        <%= f.error_for :compatible_imprint_method_ids %>
+        <div class="col-sm-10">
+          <%= f.collection_select :compatible_imprint_method_ids, ImprintMethod.all, :id, :name, {}, { multiple: true, data: { placeholder: 'Select compatible imprint methods' } } %>
+          <p class="help-block">Coordinates available for the imprintable </p>
         </div>
       </div>
 

@@ -21,4 +21,5 @@
 //= require icheck/icheck
 //= require wizard/jquery.easyWizard
 //= require jquery.maskedinput.min.js
+//= require chosen-jquery
 //= require_tree .

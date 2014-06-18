@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe 'stores/edit.html.erb' do
+describe 'stores/edit.html.erb', store_spec: true do
   let(:store){ create(:valid_store) }
 
   it 'has a form to create a new mockup group' do

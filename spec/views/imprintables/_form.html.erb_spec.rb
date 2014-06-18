@@ -16,6 +16,10 @@ describe 'imprintables/_form.html.erb', imprintable_spec: true do
       expect(rendered).to have_field_for :polyester
       expect(rendered).to have_field_for :sizing_category
       expect(rendered).to have_field_for :style_id
+      expect(rendered).to have_field_for :tag_list
+      expect(rendered).to have_field_for :sample_location_ids
+      expect(rendered).to have_field_for :coordinate_ids
+      expect(rendered).to have_field_for :compatible_imprint_method_ids
       expect(rendered).to have_selector('button')
     end
   end

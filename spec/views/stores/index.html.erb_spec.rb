@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe 'stores/index.html.erb' do
+describe 'stores/index.html.erb', store_spec: true do
 
   it 'has a table of stores' do
     assign(:stores, Store.all)
