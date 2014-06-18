@@ -55,6 +55,10 @@ RSpec.configure do |config|
 
   config.order = "random"
 
+  config.before do
+    Sunspot.session = SunspotMatchers::SunspotSessionSpy.new(Sunspot.session)
+  end
+
   config.before(:suite) do
     DatabaseCleaner.strategy = :truncation
   end
