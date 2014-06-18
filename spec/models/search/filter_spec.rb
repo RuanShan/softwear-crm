@@ -2,7 +2,7 @@ require 'spec_helper'
 
 describe Search::Filter, search_spec: true do
   it { should belong_to :model }
-  it { should have_db_column :field_name } # String column
+  it { should belong_to :field }
 
   context 'descendant classes' do
     # SET SUBJECT TO DUMMY DESCENDANT

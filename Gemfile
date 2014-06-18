@@ -59,6 +59,7 @@ group :test do
   gem 'selenium-webdriver'
   gem 'capybara-webkit'
   gem 'sunspot_solr'
+  gem 'sunspot_matchers'
 end
 
 gem 'inherited_resources'
