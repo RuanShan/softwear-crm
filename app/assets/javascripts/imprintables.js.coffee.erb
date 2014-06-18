@@ -245,6 +245,8 @@ jQuery ->
 
   $('#imprintable_compatible_imprint_method_ids').chosen()
 
+  $('.table.table-hover').fixedHeader()
+
   get_id = ->
     url_array = document.URL.split('/')
     id = url_array[url_array.length-2]

@@ -35,4 +35,13 @@ describe ApplicationHelper, application_helper_spec: true do
       expect(human_boolean(false)).to eq('No')
     end
   end
+
+  describe 'imprintable_modal', new: true do
+    let(:helpers) { ApplicationController.helpers }
+    it 'renders the imprintable_modal partial' do
+      imprintable = mock_model(Imprintable, :id => 1)
+      expect(helpers).to receive(:render).with(partial: 'imprintable_modal', locals: { modal: true, id: imprintable.id } )
+      helpers.imprintable_modal(imprintable)
+    end
+  end
 end

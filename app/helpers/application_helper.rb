@@ -75,12 +75,12 @@ module ApplicationHelper
       result
     end
   end
-end
 
-def human_boolean(bool)
-  bool ? 'Yes' : 'No'
-end
+  def human_boolean(bool)
+    bool ? 'Yes' : 'No'
+  end
 
-def imprintable_modal(imprintable)
-  # create modal link that displays the imprintable/show
+  def imprintable_modal(imprintable)
+    render partial: 'imprintable_modal', locals: { modal: true, id: imprintable.id }
+  end
 end
