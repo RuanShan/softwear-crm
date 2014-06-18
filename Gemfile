@@ -46,6 +46,9 @@ group :development do
   gem 'capistrano-rails'
   gem 'capistrano-bundler'
   gem 'better_errors', '>= 0.3.2'
+end
+
+group :development, :test do
   gem 'sunspot_solr'
 end
 
@@ -58,7 +61,6 @@ group :test do
   gem 'database_cleaner'
   gem 'selenium-webdriver'
   gem 'capybara-webkit'
-  gem 'sunspot_solr'
   gem 'sunspot_matchers'
 end
 
