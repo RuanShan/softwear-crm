@@ -68,7 +68,7 @@ class Order < ActiveRecord::Base
     double :total
     double :commission_amount
 
-    reference(:salesperson)
+    reference :salesperson
   end
 
 private

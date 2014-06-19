@@ -26,7 +26,7 @@ Sunspot::DSL::Fields.class_eval do
     register_fields name, args
   end
 
-private
+  private
   def register_fields(search_type, fields)
     fields.each do |field|
       current_model.searchable_fields << Search::Field.new(
