@@ -38,25 +38,8 @@ private
   end
 end
 
-module Sunspot
-  module Type
-    class ReferenceType < AbstractType
-      def cast(string)
-        data = string.split '_'
-        Kernel.const_get(data[0]).find(data[1])
-      end
-      def to_indexed(value)
-        "#{value.class.name}_#{value.id}_ref"
-      end
-      def indexed_name(name)
-        "#{name}_ref"
-      end
-    end
-  end
-end
+require_relative 'sunspot_custom_types'
 
 Dir[Rails.root + 'app/models/**/*.rb'].each do |file|
   require file
 end
-
-Sunspot::Type.register(Sunspot::Type::ReferenceType, ActiveRecord::Base)
