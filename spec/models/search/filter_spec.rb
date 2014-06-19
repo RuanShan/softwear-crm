@@ -1,8 +1,20 @@
 require 'spec_helper'
 
 describe Search::Filter, search_spec: true do
-  it { should belong_to :model }
-  it { should belong_to :field }
+  it { should belong_to :query }
+  it { should have_db_column :model }
+  it { should have_db_column :field }
+  
+  # Might not need this; might be able to define a filter table registry from the descendant stuff
+  # and if models are eager loaded, that would work nicely
+  #
+  # and in case you're too tired to get it,
+  # the specific filters would have a filter_key
+  # and somewhere it would validate that 
+  # each filter only has one filter type
+  # pointing to it
+  it { should have_db_column :filter_type }
+  it { should have_db_column :filter_id }
 
   context 'descendant classes' do
     # SET SUBJECT TO DUMMY DESCENDANT
@@ -19,6 +31,4 @@ describe Search::Filter, search_spec: true do
     it 'should be destroyed when the underlying Filter is destroyed'
   end
 
-  it { should have_db_column :filter_type }
-  it { should have_db_column :filter_id }
 end
