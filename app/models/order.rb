@@ -51,6 +51,10 @@ class Order < ActiveRecord::Base
 
   def total; subtotal + subtotal * tax; end
 
+  def salesperson
+    User.find(self.salesperson_id)
+  end
+
   def salesperson_name
     User.find(self.salesperson_id).full_name
   end
@@ -63,6 +67,8 @@ class Order < ActiveRecord::Base
 
     double :total
     double :commission_amount
+
+    reference(:salesperson)
   end
 
 private

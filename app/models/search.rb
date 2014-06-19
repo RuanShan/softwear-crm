@@ -11,7 +11,7 @@ module Search
 
       def register(searchable_model)
         @all_models ||= {}
-        raise "Model #{searchable_model.name} is not searchable!" unless searchable_model.searchable?
+        # raise "Model #{searchable_model.name} is not searchable!" unless searchable_model.searchable?
         @all_models[searchable_model.name] = searchable_model
       end
 

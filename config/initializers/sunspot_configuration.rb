@@ -9,7 +9,6 @@ ActiveRecord::Base.class_eval do
 
     def searchable_fields
       @searchable_fields ||= []
-      @searchable_fields
     end
   end
 end
@@ -38,3 +37,26 @@ private
     Sunspot::DSL::Fields.instance_variable_get '@current_model'
   end
 end
+
+module Sunspot
+  module Type
+    class ReferenceType < AbstractType
+      def cast(string)
+        data = string.split '_'
+        Kernel.const_get(data[0]).find(data[1])
+      end
+      def to_indexed(value)
+        "#{value.class.name}_#{value.id}_ref"
+      end
+      def indexed_name(name)
+        "#{name}_ref"
+      end
+    end
+  end
+end
+
+Dir[Rails.root + 'app/models/**/*.rb'].each do |file|
+  require file
+end
+
+Sunspot::Type.register(Sunspot::Type::ReferenceType, ActiveRecord::Base)
