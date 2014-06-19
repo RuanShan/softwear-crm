@@ -58,9 +58,9 @@ feature 'Imprintables management', imprintable_spec: true do
   end
 
 
-  describe 'There is a store available', js: true, pending: true do
+  describe 'There is a store available', js: true do
     let!(:store) { create(:valid_store) }
-    scenario 'A user can utilize sample location token input field' do
+    scenario 'A user can utilize sample location token input field', pending: 'Unsure how to test select fields that use chosen' do
       visit imprintables_path
       find("tr#imprintable_#{imprintable.id} a[data-action='edit']").click
       select_from_chosen(store.name, from: 'imprintable_sample_location_ids')
@@ -74,7 +74,7 @@ feature 'Imprintables management', imprintable_spec: true do
 
   describe 'There is another imprintable' do
     let!(:coordinate) { create(:valid_imprintable) }
-    scenario 'A user can utilize coordinate token input field', pending: true do
+    scenario 'A user can utilize coordinate token input field', pending: 'Unsure how to test select fields that use chosen' do
       visit imprintables_path
       find("tr#imprintable_#{imprintable.id} a[data-action='edit']").click
       select_from_chosen(coordinate.name, from: 'imprintable_coordinate_ids')
@@ -87,7 +87,7 @@ feature 'Imprintables management', imprintable_spec: true do
 
   describe 'There is an imprint method' do
     let!(:imprint_method) { create(:valid_imprint_method) }
-    scenario 'A user can utilize compatible imprint methods token input field', pending: true do
+    scenario 'A user can utilize compatible imprint methods token input field', pending: 'Unsure how to test select fields that use chosen' do
       visit imprintables_path
       find("tr#imprintable_#{imprintable.id} a[data-action='edit']").click
       fill_in 'Compatible Imprint Method IDs', with: imprint_method.name
