@@ -1,11 +1,13 @@
 class AddLinkerTables < ActiveRecord::Migration
   def change
-    create_table :coordinates_imprintables, id: false do |t|
+    create_table :coordinate_imprintables do |t|
       t.integer :coordinate_id
       t.integer :imprintable_id
+      t.datetime :deleted_at
+      t.timestamps
     end
 
-    add_index :coordinates_imprintables, [:coordinate_id, :imprintable_id], :name => 'coordinate_imprintable_index'
+    add_index :coordinate_imprintables, [:coordinate_id, :imprintable_id], :name => 'coordinate_imprintable_index'
 
     create_table :imprintables_stores, id: false do |t|
       t.belongs_to :imprintable

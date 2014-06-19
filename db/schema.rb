@@ -35,12 +35,15 @@ ActiveRecord::Schema.define(version: 20140617173446) do
   add_index "colors", ["deleted_at"], name: "index_colors_on_deleted_at", using: :btree
   add_index "colors", ["imprintable_variant_id"], name: "color_imprintable_variant_id_ix", using: :btree
 
-  create_table "coordinates_imprintables", id: false, force: true do |t|
-    t.integer "coordinate_id"
-    t.integer "imprintable_id"
+  create_table "coordinate_imprintables", force: true do |t|
+    t.integer  "coordinate_id"
+    t.integer  "imprintable_id"
+    t.datetime "deleted_at"
+    t.datetime "created_at"
+    t.datetime "updated_at"
   end
 
-  add_index "coordinates_imprintables", ["coordinate_id", "imprintable_id"], name: "coordinate_imprintable_index", using: :btree
+  add_index "coordinate_imprintables", ["coordinate_id", "imprintable_id"], name: "coordinate_imprintable_index", using: :btree
 
   create_table "imprint_methods", force: true do |t|
     t.string   "name"
@@ -58,12 +61,6 @@ ActiveRecord::Schema.define(version: 20140617173446) do
   end
 
   add_index "imprint_methods_imprintables", ["imprintable_id", "imprint_method_id"], name: "imprint_method_imprintables_index", using: :btree
-
-  create_table "imprintable_linker_table", id: false, force: true do |t|
-    t.integer "imprintable_id"
-    t.integer "coordinate_id"
-    t.integer "store_id"
-  end
 
   create_table "imprintable_variants", force: true do |t|
     t.integer  "imprintable_id"

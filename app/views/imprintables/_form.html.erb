@@ -96,7 +96,7 @@
         <%= f.label :coordinate_ids, 'Coordinates', class: 'col-sm-2 control-label' %>
         <%= f.error_for :coordinate_ids %>
         <div class="col-sm-10">
-          <%= f.collection_select :coordinate_ids, Imprintable.all, :id, :name, {}, { multiple: true, data: { placeholder: 'Select coordiantes' } } %>
+          <%= f.collection_select :coordinate_ids, Imprintable.all, :id, :name, {}, { multiple: true, data: { placeholder: 'Select coordinates' } } %>
           <p class="help-block">Coordinates available for the imprintable </p>
         </div>
       </div>
