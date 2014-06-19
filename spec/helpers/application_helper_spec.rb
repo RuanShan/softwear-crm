@@ -36,7 +36,7 @@ describe ApplicationHelper, application_helper_spec: true do
     end
   end
 
-  describe 'imprintable_modal', new: true do
+  describe 'imprintable_modal' do
     let(:helpers) { ApplicationController.helpers }
     it 'renders the imprintable_modal partial' do
       imprintable = mock_model(Imprintable, :id => 1)

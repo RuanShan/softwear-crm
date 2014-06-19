@@ -60,11 +60,10 @@ feature 'Imprintables management', imprintable_spec: true do
 
   describe 'There is a store available', js: true do
     let!(:store) { create(:valid_store) }
-    scenario 'A user can utilize sample location token input field', pending: 'Unsure how to test select fields that use chosen' do
+    scenario 'A user can utilize sample location token input field', js: true do
       visit imprintables_path
       find("tr#imprintable_#{imprintable.id} a[data-action='edit']").click
-      select_from_chosen(store.name, from: 'imprintable_sample_location_ids')
-      find('#imprintable_sample_location_ids').native.send_keys(:return)
+      select_from_chosen(store.name, from: 'Sample Locations')
       find_button('Update Imprintable').click
       expect(page).to have_selector '.modal-content-success', text: 'Imprintable was successfully updated.'
       expect(current_path).to eq(edit_imprintable_path imprintable.id)
@@ -74,27 +73,34 @@ feature 'Imprintables management', imprintable_spec: true do
 
   describe 'There is another imprintable' do
     let!(:coordinate) { create(:valid_imprintable) }
-    scenario 'A user can utilize coordinate token input field', pending: 'Unsure how to test select fields that use chosen' do
+    scenario 'A user can utilize coordinate token input field', js: true do
       visit imprintables_path
       find("tr#imprintable_#{imprintable.id} a[data-action='edit']").click
-      select_from_chosen(coordinate.name, from: 'imprintable_coordinate_ids')
-      find(:css, '#imprintable_coordinate_ids').native.send_keys(:return)
+      select_from_chosen(coordinate.name, from: 'Coordinates')
       find_button('Update Imprintable').click
       expect(page).to have_selector '.modal-content-success', text: 'Imprintable was successfully updated.'
       expect(imprintable.reload.coordinate_ids.include? coordinate.id).to be_truthy
+    end
+
+    scenario 'Coordinates are reflected symmetrically', js: true do
+      visit imprintables_path
+      find("tr#imprintable_#{imprintable.id} a[data-action='edit']").click
+      select_from_chosen(coordinate.name, from: 'Coordinates')
+      find_button('Update Imprintable').click
+      expect(page).to have_selector '.modal-content-success', text: 'Imprintable was successfully updated.'
+      expect(coordinate.reload.coordinate_ids.include? imprintable.id).to be_truthy
     end
   end
 
   describe 'There is an imprint method' do
     let!(:imprint_method) { create(:valid_imprint_method) }
-    scenario 'A user can utilize compatible imprint methods token input field', pending: 'Unsure how to test select fields that use chosen' do
+    scenario 'A user can utilize compatible imprint methods token input field', js: true do
       visit imprintables_path
       find("tr#imprintable_#{imprintable.id} a[data-action='edit']").click
-      fill_in 'Compatible Imprint Method IDs', with: imprint_method.name
-      find('#imprintable_compatible_imprint_method_ids').native.send_keys(:return)
+      select_from_chosen(imprint_method.name, from: 'Compatible Imprint Methods')
       find_button('Update Imprintable').click
       expect(page).to have_selector '.modal-content-success', text: 'Imprintable was successfully updated.'
-      expect(imprintable.reload.compatible_imprint_method_ids.include? coordinate.id).to be_truthy
+      expect(imprintable.reload.compatible_imprint_method_ids.include? imprint_method.id).to be_truthy
     end
   end
 
