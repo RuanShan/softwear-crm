@@ -1,5 +1,5 @@
 module Search
-  class DateFilter < Filter
+  class DateFilter < ActiveRecord::Base
 
   end
 end

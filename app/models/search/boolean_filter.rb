@@ -1,5 +1,5 @@
 module Search
-  class BooleanFilter < Filter
+  class BooleanFilter < ActiveRecord::Base
 
   end
 end

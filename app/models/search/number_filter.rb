@@ -1,5 +1,5 @@
 module Search
-  class NumberFilter < Filter
+  class NumberFilter < ActiveRecord::Base
     
   end
 end

@@ -8,7 +8,7 @@ ActiveRecord::Base.class_eval do
     end
 
     def searchable_fields
-      @searchable_fields ||= []
+      @searchable_fields ||= {}
     end
   end
 end
@@ -29,7 +29,7 @@ Sunspot::DSL::Fields.class_eval do
   private
   def register_fields(search_type, fields)
     fields.each do |field|
-      current_model.searchable_fields << Search::Field.new(
+      current_model.searchable_fields[field] = Search::Field.new(
         current_model, field, search_type)
     end
   end
@@ -39,7 +39,9 @@ Sunspot::DSL::Fields.class_eval do
 end
 
 require_relative 'sunspot_custom_types'
-
-Dir[Rails.root + 'app/models/**/*.rb'].each do |file|
-  require file
+# Eager load all the models so that the search data is readily available
+unless Rails.env.production?
+  Dir[Rails.root + 'app/models/**/*.rb'].each do |file|
+    require file
+  end
 end

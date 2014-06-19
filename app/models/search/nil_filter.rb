@@ -1,5 +1,5 @@
 module Search
-  class NilFilter < Filter
+  class NilFilter < ActiveRecord::Base
 
   end
 end

@@ -1,5 +1,5 @@
 module Search
-  class TextFilter < Filter
+  class TextFilter < ActiveRecord::Base
     
   end
 end

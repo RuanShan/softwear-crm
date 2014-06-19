@@ -34,6 +34,9 @@ module Search
       Models[name]
     end
   end
+  def Field(model_name, field_name)
+    Kernel.const_get(model_name).searchable_fields[field_name]
+  end
   class Field
     attr_reader :name
     attr_reader :type_name
@@ -44,18 +47,5 @@ module Search
       @type_name = type_name
       @model_name = model_name
     end
-
-    # def ==(other)
-    #   return super(other) unless other.is_a? Field
-    #   other.name       == self.name &&
-    #   other.type_name  == self.type_name &&
-    #   other.model_name == self.model_name
-    # end
-    # def !=(other)
-    #   return super(other) unless other.is_a? Field
-    #   other.name       != self.name ||
-    #   other.type_name  != self.type_name ||
-    #   other.model_name != self.model_name
-    # end
   end
 end
