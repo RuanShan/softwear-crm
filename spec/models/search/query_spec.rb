@@ -5,7 +5,7 @@ describe Search::Query, search_spec: true do
   it { should belong_to :user }
   it { should have_db_column :name }
 
-  it { should have_many :models, class_name: 'Search::QueryModel' }
+  it { should have_many :query_models, class_name: 'Search::QueryModel' }
   # it { should have_many :fields, class_name: 'Search::QueryField', through: :models }
 
   describe '#search' do

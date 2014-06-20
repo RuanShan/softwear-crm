@@ -10,7 +10,7 @@ feature 'Searching', search_spec: true, js: true do
     let!("order_#{n+1}") { create :order_with_job }
   end
 
-  scenario 'a user can search everything' do
+  scenario 'a user can search everything'
 
   scenario 'a user can perform an advanced search'
 
