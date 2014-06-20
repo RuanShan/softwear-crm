@@ -161,6 +161,18 @@ ActiveRecord::Schema.define(version: 20140620143021) do
   add_index "print_locations", ["deleted_at"], name: "index_print_locations_on_deleted_at", using: :btree
   add_index "print_locations", ["imprint_method_id"], name: "index_print_locations_on_imprint_method_id", using: :btree
 
+  create_table "search_boolean_filters", force: true do |t|
+    t.string  "field"
+    t.boolean "not"
+    t.boolean "value"
+  end
+
+  create_table "search_date_filters", force: true do |t|
+    t.string   "field"
+    t.boolean  "not"
+    t.datetime "value"
+  end
+
   create_table "search_filter_groups", force: true do |t|
     t.boolean "all"
   end
@@ -170,6 +182,18 @@ ActiveRecord::Schema.define(version: 20140620143021) do
     t.string  "filter_holder_type"
     t.integer "filter_type_id"
     t.string  "filter_type_type"
+  end
+
+  create_table "search_nil_filters", force: true do |t|
+    t.string  "field"
+    t.boolean "not"
+  end
+
+  create_table "search_number_filters", force: true do |t|
+    t.string  "field"
+    t.boolean "not"
+    t.decimal "value",              precision: 10, scale: 0
+    t.string  "relation", limit: 1
   end
 
   create_table "search_queries", force: true do |t|
@@ -182,11 +206,25 @@ ActiveRecord::Schema.define(version: 20140620143021) do
   create_table "search_query_fields", force: true do |t|
     t.integer "query_model_id"
     t.string  "name"
+    t.decimal "boost",          precision: 10, scale: 0
+    t.integer "phrase"
   end
 
   create_table "search_query_models", force: true do |t|
     t.integer "query_id"
     t.string  "name"
+  end
+
+  create_table "search_reference_filters", force: true do |t|
+    t.string  "field"
+    t.boolean "not"
+    t.integer "value"
+  end
+
+  create_table "search_string_filters", force: true do |t|
+    t.string  "field"
+    t.boolean "not"
+    t.string  "value"
   end
 
   create_table "shipping_methods", force: true do |t|

@@ -7,6 +7,8 @@ describe Search::NumberFilter, search_spec: true do
   it { should have_db_column :relation }
   it { should ensure_inclusion_of(:relation).in_array ['>', '<', '='] }
 
+  it { should have_db_column :not }
+
   it { should have_db_column :value }
 
   let(:query) { create :query }

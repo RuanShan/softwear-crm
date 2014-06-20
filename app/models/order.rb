@@ -60,10 +60,10 @@ class Order < ActiveRecord::Base
   end
 
   searchable do
-    text :name, :company, :twitter, :terms, :delivery_method, :sales_status
-    text :jobs do
-      jobs.map { |j| "#{j.name} #{j.description}" }
-    end
+    text :name, :email, :firstname, :company, :twitter, :terms, :delivery_method, :sales_status
+    # text :jobs do
+    #   jobs.map { |j| "#{j.name} #{j.description}" }
+    # end
 
     string :firstname, :lastname
 

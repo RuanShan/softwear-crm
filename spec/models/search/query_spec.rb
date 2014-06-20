@@ -5,10 +5,27 @@ describe Search::Query, search_spec: true do
   it { should belong_to :user }
   it { should have_db_column :name }
 
-  it { should have_many :query_models, class_name: 'Search::QueryModel' }
+  it { should have_many :query_models }
   # it { should have_many :fields, class_name: 'Search::QueryField', through: :models }
 
-  describe '#search' do
+  describe '#models' do
+    context 'when the query has no models' do
+      it 'returns all searchable models' do
+        expect(subject.models).to eq Search::Models.all
+      end
+    end
+
+    context 'with models' do
+      let!(:order_model) { create :query_order_model, query: subject }
+      let!(:job_model) { create :query_job_model, query: subject }
+
+      it 'only returns its models' do
+        expect(subject.models).to eq [Order, Job]
+      end
+    end
+  end
+
+  describe '#search', wip: true do
     context 'when the query has no models' do
       it 'searches all models and fields' do
         subject.search 'test'
@@ -17,11 +34,21 @@ describe Search::Query, search_spec: true do
     end
 
     context 'with models' do
-      let!(:order_model) { create :search_order_model, query_id: subject.id }
-      let(:job_model) { create :search_job_model, query_id: subject.id }
+      let!(:order1) { create :order_with_job, 
+        name: 'keywordone keywordtwo', 
+        firstname: 'keywordtwo' }
+      let!(:order2) { create :order_with_job, 
+        name: 'keywordtwo keywordthree', 
+        firstname: 'keywordone' }
+      let!(:order3) { create :order_with_job, 
+        name: 'keywordfour', 
+        firstname: 'keywordfour' }
+      let!(:order_model) { create :query_order_model, query: subject }
+      let(:job_model) { create :query_job_model, query: subject }
 
       it 'searches the models' do
         job_model; subject.search 'test'
+        expect(Sunspot.session.searches.count).to eq 2
         expect(Sunspot.session.searches.first).to be_a_search_for Order
         expect(Sunspot.session.searches.last).to be_a_search_for Job
       end
@@ -31,12 +58,11 @@ describe Search::Query, search_spec: true do
           order_model.add_field 'name'
         end
 
-        it 'just searches that field' do
-          subject.search 'test'
-          with(Sunspot.session.searches.first) do |it|
-            expect(it).to have_search_params(:fulltext, 'test') {
-              expect(it).to have_search_params :fields, :name}
-          end
+        it 'just searches that field', wtf: true do
+          search = subject.search 'keywordone'
+          expect(search.first.results.count).to eq 1
+          expect(search.first.results).to include order1
+          expect(search.first.results).to_not include order2
         end
       end
 
