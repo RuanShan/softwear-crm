@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140617173446) do
+ActiveRecord::Schema.define(version: 20140620182803) do
 
   create_table "brands", force: true do |t|
     t.string   "name"
@@ -156,8 +156,6 @@ ActiveRecord::Schema.define(version: 20140617173446) do
     t.string   "terms"
     t.boolean  "tax_exempt"
     t.string   "tax_id_number"
-    t.boolean  "is_redo"
-    t.text     "redo_reason"
     t.string   "sales_status"
     t.string   "delivery_method"
     t.decimal  "total",             precision: 10, scale: 2

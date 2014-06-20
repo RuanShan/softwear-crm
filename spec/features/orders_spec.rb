@@ -18,7 +18,7 @@ feature 'Order management', order_spec: true,  js: true do
     expect(page).to have_css("tr#order_#{order.id}")
   end
 
-  scenario 'user creates a new order' do
+  scenario 'user creates a new order', new: true do
     visit root_path
     unhide_dashboard
     click_link 'Orders'
@@ -36,7 +36,8 @@ feature 'Order management', order_spec: true,  js: true do
     wait_for_ajax
 
     fill_in 'Name', with: 'Whatever this should be'
-    fill_in 'In Hand By Date', with: (Time.now + 1.month).to_s
+    dateArray = DateTime.current.to_s.split(/\W|T/)
+    fill_in 'In Hand By Date', with: "#{(dateArray[1].to_i + 1).to_s }/#{ dateArray[2] }/#{ dateArray[0] } 4:00 PM"
     select User.find(order.salesperson_id).full_name, from: 'Salesperson'
     select order.store.name, from: 'Store'
     select 'Half down on purchase', from: 'Payment terms'

@@ -12,8 +12,20 @@ class OrdersController < InheritedResources::Base
   end
 
   def new
+    super do
+      @current_user = current_user
+      stores = Store.all
+      if stores.empty?
+        @empty = true
+      else
+        @empty = false
+      end
+    end
+  end
+
+  def create
+    params[:order][:in_hand_by] = Date.strptime(params[:order][:in_hand_by], '%m/%d/%Y %H:%M %p')
     super
-    @current_user = current_user
   end
 
   private

@@ -80,7 +80,12 @@ module ApplicationHelper
     bool ? 'Yes' : 'No'
   end
 
-  def imprintable_modal(imprintable)
-    render partial: 'imprintable_modal', locals: { modal: true, id: imprintable.id }
+  def imprintable_modal_link(imprintable, text = nil)
+    @imprintable = Imprintable.find(imprintable.id)
+    variants_hash = @imprintable.create_variants_hash
+    @size_variants = variants_hash[:size_variants]
+    @color_variants = variants_hash[:color_variants]
+    @variants_array = variants_hash[:variants_array]
+    render partial: 'imprintable_modal', locals: { modal: true, imprintable: imprintable, text: text }
   end
 end

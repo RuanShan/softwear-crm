@@ -25,7 +25,6 @@ class Order < ActiveRecord::Base
       message: 'Invalid delivery method')
 
   validates_presence_of :tax_id_number, if: :tax_exempt?
-  validates_presence_of :redo_reason, if: :is_redo?
   validates :store, presence: true
   validates :salesperson_id, presence: true
 

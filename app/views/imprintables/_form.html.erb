@@ -6,29 +6,25 @@
     <div id="horizontal-form" class="collapse in">
 
       <div class="form-group">
-        <%= f.label :special_considerations, 'Special Considerations', class: 'col-sm-2 control-label' %>
-        <%= f.error_for :special_considerations %>
+        <%= f.label :brand, class: 'col-sm-2 control-label' %>
+        <%= f.error_for :brand %>
         <div class="col-sm-10">
-          <%= f.text_field :special_considerations, class: 'form-control' %>
-          <p class="help-block">Special considerations for the imprintable</p>
+          <%= select_tag :brand,
+                         options_for_select(['Select a Brand'] + Brand.order(:name).collect{ |b| [b.name, b.id] }, find_brand(imprintable)),
+                         {
+                             class: 'form-control',
+                             id: 'imprintable_brand_id'
+                         } %>
+          <p class="help-block">The brand of the imprintable</p>
         </div>
       </div>
 
       <div class="form-group">
-        <%= f.label :material, class: 'col-sm-2 control-label' %>
-        <%= f.error_for :material %>
+        <%= f.label :style, class: 'col-sm-2 control-label' %>
+        <%= f.error_for :style %>
         <div class="col-sm-10">
-          <%= f.text_field :material, class: 'form-control' %>
-          <p class="help-block">The material of the imprintable</p>
-        </div>
-      </div>
-
-      <div class="form-group">
-        <%= f.label :proofing_template_name, 'Proofing Template Name', class: 'col-sm-2 control-label' %>
-        <%= f.error_for :proofing_template_name %>
-        <div class="col-sm-10">
-          <%= f.text_field :proofing_template_name, class: 'form-control' %>
-          <p class="help-block">The proofing template name of the imprintable</p>
+          <%= f.grouped_collection_select(:style_id, Brand.order(:name), :styles, :name, :id, :name, {}, { :class => 'form-control', :id => 'imprintable_style_id' }) %>
+          <p class="help-block">The catalog number of the imprintable</p>
         </div>
       </div>
 
@@ -42,11 +38,26 @@
       </div>
 
       <div class="form-group">
-        <%= f.label :flashable, class: 'col-sm-2 control-label' %>
-        <%= f.error_for :flashable %>
+        <%= f.label :sizing_category, 'Sizing Category', class: 'col-sm-2 control-label' %>
+        <%= f.error_for :sizing_category %>
         <div class="col-sm-10">
-          <%=  f.check_box :flashable, { class: 'checkbox' }, 'true', 'false' %>
-          <p class="help-block">Check if the imprintable is flashable</p>
+          <%= f.select :sizing_category,
+                       Imprintable::SIZING_CATEGORIES,
+                       { :prompt => 'Please select a sizing category' },
+                       {
+                           class: 'form-control',
+                           id: 'imprintable_sizing_category'
+                       } %>
+          <p class="help-block">Select the sizing category for the imprintable</p>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <%= f.label :material, class: 'col-sm-2 control-label' %>
+        <%= f.error_for :material %>
+        <div class="col-sm-10">
+          <%= f.text_field :material, class: 'form-control' %>
+          <p class="help-block">The material of the imprintable</p>
         </div>
       </div>
 
@@ -60,17 +71,29 @@
       </div>
 
       <div class="form-group">
-        <%= f.label :sizing_category, 'Sizing Category', class: 'col-sm-2 control-label' %>
-        <%= f.error_for :sizing_category %>
+        <%= f.label :flashable, class: 'col-sm-2 control-label' %>
+        <%= f.error_for :flashable %>
         <div class="col-sm-10">
-          <%= f.select :sizing_category,
-                       Imprintable::SIZING_CATEGORIES,
-                       { :prompt => 'Please select a sizing category' },
-                       {
-                         class: 'form-control',
-                         id: 'imprintable_sizing_category'
-                       } %>
-          <p class="help-block">Select the sizing category for the imprintable</p>
+          <%=  f.check_box :flashable, { class: 'checkbox' }, 'true', 'false' %>
+          <p class="help-block">Check if the imprintable is flashable</p>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <%= f.label :proofing_template_name, 'Proofing Template Name', class: 'col-sm-2 control-label' %>
+        <%= f.error_for :proofing_template_name %>
+        <div class="col-sm-10">
+          <%= f.text_field :proofing_template_name, class: 'form-control' %>
+          <p class="help-block">The proofing template name of the imprintable</p>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <%= f.label :special_considerations, 'Special Considerations', class: 'col-sm-2 control-label' %>
+        <%= f.error_for :special_considerations %>
+        <div class="col-sm-10">
+          <%= f.text_field :special_considerations, class: 'form-control' %>
+          <p class="help-block">Special considerations for the imprintable</p>
         </div>
       </div>
 
@@ -110,28 +133,7 @@
         </div>
       </div>
 
-      <div class="form-group">
-        <%= f.label :brand, class: 'col-sm-2 control-label' %>
-        <%= f.error_for :brand %>
-        <div class="col-sm-10">
-          <%= select_tag :brand,
-                         options_for_select(['Select a Brand'] + Brand.order(:name).collect{ |b| [b.name, b.id] }, find_brand(imprintable)),
-                         {
-                             class: 'form-control',
-                             id: 'imprintable_brand_id'
-                         } %>
-          <p class="help-block">The brand of the imprintable</p>
-        </div>
-      </div>
 
-      <div class="form-group">
-        <%= f.label :style, class: 'col-sm-2 control-label' %>
-        <%= f.error_for :style %>
-        <div class="col-sm-10">
-          <%= f.grouped_collection_select(:style_id, Brand.order(:name), :styles, :name, :id, :name, {}, { :class => 'form-control', :id => 'imprintable_style_id' }) %>
-          <p class="help-block">The catalog number of the imprintable</p>
-        </div>
-      </div>
 
       <% text = create_or_edit_text(imprintable) %>
       <% if text == 'Update' %>

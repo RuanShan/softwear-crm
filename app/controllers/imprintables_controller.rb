@@ -27,12 +27,16 @@ class ImprintablesController < InheritedResources::Base
   end
 
   def show
-    super do
+    super do |format|
       @imprintable = Imprintable.find(params[:id])
       variants_hash = @imprintable.create_variants_hash
       @size_variants = variants_hash[:size_variants]
       @color_variants = variants_hash[:color_variants]
       @variants_array = variants_hash[:variants_array]
+
+      format.html
+      format.js
+      format.json { render json: @imprintable }
     end
   end
 

@@ -30,6 +30,10 @@ gem 'launchy', '~> 2.4.2'
 # For token inputs
 gem 'chosen-rails'
 
+# For the datetimepicker
+gem 'momentjs-rails', '~> 2.5.0'
+gem 'bootstrap3-datetimepicker-rails', '~> 3.0.0'
+
 # For tagging
 gem 'acts-as-taggable-on'
 

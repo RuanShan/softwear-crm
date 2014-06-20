@@ -27,7 +27,7 @@ describe ApplicationHelper, application_helper_spec: true do
     end
   end
 
-  describe 'human boolean' do
+  describe '#human_boolean' do
     it 'returns Yes when given a true value' do
       expect(human_boolean(true)).to eq('Yes')
     end
@@ -36,12 +36,26 @@ describe ApplicationHelper, application_helper_spec: true do
     end
   end
 
-  describe 'imprintable_modal' do
+  describe '#imprintable_modal_link' do
     let(:helpers) { ApplicationController.helpers }
-    it 'renders the imprintable_modal partial' do
-      imprintable = mock_model(Imprintable, :id => 1)
-      expect(helpers).to receive(:render).with(partial: 'imprintable_modal', locals: { modal: true, id: imprintable.id } )
-      helpers.imprintable_modal(imprintable)
+    it 'renders the imprintable_modal partial with nil text, when text is not supplied' do
+      imprintable = mock_model(Imprintable, id: 1)
+      expect(Imprintable).to receive(:find).and_return imprintable
+      expect(imprintable).to receive(:create_variants_hash).and_return( { size_variants: [], color_variants: [], variants_array: [] } )
+      expect(helpers).to receive(:render).with(partial: 'imprintable_modal', locals: { modal: true, imprintable: imprintable, text: nil } )
+      helpers.imprintable_modal_link(imprintable)
     end
+
+    it 'renders the imprintable_modal partial with text when text is supplied' do
+      imprintable = mock_model(Imprintable, id: 2)
+      expect(Imprintable).to receive(:find).and_return imprintable
+      expect(imprintable).to receive(:create_variants_hash).and_return( { size_variants: [], color_variants: [], variants_array: [] } )
+      expect(helpers).to receive(:render).with(partial: 'imprintable_modal', locals: { modal: true, imprintable: imprintable, text: 'American Apparel 2001' } )
+      helpers.imprintable_modal_link(imprintable, 'American Apparel 2001')
+    end
+  end
+
+  describe '#nav_helper' do
+
   end
 end

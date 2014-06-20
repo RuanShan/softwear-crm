@@ -1,12 +1,10 @@
-<div class="col-lg-3 text-right">
-  <a href="#" class="btn btn-primary" data-toggle="modal" data-target="#basicModal">Click for Imprintable Info</a>
-</div>
+<a href="#" class="imprintable_link" data-toggle="modal" data-target="#basicModal_<%= imprintable.id %>"><%= text %></a>
 
-<div class="modal fade" id="basicModal" tabindex="-1" role="dialog" aria-labelledby="basicModal" aria-hidden="true">
+<div class="modal fade" id="basicModal_<%= imprintable.id %>" tabindex="-1" role="dialog" aria-labelledby="basicModal_<%= imprintable.id %>" aria-hidden="true">
   <div class="modal-dialog">
     <div class="modal-content">
       <div class="modal-body">
-        <%= render :template => 'imprintables/show', locals: { modal: true, id: id } %>
+        <%= render :template => 'imprintables/show', locals: { modal: true } %>
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
