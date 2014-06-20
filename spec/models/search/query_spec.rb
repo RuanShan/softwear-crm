@@ -25,7 +25,7 @@ describe Search::Query, search_spec: true do
     end
   end
 
-  describe '#search', wip: true do
+  describe '#search', wip: true, solr: true do
     context 'when the query has no models' do
       it 'searches all models and fields' do
         subject.search 'test'

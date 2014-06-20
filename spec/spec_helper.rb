@@ -2,6 +2,7 @@
 ENV["RAILS_ENV"] ||= 'test'
 require File.expand_path("../../config/environment", __FILE__)
 require 'rspec/rails'
+require 'rake'
 
 # Requires supporting ruby files with custom matchers and macros, etc, in
 # spec/support/ and its subdirectories. Files matching `spec/**/*_spec.rb` are
@@ -56,8 +57,19 @@ RSpec.configure do |config|
 
   config.order = "random"
 
-  config.before do
-    # Sunspot.session = SunspotMatchers::SunspotSessionSpy.new(Sunspot.session)
+  config.before(:each, solr: false) do
+    Sunspot.session = SunspotMatchers::SunspotSessionSpy.new(Sunspot.session)
+  end
+
+  # TODO MONDAY
+  # Doesn't build the rake tasks properly, look at the chrome thing that's hopfully already up and it should lead you to victory
+  # 
+  config.before(:each, solr: true) do
+    Rake::Task['sunspot:solr:start'].invoke
+  end
+
+  config.after(:each, solr: true) do
+    Rake::Task['sunspot:solr:stop'].invoke
   end
 
   config.before(:suite) do
