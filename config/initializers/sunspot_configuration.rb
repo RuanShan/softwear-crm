@@ -29,8 +29,8 @@ Sunspot::DSL::Fields.class_eval do
   private
   def register_fields(search_type, fields)
     fields.each do |field|
-      current_model.searchable_fields[field] = Search::Field.new(
-        current_model, field, search_type)
+      current_model.searchable_fields[field.to_sym] = Search::Field.new(
+        current_model, field.to_sym, search_type.to_sym)
     end
   end
   def current_model

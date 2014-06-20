@@ -1,4 +1,5 @@
 require 'spec_helper'
+include GeneralHelpers
 
 describe Search::Query, search_spec: true do
   it { should belong_to :user }
@@ -32,15 +33,17 @@ describe Search::Query, search_spec: true do
 
         it 'just searches that field' do
           subject.search 'test'
-          expect(Sunspot.session.searches.first).to have_search_params(:fulltext, 'test') {
-            expect(Sunspot.session.searches.first).to have_search_params :fields, :name
-          }
+          with(Sunspot.session.searches.first) do |it|
+            expect(it).to have_search_params(:fulltext, 'test') {
+              expect(it).to have_search_params :fields, :name}
+          end
         end
       end
 
       context 'with filters' do
         let!(:commission_amount_filter) {
-          create(:number_filter, value: 2.20, relation: '<')
+          create(:number_filter, value: 2.20, relation: '<',
+            field: 'commission_amount')
         }
         before(:each) do
           number_filter.filter.filter_holder = order_model

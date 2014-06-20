@@ -34,18 +34,27 @@ module Search
       Models[name]
     end
   end
-  def Field(model_name, field_name)
-    Kernel.const_get(model_name).searchable_fields[field_name]
-  end
   class Field
     attr_reader :name
     attr_reader :type_name
     attr_reader :model_name
 
+    def self.[](model, field_name)
+      if model.is_a? Class
+        model
+      else
+        Kernel.const_get(model)
+      end.searchable_fields[field_name.to_sym]
+    end
+
     def initialize(model_name, name, type_name)
-      @name = name
-      @type_name = type_name
-      @model_name = model_name
+      @name = name.to_sym
+      @type_name = type_name.to_sym
+      @model_name = if model_name.is_a?(Class)
+        model_name.name
+      else
+        model_name
+      end.to_sym
     end
   end
 end

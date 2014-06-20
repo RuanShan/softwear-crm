@@ -23,11 +23,12 @@ describe Search::QueryModel, search_spec: true do
         expect(model.fields).to eq Order.searchable_fields
       end
     end
+
     context 'when there are query fields' do
-      it 'returns the Search::Fields that the fields represent' do
+      it 'returns the Search::Fields that the query fields represent' do
         model.add_field 'name'
         model.add_field 'email'
-        expect(model.fields).to eq [Search::Field(:Order, :name), Search::Field(:Order, :email)]
+        expect(model.fields).to eq [Search::Field[:Order, :name], Search::Field[:Order, :email]]
       end
     end
   end
@@ -36,7 +37,7 @@ describe Search::QueryModel, search_spec: true do
     let!(:model) { create(:search_order_model) }
     it 'should add a field with the given name if it is fulltext searchable' do
       model.add_field 'email'
-      expect(model.fields).to eq [Search::Field(:Order, :email)]
+      expect(model.fields).to eq [Search::Field[:Order, :email]]
     end
     it 'should raise an error if the field with the given name is not text' do
       expect{model.add_field 'commission_amount'}.to raise_error
