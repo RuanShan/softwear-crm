@@ -1,11 +1,22 @@
-<%= fields_for :imprint_methods do |f| %>
-
-<div class="form-group">
-  <%= f.label :print_location %>
-  <%= f.select :print_location, PrintLocation.all.collect{|x|["#{x.name}", x.id]}, include_blank: true %>
-</div>
-<div class="form-group">
-  <%= f.label :ink_colors %>
-    <%= f.check_box InkColor.all.collect{|x|["#{x.name}", x.id]} %>
-</div>
+<%= fields_for imprint_method, {}, builder: LancengFormBuilder  do |f| %>
+    <div class="form-group">
+      <div class="row">
+        <%= f.label :print_location, class: 'col-sm-2 control-label' %>
+        <div class="col-sm-10">
+          <%= f.select :print_locations, imprint_method.print_locations.all.collect { |x| ["#{x.name}", x.id] }, include_blank: true %>
+        </div>
+      </div>
+    </div>
+    <div class="form-group">
+      <div class="row">
+        <%= f.label :ink_colors, class: 'col-sm-2 control-label' %>
+        <div class="col-sm-10">
+          <% @inkColors = imprint_method.ink_colors.all.collect { |x| ["#{x.name}", x.id] } %>
+          <% @inkColors.each do |i| %>
+              <%= f.check_box :ink_colors, { id: i.last} %>
+              <%= i.first %>
+          <% end %>
+        </div>
+      </div>
+    </div>
 <% end %>

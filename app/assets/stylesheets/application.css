@@ -17,6 +17,6 @@
  *= require icheck/skins/minimal/grey
  *= require font-awesome
  *= require summernote
- *= require bootstrap-tokenfield/bootstrap-tokenfield.css
  *= require jquery.ui.all
+ *= require chosen
  */

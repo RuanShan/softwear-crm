@@ -9,7 +9,6 @@
 //
 // Read Sprockets README (https://github.com/sstephenson/sprockets#sprockets-directives) for details
 // about supported directives.
-
 //= require jquery
 //= require jquery_ujs
 //= require slimscroll/jquery.slimscroll
@@ -21,6 +20,6 @@
 //= require icheck/icheck
 //= require wizard/jquery.easyWizard
 //= require jquery.maskedinput.min.js
+//= require chosen-jquery
 //= require_tree .
-//= require summernote.min
-//= require bootstrap-tokenfield/bootstrap-tokenfield.js
+//= require js-routes

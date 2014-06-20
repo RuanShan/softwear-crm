@@ -1,2 +1,2 @@
-$("#imprint_method_print_locations_and_ink_colors").html("<%= escape_javascript(render partial: 'orders/artwork_imprint_method_fields', imprint_methods: @imprint_methods).html_safe %>");
+$("#imprint_method_print_locations_and_ink_colors").html("<%= escape_javascript(render partial: 'orders/artwork_imprint_method_fields', locals: {imprint_method: @imprint_method}).html_safe %>");
 // Render a partial here that is your checkboxes and your dropdown

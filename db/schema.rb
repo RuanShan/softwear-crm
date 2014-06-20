@@ -11,10 +11,16 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140616145749) do
+ActiveRecord::Schema.define(version: 20140617152715) do
 
   create_table "artwork_requests", force: true do |t|
     t.text     "description"
+    t.integer  "artist_id"
+    t.integer  "imprint_method_id"
+    t.integer  "print_location_id"
+    t.integer  "salesperson_id"
+    t.datetime "deadline"
+    t.string   "artwork_status"
     t.string   "file_file_name"
     t.string   "file_content_type"
     t.integer  "file_file_size"
@@ -22,6 +28,11 @@ ActiveRecord::Schema.define(version: 20140616145749) do
     t.datetime "deleted_at"
     t.datetime "created_at"
     t.datetime "updated_at"
+  end
+
+  create_table "artwork_requests_jobs", id: false, force: true do |t|
+    t.integer "artwork_request_id"
+    t.integer "job_id"
   end
 
   create_table "assets", force: true do |t|

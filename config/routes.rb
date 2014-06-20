@@ -34,8 +34,8 @@ CrmSoftwearcrmCom::Application.routes.draw do
   
   resources :orders, shallow: true do
     get 'timeline', to: 'timeline#show'
+    resources :artwork_requests
     resources :jobs, only: [:create, :update, :destroy, :show] do
-      resources :artwork_requests
       resources :line_items
       resources :imprints, only: [:create, :update, :destroy, :new]
     end

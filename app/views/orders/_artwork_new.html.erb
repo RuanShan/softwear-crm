@@ -1,0 +1,19 @@
+<div class="modal fade " id="artworkRequestModal" tabindex="-1" role="dialog" aria-labelledby="artworkRequestModalLabel-<%= artwork_request.id %>" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content modal-lg">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+        <h4 class="modal-title" id="artworkRequestModalLabel-<%= artwork_request.id %>">New Artwork Request </h4>
+      </div>
+      <div class="modal-body artwork-request-form">
+        <div id="ar-standard-form">
+          <%= render partial: 'orders/artwork_form', locals: {artwork_request: artwork_request, order: order} %>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <a class="btn btn-default" data-dismiss="modal">Cancel</a>
+        <a id='artwork-request-submit' class="btn btn-primary">Add</a>
+      </div>
+    </div>
+  </div>
+</div>

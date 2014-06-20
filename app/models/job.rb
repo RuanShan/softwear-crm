@@ -4,6 +4,8 @@ class Job < ActiveRecord::Base
   has_many :line_items
   has_many :imprints
 
+  has_and_belongs_to_many :artwork_requests
+
   validate :assure_name_and_description, on: :create
   validates :name, uniqueness: { scope: :order_id }
 
