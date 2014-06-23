@@ -22,6 +22,6 @@ class StoresController < InheritedResources::Base
   private
 
   def permitted_params
-    params.permit(store: [:name, :retail])
+    params.permit(store: [:name])
   end
 end

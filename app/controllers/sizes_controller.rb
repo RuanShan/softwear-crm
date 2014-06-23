@@ -1,8 +1,9 @@
 class SizesController < InheritedResources::Base
 
   def update
-    super do |format|
-      format.html { redirect_to sizes_path }
+    super do |success, failure|
+      success.html { redirect_to sizes_path }
+      failure.html { render action: :edit }
     end
   end
 
