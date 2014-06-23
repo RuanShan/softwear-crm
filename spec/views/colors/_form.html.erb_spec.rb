@@ -10,6 +10,7 @@ describe 'colors/_form.html.erb', color_spec: true do
     within_form_for Color, noscope: true do
       expect(rendered).to have_field_for :name
       expect(rendered).to have_field_for :sku
+      expect(rendered).to have_field_for :retail
       expect(rendered).to have_selector('button')
     end
   end

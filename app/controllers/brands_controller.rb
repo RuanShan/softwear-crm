@@ -16,6 +16,6 @@ class BrandsController < InheritedResources::Base
   private
 
   def permitted_params
-    params.permit(brand: [:name, :sku])
+    params.permit(brand: [:name, :sku, :retail])
   end
 end

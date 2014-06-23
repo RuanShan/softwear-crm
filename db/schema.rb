@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140620182803) do
+ActiveRecord::Schema.define(version: 20140623184947) do
 
   create_table "brands", force: true do |t|
     t.string   "name"
@@ -19,9 +19,11 @@ ActiveRecord::Schema.define(version: 20140620182803) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.datetime "deleted_at"
+    t.boolean  "retail",     default: false
   end
 
   add_index "brands", ["deleted_at"], name: "index_brands_on_deleted_at", using: :btree
+  add_index "brands", ["retail"], name: "index_brands_on_retail", using: :btree
 
   create_table "colors", force: true do |t|
     t.string   "name"
@@ -30,10 +32,12 @@ ActiveRecord::Schema.define(version: 20140620182803) do
     t.datetime "updated_at"
     t.integer  "imprintable_variant_id"
     t.datetime "deleted_at"
+    t.boolean  "retail",                 default: false
   end
 
   add_index "colors", ["deleted_at"], name: "index_colors_on_deleted_at", using: :btree
   add_index "colors", ["imprintable_variant_id"], name: "color_imprintable_variant_id_ix", using: :btree
+  add_index "colors", ["retail"], name: "index_colors_on_retail", using: :btree
 
   create_table "coordinate_imprintables", force: true do |t|
     t.integer  "coordinate_id"
@@ -202,10 +206,12 @@ ActiveRecord::Schema.define(version: 20140620182803) do
     t.datetime "updated_at"
     t.integer  "imprintable_variant_id"
     t.datetime "deleted_at"
+    t.boolean  "retail",                 default: false
   end
 
   add_index "sizes", ["deleted_at"], name: "index_sizes_on_deleted_at", using: :btree
   add_index "sizes", ["imprintable_variant_id"], name: "size_imprintable_variant_id_ix", using: :btree
+  add_index "sizes", ["retail"], name: "index_sizes_on_retail", using: :btree
 
   create_table "stores", force: true do |t|
     t.string   "name"
@@ -225,10 +231,12 @@ ActiveRecord::Schema.define(version: 20140620182803) do
     t.datetime "updated_at"
     t.integer  "brand_id"
     t.datetime "deleted_at"
+    t.boolean  "retail",      default: false
   end
 
   add_index "styles", ["brand_id"], name: "brand_id_ix", using: :btree
   add_index "styles", ["deleted_at"], name: "index_styles_on_deleted_at", using: :btree
+  add_index "styles", ["retail"], name: "index_styles_on_retail", using: :btree
 
   create_table "taggings", force: true do |t|
     t.integer  "tag_id"

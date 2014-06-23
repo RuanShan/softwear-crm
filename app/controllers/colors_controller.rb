@@ -16,6 +16,6 @@ class ColorsController < InheritedResources::Base
   private
 
   def permitted_params
-    params.permit(color: [:name, :sku])
+    params.permit(color: [:name, :sku, :retail])
   end
 end

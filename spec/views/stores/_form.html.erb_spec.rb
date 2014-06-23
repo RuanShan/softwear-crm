@@ -9,6 +9,7 @@ describe 'stores/_form.html.erb', store_spec: true do
     render partial: 'stores/form', locals: {store: store, f: f}
     within_form_for Store, noscope: true do
       expect(rendered).to have_field_for :name
+      expect(rendered).to have_field_for :retail
       expect(rendered).to have_selector("[type='submit']")
     end
   end
