@@ -15,13 +15,12 @@ module Search
       text = args.empty? ? nil : args.first
 
       models.map.with_index do |model, i|
-        text_fields = text_fields_at(model, i)
+        text_fields = text_fields_at(i)
 
         model.search do
           if text
             if text_fields && !text_fields.empty?
               fulltext(text) do
-                puts "searching for #{text} in #{model.name} #{text_fields}"
                 fields(text_fields)
               end
             else
@@ -33,7 +32,7 @@ module Search
     end
 
   private
-    def text_fields_at(model, index)
+    def text_fields_at(index)
       if query_models[index] && query_models[index].query_fields.count > 0
         query_models[index].query_fields.map do |qf|
           qf.to_h

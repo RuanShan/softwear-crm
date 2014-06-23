@@ -25,11 +25,10 @@ describe Search::Query, search_spec: true do
     end
   end
 
-  describe '#search', wip: true, solr: true do
+  describe '#search' do
     context 'when the query has no models' do
       it 'searches all models and fields' do
-        subject.search 'test'
-        expect(Sunspot.session.searches.count).to eq Search::Models.count
+        expect(subject.search('test').count).to eq Search::Models.count
       end
     end
 
@@ -48,9 +47,16 @@ describe Search::Query, search_spec: true do
 
       it 'searches the models' do
         job_model; subject.search 'test'
-        expect(Sunspot.session.searches.count).to eq 2
-        expect(Sunspot.session.searches.first).to be_a_search_for Order
-        expect(Sunspot.session.searches.last).to be_a_search_for Job
+        with(Sunspot.session.searches) do |the|
+          expect(the.count).to eq 2
+          expect(the.first).to be_a_search_for Order
+          expect(the.last).to be_a_search_for Job
+        end
+      end
+
+      it 'uses the right fulltext' do
+        subject.search 'test'
+        expect(Sunspot.session).to have_search_params :fulltext, 'test'
       end
 
       context 'and a field' do
@@ -58,8 +64,9 @@ describe Search::Query, search_spec: true do
           order_model.add_field 'name'
         end
 
-        it 'just searches that field', wtf: true do
+        it 'just searches that field', solr: true do
           search = subject.search 'keywordone'
+          expect(search.count).to eq 1
           expect(search.first.results.count).to eq 1
           expect(search.first.results).to include order1
           expect(search.first.results).to_not include order2

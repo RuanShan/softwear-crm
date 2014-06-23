@@ -12,6 +12,7 @@ require 'rake'
 # end with _spec.rb. You can configure this pattern with with the --pattern
 # option on the command line or in ~/.rspec, .rspec or `.rspec-local`.
 Dir[Rails.root.join("spec/support/**/*.rb")].each { |f| require f }
+include SunspotHelpers
 
 # Checks for pending migrations before tests are run.
 # If you are not using ActiveRecord, you can remove this line.
@@ -57,19 +58,36 @@ RSpec.configure do |config|
 
   config.order = "random"
 
-  config.before(:each, solr: false) do
-    Sunspot.session = SunspotMatchers::SunspotSessionSpy.new(Sunspot.session)
+  config.before(:each) do |example|
+    if example.metadata[:solr]
+      # Recover Sunspot session (if needed) and start solr
+      if Sunspot.session.respond_to? :original_session
+        Sunspot.session = Sunspot.session.original_session
+        if Sunspot.session.respond_to? :original_session
+          raise "Sunspot session somehow got burried in spies!"
+        end
+      end
+      unless solr_running?
+        if !start_solr
+          raise "Unable to start Solr."
+        end
+        wait_for_solr
+      end
+    else
+      # If we just keep making session spies out of the current session
+      # (as suggested on the SunspotMatchers github page), it will just
+      # keep piling up and further burrying the original session!
+      if Sunspot.session.respond_to? :original_session
+        Sunspot.session = SunspotMatchers::SunspotSessionSpy.new(Sunspot.session.original_session)
+      else
+        Sunspot.session = SunspotMatchers::SunspotSessionSpy.new(Sunspot.session)
+      end
+    end
   end
 
-  # TODO MONDAY
-  # Doesn't build the rake tasks properly, look at the chrome thing that's hopfully already up and it should lead you to victory
-  # 
-  config.before(:each, solr: true) do
-    Rake::Task['sunspot:solr:start'].invoke
-  end
-
-  config.after(:each, solr: true) do
-    Rake::Task['sunspot:solr:stop'].invoke
+  # Stop solr if we were using it in any earlier tests.
+  config.after(:all) do
+    stop_solr if solr_running?
   end
 
   config.before(:suite) do
