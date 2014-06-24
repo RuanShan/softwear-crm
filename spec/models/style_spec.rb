@@ -10,14 +10,21 @@ describe Style, style_spec: true do
     it { should validate_presence_of(:name) }
     it { should validate_uniqueness_of(:name) }
 
-    it { should validate_presence_of(:sku) }
-    it { should validate_uniqueness_of(:sku) }
-    it { should ensure_length_of(:sku).is_equal_to(2) }
-
     it { should validate_presence_of(:catalog_no) }
     it { should validate_uniqueness_of(:catalog_no) }
 
     it { should validate_presence_of(:brand) }
+
+    context "if retail" do
+      before { allow(subject).to receive_message_chain(:is_retail?).and_return(true)}
+      it { should ensure_length_of(:sku).is_equal_to(2) }
+    end
+
+    context "if not retail" do
+      before { allow(subject).to receive_message_chain(:is_retail?).and_return(false)}
+      it { should_not ensure_length_of(:sku).is_equal_to(2) }
+    end
+
   end
 
   describe '#find_brand' do
@@ -28,4 +35,7 @@ describe Style, style_spec: true do
       expect(brand.id).to eq(style.brand.id)
     end
   end
+
+  it_behaves_like 'retailable'
+
 end

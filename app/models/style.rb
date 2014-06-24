@@ -1,11 +1,13 @@
 class Style < ActiveRecord::Base
   acts_as_paranoid
 
+  include Retailable
+
   belongs_to :brand
   has_one :imprintable, dependent: :destroy
 
   validates :name, :uniqueness =>  { :scope => :brand_id }, presence: true
-  validates :sku, presence: true, uniqueness: true, length: { is: 2 }
+  validates :sku, length: { is: 2 }, if: :is_retail?
   validates :catalog_no, :uniqueness => { :scope => :brand_id }, presence: true
   validates :brand, presence: true
 
