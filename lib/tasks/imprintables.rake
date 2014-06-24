@@ -24,6 +24,11 @@ namespace :imprintables do
     tags
   end
 
+  def sizing_category(sizing_category)
+    sizing_category = 'Youth Unisex' unless sizing_category != 'Youth'
+    sizing_category
+  end
+
   def get_coordinate_style_numbers(ws, row)
     style_numbers = ws[row, 28].split(',')
     style_numbers.map!{|style_number| style_number.gsub(/\(.*\)/, "").squish}
@@ -49,7 +54,7 @@ namespace :imprintables do
         style = Style.find_or_initialize_by(brand_id: brand.id, catalog_no: ws[row, 3])
         style.name = ws[row, 3]
         if !style.save
-          style.errors.each do |e|
+          style.errors.full_messages.each do |e|
             puts e.inspect
           end
         end
@@ -61,9 +66,14 @@ namespace :imprintables do
         imprintable.sample_locations = [Store.find_by(name: 'Ann Arbor Store')] unless ws[row, 19] == 'n'
         imprintable.material = ws[row, 25]
         imprintable.standard_offering = true
-        imprintable.sizing_category = ws[row,20]
+        imprintable.sizing_category = sizing_category(ws[row,20])
         imprintable.proofing_template_name = ws[row,30]
-        imprintable.save
+        if !imprintable.save
+          imprintable.errors.full_messages.each do |e|
+            puts "Error saving #{style.catalog_no}"
+            puts "Sizing Category Is #{sizing_category(ws[row,20])}"
+          end
+        end
       end
     end
 
@@ -83,7 +93,7 @@ namespace :imprintables do
           end
         end
         rescue Exception => e
-          puts e
+    #      puts e
         end
       end
     end
