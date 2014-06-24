@@ -124,10 +124,10 @@ feature 'Imprintables management', imprintable_spec: true do
     expect(current_path).to eq(imprintables_path)
     expect(imprintable.reload.destroyed? ).to be_truthy
   end
-
-  scenario 'A user can navigate to all tabs of the modal show menu (card #133)', new: true, js: true do
+  
+  scenario 'A user can navigate to all tabs of the modal show menu (card #133)', js: true do
     visit imprintables_path
-    find(:css, "#imprintable_#{imprintable.id} td a.imprintable_link").click
+    find(:css, "#imprintable_#{imprintable.id} td a.imprintable_modal_link").click
     expect(page).to have_selector "#basic_info_#{imprintable.id}.active"
     expect(page).to have_selector '.nav.nav-tabs.nav-justified li:nth-child(1).active'
     find(:css, '.nav.nav-tabs.nav-justified li:nth-child(2)').click
@@ -142,5 +142,17 @@ feature 'Imprintables management', imprintable_spec: true do
     find(:css, '.nav.nav-tabs.nav-justified li:nth-child(1)').click
     expect(page).to have_selector "#basic_info_#{imprintable.id}.active"
     expect(page).to have_selector '.nav.nav-tabs.nav-justified li:nth-child(1).active'
+  end
+
+  describe 'There are 2 different imprintables', js: true do
+    let!(:imprintable_two) { create(:valid_imprintable) }
+    scenario 'A user can display the modal show without having multiple shows being rendered at once (card #136)' do
+      visit imprintables_path
+      expect(find('.imprintable-modal div.modal-body', :visible => false).all('*').length).to eq(0)
+      expect(find('.imprintable-modal div.modal-body', :visible => false).text).to eq('')
+      find(:css, "#imprintable_#{imprintable_two.id} td a.imprintable_modal_link").click
+      expect(find('.imprintable-modal div.modal-body').all('*').length).to_not eq(0)
+      expect(find('.imprintable-modal div.modal-body').text).to_not eq ('')
+    end
   end
 end
