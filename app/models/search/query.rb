@@ -16,6 +16,7 @@ module Search
 
       models.map.with_index do |model, i|
         text_fields = text_fields_at(i)
+        query_model = query_models[i]
 
         model.search do
           if text
@@ -26,6 +27,9 @@ module Search
             else
               fulltext(text)
             end
+          end
+          if query_model && query_model.filter
+            query_model.filter.apply(self)
           end
         end
       end

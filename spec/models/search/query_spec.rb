@@ -73,19 +73,20 @@ describe Search::Query, search_spec: true do
         end
       end
 
-      context 'with filters' do
-        let!(:commission_amount_filter) {
-          create(:number_filter, value: 2.20, relation: '<',
-            field: 'commission_amount')
-        }
+      context 'and filters', wip: true do
+        let!(:filter) { create :string_filter, 
+          filter_type: create(:filter_type_string,
+            field: 'firstname', value: 'keywordfour') }
         before(:each) do
-          number_filter.filter.filter_holder = order_model
-          number_filter.filter.save
+          filter.filter_holder = order_model
+          filter.save
         end
 
-        it 'applies the filter' do
-          expect(number_filter).to receive(:apply)
-          subject.search 'test'
+        it 'applies the filter', solr: true do
+          results = subject.search.first.results
+          expect(results).to include order3
+          expect(results).to_not include order1
+          expect(results).to_not include order2
         end
       end
     end

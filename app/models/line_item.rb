@@ -14,6 +14,11 @@ class LineItem < ActiveRecord::Base
   scope :non_imprintable, -> { where imprintable_variant_id: nil }
   scope :imprintable, -> { where.not imprintable_variant_id: nil }
 
+  searchable do
+    text :name, :description
+    boolean(:is_imprintable) { imprintable? }
+  end
+
   def price
     if unit_price && quantity
       unit_price * quantity

@@ -46,18 +46,22 @@ class CreateSearchTables < ActiveRecord::Migration
     end
 
     create_table :search_reference_filters do |t|
-      field_filter t, :integer
+      field_filter t
+      t.references :value, polymorphic: true
     end
 
     create_table :search_date_filters do |t|
       field_filter t, :datetime
+      t.string :relation, limit: 1
     end
   end
 
   private
-  def field_filter(t, value_type)
+  def field_filter(t, *args)
+    value_type = args.first
+
     t.string :field
-    t.boolean :not
+    t.boolean :negate
     t.send value_type, :value unless value_type == nil
   end
 end

@@ -1,32 +1,61 @@
 require 'spec_helper'
 
 describe Search::NumberFilter, search_spec: true do
-  it { should be kind_of Search::FilterType }
-  it { should have_db_column :field }
+  it { expect(subject.class.ancestors).to include Search::NumberFilterType }
 
+  it { should have_db_column :field }
   it { should have_db_column :relation }
   it { should ensure_inclusion_of(:relation).in_array ['>', '<', '='] }
-
-  it { should have_db_column :not }
-
+  it { should have_db_column :negate }
   it { should have_db_column :value }
 
   let(:query) { create :query }
   let(:order_model) { create :search_order_model, query_id: query.id }
 
-  it 'should apply properly' do
-    subject.value = 10
-    subject.relation = '>'
-    subject.field = 'commission_amount'
-    subject.save
+  let!(:filter) { create :filter_type_number,
+    value: 10,
+    relation: '>',
+    field: 'commission_amount' }
 
-    search = Order.search do
-      subject.apply(self)
+  it 'should apply properly with negate set to false' do
+    filter.negate = false
+    filter.relation = '='
+    filter.save
+
+    Order.search do
+      filter.apply(self)
     end
-    expect(search).to have_search_params(:with, :commission_amount).greater_than(10)
+    expect(Sunspot.session).to have_search_params(:with, :commission_amount, 10)
   end
 
-  it 'should proxy methods to the filter' do
-    expect(subject.filter_holder_id).to eq subject.filter.filter_holder_id
+  it 'should apply properly with negate set to true' do
+    filter.negate = true
+    filter.save
+
+    Order.search do
+      filter.apply(self)
+    end
+    expect(Sunspot.session).to have_search_params(:without) {
+      without(:commission_amount).greater_than(10)
+    }
+  end
+
+  context 'with orders' do
+    let!(:order1) { create :order_with_job, commission_amount: 10 }
+    let!(:order2) { create :order_with_job, commission_amount: 5 }
+    let!(:order3) { create :order_with_job, commission_amount: 1 }
+
+    it 'should retrieve the correct ones', solr: true do
+      filter.value = 10
+      filter.relation = '<'
+      filter.save
+      results = Order.search do
+        filter.apply(self)
+      end.results
+
+      expect(results).to_not include order1
+      expect(results).to include order2
+      expect(results).to include order3
+    end
   end
 end

@@ -26,6 +26,7 @@ describe Search::QueryModel, search_spec: true do
 
   describe '#fields' do
     let!(:model) { create(:query_order_model) }
+    
     context 'when there are no query_fields' do
       it 'returns an array of all fields in the model' do
         expect(model.fields).to eq Order.searchable_fields
@@ -43,6 +44,7 @@ describe Search::QueryModel, search_spec: true do
 
   describe '#add_field' do
     let!(:model) { create(:query_order_model) }
+    
     it 'should add a field with the given name if it is fulltext searchable' do
       model.add_field 'email'
       expect(model.fields).to eq [Search::Field[:Order, :email]]

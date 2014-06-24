@@ -65,10 +65,14 @@ class Order < ActiveRecord::Base
     #   jobs.map { |j| "#{j.name} #{j.description}" }
     # end
 
-    string :firstname, :lastname
+    [:firstname, :lastname, :email, :terms, :delivery_method, :sales_status].each do |field|
+      string field
+    end
 
     double :total
     double :commission_amount
+
+    date :in_hand_by
 
     reference :salesperson
   end

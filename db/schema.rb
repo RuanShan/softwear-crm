@@ -163,14 +163,15 @@ ActiveRecord::Schema.define(version: 20140620143021) do
 
   create_table "search_boolean_filters", force: true do |t|
     t.string  "field"
-    t.boolean "not"
+    t.boolean "negate"
     t.boolean "value"
   end
 
   create_table "search_date_filters", force: true do |t|
     t.string   "field"
-    t.boolean  "not"
+    t.boolean  "negate"
     t.datetime "value"
+    t.string   "relation", limit: 1
   end
 
   create_table "search_filter_groups", force: true do |t|
@@ -186,12 +187,12 @@ ActiveRecord::Schema.define(version: 20140620143021) do
 
   create_table "search_nil_filters", force: true do |t|
     t.string  "field"
-    t.boolean "not"
+    t.boolean "negate"
   end
 
   create_table "search_number_filters", force: true do |t|
     t.string  "field"
-    t.boolean "not"
+    t.boolean "negate"
     t.decimal "value",              precision: 10, scale: 0
     t.string  "relation", limit: 1
   end
@@ -217,13 +218,14 @@ ActiveRecord::Schema.define(version: 20140620143021) do
 
   create_table "search_reference_filters", force: true do |t|
     t.string  "field"
-    t.boolean "not"
-    t.integer "value"
+    t.boolean "negate"
+    t.integer "value_id"
+    t.string  "value_type"
   end
 
   create_table "search_string_filters", force: true do |t|
     t.string  "field"
-    t.boolean "not"
+    t.boolean "negate"
     t.string  "value"
   end
 

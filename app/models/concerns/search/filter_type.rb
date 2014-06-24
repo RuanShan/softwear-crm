@@ -8,7 +8,18 @@ module Search
     end
 
     def method_missing(name, *args, &block)
-      filter.send name, *args, &block
+      super or filter.send name, *args, &block
+    end
+
+    # Default apply function. Works for simple stuff
+    # like boolean and string. Override for more 
+    # complex behavior, like number.
+    def apply(s)
+      s.send(with_func, field, value)
+    end
+
+    def with_func
+      negate? ? :without : :with
     end
   end
 

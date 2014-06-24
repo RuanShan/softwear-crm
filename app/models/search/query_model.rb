@@ -23,7 +23,7 @@ module Search
         raise "#{name} query model already has field #{field_name}"
       elsif Field[name, field_name].nil?
         raise "There is no field #{name}##{field_name}"
-      elsif Field[name, field_name].type_name != :text
+      elsif !Field[name, field_name].type_names.include? :text
         raise "#{name}##{field_name} is not fulltext!"
       else
         query_fields << QueryField.new(name: field_name)

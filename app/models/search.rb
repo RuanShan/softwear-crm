@@ -36,8 +36,18 @@ module Search
   end
   class Field
     attr_reader :name
-    attr_reader :type_name
+    attr_reader :type_names
     attr_reader :model_name
+
+    def self.new(model_name, name, type_name)
+      s = self[model_name, name]
+      if s
+        s.type_names << type_name.to_sym
+        s
+      else
+        super
+      end
+    end
 
     def self.[](model, field_name)
       if model.is_a? Class
@@ -49,7 +59,7 @@ module Search
 
     def initialize(model_name, name, type_name)
       @name = name.to_sym
-      @type_name = type_name.to_sym
+      @type_names = [type_name.to_sym]
       @model_name = if model_name.is_a?(Class)
         model_name.name
       else
