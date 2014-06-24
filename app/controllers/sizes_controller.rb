@@ -1,8 +1,9 @@
 class SizesController < InheritedResources::Base
 
   def update
-    super do |format|
-      format.html { redirect_to sizes_path }
+    super do |success, failure|
+      success.html { redirect_to sizes_path }
+      failure.html { render action: :edit }
     end
   end
 
@@ -31,6 +32,6 @@ class SizesController < InheritedResources::Base
   private
 
   def permitted_params
-    params.permit(size: [:name, :display_value, :sku, :sort_order])
+    params.permit(size: [:name, :display_value, :sku, :sort_order, :retail])
   end
 end

@@ -31,6 +31,11 @@ describe ImprintablesController, imprintable_spec: true do
       get :show, id: imprintable.to_param
       expect(response).to render_template('imprintables/show')
     end
+
+    it 'renders show when remote is true' do
+      get :show, id: imprintable.to_param, remote: true
+      expect(response).to render_template('imprintables/show')
+    end
   end
 
   describe 'GET edit' do
@@ -113,6 +118,4 @@ describe ImprintablesController, imprintable_spec: true do
       end
     end
   end
-
-
 end

@@ -10,6 +10,7 @@ describe 'brands/_form.html.erb', brand_spec: true do
     within_form_for Brand, noscope: true do
       expect(rendered).to have_field_for :name
       expect(rendered).to have_field_for :sku
+      expect(rendered).to have_field_for :retail
       expect(rendered).to have_selector('button')
     end
   end
