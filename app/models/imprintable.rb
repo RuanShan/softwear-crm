@@ -7,8 +7,8 @@ class Imprintable < ActiveRecord::Base
   belongs_to :style
   has_one :brand, through: :style, dependent: :destroy
   has_many :imprintable_variants, dependent: :destroy
-  has_many :colors, through: :imprintable_variants, dependent: :destroy
-  has_many :sizes, through: :imprintable_variants, dependent: :destroy
+  has_many :colors, ->{ uniq }, through: :imprintable_variants, dependent: :destroy
+  has_many :sizes, ->{ uniq },  through: :imprintable_variants, dependent: :destroy
   has_many :coordinate_imprintables
   has_many :coordinates, through: :coordinate_imprintables
   has_many :mirrored_coordinate_imprintables, class_name: 'CoordinateImprintable', foreign_key: 'coordinate_id'

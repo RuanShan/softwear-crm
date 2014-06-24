@@ -1,11 +1,11 @@
 <div class="page-heading animated fadeInDownBig col-lg-9">
   <h1><%= @imprintable.brand.name %><small> <%= @imprintable.style.name %></small></h1>
 </div>
-<% if !defined? modal %>
-  <div class="col-lg-3 text-right">
-    <%= link_to 'Edit Imprintable', edit_imprintable_path(@imprintable.id), class:'btn btn-primary', role: 'button' %>
-  </div>
-<% end %>
+
+<div class="col-lg-3 text-right">
+  <%= link_to 'Edit Imprintable', edit_imprintable_path(@imprintable.id), class:'btn btn-primary', role: 'button' %>
+</div>
+
 <% if @imprintable.standard_offering %>
   <%= render partial: 'standard_product_notice' %>
 <% end %>
@@ -15,7 +15,7 @@
     <div class="box-info full">
 
       <ul class="nav nav-tabs nav-justified">
-        <li class="active"><a href="basic_info_<%= @imprintable.id %>" data-toggle="tab"><i class="fa fa-info"></i> Basic Info</a></li>
+        <li class="active"><a href="#basic_info_<%= @imprintable.id %>" data-toggle="tab"><i class="fa fa-info"></i> Basic Info</a></li>
         <li><a href="#size_color_availability_<%= @imprintable.id %>" data-toggle="tab"><i class="fa fa-check-square-o"></i> Size/Color Availability </a></li>
         <li><a href="#imprint_details_<%= @imprintable.id %>" data-toggle="tab"><i class="fa fa-search"></i> Imprint Details</a></li>
         <li><a href="#supplier_information_<%= @imprintable.id %>" data-toggle="tab"><i class="fa fa-info-circle"></i> Supplier Information</a></li>
