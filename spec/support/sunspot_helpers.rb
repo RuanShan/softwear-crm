@@ -25,7 +25,7 @@ module SunspotHelpers
         end
       end
     end
-    sleep 0.3
+    sleep 1
   end
 
   def ping_solr

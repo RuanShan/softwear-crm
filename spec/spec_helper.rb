@@ -86,7 +86,7 @@ RSpec.configure do |config|
   end
 
   # Stop solr if we were using it in any earlier tests.
-  config.after(:all) do
+  config.after(:suite) do
     stop_solr if solr_running?
   end
 
