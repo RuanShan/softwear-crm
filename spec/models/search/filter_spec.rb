@@ -22,4 +22,15 @@ describe Search::Filter, search_spec: true do
     subject.destroy
     expect(Search::NumberFilter.where id: type_id).to_not exist
   end
+
+  describe '.new' do
+    it 'should allow a new filter to be created with a certain type' do
+      expect(Search::Filter.new(Search::NumberFilter).filter_type).to be_a Search::NumberFilter
+    end
+
+    it 'should pass remaining params to the filter type, rather than the filter' do
+      subject = Search::Filter.new(Search::StringFilter, value: 'test')
+      expect(subject.type.value).to eq 'test'
+    end
+  end
 end

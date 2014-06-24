@@ -171,7 +171,7 @@ ActiveRecord::Schema.define(version: 20140620143021) do
     t.string   "field"
     t.boolean  "negate"
     t.datetime "value"
-    t.string   "relation", limit: 1
+    t.string   "comparator", limit: 1
   end
 
   create_table "search_filter_groups", force: true do |t|
@@ -193,8 +193,8 @@ ActiveRecord::Schema.define(version: 20140620143021) do
   create_table "search_number_filters", force: true do |t|
     t.string  "field"
     t.boolean "negate"
-    t.decimal "value",              precision: 10, scale: 0
-    t.string  "relation", limit: 1
+    t.decimal "value",                precision: 10, scale: 0
+    t.string  "comparator", limit: 1
   end
 
   create_table "search_queries", force: true do |t|

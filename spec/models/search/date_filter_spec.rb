@@ -4,8 +4,8 @@ describe Search::DateFilter, search_spec: true do
   it { expect(subject.class.ancestors).to include Search::FilterType }
 
   it { should have_db_column :field }
-  it { should have_db_column :relation }
-  it { should ensure_inclusion_of(:relation).in_array ['>', '<', '='] }
+  it { should have_db_column :comparator }
+  it { should ensure_inclusion_of(:comparator).in_array ['>', '<', '='] }
   it { should have_db_column :negate }
   it { should have_db_column :value }
 
@@ -16,12 +16,12 @@ describe Search::DateFilter, search_spec: true do
 
   let!(:filter) { create :filter_type_date,
     value: date,
-    relation: '>',
+    comparator: '>',
     field: 'in_hand_by' }
 
   it 'should apply properly with negate set to false' do
     filter.negate = false
-    filter.relation = '='
+    filter.comparator = '='
     filter.save
 
     Order.search do

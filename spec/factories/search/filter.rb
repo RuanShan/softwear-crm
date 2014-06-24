@@ -5,12 +5,15 @@ FactoryGirl.define do
         filter_type { |t| t.association "filter_type_#{type}" }
       end
     end
+    factory :filter_group do
+      filter_type { |t| t.association :filter_type_group }
+    end
   end
   
 
   factory :filter_type_number, class: Search::NumberFilter do
     field 'commission_amount'
-    relation '='
+    comparator '='
     negate false
     value 10
   end
@@ -36,7 +39,7 @@ FactoryGirl.define do
   factory :filter_type_date, class: Search::DateFilter do
     field 'created_at'
     negate false
-    relation '>'
+    comparator '>'
     value 1.day.ago
   end
 

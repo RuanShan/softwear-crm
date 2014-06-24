@@ -1,5 +1,5 @@
 # include stuff in lib/util
-Dir[Rails.root + 'lib/util/*.rb'].each do |file|
+Dir[Rails.root + 'lib/util/**/*.rb'].each do |file|
 	require file
 end
 

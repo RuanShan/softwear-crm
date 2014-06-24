@@ -25,7 +25,7 @@ describe Search::FilterGroup, search_spec: true do
     before(:each) do
       group.filters << create(:number_filter,
         field: 'commission_amount',
-        value: 30, relation: '<')
+        value: 30, comparator: '<')
 
       group.filters << create(:string_filter,
         field: 'firstname', negate: true)

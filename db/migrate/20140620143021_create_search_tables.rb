@@ -30,7 +30,7 @@ class CreateSearchTables < ActiveRecord::Migration
 
     create_table :search_number_filters do |t|
       field_filter t, :decimal
-      t.string :relation, limit: 1
+      t.string :comparator, limit: 1
     end
 
     create_table :search_boolean_filters do |t|
@@ -52,7 +52,7 @@ class CreateSearchTables < ActiveRecord::Migration
 
     create_table :search_date_filters do |t|
       field_filter t, :datetime
-      t.string :relation, limit: 1
+      t.string :comparator, limit: 1
     end
   end
 

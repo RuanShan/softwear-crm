@@ -2,11 +2,19 @@ module Sunspot
   module Type
     class ReferenceType < AbstractType
       def cast(string)
-        data = string.split '_'
-        Kernel.const_get(data[0]).find(data[1])
+        if string == "nil"
+          nil
+        else
+          data = string.split '_'
+          Kernel.const_get(data[0]).find(data[1])
+        end
       end
       def to_indexed(value)
-        "#{value.class.name}_#{value.id}_ref"
+        if value.nil?
+          "nil"
+        else
+          "#{value.class.name}_#{value.id}_ref"
+        end
       end
       def indexed_name(name)
         "#{name}_ref"

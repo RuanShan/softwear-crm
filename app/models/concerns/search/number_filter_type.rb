@@ -4,24 +4,26 @@ module Search
 
     included do
       include FilterType
-      validates_inclusion_of :relation, in: ['>', '<', '=']
+      validates_inclusion_of :comparator, in: ['>', '<', '='],
+        message: "must be '>', '<', or '='"
+      after_initialize -> { self.comparator ||= '=' }
 
       def apply(s)
-        if relation == '='
+        if comparator == '='
           s.send(with_func, field, value)
         else
-          s.send(with_func, field).send(relation_func, value)
+          s.send(with_func, field).send(comparator_func, value)
         end
       end
     end
 
-    def relation_func
-      if relation == '>'
+    def comparator_func
+      if comparator == '>'
         :greater_than
-      elsif relation == '<'
+      elsif comparator == '<'
         :less_than
       else
-        raise "#{self.class.name} relation must be > or < to use relation_func"
+        raise "#{self.class.name} comparator must be > or < to use comparator_func"
       end
     end
   end
