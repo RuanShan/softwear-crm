@@ -64,7 +64,7 @@ describe Search::Query, search_spec: true do
           order_model.add_field 'name'
         end
 
-        it 'just searches that field', solr: true do
+        it 'just searches that field', :s1, solr: true do
           search = subject.search 'keywordone'
           expect(search.count).to eq 1
           expect(search.first.results.count).to eq 1
@@ -73,7 +73,7 @@ describe Search::Query, search_spec: true do
         end
       end
 
-      context 'and filters', wip: true do
+      context 'and filters' do
         let!(:filter) { create :string_filter, 
           filter_type: create(:filter_type_string,
             field: 'firstname', value: 'keywordfour') }
@@ -82,7 +82,7 @@ describe Search::Query, search_spec: true do
           filter.save
         end
 
-        it 'applies the filter', solr: true do
+        it 'applies the filter', :s2, solr: true do
           results = subject.search.first.results
           expect(results).to include order3
           expect(results).to_not include order1

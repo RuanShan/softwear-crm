@@ -14,6 +14,11 @@ module SunspotHelpers
     solr_cmd 'reindex', do_output.first == false
   end
 
+  def clear_solr
+    data_path = Rails.root.join('solr', 'test', 'data')
+    FileUtils.rm_rf data_path.to_s
+  end
+
   def wait_for_solr(*timeout_seconds)
     Timeout::timeout(timeout_seconds.first || 5) do
       while true
@@ -21,11 +26,10 @@ module SunspotHelpers
           ping_solr
           break
         rescue Errno::ECONNREFUSED
-          sleep 0.3
+          sleep 0.1
         end
       end
     end
-    sleep 1
   end
 
   def ping_solr
