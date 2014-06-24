@@ -124,4 +124,23 @@ feature 'Imprintables management', imprintable_spec: true do
     expect(current_path).to eq(imprintables_path)
     expect(imprintable.reload.destroyed? ).to be_truthy
   end
+
+  scenario 'A user can navigate to all tabs of the modal show menu (card #133)', new: true, js: true do
+    visit imprintables_path
+    find(:css, "#imprintable_#{imprintable.id} td a.imprintable_link").click
+    expect(page).to have_selector "#basic_info_#{imprintable.id}.active"
+    expect(page).to have_selector '.nav.nav-tabs.nav-justified li:nth-child(1).active'
+    find(:css, '.nav.nav-tabs.nav-justified li:nth-child(2)').click
+    expect(page).to have_selector "#size_color_availability_#{imprintable.id}.active"
+    expect(page).to have_selector '.nav.nav-tabs.nav-justified li:nth-child(2).active'
+    find(:css, '.nav.nav-tabs.nav-justified li:nth-child(3)').click
+    expect(page).to have_selector "#imprint_details_#{imprintable.id}.active"
+    expect(page).to have_selector '.nav.nav-tabs.nav-justified li:nth-child(3).active'
+    find(:css, '.nav.nav-tabs.nav-justified li:nth-child(4)').click
+    expect(page).to have_selector "#supplier_information_#{imprintable.id}.active"
+    expect(page).to have_selector '.nav.nav-tabs.nav-justified li:nth-child(4).active'
+    find(:css, '.nav.nav-tabs.nav-justified li:nth-child(1)').click
+    expect(page).to have_selector "#basic_info_#{imprintable.id}.active"
+    expect(page).to have_selector '.nav.nav-tabs.nav-justified li:nth-child(1).active'
+  end
 end
