@@ -174,6 +174,18 @@ ActiveRecord::Schema.define(version: 20140623184947) do
 
   add_index "orders", ["deleted_at"], name: "index_orders_on_deleted_at", using: :btree
 
+  create_table "payments", force: true do |t|
+    t.integer  "order_id"
+    t.integer  "salesperson_id"
+    t.integer  "store_id"
+    t.boolean  "refunded"
+    t.decimal  "amount",         precision: 10, scale: 2
+    t.text     "refund_reason"
+    t.datetime "deleted_at"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
   create_table "print_locations", force: true do |t|
     t.string   "name"
     t.integer  "imprint_method_id"

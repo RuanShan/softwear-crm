@@ -1,11 +1,11 @@
 <div class="page-heading animated fadeInDownBig col-lg-9">
   <h1><%= @imprintable.brand.name %><small> <%= @imprintable.style.name %></small></h1>
 </div>
-<% if !defined? modal %>
-  <div class="col-lg-3 text-right">
-    <%= link_to 'Edit Imprintable', edit_imprintable_path(@imprintable.id), class:'btn btn-primary', role: 'button' %>
-  </div>
-<% end %>
+
+<div class="col-lg-3 text-right">
+  <%= link_to 'Edit Imprintable', edit_imprintable_path(@imprintable.id), class:'btn btn-primary', role: 'button' %>
+</div>
+
 <% if @imprintable.standard_offering %>
   <%= render partial: 'standard_product_notice' %>
 <% end %>

@@ -21,7 +21,7 @@
       <tbody>
       <% @imprintables.each do |imprintable| %>
       <tr id="<%= model_table_row_id imprintable %>">
-        <td><%= imprintable_modal_link(imprintable, imprintable.name) %></td>
+        <td><%= link_to imprintable.name, imprintable_path(imprintable), remote: true, class: 'imprintable_modal_link' %></td>
         <td><%= imprintable.style.catalog_no %></td>
         <td><%= imprintable.style.description %></td>
         <td><%= imprintable.material %></td>
@@ -45,5 +45,16 @@
       <% end %>
       </tbody>
     </table>
+  </div>
+  <div class="modal fade imprintable-modal" tabindex="-1" role="dialog" aria-labelledby="imprintable_modal" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-body">
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+        </div>
+      </div>
+    </div>
   </div>
 </div>
