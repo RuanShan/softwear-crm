@@ -2,7 +2,7 @@ class Imprintable < ActiveRecord::Base
   acts_as_paranoid
   acts_as_taggable
 
-  SIZING_CATEGORIES = ['Adult Unisex', 'Ladies', 'Youth Unisex', 'Girls', 'Toddler', 'Infant']
+  SIZING_CATEGORIES = ['Adult Unisex', 'Ladies', 'Youth Unisex', 'Girls', 'Toddler', 'Infant', 'n/a']
 
   belongs_to :style
   has_one :brand, through: :style, dependent: :destroy
