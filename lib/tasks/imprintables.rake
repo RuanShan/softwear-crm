@@ -63,6 +63,14 @@ namespace :imprintables do
         imprintable.standard_offering = true
         imprintable.sizing_category = ws[row,20]
         imprintable.proofing_template_name = ws[row,30]
+        imprintable.weight = ws[row,24]
+        imprintable.main_supplier = ws[row,18]
+        imprintable.base_price = ws[row,6].gsub('$', '').to_f
+        imprintable.xxl_price = ws[row,7].gsub('$', '').to_f
+        imprintable.xxxl_price = ws[row,8].gsub('$', '').to_f
+        imprintable.xxxxl_price = ws[row,9].gsub('$', '').to_f
+        imprintable.xxxxxl_price = ws[row,10].gsub('$', '').to_f
+        imprintable.xxxxxxl_price = ws[row,11].gsub('$', '').to_f
         imprintable.save
       end
     end

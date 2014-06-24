@@ -59,8 +59,8 @@ describe Imprintable, imprintable_spec: true do
 
   describe '#name' do
     let!(:imprintable) { create(:valid_imprintable) }
-    it 'returns a string of the style.catalog_no and style.name' do
-      expect(imprintable.name).to eq("#{ imprintable.style.catalog_no } #{ imprintable.style.name }")
+    it 'returns a string of the style.brand - style.catalog_no - style.name' do
+      expect(imprintable.name).to eq("#{ imprintable.brand.name } #{ imprintable.style.catalog_no } #{ imprintable.style.name }")
     end
   end
 
@@ -85,6 +85,12 @@ describe Imprintable, imprintable_spec: true do
       expect(variants_hash[:size_variants][0].id).to eq(imprintable_variant.size_id)
       expect(variants_hash[:color_variants][0].id).to eq(imprintable_variant.color_id)
       expect(variants_hash[:variants_array][0].id).to eq(imprintable_variant.id)
+    end
+  end
+
+  describe 'is_a_standard_offering?' do
+    it 'returns true if standard_offering is true', pending: true do
+
     end
   end
 

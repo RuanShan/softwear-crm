@@ -20,7 +20,7 @@ class Imprintable < ActiveRecord::Base
   validates :sizing_category, inclusion: { in: SIZING_CATEGORIES, message: 'Invalid sizing category' }
 
   def name
-    "#{style.catalog_no} #{style.name}"
+    "#{brand.name} - #{style.catalog_no} - #{style.name}"
   end
 
   def description
@@ -41,5 +41,9 @@ class Imprintable < ActiveRecord::Base
 
     color_variants = variants_array.uniq{ |v| v.color_id }
     { :size_variants => size_variants, :color_variants => color_variants, :variants_array => variants_array }
+  end
+
+  def is_a_standard_offering?
+    standard_offering == true
   end
 end

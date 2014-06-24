@@ -3,37 +3,18 @@
     <table class="table table-hover" id="imprintables_list">
       <thead>
       <tr>
-        <th>Name</th>
-        <th>Catalog Number</th>
+        <th>Standard Offering</th>
+        <th>Imprintable</th>
         <th>Description</th>
-        <th>Material</th>
-        <th>Proofing Template Name</th>
-        <th>Sizing Category</th>
-        <th>Brand</th>
-        <th>Style</th>
-        <th>Tags</th>
-        <th>Flashable?</th>
-        <th>Polyester?</th>
-        <th>Special Considerations</th>
-        <th>Standard Offering?</th>
+        <th style="width: 100px" >Actions</th>
       </tr>
       </thead>
       <tbody>
       <% @imprintables.each do |imprintable| %>
       <tr id="<%= model_table_row_id imprintable %>">
+        <td><% if imprintable.is_a_standard_offering? %><i class="fa fa-check-square"></i><% end %></td>
         <td><%= link_to imprintable.name, imprintable_path(imprintable), remote: true, class: 'imprintable_modal_link' %></td>
-        <td><%= imprintable.style.catalog_no %></td>
         <td><%= imprintable.style.description %></td>
-        <td><%= imprintable.material %></td>
-        <td><%= imprintable.proofing_template_name %></td>
-        <td><%= imprintable.sizing_category %></td>
-        <td><%= imprintable.brand.name %></td>
-        <td><%= imprintable.style.name %></td>
-        <td><%= raw imprintable.tag_list.map { |t| link_to t, tag_path(t) }.join(', ') %></td>
-        <td><%= human_boolean(imprintable.flashable) %></td>
-        <td><%= human_boolean(imprintable.polyester) %></td>
-        <td><%= imprintable.special_considerations %></td>
-        <td><%= human_boolean(imprintable.standard_offering) %></td>
         <td>
           <div class="btn-group btn-group-xs">
             <%= link_to imprintable_path(imprintable), 'data-action' => 'show', 'data-toggle' => 'tooltip', 'title' => 'Show', class: 'btn btn-default' do %><i class="fa fa-eye"></i> <% end %>
