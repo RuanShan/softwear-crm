@@ -3,6 +3,7 @@ require 'spec_helper'
 describe Order, order_spec: true do
   describe 'Relationships' do
     it { should belong_to :store }
+    it { should have_many :payments }
   end
 
   let!(:store) { create(:valid_store) }
@@ -107,5 +108,7 @@ describe Order, order_spec: true do
         expect(salesperson.full_name).to eq(order.salesperson_name)
       end
     end
+
+    context '#'
   end
 end

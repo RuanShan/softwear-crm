@@ -24,3 +24,13 @@ $(window).load ->
     tab.trigger $.Event('click')
 
   $('#datetimepicker1').datetimepicker()
+
+jQuery ->
+  $(document).on('click', '#submit_button', ->
+    total = $('#total_supply').data('total')
+    amount = $('#amount_field').text()
+    amountOuter = document.getElementById('amount_field').outerHTML
+    console.log(total)
+    alert('logged')
+    return
+  )

@@ -29,11 +29,16 @@
   <div class="col-sm-6">
     <h3><strong>Apply</strong> Payment</h3>
     <div class="btn-group btn-group-sm">
-      <a data-toggle="tooltip" title="Edit" class="btn btn-default"><i class="fa fa-money"></i> Cash</a>
-      <a data-toggle="tooltip" title="Quick View" class="btn btn-default"><i class="fa fa-credit-card"></i> Swiped CreditCard</a>
-      <a data-toggle="tooltip" title="Order Timeline" class="btn btn-default md-trigger"><i class="fa fa-edit"></i> Check</a>
-      <a data-toggle="tooltip" title="Printable Invoice" class="btn btn-default"><i class="fa fa-rub"></i> PayPal</a>
-      <a data-toggle="tooltip" title="Printable Invoice" class="btn btn-default"><i class="fa fa-code-fork"></i> Wire Transfer</a>
+      <%= link_to '#', { class: 'additional-icon btn btn-default', 'data-toggle' => 'collapse', 'data-target' => '#box-icon-2', id: 'apply_cash' } do %><i class="fa fa-money"></i> Cash<% end %>
+      <a id="apply_swiped_cc" data-toggle="tooltip" title="Quick View" class="btn btn-default"><i class="fa fa-credit-card"></i> Swiped CreditCard</a>
+      <a id="apply_check" data-toggle="tooltip" title="Order Timeline" class="btn btn-default md-trigger"><i class="fa fa-edit"></i> Check</a>
+      <a id="apply_pp" data-toggle="tooltip" title="Printable Invoice" class="btn btn-default"><i class="fa fa-rub"></i> PayPal</a>
+      <a id="apply_wire_transfer" data-toggle="tooltip" title="Printable Invoice" class="btn btn-default"><i class="fa fa-code-fork"></i> Wire Transfer</a>
+    </div>
+
+    <div id="box-icon-2" class="collapse out">
+      <br/>
+      <%= render partial: 'payment_form', locals: { order: order, payment: Payment.new, method: 'cash' } %>
     </div>
 
     <h3><strong>Make</strong> Payment</h3>
@@ -45,5 +50,13 @@
 
   <div class="col-sm-12">
     <h3><strong>Payments</strong> List</h3>
+    <ul>
+      <% order.payments.each_with_index do |payment, index| %>
+        <dt>Payment <%= index + 1 %></dt>
+        <dd>Amount: <%= payment.amount %></dd><br/>
+      <% end %>
+    </ul>
   </div>
+
+
 </div>

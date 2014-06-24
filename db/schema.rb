@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140620182803) do
+ActiveRecord::Schema.define(version: 20140623151424) do
 
   create_table "brands", force: true do |t|
     t.string   "name"
@@ -61,6 +61,12 @@ ActiveRecord::Schema.define(version: 20140620182803) do
   end
 
   add_index "imprint_methods_imprintables", ["imprintable_id", "imprint_method_id"], name: "imprint_method_imprintables_index", using: :btree
+
+  create_table "imprintable_linker_table", id: false, force: true do |t|
+    t.integer "imprintable_id"
+    t.integer "coordinate_id"
+    t.integer "store_id"
+  end
 
   create_table "imprintable_variants", force: true do |t|
     t.integer  "imprintable_id"
@@ -169,6 +175,18 @@ ActiveRecord::Schema.define(version: 20140620182803) do
   end
 
   add_index "orders", ["deleted_at"], name: "index_orders_on_deleted_at", using: :btree
+
+  create_table "payments", force: true do |t|
+    t.integer  "order_id"
+    t.integer  "salesperson_id"
+    t.integer  "store_id"
+    t.boolean  "refunded"
+    t.decimal  "amount",         precision: 10, scale: 2
+    t.text     "refund_reason"
+    t.datetime "deleted_at"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
 
   create_table "print_locations", force: true do |t|
     t.string   "name"

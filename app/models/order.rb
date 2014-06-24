@@ -28,9 +28,12 @@ class Order < ActiveRecord::Base
   validates :store, presence: true
   validates :salesperson_id, presence: true
 
-  belongs_to :user
+  belongs_to :user, :foreign_key => :salesperson_id
   belongs_to :store
   has_many :jobs
+  has_many :payments
+
+  accepts_nested_attributes_for :payments
 
   # non-deletable stuff
   acts_as_paranoid
@@ -47,6 +50,12 @@ class Order < ActiveRecord::Base
       sum += line_item.price
     end
     sum
+  end
+
+  def payment_total
+    self.payments.each do |payment|
+      total += payment
+    end
   end
 
   def total; subtotal + subtotal * tax; end

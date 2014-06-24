@@ -8,7 +8,7 @@ feature 'Colors management', color_spec: true do
     login_as(valid_user)
   end
 
-  given!(:color) { create(:valid_color)}
+  given!(:color) { create(:valid_color) }
 
 
   scenario 'A user can see a list of colors' do
