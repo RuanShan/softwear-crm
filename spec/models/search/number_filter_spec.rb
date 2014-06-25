@@ -60,7 +60,7 @@ describe Search::NumberFilter, search_spec: true do
       filter.value = 10
       filter.comparator = '<'
       filter.save
-      results = assure_sunspot_search(:results) do
+      results = assure_solr_search(:results) do
         Order.search do
           filter.apply(self)
         end

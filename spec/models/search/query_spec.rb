@@ -46,9 +46,12 @@ describe Search::Query, search_spec: true do
         name: 'keytwo', 
         firstname: 'keyone' }
 
-      it 'combines all of the search results', :solr do
+      it 'combines all of the search results', solr: true do
         create(:job, name: 'keyone job')
-        expect(subject.search('keyone').combine.count).to eq 4
+        combined = assure_solr_search(:combine) do
+          subject.search('keyone')
+        end
+        expect(combined.count).to eq 4
       end
     end
 
@@ -122,7 +125,9 @@ describe Search::Query, search_spec: true do
         end
 
         it 'applies the filter', :s2, solr: true do
-          results = subject.search.first.results
+          results = assure_solr_search(:results) do
+            subject.search.first
+          end
           expect(results).to include order3
           expect(results).to_not include order1
           expect(results).to_not include order2

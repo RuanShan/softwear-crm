@@ -36,7 +36,9 @@ module SunspotHelpers
     Net::HTTP.get URI "#{Sunspot.config.solr.url}/admin/ping"
   end
 
-  def assure_sunspot_search(field)
+  # For some reason, Solr likes to occasionally return 
+  # empty arrays when testing. This deals with that.
+  def assure_solr_search(field)
     results = []
     Timeout::timeout(10) do
       while results.empty?
