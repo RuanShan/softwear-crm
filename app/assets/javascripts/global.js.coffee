@@ -61,4 +61,11 @@ $(document).ready ->
     if callback.length >= 1
       callback(false)
 
+  onHide = -> 
+    console.log 'hidden after confirm!'
+    $('#contentModal > .modal-dialog').removeClass 'modal-sm'
+    $modal.unbind 'hidden.bs.model', onHide
+  $('#contentModal > .modal-dialog').addClass 'modal-sm'
+  $modal.on 'hidden.bs.modal', onHide
+
   $modal.modal 'show'

@@ -33,14 +33,16 @@
 
     <%= render partial: 'shared/modal_flash' %>
     <%= render partial: 'shared/modal_content' %>
+    <!-- TODO Use content modal for generic error -->
     <%= render partial: 'shared/modal_generic_error' %>
+    <%= render partial: 'shared/modal_timeout' %>
 
 </div>
 
 
 </body>
 <% if Rails.env.development? %>
-  <script type='text/javascript'>idleTimeoutMs = 2147483647;</script>
+  <script type='text/javascript'>idleTimeoutMs = 5000;</script>
 <% end %>
 </html>
 
