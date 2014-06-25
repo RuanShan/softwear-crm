@@ -3,6 +3,7 @@ class CreateSearchTables < ActiveRecord::Migration
     create_table :search_queries do |t|
       t.belongs_to :user
       t.string :name
+      t.string :default_fulltext
 
       t.timestamps
     end

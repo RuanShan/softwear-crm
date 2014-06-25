@@ -200,6 +200,7 @@ ActiveRecord::Schema.define(version: 20140620143021) do
   create_table "search_queries", force: true do |t|
     t.integer  "user_id"
     t.string   "name"
+    t.string   "default_fulltext"
     t.datetime "created_at"
     t.datetime "updated_at"
   end

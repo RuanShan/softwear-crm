@@ -4,6 +4,22 @@ module Search
     has_many :query_models, class_name: 'Search::QueryModel', dependent: :destroy
     validates :name, uniqueness: { scope: :user_id }
 
+    class SearchList < Array
+      def initialize(models, &block)
+        super(models.map.with_index(&block))
+      end
+
+      def combine
+        map do |search|
+          search.results.map.with_index do |result, i|
+            { search.hits[i].score => result }
+          end
+        end.flatten.sort do |a,b|
+          a.keys.first <=> b.keys.first 
+        end.map { |e| e.values.first }
+      end
+    end
+
     def models
       if query_models.empty?
         Models.all
@@ -12,15 +28,21 @@ module Search
       end
     end
 
-    def search(*args)
-      text = args.empty? ? nil : args.first
+    def search(*args, &block)
+      options = if args.last.is_a? Hash
+        args.last
+      else {} end
 
-      models.map.with_index do |model, i|
+      text = if args.first.is_a? String
+        args.first
+      else default_fulltext end
+
+      SearchList.new(models) do |model, i|
         text_fields = text_fields_at(i)
         query_model = query_models[i]
 
         model.search do
-          if text
+          if text && !text.empty?
             if text_fields && !text_fields.empty?
               fulltext(text) do
                 fields(text_fields)
@@ -32,6 +54,7 @@ module Search
           if query_model && query_model.filter
             query_model.filter.apply(self)
           end
+          block.call if block_given?
         end
       end
     end

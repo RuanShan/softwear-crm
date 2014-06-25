@@ -63,8 +63,8 @@ RSpec.configure do |config|
       # Temporarily pending these. They do work, but not always
       # and I cannot for the life of me figure out why.
       unless example.metadata[:wip]
-        pending "These are inconsistent, but should pass sometimes."
-        return
+        #pending "Specs that use Solr appear to fail randomly."
+        #return
       end
       # Recover Sunspot session (if needed) and start solr.
       if Sunspot.session.respond_to? :original_session

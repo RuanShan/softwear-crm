@@ -5,6 +5,7 @@ describe Search::Query, search_spec: true do
   it { should belong_to :user }
   it { should have_db_column :name }
   it { should validate_uniqueness_of(:name).scoped_to :user_id }
+  it { should have_db_column :default_fulltext }
 
   it { should have_many :query_models }
   # it { should have_many :fields, class_name: 'Search::QueryField', through: :models }
@@ -30,6 +31,24 @@ describe Search::Query, search_spec: true do
     context 'when the query has no models' do
       it 'searches all models and fields' do
         expect(subject.search('test').count).to eq Search::Models.count
+      end
+    end
+
+    describe '.combine' do
+      let!(:order1) { create :order_with_job, 
+        name: 'keyone', 
+        firstname: 'keyone' }
+      let!(:order2) { create :order_with_job, 
+        name: 'keyone', 
+        firstname: 'keyone',
+        company: 'keyone and friends' }
+      let!(:order3) { create :order_with_job, 
+        name: 'keytwo', 
+        firstname: 'keyone' }
+
+      it 'combines all of the search results', :solr do
+        create(:job, name: 'keyone job')
+        expect(subject.search('keyone').combine.count).to eq 4
       end
     end
 

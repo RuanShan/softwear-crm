@@ -60,9 +60,15 @@ describe Search::NumberFilter, search_spec: true do
       filter.value = 10
       filter.comparator = '<'
       filter.save
-      results = Order.search do
-        filter.apply(self)
-      end.results
+      results = []
+      Timeout::timeout(30) do
+        while results.empty?
+          results = Order.search do
+            filter.apply(self)
+          end.results
+          sleep 0.2
+        end
+      end
 
       expect(results).to_not include order1
       expect(results).to include order2
