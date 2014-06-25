@@ -36,6 +36,16 @@ module SunspotHelpers
     Net::HTTP.get URI "#{Sunspot.config.solr.url}/admin/ping"
   end
 
+  def assure_sunspot_search(field)
+    results = []
+    Timeout::timeout(10) do
+      while results.empty?
+        results = yield.send(field)
+      end
+    end
+    results
+  end
+
   private
   def solr_cmd(command, supress_output)
     actual_command = "rake sunspot:solr:#{command} RAILS_ENV=test"

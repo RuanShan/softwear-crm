@@ -23,7 +23,6 @@ create_records([
       in_hand_by: '4/2/2015',
       terms: 'Half down on purchase',
       tax_exempt: false,
-      redo_reason: 'Because why not',
       sales_status: 'Pending',
       delivery_method: 'Ship to multiple locations',
       phone_number: '321-888-5448',

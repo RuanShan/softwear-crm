@@ -106,7 +106,7 @@ RSpec.configure do |config|
   config.after(:each) do
     # I found that sometimes, the database cleaner would start truncating tables
     # before the last test was finished.
-    # sleep 0.25
+    sleep 0.25
     DatabaseCleaner.clean
   end
 
