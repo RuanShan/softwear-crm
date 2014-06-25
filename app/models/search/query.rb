@@ -2,6 +2,7 @@ module Search
   class Query < ActiveRecord::Base
     belongs_to :user
     has_many :query_models, class_name: 'Search::QueryModel', dependent: :destroy
+    validates :name, uniqueness: { scope: :user_id }
 
     def models
       if query_models.empty?

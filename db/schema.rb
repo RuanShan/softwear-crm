@@ -193,7 +193,7 @@ ActiveRecord::Schema.define(version: 20140620143021) do
   create_table "search_number_filters", force: true do |t|
     t.string  "field"
     t.boolean "negate"
-    t.decimal "value",                precision: 10, scale: 0
+    t.decimal "value",                precision: 10, scale: 2
     t.string  "comparator", limit: 1
   end
 

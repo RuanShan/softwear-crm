@@ -62,8 +62,10 @@ RSpec.configure do |config|
     if example.metadata[:solr]
       # Temporarily pending these. They do work, but not always
       # and I cannot for the life of me figure out why.
-      pending "These are inconsistent, but should pass sometimes."
-      return
+      unless example.metadata[:wip]
+        pending "These are inconsistent, but should pass sometimes."
+        return
+      end
       # Recover Sunspot session (if needed) and start solr.
       if Sunspot.session.respond_to? :original_session
         Sunspot.session = Sunspot.session.original_session
@@ -104,9 +106,8 @@ RSpec.configure do |config|
   config.after(:each) do
     # I found that sometimes, the database cleaner would start truncating tables
     # before the last test was finished.
-    sleep 0.25
+    # sleep 0.25
     DatabaseCleaner.clean
   end
 
 end
-

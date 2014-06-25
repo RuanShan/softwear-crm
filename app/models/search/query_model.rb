@@ -1,8 +1,8 @@
 module Search
   class QueryModel < ActiveRecord::Base
     belongs_to :query, class_name: 'Search::Query'
-    has_many :query_fields, class_name: 'Search::QueryField'
-    has_one :filter, as: :filter_holder
+    has_many :query_fields, class_name: 'Search::QueryField', dependent: :destroy
+    has_one :filter, as: :filter_holder, dependent: :destroy
     validate :model_is_searchable
 
     def model
@@ -17,7 +17,7 @@ module Search
       end
     end
 
-    def add_field(field_name)
+    def add_field(field_name, *boost)
       names = query_fields.map(&:name)
       if names.include? field_name
         raise "#{name} query model already has field #{field_name}"
@@ -26,7 +26,7 @@ module Search
       elsif !Field[name, field_name].type_names.include? :text
         raise "#{name}##{field_name} is not fulltext!"
       else
-        query_fields << QueryField.new(name: field_name)
+        query_fields << QueryField.new(name: field_name, boost: boost.first)
       end
     end
 

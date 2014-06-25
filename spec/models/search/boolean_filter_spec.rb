@@ -9,6 +9,10 @@ describe Search::BooleanFilter, search_spec: true do
 
   let!(:filter) { create :filter_type_boolean, field: 'is_imprintable' }
 
+  it 'should belong to search type boolean' do
+    expect(Search::BooleanFilter.search_types).to eq [:boolean]
+  end
+
   it 'should apply properly when not negated' do
     filter.negate = false
     filter.value = true

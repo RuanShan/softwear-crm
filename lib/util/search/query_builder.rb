@@ -1,4 +1,9 @@
 module Search
+  # The Query Builder can be used to create search queries with pretty much the
+  # same syntax as Sunspot, so you don't have to deal with associating /
+  # configuring all the filters manually.
+  # 
+  # Most basic filtering stuff works. Check the QueryBuilder spec for examples.
   class QueryBuilder
     class << self
       def build(&block)
@@ -64,8 +69,6 @@ module Search
     end
 
     class PendingFilter
-      SUPPORTED_FIELD_TYPES = [:double, :float, :date]
-
       def initialize(filter_group, negate, field)
         raise "Field must be a Search::Field" unless field.is_a? Field
         @group = filter_group
@@ -80,24 +83,20 @@ module Search
           unless type.column_names.include? 'comparator'
             raise "Must be comparable filter type in order to call #{name}."
           end
-          @group.filters << type.new(field: @field.name, 
+          @group.filters << Filter.new(type, field: @field.name, 
             value: value, comparator: comp, negate: @negate)
         end
+      end
+
+      def method_missing(name, *args, &block)
+        raise "`#{name}' is an unsupported modifier"
       end
     end
 
     def self.filter_type_for(field)
       raise "Field must be a Search::Field" unless field.is_a? Field
-      if !(field.type_names & [:double, :float, :integer]).empty?
-        NumberFilter
-      elsif field.type_names.include? :string
-        StringFilter
-      elsif field.type_names.include? :date
-        DateFilter
-      elsif field.type_names.include? :reference
-        ReferenceFilter
-      elsif field.type_names.include? :boolean
-        BooleanFilter
+      FilterTypes.each do |type|
+        return type unless (field.type_names & type.search_types).empty?
       end
     end
 
@@ -109,7 +108,13 @@ module Search
 
     def fields(*args)
       args.each do |field|
-        @model.add_field field
+        if field.is_a? Hash
+          field.each do |name, boost|
+            @model.add_field name, boost
+          end
+        else
+          @model.add_field field
+        end
       end
     end
 
@@ -122,8 +127,9 @@ module Search
         when 0
           return PendingFilter.new(@group, negate, field)
         when 1
-          @group.filters << QueryBuilder.filter_type_for(field).new(
-            field: field.name, value: args.first, negate: negate)
+          type = QueryBuilder.filter_type_for(field)
+          @group.filters << Filter.new(type, field: field.name, 
+            value: args.first, negate: negate)
         end
       end
     end
@@ -141,6 +147,10 @@ module Search
         @group.filters << filter
         QueryBuilder.new(@model, filter).instance_eval(&block)
       end
+    end
+
+    def method_missing(name, *args, &block)
+      raise "`#{name}' is unsupported by QueryBuilder"
     end
 
     private

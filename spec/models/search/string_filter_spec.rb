@@ -10,6 +10,10 @@ describe Search::StringFilter, search_spec: true do
   let!(:filter) { create :filter_type_string, 
     field: 'sales_status', value: 'Pending' }
 
+  it 'should belong to search type string' do
+    expect(Search::StringFilter.search_types).to eq [:string]
+  end
+
   it 'should apply properly when not negated' do
     filter.negate = false
     filter.save

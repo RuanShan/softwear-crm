@@ -29,7 +29,7 @@ class CreateSearchTables < ActiveRecord::Migration
     end
 
     create_table :search_number_filters do |t|
-      field_filter t, :decimal
+      field_filter t, :decimal, precision: 10, scale: 2
       t.string :comparator, limit: 1
     end
 
@@ -59,9 +59,10 @@ class CreateSearchTables < ActiveRecord::Migration
   private
   def field_filter(t, *args)
     value_type = args.first
+    options = args.last.is_a?(Hash) ? args.last : {}
 
     t.string :field
     t.boolean :negate
-    t.send value_type, :value unless value_type == nil
+    t.send value_type, :value, options unless value_type == nil
   end
 end

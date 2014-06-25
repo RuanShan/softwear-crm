@@ -19,6 +19,10 @@ describe Search::DateFilter, search_spec: true do
     comparator: '>',
     field: 'in_hand_by' }
 
+  it 'should belong to search type date' do
+    expect(Search::DateFilter.search_types).to eq [:date]
+  end
+
   it 'should apply properly with negate set to false' do
     filter.negate = false
     filter.comparator = '='

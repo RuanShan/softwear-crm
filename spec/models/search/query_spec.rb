@@ -4,6 +4,7 @@ include GeneralHelpers
 describe Search::Query, search_spec: true do
   it { should belong_to :user }
   it { should have_db_column :name }
+  it { should validate_uniqueness_of(:name).scoped_to :user_id }
 
   it { should have_many :query_models }
   # it { should have_many :fields, class_name: 'Search::QueryField', through: :models }
@@ -70,6 +71,25 @@ describe Search::Query, search_spec: true do
           expect(search.first.results.count).to eq 1
           expect(search.first.results).to include order1
           expect(search.first.results).to_not include order2
+        end
+
+        context 'and filters' do
+          let!(:filter) { create :string_filter, 
+            filter_type: create(:filter_type_string,
+              field: 'firstname', value: 'keywordfour') }
+          before(:each) do
+            filter.filter_holder = order_model
+            filter.save
+          end
+
+          it 'cleans up after itself' do
+            job_model
+            subject.destroy
+            expect(Search::Query.count).to eq 0
+            expect(Search::QueryModel.count).to eq 0
+            expect(Search::QueryField.count).to eq 0
+            expect(Search::Filter.count).to eq 0
+          end
         end
       end
 

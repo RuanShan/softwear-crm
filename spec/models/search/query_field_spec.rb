@@ -11,6 +11,10 @@ describe Search::QueryField, search_spec: true do
   let!(:order) { create :order_with_job }
   let!(:field) { create :query_order_name_field }
 
+  it 'defaults boost to 1' do
+    expect(Search::QueryField.new.boost).to eq 1
+  end
+
   describe '#to_h' do
     context 'when boost is null' do
       it 'should return name => 1' do

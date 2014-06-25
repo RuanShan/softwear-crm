@@ -25,6 +25,19 @@ describe Search::QueryBuilder, search_spec: true do
         expect(order_model.fields).to include Search::Field[:Order, :email]
       end
 
+      it 'should be able to specify boost to some fields' do
+        query = Search::QueryBuilder.build do
+          on(Order) do
+            fields :email, name: 2
+          end
+        end
+
+        order_model = query.query_models.first
+        expect(order_model.query_fields.count).to eq 2
+        expect(order_model.query_fields.first.boost).to eq 1
+        expect(order_model.query_fields.last.boost).to eq 2
+      end
+
       it 'should be able to build a search on more than one model' do
         query = Search::QueryBuilder.build do
           on(Order, Job)
@@ -42,6 +55,7 @@ describe Search::QueryBuilder, search_spec: true do
 
         order_model = query.query_models.first
         expect(order_model.filter.type).to be_a Search::FilterGroup
+
         group = order_model.filter.type
         expect(group.filters.count).to eq 1
         expect(group.filters.first.value).to eq 100.50
@@ -58,11 +72,12 @@ describe Search::QueryBuilder, search_spec: true do
 
         order_model = query.query_models.first
         expect(order_model.filter.type).to be_a Search::FilterGroup
+
         group = order_model.filter.type
-        expect(group.all).to eq true
+        expect(group.all).to be_truthy
         expect(group.filters.first.type).to be_a Search::NumberFilter
         expect(group.filters.last.type).to be_a Search::StringFilter
-        expect(group.filters.last.negate).to_not be_truthy
+        expect(group.filters.last.negate).to be_truthy
       end
 
       it 'should be able to build a search with many filters' do
@@ -82,13 +97,19 @@ describe Search::QueryBuilder, search_spec: true do
 
         order_model = query.query_models.first
         expect(order_model.filter.type).to be_a Search::FilterGroup
-        expect(order_model.filter.all).to eq false
+        expect(order_model.filter.all).to be_truthy
+
         group = order_model.filter.type
-        expect(group.filters.count).to eq 3
+        expect(group.filters.count).to eq 1
         expect(group.filters.last.type).to be_a Search::FilterGroup
+
         inner_group = group.filters.last.type
-        expect(inner_group.all).to eq true
-        expect(inner_group.filters.count).to eq 2
+        expect(inner_group.all).to_not be_truthy
+        expect(inner_group.filters.count).to eq 3
+
+        inner_inner_group = inner_group.filters.last.type
+        expect(inner_inner_group.all).to be_truthy
+        expect(inner_inner_group.filters.count).to eq 2
       end
     end
   end

@@ -3,8 +3,18 @@ module Search
     extend ActiveSupport::Concern
 
     included do
-      has_one :filter, as: :filter_type
+      has_one :filter, as: :filter_type, dependent: :destroy
       FilterTypes << self
+
+      class << self
+        def search_types; @search_types; end
+        def belongs_to_search_type(type)
+          belongs_to_search_types(*[type])
+        end
+        def belongs_to_search_types(*types)
+          @search_types = types
+        end
+      end
     end
 
     def method_missing(name, *args, &block)
@@ -29,7 +39,7 @@ module Search
       attr_reader :all
 
       def respond_to?(*args)
-        @all.respond_to?(*args)
+        @all.respond_to?(*args) || super
       end
 
       def method_missing(name, *args, &block)

@@ -7,6 +7,8 @@ describe Search::QueryModel, search_spec: true do
   it { should have_many :query_fields }
   it { should have_one :filter }
 
+  let!(:model) { create(:query_order_model) }
+
   it 'should validate that the represented model is searchable' do
     with(Search::QueryModel.method :new) do |new|
       expect(new.call(name: 'Order')).to be_valid
@@ -14,19 +16,18 @@ describe Search::QueryModel, search_spec: true do
     end
   end
 
-  it 'should be destroyed when its parent query is destroyed' do
-    query = create(:search_query)
-    create(:query_order_model, query_id: query.id)
-    expect(Search::QueryModel.where(name: 'Order')).to exist
+  it 'should destroy its filter when destroyed' do
+    model.filter = create(:number_filter)
+    expect(Search::Filter.count).to eq 1
+    expect(Search::NumberFilter.count).to eq 1
 
-    query.destroy
+    model.destroy
 
-    expect(Search::QueryModel.where(name: 'Order')).to_not exist
+    expect(Search::Filter.count).to eq 0
+    expect(Search::NumberFilter.count).to eq 0
   end
 
   describe '#fields' do
-    let!(:model) { create(:query_order_model) }
-    
     context 'when there are no query_fields' do
       it 'returns an array of all fields in the model' do
         expect(model.fields).to eq Order.searchable_fields

@@ -17,6 +17,12 @@ describe Search::NumberFilter, search_spec: true do
     comparator: '>',
     field: 'commission_amount' }
 
+  it 'should belong to search types double float and integer' do
+    expect(Search::NumberFilter.search_types).to include :double
+    expect(Search::NumberFilter.search_types).to include :float
+    expect(Search::NumberFilter.search_types).to include :integer
+  end
+
   it 'should apply properly with negate set to false' do
     filter.negate = false
     filter.comparator = '='
