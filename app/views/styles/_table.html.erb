@@ -4,9 +4,9 @@
     <table class="table table-hover" id="styles_list">
       <thead>
       <tr>
-        <th>Name</th>
-        <th>Catalog Number</th>
         <th>Brand Name</th>
+        <th>Catalog Number</th>
+        <th>Name</th>
         <th>Description</th>
         <th>SKU</th>
       </tr>
@@ -14,9 +14,9 @@
       <tbody>
       <% styles.each do |style| %>
           <tr id="<%= model_table_row_id style %>">
-            <td><%= style.name %></td>
-            <td><%= style.catalog_no %></td>
             <td><%= style.brand.name %></td>
+            <td><%= style.catalog_no %></td>
+            <td><%= style.name %></td>
             <td><%= style.description %></td>
             <td><%= style.sku %></td>
             <td>

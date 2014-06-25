@@ -1,6 +1,4 @@
 class Imprintable < ActiveRecord::Base
-  paginates_per 50
-
   acts_as_paranoid
   acts_as_taggable
 

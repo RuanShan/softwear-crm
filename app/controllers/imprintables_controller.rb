@@ -1,5 +1,15 @@
 class ImprintablesController < InheritedResources::Base
 
+  def index
+    super do
+      if params[:tag]
+        @imprintables = Imprintable.tagged_with(params[:tag])
+      else
+        @imprintables = Imprintable.all.page(params[:page])
+      end
+    end
+  end
+
   def update
     super do |success, failure|
       color_ids = params[:color_ids]
@@ -16,15 +26,6 @@ class ImprintablesController < InheritedResources::Base
     end
   end
 
-  def index
-    super do
-      if params[:tag]
-        @imprintables = Imprintable.tagged_with(params[:tag])
-      else
-        @imprintables = Imprintable.all.page(params[:page])
-      end
-    end
-  end
 
   def show
     super do |format|

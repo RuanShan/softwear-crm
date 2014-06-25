@@ -1,5 +1,11 @@
 class StylesController < InheritedResources::Base
 
+  def index
+    super do
+      @styles = Style.all.page(params[:page])
+    end
+  end
+
   def update
     super do |success, failure|
       success.html { redirect_to styles_path }
