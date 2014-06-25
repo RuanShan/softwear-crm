@@ -1,30 +1,32 @@
 @idleTimeoutMs = 600000 # 10 minutes
 @idleWarningSec = 60    # 1 minute
 $(window).load ->
-  if $('#contentModal').length == 0 then return
+  if $('#timeoutModal').length == 0 then return
 
-  $('#contentModal .modal-title').html 'Warning: inactive!'
   set_countdown_timer = ->
-    $('#contentModal .modal-body').html "You will be temporarily logged out in #{count} seconds"
+    $('#timeoutModal .modal-body').html "You will be temporarily logged out in #{count} seconds"
     count--
-    $('#contentModal').modal 'show'
+    $('#timeoutModal').modal 'show'
     if count < 0
       clearInterval inter
       on_timeout()
 
   count = idleWarningSec
   inter = null
+  warning = false
   
   timer = $.timer ->
     timer.stop()
     count = idleWarningSec
-    inter = null
+    $('#timeoutModal .modal-title').html 'Warning: inactive!'
     inter = setInterval set_countdown_timer, 1000
+    warning = true
 
   cancel = ->
     timer.stop()
-    if inter then clearInterval inter
-    $("#contentModal").modal 'hide'
+    clearInterval inter if inter
+    $("#timeoutModal").modal 'hide' if warning
+    warning = false
   begin = ->
     cancel()
     timer.set { time: idleTimeoutMs, autostart: true }
@@ -32,6 +34,7 @@ $(window).load ->
   begin()
   $(window).mouseup begin
   $(window).keypress begin
+  $('#timeoutModal').on 'hidden.bs.modal', begin
 
   on_timeout = ->
     form = $('<form/>', action: '/users/lock', method: 'get')

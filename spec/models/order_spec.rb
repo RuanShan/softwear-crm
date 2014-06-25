@@ -34,13 +34,6 @@ describe Order, order_spec: true do
       expect(build(:order, store_id: store.id, store: store, salesperson_id: user.id, tax_exempt: true, tax_id_number: 12)).to be_valid
     end
 
-    it 'requires a redo reason if is_redo? is true' do
-      expect(build(:order, store_id: store.id, store: store, salesperson_id: user.id, is_redo: true)).to_not be_valid
-    end
-    it 'is valid when is_redo? is true and a redo reason is present' do
-      expect(build(:order, store_id: store.id, store: store, salesperson_id: user.id, is_redo: true, redo_reason: 'because')).to be_valid
-    end
-
     it { should ensure_inclusion_of(:delivery_method).in_array Order::VALID_DELIVERY_METHODS }
 
   end
@@ -68,7 +61,7 @@ describe Order, order_spec: true do
   end
 
   context 'relationships', line_item_spec: true do
-    let!(:order) {create :order}
+    let!(:order) { create :order }
 
     context '#line_items' do
       it 'is an ActiveRecord::Relation' do

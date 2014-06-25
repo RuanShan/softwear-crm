@@ -1,7 +1,7 @@
 require 'spec_helper'
 include ApplicationHelper
 
-feature 'Stores management' do
+feature 'Stores management', store_spec: true do
   given!(:valid_user) { create(:user) }
   before(:each) do
     login_as(valid_user)

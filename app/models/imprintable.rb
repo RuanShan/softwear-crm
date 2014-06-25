@@ -1,21 +1,30 @@
 class Imprintable < ActiveRecord::Base
-  acts_as_paranoid
+  paginates_per 50
 
-  SIZING_CATEGORIES = ['Adult Unisex', 'Ladies', 'Youth Unisex', 'Girls', 'Toddler', 'Infant']
+  acts_as_paranoid
+  acts_as_taggable
+
+  SIZING_CATEGORIES = ['Adult Unisex', 'Ladies', 'Youth Unisex', 'Girls', 'Toddler', 'Infant', 'n/a']
 
   belongs_to :style
   has_one :brand, through: :style, dependent: :destroy
   has_many :imprintable_variants, dependent: :destroy
-  has_many :colors, through: :imprintable_variants, dependent: :destroy
-  has_many :sizes, through: :imprintable_variants, dependent: :destroy
-  has_and_belongs_to_many :coordinates, class_name: 'Imprintable', association_foreign_key: 'imprintable_id', join_table: 'imprintable_linker_table'
-  has_and_belongs_to_many :sample_locations, class_name: 'Store', association_foreign_key: 'store_id', join_table: 'imprintable_linker_table'
+  has_many :colors, ->{ uniq }, through: :imprintable_variants, dependent: :destroy
+  has_many :sizes, ->{ uniq },  through: :imprintable_variants, dependent: :destroy
+  has_many :coordinate_imprintables
+  has_many :coordinates, through: :coordinate_imprintables
+  has_many :mirrored_coordinate_imprintables, class_name: 'CoordinateImprintable', foreign_key: 'coordinate_id'
+  has_many :mirrored_coordinates, through: :mirrored_coordinate_imprintables, source: :imprintable
+  has_and_belongs_to_many :sample_locations, class_name: 'Store', association_foreign_key: 'store_id', join_table: 'imprintables_stores'
+  has_and_belongs_to_many :compatible_imprint_methods, class_name: 'ImprintMethod', association_foreign_key: 'imprint_method_id', join_table: 'imprint_methods_imprintables'
 
   validates :style, presence: true
   validates :sizing_category, inclusion: { in: SIZING_CATEGORIES, message: 'Invalid sizing category' }
+  validates :supplier_link, format: {with: URI::regexp(%w(http https)), message: 'should be in format http://www.url.com/path'}, allow_blank: true
+
 
   def name
-    "#{style.catalog_no} #{style.name}"
+    "#{brand.name} - #{style.catalog_no} - #{style.name}"
   end
 
   def description
@@ -36,5 +45,9 @@ class Imprintable < ActiveRecord::Base
 
     color_variants = variants_array.uniq{ |v| v.color_id }
     { :size_variants => size_variants, :color_variants => color_variants, :variants_array => variants_array }
+  end
+
+  def standard_offering?
+    standard_offering == true
   end
 end

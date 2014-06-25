@@ -4,7 +4,7 @@
     <dd><%= imprintable.sizing_category %></dd>
     <br />
     <dt>Compatible Imprint Methods</dt>
-    <dd>Screen Print, Embroidery</dd>
+    <dd><%= imprintable.compatible_imprint_methods.map { |cim| cim.name }.join(', ') %></dd>
     <br />
     <dt>Flashable?</dt>
     <dd><%= human_boolean(imprintable.flashable) %></dd>

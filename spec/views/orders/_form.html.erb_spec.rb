@@ -19,8 +19,6 @@ describe "orders/_form.html.erb", order_spec: true do
   		expect(rendered).to have_field_for :terms
   		expect(rendered).to have_field_for :tax_exempt
   		expect(rendered).to have_field_for :tax_id_number
-  		expect(rendered).to have_field_for :is_redo
-  		expect(rendered).to have_field_for :redo_reason
       expect(rendered).to have_field_for :delivery_method
   	end
   end

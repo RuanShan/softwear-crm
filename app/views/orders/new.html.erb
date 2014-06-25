@@ -1,11 +1,20 @@
-<!-- Page header -->
-<div class="page-heading animated fadeInDownBig">
-  <h1>Create New Custom Order <small>wizard</small></h1>
-</div>
-<!-- End page header -->
+<% if @empty %>
+  <div class="page-heading animated fadeInDownBig">
+    <h1>No stores found!</h1>
+  </div>
+  <%= render partial: 'missing_store_error' %>
+<% else %>
 
-<!-- Begin form wizard -->
-<div class="box-info full">
-  <%= render partial: 'form', locals: { order: @order, current_user: @current_user} %>
-</div><!-- End div .box-info -->
-<!-- End form wizard -->
+  <!-- Page header -->
+  <div class="page-heading animated fadeInDownBig">
+    <h1>Create New Custom Order <small>wizard</small></h1>
+  </div>
+  <!-- End page header -->
+
+  <div class="box-info full">
+  <!-- Begin form wizard -->
+    <%= render partial: 'form', locals: { order: @order, current_user: @current_user} %>
+  <!-- End form wizard -->
+
+  </div><!-- End div .box-info -->
+<% end %>

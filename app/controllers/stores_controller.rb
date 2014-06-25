@@ -1,4 +1,12 @@
 class StoresController < InheritedResources::Base
+
+  def index
+    super do |format|
+      format.html
+      format.json { render json: @stores.where('name like ?', "%#{params[:q]}%") }
+    end
+  end
+
   def update
     super do |format|
       format.html { redirect_to stores_path }

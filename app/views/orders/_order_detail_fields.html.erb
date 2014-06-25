@@ -1,5 +1,5 @@
 <div class="form-group">
-  <%= f.label :name %>
+  <%= f.label :name, 'Order Name' %>
   <%= f.error_for :name %>
   <%= f.text_field :name, placeholder: 'Title used internally by company' %>
 </div>
@@ -11,7 +11,11 @@
 <div class="form-group">
   <%= f.label :in_hand_by, 'In Hand By Date' %>
   <%= f.error_for :in_hand_by %>
-  <%= f.datetime :in_hand_by, placeholder: 'In Hand By' %>
+  <div class="input-group date" id="datetimepicker1">
+    <%= f.text_field :in_hand_by, { placeholder: 'In Hand By', class: 'form-control' } %>
+    <span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span>
+    </span>
+  </div>
 </div>
 <div class="form-group">
   <%= f.label :salesperson_id, 'Salesperson' %>
@@ -34,9 +38,4 @@
   <%= f.label :tax_exempt, 'Tax exempt?' %>
   <%= f.error_for :tax_exempt %>
   <%= f.check_box_with_text_field :tax_exempt, :tax_id_number, placeholder: 'Tax ID Number' %>
-</div>
-<div class="form-group">
-  <%= f.label :is_redo, 'Is this order a redo?' %>
-  <%= f.error_for :is_redo %>
-  <%= f.check_box_with_text_field :is_redo, :redo_reason, placeholder: 'Redo Explanation' %>
 </div>

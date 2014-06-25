@@ -1,0 +1,32 @@
+<div class="user-profile-content" id="supplier_information_<%= imprintable.id%>">
+  <h2>Main Supplier: <%= imprintable.main_supplier %></h2>
+  <p>
+    <%= link_to imprintable.supplier_link, imprintable.supplier_link %>
+  </p>
+  <div class="box-info full">
+    <div class="table-responsive">
+      <table class="table table-hover" id="imprintable_supplier_pricing">
+        <thead>
+        <tr>
+          <th>Base Price</th>
+          <th>2XL</th>
+          <th>3XL</th>
+          <th>4XL</th>
+          <th>5XL</th>
+          <th>6XL</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr>
+          <td><%= number_to_currency imprintable.base_price unless imprintable.base_price == 0.0 %></td>
+          <td><%= number_to_currency imprintable.xxl_price unless imprintable.xxl_price == 0.0 %></td>
+          <td><%= number_to_currency imprintable.xxxl_price unless imprintable.xxxl_price == 0.0 %></td>
+          <td><%= number_to_currency imprintable.xxxxl_price unless imprintable.xxxxl_price == 0.0 %></td>
+          <td><%= number_to_currency imprintable.xxxxxl_price unless imprintable.xxxxxl_price == 0.0 %></td>
+          <td><%= number_to_currency imprintable.xxxxxxl_price unless imprintable.xxxxxxl_price == 0.0 %></td>
+        </tr>
+        </tbody>
+       </table>
+     </div>
+    </div>
+</div>

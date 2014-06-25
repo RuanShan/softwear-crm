@@ -4,7 +4,10 @@
 <div class="col-lg-3 text-right">
   <%= link_to "Add an Imprintable", new_imprintable_path, class:'btn btn-primary', role: 'button' %>
 </div>
+<%= paginate @imprintables %>
 
 <div class="box-info row clear">
-  <%= render partial: 'table', locals: {imprintables: @imprintables, sizes: @sizes, colors: @colors } %>
+  <%= render partial: 'table', locals: { imprintables: @imprintables, sizes: @sizes, colors: @colors } %>
 </div>
+
+<%= paginate @imprintables %>
