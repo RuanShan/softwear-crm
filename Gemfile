@@ -74,6 +74,7 @@ gem 'devise'
 gem 'figaro'
 gem 'paranoia', '~> 2.0'
 gem 'google_drive'
+gem 'kaminari'
 
 
 # Use ActiveModel has_secure_password
