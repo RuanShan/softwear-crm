@@ -22,6 +22,7 @@ describe 'imprintables/_form.html.erb', imprintable_spec: true do
       expect(rendered).to have_field_for :coordinate_ids
       expect(rendered).to have_field_for :compatible_imprint_method_ids
       expect(rendered).to have_field_for :main_supplier
+      expect(rendered).to have_field_for :supplier_link
       expect(rendered).to have_field_for :base_price
       expect(rendered).to have_field_for :xxl_price
       expect(rendered).to have_field_for :xxxl_price

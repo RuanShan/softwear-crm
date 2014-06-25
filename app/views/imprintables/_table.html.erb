@@ -12,7 +12,7 @@
       <tbody>
       <% @imprintables.each do |imprintable| %>
       <tr id="<%= model_table_row_id imprintable %>">
-        <td><% if imprintable.is_a_standard_offering? %><i class="fa fa-check-square"></i><% end %></td>
+        <td><% if imprintable.standard_offering? %><i class="fa fa-check-square"></i><% end %></td>
         <td><%= link_to imprintable.name, imprintable_path(imprintable), remote: true, class: 'imprintable_modal_link' %></td>
         <td><%= imprintable.style.description %></td>
         <td>

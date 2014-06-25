@@ -14,26 +14,23 @@ describe 'imprintables/_table.html.erb', imprintable_spec: true do
     expect(rendered).to have_selector('th', text: 'Actions')
   end
 
-  it 'displays the name, catalog number, and description material, sizing category, brand, style, flashable, polyester, and special consideration of that imprintable', pending: true do
+  it 'displays the name, description' do
     render partial: 'imprintables/table', locals: { imprintables: imprintables }
     expect(rendered).to have_selector('td', text: imprintables.first.name)
-    expect(rendered).to have_selector('td', text: imprintables.first.style.catalog_no)
-    expect(rendered).to have_selector('td', text: imprintables.first.style.description)
     expect(rendered).to have_selector('td', text: imprintables.first.description)
-    expect(rendered).to have_selector('td', text: imprintables.first.material)
-    expect(rendered).to have_selector('td', text: imprintables.first.sizing_category)
-    expect(rendered).to have_selector('td', text: imprintables.first.brand.name)
-    expect(rendered).to have_selector('td', text: imprintables.first.style.name)
-    expect(rendered).to have_selector('td', text: imprintables.first.tag_list)
-    expect(rendered).to have_selector('td', text: imprintables.first.flashable)
-    expect(rendered).to have_selector('td', text: imprintables.first.polyester)
-    expect(rendered).to have_selector('td', text: imprintables.first.special_considerations)
-    expect(rendered).to have_selector('td', text: imprintables.first.standard_offering)
   end
 
   it 'actions column has a link to edit and a link to destroy' do
     render partial: 'imprintables/table', locals: { imprintables: imprintables }
     expect(rendered).to have_selector("tr#imprintable_#{imprintables.first.id} td a[href='#{imprintable_path(imprintables.first)}']")
     expect(rendered).to have_selector("tr#imprintable_#{imprintables.first.id} td a[href='#{edit_imprintable_path(imprintables.first)}']")
+  end
+
+  context 'an imprintable is a standard offering' do
+    it 'displays a check mark in the row' do
+      imprintables.first.update_attribute(:standard_offering, true)
+      render partial: 'imprintables/table', locals: { imprintables: imprintables }
+      expect(rendered).to have_selector('i.fa-check-square')
+    end
   end
 end

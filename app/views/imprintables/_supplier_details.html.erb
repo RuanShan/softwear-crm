@@ -1,5 +1,8 @@
-<div class="user-profile-content">
+<div class="user-profile-content" id="supplier_information_<%= imprintable.id%>">
   <h2>Main Supplier: <%= imprintable.main_supplier %></h2>
+  <p>
+    <%= link_to imprintable.supplier_link, imprintable.supplier_link %>
+  </p>
   <div class="box-info full">
     <div class="table-responsive">
       <table class="table table-hover" id="imprintable_supplier_pricing">
