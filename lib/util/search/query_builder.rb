@@ -79,7 +79,7 @@ module Search
       [:greater_than, :less_than].each_with_index do |name, i|
         define_method(name) do |value|
           comp = ['>', '<'][i]
-          type = QueryBuilder.filter_type_for(@field)
+          type = FilterType.of @field
           unless type.column_names.include? 'comparator'
             raise "Must be comparable filter type in order to call #{name}."
           end
@@ -90,13 +90,6 @@ module Search
 
       def method_missing(name, *args, &block)
         raise "`#{name}' is an unsupported modifier"
-      end
-    end
-
-    def self.filter_type_for(field)
-      raise "Field must be a Search::Field" unless field.is_a? Field
-      FilterTypes.each do |type|
-        return type unless (field.type_names & type.search_types).empty?
       end
     end
 
@@ -127,7 +120,7 @@ module Search
         when 0
           return PendingFilter.new(@group, negate, field)
         when 1
-          type = QueryBuilder.filter_type_for(field)
+          type = FilterType.of field
           @group.filters << Filter.new(type, field: field.name, 
             value: args.first, negate: negate)
         end

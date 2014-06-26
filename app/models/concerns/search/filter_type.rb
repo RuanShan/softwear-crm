@@ -31,6 +31,14 @@ module Search
     def with_func
       negate? ? :without : :with
     end
+
+    def self.of(field)
+      raise "Field must be a Search::Field" unless field.is_a? Field
+      FilterTypes.each do |type|
+        return type unless (field.type_names & type.search_types).empty?
+      end
+      raise "#{field} has no filter type associated with its type!"
+    end
   end
 
   # Collection of all filter types
