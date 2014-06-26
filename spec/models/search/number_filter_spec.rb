@@ -60,10 +60,10 @@ describe Search::NumberFilter, search_spec: true do
       filter.value = 10
       filter.comparator = '<'
       filter.save
-      results = assure_solr_search(:results) do
+      results = assure_solr_search do
         Order.search do
           filter.apply(self)
-        end
+        end.results
       end
 
       expect(results).to_not include order1

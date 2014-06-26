@@ -48,10 +48,9 @@ describe Search::Query, search_spec: true do
 
       it 'combines all of the search results', solr: true do
         create(:job, name: 'keyone job')
-        combined = assure_solr_search(:combine) do
-          subject.search('keyone')
+        assure_solr_search(expect: 4) do
+          subject.search('keyone').combine
         end
-        expect(combined.count).to eq 4
       end
     end
 
@@ -88,7 +87,9 @@ describe Search::Query, search_spec: true do
         end
 
         it 'just searches that field', :s1, solr: true do
-          search = subject.search 'keywordone'
+          search = assure_solr_search do
+            subject.search 'keywordone'
+          end
           expect(search.count).to eq 1
           expect(search.first.results.count).to eq 1
           expect(search.first.results).to include order1
@@ -125,8 +126,8 @@ describe Search::Query, search_spec: true do
         end
 
         it 'applies the filter', :s2, solr: true do
-          results = assure_solr_search(:results) do
-            subject.search.first
+          results = assure_solr_search do
+            subject.search.first.results
           end
           expect(results).to include order3
           expect(results).to_not include order1

@@ -60,12 +60,6 @@ RSpec.configure do |config|
 
   config.before(:each) do |example|
     if example.metadata[:solr]
-      # Temporarily pending these. They do work, but not always
-      # and I cannot for the life of me figure out why.
-      unless example.metadata[:wip]
-        #pending "Specs that use Solr appear to fail randomly."
-        #return
-      end
       # Recover Sunspot session (if needed) and start solr.
       if Sunspot.session.respond_to? :original_session
         Sunspot.session = Sunspot.session.original_session

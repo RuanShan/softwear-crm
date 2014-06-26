@@ -38,11 +38,16 @@ module SunspotHelpers
 
   # For some reason, Solr likes to occasionally return 
   # empty arrays when testing. This deals with that.
-  def assure_solr_search(field)
+  # also TODO WEDNESDAY
+  # Looks like it didn't quite work?! I have no idea.
+  def assure_solr_search(*args)
+    options = args.first || {}
     results = []
     Timeout::timeout(10) do
-      while results.empty?
-        results = yield.send(field)
+      while if options[:expect]
+              results.count != options[:expect]
+            else results.empty? end
+        results = yield
       end
     end
     results
