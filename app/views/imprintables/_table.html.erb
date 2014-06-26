@@ -14,7 +14,7 @@
       <tr id="<%= model_table_row_id imprintable %>">
         <td><% if imprintable.standard_offering? %><i class="fa fa-check-square"></i><% end %></td>
         <td><%= link_to imprintable.name, imprintable_path(imprintable), remote: true, class: 'imprintable_modal_link' %></td>
-        <td><%= imprintable.style.description %></td>
+        <td><%= raw imprintable.style.description %></td>
         <td>
           <div class="btn-group btn-group-xs">
             <%= link_to imprintable_path(imprintable), 'data-action' => 'show', 'data-toggle' => 'tooltip', 'title' => 'Show', class: 'btn btn-default' do %><i class="fa fa-eye"></i> <% end %>
