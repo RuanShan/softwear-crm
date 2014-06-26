@@ -5,20 +5,21 @@
       <th></th>
       <% size_variants.each_with_index do |size_variant, size_index| %>
         <% size = size_variant.size %>
-        <th id="col_<%= size_index + 1 %>" data-size-id="<%= size.id%>">
+        <th id="col_<%= size_index + 1 %>" data-size-id="<%= size.id%>"  class="size-col-header">
           <%= size.display_value %>
           <i class="fa fa-plus" id="col_plus_<%= size_index + 1 %>"></i>
           <i class="fa fa-minus" id="col_minus_<%= size_index + 1 %>"></i>
         </th>
       <% end %>
       <th id="add_a_size">
-        <button type="button" id="size_button">Add a size</button>
         <%= select_tag nil,
                        options_for_select(['Select a Size'] + Size.order(:sort_order).collect{ |s| [s.display_value, s.id] }),
                        {
-                           class: 'form-control',
+                           class: 'chosen-select',
                            id: 'size_select'
                        } %>
+        <br /><br />
+        <button type="button" id="size_button">Add a size</button>
       </th>
     </tr>
     </thead>
@@ -48,13 +49,14 @@
     <% end %>
     <tr>
       <th id="add_a_color">
-        <button type="button" id="color_button">Add a color</button>
       <%= select_tag nil,
                      options_for_select(['Select a Color'] + Color.order(:name).collect{ |c| [c.name, c.id] }),
                      {
-                         class: 'form-control',
+                         class: 'chosen-select',
                          id: 'color_select'
                      } %>
+        <br /><br />
+        <button type="button" id="color_button">Add a color</button>
       </th>
       <% if variants_array.empty? %>
         <td><a class="button" id="select_button">Select</a></td>

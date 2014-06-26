@@ -1,19 +1,7 @@
 <h1>Custom Print Orders</h1>
 
-<div>
-  <ul class="pagination pagination-lg">
-    <li><a href="#fakelink">&laquo;</a></li>
-    <li><a href="#fakelink">1</a></li>
-    <li><a href="#fakelink">2</a></li>
-    <li><a href="#fakelink">3</a></li>
-    <li><a href="#fakelink">4</a></li>
-    <li><a href="#fakelink">5</a></li>
-    <li><a href="#fakelink">&raquo;</a></li>
-  </ul>
-</div>
-
-
-
+<%= paginate @orders %>
+<br clear="all" />
 <div class="box-info full">
   <div class="table-responsive">
     <table class="table table-hover">
@@ -38,52 +26,10 @@
       <% @orders.each do |order| %>
         <%= render partial: 'table_entry', locals: {order: order} %>
       <% end %>
-      <!--
-  <tr>
-    <td>5</td><td><input type="checkbox" class="rows-check"></td><td><strong>Jenny Doe</strong></td>
-    <td>New York, US</td>
-    <td><span class="label label-danger">Suspended</span></td>
-  </tr>
-  <tr>
-    <td>6</td><td><input type="checkbox" class="rows-check"></td><td><strong>Hana Sartika</strong></td>
-    <td>Semarang, Indonesia</td>
-    <td><span class="label label-success">Active</span></td>
-  </tr>
-  <tr>
-    <td>7</td><td><input type="checkbox" class="rows-check"></td><td><strong>Tukimin</strong></td>
-    <td>Surakarta, Indonesia</td>
-    <td><span class="label label-success">Active</span></td>
-  </tr>
-  <tr>
-    <td>8</td><td><input type="checkbox" class="rows-check"></td><td><strong>Johnny Depp</strong></td>
-    <td>Paris, French</td>
-    <td><span class="label label-warning">Deactivated</span></td>
-  </tr>
-  <tr>
-    <td>9</td><td><input type="checkbox" class="rows-check"></td><td><strong>Mas Arie</strong></td>
-    <td>Boyolali, Indonesia</td>
-    <td><span class="label label-success">Active</span></td>
-  </tr>
-  <tr>
-    <td>10</td><td><input type="checkbox" class="rows-check"></td><td><strong>Rusmanto</strong></td>
-    <td>Bandung, Indonesia</td>
-    <td><span class="label label-success">Active</span></td>
-  </tr>-->
+
       </tbody>
     </table>
   </div>
 </div>
 
-
-
-<div>
-  <ul class="pagination pagination-lg">
-    <li><a href="#fakelink">&laquo;</a></li>
-    <li><a href="#fakelink">1</a></li>
-    <li><a href="#fakelink">2</a></li>
-    <li><a href="#fakelink">3</a></li>
-    <li><a href="#fakelink">4</a></li>
-    <li><a href="#fakelink">5</a></li>
-    <li><a href="#fakelink">&raquo;</a></li>
-  </ul>
-</div>
+<%= paginate @orders %>

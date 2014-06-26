@@ -239,11 +239,11 @@ jQuery ->
     change_cells('fa fa-times', $(this))
   )
 
-  $('#imprintable_sample_location_ids').chosen()
 
-  $('#imprintable_coordinate_ids').chosen()
 
-  $('#imprintable_compatible_imprint_method_ids').chosen()
+  $('.chosen-select').chosen()
+  $('#color_ids').chosen( { width: "100%" })
+  $('#size_ids').chosen( { width: "100%" })
 
   $('.table.table-hover').fixedHeader()
 

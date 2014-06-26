@@ -52,7 +52,7 @@ namespace :imprintables do
           puts "Creating style #{brand.name} #{ws[row,3]}"
         end
         style = Style.find_or_initialize_by(brand_id: brand.id, catalog_no: ws[row, 3])
-        style.name = ws[row, 3]
+        style.name = ws[row, 4]
         if !style.save
           style.errors.full_messages.each do |e|
             puts e.inspect
@@ -160,7 +160,16 @@ namespace :imprintables do
       puts "[ERROR] Exception #{e}"
     end
 
+  end
 
+  desc 'Initialize Size Display Values with Size Name'
+  task initialize_size_display_values: :environment do
+    Size.all.each do |size|
+      if size.display_value.blank?
+        size.display_value = size.name
+        size.save
+      end
+    end
   end
 
 end

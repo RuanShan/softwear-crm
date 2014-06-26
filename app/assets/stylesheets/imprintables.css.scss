@@ -5,6 +5,11 @@
     vertical-align:middle;
     position:relative;
   }
+
+  th.size-col-header {
+    min-width: 120px;
+  }
+
   td {
     border:1px solid #CCCCCC;
     text-align:center;

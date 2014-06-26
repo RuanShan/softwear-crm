@@ -1,5 +1,11 @@
 class OrdersController < InheritedResources::Base
 
+  def index
+    super do
+      @orders = Order.all.page(params[:page])
+    end
+  end
+
   def update
     super do |success, failure|
       success.html { redirect_to edit_order_path(params[:id])+'#details' }

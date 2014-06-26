@@ -1,5 +1,6 @@
 class ImprintablesController < InheritedResources::Base
 
+
   def index
     super do
       if params[:tag]
@@ -12,8 +13,8 @@ class ImprintablesController < InheritedResources::Base
 
   def update
     super do |success, failure|
-      color_ids = params[:color_ids]
-      size_ids = params[:size_ids]
+      color_ids = (params[:color].nil? ? [] : params[:color][:ids])
+      size_ids = (params[:size].nil? ? [] : params[:size][:ids])
       if color_ids && size_ids
         color_ids.each do |color_id|
           size_ids.each do |size_id|
@@ -22,7 +23,10 @@ class ImprintablesController < InheritedResources::Base
         end
       end
       success.html { redirect_to edit_imprintable_path params[:id] }
-      failure.html { render action: :edit }
+      failure.html do
+        set_variant_hashes
+        render action: :edit
+      end
     end
   end
 
@@ -30,11 +34,7 @@ class ImprintablesController < InheritedResources::Base
   def show
     super do |format|
       @imprintable = Imprintable.find(params[:id])
-      variants_hash = @imprintable.create_variants_hash
-      @size_variants = variants_hash[:size_variants]
-      @color_variants = variants_hash[:color_variants]
-      @variants_array = variants_hash[:variants_array]
-
+      set_variant_hashes
       format.html
       format.js
       format.json { render json: @imprintable }
@@ -71,6 +71,13 @@ class ImprintablesController < InheritedResources::Base
   end
 
   private
+
+  def set_variant_hashes
+    variants_hash = @imprintable.create_variants_hash
+    @size_variants = variants_hash[:size_variants]
+    @color_variants = variants_hash[:color_variants]
+    @variants_array = variants_hash[:variants_array]
+  end
 
   def permitted_params
     params.permit(imprintable:
