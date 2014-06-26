@@ -34,6 +34,10 @@ class Job < ActiveRecord::Base
     LineItem.non_imprintable.where job_id: id
   end
 
+  def imprintable_variant_count
+    # sum of all line item quantities where imprintable_id is not null
+  end
+
 private
   def assure_name_and_description
     if self.name.nil?

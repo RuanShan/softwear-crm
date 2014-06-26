@@ -9,6 +9,7 @@
  * compiled file, but it's generally better to create a new file per style scope.
  *
  *= require bootstrap
+ *= require bootstrap-datetimepicker/bootstrap-datetimepicker.css
  *= require style
  *= require style-responsive
  *= require_self

@@ -1,0 +1,2 @@
+$('#contentModal').modal('hide');
+$('#artwork-request-list').append("<%= escape_javascript(render(partial: 'artwork_request', locals: {artwork_request: @artwork_request, order: @order})).html_safe %>");

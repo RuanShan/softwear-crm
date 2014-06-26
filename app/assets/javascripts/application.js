@@ -23,3 +23,5 @@
 //= require chosen-jquery
 //= require_tree .
 //= require js-routes
+//= require moment
+//= require bootstrap-datetimepicker/bootstrap-datetimepicker

@@ -83,12 +83,20 @@ create_records([
                ], PrintLocation)
 pl = PrintLocation.all.first
 
-#
-# Artwork Request SEEDING
-# ----------------
 create_records([
-                   { description: 'description'}
-               ], ArtworkRequest)
+                   {name: 'Test Name', production_name: 'Test Name'}
+               ], ImprintMethod)
+im2 = ImprintMethod.all.second
+create_records([
+                   {name: 'Test Color', imprint_method_id: im2.id},
+                   {name: 'Test Color II', imprint_method_id: im2.id},
+                   {name: 'Test Color III', imprint_method_id: im2.id},
+                   {name: 'Test Color Rocky IV', imprint_method_id: im2.id}
+               ], InkColor)
+create_records([
+                   {name: 'Forehead', max_height: 5.5, max_width: 5.5, imprint_method_id: im2.id},
+                   {name: 'Traps', max_height: 5.5, max_width: 5.5, imprint_method_id: im2.id}
+               ], PrintLocation)
 
 # Brand SEEDING
 # ----------------
@@ -166,7 +174,10 @@ create_records([
 # Job SEEDING
 # ---------------
 create_records([
-                   name: 'Test Job', description: "I hope these fields can be edited one day", order_id: 1
+                   {name: 'Test Job', description: "I hope these fields can be edited one day", order_id: 1},
+                   {name: 'Test Job Vol. 2', description: "I hope these fields can be edited one day", order_id: 1},
+                   {name: 'Test Steve Job-s', description: "I hope these fields can be edited one day", order_id: 1},
+                   {name: 'Test Kareem Abdul-Job-bar', description: "I hope these fields can be edited one day", order_id: 1},
                ], Job)
 j = Job.all.first
 

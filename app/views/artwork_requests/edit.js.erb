@@ -1,0 +1,16 @@
+$('#contentModal .modal-title').html('Edit Artwork Request');
+$('#contentModal .modal-body').html("<%= escape_javascript(render(partial: 'edit_form', locals: {artwork_request: @artwork_request, order: @order})).html_safe %>");
+$('.summernote').summernote({
+    height: 300
+});
+
+$("#artwork-request-deadline-widget").datetimepicker({
+
+});
+
+$("#jobs-tokenfield").chosen({
+    placeholder_text_multiple: "Select all jobs for this request",
+    no_results_text: "No results matched",
+    width: "400px"
+});
+$('#contentModal').modal('show');

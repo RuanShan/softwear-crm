@@ -68,6 +68,7 @@ gem 'summernote-rails'
 gem 'jquery-ui-rails'
 gem 'paperclip', github: 'thoughtbot/paperclip'
 gem 'chosen-rails'
+gem 'momentjs-rails', '~> 2.5.0'
 
 # Use ActiveModel has_secure_password
 # gem 'bcrypt', '~> 3.1.7'
