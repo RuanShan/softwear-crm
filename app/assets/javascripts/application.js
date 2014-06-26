@@ -26,3 +26,4 @@
 //= require bootstrap-datetimepicker
 //= require_tree .
 //= require js-routes
+//= require summernote
