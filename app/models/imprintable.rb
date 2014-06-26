@@ -20,7 +20,7 @@ class Imprintable < ActiveRecord::Base
   validates :sizing_category, inclusion: { in: SIZING_CATEGORIES, message: 'Invalid sizing category' }
   validates :supplier_link, format: {with: URI::regexp(%w(http https)), message: 'should be in format http://www.url.com/path'}, allow_blank: true
 
-  default_scope { order('brands.name, styles.catalog_no').joins(:brand) }
+  default_scope { eager_load(:style, :brand).order('brands.name, styles.catalog_no').joins(:brand).readonly(false) }
 
   def name
     "#{brand.name} - #{style.catalog_no} - #{style.name}"
@@ -48,5 +48,9 @@ class Imprintable < ActiveRecord::Base
 
   def standard_offering?
     standard_offering == true
+  end
+
+  def retail_sku
+
   end
 end

@@ -15,6 +15,6 @@ class Style < ActiveRecord::Base
     Brand.find(self.brand_id) if self.brand_id
   end
 
-  default_scope { joins(:brand).order('brands.name, styles.catalog_no') }
+  default_scope { eager_load(:brand).joins(:brand).order('brands.name, styles.catalog_no').readonly(false) }
 
 end
