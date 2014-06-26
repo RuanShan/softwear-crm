@@ -38,8 +38,6 @@ module SunspotHelpers
 
   # For some reason, Solr likes to occasionally return 
   # empty arrays when testing. This deals with that.
-  # also TODO WEDNESDAY
-  # Looks like it didn't quite work?! I have no idea.
   def assure_solr_search(*args)
     options = args.first || {}
     results = []
