@@ -15,6 +15,27 @@ module Search
           Base.new
         end
       end
+
+      def search(&block)
+        searcher = Searcher.new
+        searcher.instance_eval(&block)
+        searcher.searches
+      end
+    end
+
+    class Searcher
+      attr_reader :searches
+      def on(*models, &block)
+        if models.count == 1 && models.first == :all
+          on(*Models.all, &block)
+        else
+          @searches ||= []
+          @searches += models.map do |model|
+            model.search(&block)
+          end
+          @searches
+        end
+      end
     end
 
     class Base

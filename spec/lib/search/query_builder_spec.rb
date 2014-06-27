@@ -2,6 +2,21 @@ require 'spec_helper'
 
 describe Search::QueryBuilder, search_spec: true do
 
+  describe '#search' do
+    it 'just performs Sunspot searches, but allows the on(ModelName) syntax' do
+      search = Search::QueryBuilder.search do
+        on(Order) do
+          fulltext 'hi'
+        end
+      end
+
+      expect(search).to be_an Array
+      expect(search.first).to be_a Sunspot::Search::StandardSearch
+      expect(Sunspot.session).to be_a_search_for Order
+      expect(Sunspot.session).to have_search_params :fulltext, 'hi'
+    end
+  end
+
   describe '#build' do
     context 'without a block' do
       it 'should be able to build a fulltext search on all models' do
