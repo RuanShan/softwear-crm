@@ -19,17 +19,26 @@ class SearchFormBuilder
     end
   end
 
-  def text_field(field_name, options)
+  def text_field(field_name, *args)
+    options = get_options args
     add_class(options, 'form-control')
-    existing_filter = query.filter_for model, field_name
+    existing_filter = @query.filter_for @model, field_name
 
-    @template.text_field_tag input_name_for(field_name), initial_value_for(field_name)
     @field_count += 1
+    @template.text_field_tag input_name_for(field_name), initial_value_for(field_name)
   end
 
 private
+  def get_options(args)
+    if args.last && args.last.is_a?(Hash)
+      args.last
+    else
+      {}
+    end
+  end
+
   def initial_value_for(field_name)
-    existing_filter = query.filter_for model, field_name
+    existing_filter = @query.filter_for @model, field_name
     if existing_filter
       existing_filter.value
     else

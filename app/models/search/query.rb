@@ -47,9 +47,7 @@ module Search
         m.name.to_sym != field.model_name
       end.first
 
-      if query_model.nil?
-        raise "Search::Query #{id} has no query model for #{field.model_name}"
-      end
+      return nil if query_model.nil?
 
       filter = query_model.filter
       case filter.type

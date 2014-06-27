@@ -20,5 +20,12 @@ module FormHelper
       model, query, self)
 
     output = capture(builder, &block)
+    action = if query
+      search_query_path(query)
+    else
+      options[:method] ||= 'POST'
+      search_queries_path
+    end
+    form_tag(action, options) { output }
   end
 end
