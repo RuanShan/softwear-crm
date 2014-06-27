@@ -12,8 +12,10 @@ feature 'Imprintable Variant Management', imprintable_variant_spec: true do
   given!(:size) { create(:valid_size) }
 
   context 'There are no imprintable variants' do
+
     given!(:imprintable) { create(:valid_imprintable) }
-    scenario 'A user can create an initial size and color' do
+
+    scenario 'A user can create an initial size and color', js: true do
       visit edit_imprintable_path imprintable.id
       select_from_chosen(color.id, from: 'color_ids')
       select_from_chosen(size.id, from: 'size_ids')

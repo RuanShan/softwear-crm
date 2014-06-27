@@ -4,9 +4,7 @@ describe 'orders/edit.html.erb', order_spec: true do
   login_user
 
 	let!(:order) { create(:order) }
-	before :each do
-		assign :order, order
-  end
+	before(:each) { assign :order, order}
 
 	it 'displays the order name and ID' do
     params[:id] = 1

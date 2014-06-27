@@ -80,7 +80,7 @@ feature 'Imprintables management', imprintable_spec: true do
     end
   end
 
-  describe 'There is an imprint method', js: true do
+  describe 'There is an imprint method' do
     
     given!(:imprint_method) { create(:valid_imprint_method) }
     
@@ -94,7 +94,7 @@ feature 'Imprintables management', imprintable_spec: true do
   end
 
 
-  scenario 'A user can edit an existing imprintable' do
+  scenario 'A user can edit an existing imprintable', js: true  do
     visit edit_imprintable_path imprintable.id
     fill_in 'Special Considerations', :with => 'Edited Special Consideration'
     find_button('Update Imprintable').click
@@ -103,7 +103,7 @@ feature 'Imprintables management', imprintable_spec: true do
     expect(imprintable.reload.special_considerations).to eq('Edited Special Consideration')
   end
 
-  scenario 'A user can delete an existing imprintable' do
+  scenario 'A user can delete an existing imprintable', js: true  do
     visit imprintables_path
     find("tr#imprintable_#{imprintable.id} a[data-action='destroy']").click
     page.driver.browser.switch_to.alert.accept
@@ -113,7 +113,7 @@ feature 'Imprintables management', imprintable_spec: true do
     expect(imprintable.reload.destroyed? ).to be_truthy
   end
   
-  scenario 'A user can navigate to all tabs of the modal show menu (card #133)' do
+  scenario 'A user can navigate to all tabs of the modal show menu (card #133)', js: true  do
     visit imprintables_path
     find(:css, "#imprintable_#{imprintable.id} td a.imprintable_modal_link").click
     expect(page).to have_selector "#basic_info_#{imprintable.id}.active"
