@@ -127,7 +127,7 @@ feature 'Line Items management', line_item_spec: true, js: true do
     end
   end
 
-  scenario 'user cannot submit an imprintable line item without completing the form' do
+  scenario 'user cannot submit an imprintable line item without completing the form', pending: 'Need to review with Nigel'  do
     visit edit_order_path(1, anchor: 'jobs')
     wait_for_ajax
 

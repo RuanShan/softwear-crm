@@ -11,13 +11,13 @@ feature 'Imprintable Variant Management', imprintable_variant_spec: true do
   given!(:color) { create(:valid_color) }
   given!(:size) { create(:valid_size) }
 
-  context 'There are no imprintable variants' do
+  context 'There are no imprintable variants', js: true do
     given!(:imprintable) { create(:valid_imprintable) }
     scenario 'A user can create an initial size and color' do
       visit imprintables_path
       find("tr#imprintable_#{imprintable.id} a[data-action='edit']").click
-      find(:css, "#color_ids_[value='#{color.id}']").set(true)
-      find(:css, "#size_ids_[value='#{size.id}']").set(true)
+      select_from_chosen(color.id, from: 'color_ids')
+      select_from_chosen(size.id, from: 'size_ids')
       find('#submit_button').click
       expect(page).to have_selector '.modal-content-success', text: 'Imprintable was successfully updated.'
       expect(ImprintableVariant.find_by(imprintable_id: "#{imprintable.id}")).to_not be_nil
@@ -29,8 +29,7 @@ feature 'Imprintable Variant Management', imprintable_variant_spec: true do
     given!(:imprintable_variant) { create(:valid_imprintable_variant) }
 
     before(:each) do
-      visit imprintables_path
-      find("tr#imprintable_#{imprintable_variant.imprintable_id} a[data-action='edit']").click
+      visit edit_imprintable_path(imprintable_variant)
     end
 
     scenario 'A user can see a grid of imprintable variants' do
@@ -38,17 +37,15 @@ feature 'Imprintable Variant Management', imprintable_variant_spec: true do
     end
 
     scenario 'A user can add a size column' do
-      selected = find('#size_select').find("option[value='#{size.id}']").text
-      find('#size_select').find("option[value='#{size.id}']").click
+      select_from_chosen(size.display_value, from: 'size_select')
       find('#size_button').click
-      expect(page).to have_selector 'th', text: selected
+      expect(page).to have_selector 'th', text: size.display_value
     end
 
     scenario 'A user can add a color row' do
-      selected = find('#color_select').find("option[value='#{color.id}']").text
-      find('#color_select').find("option[value='#{color.id}']").click
+      select_from_chosen(color.name, from: 'color_select')
       find('#color_button').click
-      expect(page).to have_selector 'th', text: selected
+      expect(page).to have_selector 'th', text: color.name
     end
 
     scenario 'A user can toggle a column' do

@@ -30,30 +30,18 @@ feature 'Imprintables management', imprintable_spec: true do
   end
 
   describe 'Tagging', js: true do
+
     let!(:imprintable_two) { create(:valid_imprintable) }
     let!(:imprintable_three) { create(:valid_imprintable) }
+
     scenario 'A user can tag an imprintable' do
       visit imprintables_path
       find("tr#imprintable_#{imprintable.id} a[data-action='edit']").click
-      fill_in 'Tag List', with: 'cotton'
+      fill_in 'Tags', with: 'cotton'
       find_button('Update Imprintable').click
       expect(page).to have_selector '.modal-content-success', text: 'Imprintable was successfully updated.'
       expect(current_path).to eq(edit_imprintable_path imprintable.id)
       expect(imprintable.reload.tag_list.include? 'cotton').to be_truthy
-    end
-
-    scenario 'A user can filter a list of imprintables by tag' do
-      visit imprintables_path
-      find("tr#imprintable_#{imprintable.id} a[data-action='edit']").click
-      fill_in 'Tag List', with: 'cotton'
-      find_button('Update Imprintable').click
-      expect(page).to have_selector '.modal-content-success', text: 'Imprintable was successfully updated.'
-      visit imprintables_path
-      expect(page).to have_link('cotton', href: '/tags/cotton')
-      find(:xpath, "//*[@id='imprintable_#{imprintable.id}']/td[9]/a[1]").click
-      expect(page).to have_selector("tr#imprintable_#{imprintable.id}")
-      expect(page).to_not have_selector("tr#imprintable_#{imprintable_two.id}")
-      expect(page).to_not have_selector("tr#imprintable_#{imprintable_three.id}")
     end
   end
 
@@ -105,11 +93,12 @@ feature 'Imprintables management', imprintable_spec: true do
   end
 
 
-  scenario 'A user can edit an existing imprintable' do
+  scenario 'A user can edit an existing imprintable', js: true do
     visit imprintables_path
     find("tr#imprintable_#{imprintable.id} a[data-action='edit']").click
     fill_in 'Special Considerations', :with => 'Edited Special Consideration'
     find_button('Update Imprintable').click
+    sleep(4)
     expect(page).to have_selector '.modal-content-success', text: 'Imprintable was successfully updated.'
     expect(current_path).to eq(edit_imprintable_path imprintable.id)
     expect(imprintable.reload.special_considerations).to eq('Edited Special Consideration')

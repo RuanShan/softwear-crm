@@ -23,7 +23,7 @@ feature 'Styles management', style_spec: true do
     click_link('Add a Style')
     fill_in 'style_name', :with => 'Sample Name'
     fill_in 'style_catalog_no', :with => '42'
-    fill_in 'style_description', :with => 'Description'
+    fill_in_summernote('#style_description', with: 'Description')
     fill_in 'style_sku', :with => '99'
     page.find_by_id('style_brand_id').find("option[value='#{style.brand.id}']").click
     click_button('Create Style')

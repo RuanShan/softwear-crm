@@ -15,7 +15,7 @@
         <%= select_tag nil,
                        options_for_select(['Select a Size'] + Size.order(:sort_order).collect{ |s| [s.display_value, s.id] }),
                        {
-                           class: 'chosen-select',
+                           class: 'color-size-chosen-select',
                            id: 'size_select'
                        } %>
         <br /><br />
@@ -52,7 +52,7 @@
       <%= select_tag nil,
                      options_for_select(['Select a Color'] + Color.order(:name).collect{ |c| [c.name, c.id] }),
                      {
-                         class: 'chosen-select',
+                         class: 'color-size-chosen-select',
                          id: 'color_select'
                      } %>
         <br /><br />

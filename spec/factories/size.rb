@@ -12,4 +12,6 @@ FactoryGirl.define do
     }
     sequence(:sort_order) { |n| n }
   end
+
+
 end

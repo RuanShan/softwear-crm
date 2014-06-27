@@ -14,4 +14,8 @@ describe 'styles/_form.html.erb', style_spec: true do
       expect(rendered).to have_selector("[type='submit']")
     end
   end
+
+  it 'description is an Evernote WYSIWYG' do
+    expect(rendered).to have_selector("textarea#style_description.summernote")
+  end
 end
