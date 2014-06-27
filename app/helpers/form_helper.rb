@@ -21,11 +21,13 @@ module FormHelper
 
     output = capture(builder, &block)
     action = if query
+      options[:method] ||= 'GET'
       search_query_path(query)
     else
       options[:method] ||= 'POST'
       search_queries_path
     end
+    options[:id] ||= "#{model.name.underscore}_search"
     form_tag(action, options) { output }
   end
 end

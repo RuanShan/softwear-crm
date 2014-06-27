@@ -10,9 +10,9 @@ module Search
         if block_given?
           builder_base = Base.new
           builder_base.instance_eval(&block)
-          builder_base.query
+          builder_base
         else
-          Query.new
+          Base.new
         end
       end
     end

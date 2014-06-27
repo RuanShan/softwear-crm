@@ -19,13 +19,42 @@ class SearchFormBuilder
     end
   end
 
-  def text_field(field_name, *args)
+  def fulltext(*args)
     options = get_options args
     add_class(options, 'form-control')
-    existing_filter = @query.filter_for @model, field_name
+    
+    initial_value = @query.default_fulltext
+    is_textarea = options.delete :textarea
 
-    @field_count += 1
-    @template.text_field_tag input_name_for(field_name), initial_value_for(field_name)
+    func = is_textarea ? :text_area : :text_field
+
+    @template.send func, "search[fulltext]", initial_value
+  end
+
+  [:text_field, :text_area, 
+   :number_field, :check_box].each do |method_name|
+     define_method method_name do |field_name, *args|
+       options = get_options args
+       add_class options, 'form-control'
+       options.merge!(style: 'width: 75px') if method_name == :number_field
+
+       @field_count += 1
+       @template.send("#{method_name}_tag", input_name_for(field_name), initial_value_for(field_name), options)
+     end
+   end
+
+  # def text_field(field_name, *args)
+  #   options = get_options args
+  #   add_class(options, 'form-control')
+  #   existing_filter = @query.filter_for @model, field_name
+# 
+#   #   @field_count += 1
+#   #   @template.text_field_tag input_name_for(field_name), initial_value_for(field_name), options
+  # end
+
+  def submit(*args)
+    options = get_options args
+    @template.submit_tag(options[:value] || 'Submit', options)
   end
 
 private

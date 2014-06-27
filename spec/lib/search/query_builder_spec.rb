@@ -5,7 +5,7 @@ describe Search::QueryBuilder, search_spec: true do
   describe '#build' do
     context 'without a block' do
       it 'should be able to build a fulltext search on all models' do
-        query = Search::QueryBuilder.build
+        query = Search::QueryBuilder.build.query
         expect(query.models).to eq Search::Models.all
       end
     end
@@ -15,7 +15,7 @@ describe Search::QueryBuilder, search_spec: true do
           on(Order) do
             fields :name, :email
           end
-        end
+        end.query
 
         expect(query.query_models.count).to eq 1
         order_model = query.query_models.first
@@ -30,7 +30,7 @@ describe Search::QueryBuilder, search_spec: true do
           on(Order) do
             fields :email, name: 2
           end
-        end
+        end.query
 
         order_model = query.query_models.first
         expect(order_model.query_fields.count).to eq 2
@@ -41,7 +41,7 @@ describe Search::QueryBuilder, search_spec: true do
       it 'should be able to build a search on more than one model' do
         query = Search::QueryBuilder.build do
           on(Order, Job)
-        end
+        end.query
 
         expect(query.query_models.count).to eq 2
       end
@@ -51,7 +51,7 @@ describe Search::QueryBuilder, search_spec: true do
           on(Order) do
             with(:commission_amount).less_than 100.50
           end
-        end
+        end.query
 
         order_model = query.query_models.first
         expect(order_model.filter.type).to be_a Search::FilterGroup
@@ -68,7 +68,7 @@ describe Search::QueryBuilder, search_spec: true do
             with(:commission_amount, 50.55)
             without(:lastname, 'Johnson')
           end
-        end
+        end.query
 
         order_model = query.query_models.first
         expect(order_model.filter.type).to be_a Search::FilterGroup
@@ -93,7 +93,7 @@ describe Search::QueryBuilder, search_spec: true do
               end
             end
           end
-        end
+        end.query
 
         order_model = query.query_models.first
         expect(order_model.filter.type).to be_a Search::FilterGroup
