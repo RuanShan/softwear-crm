@@ -28,6 +28,51 @@ module Search
       end
     end
 
+    def filter_for(*args)
+      field = nil
+      case args.count
+      when 1
+        field = args.first
+      when 2
+        order_name = if args.first.is_a? Class
+          args.first.name.to_sym
+        else
+          args.first.to_sym
+        end
+        field_name = args.last.to_sym
+        field = Field[order_name, field_name]
+      end
+
+      query_model = query_models.reject do |m|
+        m.name.to_sym != field.model_name
+      end.first
+
+      if query_model.nil?
+        raise "Search::Query #{id} has no query model for #{field.model_name}"
+      end
+
+      filter = query_model.filter
+      case filter.type
+      when FilterGroup
+
+        find_field = Proc.new do |group|
+          group.filters.each do |f|
+            case f.type
+            when FilterGroup
+              find_field.call f.type
+            else
+              return f if f.field.to_sym == field.name.to_sym
+            end
+          end
+        end
+        find_field.call(filter.type)
+
+      else
+        return filter if filter.field.to_sym == field.name.to_sym
+      end
+      nil
+    end
+
     def search(*args, &block)
       options = if args.last.is_a? Hash
         args.last

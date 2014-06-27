@@ -1,4 +1,5 @@
 class LancengFormBuilder < ActionView::Helpers::FormBuilder
+  include FormHelper
   def self.dummy_for(object)
     temp = Class.new do
       include ActionView::Helpers::FormHelper
@@ -118,15 +119,6 @@ class LancengFormBuilder < ActionView::Helpers::FormBuilder
   end
 
 private
-  def add_class(options, *values)
-    options[:class] ||= ''
-    values.each do |v|
-      options[:class] << ' ' unless options[:class].empty?
-      options[:class] << v
-      options.merge!(@common_attrs) unless @common_attrs.nil?
-    end
-  end
-
   def proxy(method_name, *extras)
     @proxy_stack ||= []
     @proxy_stack << { func: method_name, args: extras }

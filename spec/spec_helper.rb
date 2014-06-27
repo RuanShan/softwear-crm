@@ -64,7 +64,7 @@ RSpec.configure do |config|
       if Sunspot.session.respond_to? :original_session
         Sunspot.session = Sunspot.session.original_session
         if Sunspot.session.respond_to? :original_session
-          raise "Sunspot session somehow got burried in spies!"
+          raise "Sunspot session somehow got buried in spies!"
         end
       end
       # Solr process is lazy loaded, essentially.

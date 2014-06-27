@@ -1,5 +1,4 @@
 require 'spec_helper'
-include GeneralHelpers
 
 describe Search::Query, search_spec: true do
   it { should belong_to :user }
@@ -132,6 +131,33 @@ describe Search::Query, search_spec: true do
           expect(results).to include order3
           expect(results).to_not include order1
           expect(results).to_not include order2
+        end
+
+        describe '#filter_for' do
+          it 'returns the filter associated with the given field' do
+            expect(subject.filter_for(Search::Field[:Order, :firstname])).to eq filter
+          end
+
+          it 'returns the filter associated with the given model and field name' do
+            expect(subject.filter_for(Order, :firstname)).to eq filter
+          end
+
+          context 'when the filter is buried' do
+            let!(:group1) { create(:filter_group) }
+            let!(:group2) { create(:filter_group, filter_holder: group1.type) }
+            let!(:useless_filter) { create(:number_filter, filter_holder: group2.type) }
+
+            before(:each) do
+              filter.filter_holder = group2.type
+              filter.save
+              group1.filter_holder = order_model
+              group1.save
+            end
+
+            it 'can find it from within the groups' do
+              expect(subject.filter_for(Order, :firstname)).to eq filter
+            end
+          end
         end
       end
     end
