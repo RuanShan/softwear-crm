@@ -1,5 +1,9 @@
-<%= search_form_for Order do |s| %>
-  <%= s.text_field :name %>
-  <%= s.text_field :company %>
-  <%= s.submit %>
-<% end %>
+<div class="row">
+  <%= search_form_for Order do |s| %>
+    <div class="col-sm-5">
+      <%= s.select :sizing_category, options_for_select(Imprintable::SIZING_CATEGORIES) %>
+      <%= s.text_field :company %>
+    </div>
+    <%= s.submit %>
+  <% end %>
+</div>

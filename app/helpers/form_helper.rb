@@ -21,7 +21,7 @@ module FormHelper
 
     output = capture(builder, &block)
     action = if query
-      options[:method] ||= 'GET'
+      options[:method] ||= 'PUT'
       search_query_path(query)
     else
       options[:method] ||= 'POST'

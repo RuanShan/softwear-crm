@@ -31,10 +31,23 @@ class SearchFormBuilder
     @template.send func, "search[fulltext]", initial_value
   end
 
+  def select(field_name, choices, options={})
+    add_class options, 'form-control'
+
+    initial_value = initial_value_for field_name
+    if initial_value.nil?
+      options[:allow_blank] ||= true
+    else
+      options[:selected] = initial_value
+    end
+
+    @field_count += 1
+    @template.select_tag input_name_for(field_name), choices, options
+  end
+
   [:text_field, :text_area, 
    :number_field, :check_box].each do |method_name|
-     define_method method_name do |field_name, *args|
-       options = get_options args
+     define_method method_name do |field_name, options={}|
        add_class options, 'form-control'
        options.merge!(style: 'width: 75px') if method_name == :number_field
 
@@ -42,6 +55,7 @@ class SearchFormBuilder
        @template.send("#{method_name}_tag", input_name_for(field_name), initial_value_for(field_name), options)
      end
    end
+
 
   # def text_field(field_name, *args)
   #   options = get_options args
@@ -52,20 +66,12 @@ class SearchFormBuilder
 #   #   @template.text_field_tag input_name_for(field_name), initial_value_for(field_name), options
   # end
 
-  def submit(*args)
-    options = get_options args
+  def submit(options={})
+    add_class options, 'submit', 'btn', 'btn-primary'
     @template.submit_tag(options[:value] || 'Submit', options)
   end
 
 private
-  def get_options(args)
-    if args.last && args.last.is_a?(Hash)
-      args.last
-    else
-      {}
-    end
-  end
-
   def initial_value_for(field_name)
     existing_filter = @query.filter_for @model, field_name
     if existing_filter
