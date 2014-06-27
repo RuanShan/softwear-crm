@@ -1,0 +1,69 @@
+<%= render partial: 'shared/modal_errors', locals: { object: @payment } %>
+<%= form_for [@order, @payment], builder: LancengFormBuilder do |f| %>
+
+  <!-- Horizontal form body -->
+  <div id="horizontal-form" class="collapse in">
+
+    <%= f.hidden_field :salesperson_id, value: @current_user.id %>
+    <%= f.hidden_field :order_id, value: @order.id %>
+    <%= f.hidden_field :payment_method, value: payment_method %>
+    <div id="data_supply" data-total="<%= @order.total %>" aria-hidden="true"></div>
+
+    <div class="form-group">
+      <%= f.label :user %><br/>
+      <%= @current_user.full_name %>
+      <%= link_to '(Change user)', destroy_user_session_path, method: :delete, class: 'md-trigger', 'data-model'=>'logout-modal-alt' %>
+    </div>
+
+    <div class="form-group">
+      <%= f.label :store %>
+      <%= f.collection_select :store_id, Store.order(:name), :id, :name, { selected: @order.user.store_id }, { class: 'form-control' } %>
+    </div>
+
+    <div class="form-group">
+      <%= f.label :amount %>
+      <div class="input-group">
+        <span class="input-group-addon">$</span>
+        <%= f.text_field :amount, id: 'amount_field' %>
+        <span class="input-group-addon">.00</span>
+      </div>
+    </div>
+
+    <% if payment_method == '2' %>
+      <div class="form-group">
+        <%= f.label :cc_invoice_no, 'Invoice Number' %>
+        <%= f.text_field :cc_invoice_no %>
+      </div>
+
+      <div class="form-group">
+        <%= f.label :cc_batch_no, 'Batch Number' %>
+        <%= f.text_field :cc_batch_no %>
+      </div>
+    <% end %>
+
+    <% if payment_method == '3' %>
+      <div class="form-group">
+        <%= f.label :check_dl_no, 'Drivers License Number' %>
+        <%= f.text_field :check_dl_no %>
+      </div>
+
+      <div class="form-group">
+        <%= f.label :check_phone_no, 'Phone Number' %>
+        <%= f.text_field :check_phone_no %>
+      </div>
+    <% end %>
+
+    <% if payment_method == '4' %>
+      <div class="form-group">
+        <%= f.label :pp_transaction_id, 'PayPal Transaction ID' %>
+        <%= f.text_field :pp_transaction_id %>
+      </div>
+    <% end %>
+
+    <div class="form-group">
+      <%= f.submit 'Apply Payment', class: 'btn btn-info', id: 'submit_button', onclick: "return confirm('Are you sure you would like to add a payment of ' +
+                                                                                          document.getElementById('amount_field').value + '?')" %>
+    </div>
+
+  </div>
+<% end %>

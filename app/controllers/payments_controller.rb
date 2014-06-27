@@ -6,9 +6,35 @@ class PaymentsController < InheritedResources::Base
     end
   end
 
+  def update
+    super do |format|
+      format.html { redirect_to edit_order_path(params[:id])+'#payments' }
+    end
+  end
+
+  def edit
+    super do |format|
+      format.js
+      format.html
+    end
+  end
+
+  def new
+    super do |format|
+      @payment = Payment.new(payment_method: params[:payment_method])
+      @order = Order.find(params[:order_id])
+      format.js
+    end
+  end
+
   private
 
   def permitted_params
-    params.permit(payment: [:amount, :store_id, :salesperson_id, :order_id])
+    params.permit(payment: [:amount,
+                            :store_id,
+                            :salesperson_id,
+                            :order_id,
+                            :refund,
+                            :payment_method])
   end
 end

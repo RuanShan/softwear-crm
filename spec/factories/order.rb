@@ -1,7 +1,7 @@
 FactoryGirl.define do
   sequence :name do |n|
     ['Test Order', 'Custom Print Order', 'Custom T-shirt Order',
-      'Crap Order', 'Expencive Order'][n%5]
+      'Crap Order', 'Expensive Order'][n%5]
   end
   sequence :firstname do |n|
     ['Ricky', 'Nigel', 'Chet', 'David', 'Bob', 'Mr.'][n%6]
@@ -10,15 +10,16 @@ FactoryGirl.define do
     ['Winowiecki', 'Baillie', 'McGillicutty', 'Suckstorff', 'Ross', 'Anderson'][n%6]
   end
 
-  factory :order do
+  factory :order, class: Order do
     name { generate :name }
     firstname { generate :firstname }
     lastname { generate :lastname }
-    sequence(:email) { |n| "email_#{n}@gmail.com" }
+    sequence(:email) { |n| "order_email_#{n}@gmail.com" }
     twitter '@test'
     in_hand_by Time.now + 1.day
     terms "Half down on purchase"
     tax_exempt false
+    total '100.00'
     sales_status 'Pending'
     delivery_method 'Ship to one location'
     phone_number '123-456-7890'

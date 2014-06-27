@@ -111,4 +111,37 @@ describe Order, order_spec: true do
 
     context '#'
   end
+
+  before(:each) do
+    @order = FactoryGirl.create(:order)
+    @payment = FactoryGirl.create(:valid_payment)
+    @payment.order = @order
+    @payment.save
+  end
+
+  describe '#payment_total' do
+    context 'there are a total of five payments of ten dollars each' do
+      it 'returns 50 dollars' do
+        4.times {
+          payment = FactoryGirl.create(:valid_payment)
+          payment.order = @order
+          payment.save
+        }
+
+        expect(@order.payment_total).to eq(50)
+      end
+    end
+  end
+
+  describe '#balance' do
+    it 'returns the order total minus the payment total' do
+      expect(@order.balance).to eq(@order.total - @payment.amount)
+    end
+  end
+
+  describe '#percent_paid' do
+    it 'returns the percentage of the payment total over the order total' do
+      expect(@order.percent_paid).to eq((@payment.amount / @order.total)*100)
+    end
+  end
 end

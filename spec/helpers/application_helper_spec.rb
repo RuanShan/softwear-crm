@@ -36,26 +36,18 @@ describe ApplicationHelper, application_helper_spec: true do
     end
   end
 
-  describe '#imprintable_modal_link' do
-    let(:helpers) { ApplicationController.helpers }
-    it 'renders the imprintable_modal partial with nil text, when text is not supplied' do
-      imprintable = mock_model(Imprintable, id: 1)
-      expect(Imprintable).to receive(:find).and_return imprintable
-      expect(imprintable).to receive(:create_variants_hash).and_return( { size_variants: [], color_variants: [], variants_array: [] } )
-      expect(helpers).to receive(:render).with(partial: 'imprintable_modal', locals: { modal: true, imprintable: imprintable, text: nil } )
-      helpers.imprintable_modal_link(imprintable)
+  describe '#time_format' do
+    context 'datetime is nil' do
+      it 'should return nil' do
+        expect(time_format('')).to eq(nil)
+      end
     end
 
-    it 'renders the imprintable_modal partial with text when text is supplied' do
-      imprintable = mock_model(Imprintable, id: 2)
-      expect(Imprintable).to receive(:find).and_return imprintable
-      expect(imprintable).to receive(:create_variants_hash).and_return( { size_variants: [], color_variants: [], variants_array: [] } )
-      expect(helpers).to receive(:render).with(partial: 'imprintable_modal', locals: { modal: true, imprintable: imprintable, text: 'American Apparel 2001' } )
-      helpers.imprintable_modal_link(imprintable, 'American Apparel 2001')
+    context 'there is a valid datetime' do
+      let!(:datetime) { DateTime.new(1991, 9, 25) }
+      it 'should return a formatted date' do
+        expect(time_format(datetime)).to eq('09/25/1991 00:00 AM')
+      end
     end
-  end
-
-  describe '#nav_helper' do
-
   end
 end

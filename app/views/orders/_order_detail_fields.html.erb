@@ -12,7 +12,7 @@
   <%= f.label :in_hand_by, 'In Hand By Date' %>
   <%= f.error_for :in_hand_by %>
   <div class="input-group date" id="datetimepicker1">
-    <%= f.text_field :in_hand_by, { placeholder: 'In Hand By', class: 'form-control' } %>
+    <%= f.text_field :in_hand_by, { value: time_format(f.object.in_hand_by), placeholder: 'In Hand By', class: 'form-control' } %>
     <span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span>
     </span>
   </div>

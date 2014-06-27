@@ -52,16 +52,26 @@ class Order < ActiveRecord::Base
     sum
   end
 
-  def payment_total
-    self.payments.each do |payment|
-      total += payment
-    end
-  end
-
   def total; subtotal + subtotal * tax; end
 
   def salesperson_name
     User.find(self.salesperson_id).full_name
+  end
+
+  def payment_total
+    total = 0
+    self.payments.each do |payment|
+      total += payment.amount
+    end
+    total
+  end
+
+  def balance
+    self.total - self.payment_total
+  end
+
+  def percent_paid
+    (self.payment_total / self.total)*100
   end
 
 private

@@ -1,0 +1,61 @@
+<div class="user-profile-content">
+  <div class="col-sm-6">
+    <!-- Box info -->
+    <div class="box-info">
+      <!-- Icon box -->
+      <div class="icon-box">
+            <span class="fa-stack">
+              <i class="fa fa-circle fa-stack-2x success"></i>
+              <i class="fa fa-dollar fa-stack-1x fa-inverse"></i>
+            </span>
+      </div><!-- End div .icon-box -->
+      <!-- Text box -->
+      <div class="text-box">
+        <h3><%= order.balance %></h3>
+        <p>Balance</p>
+      </div>
+
+      <div class="clear"></div>
+
+      <div class="progress progress-xs">
+        <div class="progress-bar progress-bar-success" role="progressbar" aria-valuenow="<%= order.percent_paid %>" aria-valuemin="0" aria-valuemax="100" style="width: <%= order.percent_paid %>%">
+          <span class="sr-only"><%= order.percent_paid %>&#37; Paid</span>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <div class="col-sm-6">
+    <h3><strong>Apply</strong> Payment</h3>
+    <div class="btn-group btn-group-sm" style="width: 100%">
+      <%= button_to new_order_payment_path(params[:id])+"?payment_mthd=1", { remote: true, method: :get, style: 'float: left; width: auto;', class: 'additional-icon btn btn-default', 'data-target' => '#payment-form', id: 'cash-button' } do %><i class="fa fa-money"></i> Cash <% end %>
+      <%= button_to new_order_payment_path(params[:id])+"?payment_mthd=2", { remote: true, method: :get, style: 'float: left; width: auto;', class: 'additional-icon btn btn-default', 'data-target' => '#payment-form', id: 'cc-button' } do %><i class="fa fa-credit-card"></i> Swiped Credit Card <% end %>
+      <%= button_to new_order_payment_path(params[:id])+"?payment_mthd=3", { remote: true, method: :get, style: 'float: left; width: auto;', class: 'additional-icon btn btn-default', 'data-target' => '#payment-form', id: 'check-button' } do %><i class="fa fa-edit"></i> Check <% end %>
+      <%= button_to new_order_payment_path(params[:id])+"?payment_mthd=4", { remote: true, method: :get, style: 'float: left; width: auto;', class: 'additional-icon btn btn-default', 'data-target' => '#payment-form', id: 'paypal-button' } do %><i class="fa fa-rub"></i> PayPal <% end %>
+      <%= button_to new_order_payment_path(params[:id])+"?payment_mthd=1", { remote: true, method: :get, style: 'float: left; width: auto;', class: 'additional-icon btn btn-default', 'data-target' => '#payment-form', id: 'wire-button' } do %><i class="fa fa-code-fork"></i> Wire Transfer <% end %>
+    </div>
+
+    <div id="payment-form" class="collapse">
+    </div>
+
+    <h3><strong>Make</strong> Payment</h3>
+    <div class="btn-group btn-group-sm">
+      <a data-toggle="tooltip" title="Quick View" class="btn btn-default"><i class="fa fa-credit-card"></i> eCreditCard</a>
+      <a data-toggle="tooltip" title="Printable Invoice" class="btn btn-default"><i class="fa fa-rub"></i> Request from PayPal</a>
+    </div>
+  </div>
+
+  <div class="col-sm-12">
+    <h3><strong>Payments</strong> List</h3>
+    <ul>
+      <% order.payments.each_with_index do |payment, index| %>
+        <% if !payment.is_refunded? %>
+          <dt>Payment <%= index + 1 %></dt>
+          <dd>Amount: $<%= payment.amount %></dd>
+          <dd><%= link_to 'Refund Payment', edit_payment_path(payment, 'refund' => true, 'order_id' => order.id), remote: true, class: 'order_payment_refund_link' %></dd><br/>
+        <% end %>
+       <% end %>
+    </ul>
+  </div>
+</div>
