@@ -14,6 +14,7 @@ class AddPaymentsTable < ActiveRecord::Migration
       t.string :check_phone_no
       t.string :pp_transaction_id
       t.integer :payment_method
+
       t.timestamps
     end
   end

@@ -64,8 +64,8 @@ class Order < ActiveRecord::Base
       if !payment.nil? and !payment.is_refunded?
         total += payment.amount
       end
-    end
     total
+    end
   end
 
   def balance

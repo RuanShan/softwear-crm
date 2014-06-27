@@ -98,8 +98,8 @@ describe Order, order_spec: true do
     end
 
     it 'has a total that returns the subtotal plus tax' do
-      expect{order.total}.to_not raise_error
-      expect(order.total).to eq order.subtotal + order.subtotal * order.tax
+      expect{order.total_with_tax}.to_not raise_error
+      expect(order.total_with_tax).to eq order.subtotal + order.subtotal * order.tax
     end
 
     context '#salesperson_name' do
@@ -140,6 +140,7 @@ describe Order, order_spec: true do
   end
 
   describe '#percent_paid' do
+
     it 'returns the percentage of the payment total over the order total' do
       expect(@order.percent_paid).to eq((@payment.amount / @order.total)*100)
     end
