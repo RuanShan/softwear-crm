@@ -142,6 +142,10 @@ describe Search::Query, search_spec: true do
             expect(subject.filter_for(Order, :firstname)).to eq filter
           end
 
+          it 'returns nil if it could not find a filter' do
+            expect(subject.filter_for(Order, :company)).to be_nil
+          end
+
           context 'when the filter is buried' do
             let!(:group1) { create(:filter_group) }
             let!(:group2) { create(:filter_group, filter_holder: group1.type) }

@@ -7,4 +7,18 @@ module FormHelper
       options.merge!(@common_attrs) unless @common_attrs.nil?
     end
   end
+
+  def search_form_for(model, *args, &block)
+    query = args.first
+    options = if args.last.is_a? Hash
+      args.last
+    else
+      {}
+    end
+
+    builder = SearchFormBuilder.new(
+      model, query, self)
+
+    output = capture(builder, &block)
+  end
 end
