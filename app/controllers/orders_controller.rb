@@ -38,7 +38,7 @@ class OrdersController < InheritedResources::Base
       :tax_id_number, :is_redo, :redo_reason,
       :delivery_method, :phone_number,
       :sales_status, :commission_amount,
-      :store_id, :salesperson_id
+      :store_id, :salesperson_id, :total
     ])
   end
 

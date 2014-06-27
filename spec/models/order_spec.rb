@@ -98,8 +98,8 @@ describe Order, order_spec: true do
     end
 
     it 'has a total that returns the subtotal plus tax' do
-      expect{order.total}.to_not raise_error
-      expect(order.total).to eq order.subtotal + order.subtotal * order.tax
+      expect{order.total_with_tax}.to_not raise_error
+      expect(order.total_with_tax).to eq order.subtotal + order.subtotal * order.tax
     end
 
     context '#salesperson_name' do
@@ -110,5 +110,38 @@ describe Order, order_spec: true do
     end
 
     context '#'
+  end
+
+  before(:each) do
+    @order = FactoryGirl.create(:order)
+    @payment = FactoryGirl.create(:valid_payment)
+    @payment.order = @order
+    @payment.save
+  end
+
+  describe '#payment_total', new: true do
+    context 'there are a total of five payments of ten dollars each' do
+      it 'returns 50 dollars' do
+        4.times {
+          payment = FactoryGirl.create(:valid_payment)
+          payment.order = @order
+          payment.save
+        }
+
+        expect(@order.payment_total).to eq(50)
+      end
+    end
+  end
+
+  describe '#balance', new: true do
+    it 'returns the order total minus the payment total' do
+      expect(@order.balance).to eq(@order.total - @payment.amount)
+    end
+  end
+
+  describe '#percent_paid', new: true do
+    it 'returns the percentage of the payment total over the order total' do
+      expect(@order.percent_paid).to eq((@payment.amount / @order.total)*100)
+    end
   end
 end
