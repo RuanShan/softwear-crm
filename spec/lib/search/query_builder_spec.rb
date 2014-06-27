@@ -40,6 +40,17 @@ describe Search::QueryBuilder, search_spec: true do
         expect(order_model.fields).to include Search::Field[:Order, :email]
       end
 
+      it 'should be able to take fulltext' do
+        query = Search::QueryBuilder.build do
+          on(Order) do
+            fulltext 'hello'
+            fields :email, :company
+          end.query
+
+          expect(query.default_fulltext)# shit maybe this should go in the query model
+        end
+      end
+
       it 'should be able to specify boost to some fields' do
         query = Search::QueryBuilder.build do
           on(Order) do

@@ -3,7 +3,8 @@ module Search
     before_action :permit_params
 
     def create
-      render text: params.inspect
+      @query = QueryBuilder.build(&build_search_proc(params[:search])).query
+      render text: 'nice!'
     end
 
     def search

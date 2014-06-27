@@ -4,6 +4,15 @@ describe Search::QueriesController, search_spec: true do
   let!(:valid_user) { create :alternate_user }
   before(:each) { sign_in valid_user }
 
+  let(:test_params) do
+    {search: {
+        order: {
+          '1' => { lastname: 'Johnson' },
+          '2' => { commission_amount: 200 },
+          fulltext: 'test'
+    }}}
+  end
+
   context 'GET' do
     describe '#search' do
       context 'when params contains a query id' do
@@ -29,15 +38,7 @@ describe Search::QueriesController, search_spec: true do
 
       context 'when params contains search info' do
         it 'searches with the given filter info' do
-          params = {
-            search: {
-              order: {
-                '1' => { lastname: 'Johnson' },
-                '2' => { commission_amount: 200 },
-                fulltext: 'test'
-          }}}
-
-          get :search, params
+          get :search, test_params
           expect(response).to be_ok
 
           expect(assigns[:search].first).to be_a Sunspot::Search::StandardSearch
@@ -59,7 +60,15 @@ describe Search::QueriesController, search_spec: true do
 
   context 'POST' do
     describe '#create' do
-      it 'creates a new query with the given filter info'
+      it 'creates a new query with the given filter info' do
+        post :create, test_params
+        expect(response).to be_ok
+
+        expect(assigns[:query]).to be_a Search::Query
+        expect(assigns[:query].query_models.first.name).to eq 'Order'
+
+        expect(assigns[:query].query_models.first.filter.first.field).to eq 'lastname'
+      end
     end
   end
 end
