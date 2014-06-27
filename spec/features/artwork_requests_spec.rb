@@ -1,37 +1,56 @@
 require 'spec_helper'
 include ApplicationHelper
 
-feature 'Proof Request Features' do
+feature 'Artwork Request Features', js: true, artwork_request_spec: true do
   given!(:valid_user) { create(:alternate_user) }
   before(:each) do
     login_as(valid_user)
   end
+  given!(:order) { create(:order_with_job) }
+  given(:job) { order.jobs.first }
+  given!(:imprint_method) { create(:valid_imprint_method_with_color_and_location)}
+  given!(:valid_user) { create(:user) }
+  given!(:artwork_request) { create(:valid_artwork_request)}
 
-  # given!(:proof_request) { create(:valid_proof_request)}
-  # NEED TO IMPLEMENT AN ARTWORK REQUEST FACTORY
-  #
-  # scenario 'A user can create ONE artwork request' , js: true do
-  #   visit orders_path
-  #   THIS GOES DIRECTLY TO THE ORDERS PATH, WHERE EVERYTHING IS PRESENTED IN A TABLE
-  #   find("tr#order_#{order.id} a[data-action='edit']").click
-  #   THIS FINDS AND CLICKS THE EDIT BUTTON (NO OTHER WAY TO GET TO ARTWORK REQUESTS AT THE MOMENT)
-  #   click_link 'Artwork'
-  #   THIS CLICKS ON THE ARTWORK TAB SO THAT WE CAN INPUT THE INFORMATION
-  #   find(:css, "input[class='token-input job-name']").set('Sample Job Name')
-  #   THIS CLICKS THE TOKEN INPUT FIELD AND TYPES IN A VALUE
-  #   find(:css, "div[class='dropdown imprint-names']").click
-  #   click_link 'Sample Dropdown Menu Item aka Name-Production Name'
-  #   FIGURE OUT IF THIS IS THE CORRECT WAY TO CLICK ON SOMETHING IN THE DROPDOWN MENU
-  #   find(:css, "div[class='dropdown artist-name']").click
-  #   click_link 'Sample Artist Name'
-  #   find(:css, "div[class='dropdown location']").click
-  #   click_link 'Location Based On Imprint Name'
-  #   find(:css, "div[class='dropdown status']").click
-  #   click_link 'Status of the Request'
-  #   ADD THE CHECKBOXES FOR INK COLORS, THE WYSIWYG FOR DESCRIPTION AND ADDITIONAL NOTES
-  #   expect(ImprintMethod.where(name: 'New Imprint Method Name')).to exist
-  #   expect(ImprintMethod.where(production_name: 'New Production Name')).to exist
-  #   expect(page).to have_selector('#flash_notice', text: 'Imprint method was successfully created.')
-  # end
+  scenario 'A user can add an artwork request' , js: true do
+    visit '/orders/1/edit#artwork'
+    click_button 'Add Artwork Request'
+    fill_in 'Jobs', with: 'Test Kareem Abdul-Job-bar'
+    select 'Test Name - Test Name', from: 'Imprint method'
+    wait_for_ajax
+    select 'Traps', from: 'Print locations'
+    check 'Test Color'
+    check 'Test Color Rocky IV'
+    find(".glyphicon-calendar glyphicon").click
+    select 'Ricky Winowiecki', from: 'Artist'
+    fill_in 'Description', with: 'Do we have another sorbet?'
+    click_button 'Create Artwork Request'
+    expect(ArtworkRequest.where(description: 'Do we have another sorbet?')).to exist
+    expect(page).to have_selector('.artwork-request-title', text: 'Artwork Request for Test Kareem Abdul-Job-bar')
+    expect('.the-notes').to have_button('.fa fa-2x fa-edit', text: 'Edit')
+    expect('.the-notes').to have_button('.fa fa-2x danger fa-times-circle', text: 'Delete')
+  end
+
+  scenario 'A user can delete an artwork request', js: true do
+    visit '/orders/1/edit#artwork'
+    first("a[data-method='delete']").click
+    page.driver.browser.switch_to.alert.accept
+    wait_for_ajax
+    expect(ArtworkRequest.where(id: artwork_request.id)).to_not exist
+    expect(page).to_not have_content artwork_request.description
+  end
+
+  scenario 'A user can edit an artwork request', js: true do
+    visit '/orders/1/edit#artwork'
+    first(".fa-edit").click
+    fill_in 'Description', with: 'Whens the cousins club meeting babe? Cause I wanna be there.'
+    click_button 'Update Artwork Request'
+    expect(artwork_request.reload.description).to eq('Whens the cousins club meeting babe? Cause I wanna be there.')
+  end
+
+  scenario 'A user can view a list of artwork requests' do
+    visit '/orders/1/edit#artwork'
+    expect(page).to have_selector('#artwork-request-list')
+  end
 
 end

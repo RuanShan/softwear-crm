@@ -1,7 +1,4 @@
-<div class='box-info'>
-  <%= render partial: 'shared/modal_errors', locals: {object: artwork_request} %>
-  <%= form_for artwork_request, url: order_artwork_requests_path(order, artwork_request), builder: LancengFormBuilder, remote: true do |f| %>
-      <div id="horizontal-form" class="collapse in">
+      <div id="horizontal-form artwork-request-form" class="collapse in">
         <div class="form-group">
           <div class="row">
             <%= f.label :jobs, class: 'col-sm-2 control-label' %>
@@ -31,14 +28,16 @@
         </div>
 
         <div class="form-group"id="imprint_method_print_locations_and_ink_colors">
-
+            <% if !artwork_request.print_location.blank? %>
+                <%= render partial: 'artwork_imprint_method_fields', locals: { imprint_method: artwork_request.imprint_method, artwork_request: artwork_request } %>
+            <% end %>
         </div>
 
-        <div class="form-group">
+        <div class="form-group artwork-status-select">
           <div class="row">
             <%= f.label :artwork_status, class: 'col-sm-2 control-label' %>
             <div class="col-sm-10">
-              <%= f.select :artwork_status, [['Pending'], ['In Progress'], ['Art Created']], include_blank: true %>
+              <%= f.select :artwork_status, [['Pending'], ['In Progress'], ['Art Created']] %>
               <% if artwork_request.errors.include?(:artwork_status) %>
                   <% artwork_request.errors.full_messages_for(:artwork_status).each do |message| %>
                       <p class="text-danger"><%= message %></p>
@@ -53,7 +52,7 @@
             <%= f.label :deadline, class: 'col-sm-2 control-label' %>
             <div class="col-sm-10">
               <div class="input-group date"id="artwork-request-deadline-widget">
-                <%= f.text_field :deadline %>
+                <%= f.text_field :deadline, value: time_format(artwork_request.deadline) %>
                 <span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span>
                     </span>
               </div>
@@ -85,7 +84,7 @@
           <div class="row">
             <%= f.label :artist_id, "Artist", class: 'col-sm-2 control-label' %>
             <div class="col-sm-10">
-              <%= f.select :artist_id, options_for_select(User.all().collect { |u| [u.full_name, u.id] }), include_blank: true %>
+              <%= f.select :artist_id, User.all.collect { |u| [u.full_name, u.id] }%>
               <% if artwork_request.errors.include?(:artist_id) %>
                   <% artwork_request.errors.full_messages_for(:artist_id).each do |message| %>
                       <p class="text-danger"><%= message %></p>
@@ -109,15 +108,5 @@
           </div>
         </div>
 
-        <div class="form-group">
-          <div class="row">
-            <div class="col-sm-6">
-              <%= f.submit class: 'btn btn-primary', id: 'artwork-request-submit' %>
-            </div>
-          </div>
-        </div>
-
         <hr>
       </div>
-  <% end %>
-</div>

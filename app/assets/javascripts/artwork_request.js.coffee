@@ -1,49 +1,24 @@
-initializeArtworkRequestModal = (artworkRequestModal) ->
-  $currentFormDiv = null
-  currentForm = -> $currentFormDiv.find('form')
+@initializeSummernote = ->
+  $(".summernote").summernote height: 300
 
-  errorHandler = null
+@initializeArtworkRequestDateTimePicker = ->
+  $("#artwork-request-deadline-widget").datetimepicker()
 
-  $('#artwork-request-submit').click ->
-    $add = $(this)
-    $add.attr 'disabled', 'disabled'
-    setTimeout (-> $add.removeAttr 'disabled'), 5000
+@initializeJobsChosen = ->
+  $("#jobs-tokenfield").chosen
+    placeholder_text_multiple: "Select all jobs for this request"
+    no_results_text: "No results matched"
+    width: "400px"
 
-    errorHandler.clear() if errorHandler != null
+@summernoteArtworkRequest = ->
+  $(".summernote").closest("form").submit ->
+    $(".summernote").val $(".summernote").code()
 
-    $currentFormDiv ||= $('#ar-standard-form')
-    action = currentForm().attr('action')
-    ajax = $.ajax
-      type: 'POST'
-      url: action
-      data: currentForm().serialize() + escape($('.summernote').code())
-      dataType: 'json'
-    ajax.done (response) ->
-      if response.result == 'success'
-        console.log 'Successfully created artwork request!'
-#        artworkRequestId = action.charAt(action.indexOf('artwork_requests/')+'artwork_requests/'.length)
-#        @refreshArtworkRequest artworkRequestId
-        artworkRequestModal.modal 'hide'
-
-      else if response.result == 'failure'
-        console.log 'Failed to create'
-        errorHandler ||= ErrorHandler('artwork_request', currentForm())
-        errorHandler.handleErrors(response.errors, response.modal)
-
-    ajax.fail (jqXHR, textStatus) ->
-      alert "Something's wronga with the server!"
-
-  artworkRequestModal.keyup (key) ->
-    $('#artwork-request-submit').click() if key.which is 13 # enter key
-
+@setNewArtworkRequestSelect = ->
+  $(".artwork-status-select").hide()
+  $(".artwork-status-select").val "Pending"
 
 $(document).ready ->
-#  input = $("<input>").attr("type", "hidden").escape($('.summernote').code())
-#  $("#artwork-request-submit").append $(input)
-#
-#  $("#artwork-request-submit").submit ->
-#    $('<input />').attr('type', 'hidden').escape($('.summernote').code()).appendTo "#artwork-request-submit"
-
   $(document).on "change", "#artwork_imprint_method_fields", (e) ->
     if $(this).find(":selected").attr("value")?
       ajax = $.ajax

@@ -80,3 +80,7 @@ end
 def human_boolean(bool)
   bool ? 'Yes' : 'No'
 end
+
+def time_format(datetime)
+  datetime.strftime('%m/%d/%Y %H:%M %p') unless datetime.blank?
+end

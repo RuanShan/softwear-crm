@@ -4,7 +4,7 @@
       <h3><strong>Artwork</strong> Requests</h3>
       <div id="artwork-request-list" ></div>
       <% ArtworkRequest.all.each do |ar| %>
-          <%= render partial: 'artwork_requests/artwork_request', locals: {artwork_request: ar} %>
+          <%= render partial: 'artwork_requests/artwork_request', locals: {artwork_request: ar, order: order} %>
       <%end%>
       <%= link_to new_order_artwork_request_path(@order), class: 'btn btn-info btn-lg btn-block add-line-item', id: 'new_artwork_request', remote: true do %><i class="fa fa-list-alt"> </i>Add Artwork Request<% end %>
     </div>

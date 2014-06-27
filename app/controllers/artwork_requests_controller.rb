@@ -1,6 +1,6 @@
 class ArtworkRequestsController < InheritedResources::Base
-  before_filter :reformat_time, only: [:create, :update]
-  before_filter :assign_order, only: [:new]
+  before_filter :format_time, only: [:create, :update]
+  before_filter :assign_order
 
   def new
     super do |format|
@@ -16,8 +16,9 @@ class ArtworkRequestsController < InheritedResources::Base
 
   def create
     @artwork_request = ArtworkRequest.create!(permitted_params[:artwork_request])
-    super do |format|
-      format.js
+    super do |success, failure|
+      success.js
+      failure.js {render partial: 'shared/modal_errors', locals: { object: @artwork_request } }
     end
   end
 
@@ -32,15 +33,15 @@ class ArtworkRequestsController < InheritedResources::Base
   def update
     @artwork_request = ArtworkRequest.find(params[:id])
     @artwork_request.update_attributes(permitted_params[:artwork_request])
-    super do |success, failure|
-      failure.html { render action: :edit }
+    respond_to do |format|
+      format.js
     end
   end
 
   private
 
-  def reformat_time
-    params[:artwork_request][:deadline] = Date.strptime(params[:artwork_request][:deadline], '%m/%d/%Y %H:%M %p') unless (params[:artwork_request].nil? or params[:artwork_request][:deadline].nil?)
+  def format_time
+    params[:artwork_request][:deadline] = DateTime.strptime(params[:artwork_request][:deadline], '%m/%d/%Y %H:%M %p') unless (params[:artwork_request].nil? or params[:artwork_request][:deadline].nil?)
   end
 
   def assign_order

@@ -3,9 +3,9 @@
     <h4 class="artwork-request-title">Artwork Request for <%= artwork_request.jobs.collect { |x| [x.name] }.join(', ') %></h4>
     <dl>
       <dt>Imprint Method</dt>
-      <dd><%= ImprintMethod.find(artwork_request.imprint_method_id).name %></dd>
+      <dd><%= artwork_request.imprint_method.name %></dd>
       <dt>Print Location</dt>
-      <dd><%= PrintLocation.find(artwork_request.print_location_id).name %></dd>
+      <dd><%= artwork_request.print_location.name %></dd>
       <dt>Ink Colors</dt>
       <dd><%#= artwork_request.ink_colors.where(artwork_request_id: artwork_request.id).collect{|x| [x.name]}.join(', ') %>
         <%= artwork_request.ink_colors.collect { |x| [x.name] }.join(', ') %></dd>
@@ -18,9 +18,9 @@
       <dt>Created By</dt>
       <dd><%= @current_user.full_name %></dd>
       <dt>Assigned to</dt>
-      <dd><%= User.find(artwork_request.artist_id).full_name %></dd>
+      <dd><%= artwork_request.artist.full_name %></dd>
     </dl>
-    <%= link_to edit_artwork_request_path(artwork_request), remote: true do %><i class="fa fa-2x fa-edit"></i> Edit <% end %>
-    <%= link_to artwork_request, method: :delete, remote: true do %><i class="fa fa-2x danger fa-times-circle"></i> Delete <% end %>
+    <%= link_to edit_order_artwork_request_path(order, artwork_request), remote: true do %><i class="fa fa-2x fa-edit"></i> Edit <% end %>
+    <%= link_to order_artwork_request_path(order, artwork_request), method: :delete, remote: true do %><i class="fa fa-2x danger fa-times-circle"></i> Delete <% end %>
   </div>
 </div>
