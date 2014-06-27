@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140623184947) do
+ActiveRecord::Schema.define(version: 20140624213235) do
 
   create_table "brands", force: true do |t|
     t.string   "name"
@@ -89,9 +89,19 @@ ActiveRecord::Schema.define(version: 20140623184947) do
     t.text     "proofing_template_name"
     t.string   "material"
     t.boolean  "standard_offering"
+    t.string   "main_supplier"
+    t.string   "supplier_link"
+    t.string   "weight"
+    t.decimal  "base_price",             precision: 10, scale: 2
+    t.decimal  "xxl_price",              precision: 10, scale: 2
+    t.decimal  "xxxl_price",             precision: 10, scale: 2
+    t.decimal  "xxxxl_price",            precision: 10, scale: 2
+    t.decimal  "xxxxxl_price",           precision: 10, scale: 2
+    t.decimal  "xxxxxxl_price",          precision: 10, scale: 2
   end
 
   add_index "imprintables", ["deleted_at"], name: "index_imprintables_on_deleted_at", using: :btree
+  add_index "imprintables", ["main_supplier"], name: "index_imprintables_on_main_supplier", using: :btree
   add_index "imprintables", ["style_id"], name: "style_id_ix", using: :btree
 
   create_table "imprintables_stores", id: false, force: true do |t|

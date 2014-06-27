@@ -5,6 +5,10 @@
   <%= link_to "Add a color", new_color_path, class:'btn btn-primary', role: 'button' %>
 </div>
 
+<%= paginate @colors %>
+
 <div class="box-info row clear">
   <%= render partial: 'table', locals: {colors: @colors } %>
 </div>
+
+<%= paginate @colors %>

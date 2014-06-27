@@ -4,12 +4,12 @@
       <div class="table-responsive">
         <table class="table table-hover">
           <thead>
-            <tr>
-              <th></th>
-              <% size_variants.each do |s| %>
-                <th><%= s.size.display_value %></th>
-              <% end %>
-            </tr>
+          <tr>
+            <th></th>
+            <% size_variants.each do |s| %>
+              <th><%= s.size.display_value %></th>
+            <% end %>
+          </tr>
           </thead>
           <tbody>
           <% color_variants.sort! { |x,y| x.name <=> y.name }.each do |c| %>
@@ -17,7 +17,7 @@
               <td><%= c.color.name %></td>
               <% size_variants.each do |s| %>
                 <% v = variants_array.find { |v| (v.color_id == c.color.id) && (v.size_id == s.size.id) } %>
-                  <td><% if v %><i class="fa fa-check-square"></i><% end %></td>
+                <td><% if v %><i class="fa fa-check-square"></i><% end %></td>
               <% end %>
             </tr>
           <% end %>

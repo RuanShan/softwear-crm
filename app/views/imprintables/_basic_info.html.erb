@@ -3,11 +3,14 @@
     <dt>Material</dt>
     <dd><%= imprintable.material %></dd>
     <br />
-    <dt>Colors Offered (<%= Color.count %>)</dt>
-    <dd><%= table_entries(Color) %></dd>
+    <dt>Weight</dt>
+    <dd><%= imprintable.weight %></dd>
     <br />
-    <dt>Sizes Offered (<%= Size.count %>)</dt>
-    <dd><%= table_entries(Size) %></dd>
+    <dt>Colors Offered (<%= imprintable.colors.size %>)</dt>
+    <dd><%= table_entries(imprintable.colors) %></dd>
+    <br />
+    <dt>Sizes Offered (<%= imprintable.sizes.size %>)</dt>
+    <dd><%= table_entries(imprintable.sizes) %></dd>
     <br />
     <dt>Sample Locations</dt>
     <dd><%= imprintable.sample_locations.map{ |sl| sl.name }.join(', ') %></dd>

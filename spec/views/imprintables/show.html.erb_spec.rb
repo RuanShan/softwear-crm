@@ -12,6 +12,7 @@ describe 'imprintables/show.html.erb', imprintable_spec: true do
   context 'The imprintable is not part of the standard product set' do
     it 'has a tabbed display with basic info, size/color availability, imprint details, and supplier information listed' do
       assign(:imprintable, imprintable)
+
       render file: 'imprintables/show', id: imprintable.to_param
       expect(rendered).to have_selector("#basic_info_#{imprintable.id}")
       expect(rendered).to have_selector("#size_color_availability_#{imprintable.id}")
@@ -26,7 +27,7 @@ describe 'imprintables/show.html.erb', imprintable_spec: true do
 
     it 'displays the standard product notice' do
       assign(:imprintable, imprintable)
-      render file: 'imprintables/show', id: imprintable.to_param
+      render file: 'imprintables/show', id: imprintable.to_param, locals: { color_variants: [], size_variants: [], variants_array: [] }
       expect(rendered).to have_content 'This Imprintable is part of the Standard Product Set'
     end
   end

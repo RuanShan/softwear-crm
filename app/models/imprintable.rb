@@ -2,7 +2,7 @@ class Imprintable < ActiveRecord::Base
   acts_as_paranoid
   acts_as_taggable
 
-  SIZING_CATEGORIES = ['Adult Unisex', 'Ladies', 'Youth Unisex', 'Girls', 'Toddler', 'Infant']
+  SIZING_CATEGORIES = ['Adult Unisex', 'Ladies', 'Youth Unisex', 'Girls', 'Toddler', 'Infant', 'n/a']
 
   belongs_to :style
   has_one :brand, through: :style, dependent: :destroy
@@ -18,9 +18,12 @@ class Imprintable < ActiveRecord::Base
 
   validates :style, presence: true
   validates :sizing_category, inclusion: { in: SIZING_CATEGORIES, message: 'Invalid sizing category' }
+  validates :supplier_link, format: {with: URI::regexp(%w(http https)), message: 'should be in format http://www.url.com/path'}, allow_blank: true
+
+  default_scope { order('brands.name, styles.catalog_no').joins(:brand) }
 
   def name
-    "#{style.catalog_no} #{style.name}"
+    "#{brand.name} - #{style.catalog_no} - #{style.name}"
   end
 
   def description
@@ -41,5 +44,9 @@ class Imprintable < ActiveRecord::Base
 
     color_variants = variants_array.uniq{ |v| v.color_id }
     { :size_variants => size_variants, :color_variants => color_variants, :variants_array => variants_array }
+  end
+
+  def standard_offering?
+    standard_offering == true
   end
 end

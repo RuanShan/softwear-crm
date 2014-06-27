@@ -1,5 +1,11 @@
 class ColorsController < InheritedResources::Base
 
+  def index
+    super do
+      @colors = Color.all.page(params[:page])
+    end
+  end
+
   def update
     super do |success, failure|
       success.html { redirect_to colors_path }

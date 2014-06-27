@@ -15,6 +15,8 @@ describe Imprintable, imprintable_spec: true do
   describe 'Validations' do
     it { should validate_presence_of(:style) }
     it { should ensure_inclusion_of(:sizing_category).in_array Imprintable::SIZING_CATEGORIES }
+    it { should allow_value('http://www.foo.com', 'http://www.foo.com/shipping').for(:supplier_link) }
+    it { should_not allow_value('bad_url.com', '').for(:supplier_link).with_message('should be in format http://www.url.com/path') }
   end
 
   describe 'Scopes' do
@@ -59,8 +61,8 @@ describe Imprintable, imprintable_spec: true do
 
   describe '#name' do
     let!(:imprintable) { create(:valid_imprintable) }
-    it 'returns a string of the style.catalog_no and style.name' do
-      expect(imprintable.name).to eq("#{ imprintable.style.catalog_no } #{ imprintable.style.name }")
+    it 'returns a string of the style.brand - style.catalog_no - style.name' do
+      expect(imprintable.name).to eq("#{ imprintable.brand.name } - #{ imprintable.style.catalog_no } - #{ imprintable.style.name }")
     end
   end
 
@@ -85,6 +87,30 @@ describe Imprintable, imprintable_spec: true do
       expect(variants_hash[:size_variants][0].id).to eq(imprintable_variant.size_id)
       expect(variants_hash[:color_variants][0].id).to eq(imprintable_variant.color_id)
       expect(variants_hash[:variants_array][0].id).to eq(imprintable_variant.id)
+    end
+  end
+
+  describe 'standard_offering?' do
+
+    subject { Imprintable.new }
+
+    context 'standard_offering is true' do
+
+      before { allow(subject).to receive_message_chain(:standard_offering).and_return(true) }
+
+      it 'returns true' do
+        expect(subject.standard_offering?).to be_truthy
+      end
+
+    end
+
+    context 'standard_offering is false' do
+
+      before { allow(subject).to receive_message_chain(:standard_offering).and_return(false) }
+
+      it 'returns false' do
+        expect(subject.standard_offering?).to be_falsy
+      end
     end
   end
 

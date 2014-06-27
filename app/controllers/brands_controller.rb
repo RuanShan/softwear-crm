@@ -1,5 +1,11 @@
 class BrandsController < InheritedResources::Base
 
+  def index
+    super do
+      @brands = Brand.all.page(params[:page])
+    end
+  end
+
   def update
     super do |success, failure|
       success.html { redirect_to brands_path }

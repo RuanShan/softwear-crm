@@ -49,5 +49,6 @@ describe ApplicationHelper, application_helper_spec: true do
         expect(time_format(datetime)).to eq('09/25/1991 00:00 AM')
       end
     end
+
   end
 end

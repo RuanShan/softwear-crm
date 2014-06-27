@@ -5,6 +5,10 @@
   <%= link_to "Add a Brand", new_brand_path, class: 'btn btn-primary', role: 'button' %>
 </div>
 
+<%= paginate @brands %>
+
 <div class="box-info row clear">
   <%= render partial: 'table', locals: {brands: @brands} %>
 </div>
+
+<%= paginate @brands %>

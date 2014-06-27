@@ -16,6 +16,12 @@ feature 'Imprintables management', imprintable_spec: true do
     expect(current_path).to eq(imprintables_path)
   end
 
+  scenario 'A user can visit the edit page of an imprintable' do
+    visit imprintables_path
+    find("tr#imprintable_#{imprintable.id} a[data-action='edit']").click
+    expect(current_path).to eq(edit_imprintable_path imprintable.id)
+  end
+
   scenario 'A user can create a new imprintable', js: true do
     visit imprintables_path
     click_link('Add an Imprintable')
@@ -30,12 +36,11 @@ feature 'Imprintables management', imprintable_spec: true do
   end
 
   describe 'Tagging', js: true do
-    let!(:imprintable_two) { create(:valid_imprintable) }
-    let!(:imprintable_three) { create(:valid_imprintable) }
+    given!(:imprintable_two) { create(:valid_imprintable) }
+    given!(:imprintable_three) { create(:valid_imprintable) }
     scenario 'A user can tag an imprintable' do
-      visit imprintables_path
-      find("tr#imprintable_#{imprintable.id} a[data-action='edit']").click
-      fill_in 'Tag List', with: 'cotton'
+      visit edit_imprintable_path imprintable.id
+      fill_in 'Tags', with: 'cotton'
       find_button('Update Imprintable').click
       expect(page).to have_selector '.modal-content-success', text: 'Imprintable was successfully updated.'
       expect(current_path).to eq(edit_imprintable_path imprintable.id)
@@ -43,9 +48,8 @@ feature 'Imprintables management', imprintable_spec: true do
     end
 
     scenario 'A user can filter a list of imprintables by tag' do
-      visit imprintables_path
-      find("tr#imprintable_#{imprintable.id} a[data-action='edit']").click
-      fill_in 'Tag List', with: 'cotton'
+      visit edit_imprintable_path imprintable.id
+      fill_in 'Tags', with: 'cotton'
       find_button('Update Imprintable').click
       expect(page).to have_selector '.modal-content-success', text: 'Imprintable was successfully updated.'
       visit imprintables_path
@@ -59,10 +63,9 @@ feature 'Imprintables management', imprintable_spec: true do
 
 
   describe 'There is a store available', js: true do
-    let!(:store) { create(:valid_store) }
+    given!(:store) { create(:valid_store) }
     scenario 'A user can utilize sample location token input field', js: true do
-      visit imprintables_path
-      find("tr#imprintable_#{imprintable.id} a[data-action='edit']").click
+      visit edit_imprintable_path imprintable.id
       select_from_chosen(store.name, from: 'Sample Locations')
       find_button('Update Imprintable').click
       expect(page).to have_selector '.modal-content-success', text: 'Imprintable was successfully updated.'
@@ -72,10 +75,9 @@ feature 'Imprintables management', imprintable_spec: true do
   end
 
   describe 'There is another imprintable' do
-    let!(:coordinate) { create(:valid_imprintable) }
+    given!(:coordinate) { create(:valid_imprintable) }
     scenario 'A user can utilize coordinate token input field', js: true do
-      visit imprintables_path
-      find("tr#imprintable_#{imprintable.id} a[data-action='edit']").click
+      visit edit_imprintable_path imprintable.id
       select_from_chosen(coordinate.name, from: 'Coordinates')
       find_button('Update Imprintable').click
       expect(page).to have_selector '.modal-content-success', text: 'Imprintable was successfully updated.'
@@ -83,8 +85,7 @@ feature 'Imprintables management', imprintable_spec: true do
     end
 
     scenario 'Coordinates are reflected symmetrically', js: true do
-      visit imprintables_path
-      find("tr#imprintable_#{imprintable.id} a[data-action='edit']").click
+      visit edit_imprintable_path imprintable.id
       select_from_chosen(coordinate.name, from: 'Coordinates')
       find_button('Update Imprintable').click
       expect(page).to have_selector '.modal-content-success', text: 'Imprintable was successfully updated.'
@@ -93,10 +94,9 @@ feature 'Imprintables management', imprintable_spec: true do
   end
 
   describe 'There is an imprint method' do
-    let!(:imprint_method) { create(:valid_imprint_method) }
+    given!(:imprint_method) { create(:valid_imprint_method) }
     scenario 'A user can utilize compatible imprint methods token input field', js: true do
-      visit imprintables_path
-      find("tr#imprintable_#{imprintable.id} a[data-action='edit']").click
+      visit edit_imprintable_path imprintable.id
       select_from_chosen(imprint_method.name, from: 'Compatible Imprint Methods')
       find_button('Update Imprintable').click
       expect(page).to have_selector '.modal-content-success', text: 'Imprintable was successfully updated.'
@@ -106,8 +106,7 @@ feature 'Imprintables management', imprintable_spec: true do
 
 
   scenario 'A user can edit an existing imprintable' do
-    visit imprintables_path
-    find("tr#imprintable_#{imprintable.id} a[data-action='edit']").click
+    visit edit_imprintable_path imprintable.id
     fill_in 'Special Considerations', :with => 'Edited Special Consideration'
     find_button('Update Imprintable').click
     expect(page).to have_selector '.modal-content-success', text: 'Imprintable was successfully updated.'
@@ -145,7 +144,7 @@ feature 'Imprintables management', imprintable_spec: true do
   end
 
   describe 'There are 2 different imprintables', js: true do
-    let!(:imprintable_two) { create(:valid_imprintable) }
+    given!(:imprintable_two) { create(:valid_imprintable) }
     scenario 'A user can display the modal show without having multiple shows being rendered at once (card #136)' do
       visit imprintables_path
       expect(find('.imprintable-modal div.modal-body', :visible => false).all('*').length).to eq(0)

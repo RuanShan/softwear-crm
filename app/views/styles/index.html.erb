@@ -5,6 +5,10 @@
   <%= link_to "Add a Style", new_style_path, class: 'btn btn-primary', role: 'button' %>
 </div>
 
+<%= paginate @styles %>
+
 <div class="box-info row clear">
   <%= render partial: 'table', locals: {styles: @styles} %>
 </div>
+
+<%= paginate @styles %>
