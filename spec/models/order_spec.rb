@@ -98,8 +98,8 @@ describe Order, order_spec: true do
     end
 
     it 'has a total that returns the subtotal plus tax' do
-      expect{order.total_with_tax}.to_not raise_error
-      expect(order.total_with_tax).to eq order.subtotal + order.subtotal * order.tax
+      expect{order.total}.to_not raise_error
+      expect(order.total).to eq order.subtotal + order.subtotal * order.tax
     end
 
     context '#salesperson_name' do
