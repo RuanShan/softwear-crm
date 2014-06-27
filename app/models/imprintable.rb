@@ -22,6 +22,12 @@ class Imprintable < ActiveRecord::Base
   validates :sizing_category, inclusion: { in: SIZING_CATEGORIES, message: 'Invalid sizing category' }
   validates :supplier_link, format: {with: URI::regexp(%w(http https)), message: 'should be in format http://www.url.com/path'}, allow_blank: true
 
+  searchable do
+    text :name, :special_considerations, :proofing_template_name, :main_supplier, :description
+    string :sizing_category
+    float :base_price
+    boolean :flashable
+  end
 
   def name
     "#{brand.name} - #{style.catalog_no} - #{style.name}"

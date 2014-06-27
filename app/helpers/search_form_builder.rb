@@ -35,14 +35,26 @@ class SearchFormBuilder
     add_class options, 'form-control'
 
     initial_value = initial_value_for field_name
-    if initial_value.nil?
-      options[:allow_blank] ||= true
-    else
-      options[:selected] = initial_value
+    display_method = options[:display] || :name
+
+    select_options = @template.content_tag(:option, "#{field_name.to_s.humanize}...", value: 'nil')
+    
+    choices.each do |item|
+      select_options.send :original_concat, @template.content_tag(:option, 
+        if item.respond_to? display_method
+          item.send(display_method)
+        else
+          item.to_s
+        end,
+        value: if item.respond_to? :id
+          item.id
+        else
+          item.to_s
+        end)
     end
 
     @field_count += 1
-    @template.select_tag input_name_for(field_name), choices, options
+    @template.select_tag input_name_for(field_name), select_options, options
   end
 
   [:text_field, :text_area, 
@@ -56,19 +68,9 @@ class SearchFormBuilder
      end
    end
 
-
-  # def text_field(field_name, *args)
-  #   options = get_options args
-  #   add_class(options, 'form-control')
-  #   existing_filter = @query.filter_for @model, field_name
-# 
-#   #   @field_count += 1
-#   #   @template.text_field_tag input_name_for(field_name), initial_value_for(field_name), options
-  # end
-
   def submit(options={})
     add_class options, 'submit', 'btn', 'btn-primary'
-    @template.submit_tag(options[:value] || 'Submit', options)
+    @template.submit_tag(options[:value] || 'Search', options)
   end
 
 private
