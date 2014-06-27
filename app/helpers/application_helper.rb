@@ -79,4 +79,12 @@ module ApplicationHelper
   def human_boolean(bool)
     bool ? 'Yes' : 'No'
   end
+
+  def time_format(datetime)
+    datetime.strftime('%m/%d/%Y %H:%M %p') unless datetime.blank?
+  end
+
+  def imprintable_modal(imprintable)
+    link_to imprintable.name, imprintable_path(imprintable), remote: true, class: 'imprintable_modal_link'
+  end
 end

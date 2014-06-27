@@ -59,6 +59,7 @@ group :development do
   gem 'capistrano-rails'
   gem 'capistrano-bundler'
   gem 'better_errors', '>= 0.3.2'
+  gem 'binding_of_caller'
 end
 
 group :test do

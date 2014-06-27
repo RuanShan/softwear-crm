@@ -30,13 +30,12 @@ feature 'Imprintables management', imprintable_spec: true do
   end
 
   describe 'Tagging', js: true do
-
-    let!(:imprintable_two) { create(:valid_imprintable) }
-    let!(:imprintable_three) { create(:valid_imprintable) }
-
+    
+    given!(:imprintable_two) { create(:valid_imprintable) }
+    given!(:imprintable_three) { create(:valid_imprintable) }
+    
     scenario 'A user can tag an imprintable' do
-      visit imprintables_path
-      find("tr#imprintable_#{imprintable.id} a[data-action='edit']").click
+      visit edit_imprintable_path imprintable.id
       fill_in 'Tags', with: 'cotton'
       find_button('Update Imprintable').click
       expect(page).to have_selector '.modal-content-success', text: 'Imprintable was successfully updated.'
@@ -47,10 +46,11 @@ feature 'Imprintables management', imprintable_spec: true do
 
 
   describe 'There is a store available', js: true do
-    let!(:store) { create(:valid_store) }
+    
+    given!(:store) { create(:valid_store) }
+    
     scenario 'A user can utilize sample location token input field', js: true do
-      visit imprintables_path
-      find("tr#imprintable_#{imprintable.id} a[data-action='edit']").click
+      visit edit_imprintable_path imprintable.id
       select_from_chosen(store.name, from: 'Sample Locations')
       find_button('Update Imprintable').click
       expect(page).to have_selector '.modal-content-success', text: 'Imprintable was successfully updated.'
@@ -60,10 +60,11 @@ feature 'Imprintables management', imprintable_spec: true do
   end
 
   describe 'There is another imprintable' do
-    let!(:coordinate) { create(:valid_imprintable) }
+    
+    given!(:coordinate) { create(:valid_imprintable) }
+    
     scenario 'A user can utilize coordinate token input field', js: true do
-      visit imprintables_path
-      find("tr#imprintable_#{imprintable.id} a[data-action='edit']").click
+      visit edit_imprintable_path imprintable.id
       select_from_chosen(coordinate.name, from: 'Coordinates')
       find_button('Update Imprintable').click
       expect(page).to have_selector '.modal-content-success', text: 'Imprintable was successfully updated.'
@@ -71,8 +72,7 @@ feature 'Imprintables management', imprintable_spec: true do
     end
 
     scenario 'Coordinates are reflected symmetrically', js: true do
-      visit imprintables_path
-      find("tr#imprintable_#{imprintable.id} a[data-action='edit']").click
+      visit edit_imprintable_path imprintable.id
       select_from_chosen(coordinate.name, from: 'Coordinates')
       find_button('Update Imprintable').click
       expect(page).to have_selector '.modal-content-success', text: 'Imprintable was successfully updated.'
@@ -80,11 +80,12 @@ feature 'Imprintables management', imprintable_spec: true do
     end
   end
 
-  describe 'There is an imprint method' do
-    let!(:imprint_method) { create(:valid_imprint_method) }
+  describe 'There is an imprint method', js: true do
+    
+    given!(:imprint_method) { create(:valid_imprint_method) }
+    
     scenario 'A user can utilize compatible imprint methods token input field', js: true do
-      visit imprintables_path
-      find("tr#imprintable_#{imprintable.id} a[data-action='edit']").click
+      visit edit_imprintable_path imprintable.id
       select_from_chosen(imprint_method.name, from: 'Compatible Imprint Methods')
       find_button('Update Imprintable').click
       expect(page).to have_selector '.modal-content-success', text: 'Imprintable was successfully updated.'
@@ -93,18 +94,16 @@ feature 'Imprintables management', imprintable_spec: true do
   end
 
 
-  scenario 'A user can edit an existing imprintable', js: true do
-    visit imprintables_path
-    find("tr#imprintable_#{imprintable.id} a[data-action='edit']").click
+  scenario 'A user can edit an existing imprintable' do
+    visit edit_imprintable_path imprintable.id
     fill_in 'Special Considerations', :with => 'Edited Special Consideration'
     find_button('Update Imprintable').click
-    sleep(4)
     expect(page).to have_selector '.modal-content-success', text: 'Imprintable was successfully updated.'
     expect(current_path).to eq(edit_imprintable_path imprintable.id)
     expect(imprintable.reload.special_considerations).to eq('Edited Special Consideration')
   end
 
-  scenario 'A user can delete an existing imprintable', js: true do
+  scenario 'A user can delete an existing imprintable' do
     visit imprintables_path
     find("tr#imprintable_#{imprintable.id} a[data-action='destroy']").click
     page.driver.browser.switch_to.alert.accept
@@ -114,7 +113,7 @@ feature 'Imprintables management', imprintable_spec: true do
     expect(imprintable.reload.destroyed? ).to be_truthy
   end
   
-  scenario 'A user can navigate to all tabs of the modal show menu (card #133)', js: true do
+  scenario 'A user can navigate to all tabs of the modal show menu (card #133)' do
     visit imprintables_path
     find(:css, "#imprintable_#{imprintable.id} td a.imprintable_modal_link").click
     expect(page).to have_selector "#basic_info_#{imprintable.id}.active"
@@ -134,14 +133,16 @@ feature 'Imprintables management', imprintable_spec: true do
   end
 
   describe 'There are 2 different imprintables', js: true do
-    let!(:imprintable_two) { create(:valid_imprintable) }
+    
+    given!(:imprintable_two) { create(:valid_imprintable) }
+    
     scenario 'A user can display the modal show without having multiple shows being rendered at once (card #136)' do
       visit imprintables_path
-      expect(find('.imprintable-modal div.modal-body', :visible => false).all('*').length).to eq(0)
-      expect(find('.imprintable-modal div.modal-body', :visible => false).text).to eq('')
+      expect(find('#contentModal div.modal-body', :visible => false).all('*').length).to eq(0)
+      expect(find('#contentModal div.modal-body', :visible => false).text).to eq('')
       find(:css, "#imprintable_#{imprintable_two.id} td a.imprintable_modal_link").click
-      expect(find('.imprintable-modal div.modal-body').all('*').length).to_not eq(0)
-      expect(find('.imprintable-modal div.modal-body').text).to_not eq ('')
+      expect(find('#contentModal div.modal-body').all('*').length).to_not eq(0)
+      expect(find('#contentModal div.modal-body').text).to_not eq ('')
     end
   end
 end

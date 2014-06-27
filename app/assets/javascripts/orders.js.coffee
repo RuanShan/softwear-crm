@@ -24,3 +24,4 @@ $(window).load ->
     tab.trigger $.Event('click')
 
   $('#datetimepicker1').datetimepicker()
+

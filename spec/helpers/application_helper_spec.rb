@@ -36,7 +36,19 @@ describe ApplicationHelper, application_helper_spec: true do
     end
   end
 
-  describe '#nav_helper' do
+  describe '#time_format' do
+    context 'datetime is nil' do
+      it 'should return nil' do
+        expect(time_format('')).to eq(nil)
+      end
+    end
+
+    context 'there is a valid datetime' do
+      let!(:datetime) { DateTime.new(1991, 9, 25) }
+      it 'should return a formatted date' do
+        expect(time_format(datetime)).to eq('09/25/1991 00:00 AM')
+      end
+    end
 
   end
 end

@@ -28,8 +28,7 @@ feature 'Brands management', brand_spec: true do
   end
 
   scenario 'A user can edit an existing brand'do
-    visit brands_path
-    find("tr#brand_#{brand.id} a[data-action='edit']").click
+    visit edit_brand_path brand.id
     fill_in 'brand_name', :with => 'Edited Brand Name'
     click_button 'Update Brand'
     expect(current_path).to eq(brands_path)

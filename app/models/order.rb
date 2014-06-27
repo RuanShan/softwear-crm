@@ -9,7 +9,7 @@ class Order < ActiveRecord::Base
 
   VALID_SALES_STATUSES   = ['Pending', 'Terms Set And Met', 'Paid', 'Cancelled']
   VALID_DELIVERY_METHODS = ['Pick up in Ann Arbor', 'Pick up in Ypsilanti', 'Ship to one location', 'Ship to multiple locations']
-  
+
   before_validation :initialize_fields, on: :create
 
   validates_presence_of :email, :firstname, :lastname, :name, :terms, :delivery_method
@@ -28,9 +28,12 @@ class Order < ActiveRecord::Base
   validates :store, presence: true
   validates :salesperson_id, presence: true
 
-  belongs_to :user
+  belongs_to :user, :foreign_key => :salesperson_id
   belongs_to :store
   has_many :jobs
+  has_many :payments
+
+  accepts_nested_attributes_for :payments
 
   # non-deletable stuff
   acts_as_paranoid
@@ -53,6 +56,24 @@ class Order < ActiveRecord::Base
 
   def salesperson_name
     User.find(self.salesperson_id).full_name
+  end
+
+  def payment_total
+    total = 0
+    self.payments.each do |payment|
+      if !payment.nil? and !payment.is_refunded?
+        total += payment.amount
+      end
+    total
+    end
+  end
+
+  def balance
+    self.total - self.payment_total
+  end
+
+  def percent_paid
+    (self.payment_total / self.total)*100
   end
 
 private

@@ -7,6 +7,7 @@ class OrdersController < InheritedResources::Base
   end
 
   def update
+    params[:order][:in_hand_by] = DateTime.strptime(params[:order][:in_hand_by], '%m/%d/%Y %H:%M %p') if params[:order][:in_hand_by].length > 0
     super do |success, failure|
       success.html { redirect_to edit_order_path(params[:id])+'#details' }
       failure.html { render action: :edit, anchor: 'details' }
@@ -30,7 +31,7 @@ class OrdersController < InheritedResources::Base
   end
 
   def create
-    params[:order][:in_hand_by] = Date.strptime(params[:order][:in_hand_by], '%m/%d/%Y %H:%M %p') if params[:order][:in_hand_by].length > 0
+    params[:order][:in_hand_by] = DateTime.strptime(params[:order][:in_hand_by], '%m/%d/%Y %H:%M %p') if params[:order][:in_hand_by].length > 0
     super
   end
 
@@ -44,7 +45,7 @@ class OrdersController < InheritedResources::Base
       :tax_id_number, :is_redo, :redo_reason,
       :delivery_method, :phone_number,
       :sales_status, :commission_amount,
-      :store_id, :salesperson_id
+      :store_id, :salesperson_id, :total
     ])
   end
 
