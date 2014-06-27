@@ -47,5 +47,6 @@ CrmSoftwearcrmCom::Application.routes.draw do
   namespace 'search' do
     resources :queries
   end
+  get '/search', to: 'search/queries#search'
 
 end
