@@ -29,8 +29,7 @@ feature 'Colors management', color_spec: true do
   end
 
   scenario 'A user can edit an existing color' do
-    visit colors_path
-    find("tr#color_#{color.id} a[data-action='edit']").click
+    visit edit_color_path color.id
     fill_in 'color_name', :with => 'Edited Color Name'
     click_button 'Update Color'
     expect(current_path).to eq(colors_path)

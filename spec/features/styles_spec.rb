@@ -32,8 +32,7 @@ feature 'Styles management', style_spec: true do
   end
 
   scenario 'A user can edit an existing style' do
-    visit styles_path
-    find("tr#style_#{style.id} a[data-action='edit']").click
+    visit edit_style_path style.id
     fill_in 'style_name', :with => 'Edited Style Name'
     click_button 'Update Style'
     expect(current_path).to eq(styles_path)

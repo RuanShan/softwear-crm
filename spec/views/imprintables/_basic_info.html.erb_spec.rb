@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe 'imprintables/_basic_info.html.erb', imprintable_spec: true, new: true do
+describe 'imprintables/_basic_info.html.erb', imprintable_spec: true do
   let!(:imprintable) { create(:valid_imprintable) }
   login_user
 

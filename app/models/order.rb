@@ -9,7 +9,7 @@ class Order < ActiveRecord::Base
 
   VALID_SALES_STATUSES   = ['Pending', 'Terms Set And Met', 'Paid', 'Cancelled']
   VALID_DELIVERY_METHODS = ['Pick up in Ann Arbor', 'Pick up in Ypsilanti', 'Ship to one location', 'Ship to multiple locations']
-  
+
   before_validation :initialize_fields, on: :create
 
   validates_presence_of :email, :firstname, :lastname, :name, :terms, :delivery_method
@@ -61,7 +61,9 @@ class Order < ActiveRecord::Base
   def payment_total
     total = 0
     self.payments.each do |payment|
-      total += payment.amount
+      if !payment.nil? and !payment.is_refunded?
+        total += payment.amount
+      end
     end
     total
   end

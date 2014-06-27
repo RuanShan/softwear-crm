@@ -1,5 +1,5 @@
 // replace html of modal
-$('#contentModal .modal-header').html("");
+$('#contentModal .modal-header').html("<button type='button' class='close' data-dismiss='modal' aria-hidden='true'>&times;</button><br/>");
 $('#contentModal .modal-body').html("<%=j render( template: 'payments/edit', :locals => { :refund => true }, :formats => [:html] ).html_safe %>");
 // display the modal
 $('#contentModal').modal('show');

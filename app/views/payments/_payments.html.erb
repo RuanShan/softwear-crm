@@ -29,11 +29,11 @@
   <div class="col-sm-6">
     <h3><strong>Apply</strong> Payment</h3>
     <div class="btn-group btn-group-sm" style="width: 100%">
-      <%= button_to new_order_payment_path(params[:id])+"?payment_mthd=1", { remote: true, method: :get, style: 'float: left; width: auto;', class: 'additional-icon btn btn-default', 'data-target' => '#payment-form', id: 'cash-button' } do %><i class="fa fa-money"></i> Cash <% end %>
-      <%= button_to new_order_payment_path(params[:id])+"?payment_mthd=2", { remote: true, method: :get, style: 'float: left; width: auto;', class: 'additional-icon btn btn-default', 'data-target' => '#payment-form', id: 'cc-button' } do %><i class="fa fa-credit-card"></i> Swiped Credit Card <% end %>
-      <%= button_to new_order_payment_path(params[:id])+"?payment_mthd=3", { remote: true, method: :get, style: 'float: left; width: auto;', class: 'additional-icon btn btn-default', 'data-target' => '#payment-form', id: 'check-button' } do %><i class="fa fa-edit"></i> Check <% end %>
-      <%= button_to new_order_payment_path(params[:id])+"?payment_mthd=4", { remote: true, method: :get, style: 'float: left; width: auto;', class: 'additional-icon btn btn-default', 'data-target' => '#payment-form', id: 'paypal-button' } do %><i class="fa fa-rub"></i> PayPal <% end %>
-      <%= button_to new_order_payment_path(params[:id])+"?payment_mthd=1", { remote: true, method: :get, style: 'float: left; width: auto;', class: 'additional-icon btn btn-default', 'data-target' => '#payment-form', id: 'wire-button' } do %><i class="fa fa-code-fork"></i> Wire Transfer <% end %>
+      <%= button_to new_order_payment_path(params[:id])+"?payment_method=1", { remote: true, method: :get, style: 'float: left; width: auto;', class: 'additional-icon btn btn-default', 'data-target' => '#payment-form', id: 'cash-button' } do %><i class="fa fa-money"></i> Cash <% end %>
+      <%= button_to new_order_payment_path(params[:id])+"?payment_method=2", { remote: true, method: :get, style: 'float: left; width: auto;', class: 'additional-icon btn btn-default', 'data-target' => '#payment-form', id: 'cc-button' } do %><i class="fa fa-credit-card"></i> Swiped Credit Card <% end %>
+      <%= button_to new_order_payment_path(params[:id])+"?payment_method=3", { remote: true, method: :get, style: 'float: left; width: auto;', class: 'additional-icon btn btn-default', 'data-target' => '#payment-form', id: 'check-button' } do %><i class="fa fa-edit"></i> Check <% end %>
+      <%= button_to new_order_payment_path(params[:id])+"?payment_method=4", { remote: true, method: :get, style: 'float: left; width: auto;', class: 'additional-icon btn btn-default', 'data-target' => '#payment-form', id: 'paypal-button' } do %><i class="fa fa-rub"></i> PayPal <% end %>
+      <%= button_to new_order_payment_path(params[:id])+"?payment_method=1", { remote: true, method: :get, style: 'float: left; width: auto;', class: 'additional-icon btn btn-default', 'data-target' => '#payment-form', id: 'wire-button' } do %><i class="fa fa-code-fork"></i> Wire Transfer <% end %>
     </div>
 
     <div id="payment-form" class="collapse">

@@ -14,10 +14,11 @@
       </div>
 
       <%= f.hidden_field :refunded, :value => true %>
+      <%= f.hidden_field :order_id, :value => params[:order_id] %>
 
       <div class="form-group">
         <div class="col-sm-offset-2 col-sm-10">
-          <button type="submit" id="submit_button" class="btn btn-info">Submit</button>
+          <%= f.submit 'Refund Payment', class: 'btn btn-info', id: 'submit_refund_button', onclick: "return confirm('Are you sure you would like to refund this payment of #{payment.amount}?')" %>
         </div>
       </div>
 

@@ -8,7 +8,7 @@ class PaymentsController < InheritedResources::Base
 
   def update
     super do |format|
-      format.html { redirect_to edit_order_path(params[:id])+'#payments' }
+      format.html { redirect_to edit_order_path(params[:payment][:order_id])+'#payments' }
     end
   end
 
@@ -34,7 +34,8 @@ class PaymentsController < InheritedResources::Base
                             :store_id,
                             :salesperson_id,
                             :order_id,
-                            :refund,
+                            :refunded,
+                            :refund_reason,
                             :payment_method])
   end
 end
