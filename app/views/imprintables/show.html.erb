@@ -38,6 +38,7 @@
         </div>
 
         <div class="tab-pane animated fadeInRight" id="supplier_information_<%= @imprintable.id %>">
+          <%= render partial: 'supplier_details', locals: { imprintable: @imprintable } %>
         </div>
       </div>
     </div>

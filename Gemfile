@@ -56,6 +56,7 @@ group :development do
   gem 'capistrano-rails'
   gem 'capistrano-bundler'
   gem 'better_errors', '>= 0.3.2'
+  gem 'binding_of_caller'
 end
 
 group :test do
@@ -73,6 +74,8 @@ gem 'inherited_resources'
 gem 'devise'
 gem 'figaro'
 gem 'paranoia', '~> 2.0'
+gem 'google_drive'
+gem 'kaminari'
 
 
 # Use ActiveModel has_secure_password

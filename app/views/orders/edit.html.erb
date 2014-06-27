@@ -35,7 +35,7 @@
                 </div>
 
                 <div class="tab-pane animated fadeInRight" id="payments">
-                  <%= render partial: 'payments' %>
+                  <%= render partial: 'payments/payments', locals: { order: @order }%>
                 </div>
 
                 <div class="tab-pane animated fadeInRight" id="shipments">

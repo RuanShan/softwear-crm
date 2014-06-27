@@ -14,4 +14,7 @@ class Style < ActiveRecord::Base
   def find_brand
     Brand.find(self.brand_id) if self.brand_id
   end
+
+  default_scope { joins(:brand).order('brands.name, styles.catalog_no') }
+
 end

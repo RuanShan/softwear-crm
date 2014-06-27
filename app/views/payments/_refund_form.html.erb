@@ -1,0 +1,27 @@
+<div class="box-info full">
+  <%= render partial: 'shared/modal_errors', locals: { object: payment } %>
+  <%= form_for payment, builder: LancengFormBuilder do |f| %>
+    <!-- Horizontal form body -->
+    <div id="horizontal-form" class="collapse in">
+
+      <div class="form-group">
+        <%= f.label :refund_reason, 'Refund Reason' %>
+        <%= f.error_for :refund_reason %>
+        <div class="col-sm-10" style="width: 100%;">
+          <%= f.text_field :refund_reason, class: 'col-sm-2 control-label' %>
+          <p class="help-block">Reason for refunding the payment</p>
+        </div>
+      </div>
+
+      <%= f.hidden_field :refunded, :value => true %>
+      <%= f.hidden_field :order_id, :value => params[:order_id] %>
+
+      <div class="form-group">
+        <div class="col-sm-offset-2 col-sm-10">
+          <%= f.submit 'Refund Payment', class: 'btn btn-info', id: 'submit_refund_button', onclick: "return confirm('Are you sure you would like to refund this payment of #{payment.amount}?')" %>
+        </div>
+      </div>
+
+    </div>
+  <% end %>
+</div>

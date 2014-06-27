@@ -1,6 +1,6 @@
 @deleteJob = ($this, jobId) ->
   $this.attr 'disabled', 'disabled'
-  setTimeout (-> $this.removeAttr 'disabled'), 10000
+  setTimeout (-> $this.removeAttr 'disabled'), 1000
   confirmModal 'Are you sure?', ->
 
     ajax = $.ajax

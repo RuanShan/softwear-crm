@@ -14,8 +14,7 @@ feature 'Imprintable Variant Management', imprintable_variant_spec: true do
   context 'There are no imprintable variants' do
     given!(:imprintable) { create(:valid_imprintable) }
     scenario 'A user can create an initial size and color' do
-      visit imprintables_path
-      find("tr#imprintable_#{imprintable.id} a[data-action='edit']").click
+      visit edit_imprintable_path imprintable.id
       find(:css, "#color_ids_[value='#{color.id}']").set(true)
       find(:css, "#size_ids_[value='#{size.id}']").set(true)
       find('#submit_button').click
@@ -29,8 +28,7 @@ feature 'Imprintable Variant Management', imprintable_variant_spec: true do
     given!(:imprintable_variant) { create(:valid_imprintable_variant) }
 
     before(:each) do
-      visit imprintables_path
-      find("tr#imprintable_#{imprintable_variant.imprintable_id} a[data-action='edit']").click
+      visit edit_imprintable_path imprintable_variant.imprintable.id
     end
 
     scenario 'A user can see a grid of imprintable variants' do

@@ -32,8 +32,7 @@ feature 'sizes management', size_spec: true do
   end
 
   scenario 'A user can edit an existing size' do
-    visit sizes_path
-    find("tr#size_#{size.id} a[data-action='edit']").click
+    visit edit_size_path size.id
     fill_in 'size_name', :with => 'Edited size Name'
     click_button 'Update Size'
     expect(current_path).to eq(sizes_path)
