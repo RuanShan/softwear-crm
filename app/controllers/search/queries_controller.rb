@@ -36,6 +36,67 @@ module Search
 
   private
     def build_search_proc(search)
+      ### Helper functions are defined in here as lambdas, since the context
+      ### within the returned proc will not be this controller.
+
+      # Helper function to get with/without depending on whether or
+      # not a field is negated.
+      with_or_without = -> (metadata) { metadata.include?('negate') ? :without : :with }
+      # Get any_of/all_of depending on metadata
+      any_or_all_of = -> (metadata) { metadata.include?('any_of') ? :any_of : :all_of }
+      # Get a post-funtion for a filter call.
+      greater_or_less_than = -> (metadata) do
+        metadata.each { |m| case m; when 'greater_than', 'less_than'; return m; end }
+        nil
+      end
+
+      # Turn hash search data into function calls
+      process_attrs = -> (attrs) do
+        Proc.new do
+          attrs.each do |num, attr|
+            # num will either be 'fulltext' or a number.
+            # If it's a number, attr is a hash with { fieldname=>fieldvalue, posssiblemetadata=>array }
+            # TODO boost fields, dang.
+            if num == 'fulltext'
+              send(:fulltext, attr)
+            else
+              # puts attr.inspect
+
+              # Grab a field name and possible metadata
+              field_name = nil; field_value = nil
+              metadata = []
+              group_attrs = nil
+              attr.each do |key, value|
+                case key
+                when '_metadata'
+                  metadata = value
+                when '_group'
+                  group_attrs = value
+                else
+                  field_name = key
+                  field_value = value
+                end
+              end
+              
+              if group_attrs
+                send(any_or_all_of.call(metadata), &process_attrs.call(group_attrs))
+              else
+                with = with_or_without.call(metadata)
+                post_func = greater_or_less_than.call(metadata)
+
+                # The call is structured differently if it is a relative comparison
+                if post_func
+                  send(with, field_name).send(post_func, field_value)
+                else
+                  send(with, field_name, field_value)
+                end
+              end
+            end
+          end
+        end
+      end
+
+      # The actual returned proc
       Proc.new do
         search.each do |model, attrs|
           actual_model = case model
@@ -53,19 +114,7 @@ module Search
             raise "#{actual_model.inspect} is not searchable."
           end
 
-          # on Order do
-          send(:on, actual_model) do
-            attrs.each do |num, attr|
-              # attr should only have 1 key and 1 value unless num is fulltext
-              if num == 'fulltext'
-                send(:fulltext, attr)
-              else
-                # TODO greater_than/less_than
-                puts attr.inspect
-                send(:with, attr.keys.first, attr.values.first)
-              end
-            end
-          end
+          on actual_model, &process_attrs.call(attrs)
         end
       end
     end

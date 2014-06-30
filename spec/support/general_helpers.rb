@@ -1,8 +1,4 @@
 module GeneralHelpers
-  def with(thing)
-    yield thing
-  end
-
   def queries_after(&block)
   	count = 0
   	counter_func = ->(name,started,finished,unique_id,payload) {

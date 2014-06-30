@@ -18,18 +18,22 @@ describe Search::QueriesController, search_spec: true do
       order: {
         '1' => { firstname: 'Nigel', _metadata: [:negate] },
         '2' => { lastname: 'Baillie' },
-        '3' => { commission_amount: 15.00, _metadata: [:greater_than] },
+        '3' => { commission_amount: 15.00, _metadata: [:negate, :greater_than] },
         fulltext: 'ftestasdlfkj'
     }}}
   end
 
-  # let(:test_params_with_group) do
-  #   {search: {
-  #     order: {
-  #       '1' => { firstname: 'Someone' }
-  #       
-  #   }}}
-  # end
+  let(:test_params_with_group) do
+    {search: {
+      order: {
+        '1' => { company: 'Some Stuff' },
+        '2' => { _group: {
+                  '1' => { lastname: 'Whatever' },
+                  '2' => { lastname: 'Whatnot' },
+                }, _metadata: [:any_of] },
+        fulltext: 'cool stuff'
+    }}}
+  end
 
   let(:query) { create(:search_query) }
   let(:order_model) { create(:query_order_model, query: query, default_fulltext: 'success') }
@@ -67,6 +71,51 @@ describe Search::QueriesController, search_spec: true do
           expect(Sunspot.session).to have_search_params(:fulltext, 'test')
           expect(Sunspot.session).to have_search_params(:with, :lastname, 'Johnson')
           expect(Sunspot.session).to have_search_params(:with, :commission_amount, 200)
+        end
+
+        context 'and metadata', wip: true, metadata: true do
+          it 'applies the "negate" metadata properly' do
+            get :search, test_params_with_metadata
+            expect(response).to be_ok
+
+            expect(assigns[:search].first).to be_a Sunspot::Search::StandardSearch
+
+            expect(Sunspot.session).to be_a_search_for Order
+            expect(Sunspot.session).to have_search_params(:fulltext, 'ftestasdlfkj')
+            expect(Sunspot.session).to have_search_params(:without, :firstname, 'Nigel')
+          end
+
+          it 'applies the "greater_than" metadata properly', wip: true, metadata: true do
+            get :search, test_params_with_metadata
+            expect(response).to be_ok
+
+            expect(assigns[:search].first).to be_a Sunspot::Search::StandardSearch
+
+            expect(Sunspot.session).to be_a_search_for Order
+            expect(Sunspot.session).to have_search_params(:fulltext, 'ftestasdlfkj')
+            expect(Sunspot.session).to have_search_params(:with) {
+              without(:commission_amount).greater_than(15.00)
+            }
+          end
+        end
+
+        context 'and a group', wip: true, group: true do
+          it 'applies the group properly within the search' do
+            get :search, test_params_with_group
+            expect(response).to be_ok
+
+            expect(assigns[:search].first).to be_a Sunspot::Search::StandardSearch
+
+            expect(Sunspot.session).to be_a_search_for Order
+            expect(Sunspot.session).to have_search_params(:fulltext, 'cool stuff')
+            expect(Sunspot.session).to have_search_params(:with, :company, 'Some Stuff')
+            expect(Sunspot.session).to have_search_params(:with) {
+              any_of do
+                with :lastname, 'Whatever'
+                with :lastname, 'Whatnot'
+              end
+            }
+          end
         end
       end
     end

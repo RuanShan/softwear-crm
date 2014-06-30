@@ -64,7 +64,7 @@ class Order < ActiveRecord::Base
     #   jobs.map { |j| "#{j.name} #{j.description}" }
     # end
 
-    [:firstname, :lastname, :email, :terms, :delivery_method, :sales_status].each do |field|
+    [:firstname, :lastname, :email, :terms, :delivery_method, :sales_status, :company].each do |field|
       string field
     end
 

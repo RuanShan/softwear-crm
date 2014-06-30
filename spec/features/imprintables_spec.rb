@@ -16,6 +16,12 @@ feature 'Imprintables management', imprintable_spec: true do
     expect(current_path).to eq(imprintables_path)
   end
 
+  describe 'A user can search imprintables', search_spec: true do
+    visit imprintables_path
+    pending "I'll get to it."
+    fill_in ''
+  end
+
   scenario 'A user can create a new imprintable', js: true do
     visit imprintables_path
     click_link('Add an Imprintable')

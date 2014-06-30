@@ -31,7 +31,6 @@ module Search
     end
 
     private
-    def using(s); yield s; end
 
     def model_is_searchable
       unless model.searchable?
