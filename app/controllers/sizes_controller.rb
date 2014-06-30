@@ -15,15 +15,11 @@ class SizesController < InheritedResources::Base
 
   def update_size_order
     @size_ids = params[:categories]
-    n = 0
     ActiveRecord::Base.transaction do
-      @size_ids.each do |temp|
+      @size_ids.each_with_index do |temp, n|
         temp = temp.split('_')
         id = temp[1]
-        size = Size.find(id)
-        size.sort_order = n
-        n += 1
-        size.save
+        Size.find(id).update_attribute :sort_order, n
       end
     end
     render :json => {}

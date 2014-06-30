@@ -2,7 +2,7 @@ require 'spec_helper'
 require 'database_cleaner'
 include ApplicationHelper
 
-feature 'Imprintable Variant Management', imprintable_variant_spec: true do
+feature 'Imprintable Variant Management', js: true, imprintable_variant_spec: true do
   given!(:valid_user) { create(:alternate_user) }
   before (:each) do
     login_as(valid_user)
@@ -15,7 +15,7 @@ feature 'Imprintable Variant Management', imprintable_variant_spec: true do
 
     given!(:imprintable) { create(:valid_imprintable) }
 
-    scenario 'A user can create an initial size and color', js: true do
+    scenario 'A user can create an initial size and color' do
       visit edit_imprintable_path imprintable.id
       select_from_chosen(color.id, from: 'color_ids')
       select_from_chosen(size.id, from: 'size_ids')
@@ -25,7 +25,7 @@ feature 'Imprintable Variant Management', imprintable_variant_spec: true do
     end
   end
 
-  context 'There is an imprintable invariant', js: true do
+  context 'There is an imprintable invariant' do
 
     given!(:imprintable_variant) { create(:valid_imprintable_variant) }
 
