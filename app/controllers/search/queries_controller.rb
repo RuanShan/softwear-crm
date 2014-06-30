@@ -50,15 +50,19 @@ module Search
         nil
       end
 
+      default_fulltext = search['fulltext']
+
       # Turn hash search data into function calls
       process_attrs = -> (attrs) do
         Proc.new do
+          applied_fulltext = false
           attrs.each do |num, attr|
             # num will either be 'fulltext' or a number.
             # If it's a number, attr is a hash with { fieldname=>fieldvalue, posssiblemetadata=>array }
             # TODO boost fields, dang.
             if num == 'fulltext'
               send(:fulltext, attr)
+              applied_fulltext = true
             else
               # puts attr.inspect
 
@@ -93,12 +97,15 @@ module Search
               end
             end
           end
+          # Apply default fulltext if we didn't run into a model-specific fulltext (and if there is a default set)
+          fulltext(default_fulltext) unless applied_fulltext || !default_fulltext
         end
       end
 
       # The actual returned proc
       Proc.new do
         search.each do |model, attrs|
+          next if model == 'fulltext'
           actual_model = case model
             when Symbol, String
               Kernel.const_get(model.camelize)

@@ -37,7 +37,7 @@ class Job < ActiveRecord::Base
 
   searchable do
     text :name, :description
-
+    string :name
     reference :order
   end
 

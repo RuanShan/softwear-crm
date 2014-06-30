@@ -1,16 +1,25 @@
+# This currently does not support filter groups, although QueriesController is ready to handle them if need be.
 class SearchFormBuilder
   include FormHelper
 
+  # Just pass <metadata option>: true to the options of any field method, and it will be applied
+  METADATA_OPTIONS = [:negate, :greater_than, :less_than]
+
   def initialize(model, query, template)
     @model = model
-    @model_name = model.name.underscore
     @query = query || Search::Query.new
     @template = template
 
-    @filter_group_stack = [:all]
+    @filter_group_stack = [:all] # Not currently actually using this.
     @field_count = 0
   end
 
+  def on(model)
+    # TODO do useful things here, like accept a block or whatever.
+    @model = model
+  end
+
+  # These methods are not actually useful right now.
   [:filter_all, :filter_any].each do |method_name|
     define_method(method_name) do |&block|
       @filter_group_stack.push method_name.to_s.last(3).to_sym
@@ -31,9 +40,11 @@ class SearchFormBuilder
   end
 
   def select(field_name, choices, options={})
+    raise "Cannot call select unless a model is specified" if @model.nil?
     add_class options, 'form-control'
 
     initial_value = initial_value_for field_name
+    options[:selected] = 'selected' unless initial_value.empty?
     display_method = options[:display] || :name
 
     select_options = @template.content_tag(:option, "#{field_name.to_s.humanize}...", value: 'nil')
@@ -53,18 +64,20 @@ class SearchFormBuilder
     end
 
     @field_count += 1
-    @template.select_tag input_name_for(field_name), select_options, options
+    process_options(field_name, options) +
+      @template.select_tag(input_name_for(field_name), select_options, options)
   end
 
   [:text_field, :text_area, 
    :number_field, :check_box].each do |method_name|
      define_method method_name do |field_name, options={}|
+      raise "Cannot call #{model_name} unless a model is specified" if @model.nil?
        add_class options, 'form-control'
-       # TODO add number_field class instead of style attr
-       options.merge!(style: 'width: 75px') if method_name == :number_field
+       add_class(options, 'number_field') if method_name == :number_field
 
        @field_count += 1
-       @template.send("#{method_name}_tag", input_name_for(field_name), initial_value_for(field_name), options)
+       process_options(field_name, options) + 
+        @template.send("#{method_name}_tag", input_name_for(field_name), initial_value_for(field_name), options)
      end
    end
 
@@ -95,8 +108,24 @@ private
     end
   end
 
+  def model_name
+    @model.name.underscore
+  end
+
+  def process_options(field_name, options)
+    buf = "".html_safe
+    METADATA_OPTIONS.each do |meta|
+      if options.delete meta
+        buf += @template.hidden_field_tag metadata_name_for(field_name), meta.to_s
+      end
+    end
+    buf
+  end
+
   def input_name_for(field_name)
-    # Unsure yet if this works out alright
-    "search[#{@model_name}[#{@field_count}[#{field_name}]]]"
+    "search[#{model_name}[#{@field_count}[#{field_name}]]]"
+  end
+  def metadata_name_for(field_name)
+    "search[#{model_name}[#{@field_count}[_metadata]]][]"
   end
 end

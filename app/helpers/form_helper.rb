@@ -24,8 +24,8 @@ module FormHelper
       options[:method] ||= 'PUT'
       search_query_path(query)
     else
-      options[:method] ||= 'POST'
-      search_queries_path
+      options[:method] ||= 'GET'
+      search_test_path
     end
     options[:id] ||= "#{model.name.underscore}_search"
     form_tag(action, options) { output }

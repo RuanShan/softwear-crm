@@ -13,12 +13,25 @@ describe Search::QueriesController, search_spec: true do
     }}}
   end
 
+  let!(:test_params_with_model_level_fulltext) do
+    {search: {
+      fulltext: 'test',
+      order: {
+        '1' => { lastname: 'Johnson' },
+        '2' => { commission_amount: 200 },
+      },
+      job: {
+        '1' => { name: 'whocares' }
+      }
+    }}
+  end
+
   let(:test_params_with_metadata) do
     {search: {
       order: {
-        '1' => { firstname: 'Nigel', _metadata: [:negate] },
+        '1' => { firstname: 'Nigel', _metadata: ['negate'] },
         '2' => { lastname: 'Baillie' },
-        '3' => { commission_amount: 15.00, _metadata: [:negate, :greater_than] },
+        '3' => { commission_amount: 15.00, _metadata: ['negate', 'greater_than'] },
         fulltext: 'ftestasdlfkj'
     }}}
   end
@@ -30,7 +43,7 @@ describe Search::QueriesController, search_spec: true do
         '2' => { _group: {
                   '1' => { lastname: 'Whatever' },
                   '2' => { lastname: 'Whatnot' },
-                }, _metadata: [:any_of] },
+                }, _metadata: ['any_of'] },
         fulltext: 'cool stuff'
     }}}
   end
@@ -73,7 +86,22 @@ describe Search::QueriesController, search_spec: true do
           expect(Sunspot.session).to have_search_params(:with, :commission_amount, 200)
         end
 
-        context 'and metadata', wip: true, metadata: true do
+        it 'should apply fulltext if defined on the model-level' do
+          get :search, test_params_with_model_level_fulltext
+          expect(response).to be_ok
+
+          expect(assigns[:search].first).to be_a Sunspot::Search::StandardSearch
+
+          searches = Sunspot.session.searches
+
+          expect(searches.first).to be_a_search_for Order
+          expect(searches.second).to be_a_search_for Job
+
+          expect(searches.first).to have_search_params(:fulltext, 'test')
+          expect(searches.last).to have_search_params(:fulltext, 'test')
+        end
+
+        context 'and metadata', metadata: true do
           it 'applies the "negate" metadata properly' do
             get :search, test_params_with_metadata
             expect(response).to be_ok
@@ -85,7 +113,7 @@ describe Search::QueriesController, search_spec: true do
             expect(Sunspot.session).to have_search_params(:without, :firstname, 'Nigel')
           end
 
-          it 'applies the "greater_than" metadata properly', wip: true, metadata: true do
+          it 'applies the "greater_than" metadata properly', metadata: true do
             get :search, test_params_with_metadata
             expect(response).to be_ok
 
@@ -99,7 +127,7 @@ describe Search::QueriesController, search_spec: true do
           end
         end
 
-        context 'and a group', wip: true, group: true do
+        context 'and a group', group: true do
           it 'applies the group properly within the search' do
             get :search, test_params_with_group
             expect(response).to be_ok

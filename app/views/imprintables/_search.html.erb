@@ -1,10 +1,10 @@
 <div class="row">
   <%= search_form_for Imprintable do |s| %>
     <div class="col-sm-3">
-      <%= s.select :sizing_category, Imprintable::SIZING_CATEGORIES %>
+      <%= s.select :sizing_category, Imprintable::SIZING_CATEGORIES, id: 'filter_sizing_category' %>
     </div>
     <div class="col-sm-3">
-      <%= s.fulltext :name %>
+      <%= s.fulltext :name, id: 'imprintables_search' %>
     </div>
     <%= s.submit %>
   <% end %>
