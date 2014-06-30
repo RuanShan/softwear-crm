@@ -45,7 +45,7 @@ class SearchFormBuilder
 
     initial_value = initial_value_for field_name
     options[:selected] = 'selected' unless initial_value.empty?
-    display_method = options[:display] || :name
+    display_method = options.delete(:display) || :name
 
     select_options = @template.content_tag(:option, "#{field_name.to_s.humanize}...", value: 'nil')
     
@@ -58,8 +58,6 @@ class SearchFormBuilder
         end,
         value: if item.respond_to? :id
           item.id
-        else
-          item.to_s
         end)
     end
 

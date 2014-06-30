@@ -13,6 +13,14 @@ describe Search::QueriesController, search_spec: true do
     }}}
   end
 
+  let(:test_params_with_nil) do
+    {search: {
+      order: {
+        '1' => { lastname: 'nil' },
+        fulltext: 'test'
+    }}}
+  end
+
   let!(:test_params_with_model_level_fulltext) do
     {search: {
       fulltext: 'test',
@@ -71,6 +79,17 @@ describe Search::QueriesController, search_spec: true do
           expect(Sunspot.session).to have_search_params(:fulltext, 'success')
           expect(Sunspot.session).to have_search_params(:with, :firstname, 'Test')
         end
+      end
+
+      it 'should ignore fields filtered on the string value "nil"', wip: true do
+        get :search, test_params_with_nil
+        expect(response).to be_ok
+
+        expect(assigns[:search].first).to be_a Sunspot::Search::StandardSearch
+
+        expect(Sunspot.session).to be_a_search_for Order
+        expect(Sunspot.session).to have_search_params(:fulltext, 'test')
+        expect(Sunspot.session).to_not have_search_params(:with, :lastname, 'nil')
       end
 
       context 'when params contains search info' do

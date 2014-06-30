@@ -21,18 +21,25 @@ module Search
 
     def search
       if params[:query_id]
-        @search = Query.find(params[:query_id]).search
+        @query = Query.find(params[:query_id])
+        @search = @query.search
       elsif params[:search]
         session[:last_search] = params[:search]
         @search = QueryBuilder.search(&build_search_proc(params[:search]))
       else
         puts 'your params were useless, however'
       end
-      render text: if params[:search]
-                     params[:search].inspect
-                   else
-                     @search.inspect
-                   end
+
+      models = models_of params[:search] || @query
+      case models.count
+      when 1
+        models = models.first.underscore.pluralize
+        instance_variable_set "@#{models}", @search.first.results
+        destination = Rails.root.join('app', 'views', models, 'index.html.erb').to_s
+        render destination
+      else
+        render text: "Implement multi-model search results view plz!"
+      end
     end
 
   private
@@ -82,6 +89,7 @@ module Search
                   field_value = value
                 end
               end
+              next if field_value == 'nil'
               
               if group_attrs
                 send(any_or_all_of.call(metadata), &process_attrs.call(group_attrs))
@@ -124,6 +132,14 @@ module Search
 
           on actual_model, &process_attrs.call(attrs)
         end
+      end
+    end
+
+    def models_of(search_params)
+      if search_params.is_a? Hash
+        search_params.keys.reject { |k| k == 'fulltext' }
+      else
+        search_params.models.map(&:name)
       end
     end
 
