@@ -1,10 +1,10 @@
 <div class="row">
-  <%= search_form_for Order do |s| %>
+  <%= search_form_for Imprintable do |s| %>
     <div class="col-sm-3">
       <%= s.select :sizing_category, Imprintable::SIZING_CATEGORIES %>
     </div>
     <div class="col-sm-3">
-      <%= s.text_field :company %>
+      <%= s.text_field :name %>
     </div>
     <%= s.submit %>
   <% end %>

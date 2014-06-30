@@ -86,4 +86,13 @@ describe Search::QueriesController, search_spec: true do
       end
     end
   end
+
+  context 'DELETE' do
+    describe '#destroy' do
+      it 'destroys the query' do
+        delete :destroy, id: query.id
+        expect(Search::Query.count).to eq 0
+      end
+    end
+  end
 end

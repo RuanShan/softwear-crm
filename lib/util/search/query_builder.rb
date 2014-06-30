@@ -12,7 +12,7 @@ module Search
           builder_base.instance_eval(&block)
           builder_base
         else
-          Base.new
+          Base.new(nil)
         end
       end
 
@@ -144,6 +144,9 @@ module Search
       define_method(name) do |field_name, *args|
         negate = name == :without
         field = field_of field_name
+        if field.nil?
+          raise "#{@model.name} has no field called #{field_name}."
+        end
 
         case args.count
         when 0

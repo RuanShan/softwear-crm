@@ -9,12 +9,14 @@ module Search
 
     def update
       @query = Query.find params[:id]
-      # TODO MONDAY
-      # I think the params[:search] is not passing properly in the spec.
-      # Or that might be bogus. Somehow a Search object is being passed
-      # through.......
       QueryBuilder.build(@query, &build_search_proc(params[:search]))
       render text: 'ok'
+    end
+
+    def destroy
+      @query = Query.find params[:id]
+      @query.destroy
+      render text: 'cool'
     end
 
     def search
@@ -25,7 +27,11 @@ module Search
       else
         puts 'your params were useless, however'
       end
-      render text: 'text'
+      render text: if params[:search]
+                     params[:search].inspect
+                   else
+                     @search.inspect
+                   end
     end
 
   private
@@ -55,6 +61,7 @@ module Search
                 send(:fulltext, attr)
               else
                 # TODO greater_than/less_than
+                puts attr.inspect
                 send(:with, attr.keys.first, attr.values.first)
               end
             end

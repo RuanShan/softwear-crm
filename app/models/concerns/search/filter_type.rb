@@ -7,7 +7,7 @@ module Search
       FilterTypes << self
 
       class << self
-        def search_types; @search_types; end
+        def search_types; @search_types ||= []; end
         def belongs_to_search_type(type)
           belongs_to_search_types(*[type])
         end
@@ -37,7 +37,13 @@ module Search
       FilterTypes.each do |type|
         return type unless (field.type_names & type.search_types).empty?
       end
-      raise "#{field} has no filter type associated with its type!"
+      if field.type_names == [:text]
+        raise "Attempted to find a search filter for fulltext-only field #{field.model_name}##{field.name}. If you want
+               the field to be filterable, add 'string :#{field.name}' to the 'searchable' block in #{field.model_name.to_s.underscore}.rb."
+      else
+        raise "#{field.model_name}##{field.name} has no filter type associated with its type(s) #{field.type_names.inspect}.
+               Check the 'searchable' block in #{field.model_name.to_s.underscore}.rb or filter on a different field."
+      end
     end
   end
 
