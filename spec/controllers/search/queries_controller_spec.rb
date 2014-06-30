@@ -6,12 +6,30 @@ describe Search::QueriesController, search_spec: true do
 
   let(:test_params) do
     {search: {
-        order: {
-          '1' => { lastname: 'Johnson' },
-          '2' => { commission_amount: 200 },
-          fulltext: 'test'
+      order: {
+        '1' => { lastname: 'Johnson' },
+        '2' => { commission_amount: 200 },
+        fulltext: 'test'
     }}}
   end
+
+  let(:test_params_with_metadata) do
+    {search: {
+      order: {
+        '1' => { firstname: 'Nigel', _metadata: [:negate] },
+        '2' => { lastname: 'Baillie' },
+        '3' => { commission_amount: 15.00, _metadata: [:greater_than] },
+        fulltext: 'ftestasdlfkj'
+    }}}
+  end
+
+  # let(:test_params_with_group) do
+  #   {search: {
+  #     order: {
+  #       '1' => { firstname: 'Someone' }
+  #       
+  #   }}}
+  # end
 
   let(:query) { create(:search_query) }
   let(:order_model) { create(:query_order_model, query: query, default_fulltext: 'success') }

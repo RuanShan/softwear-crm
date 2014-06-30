@@ -26,6 +26,7 @@ class LancengFormBuilder < ActionView::Helpers::FormBuilder
     define_method method_name do |*args|
       options = args.count == 2 ? args.last.merge({}) : {}
       add_class options, 'form-control'
+      # TODO add number_field class instead of inline style
       options.merge!(style: 'width: 75px') if method_name == :number_field
       actual_args = [args.first, options]
       send("original_#{method_name}".to_sym, *actual_args)

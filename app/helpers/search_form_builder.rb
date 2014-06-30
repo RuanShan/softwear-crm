@@ -60,6 +60,7 @@ class SearchFormBuilder
    :number_field, :check_box].each do |method_name|
      define_method method_name do |field_name, options={}|
        add_class options, 'form-control'
+       # TODO add number_field class instead of style attr
        options.merge!(style: 'width: 75px') if method_name == :number_field
 
        @field_count += 1
