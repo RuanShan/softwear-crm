@@ -91,7 +91,7 @@ module Search
             @query.query_models << query_model
           end
           unless @query.save
-            raise "Couldn't save the query!"
+            raise "Couldn't save the query! #{@query.errors.messages.inspect}"
           end
         end
       end

@@ -25,7 +25,7 @@ class Imprintable < ActiveRecord::Base
   searchable do
     text :name, :special_considerations, :proofing_template_name, :main_supplier, :description
     string :sizing_category
-    string :name
+    string :name # <- this can be removed; used to test stuff.
     float :base_price
     boolean :flashable
   end

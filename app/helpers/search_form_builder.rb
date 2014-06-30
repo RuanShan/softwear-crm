@@ -19,16 +19,15 @@ class SearchFormBuilder
     end
   end
 
-  def fulltext(*args)
-    options = get_options args
-    add_class(options, 'form-control')
+  def fulltext(field_name, options={})
+    add_class options, 'form-control'
     
-    initial_value = @query.default_fulltext
+    initial_value = query_model.nil? ? nil : query_model.default_fulltext
     is_textarea = options.delete :textarea
 
-    func = is_textarea ? :text_area : :text_field
+    func = is_textarea ? :text_area_tag : :text_field_tag
 
-    @template.send func, "search[fulltext]", initial_value
+    @template.send func, "search[fulltext]", initial_value, options
   end
 
   def select(field_name, choices, options={})
@@ -85,6 +84,14 @@ private
 
   def current_depth
     @filter_group_stack.count
+  end
+
+  def query_model
+    if @query.id.nil?
+      nil
+    else
+      @query.query_models.where(name: @model.name).first
+    end
   end
 
   def input_name_for(field_name)
