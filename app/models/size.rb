@@ -3,7 +3,7 @@ class Size < ActiveRecord::Base
 
   include Retailable
 
-  default_scope { order(:sort_order).with_deleted }
+  default_scope { order(:sort_order) }
   before_validation :set_sort_order
 
   has_many :imprintable_variants, dependent: :destroy

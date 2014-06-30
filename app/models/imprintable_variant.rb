@@ -11,7 +11,7 @@ class ImprintableVariant < ActiveRecord::Base
   validates :color_id, uniqueness: { scope: :size_id }
 
   def full_name
-    "#{brand.name} #{style.catalog_no} #{color.name} #{size.name}"
+    "#{ brand.name } #{ style.catalog_no } #{ color.name } #{ size.name }"
   end
 
   def description
@@ -19,7 +19,7 @@ class ImprintableVariant < ActiveRecord::Base
   end
 
   def name 
-    "#{color.name} #{imprintable.name}"
+    "#{ color.name } #{ imprintable.name }"
   end
 
   def style_name

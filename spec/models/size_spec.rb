@@ -2,7 +2,7 @@ require 'spec_helper'
 
 describe Size, size_spec: true do
   describe 'Relationships' do
-    it { should have_many(:imprintable_variants) }
+    it { should have_many(:imprintable_variants).dependent(:destroy) }
   end
 
   describe 'Validations' do

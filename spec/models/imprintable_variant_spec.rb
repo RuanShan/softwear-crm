@@ -23,15 +23,39 @@ describe ImprintableVariant, imprintable_variant_spec: true do
       end
     end
 
-    describe '#brand' do
-      it 'returns the brand associated with the imprintable associated with the imprintable variant' do
-        expect(imprintable_variant.brand).to eq(imprintable_variant.imprintable.brand)
+    describe '#description' do
+      it 'returns the description of the imprintable' do
+        expect(imprintable_variant.description).to eq(imprintable_variant.imprintable.description)
+      end
+    end
+
+    describe '#name' do
+      it 'returns "color.name imprintable.name"' do
+        expect(imprintable_variant.name).to eq("#{ imprintable_variant.color.name } #{ imprintable_variant.imprintable.name }")
+      end
+    end
+
+    describe '#style_name' do
+      it 'returns the associated style\'s name' do
+        expect(imprintable_variant.style_name).to eq(imprintable_variant.imprintable.style.name)
+      end
+    end
+
+    describe '#style_catalog_no' do
+      it 'returns teh associated style\'s catalog number' do
+        expect(imprintable_variant.style_catalog_no).to eq(imprintable_variant.imprintable.style.catalog_no)
       end
     end
 
     describe '#style' do
       it 'returns the style associated with the imprintable associated with the imprintable variant' do
         expect(imprintable_variant.style).to eq(imprintable_variant.imprintable.style)
+      end
+    end
+
+    describe '#brand' do
+      it 'returns the brand associated with the imprintable associated with the imprintable variant' do
+        expect(imprintable_variant.brand).to eq(imprintable_variant.imprintable.brand)
       end
     end
   end

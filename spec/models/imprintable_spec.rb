@@ -3,11 +3,17 @@ require 'spec_helper'
 describe Imprintable, imprintable_spec: true do
   describe 'Relationship' do
     it { should belong_to(:style) }
-    it { should have_one(:brand).through(:style) }
-    it { should have_many(:imprintable_variants) }
-    it { should have_many(:colors).through(:imprintable_variants) }
-    it { should have_many(:sizes).through(:imprintable_variants) }
-    it { should have_and_belong_to_many(:coordinates) }
+
+    it { should have_one(:brand).through(:style).dependent(:destroy) }
+
+    it { should have_many(:imprintable_variants).dependent(:destroy) }
+    it { should have_many(:colors).through(:imprintable_variants).dependent(:destroy) }
+    it { should have_many(:sizes).through(:imprintable_variants).dependent(:destroy) }
+
+    it { should have_many(:coordinate_imprintables) }
+    it { should have_many(:coordinates).through(:coordinate_imprintables) }
+    it { should have_many(:mirrored_coordinate_imprintables).class_name('CoordinateImprintable') }
+
     it { should have_and_belong_to_many(:sample_locations) }
     it { should have_and_belong_to_many(:compatible_imprint_methods) }
   end

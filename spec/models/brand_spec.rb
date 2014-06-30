@@ -2,7 +2,7 @@ require 'spec_helper'
 
 describe Brand, brand_spec: true do
   describe 'Relationships' do
-    it { should have_many(:styles) }
+    it { should have_many(:styles).dependent(:destroy) }
   end
 
   describe 'Validations' do
@@ -20,6 +20,18 @@ describe Brand, brand_spec: true do
       it { should_not ensure_length_of(:sku).is_equal_to(2) }
     end
 
+  end
+
+  describe 'Scopes' do
+    context 'there are two brands' do
+      let!(:brand_one) { create(:valid_brand, name: 'Urban Outfitters') }
+      let!(:brand_two) { create(:valid_brand, name: 'American Apparel') }
+
+      it 'should order the brands by name' do
+        expect(Brand.first).to eq(brand_two)
+        expect(Brand.last).to eq(brand_one)
+      end
+    end
   end
 
   it_behaves_like 'retailable'
