@@ -3,7 +3,6 @@ class CreateSearchTables < ActiveRecord::Migration
     create_table :search_queries do |t|
       t.belongs_to :user
       t.string :name
-      t.string :default_fulltext
 
       t.timestamps
     end
@@ -11,12 +10,13 @@ class CreateSearchTables < ActiveRecord::Migration
     create_table :search_query_models do |t|
       t.belongs_to :query
       t.string :name
+      t.string :default_fulltext
     end
 
     create_table :search_query_fields do |t|
       t.belongs_to :query_model
       t.string :name
-      t.decimal :boost
+      t.decimal :boost, precision: 10, scale: 2
       t.integer :phrase
     end
 
@@ -57,7 +57,7 @@ class CreateSearchTables < ActiveRecord::Migration
     end
   end
 
-  private
+private
   def field_filter(t, *args)
     value_type = args.first
     options = args.last.is_a?(Hash) ? args.last : {}

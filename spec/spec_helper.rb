@@ -78,7 +78,9 @@ RSpec.configure do |config|
       # If we just keep making session spies out of the current session
       # (as suggested on the SunspotMatchers github page), it will just
       # keep piling up and further burrying the original session!
-      unless Sunspot.session.respond_to? :original_session
+      if Sunspot.session.respond_to? :original_session
+        Sunspot.session = SunspotMatchers::SunspotSessionSpy.new(Sunspot.session.original_session)
+      else
         Sunspot.session = SunspotMatchers::SunspotSessionSpy.new(Sunspot.session)
       end
     end

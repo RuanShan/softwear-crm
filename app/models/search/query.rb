@@ -76,13 +76,13 @@ module Search
         args.last
       else {} end
 
-      text = if args.first.is_a? String
-        args.first
-      else default_fulltext end
-
       SearchList.new(models) do |model, i|
         text_fields = text_fields_at(i)
         query_model = query_models[i]
+
+        text = if args.first.is_a? String
+          args.first
+        else query_model.default_fulltext end
 
         model.search do
           if text && !text.empty?

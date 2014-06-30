@@ -236,7 +236,6 @@ ActiveRecord::Schema.define(version: 20140624213235) do
   create_table "search_queries", force: true do |t|
     t.integer  "user_id"
     t.string   "name"
-    t.string   "default_fulltext"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
@@ -244,13 +243,14 @@ ActiveRecord::Schema.define(version: 20140624213235) do
   create_table "search_query_fields", force: true do |t|
     t.integer "query_model_id"
     t.string  "name"
-    t.decimal "boost",          precision: 10, scale: 0
+    t.decimal "boost",          precision: 10, scale: 2
     t.integer "phrase"
   end
 
   create_table "search_query_models", force: true do |t|
     t.integer "query_id"
     t.string  "name"
+    t.string  "default_fulltext"
   end
 
   create_table "search_reference_filters", force: true do |t|

@@ -4,7 +4,7 @@ describe Search::Query, search_spec: true do
   it { should belong_to :user }
   it { should have_db_column :name }
   it { should validate_uniqueness_of(:name).scoped_to :user_id }
-  it { should have_db_column :default_fulltext }
+  it { should_not have_db_column :default_fulltext }
 
   it { should have_many :query_models }
   # it { should have_many :fields, class_name: 'Search::QueryField', through: :models }
@@ -75,9 +75,16 @@ describe Search::Query, search_spec: true do
         end
       end
 
-      it 'uses the right fulltext' do
+      it 'uses the right fulltext when passed a string parameter' do
         subject.search 'test'
         expect(Sunspot.session).to have_search_params :fulltext, 'test'
+      end
+
+      it 'uses the default fulltext when not passed a string parameter' do
+        order_model.default_fulltext = 'lets go'
+        order_model.save
+        subject.search
+        expect(Sunspot.session).to have_search_params :fulltext, 'lets go'
       end
 
       context 'and a field' do

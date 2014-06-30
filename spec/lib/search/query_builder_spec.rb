@@ -25,6 +25,24 @@ describe Search::QueryBuilder, search_spec: true do
       end
     end
     context 'with a block' do
+      context 'when passed a query' do
+        it "should alter that query's filters" do
+          query = create(:search_query)
+          order_model = create(:query_order_model, query: query)
+
+          Search::QueryBuilder.build query do
+            on(Job) do
+              fulltext 'hey hey'
+            end
+          end
+
+          expect(Search::QueryModel.where id: order_model.id).to_not exist
+          expect(query.query_models.count).to eq 1
+          expect(query.query_models.first.name).to eq 'Job'
+          expect(query.query_models.first.default_fulltext).to eq 'hey hey'
+        end
+      end
+
       it 'should be able to build search on just some fields in one model' do
         query = Search::QueryBuilder.build do
           on(Order) do
@@ -40,15 +58,30 @@ describe Search::QueryBuilder, search_spec: true do
         expect(order_model.fields).to include Search::Field[:Order, :email]
       end
 
-      it 'should be able to take fulltext' do
+      it 'should be able to take fulltext', fulltext: true do
         query = Search::QueryBuilder.build do
           on(Order) do
             fulltext 'hello'
             fields :email, :company
-          end.query
+          end
+        end.query
 
-          expect(query.default_fulltext)# shit maybe this should go in the query model
-        end
+        expect(query.query_models.first.default_fulltext).to eq 'hello'
+      end
+
+      it 'should be able to apply fields under fulltext', fulltext: true do
+        query = Search::QueryBuilder.build do
+          on(Order) do
+            fulltext 'test' do
+              fields :email, :name, company: 2.5
+            end
+          end
+        end.query
+
+        order_model = query.query_models.first
+        expect(order_model.default_fulltext).to eq 'test'
+        expect(order_model.query_fields.count).to eq 3
+        expect(order_model.query_fields.last.boost).to eq 2.5
       end
 
       it 'should be able to specify boost to some fields' do

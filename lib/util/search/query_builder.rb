@@ -6,9 +6,9 @@ module Search
   # Most basic filtering stuff works. Check the QueryBuilder spec for examples.
   class QueryBuilder
     class << self
-      def build(&block)
+      def build(query=nil, &block)
         if block_given?
-          builder_base = Base.new
+          builder_base = Base.new(query)
           builder_base.instance_eval(&block)
           builder_base
         else
@@ -40,8 +40,16 @@ module Search
 
     class Base
       attr_accessor :query
-      def initialize
-        @query = Query.new
+      def initialize(query)
+        @query = if query
+          query.query_models.each do |qm|
+            qm.destroy
+          end
+          query.query_models.clear
+          query
+        else
+          Query.new
+        end
       end
 
       # For now, assuming no duplicates will be added.
@@ -62,8 +70,8 @@ module Search
             end
 
             # If we have a block, make a builder and have it apply
-            # the filters a filter group, which we add to the query-
-            # model.
+            # the filters to a filter group, which we add to the
+            # query model.
             if block_given?
               filter_group = FilterGroup.new(all: true)
               filter = Filter.new
@@ -161,6 +169,11 @@ module Search
         @group.filters << filter
         QueryBuilder.new(@model, filter).instance_eval(&block)
       end
+    end
+
+    def fulltext(text, &block)
+      @model.default_fulltext = text
+      instance_eval(&block) if block_given?
     end
 
     def method_missing(name, *args, &block)

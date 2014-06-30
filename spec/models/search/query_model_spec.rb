@@ -5,6 +5,7 @@ describe Search::QueryModel, search_spec: true do
   it { should belong_to :query }
   it { should have_db_column :name }
   it { should have_many :query_fields }
+  it { should have_db_column :default_fulltext }
   it { should have_one :filter }
 
   let!(:model) { create(:query_order_model) }
