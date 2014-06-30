@@ -23,6 +23,7 @@ module Search
       if params[:query_id]
         @search = Query.find(params[:query_id]).search
       elsif params[:search]
+        session[:last_search] = params[:search]
         @search = QueryBuilder.search(&build_search_proc(params[:search]))
       else
         puts 'your params were useless, however'

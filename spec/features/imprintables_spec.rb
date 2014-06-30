@@ -17,11 +17,28 @@ feature 'Imprintables management', imprintable_spec: true do
   end
 
   describe 'search', search_spec: true do
-    scenario 'a user can search imprintables', js: true do
+    given!(:test_imprintable1) { create(:valid_imprintable, 
+      sizing_category: 'Girls', main_supplier: 'main supplier test') }
+    given!(:test_imprintable2) { create(:valid_imprintable, 
+      sizing_category: 'Girls', main_supplier: 'test main supplier') }
+    given!(:test_imprintable3) { create(:valid_imprintable, 
+      sizing_category: 'Girls', main_supplier: 'test main supplier') }
+    given!(:noshow_imprintable1) { create(:valid_imprintable, 
+      sizing_category: 'Adult Unisex', main_supplier: 'test main supplier') }
+    given!(:noshow_imprintable2) { create(:valid_imprintable, 
+      sizing_category: 'Girls', main_supplier: 'other supplier') }
+
+    scenario 'a user can search imprintables and see accurate results', solr: true do
       visit imprintables_path
-      sleep 20
-      pending "I'll get to it"
-      expect(false).to be_truthy
+      select 'Girls', from: 'filter_sizing_category'
+      fill_in 'imprintables_search', with: 'test'
+      click_button 'Search'
+      expect(page).to have_content test_imprintable1.name
+      expect(page).to have_content test_imprintable2.name
+      expect(page).to have_content test_imprintable3.name
+
+      expect(page).to_not have_content noshow_imprintable1.name
+      expect(page).to_not have_content noshow_imprintable2.name
     end
   end
 

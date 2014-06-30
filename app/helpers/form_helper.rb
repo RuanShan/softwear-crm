@@ -25,7 +25,7 @@ module FormHelper
       search_query_path(query)
     else
       options[:method] ||= 'GET'
-      search_test_path
+      search_path
     end
     options[:id] ||= "#{model.name.underscore}_search"
     form_tag(action, options) { output }
