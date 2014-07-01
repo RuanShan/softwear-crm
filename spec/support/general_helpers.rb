@@ -3,6 +3,13 @@ module GeneralHelpers
     yield thing
   end
 
+  def unhide_dashboard
+    selector = 'button.button-menu-mobile.show-sidebar'
+    return if all(selector).empty?
+    find(selector).click
+    wait_for_ajax
+  end
+
   def queries_after(&block)
   	count = 0
   	counter_func = ->(name,started,finished,unique_id,payload) {
