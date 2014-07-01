@@ -16,8 +16,9 @@ module FormHelper
       {}
     end
 
+    puts "LAST SEARCH: #{session[:last_search]}"
     builder = SearchFormBuilder.new(
-      model, query, self)
+      model, query, self, session[:last_search])
 
     output = capture(builder, &block)
     action = if query

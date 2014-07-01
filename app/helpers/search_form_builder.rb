@@ -5,10 +5,11 @@ class SearchFormBuilder
   # Just pass <metadata option>: true to the options of any field method, and it will be applied
   METADATA_OPTIONS = [:negate, :greater_than, :less_than]
 
-  def initialize(model, query, template)
+  def initialize(model, query, template, last_search=nil)
     @model = model
     @query = query || Search::Query.new
     @template = template
+    @last_search = last_search
 
     @filter_group_stack = [:all] # Not currently actually using this.
     @field_count = 0
@@ -31,9 +32,14 @@ class SearchFormBuilder
   def fulltext(field_name, options={})
     add_class options, 'form-control'
     
-    initial_value = query_model.nil? ? nil : query_model.default_fulltext
-    is_textarea = options.delete :textarea
+    initial_value = if query_model
+      query_model.default_fulltext
+    elsif @last_search
+      (@last_search[model_name] && @last_search[model_name][:fulltext]) || 
+        @last_search[:fulltext]
+    end
 
+    is_textarea = options.delete :textarea
     func = is_textarea ? :text_area_tag : :text_field_tag
 
     @template.send func, "search[fulltext]", initial_value, options
@@ -44,21 +50,28 @@ class SearchFormBuilder
     add_class options, 'form-control'
 
     initial_value = initial_value_for field_name
-    options[:selected] = 'selected' unless initial_value.empty?
     display_method = options.delete(:display) || :name
 
     select_options = @template.content_tag(:option, "#{field_name.to_s.humanize}...", value: 'nil')
     
     choices.each do |item|
+      name = if item.respond_to? display_method
+        item.send(display_method)
+      else
+        item.to_s
+      end
+      value = if item.respond_to? :id
+        item.id
+      else
+        item.to_s
+      end
+
       select_options.send :original_concat, @template.content_tag(:option, 
-        if item.respond_to? display_method
-          item.send(display_method)
-        else
-          item.to_s
-        end,
-        value: if item.respond_to? :id
-          item.id
-        end)
+        name,
+        value: value,
+        # TODO tuesday this does not actually select the initial value (which I believe is properly captured)
+        selected: value.to_s == initial_value.to_s ? 'selected' : nil
+        )
     end
 
     @field_count += 1
@@ -85,13 +98,29 @@ class SearchFormBuilder
   end
 
 private
+  def traverse(h,&b)
+    h.each do |k,v|
+      case v
+      when Hash
+        traverse(v,&b)
+      else
+        b.call k, v
+      end
+    end
+  end
+
   def initial_value_for(field_name)
     existing_filter = @query.filter_for @model, field_name
     if existing_filter
-      existing_filter.value
+      return existing_filter.value
     else
-      ''
+      if @last_search && @last_search[model_name]
+        traverse @last_search[model_name] do |k,v|
+          return v if k.to_s == field_name.to_s
+        end
+      end
     end
+    nil
   end
 
   def current_depth
