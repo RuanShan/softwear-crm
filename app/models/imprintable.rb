@@ -28,6 +28,7 @@ class Imprintable < ActiveRecord::Base
     string :name # <- this can be removed; used to test stuff.
     float :base_price
     boolean :flashable
+    boolean :standard_offering
   end
 
   def name

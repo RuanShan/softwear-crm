@@ -3,7 +3,7 @@ class SearchFormBuilder
   include FormHelper
 
   # Just pass <metadata option>: true to the options of any field method, and it will be applied
-  METADATA_OPTIONS = [:negate, :greater_than, :less_than]
+  METADATA_OPTIONS = [:negate, :greater_than, :less_than, :boolean]
 
   def initialize(model, query, template, last_search=nil)
     @model = model
@@ -23,14 +23,27 @@ class SearchFormBuilder
   # These methods are not actually useful right now.
   [:filter_all, :filter_any].each do |method_name|
     define_method(method_name) do |&block|
+      raise "Filter groups in search forms aren't quite implemented yet."
       @filter_group_stack.push method_name.to_s.last(3).to_sym
       block.call(self)
       @filter_group_stack.pop
     end
   end
 
+  def label(field_name, content_or_options={}, &block)
+    content = ""
+    options = {}
+    if content_or_options.is_a?(Hash)
+      options = content_or_options
+      content = field_name.to_s.humanize
+    else
+      content = content_or_options.to_s
+    end
+    @template.label_tag(input_name_for(field_name, @field_count + 1), content, options, &block)
+  end
+
   def fulltext(field_name, options={})
-    add_class options, 'form-control'
+    preprocess_options options, field_name
     
     initial_value = if query_model
       query_model.default_fulltext
@@ -47,7 +60,7 @@ class SearchFormBuilder
 
   def select(field_name, choices, options={})
     raise "Cannot call select unless a model is specified" if @model.nil?
-    add_class options, 'form-control'
+    preprocess_options options, field_name
 
     initial_value = initial_value_for field_name
     display_method = options.delete(:display) || :name
@@ -67,11 +80,8 @@ class SearchFormBuilder
       end
 
       select_options.send :original_concat, @template.content_tag(:option, 
-        name,
-        value: value,
-        # TODO tuesday this does not actually select the initial value (which I believe is properly captured)
-        selected: value.to_s == initial_value.to_s ? 'selected' : nil
-        )
+        name, value: value,
+        selected: value.to_s == initial_value.to_s ? 'selected' : nil)
     end
 
     @field_count += 1
@@ -79,18 +89,54 @@ class SearchFormBuilder
       @template.select_tag(input_name_for(field_name), select_options, options)
   end
 
-  [:text_field, :text_area, 
-   :number_field, :check_box].each do |method_name|
-     define_method method_name do |field_name, options={}|
+  [:text_field, :text_area, :number_field].each do |method_name|
+    define_method method_name do |field_name, options={}|
       raise "Cannot call #{model_name} unless a model is specified" if @model.nil?
-       add_class options, 'form-control'
+       preprocess_options options, field_name
        add_class(options, 'number_field') if method_name == :number_field
 
        @field_count += 1
        process_options(field_name, options) + 
         @template.send("#{method_name}_tag", input_name_for(field_name), initial_value_for(field_name), options)
-     end
-   end
+    end
+  end
+
+  def yes_or_no(field_name, options={})
+    preprocess_options options, field_name
+    options[:boolean] = true
+
+    yes = options.delete(:yes) || 'Yes'
+    no  = options.delete(:no)  || 'No'
+
+    initial = initial_value_for field_name
+
+    @field_count += 1
+    process_options(field_name, options) +
+     @template.content_tag(:div, class: 'form-group') do
+      process_options(field_name, options) + 
+        @template.radio_button_tag(input_name_for(field_name), 'true', options.merge(default: initial == 'true')) +
+        @template.content_tag(:span, yes) +
+        @template.radio_button_tag(input_name_for(field_name), 'false', options.merge(default: initial == 'false')) +
+        @template.content_tag(:span, no) +
+        @template.radio_button_tag(input_name_for(field_name), 'nil', options) +
+        @template.content_tag(:span, "Either")
+    end
+  end
+
+  def check_box(field_name, options={})
+    preprocess_options options, field_name
+    add_class options, 'search-check-box'
+    options[:boolean] = true
+
+    initial_value = initial_value_for field_name
+
+    @field_count += 1
+    @template.content_tag(:div) do
+      process_options(field_name, options) +
+        @template.hidden_field_tag(input_name_for(field_name), 'false') +
+        @template.check_box_tag(input_name_for(field_name), 'true', initial_value == 'true', options)
+    end
+  end
 
   def submit(options={})
     add_class options, 'submit', 'btn', 'btn-primary'
@@ -98,6 +144,11 @@ class SearchFormBuilder
   end
 
 private
+  def preprocess_options(options, field_name)
+    add_class options, 'form-control'
+    # options[:id] ||= id_for field_name
+  end
+
   def traverse(h,&b)
     h.each do |k,v|
       case v
@@ -116,7 +167,9 @@ private
     else
       if @last_search && @last_search[model_name]
         traverse @last_search[model_name] do |k,v|
-          return v if k.to_s == field_name.to_s
+          if k.to_s == field_name.to_s
+            if v == 'nil' then return nil else return v end
+          end
         end
       end
     end
@@ -149,9 +202,13 @@ private
     buf
   end
 
-  def input_name_for(field_name)
-    "search[#{model_name}[#{@field_count}[#{field_name}]]]"
+  # TODO When groups are implemented, these will have to be different
+  def input_name_for(field_name, num=nil)
+    "search[#{model_name}[#{num || @field_count}[#{field_name}]]]"
   end
+  # def id_for(field_name, suffix=nil)
+  #   "search_#{model_name}_#{@field_count}_#{field_name}#{suffix.nil? ? '' : '_'+suffix}"
+  # end
   def metadata_name_for(field_name)
     "search[#{model_name}[#{@field_count}[_metadata]]][]"
   end

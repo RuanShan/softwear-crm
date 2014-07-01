@@ -13,6 +13,14 @@ describe Search::QueriesController, search_spec: true do
     }}}
   end
 
+  let!(:test_params_with_boolean) do
+    {search: {
+      imprintable: {
+        '1' => { standard_offering: 'false', _metadata: ['boolean'] },
+        fulltext: 'yeah'
+    }}}
+  end
+
   let(:test_params_with_nil) do
     {search: {
       order: {
@@ -81,7 +89,7 @@ describe Search::QueriesController, search_spec: true do
         end
       end
 
-      it 'should ignore fields filtered on the string value "nil"', wip: true do
+      it 'should ignore fields filtered on the string value "nil"' do
         get :search, test_params_with_nil
         expect(response).to be_ok
 
@@ -132,7 +140,7 @@ describe Search::QueriesController, search_spec: true do
             expect(Sunspot.session).to have_search_params(:without, :firstname, 'Nigel')
           end
 
-          it 'applies the "greater_than" metadata properly', metadata: true do
+          it 'applies the "greater_than" metadata properly' do
             get :search, test_params_with_metadata
             expect(response).to be_ok
 
@@ -143,6 +151,16 @@ describe Search::QueriesController, search_spec: true do
             expect(Sunspot.session).to have_search_params(:with) {
               without(:commission_amount).greater_than(15.00)
             }
+          end
+
+          it 'applies booleans properly' do
+            get :search, test_params_with_boolean
+            expect(response).to be_ok
+
+            expect(assigns[:search].first).to be_a Sunspot::Search::StandardSearch
+
+            expect(Sunspot.session).to be_a_search_for Imprintable
+            expect(Sunspot.session).to have_search_params(:with, :standard_offering, false)
           end
         end
 

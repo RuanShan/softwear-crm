@@ -17,3 +17,6 @@ $(document).ready ->
   returnColor = $element.css('background-color') unless returnDefault
   $element.css('background-color', '#99ffbb')
   $element.animate {backgroundColor: returnColor}, 1000, -> $element.css 'background-color', ''
+
+$(window).load ->
+  # TODO DEAL WITH DEFAULT VALUES AAAAH

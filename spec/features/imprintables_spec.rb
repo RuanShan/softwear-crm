@@ -40,6 +40,16 @@ feature 'Imprintables management', imprintable_spec: true do
       expect(page).to_not have_content noshow_imprintable1.name
       expect(page).to_not have_content noshow_imprintable2.name
     end
+
+    scenario 'a user sees the values from their last search in the search box', solr: true do
+      visit imprintables_path
+      select 'Infant', from: 'filter_sizing_category'
+      fill_in 'imprintables_search', with: 'I should be there'
+      click_button 'Search'
+
+      expect(page).to have_content 'Infant'
+      expect(page).to have_selector '*[value="I should be there"]'
+    end
   end
 
   scenario 'A user can create a new imprintable', js: true do

@@ -58,6 +58,7 @@ group :development do
   gem 'capistrano-rails'
   gem 'capistrano-bundler'
   gem 'better_errors', '>= 0.3.2'
+  gem 'progress_bar'
 end
 
 group :development, :test do

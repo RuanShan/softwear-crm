@@ -89,8 +89,14 @@ module Search
                   field_value = value
                 end
               end
-              next if field_value == 'nil'
-              
+              # If the value is nil, it means we don't even want to filter on it.
+              next if field_value == 'nil' || (!group_attrs && field_value.nil?)
+              # Boolean metadata indicates we need to use ruby true/false values.
+              if metadata.include? 'boolean'
+                field_value = field_value == 'false' ? false : true
+              end
+
+              # If we're in a group, recurse!
               if group_attrs
                 send(any_or_all_of.call(metadata), &process_attrs.call(group_attrs))
               else
