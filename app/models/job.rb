@@ -3,6 +3,10 @@ class Job < ActiveRecord::Base
 
   has_many :line_items
   has_many :imprints
+  has_many :imprintable_variants, -> {readonly}, through: :line_items
+  has_many :imprintables, -> {readonly}, through: :imprintable_variants
+  has_many :colors, -> {readonly}, through: :imprintable_variants
+  has_many :styles, -> {readonly}, through: :imprintables
 
   has_and_belongs_to_many :artwork_requests
 
@@ -35,8 +39,32 @@ class Job < ActiveRecord::Base
   end
 
   def imprintable_variant_count
-    # sum of all line item quantities where imprintable_id is not null
+    sum = 0
+    line_items.each do |li|
+      if li.imprintable_variant_id
+        sum += li.quantity
+      else
+        sum
+      end
+    end
+    sum
   end
+
+  def imprintable_color_names
+    colors.map{|c| c.name}
+  end
+
+  def imprintable_style_names
+    styles.map{|s| s.name}
+  end
+  def imprintable_style_catalog_nos
+    styles.map{|s| s.catalog_no}
+  end
+
+  def imprintable_info
+    (imprintable_color_names).zip(imprintable_style_names, imprintable_style_catalog_nos).map{|array| array.join(' ')}.join(', ')
+  end
+
 
 private
   def assure_name_and_description

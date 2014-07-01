@@ -7,8 +7,10 @@
       <dt>Print Location</dt>
       <dd><%= artwork_request.print_location.name %></dd>
       <dt>Ink Colors</dt>
-      <dd><%#= artwork_request.ink_colors.where(artwork_request_id: artwork_request.id).collect{|x| [x.name]}.join(', ') %>
-        <%= artwork_request.ink_colors.collect { |x| [x.name] }.join(', ') %></dd>
+      <dd><%= artwork_request.ink_colors.collect { |x| [x.name] }.join(', ') %></dd>
+      <dt>Imprintables</dt>
+      <dd><%= artwork_request.imprintable_variant_count %></dd>
+      <dd><%= artwork_request.imprintable_info %></dd>
       <dt>Description</dt>
       <dd><%= artwork_request.description.html_safe %></dd>
       <dt>Artwork Status</dt>
@@ -16,7 +18,7 @@
       <dt>Deadline</dt>
       <dd><%= artwork_request.deadline.strftime('%b %d, %Y, %I:%M %p') %></dd>
       <dt>Created By</dt>
-      <dd><%= @current_user.full_name %></dd>
+      <dd><%= current_user.full_name %></dd>
       <dt>Assigned to</dt>
       <dd><%= artwork_request.artist.full_name %></dd>
     </dl>

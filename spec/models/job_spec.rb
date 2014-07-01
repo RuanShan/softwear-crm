@@ -125,4 +125,76 @@ describe Job, job_spec: true do
       end
     end
   end
+
+  describe '#imprintable_variant_count', artwork_request_spec: true do
+    before do
+      allow(subject).to receive(:line_items) { [
+          build_stubbed(:blank_line_item, imprintable_variant_id: 1, quantity: 25),
+          build_stubbed(:blank_line_item, imprintable_variant_id: nil, quantity: 50),
+          build_stubbed(:blank_line_item, imprintable_variant_id: 1, quantity: 30)
+      ]}
+    end
+
+    it 'should return the sum of all line item quantities where imprintable_id is not null' do
+      expect(subject.imprintable_variant_count).to eq(55)
+    end
+  end
+
+  describe '#imprintable_color_names', artwork_request_spec: true do
+    before do
+      allow(subject).to receive(:colors) { [
+          build_stubbed(:blank_color, name: 'ROYGBIV'),
+          build_stubbed(:blank_color, name: 'Obsidian'),
+          build_stubbed(:blank_color, name: 'Color')
+      ]}
+    end
+    it 'returns an array of the colors associated with the job through the imprintable variants' do
+      expect(subject.imprintable_color_names).to eq(["ROYGBIV", "Obsidian", "Color"])
+    end
+  end
+
+  describe '#imprintable_style_names', artwork_request_spec: true do
+    before do
+      allow(subject).to receive(:styles) { [
+          build_stubbed(:blank_style, name: 'Hip'),
+          build_stubbed(:blank_style, name: 'Cool'),
+          build_stubbed(:blank_style, name: 'Balla')
+      ]}
+    end
+    it 'returns an array of the colors associated with the job through the imprintables' do
+      expect(subject.imprintable_style_names).to eq(["Hip", "Cool", "Balla"])
+    end
+  end
+
+  describe '#imprintable_style_catalog_nos', artwork_request_spec: true do
+    before do
+      allow(subject).to receive(:styles) { [
+          build_stubbed(:blank_style, catalog_no: '5'),
+          build_stubbed(:blank_style, catalog_no: '55'),
+          build_stubbed(:blank_style, catalog_no: '555')
+      ]}
+    end
+    it 'returns an array of the colors associated with the job through the imprintables' do
+      expect(subject.imprintable_style_catalog_nos).to eq(["5", "55", "555"])
+    end
+  end
+
+  describe '#imprintable_info', artwork_request_spec: true do
+    before do
+      allow(subject).to receive(:colors) { [
+          build_stubbed(:blank_color, name: 'ROYGBIV'),
+          build_stubbed(:blank_color, name: 'Obsidian'),
+          build_stubbed(:blank_color, name: 'Color')
+      ]}
+      allow(subject).to receive(:styles) { [
+          build_stubbed(:blank_style, name: 'Hip', catalog_no: '5'),
+          build_stubbed(:blank_style, name: 'Cool', catalog_no: '55'),
+          build_stubbed(:blank_style, name: 'Balla', catalog_no: '555')
+      ]}
+    end
+
+    it 'should return all of the information for the imprintables ' do
+      expect(subject.imprintable_info).to eq("ROYGBIV Hip 5, Obsidian Cool 55, Color Balla 555")
+    end
+  end
 end

@@ -5,7 +5,7 @@
   $("#artwork-request-deadline-widget").datetimepicker()
 
 @initializeJobsChosen = ->
-  $("#jobs-tokenfield").chosen
+  $("#artwork_request_job_ids").chosen
     placeholder_text_multiple: "Select all jobs for this request"
     no_results_text: "No results matched"
     width: "400px"
@@ -17,6 +17,17 @@
 @setNewArtworkRequestSelect = ->
   $(".artwork-status-select").hide()
   $(".artwork-status-select").val "Pending"
+
+@formatContentModal = ->
+  $("#contentModal").modal
+    backdrop: "static"
+    keyboard: false
+
+@styleCheckboxes = ->
+  $("input").iCheck
+  checkboxClass: "icheckbox_minimal-grey"
+  radioClass: "iradio_minimal-grey"
+  increaseArea: "20%"
 
 $(document).ready ->
   $(document).on "change", "#artwork_imprint_method_fields", (e) ->

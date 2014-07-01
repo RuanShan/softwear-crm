@@ -5,4 +5,7 @@ FactoryGirl.define do
       description 'Here is the test job description.'
     end
   end
+  factory :blank_job, class: Job do
+  sequence(:name) { |s| "Test job #{s}" }
+  end
 end

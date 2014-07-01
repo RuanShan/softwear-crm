@@ -82,7 +82,7 @@ describe ImprintMethodsController do
 
 
   describe 'DELETE destroy' do
-    it 'deletes the contact' do
+    it 'deletes the imprint method' do
     expect{delete :destroy, id: imprint_method.to_param}.to change(ImprintMethod, :count).by(-1)
     end
   end

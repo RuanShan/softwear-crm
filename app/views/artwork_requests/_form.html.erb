@@ -1,9 +1,9 @@
       <div id="horizontal-form artwork-request-form" class="collapse in">
         <div class="form-group">
           <div class="row">
-            <%= f.label :jobs, class: 'col-sm-2 control-label' %>
+            <%= f.label :job_ids, 'Jobs', class: 'col-sm-2 control-label' %>
             <div class="col-sm-10">
-              <%= f.select :job_ids, order.jobs.collect { |x| ["#{x.name}", x.id] }, {}, {name: "artwork_request[job_ids][]", id: 'jobs-tokenfield', multiple: true}%>
+              <%= f.select :job_ids, order.jobs.collect { |x| ["#{x.name}", x.id] }, {}, {name: "artwork_request[job_ids][]", multiple: true}%>
               <% if artwork_request.errors.include?(:job) %>
                   <% artwork_request.errors.full_messages_for(:job).each do |message| %>
                       <p class="text-danger"><%= message %></p>
@@ -70,7 +70,7 @@
           <div class="row">
             <%= f.label :salesperson_id, "Saleperson", class: 'col-sm-2 control-label' %>
             <div class="col-sm-10">
-              <%= f.select :salesperson_id, [@current_user.id]  %>
+              <%= f.select :salesperson_id, [current_user.id]  %>
               <% if artwork_request.errors.include?(:salesperson_id) %>
                   <% artwork_request.errors.full_messages_for(:salesperson_id).each do |message| %>
                       <p class="text-danger"><%= message %></p>
@@ -84,7 +84,7 @@
           <div class="row">
             <%= f.label :artist_id, "Artist", class: 'col-sm-2 control-label' %>
             <div class="col-sm-10">
-              <%= f.select :artist_id, User.all.collect { |u| [u.full_name, u.id] }%>
+              <%= f.select :artist_id, User.all.collect { |u| [u.full_name, u.id] }, include_blank: true%>
               <% if artwork_request.errors.include?(:artist_id) %>
                   <% artwork_request.errors.full_messages_for(:artist_id).each do |message| %>
                       <p class="text-danger"><%= message %></p>

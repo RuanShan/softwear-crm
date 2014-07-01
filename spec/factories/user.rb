@@ -17,5 +17,9 @@ FactoryGirl.define do
       u.store = store
       u.store_id = store.id
     }
-	end
+  end
+
+  factory :blank_user, class: User do
+
+  end
 end
