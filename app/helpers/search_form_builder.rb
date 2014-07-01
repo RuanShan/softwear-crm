@@ -2,8 +2,23 @@
 class SearchFormBuilder
   include FormHelper
 
+  class YesOrNo
+    def initialize(display, value)
+      @display = display
+      @value = value
+    end
+    def name
+      @display
+    end
+    def to_s
+      @value
+    end
+  end
+
   # Just pass <metadata option>: true to the options of any field method, and it will be applied
   METADATA_OPTIONS = [:negate, :greater_than, :less_than, :boolean]
+
+  YES_OR_NO_CHOICES = [YesOrNo.new('Yes', 'true'), YesOrNo.new('No', 'false')]
 
   def initialize(model, query, template, last_search=nil)
     @model = model
@@ -89,6 +104,10 @@ class SearchFormBuilder
       @template.select_tag(input_name_for(field_name), select_options, options)
   end
 
+  def yes_or_no_select(field_name, options={})
+    select(field_name, YES_OR_NO_CHOICES, options)
+  end
+
   [:text_field, :text_area, :number_field].each do |method_name|
     define_method method_name do |field_name, options={}|
       raise "Cannot call #{model_name} unless a model is specified" if @model.nil?
@@ -114,11 +133,11 @@ class SearchFormBuilder
     process_options(field_name, options) +
      @template.content_tag(:div, class: 'form-group') do
       process_options(field_name, options) + 
-        @template.radio_button_tag(input_name_for(field_name), 'true', options.merge(default: initial == 'true')) +
+        @template.radio_button_tag(input_name_for(field_name), 'true', initial == 'true', options) +
         @template.content_tag(:span, yes) +
-        @template.radio_button_tag(input_name_for(field_name), 'false', options.merge(default: initial == 'false')) +
+        @template.radio_button_tag(input_name_for(field_name), 'false', initial == 'false', options) +
         @template.content_tag(:span, no) +
-        @template.radio_button_tag(input_name_for(field_name), 'nil', options) +
+        @template.radio_button_tag(input_name_for(field_name), 'nil', !initial, options) +
         @template.content_tag(:span, "Either")
     end
   end

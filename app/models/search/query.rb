@@ -28,6 +28,8 @@ module Search
       end
     end
 
+    # You can pass either field_name, model_name 
+    # or an instance of Search::Field.
     def filter_for(*args)
       field = nil
       case args.count
@@ -53,6 +55,7 @@ module Search
       case filter.type
       when FilterGroup
 
+        # Recursively search for the filter that matches the given field
         find_field = Proc.new do |group|
           group.filters.each do |f|
             case f.type
@@ -76,6 +79,8 @@ module Search
         args.last
       else {} end
 
+      # SearchList allows us to combine multi-model searches
+      # into one array, sorted by relevancy.
       SearchList.new(models) do |model, i|
         text_fields = text_fields_at(i)
         query_model = query_models[i]
@@ -98,6 +103,7 @@ module Search
             query_model.filter.apply(self)
           end
           block.call if block_given?
+          paginate page: options[:page] || 1, per_page: model.default_per_page
         end
       end
     end

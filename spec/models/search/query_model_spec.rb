@@ -11,10 +11,8 @@ describe Search::QueryModel, search_spec: true do
   let!(:model) { create(:query_order_model) }
 
   it 'should validate that the represented model is searchable' do
-    with(Search::QueryModel.method :new) do |new|
-      expect(new.call(name: 'Order')).to be_valid
-      expect(new.call(name: 'Search::Query')).to_not be_valid
-    end
+    expect(Search::QueryModel.new(name: 'Order')).to be_valid
+    expect(Search::QueryModel.new(name: 'Search::Query')).to_not be_valid
   end
 
   it 'should destroy its filter when destroyed' do

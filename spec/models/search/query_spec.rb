@@ -68,11 +68,9 @@ describe Search::Query, search_spec: true do
 
       it 'searches the models' do
         job_model; subject.search 'test'
-        with(Sunspot.session.searches) do |the|
-          expect(the.count).to eq 2
-          expect(the.first).to be_a_search_for Order
-          expect(the.last).to be_a_search_for Job
-        end
+        expect(Sunspot.session.searches.count).to eq 2
+        expect(Sunspot.session.searches.first).to be_a_search_for Order
+        expect(Sunspot.session.searches.last).to be_a_search_for Job
       end
 
       it 'uses the right fulltext when passed a string parameter' do

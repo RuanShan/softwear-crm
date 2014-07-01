@@ -22,10 +22,10 @@ module Search
     def search
       if params[:query_id]
         @query = Query.find(params[:query_id])
-        @search = @query.search
+        @search = @query.search page: params[:page]
       elsif params[:search]
         session[:last_search] = params[:search]
-        @search = QueryBuilder.search(&build_search_proc(params[:search]))
+        @search = QueryBuilder.search({page: params[:page]}, &build_search_proc(params[:search]))
       else
         puts 'your params were useless, however'
       end
@@ -153,6 +153,7 @@ module Search
       params.permit(:search).permit!
       params.permit(:query_id)
       params.permit(:id)
+      params.permit(:page)
     end
   end
 end

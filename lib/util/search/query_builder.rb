@@ -16,8 +16,8 @@ module Search
         end
       end
 
-      def search(&block)
-        searcher = Searcher.new
+      def search(options={}, &block)
+        searcher = Searcher.new(options)
         searcher.instance_eval(&block)
         searcher.searches
       end
@@ -25,15 +25,25 @@ module Search
 
     class Searcher
       attr_reader :searches
+      def initialize(options)
+        @options = options
+      end
+
       def on(*models, &block)
+        options = @options
+
         if models.count == 1 && models.first == :all
           on(*Models.all, &block)
         else
           @searches ||= []
           @searches += models.map do |model|
-            model.search(&block)
+            next if model.is_a?(Hash)
+            model.search do
+              instance_eval(&block)
+              paginate page: options[:page] || 1, per_page: model.default_per_page
+            end
           end
-          @searches
+          @searches.flatten.compact
         end
       end
     end
