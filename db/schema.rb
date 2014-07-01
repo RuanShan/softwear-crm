@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140627190924) do
+ActiveRecord::Schema.define(version: 20140613184117) do
 
   create_table "brands", force: true do |t|
     t.string   "name"
@@ -19,11 +19,9 @@ ActiveRecord::Schema.define(version: 20140627190924) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.datetime "deleted_at"
-    t.boolean  "retail",     default: false
   end
 
   add_index "brands", ["deleted_at"], name: "index_brands_on_deleted_at", using: :btree
-  add_index "brands", ["retail"], name: "index_brands_on_retail", using: :btree
 
   create_table "colors", force: true do |t|
     t.string   "name"
@@ -32,22 +30,10 @@ ActiveRecord::Schema.define(version: 20140627190924) do
     t.datetime "updated_at"
     t.integer  "imprintable_variant_id"
     t.datetime "deleted_at"
-    t.boolean  "retail",                 default: false
   end
 
   add_index "colors", ["deleted_at"], name: "index_colors_on_deleted_at", using: :btree
   add_index "colors", ["imprintable_variant_id"], name: "color_imprintable_variant_id_ix", using: :btree
-  add_index "colors", ["retail"], name: "index_colors_on_retail", using: :btree
-
-  create_table "coordinate_imprintables", force: true do |t|
-    t.integer  "coordinate_id"
-    t.integer  "imprintable_id"
-    t.datetime "deleted_at"
-    t.datetime "created_at"
-    t.datetime "updated_at"
-  end
-
-  add_index "coordinate_imprintables", ["coordinate_id", "imprintable_id"], name: "coordinate_imprintable_index", using: :btree
 
   create_table "imprint_methods", force: true do |t|
     t.string   "name"
@@ -58,13 +44,6 @@ ActiveRecord::Schema.define(version: 20140627190924) do
   end
 
   add_index "imprint_methods", ["deleted_at"], name: "index_imprint_methods_on_deleted_at", using: :btree
-
-  create_table "imprint_methods_imprintables", id: false, force: true do |t|
-    t.integer "imprint_method_id"
-    t.integer "imprintable_id"
-  end
-
-  add_index "imprint_methods_imprintables", ["imprintable_id", "imprint_method_id"], name: "imprint_method_imprintables_index", using: :btree
 
   create_table "imprintable_variants", force: true do |t|
     t.integer  "imprintable_id"
@@ -89,27 +68,10 @@ ActiveRecord::Schema.define(version: 20140627190924) do
     t.text     "proofing_template_name"
     t.string   "material"
     t.boolean  "standard_offering"
-    t.string   "main_supplier"
-    t.string   "supplier_link"
-    t.string   "weight"
-    t.decimal  "base_price",             precision: 10, scale: 2
-    t.decimal  "xxl_price",              precision: 10, scale: 2
-    t.decimal  "xxxl_price",             precision: 10, scale: 2
-    t.decimal  "xxxxl_price",            precision: 10, scale: 2
-    t.decimal  "xxxxxl_price",           precision: 10, scale: 2
-    t.decimal  "xxxxxxl_price",          precision: 10, scale: 2
   end
 
   add_index "imprintables", ["deleted_at"], name: "index_imprintables_on_deleted_at", using: :btree
-  add_index "imprintables", ["main_supplier"], name: "index_imprintables_on_main_supplier", using: :btree
   add_index "imprintables", ["style_id"], name: "style_id_ix", using: :btree
-
-  create_table "imprintables_stores", id: false, force: true do |t|
-    t.integer "imprintable_id"
-    t.integer "store_id"
-  end
-
-  add_index "imprintables_stores", ["imprintable_id", "store_id"], name: "index_imprintables_stores_on_imprintable_id_and_store_id", using: :btree
 
   create_table "imprints", force: true do |t|
     t.integer  "print_location_id"
@@ -170,8 +132,11 @@ ActiveRecord::Schema.define(version: 20140627190924) do
     t.string   "terms"
     t.boolean  "tax_exempt"
     t.string   "tax_id_number"
+    t.boolean  "is_redo"
+    t.text     "redo_reason"
     t.string   "sales_status"
     t.string   "delivery_method"
+    t.decimal  "total",             precision: 10, scale: 2
     t.datetime "deleted_at"
     t.string   "phone_number"
     t.datetime "created_at"
@@ -182,24 +147,6 @@ ActiveRecord::Schema.define(version: 20140627190924) do
   end
 
   add_index "orders", ["deleted_at"], name: "index_orders_on_deleted_at", using: :btree
-
-  create_table "payments", force: true do |t|
-    t.integer  "order_id"
-    t.integer  "salesperson_id"
-    t.integer  "store_id"
-    t.boolean  "refunded"
-    t.decimal  "amount",            precision: 10, scale: 2
-    t.text     "refund_reason"
-    t.datetime "deleted_at"
-    t.string   "cc_invoice_no"
-    t.string   "cc_batch_no"
-    t.string   "check_dl_no"
-    t.string   "check_phone_no"
-    t.string   "pp_transaction_id"
-    t.integer  "payment_method"
-    t.datetime "created_at"
-    t.datetime "updated_at"
-  end
 
   create_table "print_locations", force: true do |t|
     t.string   "name"
@@ -233,12 +180,10 @@ ActiveRecord::Schema.define(version: 20140627190924) do
     t.datetime "updated_at"
     t.integer  "imprintable_variant_id"
     t.datetime "deleted_at"
-    t.boolean  "retail",                 default: false
   end
 
   add_index "sizes", ["deleted_at"], name: "index_sizes_on_deleted_at", using: :btree
   add_index "sizes", ["imprintable_variant_id"], name: "size_imprintable_variant_id_ix", using: :btree
-  add_index "sizes", ["retail"], name: "index_sizes_on_retail", using: :btree
 
   create_table "stores", force: true do |t|
     t.string   "name"
@@ -258,31 +203,10 @@ ActiveRecord::Schema.define(version: 20140627190924) do
     t.datetime "updated_at"
     t.integer  "brand_id"
     t.datetime "deleted_at"
-    t.boolean  "retail",      default: false
   end
 
   add_index "styles", ["brand_id"], name: "brand_id_ix", using: :btree
   add_index "styles", ["deleted_at"], name: "index_styles_on_deleted_at", using: :btree
-  add_index "styles", ["retail"], name: "index_styles_on_retail", using: :btree
-
-  create_table "taggings", force: true do |t|
-    t.integer  "tag_id"
-    t.integer  "taggable_id"
-    t.string   "taggable_type"
-    t.integer  "tagger_id"
-    t.string   "tagger_type"
-    t.string   "context",       limit: 128
-    t.datetime "created_at"
-  end
-
-  add_index "taggings", ["tag_id", "taggable_id", "taggable_type", "context", "tagger_id", "tagger_type"], name: "taggings_idx", unique: true, using: :btree
-
-  create_table "tags", force: true do |t|
-    t.string  "name"
-    t.integer "taggings_count", default: 0
-  end
-
-  add_index "tags", ["name"], name: "index_tags_on_name", unique: true, using: :btree
 
   create_table "users", force: true do |t|
     t.string   "email",                  default: "", null: false

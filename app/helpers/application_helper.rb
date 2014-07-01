@@ -18,13 +18,6 @@ module ApplicationHelper
     object.new_record? ? 'Create' : 'Update'
   end
 
-  def unhide_dashboard
-    selector = 'button.button-menu-mobile.show-sidebar'
-    return if all(selector).empty?
-  	find(selector).click
-  	wait_for_ajax
-  end
-
   def modal_flash_class(level)
     case level
       when :info then "modal-content-info"
@@ -87,4 +80,8 @@ module ApplicationHelper
   def imprintable_modal(imprintable)
     link_to imprintable.name, imprintable_path(imprintable), remote: true, class: 'imprintable_modal_link'
   end
+end
+
+def time_format(datetime)
+  datetime.strftime('%m/%d/%Y %H:%M %p') unless datetime.blank?
 end

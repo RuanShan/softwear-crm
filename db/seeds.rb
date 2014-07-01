@@ -147,6 +147,7 @@ create_records([
       in_hand_by: '1/2/1015',
       terms: 'Half down on purchase',
       tax_exempt: false,
+      is_redo: false,
       sales_status: 'Pending',
       delivery_method: 'Ship to one location',
       phone_number: '123-456-8456',

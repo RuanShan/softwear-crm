@@ -12,4 +12,11 @@ module GeneralHelpers
   	ActiveSupport::Notifications.subscribed counter_func, "sql.active_record", &block
   	count
   end
+
+  def unhide_dashboard
+    selector = 'button.button-menu-mobile.show-sidebar'
+    return if all(selector).empty?
+    find(selector).click
+    wait_for_ajax
+  end
 end
