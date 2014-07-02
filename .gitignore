@@ -42,6 +42,7 @@ Gemfile.lock
 ## Don't upload dynamic solr stuff
 /solr/development/data/*
 /solr/test/data/*
+/solr/default/data/*
 
 # these should all be checked in to normalise the environment:
 # Gemfile.lock, .ruby-version, .ruby-gemset
