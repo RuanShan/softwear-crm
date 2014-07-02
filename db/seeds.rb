@@ -75,7 +75,13 @@ create_records([
                ], ImprintMethod)
 im = ImprintMethod.all.first
 create_records([
-                   {name: 'Red', imprint_method_id: im.id}
+                   {name: 'Red', imprint_method_id: im.id},
+                   {name: 'Orange', imprint_method_id: im.id},
+                   {name: 'Yellow', imprint_method_id: im.id},
+                   {name: 'Green', imprint_method_id: im.id},
+                   {name: 'Blue', imprint_method_id: im.id},
+                   {name: 'Indigo', imprint_method_id: im.id},
+                   {name: 'Violet', imprint_method_id: im.id}
                ], InkColor)
 create_records([
                    {name: 'Chest', max_height: 5.5, max_width: 5.5, imprint_method_id: im.id},
@@ -167,3 +173,9 @@ j = Job.all.first
 create_records([
     job_id: j.id, print_location_id: pl.id
   ], Imprint)
+
+# Line Item SEEDING
+# ---------------
+# create_records([
+#                    job_id: j.id, print_location_id: pl.id
+#                ], Imprint)
