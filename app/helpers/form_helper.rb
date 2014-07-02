@@ -8,6 +8,13 @@ module FormHelper
     end
   end
 
+  # Just like form_for except for searches on models.
+  # Rather than passing a specific resource, you pass a class, i.e. Order.
+  # Many of the same functions in the Rails form builder are available
+  # on the search form builder.
+  # 
+  # Theoretically this could be used to save a search query to the 
+  # database as well if you pass a query object after the model class.
   def search_form_for(model, *args, &block)
     query = args.first
     options = if args.last.is_a? Hash
@@ -17,7 +24,7 @@ module FormHelper
     end
 
     builder = SearchFormBuilder.new(
-      model, query, self, session[:last_search])
+      model, query, self, @current_user, session[:last_search])
 
     output = capture(builder, &block)
     action = if query
@@ -29,5 +36,29 @@ module FormHelper
     end
     options[:id] ||= "#{model.name.underscore}_search"
     form_tag(action, options) { output }
+  end
+
+  # Gets a select box for the current user's saved queries on the given
+  # model class.
+  def select_search_queries_on(model, options={})
+    add_class options, 'form-control', 'search-query-select'
+    options[:id] = "select_query_for_#{model.name.underscore}"
+    select_options = content_tag(:option, "#{model.name.humanize} queries...", value: 'nil')
+
+    current = if session[:last_search] =~ /\d/
+      session[:last_search].to_i
+    else
+      nil
+    end
+
+    @current_user.search_queries.each do |query|
+      select_options.send :original_concat, content_tag(:option,
+        query.name, value: query.id, selected: query.id == current)
+    end
+
+    # TODO some js to spawn a search button / form
+    form_tag search_path, method: 'GET' do
+      select_tag('id', select_options, options)
+    end
   end
 end

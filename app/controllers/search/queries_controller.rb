@@ -1,27 +1,45 @@
 module Search
   class QueriesController < ApplicationController
     before_action :permit_params
+    skip_before_filter :verify_authenticity_token
 
     def create
-      @query = QueryBuilder.build(&build_search_proc(params[:search])).query
-      render text: 'nice!'
+      begin
+        @query = QueryBuilder.build(query_params[:name], &build_search_proc(params[:search])).query
+        @query.update_attributes query_params
+        raise "Failed to create search query" unless @query.save
+        flash[:success] = "Successfully saved search query!"
+      rescue Exception => e
+        flash[:error] = "#{e.message}. #{@query.errors.full_messages.join(', ') if @query}"
+      end
+      if params[:target_path]
+        redirect_to params[:target_path]
+      else
+        render text: 'nice!'
+      end
     end
 
     def update
-      @query = Query.find params[:id]
+      @query = Query.find query_id
+      @query.update_attributes query_params
       QueryBuilder.build(@query, &build_search_proc(params[:search]))
-      render text: 'ok'
+      if @query.save
+        render text: 'ok'
+      else
+        render text: 'not ok'
+      end
     end
 
     def destroy
-      @query = Query.find params[:id]
+      @query = Query.find query_id
       @query.destroy
       render text: 'cool'
     end
 
     def search
-      if params[:query_id]
-        @query = Query.find(params[:query_id])
+      if query_id
+        @query = Query.find(query_id)
+        session[:last_search] = query_id
         @search = @query.search page: params[:page]
       elsif params[:search]
         session[:last_search] = params[:search]
@@ -129,11 +147,11 @@ module Search
             end
 
           unless actual_model < ActiveRecord::Base
-            raise "#{actual_model} is not a model."
+            raise SearchException.new "#{actual_model} is not a model."
           end
 
           unless actual_model.respond_to? :searchable
-            raise "#{actual_model.inspect} is not searchable."
+            raise SearchException.new "#{actual_model.inspect} is not searchable."
           end
 
           on actual_model, &process_attrs.call(attrs)
@@ -151,9 +169,22 @@ module Search
 
     def permit_params
       params.permit(:search).permit!
-      params.permit(:query_id)
       params.permit(:id)
       params.permit(:page)
+      params.permit(:target_path)
+      params.permit(:user_id)
+    end
+
+    def query_params
+      begin
+        params.require(:query).permit(:name, :user_id)
+      rescue
+        {}
+      end
+    end
+
+    def query_id
+      params[:id]
     end
   end
 end
