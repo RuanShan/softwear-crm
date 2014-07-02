@@ -16,6 +16,7 @@ class SearchFormBuilder
   end
 
   # Just pass <metadata option>: true to the options of any field method, and it will be applied
+  # (boolean is automatically applied for yes/no and checkbox)
   METADATA_OPTIONS = [:negate, :greater_than, :less_than, :boolean]
 
   YES_OR_NO_CHOICES = [YesOrNo.new('Yes', 'true'), YesOrNo.new('No', 'false')]

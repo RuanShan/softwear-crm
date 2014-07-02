@@ -4,6 +4,7 @@ class User < ActiveRecord::Base
 
   has_many :orders
   belongs_to :store
+  has_many :search_queries, class: "Search::Query"
 
   validates_presence_of :firstname, :lastname
   validates :email, format: { with: /\A([^@\s]+)@((?:[-a-z0-9]+\.)+[a-z]{2,})\Z/i }
@@ -12,6 +13,5 @@ class User < ActiveRecord::Base
     "#{firstname} #{lastname}"
   end
 
-  # non-deletable stuff
   acts_as_paranoid
 end
