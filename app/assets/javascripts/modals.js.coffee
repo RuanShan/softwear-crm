@@ -1,7 +1,10 @@
 $(document).ready ->
   $contentModal = $('#contentModal')
 
-  storeClassFor = ($elem) -> 
+  $contentModal.DEFAULTS
+
+
+  storeClassFor = ($elem) ->
     $elem.data 'original-class', $elem.attr('class')
   retrieveClassFor = ($elem) ->
     unless typeof $elem.data('original-class') is 'undefined'

@@ -51,7 +51,7 @@
           <div class="row">
             <%= f.label :deadline, class: 'col-sm-2 control-label' %>
             <div class="col-sm-10">
-              <div class="input-group date"id="artwork-request-deadline-widget">
+              <div class="input-group date "id="">
                 <%= f.text_field :deadline, value: time_format(artwork_request.deadline) %>
                 <span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span>
                     </span>
@@ -87,20 +87,6 @@
               <%= f.select :artist_id, User.all.collect { |u| [u.full_name, u.id] }, include_blank: true%>
               <% if artwork_request.errors.include?(:artist_id) %>
                   <% artwork_request.errors.full_messages_for(:artist_id).each do |message| %>
-                      <p class="text-danger"><%= message %></p>
-                  <% end %>
-              <% end %>
-            </div>
-          </div>
-        </div>
-
-        <div class="form-group">
-          <div class="row">
-            <%= f.label :description, class: 'col-sm-2 control-label' %>
-            <div class="col-sm-10">
-              <%= f.text_field :description, class: 'form-control summernote' %>
-              <% if artwork_request.errors.include?(:description) %>
-                  <% artwork_request.errors.full_messages_for(:description).each do |message| %>
                       <p class="text-danger"><%= message %></p>
                   <% end %>
               <% end %>

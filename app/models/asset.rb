@@ -5,7 +5,7 @@ class Asset < ActiveRecord::Base
   has_attached_file :file
 
   validates_attachment_presence :file
-  validates_attachment_size :file, less_than: 120.megabytes, if: -> {class==ArtworkRequest}
+  # validates_attachment_size :file, less_than: 120.megabytes, if: -> {class==ArtworkRequest}
   validates :description, presence: true
 
 end

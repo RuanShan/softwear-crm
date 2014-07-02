@@ -220,3 +220,5 @@ load_seeds_for LineItem
 create_records([
     job_id: j.id, print_location_id: pl.id
   ], Imprint)
+
+# Artwork Request Seeding
