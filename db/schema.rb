@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140627190924) do
+ActiveRecord::Schema.define(version: 20140702125930) do
 
   create_table "artwork_requests", force: true do |t|
     t.text     "description"
@@ -34,6 +34,18 @@ ActiveRecord::Schema.define(version: 20140627190924) do
   create_table "artwork_requests_jobs", id: false, force: true do |t|
     t.integer "artwork_request_id"
     t.integer "job_id"
+  end
+
+  create_table "assets", force: true do |t|
+    t.string   "file_file_name"
+    t.string   "file_content_type"
+    t.integer  "file_file_size"
+    t.datetime "file_updated_at"
+    t.string   "description"
+    t.integer  "assetable_id"
+    t.string   "assetable_type"
+    t.datetime "created_at"
+    t.datetime "updated_at"
   end
 
   create_table "brands", force: true do |t|

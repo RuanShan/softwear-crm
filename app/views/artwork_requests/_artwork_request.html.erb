@@ -21,6 +21,11 @@
       <dd><%= current_user.full_name %></dd>
       <dt>Assigned to</dt>
       <dd><%= artwork_request.artist.full_name %></dd>
+      <dt>Attachments</dt>
+      <!--<%# artwork_request.assets.each do |a| %>-->
+      <!--<dt><%#= a.description %></dt>-->
+      <!--<dt><%#= a.size a.name link_to file download %></dt>-->
+      <!--<%# end %>-->
     </dl>
     <%= link_to edit_order_artwork_request_path(order, artwork_request), remote: true do %><i class="fa fa-2x fa-edit"></i> Edit <% end %>
     <%= link_to order_artwork_request_path(order, artwork_request), method: :delete, remote: true do %><i class="fa fa-2x danger fa-times-circle"></i> Delete <% end %>
