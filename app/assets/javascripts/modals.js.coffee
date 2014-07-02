@@ -36,7 +36,10 @@ $(document).ready ->
 #   title: $('<strong>Test Content Modal!</strong>')
 #   body: "This is a large modal! These options allow strings or jQueries."
 #   footer: $('<button data-dismiss="modal">Close</button>')
+#   backdrop: 'static'
 # ===============================
+# 
+# TODO backdrop is permanent until new page/reload - fix that.
 # 
 # Calling setupContentModal is not neccessary if you are fine
 # with the default look of the contentModal. However, if you 
@@ -78,7 +81,9 @@ $(document).ready ->
     setSection $('#contentBody'),   options.body
     setSection $('#contentFooter'), options.footer
 
-    $contentModal.modal 'show'
+    options.title = null; options.body = null; options.footer = null
+
+    $contentModal.modal options
   
   if $contentModal.data('open')
     if options.force is true

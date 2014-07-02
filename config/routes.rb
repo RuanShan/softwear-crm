@@ -46,4 +46,9 @@ CrmSoftwearcrmCom::Application.routes.draw do
   get '/line_item/select_options', to: 'line_items#select_options'
   delete '/line_items/*ids', to: 'line_items#destroy'
 
+  namespace 'search' do
+    resources :queries
+  end
+  get '/search', to: 'search/queries#search', as: :search
+
 end

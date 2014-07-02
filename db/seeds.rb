@@ -1,8 +1,10 @@
 def create_records(params_array, model)
   return if Rails.env.test?
   params_array.each do |params|
+    after = params.delete :after
     record = model.new(params)
     if record.save
+      after.call(record) if after
       puts "Created #{model} #{params[:name]}"
     else
       puts "[ERROR] Can't create #{model}"
@@ -12,6 +14,44 @@ def create_records(params_array, model)
       puts '[ERROR] -----------------------'
     end
   end
+end
+
+def create_imprintable_line_items(style_maybe_id, color_maybe_id, options)
+  style = nil; color = nil
+  if style_maybe_id.respond_to? :id
+    style = style_maybe_id
+  else
+    style = Style.find style_maybe_id
+  end
+  if color_maybe_id.respond_to? :id
+    color = color_maybe_id
+  else
+    color = Color.find color_maybe_id
+  end
+
+  imprintable = Imprintable.where(style_id: style.id).first
+  variants = ImprintableVariant.where imprintable_id: imprintable.id, color_id: color.id
+  records = variants.map do |v|
+    options.merge imprintable_variant_id: v.id, 
+      unit_price: [5,10.55,12.99].sample, 
+      quantity: [0,0,1,2].sample
+  end
+  create_records(records, LineItem)
+end
+
+# Load seeds from a file in the ./seeds/ folder
+# load_seeds_for User will load a file in ./seeds/users.rb
+def load_seeds_for(seeds)
+  filename = ""
+  if seeds.respond_to? :name
+    filename = seeds.name.underscore.pluralize
+  else
+    filename = seeds.to_s.underscore.pluralize
+  end
+  path = Rails.root.join('db', 'seeds', "#{filename}.rb").to_s
+  puts "====From #{path}===="
+  load path
+  puts "===================="
 end
 
 # USER SEEDING
@@ -126,13 +166,19 @@ create_records([
 
 # Imprintable Variant SEEDING
 # ---------------
-create_records([
-    { imprintable_id: 1, size_id: 2, color_id: 1 },
-    { imprintable_id: 1, size_id: 2, color_id: 2 },
-    { imprintable_id: 2, size_id: 1, color_id: 1 },
-    { imprintable_id: 2, size_id: 1, color_id: 2 },
-    { imprintable_id: 2, size_id: 4, color_id: 1 }
-], ImprintableVariant)
+variants = []
+Imprintable.all.each do |imprintable|
+  Size.all.each do |size|
+    Color.all.each do |color|
+      variants << {
+        imprintable_id: imprintable.id,
+        size_id: size.id,
+        color_id: color.id
+      }
+    end
+  end
+end
+create_records variants, ImprintableVariant
 
 # Store SEEDING
 # ---------------
@@ -160,22 +206,17 @@ create_records([
       salesperson_id: 1
     }
   ], Order)
+load_seeds_for Order
 
 # Job SEEDING
 # ---------------
-create_records([
-    name: 'Test Job', description: "I hope these fields can be edited one day", order_id: 1
-  ], Job)
+load_seeds_for Job
 j = Job.all.first
+
+load_seeds_for LineItem
 
 # Imprint SEEDING
 # ---------------
 create_records([
     job_id: j.id, print_location_id: pl.id
   ], Imprint)
-
-# Line Item SEEDING
-# ---------------
-# create_records([
-#                    job_id: j.id, print_location_id: pl.id
-#                ], Imprint)
