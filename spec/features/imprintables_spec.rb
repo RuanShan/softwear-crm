@@ -80,6 +80,30 @@ feature 'Imprintables management', imprintable_spec: true do
     end
   end
 
+  describe 'Imprintable category', js: true do
+    scenario 'A user can add an imprintable category', pending: 'Can\'t figure out how to select from chosen here' do
+      visit edit_imprintable_path imprintable.id
+      find_link('Add Imprintable Category').click
+      select_from_chosen('Something', from: 'imprintable_categories')
+      find_button('Update Imprintable').click
+      expect(page).to have_selector '.modal-content-success', text: 'Imprintable was successfully updated.'
+      expect(ImprintableCategory.where(imprintable_id: imprintable.id)).to_not be_nil
+    end
+
+    context 'there is already an associated imprintable category' do
+      let!(:category) { create(:imprintable_category, imprintable_id: imprintable.id) }
+
+      scenario 'A user can delete an imprintable category' do
+        expect(ImprintableCategory.where(imprintable_id: imprintable.id)).to_not be_nil
+        visit edit_imprintable_path imprintable.id
+        find(:css, '.remove_fields').click
+        find_button('Update Imprintable').click
+        expect(page).to have_selector '.modal-content-success', text: 'Imprintable was successfully updated.'
+        expect(ImprintableCategory.where(imprintable_id: imprintable.id).empty?).to be_truthy
+      end
+    end
+  end
+
   describe 'There is an imprint method' do
     
     given!(:imprint_method) { create(:valid_imprint_method) }

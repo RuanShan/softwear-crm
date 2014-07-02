@@ -31,7 +31,7 @@ namespace :imprintables do
 
   def get_coordinate_style_numbers(ws, row)
     style_numbers = ws[row, 28].split(',')
-    style_numbers.map!{|style_number| style_number.gsub(/\(.*\)/, "").squish}
+    style_numbers.map!{ |style_number| style_number.gsub(/\(.*\)/, "").squish }
   end
 
 
@@ -75,6 +75,7 @@ namespace :imprintables do
           end
         end
         imprintable.weight = ws[row,24]
+        imprintable.tag_list = get_tags(ws, row)
         imprintable.main_supplier = ws[row,18]
         imprintable.base_price = ws[row,6].gsub('$', '').to_f
         imprintable.xxl_price = ws[row,7].gsub('$', '').to_f

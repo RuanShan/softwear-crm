@@ -241,10 +241,14 @@ jQuery ->
 
 
   $('.chosen-select').chosen()
-  $('.color-size-chosen-select').chosen( { width: '200px';} )
+  $('.color-size-chosen-select').chosen( { width: '200px' } )
   $('#color_ids').chosen( { width: "100%" })
   $('#size_ids').chosen( { width: "100%" })
 
+  $('form').on 'click', '.remove_fields', (event) ->
+    $(this).prev('input[type=hidden]').val('1')
+    $(this).closest('.removeable').hide()
+    event.preventDefault()
 
   $('.table.table-hover').fixedHeader()
 

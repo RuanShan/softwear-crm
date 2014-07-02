@@ -13,6 +13,8 @@ class Imprintable < ActiveRecord::Base
   has_many :coordinates, through: :coordinate_imprintables
   has_many :mirrored_coordinate_imprintables, class_name: 'CoordinateImprintable', foreign_key: 'coordinate_id'
   has_many :mirrored_coordinates, through: :mirrored_coordinate_imprintables, source: :imprintable
+  has_many :imprintable_categories
+  accepts_nested_attributes_for :imprintable_categories, allow_destroy: true
   has_and_belongs_to_many :sample_locations, class_name: 'Store', association_foreign_key: 'store_id', join_table: 'imprintables_stores'
   has_and_belongs_to_many :compatible_imprint_methods, class_name: 'ImprintMethod', association_foreign_key: 'imprint_method_id', join_table: 'imprint_methods_imprintables'
 

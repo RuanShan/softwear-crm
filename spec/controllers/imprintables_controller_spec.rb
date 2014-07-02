@@ -69,7 +69,7 @@ describe ImprintablesController, imprintable_spec: true do
   describe 'PUT update' do
     context 'with valid input' do
       it 'updates the imprintable' do
-        expect{ put :update, id: imprintable.to_param, color: {ids: [1]}, size: {ids: [1]}, imprintable: attributes_for(:valid_imprintable) }.to_not change(Imprintable, :count)
+        expect{ put :update, id: imprintable.to_param, color: { ids: [1]}, size: {ids: [1]}, imprintable: attributes_for(:valid_imprintable) }.to_not change(Imprintable, :count)
         expect(imprintable.special_considerations).to eq('Special Consideration')
       end
     end
