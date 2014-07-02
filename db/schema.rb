@@ -237,6 +237,75 @@ ActiveRecord::Schema.define(version: 20140627190924) do
   add_index "print_locations", ["deleted_at"], name: "index_print_locations_on_deleted_at", using: :btree
   add_index "print_locations", ["imprint_method_id"], name: "index_print_locations_on_imprint_method_id", using: :btree
 
+  create_table "search_boolean_filters", force: true do |t|
+    t.string  "field"
+    t.boolean "negate"
+    t.boolean "value"
+  end
+
+  create_table "search_date_filters", force: true do |t|
+    t.string   "field"
+    t.boolean  "negate"
+    t.datetime "value"
+    t.string   "comparator", limit: 1
+  end
+
+  create_table "search_filter_groups", force: true do |t|
+    t.boolean "all"
+  end
+
+  create_table "search_filters", force: true do |t|
+    t.integer "filter_holder_id"
+    t.string  "filter_holder_type"
+    t.integer "filter_type_id"
+    t.string  "filter_type_type"
+  end
+
+  create_table "search_nil_filters", force: true do |t|
+    t.string  "field"
+    t.boolean "negate"
+  end
+
+  create_table "search_number_filters", force: true do |t|
+    t.string  "field"
+    t.boolean "negate"
+    t.decimal "value",                precision: 10, scale: 2
+    t.string  "comparator", limit: 1
+  end
+
+  create_table "search_queries", force: true do |t|
+    t.integer  "user_id"
+    t.string   "name"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "search_query_fields", force: true do |t|
+    t.integer "query_model_id"
+    t.string  "name"
+    t.decimal "boost",          precision: 10, scale: 2
+    t.integer "phrase"
+  end
+
+  create_table "search_query_models", force: true do |t|
+    t.integer "query_id"
+    t.string  "name"
+    t.string  "default_fulltext"
+  end
+
+  create_table "search_reference_filters", force: true do |t|
+    t.string  "field"
+    t.boolean "negate"
+    t.integer "value_id"
+    t.string  "value_type"
+  end
+
+  create_table "search_string_filters", force: true do |t|
+    t.string  "field"
+    t.boolean "negate"
+    t.string  "value"
+  end
+
   create_table "shipping_methods", force: true do |t|
     t.string   "name"
     t.string   "tracking_url"

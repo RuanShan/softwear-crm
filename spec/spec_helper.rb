@@ -2,6 +2,7 @@
 ENV["RAILS_ENV"] ||= 'test'
 require File.expand_path("../../config/environment", __FILE__)
 require 'rspec/rails'
+require 'rake'
 
 # Requires supporting ruby files with custom matchers and macros, etc, in
 # spec/support/ and its subdirectories. Files matching `spec/**/*_spec.rb` are
@@ -11,6 +12,7 @@ require 'rspec/rails'
 # end with _spec.rb. You can configure this pattern with with the --pattern
 # option on the command line or in ~/.rspec, .rspec or `.rspec-local`.
 Dir[Rails.root.join("spec/support/**/*.rb")].each { |f| require f }
+include SunspotHelpers
 
 # Checks for pending migrations before tests are run.
 # If you are not using ActiveRecord, you can remove this line.
@@ -26,7 +28,8 @@ RSpec.configure do |config|
   config.include Devise::TestHelpers, type: :controller
   config.extend ControllerMacros, type: :view
   config.include Devise::TestHelpers, type: :view
-  
+  config.include SunspotMatchers
+  config.include SunspotHelpers
 
   # ## Mock Framework
   #
@@ -55,6 +58,39 @@ RSpec.configure do |config|
 
   config.order = "random"
 
+  config.before(:each) do |example|
+    if example.metadata[:solr]
+      # Recover Sunspot session (if needed) and start solr.
+      if Sunspot.session.respond_to? :original_session
+        Sunspot.session = Sunspot.session.original_session
+        if Sunspot.session.respond_to? :original_session
+          raise "Sunspot session somehow got buried in spies!"
+        end
+      end
+      # Solr process is lazy loaded, essentially.
+      unless solr_running?
+        if !start_solr
+          raise "Unable to start Solr."
+        end
+        wait_for_solr
+      end
+    else
+      # If we just keep making session spies out of the current session
+      # (as suggested on the SunspotMatchers github page), it will just
+      # keep piling up and further burrying the original session!
+      if Sunspot.session.respond_to? :original_session
+        Sunspot.session = SunspotMatchers::SunspotSessionSpy.new(Sunspot.session.original_session)
+      else
+        Sunspot.session = SunspotMatchers::SunspotSessionSpy.new(Sunspot.session)
+      end
+    end
+  end
+
+  # Stop solr if we were using it in any earlier tests.
+  config.after(:suite) do
+    stop_solr if solr_running?
+  end
+
   config.before(:suite) do
     DatabaseCleaner.strategy = :truncation
   end
@@ -64,7 +100,7 @@ RSpec.configure do |config|
   config.after(:each) do
     # I found that sometimes, the database cleaner would start truncating tables
     # before the last test was finished.
-    sleep 0.5
+    sleep 0.25
     DatabaseCleaner.clean
   end
 

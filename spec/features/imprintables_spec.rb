@@ -16,6 +16,42 @@ feature 'Imprintables management', imprintable_spec: true do
     expect(current_path).to eq(imprintables_path)
   end
 
+  describe 'search', search_spec: true do
+    given!(:test_imprintable1) { create(:valid_imprintable, 
+      sizing_category: 'Girls', main_supplier: 'main supplier test') }
+    given!(:test_imprintable2) { create(:valid_imprintable, 
+      sizing_category: 'Girls', main_supplier: 'test main supplier') }
+    given!(:test_imprintable3) { create(:valid_imprintable, 
+      sizing_category: 'Girls', main_supplier: 'test main supplier') }
+    given!(:noshow_imprintable1) { create(:valid_imprintable, 
+      sizing_category: 'Adult Unisex', main_supplier: 'test main supplier') }
+    given!(:noshow_imprintable2) { create(:valid_imprintable, 
+      sizing_category: 'Girls', main_supplier: 'other supplier') }
+
+    scenario 'a user can search imprintables and see accurate results', solr: true do
+      visit imprintables_path
+      select 'Girls', from: 'filter_sizing_category'
+      fill_in 'imprintables_search', with: 'test'
+      click_button 'Search'
+      expect(page).to have_content test_imprintable1.name
+      expect(page).to have_content test_imprintable2.name
+      expect(page).to have_content test_imprintable3.name
+
+      expect(page).to_not have_content noshow_imprintable1.name
+      expect(page).to_not have_content noshow_imprintable2.name
+    end
+
+    scenario 'a user sees the values from their last search in the search box', solr: true do
+      visit imprintables_path
+      select 'Infant', from: 'filter_sizing_category'
+      fill_in 'imprintables_search', with: 'I should be there'
+      click_button 'Search'
+
+      expect(page).to have_content 'Infant'
+      expect(page).to have_selector '*[value="I should be there"]'
+    end
+  end
+
   scenario 'A user can create a new imprintable', js: true do
     visit imprintables_path
     click_link('Add an Imprintable')
