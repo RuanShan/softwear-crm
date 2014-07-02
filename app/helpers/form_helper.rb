@@ -40,7 +40,7 @@ module FormHelper
 
   # Gets a select box for the current user's saved queries on the given
   # model class.
-  def select_search_queries_on(model, options={})
+  def select_search_queries(model, options={})
     add_class options, 'form-control', 'search-query-select'
     options[:id] = "select_query_for_#{model.name.underscore}"
     select_options = content_tag(:option, "#{model.name.humanize} queries...", value: 'nil')
