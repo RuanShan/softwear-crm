@@ -71,7 +71,7 @@ feature 'Imprintables management', imprintable_spec: true do
     scenario 'A user can tag an imprintable' do
       visit imprintables_path
       find("tr#imprintable_#{imprintable.id} a[data-action='edit']").click
-      fill_in 'Tag List', with: 'cotton'
+      fill_in 'imprintable_tag_list', with: 'cotton'
       find_button('Update Imprintable').click
       expect(page).to have_selector '.modal-content-success', text: 'Imprintable was successfully updated.'
       expect(current_path).to eq(edit_imprintable_path imprintable.id)
@@ -81,7 +81,7 @@ feature 'Imprintables management', imprintable_spec: true do
     scenario 'A user can filter a list of imprintables by tag' do
       visit imprintables_path
       find("tr#imprintable_#{imprintable.id} a[data-action='edit']").click
-      fill_in 'Tag List', with: 'cotton'
+      fill_in 'imprintable_tag_list', with: 'cotton'
       find_button('Update Imprintable').click
       expect(page).to have_selector '.modal-content-success', text: 'Imprintable was successfully updated.'
       visit imprintables_path
