@@ -6,4 +6,7 @@ FactoryGirl.define do
       order { |o| o.association(:order) }
     end
   end
+  factory :blank_job, class: Job do
+  sequence(:name) { |s| "Test job #{s}" }
+  end
 end

@@ -34,15 +34,21 @@ CrmSoftwearcrmCom::Application.routes.draw do
     end
   end
   
-  resources :orders, shallow: true do
+  resources :orders do
     get 'timeline', to: 'timeline#show'
-    resources :payments
-    resources :jobs, only: [:create, :update, :destroy, :show] do
+    resources :payments, shallow: true
+    resources :artwork_requests
+    resources :jobs, only: [:create, :update, :destroy, :show], shallow: true do
       resources :line_items
       resources :imprints, only: [:create, :update, :destroy, :new]
     end
   end
   get '/line_item/select_options', to: 'line_items#select_options'
   delete '/line_items/*ids', to: 'line_items#destroy'
+
+  namespace 'search' do
+    resources :queries
+  end
+  get '/search', to: 'search/queries#search', as: :search
 
 end

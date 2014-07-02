@@ -10,6 +10,7 @@ class ImprintMethodsController < InheritedResources::Base
   def show
     super do |format|
       format.html { redirect_to edit_imprint_method_path params[:id] }
+      format.js { render layout: nil, locals: {imprint_method: ImprintMethod.find(params[:id]) } }
     end
   end
 

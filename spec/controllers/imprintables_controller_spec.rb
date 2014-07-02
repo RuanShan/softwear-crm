@@ -85,7 +85,7 @@ describe ImprintablesController, imprintable_spec: true do
   describe 'POST create' do
     context 'with valid input' do
       it 'creates a new imprintable' do
-        expect{post :create, imprintable: create(:valid_imprintable)}.to change(Imprintable, :count).by(1)
+        expect{post :create, order: create(:order_with_job), imprintable: create(:valid_imprintable)}.to change(Imprintable, :count).by(1)
         expect(imprintable.special_considerations).to eq('Special Consideration')
       end
     end

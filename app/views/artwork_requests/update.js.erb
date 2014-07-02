@@ -1,0 +1,13 @@
+<% if @artwork_request.valid? %>
+    $('#contentModal').modal('hide');
+    $('#artwork-request-<%= @artwork_request.id %>').replaceWith("<%= escape_javascript(render(partial: 'artwork_request', locals: {artwork_request: @artwork_request, order: @order})).html_safe %>");
+<% else %>
+    $('#contentModal .modal-body').html("<%= escape_javascript(render(partial: 'edit', locals: {artwork_request: @artwork_request, order: @order})).html_safe %>");
+    initializeSummernote();
+    initializeArtworkRequestDateTimePicker();
+    initializeJobsChosen();
+    $('.summernote').code('<%= (@artwork_request.description).html_safe %>');
+    summernoteArtworkRequest();
+    formatContentModal();
+    $('#errorsModal').modal('show');
+<% end %>

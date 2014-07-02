@@ -24,4 +24,8 @@ FactoryGirl.define do
       brand { |b| b.association(:valid_brand) }
     end
   end
+
+  factory :blank_style, class: Style do
+
+  end
 end

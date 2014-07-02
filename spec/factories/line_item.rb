@@ -14,4 +14,8 @@ FactoryGirl.define do
       imprintable_variant { |i| i.association :associated_imprintable_variant }
     end
   end
+
+  factory :blank_line_item, class: LineItem do
+
+  end
 end

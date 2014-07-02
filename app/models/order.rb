@@ -54,6 +54,10 @@ class Order < ActiveRecord::Base
 
   def total; subtotal + subtotal * tax; end
 
+  def salesperson
+    User.find(self.salesperson_id)
+  end
+
   def salesperson_name
     User.find(self.salesperson_id).full_name
   end
@@ -76,9 +80,26 @@ class Order < ActiveRecord::Base
     (self.payment_total / self.total)*100
   end
 
+  searchable do
+    text :name, :email, :firstname, :lastname, :company, :twitter, :terms, :delivery_method, :sales_status
+    # text :jobs do
+    #   jobs.map { |j| "#{j.name} #{j.description}" }
+    # end
+
+    [:firstname, :lastname, :email, :terms, :delivery_method, :sales_status, :company].each do |field|
+      string field
+    end
+
+    double :total
+    double :commission_amount
+
+    date :in_hand_by
+
+    reference :salesperson
+  end
+
 private
   def initialize_fields
     self.sales_status = 'Pending' if self.sales_status.nil? or self.sales_status.empty?
-    ## Additionally, grab the correct edit template
   end
 end

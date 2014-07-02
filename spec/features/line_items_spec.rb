@@ -72,6 +72,7 @@ feature 'Line Items management', line_item_spec: true, js: true do
     expect(page).to have_content 'Add'
 
     within('.line-item-form') do
+      sleep(1)
       choose 'Yes'
       wait_for_ajax
       select brand.name, from: 'Brand'
@@ -108,6 +109,7 @@ feature 'Line Items management', line_item_spec: true, js: true do
       expect(page).to have_content 'Add'
 
       within('.line-item-form') do
+        sleep(1)
         choose 'Yes'
         wait_for_ajax
         select brand.name, from: 'Brand'
@@ -136,6 +138,7 @@ feature 'Line Items management', line_item_spec: true, js: true do
     expect(page).to have_content 'Add'
 
     within('.line-item-form') do
+      sleep(1)
       choose 'Yes'
       wait_for_ajax
       select brand.name, from: 'Brand'

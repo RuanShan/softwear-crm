@@ -1,0 +1,40 @@
+<%= fields_for imprint_method, {}, builder: LancengFormBuilder  do |f| %>
+    <div class="form-group">
+      <div class="row">
+        <%= f.label :print_locations, class: 'col-sm-2 control-label' %>
+        <div class="col-sm-10">
+          <%
+             #todo: look into ternary syntax
+             #checked = ( !artwork_request.nil? and  artwork_request.ink_color_ids.include?(i.last) ? {checked: true} : {} )
+             if artwork_request.nil?
+               selected = {include_blank: true}
+             elsif !artwork_request.print_location_id.nil?
+               selected = {selected: artwork_request.print_location_id}
+             end
+          %>
+          <%= f.select :print_locations, imprint_method.print_locations.collect { |x| ["#{x.name}", x.id] }, selected, {name: "artwork_request[print_location_id]"} %>
+        </div>
+      </div>
+    </div>
+    <div class="form-group">
+      <div class="row">
+        <%= f.label :ink_colors, class: 'col-sm-2 control-label' %>
+        <div class="col-sm-10">
+          <% @inkColors = imprint_method.ink_colors.collect { |x| ["#{x.name}", x.id] } %>
+          <% @inkColors.each do |i| %>
+              <%
+                 #todo: look into ternary syntax
+                 #checked = ( !artwork_request.nil? and  artwork_request.ink_color_ids.include?(i.last) ? {checked: true} : {} )
+                 if artwork_request.nil?
+                   checked = false
+                 elsif artwork_request.ink_color_ids.include?(i.last)
+                   checked = {checked: true}
+                 end
+             %>
+              <%= check_box_tag "artwork_request[ink_color_ids][]", i.last, checked %>
+              <%= i.first %>
+          <% end %>
+        </div>
+      </div>
+    </div>
+<% end %>

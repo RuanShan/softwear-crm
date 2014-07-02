@@ -48,6 +48,8 @@ gem 'jbuilder', '~> 1.2'
 
 gem 'js-routes'
 
+gem 'sunspot_rails'
+
 group :doc do
   # bundle exec rake doc:rails generates the API under doc/api.
   gem 'sdoc', require: false
@@ -59,7 +61,12 @@ group :development do
   gem 'capistrano-rails'
   gem 'capistrano-bundler'
   gem 'better_errors', '>= 0.3.2'
+  gem 'progress_bar'
   gem 'binding_of_caller'
+end
+
+group :development, :test do
+  gem 'sunspot_solr'
 end
 
 group :test do
@@ -71,12 +78,16 @@ group :test do
   gem 'database_cleaner'
   gem 'selenium-webdriver'
   gem 'capybara-webkit'
+  gem 'sunspot_matchers'
 end
 
 gem 'inherited_resources'
 gem 'devise'
 gem 'figaro'
 gem 'paranoia', '~> 2.0'
+gem 'simple_form'
+gem 'jquery-ui-rails'
+gem 'paperclip', github: 'thoughtbot/paperclip'
 gem 'google_drive'
 gem 'kaminari'
 

@@ -1,4 +1,6 @@
 class Imprintable < ActiveRecord::Base
+  paginates_per 50
+
   acts_as_paranoid
   acts_as_taggable
 
@@ -23,6 +25,14 @@ class Imprintable < ActiveRecord::Base
   validates :supplier_link, format: {with: URI::regexp(%w(http https)), message: 'should be in format http://www.url.com/path'}, allow_blank: true
 
   default_scope { eager_load(:style, :brand).order('brands.name, styles.catalog_no').joins(:brand).readonly(false) }
+  searchable do
+    text :name, :special_considerations, :proofing_template_name, :main_supplier, :description
+    string :sizing_category
+    string :name # <- this can be removed; used to test stuff.
+    float :base_price
+    boolean :flashable
+    boolean :standard_offering
+  end
 
   def name
     "#{brand.name} - #{style.catalog_no} - #{style.name}"

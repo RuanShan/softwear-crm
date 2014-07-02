@@ -1,4 +1,5 @@
 class LancengFormBuilder < ActionView::Helpers::FormBuilder
+  include FormHelper
   def self.dummy_for(object)
     temp = Class.new do
       include ActionView::Helpers::FormHelper
@@ -14,19 +15,6 @@ class LancengFormBuilder < ActionView::Helpers::FormBuilder
   end
 
   # Adding form-control class to standard field functions
-  # def text_field(method, options={})
-  #   add_class options, 'form-control'
-  #   super
-  # end  
-  # alias_method :email_field, :text_field
-  # def password_field(method, options={})
-  #   add_class options, 'form-control'
-  #   super
-  # end
-  # def text_area(method, options={})
-  #   add_class options, 'form-control'
-  #   super
-  # end
   def select(method, choices, o={}, options={})
     add_class options, 'form-control'
     super method, choices, o, options
@@ -38,7 +26,7 @@ class LancengFormBuilder < ActionView::Helpers::FormBuilder
     define_method method_name do |*args|
       options = args.count == 2 ? args.last.merge({}) : {}
       add_class options, 'form-control'
-      options.merge!(style: 'width: 75px') if method_name == :number_field
+      add_class(options, 'number_field') if method_name == :number_field
       actual_args = [args.first, options]
       send("original_#{method_name}".to_sym, *actual_args)
     end
@@ -131,15 +119,6 @@ class LancengFormBuilder < ActionView::Helpers::FormBuilder
   end
 
 private
-  def add_class(options, *values)
-    options[:class] ||= ''
-    values.each do |v|
-      options[:class] << ' ' unless options[:class].empty?
-      options[:class] << v
-      options.merge!(@common_attrs) unless @common_attrs.nil?
-    end
-  end
-
   def proxy(method_name, *extras)
     @proxy_stack ||= []
     @proxy_stack << { func: method_name, args: extras }
