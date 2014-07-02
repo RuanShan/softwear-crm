@@ -40,7 +40,7 @@ $(document).ready ->
 # 
 # Calling setupContentModal is not neccessary if you are fine
 # with the default look of the contentModal. However, if you 
-# want to add classes to the modal's innerds, I recommend you 
+# want to add classes to the modal's innards, I recommend you 
 # make those adjustments within setupContentModal to avoid 
 # potential conflicts if the modal is already open.
 # 

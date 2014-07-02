@@ -21,9 +21,21 @@ gem 'coffee-rails', '~> 4.0.0'
 # Use jquery as the JavaScript library
 gem 'jquery-rails'
 
+# Used to beautify rails console output, type Hirb.enable after entering rails console to use
 gem 'hirb', '~> 0.7.1'
 
+# Makes it so save_and_open_page
 gem 'launchy', '~> 2.4.2'
+
+# For token inputs
+gem 'chosen-rails'
+
+# For the datetimepicker
+gem 'momentjs-rails', '~> 2.5.0'
+gem 'bootstrap3-datetimepicker-rails', '~> 3.0.0'
+
+# For tagging
+gem 'acts-as-taggable-on'
 
 # Turbolinks makes following links in your web application faster. Read more: https://github.com/rails/turbolinks
 #gem 'turbolinks'
@@ -32,6 +44,8 @@ gem 'launchy', '~> 2.4.2'
 gem 'jbuilder', '~> 1.2'
 
 gem 'js-routes'
+
+gem 'sunspot_rails'
 
 group :doc do
   # bundle exec rake doc:rails generates the API under doc/api.
@@ -44,6 +58,11 @@ group :development do
   gem 'capistrano-rails'
   gem 'capistrano-bundler'
   gem 'better_errors', '>= 0.3.2'
+  gem 'progress_bar'
+end
+
+group :development, :test do
+  gem 'sunspot_solr'
 end
 
 group :test do
@@ -55,12 +74,15 @@ group :test do
   gem 'database_cleaner'
   gem 'selenium-webdriver'
   gem 'capybara-webkit'
+  gem 'sunspot_matchers'
 end
 
 gem 'inherited_resources'
 gem 'devise'
 gem 'figaro'
 gem 'paranoia', '~> 2.0'
+gem 'google_drive'
+gem 'kaminari'
 
 
 # Use ActiveModel has_secure_password

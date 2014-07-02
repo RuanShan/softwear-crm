@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe 'stores/_form.html.erb' do
+describe 'stores/_form.html.erb', store_spec: true do
   before(:each){ render partial: 'stores/form', locals: { store: Store.new}}
 
   it 'has text_field for name and a submit button' do

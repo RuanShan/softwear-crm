@@ -21,6 +21,8 @@ CrmSoftwearcrmCom::Application.routes.draw do
     end
   end
 
+  get 'tags/:tag', to: 'imprintables#index', as: :tag
+
   resources :styles, :brands, :colors, :users
 
   get '/logout' => 'users#logout'
@@ -41,5 +43,10 @@ CrmSoftwearcrmCom::Application.routes.draw do
   end
   get '/line_item/select_options', to: 'line_items#select_options'
   delete '/line_items/*ids', to: 'line_items#destroy'
+
+  namespace 'search' do
+    resources :queries
+  end
+  get '/search', to: 'search/queries#search', as: :search
 
 end

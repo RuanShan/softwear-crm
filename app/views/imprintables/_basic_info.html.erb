@@ -3,23 +3,26 @@
     <dt>Material</dt>
     <dd><%= imprintable.material %></dd>
     <br />
-    <dt>Colors Offered (<%= Color.count %>)</dt>
-    <dd><%= table_entries(Color) %></dd>
+    <dt>Weight</dt>
+    <dd><%= imprintable.weight %></dd>
     <br />
-    <dt>Sizes Offered (<%= Size.count %>)</dt>
-    <dd><%= table_entries(Size) %></dd>
+    <dt>Colors Offered (<%= imprintable.colors.size %>)</dt>
+    <dd><%= table_entries(imprintable.colors) %></dd>
+    <br />
+    <dt>Sizes Offered (<%= imprintable.sizes.size %>)</dt>
+    <dd><%= table_entries(imprintable.sizes) %></dd>
     <br />
     <dt>Sample Locations</dt>
-    <dd>Ann Arbor, Ypsilanti</dd>
+    <dd><%= imprintable.sample_locations.map{ |sl| sl.name }.join(', ') %></dd>
     <br />
     <dt>Tags</dt>
-    <dd>Athletic, Fashionable, Fitted, Non-Preshrunk</dd>
+    <dd><%= imprintable.tag_list.join(', ') %></dd>
     <br />
     <dt>Description</dt>
     <dd><%= imprintable.description %></dd>
     <br />
     <dt>Coordinates</dt>
-    <dd>American Apparel 2102, American Apparel 2201</dd>
+    <dd><%= imprintable.coordinates.map{ |coordinate| coordinate.name }.join(', ') %></dd>
     <br />
   </dl>
 </div>

@@ -12,8 +12,20 @@ class OrdersController < InheritedResources::Base
   end
 
   def new
+    super do
+      @current_user = current_user
+      stores = Store.all
+      if stores.empty?
+        @empty = true
+      else
+        @empty = false
+      end
+    end
+  end
+
+  def create
+    params[:order][:in_hand_by] = Date.strptime(params[:order][:in_hand_by], '%m/%d/%Y %H:%M %p') if params[:order][:in_hand_by].length > 0
     super
-    @current_user = current_user
   end
 
   private
@@ -23,7 +35,7 @@ class OrdersController < InheritedResources::Base
       :email, :firstname, :lastname,
       :company, :twitter, :name, :po,
       :in_hand_by, :terms, :tax_exempt,
-      :tax_id_number, :is_redo, :redo_reason,
+      :tax_id_number, :redo_reason,
       :delivery_method, :phone_number,
       :sales_status, :commission_amount,
       :store_id, :salesperson_id

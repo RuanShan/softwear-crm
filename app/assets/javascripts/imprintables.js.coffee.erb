@@ -14,6 +14,23 @@ jQuery ->
       $('#imprintable_style_id').empty()
       $('#imprintable_style_id').parent().parent().hide()
 
+  if $('#sample_location_ids').length
+    stores = $('#sample_location_ids').data()['stores']
+    store_name_array = []
+    for store in stores
+      store_name_array.push(store[0])
+    $('#sample_location_ids').on('tokenfield:createtoken', (e) ->
+      for store in stores
+        if e.attrs.label == store[0]
+          e.attrs.value == store[1]
+    ).tokenfield({
+          autocomplete: {
+            source: store_name_array,
+            delay: 100
+          },
+          showAutocompleteOnFocus: true
+    })
+
   # these functions are modified from an example hosted publicly at
   # http://www.mredkj.com/tutorials/tableaddcolumn.html
   `function addColumn(tblId, size, size_id)
@@ -201,7 +218,7 @@ jQuery ->
 
         variants_to_add.push({size_id: size_id, color_id: color_id})
 
-    return {variants_to_add: variants_to_add, variants_to_remove: variants_to_remove}
+    return { variants_to_add: variants_to_add, variants_to_remove: variants_to_remove }
 
   populate_color_and_size_ids = ->
     color_ids = new Array
@@ -221,6 +238,14 @@ jQuery ->
   $(document).on('click', '.fa-minus', ->
     change_cells('fa fa-times', $(this))
   )
+
+  $('#imprintable_sample_location_ids').chosen()
+
+  $('#imprintable_coordinate_ids').chosen()
+
+  $('#imprintable_compatible_imprint_method_ids').chosen()
+
+  $('.table.table-hover').fixedHeader()
 
   get_id = ->
     url_array = document.URL.split('/')
@@ -243,5 +268,4 @@ jQuery ->
         ids_hash = populate_color_and_size_ids()
         id = get_id()
         pobj = { update: ids_hash, id: id }
-        $.post('/imprintables/update', pobj)
   )

@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe 'stores/_table.html.erb' do
+describe 'stores/_table.html.erb', store_spec: true do
 
   let!(:stores) do
     [create(:valid_store)]

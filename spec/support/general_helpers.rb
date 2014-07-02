@@ -1,8 +1,4 @@
 module GeneralHelpers
-  def with(thing)
-    yield thing
-  end
-
   def unhide_dashboard
     selector = 'button.button-menu-mobile.show-sidebar'
     return if all(selector).empty?
@@ -18,5 +14,26 @@ module GeneralHelpers
   	}
   	ActiveSupport::Notifications.subscribed counter_func, "sql.active_record", &block
   	count
+  end
+
+  RSpec::Matchers.define :inherit_from do |inherited|
+    match do |subject|
+      clazz = nil
+      parent_class = nil
+      if subject.respond_to? :ancestors
+        clazz = subject
+      else
+        clazz = subject.class
+      end
+      if inherited.is_a?(Symbol) || inherited.is_a?(String)
+        parent_class = Kernel.const_get(inherited)
+      else
+        parent_class = inherited
+      end
+      clazz.ancestors.include? parent_class
+    end
+    failure_message do |subject|
+      "The ancestors of #{subject} do not include #{inherited.inspect}"
+    end
   end
 end

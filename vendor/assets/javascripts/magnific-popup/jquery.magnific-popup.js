@@ -1924,7 +1924,9 @@ $.magnificPopup.registerModule(RETINA_NS, {
 	},
 	proto: {
 		initRetina: function() {
-			if(window.devicePixelRatio > 1) {
+			// if(window.devicePixelRatio > 1) {
+            // TODO: Need to debug this for production, doesn't properly resolve asset path in rails pipeline
+            if( false ) {
 
 				var st = mfp.st.retina,
 					ratio = st.ratio;

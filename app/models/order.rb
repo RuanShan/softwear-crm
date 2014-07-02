@@ -25,7 +25,6 @@ class Order < ActiveRecord::Base
       message: 'Invalid delivery method')
 
   validates_presence_of :tax_id_number, if: :tax_exempt?
-  validates_presence_of :redo_reason, if: :is_redo?
   validates :store, presence: true
   validates :salesperson_id, presence: true
 
@@ -33,7 +32,6 @@ class Order < ActiveRecord::Base
   belongs_to :store
   has_many :jobs
 
-  # non-deletable stuff
   acts_as_paranoid
 
   def line_items
@@ -52,13 +50,34 @@ class Order < ActiveRecord::Base
 
   def total; subtotal + subtotal * tax; end
 
+  def salesperson
+    User.find(self.salesperson_id)
+  end
+
   def salesperson_name
     User.find(self.salesperson_id).full_name
+  end
+
+  searchable do
+    text :name, :email, :firstname, :lastname, :company, :twitter, :terms, :delivery_method, :sales_status
+    # text :jobs do
+    #   jobs.map { |j| "#{j.name} #{j.description}" }
+    # end
+
+    [:firstname, :lastname, :email, :terms, :delivery_method, :sales_status, :company].each do |field|
+      string field
+    end
+
+    double :total
+    double :commission_amount
+
+    date :in_hand_by
+
+    reference :salesperson
   end
 
 private
   def initialize_fields
     self.sales_status = 'Pending' if self.sales_status.nil? or self.sales_status.empty?
-    ## Additionally, grab the correct edit template
   end
 end

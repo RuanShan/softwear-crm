@@ -16,13 +16,27 @@ class ImprintablesController < InheritedResources::Base
     end
   end
 
-  def show
+  def index
     super do
+      if params[:tag]
+        @imprintables = Imprintable.tagged_with(params[:tag])
+      else
+        @imprintables = Imprintable.all.page(params[:page])
+      end
+    end
+  end
+
+  def show
+    super do |format|
       @imprintable = Imprintable.find(params[:id])
       variants_hash = @imprintable.create_variants_hash
       @size_variants = variants_hash[:size_variants]
       @color_variants = variants_hash[:color_variants]
       @variants_array = variants_hash[:variants_array]
+
+      format.html
+      format.js
+      format.json { render json: @imprintable }
     end
   end
 
@@ -36,8 +50,10 @@ class ImprintablesController < InheritedResources::Base
   end
 
   def update_imprintable_variants
-    variants_to_add = params[:update][:variants_to_add]
-    variants_to_remove = params[:update][:variants_to_remove]
+    if params[:update]
+      variants_to_add = params[:update][:variants_to_add]
+      variants_to_remove = params[:update][:variants_to_remove]
+    end
     if !variants_to_add.nil?
       variants_to_add.each_value do |hash|
         size_id = hash['size_id']
@@ -57,13 +73,12 @@ class ImprintablesController < InheritedResources::Base
 
   def permitted_params
     params.permit(imprintable:
-                    [:flashable,
-                     :polyester,
-                     :special_considerations,
-                     :material,
-                     :style_id,
-                     :color_check,
-                     :size_check,
-                     :sizing_category])
+                    [:flashable, :polyester, :special_considerations, :material,
+                     :style_id, :color_check, :size_check, :weight, :supplier_link, :main_supplier,
+                     :base_price, :xxl_price, :xxxl_price, :xxxxl_price, :xxxxxl_price, :xxxxxxl_price,
+                     { :sample_location_ids => [] },
+                     { :coordinate_ids => [] },
+                     { :compatible_imprint_method_ids => [] },
+                     :tag_list, :standard_offering, :proofing_template_name, :sizing_category])
   end
 end

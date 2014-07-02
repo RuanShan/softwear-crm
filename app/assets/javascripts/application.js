@@ -21,5 +21,8 @@
 //= require icheck/icheck
 //= require wizard/jquery.easyWizard
 //= require jquery.maskedinput.min.js
+//= require chosen-jquery
+//= require moment
+//= require bootstrap-datetimepicker
 //= require_tree .
 //= require js-routes

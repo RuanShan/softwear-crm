@@ -1,8 +1,9 @@
 class StylesController < InheritedResources::Base
 
   def update
-    super do |format|
-      format.html { redirect_to styles_path }
+    super do |success, failure|
+      success.html { redirect_to styles_path }
+      failure.html { render action: :edit }
     end
   end
 
@@ -15,6 +16,6 @@ class StylesController < InheritedResources::Base
   private
 
   def permitted_params
-    params.permit(style: [:name, :catalog_no, :description, :sku, :brand_id])
+    params.permit(style: [:name, :catalog_no, :description, :sku, :brand_id, :retail])
   end
 end

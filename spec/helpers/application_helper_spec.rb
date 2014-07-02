@@ -27,12 +27,16 @@ describe ApplicationHelper, application_helper_spec: true do
     end
   end
 
-  describe 'human boolean' do
+  describe '#human_boolean' do
     it 'returns Yes when given a true value' do
       expect(human_boolean(true)).to eq('Yes')
     end
     it 'returns No when given a false value' do
       expect(human_boolean(false)).to eq('No')
     end
+  end
+
+  describe '#nav_helper' do
+
   end
 end

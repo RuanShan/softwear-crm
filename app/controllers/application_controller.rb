@@ -37,4 +37,8 @@ protected
     self.formats = old_formats
     r
   end
+
+  def last_search
+    session[:last_search]
+  end
 end

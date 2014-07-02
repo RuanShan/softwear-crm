@@ -35,6 +35,12 @@ class Job < ActiveRecord::Base
     LineItem.non_imprintable.where job_id: id
   end
 
+  searchable do
+    text :name, :description
+    string :name
+    reference :order
+  end
+
 private
   def assure_name_and_description
     if self.name.nil?
