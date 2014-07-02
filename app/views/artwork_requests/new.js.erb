@@ -1,12 +1,16 @@
-$('#contentModal .modal-title').html('New Artwork Request');
-$('#contentModal .modal-body').html("<%= escape_javascript(render(partial: 'new', locals: {artwork_request: @artwork_request, order: @order})).html_safe %>");
+showContentModal({
+    title: 'New Artwork Request',
+    body: $("<%= escape_javascript(render(partial: 'new', locals: {artwork_request: @artwork_request, order: @order})).html_safe %>")
+})
+//$('#contentModal .modal-title').html('New Artwork Request');
+//$('#contentModal .modal-body').html("<%= escape_javascript(render(partial: 'new', locals: {artwork_request: @artwork_request, order: @order})).html_safe %>");
 initializeSummernote();
 initializeArtworkRequestDateTimePicker();
 initializeJobsChosen();
 summernoteArtworkRequest();
 setNewArtworkRequestSelect();
 formatContentModal();
-$('#contentModal').modal('show');
+//$('#contentModal').modal('show');
 
 
 
