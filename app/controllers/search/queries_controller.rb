@@ -41,7 +41,7 @@ module Search
     def search
       if query_id
         begin
-          @query = Query.find(query_id)
+          @query = Query.includes(query_models: [:filter, :query_fields]).find(query_id)
           session[:last_search] = query_id
           @search = @query.search page: params[:page]
         rescue ActiveRecord::RecordNotFound
