@@ -105,6 +105,7 @@ $(document).ready ->
 
   setupContentModal ($contentModal) ->
     $contentModal.find('.modal-content').addClass 'modal-content-error'
+    $contentModal.find('.modal-body').addClass 'centered'
   showContentModal
     title: $("<strong>#{title}</strong>")
     body: body
@@ -122,6 +123,7 @@ $(document).ready ->
 
   setupContentModal ($contentModal) ->
     $contentModal.find('.modal-content').addClass 'modal-content-success'
+    $contentModal.find('.modal-body').addClass 'centered'
   showContentModal
     title: title
     body: body
@@ -158,6 +160,7 @@ $(document).ready ->
 
   setupContentModal ($contentModal) ->
     $contentModal.find('.modal-dialog').addClass 'modal-sm'
+    $contentModal.find('.modal-body').addClass 'centered'
   showContentModal
     title: 'Confirm'
     body: question

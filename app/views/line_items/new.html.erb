@@ -9,7 +9,7 @@
           Imprintable?
           <%= radio_button_tag :is_imprintable, 'yes', 'data-id'=>job.id %><%= label_tag :is_imprintable_yes, 'Yes' %>
           <%= radio_button_tag :is_imprintable, 'no', 'data-id'=>job.id %><%= label_tag :is_imprintable_no, 'No' %>
-          <div id="li-standard-form">
+          <div id="li-standard-form" style='display: none;'>
             <%= render partial: 'standard_form', locals: {job: job, line_item: @line_item} %>
           </div>
           <div id="li-imprintable-form" style='display: none;'>

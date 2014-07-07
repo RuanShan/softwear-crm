@@ -15,6 +15,10 @@ class Style < ActiveRecord::Base
     Brand.find(self.brand_id) if self.brand_id
   end
 
+  def name_and_catalog_no
+    "#{catalog_no} - #{name}"
+  end
+
   default_scope { eager_load(:brand).joins(:brand).order('brands.name, styles.catalog_no').readonly(false) }
 
 end

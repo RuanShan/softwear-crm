@@ -78,7 +78,7 @@ initializeLineItemModal = (lineItemModal) ->
         url: '/line_item/select_options'
         data: data
       a.fail (jqXHR, textStatus) ->
-        alert('Internal server error. Sorry!')
+        errorModal('Internal server error (that or the internet is down). Sorry!')
       a.done(done) unless done is null
       a
 
@@ -130,6 +130,7 @@ initializeLineItemModal = (lineItemModal) ->
 
   handleImprintableForm $('#li-imprintable-form')
   lineItemModal.modal 'show'
+  lineItemModal.find('#is_imprintable_no').prop('checked', false)
 
 loadLineItemView = (lineItemId, url) ->
   $row = $("#line-item-#{lineItemId}")

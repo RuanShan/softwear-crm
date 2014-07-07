@@ -1,30 +1,37 @@
+
 <div class="col-sm-4 imprint-entry" data-id="<%= local_assigns[:imprint_id] || -1 %>">
   <div class="box-info imprint-container">
-    <div class="print-location-container">
-      <%= render partial: 'imprint_methods/print_locations_select', locals: {
-        print_locations: (local_assigns[:imprint_method] ? 
-            ( local_assigns[:imprint_id] ? 
-                using(Imprint.find(imprint_id).print_location) do |pl|
-                  [pl]+imprint_method.print_locations.where.not(id: pl.id)
-                 end :
-                imprint_method.print_locations
-            ) : 
-          ImprintMethod.first.print_locations)
-      } %>
-    </div>
+  <% if ImprintMethod.count == 0 %>
+    <p>
+      Looks like there aren't any Imprint Methods registered. 
+      <%= link_to "Click here", new_imprint_method_path %> to add one.
+    </p>
+  <% else %>
+      <div class="print-location-container">
+        <%= render partial: 'imprint_methods/print_locations_select', locals: {
+          print_locations: (local_assigns[:imprint_method] ? 
+              ( local_assigns[:imprint_id] ? 
+                  using(Imprint.find(imprint_id).print_location) do |pl|
+                    [pl]+imprint_method.print_locations.where.not(id: pl.id)
+                   end :
+                  imprint_method.print_locations
+              ) : 
+            ImprintMethod.first.print_locations)
+        } %>
+      </div>
 
-    <div class="form-group">
-      <%= label_tag :imprint_method %>
-      <%= select_tag :imprint_method, options_from_collection_for_select(
-        (local_assigns[:imprint_method] ? [imprint_method] + ImprintMethod.where.not(id: imprint_method.id) : ImprintMethod.all), 
-        :id, :canonical_name
-      ), class: 'form-control', onchange: "imprintMethodSelected($(this))" %>
-    </div>
+      <div class="form-group">
+        <%= label_tag :imprint_method %>
+        <%= select_tag :imprint_method, options_from_collection_for_select(
+          (local_assigns[:imprint_method] ? [imprint_method] + ImprintMethod.where.not(id: imprint_method.id) : ImprintMethod.all), 
+          :id, :canonical_name
+        ), class: 'form-control', onchange: "imprintMethodSelected($(this))" %>
+      </div>
 
-    <div class="full text-right">
-      <span class="line-item-button" onclick="deleteImprint($(this), <%=job.id%>)"><i class="fa fa-2x danger fa-times-circle"></i></span>
-    </div>
+      <div class="full text-right">
+        <span class="line-item-button" onclick="deleteImprint($(this), <%=job.id%>)"><i class="fa fa-2x danger fa-times-circle"></i></span>
+      </div>
 
+    <% end %>
   </div>
-
 </div>

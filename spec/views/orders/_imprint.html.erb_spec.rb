@@ -12,6 +12,18 @@ describe 'orders/_imprint.html.erb', order_spec: true, imprint_spec: true do
     job_id: job.id, print_location_id: print_location.id
   ) }
 
+  context 'when there are no imprint methods' do
+    it 'should inform the user of this' do
+      render partial: 'orders/imprint'
+      expect(rendered).to have_content "Looks like there aren't any Imprint Methods registered."
+    end
+
+    it 'should provide a link to create one' do
+      render partial: 'orders/imprint'
+      expect(rendered).to have_css "a[href='#{new_imprint_method_path}']"
+    end
+  end
+
   context 'with an imprint method' do
     let!(:imprint_method2) { create(:valid_imprint_method_with_color_and_location, name: 'imp2') }
     let!(:imprint_method3) { create(:valid_imprint_method_with_color_and_location, name: 'imp3') }

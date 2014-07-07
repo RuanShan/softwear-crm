@@ -111,4 +111,4 @@
         if jqXHR.statusCode is 404
           killContainer()
         else
-          alert "Internal server error; can't make changes, sorry!"
+          errorModal "Either the internet is down, or there was an error in the server."
