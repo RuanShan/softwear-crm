@@ -31,6 +31,10 @@ jQuery ->
           showAutocompleteOnFocus: true
     })
 
+  $(document).on('click', '.add_fields', ->
+    $('.chosen-select').chosen()
+  )
+
   # these functions are modified from an example hosted publicly at
   # http://www.mredkj.com/tutorials/tableaddcolumn.html
   `function addColumn(tblId, size, size_id)
