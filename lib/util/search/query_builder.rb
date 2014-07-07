@@ -135,6 +135,18 @@ module Search
       end
     end
 
+    class PendingPhrase
+      def initialize(&block)
+        instance_eval(&block)
+      end
+
+      def fields(*args)
+        @fields = args
+      end
+
+      def grab_fields; @fields; end
+    end
+
     # The group is assumed to be within the model
     def initialize(query_model, group_filter)
       @model = query_model
@@ -190,6 +202,20 @@ module Search
     def fulltext(text, &block)
       @model.default_fulltext = text
       instance_eval(&block) if block_given?
+    end
+    # Keywords is used separately from fulltext to associate with 
+    # phrase filters.
+    def keywords(text, &block)
+      phrase = PendingPhrase.new(&block)
+      case phrase.grab_fields.count
+      when 0
+        raise SearchException.new "Phrase filters must specify a field"
+      when 1
+        filter = Filter.new(PhraseFilter, field: phrase.grab_fields.first, value: PhraseFilter.assure_value(text))
+        @group.filters << filter
+      else
+        raise SearchException.new "Phrase filters can currently only handle 1 field"
+      end
     end
 
     def method_missing(name, *args, &block)

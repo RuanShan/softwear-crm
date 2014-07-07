@@ -73,7 +73,7 @@ class SearchFormBuilder
         if query_model.nil?
           ''
         else
-          default_fulltext
+          query_model.default_fulltext
         end
       end
     end

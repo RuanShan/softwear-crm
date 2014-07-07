@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140630191253) do
+ActiveRecord::Schema.define(version: 20140707194755) do
 
   create_table "artwork_requests", force: true do |t|
     t.text     "description"
@@ -91,7 +91,7 @@ ActiveRecord::Schema.define(version: 20140630191253) do
   add_index "imprint_methods_imprintables", ["imprintable_id", "imprint_method_id"], name: "imprint_method_imprintables_index", using: :btree
 
   create_table "imprintable_categories", force: true do |t|
-    t.string   "category"
+    t.string   "name"
     t.integer  "imprintable_id"
     t.datetime "deleted_at"
     t.datetime "created_at"
@@ -280,6 +280,12 @@ ActiveRecord::Schema.define(version: 20140630191253) do
     t.boolean "negate"
     t.decimal "value",                precision: 10, scale: 2
     t.string  "comparator", limit: 1
+  end
+
+  create_table "search_phrase_filters", force: true do |t|
+    t.string  "field"
+    t.boolean "negate"
+    t.string  "value"
   end
 
   create_table "search_queries", force: true do |t|

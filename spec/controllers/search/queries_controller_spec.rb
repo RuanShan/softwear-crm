@@ -29,6 +29,14 @@ describe Search::QueriesController, search_spec: true do
     }}}
   end
 
+  let!(:test_params_with_phrase_filter) do
+    {search: {
+      order: {
+        '1' => { jobs: 'Whoa! This would also include a description.' },
+        fulltext: 'yeah'
+    }}}
+  end
+
   let(:test_params_with_nil) do
     {search: {
       order: {
@@ -108,26 +116,6 @@ describe Search::QueriesController, search_spec: true do
         expect(Sunspot.session).to_not have_search_params(:with, :lastname, 'nil')
       end
 
-      it 'applies booleans properly' do
-        get :search, test_params_with_boolean
-        expect(response).to be_ok
-
-        expect(assigns[:search].first).to be_a Sunspot::Search::StandardSearch
-
-        expect(Sunspot.session).to be_a_search_for Imprintable
-        expect(Sunspot.session).to have_search_params(:with, :standard_offering, false)
-      end
-
-      it 'applies references properly' do
-        get :search, test_params_with_reference
-        expect(response).to be_ok
-
-        expect(assigns[:search].first).to be_a Sunspot::Search::StandardSearch
-
-        expect(Sunspot.session).to be_a_search_for Order
-        expect(Sunspot.session).to have_search_params(:with, :salesperson, valid_user)
-      end
-
       context 'when params contains search info' do
         it 'searches with the given filter info' do
           get :search, test_params
@@ -154,6 +142,26 @@ describe Search::QueriesController, search_spec: true do
 
           expect(searches.first).to have_search_params(:fulltext, 'test')
           expect(searches.last).to have_search_params(:fulltext, 'test')
+        end
+
+        it 'applies booleans properly' do
+          get :search, test_params_with_boolean
+          expect(response).to be_ok
+
+          expect(assigns[:search].first).to be_a Sunspot::Search::StandardSearch
+
+          expect(Sunspot.session).to be_a_search_for Imprintable
+          expect(Sunspot.session).to have_search_params(:with, :standard_offering, false)
+        end
+
+        it 'applies references properly' do
+          get :search, test_params_with_reference
+          expect(response).to be_ok
+
+          expect(assigns[:search].first).to be_a Sunspot::Search::StandardSearch
+
+          expect(Sunspot.session).to be_a_search_for Order
+          expect(Sunspot.session).to have_search_params(:with, :salesperson, valid_user)
         end
 
         context 'and metadata', metadata: true do

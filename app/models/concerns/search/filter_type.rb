@@ -30,7 +30,7 @@ module Search
     # Default apply function. Works for simple stuff
     # like boolean and string. Override for more 
     # complex behavior, like number.
-    def apply(s)
+    def apply(s, base=nil)
       s.send(with_func, field, value)
     end
 
@@ -39,7 +39,7 @@ module Search
     end
 
     def self.of(field)
-      raise "Field must be a Search::Field" unless field.is_a? Field
+      raise "Field must be a Search::Field. Got #{field.class.name}." unless field.is_a? Field
       FilterTypes.each do |type|
         return type unless (field.type_names & type.search_types).empty?
       end
