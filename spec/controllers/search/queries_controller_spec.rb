@@ -29,7 +29,7 @@ describe Search::QueriesController, search_spec: true do
     }}}
   end
 
-  let!(:test_params_with_model_level_fulltext) do
+  let(:test_params_with_model_level_fulltext) do
     {search: {
       fulltext: 'test',
       order: {
@@ -78,7 +78,7 @@ describe Search::QueriesController, search_spec: true do
         end
 
         it 'searches with that query' do
-          get :search, query_id: query.id
+          get :search, id: query.id
           expect(response).to be_ok
 
           expect(assigns[:search].first).to be_a Sunspot::Search::StandardSearch
@@ -188,33 +188,41 @@ describe Search::QueriesController, search_spec: true do
 
   context 'PUT' do
     describe '#update', :update do
-      it 'updates the given query with the given filter info' do
+      it 'updates the given query with the given filter info, name and user' do
         job_model.filter = create(:filter_group)
         job_model.filter.filters << create(:string_filter, field: 'name')
         query.save
 
         expect(Search::QueryModel.count).to eq 1
 
-        put :update, {id: query.id}.merge(test_params)
+        put :update, test_params.merge(id: query.id, query: {name: 'new name'})
         expect(response).to be_ok
 
         expect(assigns[:query]).to eq query
         expect(Search::QueryModel.count).to eq 1
         expect(query.query_models.first.filter.filters.count).to eq 2
+        expect(assigns[:query].name).to eq 'new name'
       end
     end
   end
 
   context 'POST' do
-    describe '#create' do
-      it 'creates a new query with the given filter info' do
-        post :create, test_params
+    describe '#create', :create do
+      it 'creates a new query with the given filter info for the given user' do
+        post :create, test_params.merge(query: {user_id: valid_user.id, name: 'test q'})
         expect(response).to be_ok
 
         expect(assigns[:query]).to be_a Search::Query
         expect(assigns[:query].query_models.first.name).to eq 'Order'
-
         expect(assigns[:query].query_models.first.filter.filters.first.field).to eq 'lastname'
+        expect(assigns[:query].name).to eq 'test q'
+
+        expect(valid_user.search_queries).to include assigns[:query]
+      end
+
+      it 'redirects to params[:target_path] if present', wip: true do
+        post :create, test_params.merge(target_path: '/')
+        expect(response).to redirect_to '/'
       end
     end
   end

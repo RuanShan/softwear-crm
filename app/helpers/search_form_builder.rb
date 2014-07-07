@@ -16,15 +16,17 @@ class SearchFormBuilder
   end
 
   # Just pass <metadata option>: true to the options of any field method, and it will be applied
+  # (boolean is automatically applied for yes/no and checkbox)
   METADATA_OPTIONS = [:negate, :greater_than, :less_than, :boolean]
 
   YES_OR_NO_CHOICES = [YesOrNo.new('Yes', 'true'), YesOrNo.new('No', 'false')]
 
-  def initialize(model, query, template, last_search=nil)
+  def initialize(model, query, template, current_user=nil, last_search=nil)
     @model = model
-    @query = query || Search::Query.new
+    @query = query 
     @template = template
     @last_search = last_search
+    @current_user = current_user
 
     @filter_group_stack = [:all] # Not currently actually using this.
     @field_count = 0
@@ -63,8 +65,12 @@ class SearchFormBuilder
     initial_value = if query_model
       query_model.default_fulltext
     elsif @last_search
-      (@last_search[model_name] && @last_search[model_name][:fulltext]) || 
-        @last_search[:fulltext]
+      if @last_search.is_a? Hash
+        (@last_search[model_name] && @last_search[model_name][:fulltext]) || 
+          @last_search[:fulltext]
+      else
+        Search::Query.find(@last_search.to_i).query_models.where(name: @model.name).first.default_fulltext
+      end
     end
 
     is_textarea = options.delete :textarea
@@ -82,6 +88,10 @@ class SearchFormBuilder
 
     select_options = @template.content_tag(:option, "#{field_name.to_s.humanize}...", value: 'nil')
     
+    puts '========'
+    puts "Select field for #{field_name}"
+    puts "Initial value: #{initial_value.to_s}"
+
     choices.each do |item|
       name = if item.respond_to? display_method
         item.send(display_method)
@@ -94,10 +104,14 @@ class SearchFormBuilder
         item.to_s
       end
 
+      puts "Option: #{value.to_s}"
+
       select_options.send :original_concat, @template.content_tag(:option, 
         name, value: value,
         selected: value.to_s == initial_value.to_s ? 'selected' : nil)
     end
+
+    puts '========'
 
     @field_count += 1
     process_options(field_name, options) +
@@ -159,7 +173,17 @@ class SearchFormBuilder
 
   def submit(options={})
     add_class options, 'submit', 'btn', 'btn-primary'
-    @template.submit_tag(options[:value] || 'Search', options)
+    @template.submit_tag(options[:value] || (@query ? 'Save' : 'Search'), options)
+  end
+
+  # This button will save the query instead of searching it
+  def save(options={})
+    add_class options, 'submit', 'btn', 'btn-primary', 'btn-search-save'
+
+    @template.hidden_field_tag('query[name]', '', disabled: true, class: 'query_name') + 
+      @template.hidden_field_tag('query[user_id]', @current_user.id, disabled: true, class: 'user_id') +
+      @template.hidden_field_tag('target_path', '', disabled: true, class: 'target_path') +
+      @template.button_tag(options[:value] || 'Save', options.merge(type: 'button'))
   end
 
 private
@@ -180,17 +204,24 @@ private
   end
 
   def initial_value_for(field_name)
-    existing_filter = @query.filter_for @model, field_name
-    if existing_filter
-      return existing_filter.value
-    else
-      if @last_search && @last_search[model_name]
-        traverse @last_search[model_name] do |k,v|
-          if k.to_s == field_name.to_s
-            if v == 'nil' then return nil else return v end
+    if @query.nil?
+      if @last_search
+        # If it's a number, it was a query
+        if (@last_search.is_a?(String) && @last_search =~ /\d+/) || @last_search.is_a?(Fixnum)
+          existing_filter = Search::Query.find(@last_search.to_i).filter_for @model, field_name
+          return existing_filter.value unless existing_filter.nil?
+        # Otherwise it must be a hash with search params
+        elsif @last_search[model_name]
+          traverse @last_search[model_name] do |k,v|
+            if k.to_s == field_name.to_s
+              if v == 'nil' then return nil else return v end
+            end
           end
         end
       end
+    else
+      existing_filter = @query.filter_for @model, field_name
+      return existing_filter.value unless existing_filter.nil?
     end
     nil
   end
@@ -200,7 +231,7 @@ private
   end
 
   def query_model
-    if @query.id.nil?
+    if @query.nil?
       nil
     else
       @query.query_models.where(name: @model.name).first

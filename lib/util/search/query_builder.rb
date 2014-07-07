@@ -6,13 +6,13 @@ module Search
   # Most basic filtering stuff works. Check the QueryBuilder spec for examples.
   class QueryBuilder
     class << self
-      def build(query=nil, &block)
+      def build(query_or_name=nil, &block)
         if block_given?
-          builder_base = Base.new(query)
+          builder_base = Base.new(query_or_name)
           builder_base.instance_eval(&block)
           builder_base
         else
-          Base.new(nil)
+          Base.new(query_or_name)
         end
       end
 
@@ -50,13 +50,16 @@ module Search
 
     class Base
       attr_accessor :query
-      def initialize(query)
-        @query = if query
-          query.query_models.each do |qm|
-            qm.destroy
+      def initialize(query_or_name)
+        @query = if query_or_name
+          case query_or_name
+          when Search::Query
+            query_or_name.query_models.each(&:destroy)
+            query_or_name.query_models.clear
+            query_or_name
+          when String
+            Query.new name: query_or_name
           end
-          query.query_models.clear
-          query
         else
           Query.new
         end
@@ -76,7 +79,7 @@ module Search
             query_model = QueryModel.new(name: model_name)
 
             unless query_model.save
-              raise "Error saving query model!"
+              raise SearchException.new "Error saving query model!"
             end
 
             # If we have a block, make a builder and have it apply
@@ -90,7 +93,7 @@ module Search
 
               query_model.filter = filter
               unless query_model.save
-                raise "Error saving query model!"
+                raise SearchException.new "Error saving query model!"
               end
 
               builder = QueryBuilder.new(query_model, filter)
@@ -101,7 +104,7 @@ module Search
             @query.query_models << query_model
           end
           unless @query.save
-            raise "Couldn't save the query! #{@query.errors.messages.inspect}"
+            raise SearchException.new "Couldn't save the query! #{@query.errors.full_messages.join(', ')}"
           end
         end
       end
@@ -109,7 +112,7 @@ module Search
 
     class PendingFilter
       def initialize(filter_group, negate, field)
-        raise "Field must be a Search::Field" unless field.is_a? Field
+        raise SearchException.new "Field must be a Search::Field" unless field.is_a? Field
         @group = filter_group
         @negate = negate
         @field = field
@@ -120,7 +123,7 @@ module Search
           comp = ['>', '<'][i]
           type = FilterType.of @field
           unless type.column_names.include? 'comparator'
-            raise "Must be comparable filter type in order to call #{name}."
+            raise SearchException.new "Must be comparable filter type in order to call #{name}."
           end
           @group.filters << Filter.new(type, field: @field.name, 
             value: value, comparator: comp, negate: @negate)
@@ -128,7 +131,7 @@ module Search
       end
 
       def method_missing(name, *args, &block)
-        raise "`#{name}' is an unsupported modifier"
+        raise SearchException.new "`#{name}' is an unsupported modifier"
       end
     end
 
@@ -155,7 +158,7 @@ module Search
         negate = name == :without
         field = field_of field_name
         if field.nil?
-          raise "#{@model.name} has no field called #{field_name}."
+          raise SearchException.new "#{@model.name} has no field called #{field_name}."
         end
 
         case args.count
@@ -190,7 +193,7 @@ module Search
     end
 
     def method_missing(name, *args, &block)
-      raise "`#{name}' is unsupported by QueryBuilder"
+      raise SearchException.new "`#{name}' is unsupported by QueryBuilder"
     end
 
     private

@@ -8,7 +8,7 @@ feature 'Artwork Request Features', js: true, artwork_request_spec: true do
   end
   given!(:artwork_request) { create(:valid_artwork_request)}
 
-  scenario 'A user can add an artwork request', wip: true, js: true, pending: 'Unclear how to select from chosen and check checkbox' do
+  scenario 'A user can add an artwork request', js: true, pending: 'Unclear how to select from chosen and check checkbox' do
     # visit '/orders/1/edit#artwork'
     # page.find('#new_artwork_request').click
     # page.find("select[name='artwork_request[job_ids][]']")
