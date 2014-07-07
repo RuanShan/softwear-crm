@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140630191253) do
+ActiveRecord::Schema.define(version: 20140627190924) do
 
   create_table "artwork_requests", force: true do |t|
     t.text     "description"

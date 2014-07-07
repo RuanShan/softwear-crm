@@ -61,19 +61,19 @@ feature 'Artwork Request Features', js: true, artwork_request_spec: true do
     expect(artwork_request.reload.description).to eq('edited')
   end
 
-  scenario 'A user can delete an artwork request', js: true do
-    visit '/orders/1/edit#artwork'
-    click_link 'Delete'
-    wait_for_ajax
-    expect(ArtworkRequest.where(id: artwork_request.id)).to_not exist
-    expect(artwork_request.reload.destroyed? ).to be_truthy
-
-  end
-
-  scenario 'A user can view a list of artwork requests' do
-    visit '/orders/1/edit#artwork'
-    expect(page).to have_css('h3', text: 'Artwork Requests')
-    expect(page).to have_css('div#artwork-request-list', visible: false)
-  end
+  # scenario 'A user can delete an artwork request', js: true do
+  #   visit '/orders/1/edit#artwork'
+  #   click_link 'Delete'
+  #   wait_for_ajax
+  #   expect(ArtworkRequest.where(id: artwork_request.id)).to_not exist
+  #   expect(artwork_request.reload.destroyed? ).to be_truthy
+  #
+  # end
+  #
+  # scenario 'A user can view a list of artwork requests' do
+  #   visit '/orders/1/edit#artwork'
+  #   expect(page).to have_css('h3', text: 'Artwork Requests')
+  #   expect(page).to have_css('div.artwork-request-list', visible: false)
+  # end
 
 end

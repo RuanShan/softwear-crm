@@ -13,7 +13,7 @@ describe 'artwork_requests/_list.html.erb', artwork_request_spec: true do
   end
 
   it 'has a div to contain all artwork_requests' do
-    expect(rendered).to have_selector("div#artwork-request-list")
+    expect(rendered).to have_selector("div.artwork-request-list")
   end
 
   it 'has a button to add artwork requests' do

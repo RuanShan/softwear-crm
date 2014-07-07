@@ -15,6 +15,7 @@ describe 'artwork_requests/_form.html.erb', artwork_request_spec: true do
       expect(rendered).to have_selector("input#artwork_request_deadline")
       expect(rendered).to have_selector("select#artwork_request_artist_id")
       expect(rendered).to have_selector("input#artwork_request_description")
+      expect(rendered).to have_selector("i[class='fa fa-plus artwork-assets']")
     end
   end
 end

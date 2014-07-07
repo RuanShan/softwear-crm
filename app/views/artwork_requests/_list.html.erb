@@ -2,7 +2,7 @@
   <div class="row">
     <div class="col-sm-12">
       <h3><strong>Artwork</strong> Requests</h3>
-      <div id="artwork-request-list" ></div>
+      <div class="artwork-request-list" ></div>
       <% ArtworkRequest.all.each do |ar| %>
           <%= render partial: 'artwork_requests/artwork_request', locals: {artwork_request: ar, order: order} %>
       <%end%>

@@ -4,6 +4,17 @@ $(window).load ->
   return
 
 $(document).ready ->
+  $(document).on 'click', '.remove_fields', (event) ->
+    $(this).prev('input[type=hidden]').val('1')
+    $(this).closest('.removeable').hide()
+    event.preventDefault()
+
+  $(document).on 'click', '.add_fields', (event) ->
+    time = new Date().getTime()
+    regexp = new RegExp($(this).data('id'), 'g')
+    $(this).before($(this).data('fields').replace(regexp, time))
+    event.preventDefault()
+
   $('.format-phone').mask("999-999-9999")
   return
 

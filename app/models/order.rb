@@ -31,6 +31,7 @@ class Order < ActiveRecord::Base
   belongs_to :user, :foreign_key => :salesperson_id
   belongs_to :store
   has_many :jobs
+  has_many :artwork_requests, through: :jobs
   has_many :payments
 
   accepts_nested_attributes_for :payments
