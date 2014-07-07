@@ -10,7 +10,8 @@ feature 'Imprints Management', imprint_spec: true, js: true, imprint_features: t
   given!(:order) { create :order_with_job }
   given(:job) { order.jobs.first }
   
-  -> (t,&b){b.call(t)}.call([['Digital', 'Screen', 'Embroidery'], 
+  -> (t,&b){b.call(t)}.call(
+       [['Digital', 'Screen', 'Embroidery'], 
         ['Front',   'Lower',  'Wherever']]) do |name|
     3.times do |n|
       let!("imprint_method#{n+1}") { create(:valid_imprint_method, 
