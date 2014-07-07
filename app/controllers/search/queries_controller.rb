@@ -86,7 +86,7 @@ module Search
       default_fulltext = search['fulltext']
 
       # Turn hash search data into function calls
-      process_attrs = -> (attrs) do
+      process_attrs = -> (attrs, model) do
         Proc.new do
           applied_fulltext = false
           attrs.each do |num, attr|
@@ -114,21 +114,21 @@ module Search
                   field_value = value
                 end
               end
-              # If the value is nil, it means we don't even want to filter on it.
-              next if field_value == 'nil' || (!group_attrs && field_value.nil?)
-              # Boolean metadata indicates we need to use ruby true/false values.
-              if metadata.include? 'boolean'
-                field_value = field_value == 'false' ? false : true
-              end
+              # If the value is nil or empty, it means we don't even want to filter on it.
+              next if field_value == 'nil' || (!group_attrs && field_value.nil?) || field_value.empty?
+              
+              field = Field[model, field_name]
+              # Boolean metadata is effectively replaced by this
+              field_value = FilterType.of(field).assure_value(field_value)
 
               # If we're in a group, recurse!
               if group_attrs
-                send(any_or_all_of.call(metadata), &process_attrs.call(group_attrs))
+                send(any_or_all_of.call(metadata), &process_attrs.call(group_attrs, model))
               else
                 with = with_or_without.call(metadata)
                 post_func = greater_or_less_than.call(metadata)
 
-                # The call is structured differently if it is a relative comparison
+                # The call is structured differently if it is a relative comparison (> or <)
                 if post_func
                   send(with, field_name).send(post_func, field_value)
                 else
@@ -161,7 +161,7 @@ module Search
             raise SearchException.new "#{actual_model.inspect} is not searchable."
           end
 
-          on actual_model, &process_attrs.call(attrs)
+          on actual_model, &process_attrs.call(attrs, actual_model)
         end
       end
     end

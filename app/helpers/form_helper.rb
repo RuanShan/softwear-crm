@@ -16,12 +16,12 @@ module FormHelper
   # Theoretically this could be used to save a search query to the 
   # database as well if you pass a query object after the model class.
   def search_form_for(model, *args, &block)
-    query = args.first
+    query = if args.first.is_a? Search::Query
+      args.first
+    else nil end
     options = if args.last.is_a? Hash
       args.last
-    else
-      {}
-    end
+    else {} end
 
     builder = SearchFormBuilder.new(
       model, query, self, @current_user, session[:last_search])

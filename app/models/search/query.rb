@@ -45,6 +45,8 @@ module Search
         field = Field[order_name, field_name]
       end
 
+      return nil if field.nil?
+
       query_model = query_models.reject do |m|
         m.name.to_sym != field.model_name
       end.first

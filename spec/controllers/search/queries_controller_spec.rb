@@ -16,7 +16,15 @@ describe Search::QueriesController, search_spec: true do
   let!(:test_params_with_boolean) do
     {search: {
       imprintable: {
-        '1' => { standard_offering: 'false', _metadata: ['boolean'] },
+        '1' => { standard_offering: 'false' },
+        fulltext: 'yeah'
+    }}}
+  end
+
+  let!(:test_params_with_reference) do
+    {search: {
+      order: {
+        '1' => { salesperson: "User##{valid_user.id}" },
         fulltext: 'yeah'
     }}}
   end
@@ -100,6 +108,26 @@ describe Search::QueriesController, search_spec: true do
         expect(Sunspot.session).to_not have_search_params(:with, :lastname, 'nil')
       end
 
+      it 'applies booleans properly' do
+        get :search, test_params_with_boolean
+        expect(response).to be_ok
+
+        expect(assigns[:search].first).to be_a Sunspot::Search::StandardSearch
+
+        expect(Sunspot.session).to be_a_search_for Imprintable
+        expect(Sunspot.session).to have_search_params(:with, :standard_offering, false)
+      end
+
+      it 'applies references properly' do
+        get :search, test_params_with_reference
+        expect(response).to be_ok
+
+        expect(assigns[:search].first).to be_a Sunspot::Search::StandardSearch
+
+        expect(Sunspot.session).to be_a_search_for Order
+        expect(Sunspot.session).to have_search_params(:with, :salesperson, valid_user)
+      end
+
       context 'when params contains search info' do
         it 'searches with the given filter info' do
           get :search, test_params
@@ -151,16 +179,6 @@ describe Search::QueriesController, search_spec: true do
             expect(Sunspot.session).to have_search_params(:with) {
               without(:commission_amount).greater_than(15.00)
             }
-          end
-
-          it 'applies booleans properly' do
-            get :search, test_params_with_boolean
-            expect(response).to be_ok
-
-            expect(assigns[:search].first).to be_a Sunspot::Search::StandardSearch
-
-            expect(Sunspot.session).to be_a_search_for Imprintable
-            expect(Sunspot.session).to have_search_params(:with, :standard_offering, false)
           end
         end
 
@@ -220,7 +238,7 @@ describe Search::QueriesController, search_spec: true do
         expect(valid_user.search_queries).to include assigns[:query]
       end
 
-      it 'redirects to params[:target_path] if present', wip: true do
+      it 'redirects to params[:target_path] if present' do
         post :create, test_params.merge(target_path: '/')
         expect(response).to redirect_to '/'
       end

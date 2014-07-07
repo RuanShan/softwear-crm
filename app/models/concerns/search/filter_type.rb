@@ -14,6 +14,12 @@ module Search
         def belongs_to_search_types(*types)
           @search_types = types
         end
+        # Some filters may have trouble with string values,
+        # so this is called to get the correct value before
+        # being used in a proc.
+        def assure_value(value)
+          value
+        end
       end
     end
 
