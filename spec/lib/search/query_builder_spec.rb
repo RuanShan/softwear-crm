@@ -43,6 +43,18 @@ describe Search::QueryBuilder, search_spec: true do
         end
       end
 
+      context 'when passed a string' do
+        it 'should create the query as normal, but with the given name' do
+          query = Search::QueryBuilder.build "new guy" do
+            on(Order) do
+              fulltext 'testing'
+            end
+          end.query
+
+          expect(query.name).to eq 'new guy'
+        end
+      end
+
       it 'should be able to build search on just some fields in one model' do
         query = Search::QueryBuilder.build do
           on(Order) do

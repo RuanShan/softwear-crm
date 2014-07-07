@@ -106,9 +106,26 @@ $(document).ready ->
   setupContentModal ($contentModal) ->
     $contentModal.find('.modal-content').addClass 'modal-content-error'
   showContentModal
-    title: $("<string>#{title}</string>")
+    title: $("<strong>#{title}</strong>")
     body: body
     footer: $('<button class="btn btn-danger" data-dismiss="modal">OK</button>')
+
+# Opens a modal that looks just like the flash modal when
+# the flash contains a success message.
+@successModal = (titleOrBody, body) ->
+  title = 
+    if body
+      titleOrBody
+    else
+      body = titleOrBody
+      "Success!"
+
+  setupContentModal ($contentModal) ->
+    $contentModal.find('.modal-content').addClass 'modal-content-success'
+  showContentModal
+    title: title
+    body: body
+    footer: $("<button class='btn btn-default' data-dismiss='modal'>OK</button>")
 
 # Modal alternative to confirm() except you pass a function
 # rather than call as a conditional.
