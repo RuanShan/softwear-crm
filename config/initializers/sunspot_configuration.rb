@@ -41,6 +41,7 @@ end
 require_relative 'sunspot_custom_types'
 # Eager load all the models so that the search data is readily available
 unless Rails.env.production?
+  require 'app/models/search.rb'
   Dir[Rails.root + 'app/models/**/*.rb'].each do |file|
     require file
   end
