@@ -33,14 +33,20 @@ module Search
     def destroy
       @query = Query.find query_id
       @query.destroy
-      render text: 'cool'
+      respond_to do |format|
+        format.json { render json: {result: @query.destroyed? ? 'success' : 'failure'} }
+      end
     end
 
     def search
       if query_id
-        @query = Query.find(query_id)
-        session[:last_search] = query_id
-        @search = @query.search page: params[:page]
+        begin
+          @query = Query.find(query_id)
+          session[:last_search] = query_id
+          @search = @query.search page: params[:page]
+        rescue ActiveRecord::RecordNotFound
+          return render text: '404!' 
+        end
       elsif params[:search]
         session[:last_search] = params[:search]
         @search = QueryBuilder.search({page: params[:page]}, &build_search_proc(params[:search]))

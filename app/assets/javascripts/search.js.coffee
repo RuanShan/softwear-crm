@@ -1,4 +1,25 @@
 $(window).load ->
+  deleteSearchQuery = ->
+    $this = $(this)
+    queryId = $this.data('query-id')
+    confirmModal "Delete saved search query?", ->
+      ajax = $.ajax
+        type: 'DELETE'
+        url: Routes.search_query_path(queryId)
+        dataType: 'json'
+
+      ajax.done (response) ->
+        if response.result == 'success'
+          $select = $this.data('search-select')
+          $select.find("option[value='#{queryId}']").remove()
+          $("##{$select.data('go')}").find('.gobtn').remove()
+          successModal "Successfully deleted saved search query!"
+        else
+          errorModal "Somehow failed to delete saved search query!"
+
+      ajax.fail (jqXHR, textStatus) ->
+        errorModal "Something went wrong with the server, or it's unreachable."
+
   $('.search-query-select').change ->
     $this = $(this)
 
@@ -9,12 +30,20 @@ $(window).load ->
         $this.parent()
 
     if $this.val() is 'nil'
-      goSpot().find('input[type="submit"].gobtn').remove()
+      goSpot().find('.gobtn').remove()
     else
-      if goSpot().find('input[type="submit"].gobtn').length == 0
+      if goSpot().find('.gobtn').length == 0
         $btn = $ "<button type='button' class='btn btn-default gobtn'>GO</button>"
         $btn.click -> $this.parent().submit()
+        $delete = $ "
+        <button type='button' class='btn btn-danger gobtn del'
+          data-query-id='#{$this.val()}'>X</button>"
+        $delete.click deleteSearchQuery
+        $delete.data 'search-select', $this
         goSpot().append $btn
+        goSpot().append $delete
+      else
+        goSpot().find('.gobtn.del').data 'query-id', $this.val()
 
   $('.search-query-select').keydown (key) ->
     if key.which is 13
