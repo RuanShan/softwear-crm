@@ -79,7 +79,7 @@ gem 'figaro'
 gem 'paranoia', '~> 2.0'
 gem 'google_drive'
 gem 'kaminari'
-
+gem 'api', path: 'engines/api'
 
 # Use ActiveModel has_secure_password
 # gem 'bcrypt', '~> 3.1.7'

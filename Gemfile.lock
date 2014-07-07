@@ -1,3 +1,9 @@
+PATH
+  remote: engines/api
+  specs:
+    api (0.0.1)
+      rails (~> 4.0.4)
+
 GEM
   remote: https://rubygems.org/
   specs:
@@ -264,6 +270,7 @@ PLATFORMS
 
 DEPENDENCIES
   acts-as-taggable-on
+  api!
   better_errors (>= 0.3.2)
   binding_of_caller
   bootstrap-sass

@@ -45,4 +45,6 @@ CrmSoftwearcrmCom::Application.routes.draw do
   get '/line_item/select_options', to: 'line_items#select_options'
   delete '/line_items/*ids', to: 'line_items#destroy'
 
+  mount Api::Engine => "/api"
+
 end
