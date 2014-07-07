@@ -35,6 +35,7 @@ module Search
       @query.destroy
       respond_to do |format|
         format.json { render json: {result: @query.destroyed? ? 'success' : 'failure'} }
+        format.html { render text: 'hi' }
       end
     end
 
