@@ -130,6 +130,7 @@ initializeLineItemModal = (lineItemModal) ->
 
   handleImprintableForm $('#li-imprintable-form')
   lineItemModal.modal 'show'
+  lineItemModal.find('#is_imprintable_no').prop('checked', false)
 
 loadLineItemView = (lineItemId, url) ->
   $row = $("#line-item-#{lineItemId}")
