@@ -40,8 +40,10 @@ config/secrets.yml
 Gemfile.lock
 
 ## Don't upload dynamic solr stuff
+/solr/default/data/*
 /solr/development/data/*
 /solr/test/data/*
+/solr/pids/*
 
 # these should all be checked in to normalise the environment:
 # Gemfile.lock, .ruby-version, .ruby-gemset
