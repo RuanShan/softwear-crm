@@ -90,6 +90,7 @@ gem 'jquery-ui-rails'
 gem 'paperclip', github: 'thoughtbot/paperclip'
 gem 'google_drive'
 gem 'kaminari'
+gem 'remotipart'
 
 
 # Use ActiveModel has_secure_password

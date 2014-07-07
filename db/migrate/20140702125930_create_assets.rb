@@ -4,6 +4,7 @@ class CreateAssets < ActiveRecord::Migration
       t.attachment :file
       t.string :description
       t.references :assetable, polymorphic: true
+      t.datetime :deleted_at
       t.timestamps
     end
   end

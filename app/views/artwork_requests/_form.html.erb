@@ -1,112 +1,133 @@
-      <div id="horizontal-form artwork-request-form" class="collapse in">
-        <div class="form-group">
-          <div class="row">
-            <%= f.label :job_ids, 'Jobs', class: 'col-sm-2 control-label' %>
-            <div class="col-sm-10">
-              <%= f.select :job_ids, order.jobs.collect { |x| ["#{x.name}", x.id] }, {}, {name: "artwork_request[job_ids][]", multiple: true}%>
-              <% if artwork_request.errors.include?(:job) %>
-                  <% artwork_request.errors.full_messages_for(:job).each do |message| %>
-                      <p class="text-danger"><%= message %></p>
-                  <% end %>
-              <% end %>
-            </div>
-          </div>
-        </div>
-
-        <div class="form-group">
-          <div class="row">
-            <%= f.label :imprint_method_id, class: 'col-sm-2 control-label' %>
-            <div class="col-sm-10">
-              <%= f.select :imprint_method_id, ImprintMethod.all.collect { |x| ["#{x.name} - #{x.production_name}", x.id] }, {include_blank: true}, {id:'artwork_imprint_method_fields', data: {url: imprint_methods_path}} %>
-              <% if artwork_request.errors.include?(:imprint_method_id) %>
-                  <% artwork_request.errors.full_messages_for(:imprint_method_id).each do |message| %>
-                      <p class="text-danger"><%= message %></p>
-                  <% end %>
-              <% end %>
-            </div>
-          </div>
-        </div>
-
-        <div class="form-group"id="imprint_method_print_locations_and_ink_colors">
-            <% if !artwork_request.print_location.blank? %>
-                <%= render partial: 'artwork_imprint_method_fields', locals: { imprint_method: artwork_request.imprint_method, artwork_request: artwork_request } %>
+<div id="horizontal-form artwork-request-form" class="collapse in">
+  <div class="form-group">
+    <div class="row">
+      <%= f.label :job_ids, 'Jobs', class: 'col-sm-2 control-label' %>
+      <div class="col-sm-10">
+        <%= f.select :job_ids, order.jobs.collect { |x| ["#{x.name}", x.id] }, {}, {name: "artwork_request[job_ids][]", multiple: true} %>
+        <% if artwork_request.errors.include?(:job) %>
+            <% artwork_request.errors.full_messages_for(:job).each do |message| %>
+                <p class="text-danger"><%= message %></p>
             <% end %>
-        </div>
-
-        <div class="form-group artwork-status-select">
-          <div class="row">
-            <%= f.label :artwork_status, class: 'col-sm-2 control-label' %>
-            <div class="col-sm-10">
-              <%= f.select :artwork_status, [['Pending'], ['In Progress'], ['Art Created']] %>
-              <% if artwork_request.errors.include?(:artwork_status) %>
-                  <% artwork_request.errors.full_messages_for(:artwork_status).each do |message| %>
-                      <p class="text-danger"><%= message %></p>
-                  <% end %>
-              <% end %>
-            </div>
-          </div>
-        </div>
-
-        <div class="form-group">
-          <div class="row">
-            <%= f.label :deadline, class: 'col-sm-2 control-label' %>
-            <div class="col-sm-10">
-              <div class="input-group date "id="">
-                <%= f.text_field :deadline, value: time_format(artwork_request.deadline) %>
-                <span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span>
-                    </span>
-              </div>
-              <% if artwork_request.errors.include?(:deadline) %>
-                  <% artwork_request.errors.full_messages_for(:deadline).each do |message| %>
-                      <p class="text-danger"><%= message %></p>
-                  <% end %>
-              <% end %>
-            </div>
-          </div>
-        </div>
-
-
-        <div class="form-group" style="display: none">
-          <div class="row">
-            <%= f.label :salesperson_id, "Saleperson", class: 'col-sm-2 control-label' %>
-            <div class="col-sm-10">
-              <%= f.select :salesperson_id, [current_user.id]  %>
-              <% if artwork_request.errors.include?(:salesperson_id) %>
-                  <% artwork_request.errors.full_messages_for(:salesperson_id).each do |message| %>
-                      <p class="text-danger"><%= message %></p>
-                  <% end %>
-              <% end %>
-            </div>
-          </div>
-        </div>
-
-        <div class="form-group">
-          <div class="row">
-            <%= f.label :artist_id, "Artist", class: 'col-sm-2 control-label' %>
-            <div class="col-sm-10">
-              <%= f.select :artist_id, User.all.collect { |u| [u.full_name, u.id] }, include_blank: true%>
-              <% if artwork_request.errors.include?(:artist_id) %>
-                  <% artwork_request.errors.full_messages_for(:artist_id).each do |message| %>
-                      <p class="text-danger"><%= message %></p>
-                  <% end %>
-              <% end %>
-            </div>
-          </div>
-        </div>
-
-        <div class="form-group">
-          <div class="row">
-            <%= f.label :description, class: 'col-sm-2 control-label' %>
-            <div class="col-sm-10">
-              <%= f.text_field :description, class: 'form-control summernote' %>
-              <% if artwork_request.errors.include?(:description) %>
-                  <% artwork_request.errors.full_messages_for(:description).each do |message| %>
-                      <p class="text-danger"><%= message %></p>
-                  <% end %>
-              <% end %>
-            </div>
-          </div>
-        </div>
-
-        <hr>
+        <% end %>
       </div>
+    </div>
+  </div>
+
+  <div class="form-group">
+    <div class="row">
+      <%= f.label :imprint_method_id, class: 'col-sm-2 control-label' %>
+      <div class="col-sm-10">
+        <%= f.select :imprint_method_id, ImprintMethod.all.collect { |x| ["#{x.name} - #{x.production_name}", x.id] }, {include_blank: true}, {id: 'artwork_imprint_method_fields', data: {url: imprint_methods_path}} %>
+        <% if artwork_request.errors.include?(:imprint_method_id) %>
+            <% artwork_request.errors.full_messages_for(:imprint_method_id).each do |message| %>
+                <p class="text-danger"><%= message %></p>
+            <% end %>
+        <% end %>
+      </div>
+    </div>
+  </div>
+
+  <div class="form-group" id="imprint_method_print_locations_and_ink_colors">
+    <% unless artwork_request.print_location.blank? %>
+        <%= render partial: 'artwork_imprint_method_fields', locals: {imprint_method: artwork_request.imprint_method, artwork_request: artwork_request} %>
+    <% end %>
+  </div>
+
+  <div class="form-group artwork-status-select">
+    <div class="row">
+      <%= f.label :artwork_status, class: 'col-sm-2 control-label' %>
+      <div class="col-sm-10">
+        <%= f.select :artwork_status, [['Pending'], ['In Progress'], ['Art Created']] %>
+        <% if artwork_request.errors.include?(:artwork_status) %>
+            <% artwork_request.errors.full_messages_for(:artwork_status).each do |message| %>
+                <p class="text-danger"><%= message %></p>
+            <% end %>
+        <% end %>
+      </div>
+    </div>
+  </div>
+
+  <div class="form-group">
+    <div class="row">
+      <%= f.label :deadline, class: 'col-sm-2 control-label' %>
+      <div class="col-sm-10">
+        <div class="input-group date ">
+          <%= f.text_field :deadline, value: time_format(artwork_request.deadline) %>
+          <span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span>
+                    </span>
+        </div>
+        <% if artwork_request.errors.include?(:deadline) %>
+            <% artwork_request.errors.full_messages_for(:deadline).each do |message| %>
+                <p class="text-danger"><%= message %></p>
+            <% end %>
+        <% end %>
+      </div>
+    </div>
+  </div>
+
+
+  <div class="form-group" style="display: none">
+    <div class="row">
+      <%= f.label :salesperson_id, "Saleperson", class: 'col-sm-2 control-label' %>
+      <div class="col-sm-10">
+        <%= f.select :salesperson_id, [current_user.id] %>
+        <% if artwork_request.errors.include?(:salesperson_id) %>
+            <% artwork_request.errors.full_messages_for(:salesperson_id).each do |message| %>
+                <p class="text-danger"><%= message %></p>
+            <% end %>
+        <% end %>
+      </div>
+    </div>
+  </div>
+
+  <div class="form-group">
+    <div class="row">
+      <%= f.label :artist_id, "Artist", class: 'col-sm-2 control-label' %>
+      <div class="col-sm-10">
+        <%= f.select :artist_id, User.all.collect { |u| [u.full_name, u.id] }, include_blank: true %>
+        <% if artwork_request.errors.include?(:artist_id) %>
+            <% artwork_request.errors.full_messages_for(:artist_id).each do |message| %>
+                <p class="text-danger"><%= message %></p>
+            <% end %>
+        <% end %>
+      </div>
+    </div>
+  </div>
+
+  <div class="form-group">
+    <div class="row">
+      <%= f.label :description, class: 'col-sm-2 control-label' %>
+      <div class="col-sm-10">
+        <%= f.text_field :description, class: 'form-control summernote' %>
+        <% if artwork_request.errors.include?(:description) %>
+            <% artwork_request.errors.full_messages_for(:description).each do |message| %>
+                <p class="text-danger"><%= message %></p>
+            <% end %>
+        <% end %>
+      </div>
+    </div>
+  </div>
+
+  <div class="form-group">
+        <%= f.fields_for :assets, multipart: true do |ff| %>
+            <%= render partial: 'asset_fields', locals: {f: ff} %>
+        <% end %>
+        <% if artwork_request.errors.include?(:assets) %>
+            <% artwork_request.errors.full_messages_for(:assets).each do |message| %>
+                <p class="text-danger"><%= message %></p>
+            <% end %>
+        <% end %>
+        <%= link_to_add_fields "<i class='fa fa-plus artwork-assets'></i> Add Attachment".html_safe, f, :assets %>
+    </div>
+  </div>
+
+  <hr>
+
+  <div class="form-group">
+    <div class="row">
+      <div class="col-sm-6">
+        <%= f.submit create_or_edit_text(artwork_request) + ' Artwork Request', class: 'btn btn-primary', id: 'artwork-request-submit' %>
+      </div>
+    </div>
+  </div>
+</div>

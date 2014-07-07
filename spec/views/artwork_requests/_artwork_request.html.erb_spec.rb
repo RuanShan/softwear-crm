@@ -33,7 +33,7 @@ describe 'artwork_requests/_artwork_request.html.erb', artwork_request_spec: tru
       expect(rendered).to have_css("dd", text: 'Stone Cold Steve Austin')
       expect(rendered).to have_css("dt", text: 'Assigned to')
       expect(rendered).to have_css("dd", text: "#{artwork_request.artist.full_name}")
-
+      expect(rendered).to have_css("dt", text: 'Attachments')
       expect(rendered).to have_selector("a[href='/orders/#{order.id}/artwork_requests/#{artwork_request.id}/edit']")
       expect(rendered).to have_selector("a[data-method='delete']")
       expect(rendered).to have_selector("a[href='/orders/#{order.id}/artwork_requests/#{artwork_request.id}']")
