@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140707194755) do
+ActiveRecord::Schema.define(version: 20140708163318) do
 
   create_table "artwork_requests", force: true do |t|
     t.text     "description"
@@ -24,6 +24,7 @@ ActiveRecord::Schema.define(version: 20140707194755) do
     t.datetime "deleted_at"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.string   "priority"
   end
 
   create_table "artwork_requests_ink_colors", id: false, force: true do |t|

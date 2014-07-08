@@ -3,6 +3,7 @@ FactoryGirl.define do
     artwork_status 'Pending'
     deadline '06/05/2014 3:07 PM'
     description 'Description'
+    priority 'Normal'
 
     before(:create) do |artwork_request|
       order = create(:order_with_job)

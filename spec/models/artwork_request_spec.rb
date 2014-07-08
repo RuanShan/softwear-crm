@@ -13,6 +13,7 @@ describe ArtworkRequest, artwork_request_spec: true do
     it { should validate_presence_of(:ink_color_ids) }
     it { should validate_presence_of(:artist_id) }
     it { should validate_presence_of(:salesperson_id) }
+    it { should validate_presence_of(:priority) }
   end
 
   describe 'Relationships' do

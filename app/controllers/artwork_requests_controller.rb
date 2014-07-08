@@ -19,7 +19,7 @@ class ArtworkRequestsController < InheritedResources::Base
 
   def permitted_params
     params.permit(:order_id,
-                  artwork_request: [:id, :description, :artist_id,
+                  artwork_request: [:id, :priority, :description, :artist_id,
                                     :imprint_method_id, :print_location_id,
                                     :salesperson_id, :deadline, :artwork_status, assets_attributes: [:file, :description, :id, :_destroy], job_ids: [], ink_color_ids: []])
 

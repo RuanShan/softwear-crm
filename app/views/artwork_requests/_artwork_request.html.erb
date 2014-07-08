@@ -3,6 +3,8 @@
     <h4 class="artwork-request-title">Artwork Request
       for <%= artwork_request.jobs.collect { |x| [x.name] }.join(', ') %></h4>
     <dl>
+      <dt>Priority</dt>
+      <dd><%= ArtworkRequest::PRIORITIES[artwork_request.priority.to_i] %></dd>
       <dt>Imprint Method</dt>
       <dd><%= artwork_request.imprint_method.name %></dd>
       <dt>Print Location</dt>
