@@ -5,7 +5,6 @@
       <thead>
       <tr>
         <th>Name</th>
-        <th>Production Name</th>
         <th>Ink Colors</th>
         <th>Print Locations</th>
         <th>Actions</th>
@@ -15,7 +14,6 @@
       <% imprint_methods.each do |imprint_method| %>
       <tr id="<%= model_table_row_id imprint_method %>">
         <td><%= imprint_method.name %></td>
-        <td><%= imprint_method.production_name %></td>
         <td><%= imprint_method.ink_colors.collect{|x| [x.name]}.join(', ') %></td>
         <td><%= imprint_method.print_locations.collect{|x| [x.name]}.join(', ') %></td>
         <td>

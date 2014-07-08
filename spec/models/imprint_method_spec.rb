@@ -1,11 +1,10 @@
 require 'spec_helper'
 
-describe ImprintMethod do 
+describe ImprintMethod, imprint_method_spec: true do
 
   describe 'Validations' do
     it { should validate_presence_of(:name) }
-    it { should validate_presence_of(:production_name) }
-    it { should validate_uniqueness_of(:production_name).scoped_to :name}
+    it { should validate_uniqueness_of(:name) }
   end
 
   describe 'Relationships' do

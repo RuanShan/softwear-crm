@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe 'imprint_methods/edit.html.erb' do
+describe 'imprint_methods/edit.html.erb', imprint_method_spec: true do
   let(:imprint_method){ create(:valid_imprint_method_with_color_and_location) }
 
   it 'has a form to edit the imprint method' do

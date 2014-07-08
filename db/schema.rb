@@ -88,7 +88,6 @@ ActiveRecord::Schema.define(version: 20140707194755) do
 
   create_table "imprint_methods", force: true do |t|
     t.string   "name"
-    t.string   "production_name"
     t.datetime "deleted_at"
     t.datetime "created_at"
     t.datetime "updated_at"

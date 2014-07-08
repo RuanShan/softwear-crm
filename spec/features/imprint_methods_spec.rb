@@ -1,7 +1,7 @@
 require 'spec_helper'
 include ApplicationHelper
 
-feature 'Imprint Method Features' do
+feature 'Imprint Method Features', imprint_method_spec: true do
   given!(:valid_user) { create(:alternate_user) }
   before(:each) do
     login_as(valid_user)
@@ -13,7 +13,6 @@ feature 'Imprint Method Features' do
     visit imprint_methods_path
     click_link 'Add an Imprint Method'
     fill_in 'Name', with: 'New Imprint Method Name'
-    fill_in 'Production name', with: 'New Production Name'
     click_link 'Add Ink color'
     find(:css, "input[id^='imprint_method_ink_colors_attributes_'][id$='_name']").set('Red')
     click_link 'Add Print Location'
@@ -22,7 +21,6 @@ feature 'Imprint Method Features' do
     find(:css, "input[id^='imprint_method_print_locations_attributes_'][id$='_max_width']").set('5.5')
     click_button 'Create Imprint Method'
     expect(ImprintMethod.where(name: 'New Imprint Method Name')).to exist
-    expect(ImprintMethod.where(production_name: 'New Production Name')).to exist
     expect(page).to have_selector('#flash_notice', text: 'Imprint method was successfully created.')
   end
 

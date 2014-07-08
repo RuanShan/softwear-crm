@@ -7,11 +7,6 @@ class ImprintMethod < ActiveRecord::Base
   accepts_nested_attributes_for :print_locations, allow_destroy: true
   has_and_belongs_to_many :imprintables, association_foreign_key: 'imprint_method_id', join_table: 'imprint_methods_imprintables'
 
-  validates :name, presence: true
-  validates :production_name, uniqueness: {scope: :name}, presence: true
-
-  def canonical_name
-    "#{name} (#{production_name})"
-  end
+  validates :name, presence: true, uniqueness: true
 
 end
