@@ -26,3 +26,4 @@
 //= require js-routes
 //= require moment
 //= require bootstrap-datetimepicker/bootstrap-datetimepicker
+//= require jquery.remotipart

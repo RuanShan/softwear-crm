@@ -1,12 +1,14 @@
-$('#contentModal .modal-title').html('New Artwork Request');
-$('#contentModal .modal-body').html("<%= escape_javascript(render(partial: 'new', locals: {artwork_request: @artwork_request, order: @order})).html_safe %>");
+showContentModal({
+    backdrop: "static",
+    keyboard: false,
+    title: 'New Artwork Request',
+    body: $("<%= escape_javascript(render(partial: 'new', locals: {artwork_request: @artwork_request, order: @order})).html_safe %>")
+})
 initializeSummernote();
-initializeArtworkRequestDateTimePicker();
+initializeDateTimePicker();
 initializeJobsChosen();
 summernoteArtworkRequest();
 setNewArtworkRequestSelect();
-formatContentModal();
-$('#contentModal').modal('show');
 
 
 

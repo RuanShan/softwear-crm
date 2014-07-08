@@ -14,7 +14,7 @@ describe 'artwork_requests/_artwork_request.html.erb', artwork_request_spec: tru
   context 'given a single artwork request' do
     it 'displays all the fields for the artwork request' do
       expect(rendered).to have_selector("div#artwork-request-#{artwork_request.id}")
-      expect(rendered).to have_selector("div.the-notes#artwork-request-#{artwork_request.id}")
+      expect(rendered).to have_selector("div.the-notes")
       expect(rendered).to have_selector("h4.artwork-request-title")
       expect(rendered).to have_css("dt", text: 'Imprint Method')
       expect(rendered).to have_css("dd", text: "#{artwork_request.imprint_method.name}")
@@ -33,7 +33,7 @@ describe 'artwork_requests/_artwork_request.html.erb', artwork_request_spec: tru
       expect(rendered).to have_css("dd", text: 'Stone Cold Steve Austin')
       expect(rendered).to have_css("dt", text: 'Assigned to')
       expect(rendered).to have_css("dd", text: "#{artwork_request.artist.full_name}")
-
+      expect(rendered).to have_css("dt", text: 'Attachments')
       expect(rendered).to have_selector("a[href='/orders/#{order.id}/artwork_requests/#{artwork_request.id}/edit']")
       expect(rendered).to have_selector("a[data-method='delete']")
       expect(rendered).to have_selector("a[href='/orders/#{order.id}/artwork_requests/#{artwork_request.id}']")

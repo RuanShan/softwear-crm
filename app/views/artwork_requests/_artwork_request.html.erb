@@ -1,6 +1,7 @@
-<div id="artwork-request-<%=artwork_request.id%>" class="row">
-  <div class="the-notes" id="artwork-request-<%=artwork_request.id%>">
-    <h4 class="artwork-request-title">Artwork Request for <%= artwork_request.jobs.collect { |x| [x.name] }.join(', ') %></h4>
+<div id="artwork-request-<%= artwork_request.id %>" class="row">
+  <div class="the-notes artwork-request-<%= artwork_request.id %>">
+    <h4 class="artwork-request-title">Artwork Request
+      for <%= artwork_request.jobs.collect { |x| [x.name] }.join(', ') %></h4>
     <dl>
       <dt>Imprint Method</dt>
       <dd><%= artwork_request.imprint_method.name %></dd>
@@ -21,8 +22,18 @@
       <dd><%= current_user.full_name %></dd>
       <dt>Assigned to</dt>
       <dd><%= artwork_request.artist.full_name %></dd>
+      <dt>Attachments</dt>
+      <% artwork_request.assets.each do |a| %>
+          <br>
+          <div class="artwork-request-asset-information">
+            <dd><strong>File Name:</strong> <%= a.file_file_name %></dd>
+            <dd><strong>File Size:</strong> <%= number_to_human_size(a.file_file_size) %></dd>
+            <dd><strong>Description:</strong> <%= a.description %></dd>
+            <dd><%= link_to "Download File", a.file.url %></dd>
+          </div>
+      <% end %>
     </dl>
-    <%= link_to edit_order_artwork_request_path(order, artwork_request), remote: true do %><i class="fa fa-2x fa-edit"></i> Edit <% end %>
+    <%= link_to edit_order_artwork_request_path(order, artwork_request), remote: true do %><i class="fa fa-2x fa-edit"></i> Edit<% end %>
     <%= link_to order_artwork_request_path(order, artwork_request), method: :delete, remote: true do %><i class="fa fa-2x danger fa-times-circle"></i> Delete <% end %>
   </div>
 </div>

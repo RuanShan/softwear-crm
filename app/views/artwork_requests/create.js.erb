@@ -1,13 +1,19 @@
 <% if @artwork_request.valid? %>
-    $('#contentModal').modal('hide');
-    $('#artwork-request-list').prepend("<%= escape_javascript(render(partial: 'artwork_request', locals: {artwork_request: @artwork_request, order: @order})).html_safe %>");
+    $('.artwork-request-list').append("<%= escape_javascript(render(partial: 'artwork_request', locals: {artwork_request: @artwork_request, order: @order})).html_safe %>");
+    setupContentModal(function($contentModal){
+        $contentModal.find('.modal-content').addClass('modal-content-success')
+    })
+    showContentModal({
+        title: 'SUCCESS',
+        body: 'Successfuly created Artwork Request!'
+    }).delay(50)
 <% else %>
     $('#contentModal .modal-body').html("<%= escape_javascript(render(partial: 'new', locals: {artwork_request: @artwork_request, order: @order})).html_safe %>");
+    styleCheckboxes();
     initializeSummernote();
-    initializeArtworkRequestDateTimePicker();
+    initializeDateTimePicker();
     initializeJobsChosen();
     summernoteArtworkRequest();
     setNewArtworkRequestSelect();
-    formatContentModal();
-    $('#errorsModal').modal('show');
+//    $('#errorsModal').modal('show');
 <% end %>

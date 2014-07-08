@@ -1,10 +1,12 @@
-$('#contentModal .modal-title').html('Edit Artwork Request');
-$('#contentModal .modal-body').html("<%= escape_javascript(render(partial: 'edit', locals: {artwork_request: @artwork_request, order: @order})).html_safe %>");
-initializeSummernote();
+showContentModal({
+    backdrop: "static",
+    keyboard: false,
+    title: 'Edit Artwork Request',
+    body: $("<%= escape_javascript(render(partial: 'edit', locals: {artwork_request: @artwork_request, order: @order})).html_safe %>")
+})
 styleCheckboxes();
-initializeArtworkRequestDateTimePicker();
+initializeSummernote();
+initializeDateTimePicker();
 initializeJobsChosen();
 $('.summernote').code('<%= (@artwork_request.description).html_safe %>');
 summernoteArtworkRequest();
-formatContentModal();
-$('#contentModal').modal('show');

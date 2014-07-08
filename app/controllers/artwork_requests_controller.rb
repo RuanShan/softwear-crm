@@ -3,14 +3,6 @@ class ArtworkRequestsController < InheritedResources::Base
   before_filter :assign_order
   respond_to :js
 
-  # def destroy
-  #   @artwork_request = ArtworkRequest.find(params[:id])
-  #   respond_to do |format|
-  #     format.js
-  #   end
-  #   @artwork_request.destroy
-  # end
-
   private
 
   def format_time
@@ -29,7 +21,7 @@ class ArtworkRequestsController < InheritedResources::Base
     params.permit(:order_id,
                   artwork_request: [:id, :description, :artist_id,
                                     :imprint_method_id, :print_location_id,
-                                    :salesperson_id, :deadline, :artwork_status, :assets, job_ids: [], ink_color_ids: []])
+                                    :salesperson_id, :deadline, :artwork_status, assets_attributes: [:file, :description, :id, :_destroy], job_ids: [], ink_color_ids: []])
 
   end
 end

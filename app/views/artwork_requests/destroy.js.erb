@@ -1,3 +1,10 @@
-$row = $('#artwork-request-<%= @artwork_request.id %>');
+$row = $('.artwork-request-<%= @artwork_request.id %>');
 $row.fadeOut();
 $row.remove();
+setupContentModal(function($contentModal){
+    $contentModal.find('.modal-content').addClass('modal-content-success')
+})
+showContentModal({
+    title: 'SUCCESS',
+    body: 'Successfuly destroyed Artwork Request!'
+})

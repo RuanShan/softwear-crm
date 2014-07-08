@@ -115,7 +115,13 @@ create_records([
                ], ImprintMethod)
 im = ImprintMethod.all.first
 create_records([
-                   {name: 'Red', imprint_method_id: im.id}
+                   {name: 'Red', imprint_method_id: im.id},
+                   {name: 'Orange', imprint_method_id: im.id},
+                   {name: 'Yellow', imprint_method_id: im.id},
+                   {name: 'Green', imprint_method_id: im.id},
+                   {name: 'Blue', imprint_method_id: im.id},
+                   {name: 'Indigo', imprint_method_id: im.id},
+                   {name: 'Violet', imprint_method_id: im.id}
                ], InkColor)
 create_records([
                    {name: 'Chest', max_height: 5.5, max_width: 5.5, imprint_method_id: im.id},
@@ -183,6 +189,23 @@ create_records([
 
 # Order SEEDING
 # --------------
+create_records([
+    {
+      name: 'Test Order',
+      firstname: 'Test',
+      lastname: 'Tlast',
+      email: 'test@test.com',
+      twitter: '@test',
+      in_hand_by: '1/2/1015',
+      terms: 'Half down on purchase',
+      tax_exempt: false,
+      sales_status: 'Pending',
+      delivery_method: 'Ship to one location',
+      phone_number: '123-456-8456',
+      store_id: 1,
+      salesperson_id: 1
+    }
+  ], Order)
 load_seeds_for Order
 
 # Job SEEDING
@@ -197,3 +220,5 @@ load_seeds_for LineItem
 create_records([
     job_id: j.id, print_location_id: pl.id
   ], Imprint)
+
+# Artwork Request Seeding

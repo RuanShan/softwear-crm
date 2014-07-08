@@ -5,8 +5,10 @@ class ArtworkRequest < ActiveRecord::Base
   belongs_to :print_location
   belongs_to :artist, class_name: User
   belongs_to :salesperson, class_name: User
+  has_many :assets, as: :assetable, dependent: :destroy
   has_and_belongs_to_many :ink_colors
   has_and_belongs_to_many :jobs
+  accepts_nested_attributes_for :assets
 
   validates :deadline, presence: true
   validates :description, presence: true
@@ -19,11 +21,7 @@ class ArtworkRequest < ActiveRecord::Base
   validates :artist_id, presence: true
 
   def imprintable_variant_count
-    sum = 0
-    jobs.each do |job|
-      sum += job.imprintable_variant_count
-    end
-    sum
+    jobs.map{|j| j.imprintable_variant_count}.inject{|sum,x| sum + x }
   end
 
   def imprintable_info

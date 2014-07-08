@@ -66,7 +66,6 @@ group :development do
 end
 
 group :development, :test do
-  gem 'sunspot_solr'
 end
 
 group :test do
@@ -90,6 +89,9 @@ gem 'jquery-ui-rails'
 gem 'paperclip', github: 'thoughtbot/paperclip'
 gem 'google_drive'
 gem 'kaminari'
+gem 'remotipart'
+
+gem 'sunspot_solr'
 
 
 # Use ActiveModel has_secure_password
