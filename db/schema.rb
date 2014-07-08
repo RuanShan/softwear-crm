@@ -36,6 +36,19 @@ ActiveRecord::Schema.define(version: 20140707194755) do
     t.integer "job_id"
   end
 
+  create_table "assets", force: true do |t|
+    t.string   "file_file_name"
+    t.string   "file_content_type"
+    t.integer  "file_file_size"
+    t.datetime "file_updated_at"
+    t.string   "description"
+    t.integer  "assetable_id"
+    t.string   "assetable_type"
+    t.datetime "deleted_at"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
   create_table "brands", force: true do |t|
     t.string   "name"
     t.string   "sku"
