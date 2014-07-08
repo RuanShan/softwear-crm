@@ -14,7 +14,7 @@ class ArtworkRequestsController < InheritedResources::Base
   end
 
   def assign_order
-    @order = Order.find(params[:order_id])
+    @order = Order.find(params[:order_id]) unless params[:order_id].nil?
   end
 
   def permitted_params
