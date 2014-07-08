@@ -16,6 +16,7 @@
 /tmp
 /.idea/
 /config/*.yml
+!/config/sunspot.yml
 *.rbc
 capybara-*.html
 .rspec
