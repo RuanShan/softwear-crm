@@ -17,7 +17,7 @@ class SearchFormBuilder
 
   # Just pass <metadata option>: true to the options of any field method, and it will be applied
   # (boolean is automatically applied for yes/no and checkbox)
-  METADATA_OPTIONS = [:negate, :greater_than, :less_than, :boolean]
+  METADATA_OPTIONS = [:negate, :greater_than, :less_than]
 
   YES_OR_NO_CHOICES = [YesOrNo.new('Yes', 'true'), YesOrNo.new('No', 'false')]
 
@@ -47,9 +47,8 @@ class SearchFormBuilder
     end
   end
 
-  def label(field_name, content_or_options={}, &block)
+  def label(field_name, content_or_options={}, options={}, &block)
     content = ""
-    options = {}
     if content_or_options.is_a?(Hash)
       options = content_or_options
       content = field_name.to_s.humanize
@@ -59,8 +58,8 @@ class SearchFormBuilder
     @template.label_tag(input_name_for(field_name, @field_count + 1), content, options, &block)
   end
 
-  def fulltext(field_name, options={})
-    preprocess_options options, field_name
+  def fulltext(options={})
+    preprocess_options options, 'fulltext'
     
     initial_value = if query_model
       query_model.default_fulltext
@@ -69,7 +68,13 @@ class SearchFormBuilder
         (@last_search[model_name] && @last_search[model_name][:fulltext]) || 
           @last_search[:fulltext]
       else
-        Search::Query.find(@last_search.to_i).query_models.where(name: @model.name).first.default_fulltext
+        query = Search::Query.find(@last_search.to_i)
+        query_model = query.query_models.where(name: @model.name).first
+        if query_model.nil?
+          ''
+        else
+          query_model.default_fulltext
+        end
       end
     end
 
@@ -86,32 +91,21 @@ class SearchFormBuilder
     initial_value = initial_value_for field_name
     display_method = options.delete(:display) || :name
 
-    select_options = @template.content_tag(:option, "#{field_name.to_s.humanize}...", value: 'nil')
+    select_options = @template.content_tag(:option, options.delete(:nil) || "#{field_name.to_s.humanize}...", value: 'nil')
     
-    puts '========'
-    puts "Select field for #{field_name}"
-    puts "Initial value: #{initial_value.to_s}"
-
     choices.each do |item|
       name = if item.respond_to? display_method
         item.send(display_method)
-      else
-        item.to_s
-      end
-      value = if item.respond_to? :id
-        item.id
-      else
-        item.to_s
-      end
+      else item.to_s end
 
-      puts "Option: #{value.to_s}"
+      value = if item.respond_to? :id
+        "#{item.class.name}##{item.id}"
+      else item.to_s end
 
       select_options.send :original_concat, @template.content_tag(:option, 
         name, value: value,
         selected: value.to_s == initial_value.to_s ? 'selected' : nil)
     end
-
-    puts '========'
 
     @field_count += 1
     process_options(field_name, options) +
@@ -124,7 +118,7 @@ class SearchFormBuilder
 
   [:text_field, :text_area, :number_field].each do |method_name|
     define_method method_name do |field_name, options={}|
-      raise "Cannot call #{model_name} unless a model is specified" if @model.nil?
+       raise "Cannot call #{model_name} unless a model is specified" if @model.nil?
        preprocess_options options, field_name
        add_class(options, 'number_field') if method_name == :number_field
 
@@ -175,6 +169,7 @@ class SearchFormBuilder
     add_class options, 'submit', 'btn', 'btn-primary'
     @template.submit_tag(options[:value] || (@query ? 'Save' : 'Search'), options)
   end
+  alias_method :search, :submit
 
   # This button will save the query instead of searching it
   def save(options={})

@@ -45,6 +45,8 @@ module Search
         field = Field[order_name, field_name]
       end
 
+      return nil if field.nil?
+
       query_model = query_models.reject do |m|
         m.name.to_sym != field.model_name
       end.first
@@ -84,12 +86,14 @@ module Search
       SearchList.new(models) do |model, i|
         text_fields = text_fields_at(i)
         query_model = query_models[i]
+        base_scope = nil
 
         text = if args.first.is_a? String
           args.first
         else query_model.default_fulltext end
 
         model.search do
+          base_scope = self
           if text && !text.empty?
             if text_fields && !text_fields.empty?
               fulltext(text) do
@@ -100,7 +104,7 @@ module Search
             end
           end
           if query_model && query_model.filter
-            query_model.filter.apply(self)
+            query_model.filter.apply(self, base_scope)
           end
           block.call if block_given?
           paginate page: options[:page] || 1, per_page: model.default_per_page

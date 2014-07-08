@@ -83,11 +83,11 @@ class Order < ActiveRecord::Base
 
   searchable do
     text :name, :email, :firstname, :lastname, :company, :twitter, :terms, :delivery_method, :sales_status
-    # text :jobs do
-    #   jobs.map { |j| "#{j.name} #{j.description}" }
-    # end
+    text :jobs do
+      jobs.map { |j| "#{j.name} #{j.description}" }
+    end
 
-    [:firstname, :lastname, :email, :terms, :delivery_method, :sales_status, :company].each do |field|
+    [:firstname, :lastname, :email, :terms, :delivery_method, :sales_status, :company, :phone_number].each do |field|
       string field
     end
 

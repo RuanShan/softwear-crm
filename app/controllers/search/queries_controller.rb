@@ -86,7 +86,7 @@ module Search
       default_fulltext = search['fulltext']
 
       # Turn hash search data into function calls
-      process_attrs = -> (attrs) do
+      process_attrs = -> (attrs, model, base_scope) do
         Proc.new do
           applied_fulltext = false
           attrs.each do |num, attr|
@@ -94,7 +94,7 @@ module Search
             # If it's a number, attr is a hash with { fieldname=>fieldvalue, posssiblemetadata=>array }
             # TODO boost fields, dang.
             if num == 'fulltext'
-              send(:fulltext, attr)
+              fulltext attr
               applied_fulltext = true
             else
               # puts attr.inspect
@@ -114,25 +114,31 @@ module Search
                   field_value = value
                 end
               end
-              # If the value is nil, it means we don't even want to filter on it.
-              next if field_value == 'nil' || (!group_attrs && field_value.nil?)
-              # Boolean metadata indicates we need to use ruby true/false values.
-              if metadata.include? 'boolean'
-                field_value = field_value == 'false' ? false : true
-              end
+
+              # If the value is nil or empty, it means we don't even want to filter on it.
+              next if field_value == 'nil' || (!group_attrs && field_value.nil?) || (field_value.respond_to?(:empty?) && field_value.empty?)
 
               # If we're in a group, recurse!
               if group_attrs
-                send(any_or_all_of.call(metadata), &process_attrs.call(group_attrs))
+                send(any_or_all_of.call(metadata), &process_attrs.call(group_attrs, model, base_scope))
               else
-                with = with_or_without.call(metadata)
-                post_func = greater_or_less_than.call(metadata)
+                field = Field[model, field_name]
+                # Boolean metadata is effectively replaced by this.
+                field_value = FilterType.of(field).assure_value(field_value)
 
-                # The call is structured differently if it is a relative comparison
-                if post_func
-                  send(with, field_name).send(post_func, field_value)
+                # TODO construct new filter type for all non-group fields.
+                if FilterType.of(field) == PhraseFilter
+                  PhraseFilter.new(field: field_name, value: field_value).apply(self, base_scope)
                 else
-                  send(with, field_name, field_value)
+                  with = with_or_without.call(metadata)
+                  post_func = greater_or_less_than.call(metadata)
+
+                  # The call is structured differently if it is a relative comparison (> or <)
+                  if post_func
+                    send(with, field_name).send(post_func, field_value)
+                  else
+                    send(with, field_name, field_value)
+                  end
                 end
               end
             end
@@ -161,7 +167,9 @@ module Search
             raise SearchException.new "#{actual_model.inspect} is not searchable."
           end
 
-          on actual_model, &process_attrs.call(attrs)
+          on actual_model do
+            instance_eval(&process_attrs.call(attrs, actual_model, self))
+          end
         end
       end
     end

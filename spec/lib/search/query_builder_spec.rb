@@ -151,6 +151,24 @@ describe Search::QueryBuilder, search_spec: true do
         expect(group.filters.last.negate).to be_truthy
       end
 
+      it 'should add a phrase filter with :keywords', :wip do
+        query = Search::QueryBuilder.build do
+          on(Order) do
+            keywords('Excellent') do
+              fields :job_names
+            end
+          end
+        end.query
+
+        order_model = query.query_models.first
+        expect(order_model.filter.type).to be_a Search::FilterGroup
+
+        group = order_model.filter.type
+        expect(group.filters.count).to eq 1
+        expect(group.filters.first.type).to be_a Search::PhraseFilter
+        expect(group.filters.first.value).to eq 'Excellent'
+      end
+
       it 'should be able to build a search with many filters' do
         salesperson = create(:user)
         query = Search::QueryBuilder.build do

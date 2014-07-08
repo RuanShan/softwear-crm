@@ -1,6 +1,6 @@
 FactoryGirl.define do
   factory :filter, class: Search::Filter do
-    [:number, :boolean, :string, :reference, :date].each do |type|
+    [:number, :boolean, :string, :reference, :date, :phrase].each do |type|
       factory "#{type}_filter" do
         filter_type { |t| t.association "filter_type_#{type}" }
       end
@@ -41,6 +41,11 @@ FactoryGirl.define do
     negate false
     comparator '>'
     value 1.day.ago
+  end
+
+  factory :filter_type_phrase, class: Search::PhraseFilter do
+    field 'whocares'
+    value '"test"'
   end
 
   factory :filter_type_group, class: Search::FilterGroup do

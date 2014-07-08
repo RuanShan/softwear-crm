@@ -14,6 +14,12 @@ module Search
         def belongs_to_search_types(*types)
           @search_types = types
         end
+        # Some filters may have trouble with string values,
+        # so this is called to get the correct value before
+        # being used in a proc.
+        def assure_value(value)
+          value
+        end
       end
     end
 
@@ -24,7 +30,7 @@ module Search
     # Default apply function. Works for simple stuff
     # like boolean and string. Override for more 
     # complex behavior, like number.
-    def apply(s)
+    def apply(s, base=nil)
       s.send(with_func, field, value)
     end
 
@@ -33,7 +39,7 @@ module Search
     end
 
     def self.of(field)
-      raise "Field must be a Search::Field" unless field.is_a? Field
+      raise "Field must be a Search::Field. Got #{field.class.name}." unless field.is_a? Field
       FilterTypes.each do |type|
         return type unless (field.type_names & type.search_types).empty?
       end
