@@ -166,7 +166,7 @@ describe Search::QueryBuilder, search_spec: true do
         group = order_model.filter.type
         expect(group.filters.count).to eq 1
         expect(group.filters.first.type).to be_a Search::PhraseFilter
-        expect(group.filters.first.value).to eq '"Excellent"'
+        expect(group.filters.first.value).to eq 'Excellent'
       end
 
       it 'should be able to build a search with many filters' do

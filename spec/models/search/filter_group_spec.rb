@@ -41,11 +41,11 @@ describe Search::FilterGroup, search_spec: true do
       # a different context.
       group_type = group
       Order.search do
-        group_type.apply(self)
+        group_type.apply(self, self)
       end
       group.filters.each do |filter|
         expect(Sunspot.session).to have_search_params(filter.with_func) {
-          filter.apply(self)
+          filter.apply(self, self)
         }
       end
     end

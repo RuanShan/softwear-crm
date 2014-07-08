@@ -10,7 +10,7 @@ describe Search::PhraseFilter, search_spec: true do
 
   it 'should not use the with/without syntax' do
     Order.search do
-      filter.apply(self)
+      filter.apply(self, self)
     end
     expect(Sunspot.session).to_not have_search_params(:with, :sales_status, '"Pending"')
   end

@@ -91,7 +91,7 @@ class SearchFormBuilder
     initial_value = initial_value_for field_name
     display_method = options.delete(:display) || :name
 
-    select_options = @template.content_tag(:option, "#{field_name.to_s.humanize}...", value: 'nil')
+    select_options = @template.content_tag(:option, options.delete(:nil) || "#{field_name.to_s.humanize}...", value: 'nil')
     
     choices.each do |item|
       name = if item.respond_to? display_method
@@ -118,7 +118,7 @@ class SearchFormBuilder
 
   [:text_field, :text_area, :number_field].each do |method_name|
     define_method method_name do |field_name, options={}|
-      raise "Cannot call #{model_name} unless a model is specified" if @model.nil?
+       raise "Cannot call #{model_name} unless a model is specified" if @model.nil?
        preprocess_options options, field_name
        add_class(options, 'number_field') if method_name == :number_field
 

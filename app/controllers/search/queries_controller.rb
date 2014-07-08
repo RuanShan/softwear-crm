@@ -114,27 +114,31 @@ module Search
                   field_value = value
                 end
               end
+
               # If the value is nil or empty, it means we don't even want to filter on it.
-              next if field_value == 'nil' || (!group_attrs && field_value.nil?) || field_value.empty?
-              
-              field = Field[model, field_name]
-              # Boolean metadata is effectively replaced by this
-              field_value = FilterType.of(field).assure_value(field_value)
+              next if field_value == 'nil' || (!group_attrs && field_value.nil?) || (field_value.respond_to?(:empty?) && field_value.empty?)
 
               # If we're in a group, recurse!
               if group_attrs
                 send(any_or_all_of.call(metadata), &process_attrs.call(group_attrs, model, base_scope))
-              elsif FilterType.of(field) == PhraseFilter
-                PhraseFilter.new(field: field_name, value: field_value).apply(self, base_scope)
               else
-                with = with_or_without.call(metadata)
-                post_func = greater_or_less_than.call(metadata)
+                field = Field[model, field_name]
+                # Boolean metadata is effectively replaced by this.
+                field_value = FilterType.of(field).assure_value(field_value)
 
-                # The call is structured differently if it is a relative comparison (> or <)
-                if post_func
-                  send(with, field_name).send(post_func, field_value)
+                # TODO construct new filter type for all non-group fields.
+                if FilterType.of(field) == PhraseFilter
+                  PhraseFilter.new(field: field_name, value: field_value).apply(self, base_scope)
                 else
-                  send(with, field_name, field_value)
+                  with = with_or_without.call(metadata)
+                  post_func = greater_or_less_than.call(metadata)
+
+                  # The call is structured differently if it is a relative comparison (> or <)
+                  if post_func
+                    send(with, field_name).send(post_func, field_value)
+                  else
+                    send(with, field_name, field_value)
+                  end
                 end
               end
             end
