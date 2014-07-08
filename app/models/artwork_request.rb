@@ -8,7 +8,7 @@ class ArtworkRequest < ActiveRecord::Base
   has_many :assets, as: :assetable, dependent: :destroy
   has_and_belongs_to_many :ink_colors
   has_and_belongs_to_many :jobs
-  accepts_nested_attributes_for :assets
+  accepts_nested_attributes_for :assets, allow_destroy: true
 
   validates :deadline, presence: true
   validates :description, presence: true
