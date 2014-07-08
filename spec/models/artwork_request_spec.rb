@@ -40,6 +40,18 @@ describe ArtworkRequest, artwork_request_spec: true do
     end
   end
 
+  context '#imprintable_variant_count with job having no line items (bug #176)' do
+      before do
+        job = [build_stubbed(:blank_job)]
+        allow(job[0]).to receive(:imprintable_variant_count).and_return(0)
+        allow(subject).to receive(:jobs).and_return(job)
+      end
+
+    it 'should return the sum of all line item quantities from the artwork requests jobs where imprintable_id is not null' do
+      expect(subject.imprintable_variant_count).to eq(0)
+    end
+  end
+
   context '#imprintable_info' do
     before do
       jobs = [build_stubbed(:blank_job), build_stubbed(:blank_job), build_stubbed(:blank_job)]

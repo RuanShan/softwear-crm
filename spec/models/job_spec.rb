@@ -151,6 +151,25 @@ describe Job, job_spec: true do
     end
   end
 
+  context '#imprintable_variant_count with job having no imprintable line items (bug #176)', artwork_request_spec: true do
+    before do
+      allow(subject).to receive(:line_items) { [
+          build_stubbed(:blank_line_item, imprintable_variant_id: nil, quantity: 5)
+      ]}
+    end
+
+    it 'should return the sum of all line item quantities where imprintable_id is not null' do
+      expect(subject.imprintable_variant_count).to eq(0)
+    end
+  end
+
+  context '#imprintable_variant_count with job having no line items (bug #176)', artwork_request_spec: true do
+    let!(:job) { create(:job) }
+    it 'should return the sum of all line item quantities where imprintable_id is not null' do
+      expect(job.imprintable_variant_count).to eq(0)
+    end
+  end
+
   describe '#imprintable_color_names', artwork_request_spec: true do
     before do
       allow(subject).to receive(:colors) { [

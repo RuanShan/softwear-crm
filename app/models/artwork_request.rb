@@ -21,7 +21,7 @@ class ArtworkRequest < ActiveRecord::Base
   validates :artist_id, presence: true
 
   def imprintable_variant_count
-    jobs.map{|j| j.imprintable_variant_count}.inject{|sum,x| sum + x }
+   jobs.map{|j| j.imprintable_variant_count}.inject{|sum,x| sum + x }
   end
 
   def imprintable_info

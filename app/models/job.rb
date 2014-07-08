@@ -42,7 +42,7 @@ class Job < ActiveRecord::Base
   end
 
   def imprintable_variant_count
-    line_items.map{|li| li.imprintable_variant_id ? li.quantity : 0}.inject{|sum, x| sum + x }
+    line_items.empty? ? 0 : line_items.map{|li| li.imprintable_variant_id ? li.quantity : 0}.inject{|sum, x| sum + x }
   end
 
   def imprintable_color_names
