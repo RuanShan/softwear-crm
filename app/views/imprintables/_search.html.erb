@@ -1,9 +1,12 @@
 <%= search_form_for Imprintable do |s| %>
   <div class="row">
     <div class="col-sm-3">
-      <%= s.select :all_categories, ImprintableCategory::VALID_CATEGORIES, id: 'filter_imprintable_categories' %>
+      <%= s.select :all_categories, ImprintableCategory::VALID_CATEGORIES, nil: 'Category...' %>
     </div>
     <div class="col-sm-3">
+      <%= s.select :sizing_category, Imprintable::SIZING_CATEGORIES, id: 'filter_sizing_category' %>
+    </div>
+    <div class="col-sm-2">
       <%= s.yes_or_no_select :standard_offering %>
     </div>
     <div class="col-sm-3">
