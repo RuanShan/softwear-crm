@@ -40,7 +40,7 @@ describe ArtworkRequest, artwork_request_spec: true do
     end
   end
 
-  context '#imprintable_variant_count with job having no line items (bug #176)', wip: true do
+  context '#imprintable_variant_count with job having no line items (bug #176)' do
       before do
         job = [build_stubbed(:blank_job)]
         allow(job[0]).to receive(:imprintable_variant_count).and_return(0)
