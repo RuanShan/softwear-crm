@@ -9,6 +9,8 @@ describe 'imprintables/_supplier_details.html.erb', imprintable_spec: true do
     render partial: 'imprintables/supplier_details', locals: { imprintable: imprintable }
     expect(rendered).to have_css('h2', text: imprintable.main_supplier)
     expect(rendered).to have_css('p', text: imprintable.supplier_link)
+    expect(rendered).to have_css('td', text: imprintable.name)
+    expect(rendered).to have_css('td', text: 'There are no sizes available')
     expect(rendered).to have_css('td', text: imprintable.base_price)
     expect(rendered).to have_css('td', text: imprintable.xxl_price)
     expect(rendered).to have_css('td', text: imprintable.xxxl_price)

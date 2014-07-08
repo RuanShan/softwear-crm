@@ -30,7 +30,7 @@ feature 'Imprints Management', imprint_spec: true, js: true, imprint_features: t
     first('.add-imprint').click
     wait_for_ajax
 
-    select imprint_method2.canonical_name, from: 'Imprint method'
+    select imprint_method2.name, from: 'Imprint method'
     sleep 1.5
     select print_location2.name, from: 'Print location'
 
@@ -47,7 +47,7 @@ feature 'Imprints Management', imprint_spec: true, js: true, imprint_features: t
     visit edit_order_path(order.id, anchor: 'jobs')
     wait_for_ajax
 
-    select imprint_method2.canonical_name, from: 'Imprint method'
+    select imprint_method2.name, from: 'Imprint method'
     sleep 1.5
     select print_location2.name, from: 'Print location'
 
@@ -60,7 +60,7 @@ feature 'Imprints Management', imprint_spec: true, js: true, imprint_features: t
     expect(Imprint.where(job_id: job.id, print_location_id: print_location2.id)).to exist
   end
 
-  scenario 'user can add and edit an imprint method, and update them both' do
+  scenario 'user can add and edit an imprint method, and update them both', new: true do
     imprint
     visit edit_order_path(order.id, anchor: 'jobs')
     wait_for_ajax
@@ -69,12 +69,12 @@ feature 'Imprints Management', imprint_spec: true, js: true, imprint_features: t
     wait_for_ajax
 
     within('.imprint-entry[data-id="-1"]') do
-      select imprint_method2.canonical_name, from: 'Imprint method'
+      select imprint_method2.name, from: 'Imprint method'
       select print_location2.name, from: 'Print location'
     end
 
     within(".imprint-entry[data-id='#{job.imprints.first.id}']") do
-      select imprint_method3.canonical_name, from: 'Imprint method'
+      select imprint_method3.name, from: 'Imprint method'
       select print_location3.name, from: 'Print location'
     end
 
@@ -89,7 +89,7 @@ feature 'Imprints Management', imprint_spec: true, js: true, imprint_features: t
     expect(Imprint.where(job_id: job.id, print_location_id: print_location1.id)).to_not exist
   end
 
-  scenario 'user sees error when attempting to add 2 imprints with the same location' do
+  scenario 'user sees error when attempting to add 2 imprints with the same location', new: true do
     imprint
     visit edit_order_path(order.id, anchor: 'jobs')
     wait_for_ajax

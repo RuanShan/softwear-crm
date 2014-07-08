@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe ImprintMethodsController do
+describe ImprintMethodsController, imprint_method_spec: true do
 
   let!(:imprint_method) { create :valid_imprint_method }
   let(:print_location) { create :print_location, imprint_method_id: imprint_method.id }
@@ -52,7 +52,6 @@ describe ImprintMethodsController do
      context 'with valid input' do
        it 'creates a new imprint method' do
          expect{post :create, imprint_method: attributes_for(:valid_imprint_method)}.to change(ImprintMethod, :count).by(1)
-         expect(imprint_method.name).to eq('Imprint Method')
       end
      end
 
@@ -68,7 +67,6 @@ describe ImprintMethodsController do
     context 'with valid input' do
       it 'updates a new imprint method' do
         expect{put :update, id: imprint_method.to_param, imprint_method: attributes_for(:valid_imprint_method)}.to_not change(ImprintMethod, :count)
-        expect(imprint_method.name).to eq('Imprint Method')
       end
     end
 

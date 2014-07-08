@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140630191253) do
+ActiveRecord::Schema.define(version: 20140707183701) do
 
   create_table "artwork_requests", force: true do |t|
     t.text     "description"
@@ -75,7 +75,6 @@ ActiveRecord::Schema.define(version: 20140630191253) do
 
   create_table "imprint_methods", force: true do |t|
     t.string   "name"
-    t.string   "production_name"
     t.datetime "deleted_at"
     t.datetime "created_at"
     t.datetime "updated_at"

@@ -17,7 +17,7 @@
           <div class="row">
             <%= f.label :imprint_method_id, class: 'col-sm-2 control-label' %>
             <div class="col-sm-10">
-              <%= f.select :imprint_method_id, ImprintMethod.all.collect { |x| ["#{x.name} - #{x.production_name}", x.id] }, {include_blank: true}, {id:'artwork_imprint_method_fields', data: {url: imprint_methods_path}} %>
+              <%= f.select :imprint_method_id, ImprintMethod.all.collect { |x| [x.name, x.id] }, {include_blank: true}, {id:'artwork_imprint_method_fields', data: {url: imprint_methods_path}} %>
               <% if artwork_request.errors.include?(:imprint_method_id) %>
                   <% artwork_request.errors.full_messages_for(:imprint_method_id).each do |message| %>
                       <p class="text-danger"><%= message %></p>
