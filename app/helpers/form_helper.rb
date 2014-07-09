@@ -61,13 +61,14 @@ module FormHelper
     end
   end
 
-  def search_field(options={})
+  def search_field(options={}, &block)
     add_class options, 'form-control', 'search'
-    form_tag search_path, method: 'GET' do
+
+    form_tag search_path, method: 'GET', role: 'form' do
       is_textarea = options.delete :textarea
       func = is_textarea ? :text_area_tag : :text_field_tag
 
-      send func, 'q', options
+      send(func, 'q', '', options) + (block_given? ? capture(&block) : '')
     end
   end
 end
