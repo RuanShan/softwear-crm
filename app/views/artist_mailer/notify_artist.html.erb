@@ -1,0 +1,11 @@
+<h2>
+  <%= "#{@salesperson.full_name}" %> has <%= @action %> an Artwork Request for
+    Imprint Method: <%= @artwork_request.imprint_method.name + ', ' + @artwork_request.print_location.name %>
+    Jobs: <%= @artwork_request.jobs.collect { |x| [x.name] }.join(', ') %>
+    Order: <%= @artwork_request.jobs[0].order.name %>
+    Proof Deadline: <%= @artwork_request.deadline.strftime('%b %d, %Y, %I:%M %p') %>
+    Priority: <%= ArtworkRequest::PRIORITIES[@artwork_request.priority.to_i] %>
+</h2>
+<p>
+  Best of luck! I've got to mambo darling!
+</p>
