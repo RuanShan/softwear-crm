@@ -28,6 +28,10 @@ module Search
         def assure_value(value)
           value
         end
+
+        def uses_comparator?
+          column_names.include? 'comparator'
+        end
       end
     end
 
