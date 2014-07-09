@@ -90,7 +90,7 @@ describe Search::Query, search_spec: true do
           order_model.add_field 'name'
         end
 
-        it 'just searches that field', :s1, solr: true do
+        it 'just searches that field', solr: true, random: true do
           search = assure_solr_search do
             subject.search 'keywordone'
           end
@@ -129,7 +129,7 @@ describe Search::Query, search_spec: true do
           filter.save
         end
 
-        it 'applies the filter', :s2, solr: true do
+        it 'applies the filter', solr: true do
           results = assure_solr_search do
             subject.search.first.results
           end
