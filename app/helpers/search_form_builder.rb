@@ -1,4 +1,4 @@
-# This currently does not support filter groups, although QueriesController is ready to handle them if need be.
+# This currently does not support filter groups, although QueriesController is ready to handle them for the occasion.
 class SearchFormBuilder
   include FormHelper
 
@@ -30,11 +30,6 @@ class SearchFormBuilder
 
     @filter_group_stack = [:all] # Not currently actually using this.
     @field_count = 0
-  end
-
-  def on(model)
-    # TODO do useful things here, like accept a block or whatever.
-    @model = model
   end
 
   # These methods are not actually useful right now.
@@ -108,7 +103,7 @@ class SearchFormBuilder
 
       select_options.send :original_concat, @template.content_tag(:option, 
         name, value: value,
-        selected: value.to_s == initial_value.to_s ? 'selected' : nil)
+        selected: value.to_s == initial_value.to_s ? 'selected' : nil) unless value.empty?
     end
 
     @field_count += 1
@@ -175,7 +170,7 @@ class SearchFormBuilder
   end
   alias_method :search, :submit
 
-  # This button will save the query instead of searching it
+  # This outputs a button that will save the query instead of searching it
   def save(options={})
     add_class options, 'submit', 'btn', 'btn-primary', 'btn-search-save'
 
@@ -213,11 +208,11 @@ private
             return existing_filter.value unless existing_filter.nil?
           rescue ActiveRecord::RecordNotFound
           end
-        # Otherwise it must be a hash with search params
+        # Otherwise it must be a hash of search params
         elsif @last_search[model_name]
           traverse @last_search[model_name] do |k,v|
             if k.to_s == field_name.to_s
-              if v == 'nil' then return nil else return v end
+              return v == 'nil' ? nil : v
             end
           end
         end
@@ -259,9 +254,7 @@ private
   def input_name_for(field_name, num=nil)
     "search[#{model_name}[#{num || @field_count}[#{field_name}]]]"
   end
-  # def id_for(field_name, suffix=nil)
-  #   "search_#{model_name}_#{@field_count}_#{field_name}#{suffix.nil? ? '' : '_'+suffix}"
-  # end
+
   def metadata_name_for(field_name)
     "search[#{model_name}[#{@field_count}[_metadata]]][]"
   end

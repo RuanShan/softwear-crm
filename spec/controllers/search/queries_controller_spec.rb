@@ -68,6 +68,15 @@ describe Search::QueriesController, search_spec: true do
     }}}
   end
 
+  let(:test_params_with_lessthan_metadata) do
+    {search: {
+      order: {
+        '1' => { lastname: 'Baillie' },
+        '2' => { commission_amount: 15.00, _metadata: ['less_than'] },
+        fulltext: 'ftestasdlfkj'
+    }}}
+  end
+
   let(:test_params_with_group) do
     {search: {
       order: {
@@ -176,7 +185,19 @@ describe Search::QueriesController, search_spec: true do
             expect(Sunspot.session).to have_search_params(:without, :firstname, 'Nigel')
           end
 
-          it 'applies the "greater_than" metadata properly' do
+          it 'applies the "less_than" metadata properly' do
+            get :search, test_params_with_lessthan_metadata
+            expect(response).to be_ok
+
+            expect(assigns[:search].first).to be_a Sunspot::Search::StandardSearch
+
+            expect(Sunspot.session).to be_a_search_for Order
+            expect(Sunspot.session).to have_search_params(:with) {
+              with(:commission_amount).less_than(15.00)
+            }
+          end
+
+          it 'applies the "greater_than" AND "negate" metadata properly' do
             get :search, test_params_with_metadata
             expect(response).to be_ok
 

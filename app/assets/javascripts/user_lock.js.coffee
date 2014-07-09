@@ -3,14 +3,21 @@
 $(window).load ->
   if $('#timeoutModal').length == 0 then return
 
+  assureIdle = -> Date.now() - localStorage.SWCRM_LastClickMs >= idleTimeoutMs
+
   set_countdown_timer = ->
+    # Stop counting down if we receive a click from another tab / window.
+    return begin() unless assureIdle()
+
     $('#timeoutModal .modal-body').html "You will be temporarily logged out in #{count} seconds"
     count--
     $('#timeoutModal').modal 'show'
+
     if count < 0
       clearInterval inter
       on_timeout()
 
+  localStorage.SWCRM_LastClickMs = Date.now()
   count = idleWarningSec
   inter = null
   warning = false
@@ -27,8 +34,10 @@ $(window).load ->
     clearInterval inter if inter
     $("#timeoutModal").modal 'hide' if warning
     warning = false
+    count = idleWarningSec
   begin = ->
     cancel()
+    localStorage.SWCRM_LastClickMs = Date.now()
     timer.set { time: idleTimeoutMs, autostart: true }
 
   begin()

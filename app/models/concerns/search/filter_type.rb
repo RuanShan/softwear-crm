@@ -9,7 +9,7 @@ module Search
       class << self
         def search_types; @search_types ||= []; end
         def belongs_to_search_type(type)
-          belongs_to_search_types(*[type])
+          belongs_to_search_types(type)
         end
         def belongs_to_search_types(*types)
           @search_types = types
@@ -27,6 +27,10 @@ module Search
         # being used in a proc.
         def assure_value(value)
           value
+        end
+
+        def uses_comparator?
+          column_names.include? 'comparator'
         end
       end
     end
@@ -52,7 +56,7 @@ module Search
         return type unless (field.type_names & type.search_types).empty? || 
                            (!low_priority && type.low_priority?)
       end
-      return self.of(field, true) unless low_priority
+      return self.of(field, true) if low_priority == false
 
       raise "#{field.model_name}##{field.name} has no filter type associated with its type(s) #{field.type_names.inspect}.
              Check the 'searchable' block in #{field.model_name.to_s.underscore}.rb or filter on a different field."

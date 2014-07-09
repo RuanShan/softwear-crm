@@ -51,8 +51,13 @@ module Search
       elsif params[:search]
         session[:last_search] = params[:search]
         @search = QueryBuilder.search({page: params[:page]}, &build_search_proc(params[:search]))
+      elsif params[:q]
+        text = params[:q]
+        @search = QueryBuilder.search page: params[:page] do
+          on(:all) { fulltext text }
+        end
       else
-        puts 'your params were useless, however'
+        return render text: "Can't search without a query of some sort!"
       end
 
       models = models_of params[:search] || @query
@@ -72,15 +77,17 @@ module Search
       ### Helper functions are defined in here as lambdas, since the context
       ### within the returned proc will not be this controller.
 
-      # Helper function to get with/without depending on whether or
-      # not a field is negated.
-      with_or_without = -> (metadata) { metadata.include?('negate') ? :without : :with }
       # Get any_of/all_of depending on metadata
       any_or_all_of = -> (metadata) { metadata.include?('any_of') ? :any_of : :all_of }
-      # Get a post-funtion for a filter call.
-      greater_or_less_than = -> (metadata) do
-        metadata.each { |m| case m; when 'greater_than', 'less_than'; return m; end }
-        nil
+      # Get comparator for number filters
+      comparator_for = -> (metadata) do
+        metadata.each do |m|
+          case m
+            when 'greater_than'; return '>'
+            when 'less_than'; return '<'
+          end
+        end
+        '='
       end
 
       default_fulltext = search['fulltext']
@@ -122,24 +129,18 @@ module Search
               if group_attrs
                 send(any_or_all_of.call(metadata), &process_attrs.call(group_attrs, model, base_scope))
               else
+                # Get the search field we're working with, and its associated filter type.
                 field = Field[model, field_name]
-                # Boolean metadata is effectively replaced by this.
-                field_value = FilterType.of(field).assure_value(field_value)
+                filter_type = FilterType.of field
 
-                # TODO construct new filter type for all non-group fields.
-                if FilterType.of(field) == PhraseFilter
-                  PhraseFilter.new(field: field_name, value: field_value).apply(self, base_scope)
-                else
-                  with = with_or_without.call(metadata)
-                  post_func = greater_or_less_than.call(metadata)
+                # The field value will be a string; this will convert it into the proper
+                # Ruby type if possible.
+                field_value = filter_type.assure_value(field_value)
 
-                  # The call is structured differently if it is a relative comparison (> or <)
-                  if post_func
-                    send(with, field_name).send(post_func, field_value)
-                  else
-                    send(with, field_name, field_value)
-                  end
-                end
+                args = { field: field_name, value: field_value, negate: metadata.include?('negate') }
+                args.merge!(comparator: comparator_for.call(metadata)) if filter_type.uses_comparator?
+
+                filter_type.new(args).apply(self, base_scope)
               end
             end
           end
@@ -175,19 +176,19 @@ module Search
     end
 
     def models_of(search_params)
-      if search_params.is_a? Hash
+      case search_params
+      when Hash
         search_params.keys.reject { |k| k == 'fulltext' }
-      else
+      when Query
         search_params.models.map(&:name)
+      else
+        Models.all.map(&:name)
       end
     end
 
     def permit_params
       params.permit(:search).permit!
-      params.permit(:id)
-      params.permit(:page)
-      params.permit(:target_path)
-      params.permit(:user_id)
+      params.permit(:id, :page, :target_path, :user_id, :q)
     end
 
     def query_params

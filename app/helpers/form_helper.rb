@@ -47,17 +47,28 @@ module FormHelper
 
     current = if session[:last_search] =~ /\d/
       session[:last_search].to_i
-    else
-      nil
     end
 
-    @current_user.search_queries.each do |query|
-      select_options.send :original_concat, content_tag(:option,
-        query.name, value: query.id, selected: query.id == current)
+    @current_user.search_queries.joins(:query_models).
+      where(search_query_models: { name: model.name }).each do |query|
+        
+        select_options.send :original_concat, content_tag(:option,
+          query.name, value: query.id, selected: query.id == current)
     end
 
     form_tag search_path, method: 'GET' do
       select_tag('id', select_options, options)
+    end
+  end
+
+  def search_field(options={}, &block)
+    add_class options, 'form-control', 'search'
+
+    form_tag search_path, method: 'GET', role: 'form' do
+      is_textarea = options.delete :textarea
+      func = is_textarea ? :text_area_tag : :text_field_tag
+
+      send(func, 'q', '', options) + (block_given? ? capture(&block) : '')
     end
   end
 end

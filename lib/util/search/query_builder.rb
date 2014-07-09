@@ -122,7 +122,7 @@ module Search
         define_method(name) do |value|
           comp = ['>', '<'][i]
           type = FilterType.of @field
-          unless type.column_names.include? 'comparator'
+          unless type.uses_comparator?
             raise SearchException.new "Must be comparable filter type in order to call #{name}."
           end
           @group.filters << Filter.new(type, field: @field.name, 
