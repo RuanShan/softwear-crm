@@ -56,7 +56,7 @@ module Search
         return type unless (field.type_names & type.search_types).empty? || 
                            (!low_priority && type.low_priority?)
       end
-      return self.of(field, true) unless low_priority
+      return self.of(field, true) if low_priority == false
 
       raise "#{field.model_name}##{field.name} has no filter type associated with its type(s) #{field.type_names.inspect}.
              Check the 'searchable' block in #{field.model_name.to_s.underscore}.rb or filter on a different field."
