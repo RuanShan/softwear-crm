@@ -31,4 +31,8 @@ class ArtworkRequest < ActiveRecord::Base
     jobs.map{|job| job.imprintable_info}.join(', ')
   end
 
+  def total_quantity
+    jobs.map{|j| j.total_quantity}.inject{|sum,x| sum + x }
+  end
+
 end

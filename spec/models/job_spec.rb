@@ -227,4 +227,18 @@ describe Job, job_spec: true do
       expect(subject.imprintable_info).to eq("ROYGBIV Hip 5, Obsidian Cool 55, Color Balla 555")
     end
   end
+
+  describe '#total_quantity', artwork_request_spec: true do
+    before do
+      allow(subject).to receive(:line_items) { [
+          build_stubbed(:blank_line_item, quantity: 25),
+          build_stubbed(:blank_line_item, quantity: 50),
+          build_stubbed(:blank_line_item, quantity: 30)
+      ]}
+    end
+
+    it 'should return the sum of all line item quantities' do
+      expect(subject.total_quantity).to eq(105)
+    end
+  end
 end

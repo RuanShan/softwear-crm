@@ -1,0 +1,30 @@
+<div class="box-info full">
+  <div class="table-responsive">
+    <table data-sortable class="table">
+      <thead>
+      <tr>
+        <th>Priority</th>
+        <th>Hard Deadline</th>
+        <th>Proof Deadline</th>
+        <th>Imprint Method</th>
+        <th>Quantity</th>
+        <th>Payment Terms</th>
+        <th>Order Name</th>
+      </tr>
+      </thead>
+      <tbody>
+      <% artwork_requests.where(artist_id: current_user.id).each do |ar| %>
+          <tr>
+            <td><%= ArtworkRequest::PRIORITIES[ar.priority.to_i] %></td>
+            <td><%= ar.jobs[0].order.in_hand_by.strftime('%b %d, %Y, %I:%M %p') %></td>
+            <td><%= ar.deadline.strftime('%b %d, %Y, %I:%M %p') %></td>
+            <td><%= ar.imprint_method.name %></td>
+            <td><%= ar.total_quantity %></td>
+            <td><%= ar.jobs[0].order.sales_status %></td>
+            <td><%= ar.jobs[0].order.name %></td>
+          </tr>
+      <% end %>
+      </tbody>
+    </table>
+  </div>
+</div>

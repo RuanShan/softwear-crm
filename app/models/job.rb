@@ -60,6 +60,10 @@ class Job < ActiveRecord::Base
     (imprintable_color_names).zip(imprintable_style_names, imprintable_style_catalog_nos).map{|array| array.join(' ')}.join(', ')
   end
 
+  def total_quantity
+    line_items.empty? ? 0 : line_items.map{|li| li.quantity}.inject{|sum, x| sum + x }
+  end
+
 
   searchable do
     text :name, :description
