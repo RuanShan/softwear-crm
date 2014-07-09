@@ -1,9 +1,16 @@
 class ArtworkRequestsController < InheritedResources::Base
   before_filter :format_time, only: [:create, :update]
   before_filter :assign_order
+  after_filter :notify_artists, only: [:create, :update]
+
   respond_to :js
 
   private
+
+  def notify_artists
+    action = action_name + 'd'
+    ArtistMailer.notify_artist(@artwork_request.salesperson, @artwork_request, @artwork_request.artist, action).deliver
+  end
 
   def format_time
     begin

@@ -23,9 +23,26 @@ describe ArtworkRequestsController, js: true, artwork_request_spec: true do
   end
 
   describe 'POST create' do
+    let!(:imprint_method) {create(:valid_imprint_method_with_color_and_location)}
+    let!(:args) { [:create, artwork_request: attributes_for(:valid_artwork_request).merge(artist_id: create(:user).id,
+                                                                                          imprint_method_id: imprint_method.id,
+                                                                                          salesperson_id: create(:alternate_user).id,
+                                                                                          print_location_id: imprint_method.print_locations.first.id,
+                                                                                          job_ids: create(:order_with_job).job_ids,
+                                                                                          ink_color_ids: imprint_method.ink_color_ids)] }
     it 'renders create.js.erb' do
-      post :create, order_id: order.id, artwork_request_id: artwork_request.id, format: 'js'
+      post :create, order_id: order.id, artwork_request: attributes_for(:valid_artwork_request).merge(artist_id: create(:user).id,
+                                                                                               imprint_method_id: imprint_method.id,
+                                                                                               salesperson_id: create(:alternate_user).id,
+                                                                                               print_location_id: imprint_method.print_locations.first.id,
+                                                                                               job_ids: create(:order_with_job).job_ids,
+                                                                                               ink_color_ids: imprint_method.ink_color_ids), format: 'js'
       expect(response).to render_template('create')
+
+
+    end
+    it "sends an email to the artist's email address" do
+      expect{ post *args }.to change{ActionMailer::Base.deliveries.count}.by 1
     end
   end
 
@@ -37,9 +54,27 @@ describe ArtworkRequestsController, js: true, artwork_request_spec: true do
   end
 
   describe 'PUT update' do
+    let!(:imprint_method) {create(:valid_imprint_method_with_color_and_location)}
+    let!(:args) { [:create, artwork_request: attributes_for(:valid_artwork_request).merge(artist_id: create(:user).id,
+                                                                                          imprint_method_id: imprint_method.id,
+                                                                                          salesperson_id: create(:alternate_user).id,
+                                                                                          print_location_id: imprint_method.print_locations.first.id,
+                                                                                          job_ids: create(:order_with_job).job_ids,
+                                                                                          ink_color_ids: imprint_method.ink_color_ids)] }
     it 'renders update.js.erb' do
-      put :update, order_id: order.id, id: artwork_request.id, format: 'js'
+
+      put :update, order_id: order.id, id: artwork_request.id, artwork_request: attributes_for(:valid_artwork_request).merge(artist_id: create(:user).id,
+                                                                                                                                             imprint_method_id: imprint_method.id,
+                                                                                                                                             salesperson_id: create(:alternate_user).id,
+                                                                                                                                             print_location_id: imprint_method.print_locations.first.id,
+                                                                                                                                             job_ids: create(:order_with_job).job_ids,
+                                                                                                                                             ink_color_ids: imprint_method.ink_color_ids), format: 'js'
       expect(response).to render_template('update')
+
+
+    end
+    it "sends an email to the artist's email address" do
+      expect{ post *args }.to change{ActionMailer::Base.deliveries.count}.by 1
     end
   end
 end
