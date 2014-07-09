@@ -7,7 +7,12 @@ describe Search::Query, search_spec: true do
   it { should_not have_db_column :default_fulltext }
 
   it { should have_many :query_models }
-  # it { should have_many :fields, class_name: 'Search::QueryField', through: :models }
+
+  it 'should not allow an empty name if user_id is not nil' do
+    subject.user_id = 1
+    subject.name = ""
+    expect(subject).to_not be_valid
+  end
 
   describe '#models' do
     context 'when the query has no models' do

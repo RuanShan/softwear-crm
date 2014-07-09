@@ -3,6 +3,7 @@ module Search
     belongs_to :user
     has_many :query_models, class_name: 'Search::QueryModel', dependent: :destroy
     validates :name, uniqueness: { scope: :user_id }
+    validate :name_is_not_empty_if_owned_by_a_user
 
     class SearchList < Array
       def initialize(models, &block)
@@ -118,6 +119,12 @@ module Search
         query_models[index].query_fields.map do |qf|
           qf.to_h
         end.reduce({}, :merge)
+      end
+    end
+
+    def name_is_not_empty_if_owned_by_a_user
+      if self.name.empty? && !self.user_id.nil?
+        errors.add :name, "cannot be empty if owned by a user"
       end
     end
   end
