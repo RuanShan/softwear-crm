@@ -111,4 +111,61 @@ feature 'Order management', order_spec: true,  js: true do
 
     expect(page).to have_content 'Email is invalid'
   end
+
+  describe 'search', search_spec: true, solr: true do
+    let!(:order2) { create(:order_with_job, name: 'Keyword order') }
+    let!(:order3) { create(:order_with_job, name: 'Nonkeyword order', 
+      sales_status: 'Terms Set And Met') }
+    let!(:order4) { create(:order_with_job, name: 'Some Order', 
+      company: 'Order with the keyword keyword!') }
+    let!(:order5) { create(:order_with_job, name: 'Dumb order') }
+
+    scenario 'user can search orders' do
+      visit orders_path
+
+      fill_in 'search_fulltext', with: 'Keyword'
+      click_button 'Search'
+
+      expect(page).to have_content 'Keyword order'
+      expect(page).to have_content 'Some Order'
+      expect(page).to_not have_content 'Nonkeyword order'
+      expect(page).to_not have_content 'Dumb order'
+    end
+
+    scenario 'user can save searches' do
+      visit orders_path
+
+      find('.additional-icon[data-toggle="collapse"]').click
+      select 'Pending', from: 'search_order_3_sales_status'
+      click_button 'Save'
+      wait_for_ajax
+
+      fill_in 'query_name_input', with: 'Test Query'
+      find('#modal-confirm-btn').click
+
+      expect(page).to have_content 'Successfully saved search query!'
+      expect(Search::Query.where(name: 'Test Query')).to exist
+    end
+
+    scenario 'user can use saved searches' do
+      query = Search::QueryBuilder.build('Test Query') do
+        on Order do
+          with :sales_status, 'Pending'
+          fulltext 'order'
+        end
+      end.query
+      query.user = valid_user
+      expect(query.save).to be_truthy
+
+      visit orders_path
+
+      select 'Test Query', from: 'select_query_for_order'
+      wait_for_ajax
+      click_button 'GO'
+
+      expect(page).to have_content 'Keyword order'
+      expect(page).to have_content 'Dumb order'
+      expect(page).to_not have_content 'Nonkeyword order'
+    end
+  end
 end

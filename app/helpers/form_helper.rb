@@ -56,7 +56,6 @@ module FormHelper
         query.name, value: query.id, selected: query.id == current)
     end
 
-    # TODO some js to spawn a search button / form
     form_tag search_path, method: 'GET' do
       select_tag('id', select_options, options)
     end

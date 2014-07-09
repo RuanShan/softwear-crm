@@ -7,58 +7,91 @@
   </div><!-- End div .additional-btn -->
   <!-- Horizontal form body -->
   <%= search_form_for Order, class: 'form-horizontal' do |s| %>
-    <div id="horizontal-form" class="collapse out">
-        <div class="col-sm-4">
-          <div class="form-group">
-            <%= s.label :email, class: 'col-sm-2 control-label' %>
-            <div class="col-sm-10">
-              <%= s.text_field :email, placeholder: 'Email' %>
-            </div>
-          </div>
-          <div class="form-group">
-            <label for="inputPassword3" class="col-sm-2 control-label"></label>
-            <%= s.label :salesperson, 'Salesperson' %>
-            <div class="col-sm-10">
-              <%= s.select :salesperson, User.all, display: :full_name, style: 'width: 50%;' %>
-            </div>
-          </div>
-        </div>
-        <div class="col-sm-4">
-          <div class="form-group">
-            <%= s.label :firstname, 'First Name', class: 'col-sm-2 control-label' %>
-            <div class="col-sm-10">
-              <%= s.text_field :firstname, placeholder: 'First Name' %>
-            </div>
-          </div>
-          <div class="form-group">
-            <%= s.label :company, class: 'col-sm-2 control-label' %>
-            <div class="col-sm-10">
-              <%= s.text_field :company, placeholder: 'Company' %>
-            </div>
-          </div>
-        </div>
-      <div class="col-sm-4">
-        <div class="form-group">
-          <%= s.label :lastname, 'Last Name', class: 'col-sm-2 control-label' %>
-          <div class="col-sm-10">
-            <%= s.text_field :lastname, placeholder: 'Last Name' %>
-          </div>
-        </div>
-        <div class="form-group">
-          <%= s.label :phone_number, class: 'col-sm-2 control-label' %>
-          <div class="col-sm-10">
-            <%= s.text_field :phone_number, placeholder: '___-___-____', class: 'format-phone' %>
-          </div>
-        </div>
-      </div>
-    </div><!-- End div #horizontal-from -->
+  <div id="horizontal-form" class="collapse out">
+    <div class="col-sm-4">
 
-    <div class="form-group margin-top-10">
-      <div class="col-sm-offset-3 col-sm-6">
-        <%= s.fulltext placeholder: 'Keywords' %>
-        <%= s.submit class: 'btn-lg btn-block margin-top-10' %>
+      <div class="form-group">
+        <%= s.label :email, class: 'col-sm-2 control-label' %>
+        <div class="col-sm-10">
+          <%= s.text_field :email, placeholder: 'Email' %>
+        </div>
       </div>
+
+      <div class="form-group">
+        <%= s.label :salesperson, 'Sales Person', class: 'col-sm-2 control-label' %>
+        <div class="col-sm-10">
+          <%= s.select :salesperson, User.all, display: :full_name %>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <%= s.label :sales_status, class: 'col-sm-2 control-label' %>
+        <div class='col-sm-10'>
+          <%= s.select :sales_status, Order::VALID_SALES_STATUSES %>
+        </div>
+      </div>
+
     </div>
-    
-    <% end %>
- </div>
+    <div class="col-sm-4">
+
+      <div class="form-group">
+        <%= s.label :firstname, 'First Name', class: 'col-sm-2 control-label' %>
+        <div class="col-sm-10">
+          <%= s.text_field :firstname, placeholder: 'First Name' %>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <%= s.label :company, class: 'col-sm-2 control-label' %>
+        <div class="col-sm-10">
+          <%= s.text_field :company, placeholder: 'Company' %>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <%= s.label :delivery_method, class: 'col-sm-2 control-label' %>
+        <div class='col-sm-10'>
+          <%= s.select :delivery_method, Order::VALID_DELIVERY_METHODS %>
+        </div>
+      </div>
+
+    </div>
+    <div class="col-sm-4">
+
+      <div class="form-group">
+        <%= s.label :lastname, 'Last Name', class: 'col-sm-2 control-label' %>
+        <div class="col-sm-10">
+          <%= s.text_field :lastname, placeholder: 'Last Name' %>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <%= s.label :phone_number, class: 'col-sm-2 control-label' %>
+        <div class="col-sm-10">
+          <%= s.text_field :phone_number, placeholder: '___-___-____', class: 'format-phone' %>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <%= s.label :terms, 'Payment Terms', class: 'col-sm-2 control-label' %>
+        <div class='col-sm-10'>
+          <%= s.select :terms, Order::VALID_PAYMENT_TERMS %>
+        </div>
+      </div>
+
+    </div>
+  </div><!-- End div #horizontal-from -->
+
+  <div class="col-sm-3">
+    <%= s.save %>
+  </div>
+  <div class="col-sm-6">
+    <%= s.fulltext placeholder: 'Keywords' %>
+    <%= s.submit class: 'btn-lg btn-block margin-top-10' %>
+  </div>
+  <% end %>
+  <div class="col-sm-3">
+    <%= select_search_queries Order %>
+  </div>
+  
+</div>
