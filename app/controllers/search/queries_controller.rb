@@ -51,8 +51,13 @@ module Search
       elsif params[:search]
         session[:last_search] = params[:search]
         @search = QueryBuilder.search({page: params[:page]}, &build_search_proc(params[:search]))
+      elsif params[:q]
+        text = params[:q]
+        @search = QueryBuilder.search page: params[:page] do
+          on(:all) { fulltext text }
+        end
       else
-        puts 'your params were useless, however'
+        return render text: "Can't search without a query of some sort!"
       end
 
       models = models_of params[:search] || @query
@@ -171,19 +176,19 @@ module Search
     end
 
     def models_of(search_params)
-      if search_params.is_a? Hash
+      case search_params
+      when Hash
         search_params.keys.reject { |k| k == 'fulltext' }
-      else
+      when Query
         search_params.models.map(&:name)
+      else
+        Models.all.map(&:name)
       end
     end
 
     def permit_params
       params.permit(:search).permit!
-      params.permit(:id)
-      params.permit(:page)
-      params.permit(:target_path)
-      params.permit(:user_id)
+      params.permit(:id, :page, :target_path, :user_id, :q)
     end
 
     def query_params
