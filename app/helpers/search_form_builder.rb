@@ -103,7 +103,7 @@ class SearchFormBuilder
 
       select_options.send :original_concat, @template.content_tag(:option, 
         name, value: value,
-        selected: value.to_s == initial_value.to_s ? 'selected' : nil)
+        selected: value.to_s == initial_value.to_s ? 'selected' : nil) unless value.empty?
     end
 
     @field_count += 1
@@ -212,7 +212,7 @@ private
         elsif @last_search[model_name]
           traverse @last_search[model_name] do |k,v|
             if k.to_s == field_name.to_s
-              if v == 'nil' then return nil else return v end
+              return v == 'nil' ? nil : v
             end
           end
         end
