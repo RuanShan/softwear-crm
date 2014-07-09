@@ -68,12 +68,16 @@ class SearchFormBuilder
         (@last_search[model_name] && @last_search[model_name][:fulltext]) || 
           @last_search[:fulltext]
       else
-        query = Search::Query.find(@last_search.to_i)
-        query_model = query.query_models.where(name: @model.name).first
-        if query_model.nil?
+        begin
+          query = Search::Query.find(@last_search.to_i)
+          query_model = query.query_models.where(name: @model.name).first
+          if query_model.nil?
+            ''
+          else
+            query_model.default_fulltext
+          end
+        rescue ActiveRecord::RecordNotFound
           ''
-        else
-          query_model.default_fulltext
         end
       end
     end
@@ -203,8 +207,12 @@ private
       if @last_search
         # If it's a number, it was a query
         if (@last_search.is_a?(String) && @last_search =~ /\d+/) || @last_search.is_a?(Fixnum)
-          existing_filter = Search::Query.find(@last_search.to_i).filter_for @model, field_name
-          return existing_filter.value unless existing_filter.nil?
+          begin
+            last_query = Search::Query.find(@last_search.to_i)
+            existing_filter = last_query.filter_for @model, field_name
+            return existing_filter.value unless existing_filter.nil?
+          rescue ActiveRecord::RecordNotFound
+          end
         # Otherwise it must be a hash with search params
         elsif @last_search[model_name]
           traverse @last_search[model_name] do |k,v|

@@ -2,6 +2,7 @@ module Search
   class PhraseFilter < ActiveRecord::Base
     include FilterType
     belongs_to_search_type :text
+    low_priority_filter_type
 
     def apply(s, base)
       v = value
