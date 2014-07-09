@@ -76,9 +76,9 @@ class LineItemsController < InheritedResources::Base
           quantity: 0,
           job_id: params[:job_id]
       )}
-      valid_line_items = line_items.map { |l| l.valid? ? 1 : 0 }.sum
-      if valid_line_items > 0
-        line_items.each { |l| l.save if l.valid? }
+      valid_line_items = line_items.select(&:valid)
+      if !valid_line_items.empty?
+        valid_line_items.each(&:save)
         render json: { result: 'success' }
       else
         modal_html = ''
