@@ -9,7 +9,7 @@ module Search
       class << self
         def search_types; @search_types ||= []; end
         def belongs_to_search_type(type)
-          belongs_to_search_types(*[type])
+          belongs_to_search_types(type)
         end
         def belongs_to_search_types(*types)
           @search_types = types
