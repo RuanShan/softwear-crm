@@ -1,4 +1,5 @@
 class OrdersController < InheritedResources::Base
+  before_filter :format_time, only: [:create, :update]
 
   def index
     super do
@@ -7,7 +8,6 @@ class OrdersController < InheritedResources::Base
   end
 
   def update
-    params[:order][:in_hand_by] = DateTime.strptime(params[:order][:in_hand_by], '%m/%d/%Y %H:%M %p') if params[:order][:in_hand_by].length > 0
     super do |success, failure|
       success.html { redirect_to edit_order_path(params[:id])+'#details' }
       failure.html { render action: :edit, anchor: 'details' }
@@ -30,12 +30,18 @@ class OrdersController < InheritedResources::Base
     end
   end
 
-  def create
-    params[:order][:in_hand_by] = DateTime.strptime(params[:order][:in_hand_by], '%m/%d/%Y %H:%M %p') if params[:order][:in_hand_by].length > 0
-    super
-  end
-
   private
+
+  def format_time
+    begin
+      time = DateTime.strptime(params[:order][:in_hand_by], '%m/%d/%Y %H:%M %p').to_time unless (params[:order].nil? or params[:order][:in_hand_by].nil?)
+      offset = (time.utc_offset)/60/60
+      adjusted_time = (time - offset.hours).utc
+      params[:order][:in_hand_by] = adjusted_time
+    rescue ArgumentError
+      params[:order][:in_hand_by]
+    end
+  end
 
   def permitted_params
     params.permit(order: [

@@ -7,7 +7,10 @@ class ArtworkRequestsController < InheritedResources::Base
 
   def format_time
     begin
-      params[:artwork_request][:deadline] = DateTime.strptime(params[:artwork_request][:deadline], '%m/%d/%Y %H:%M %p') unless (params[:artwork_request].nil? or params[:artwork_request][:deadline].nil?)
+      time = DateTime.strptime(params[:artwork_request][:deadline], '%m/%d/%Y %H:%M %p').to_time unless (params[:artwork_request].nil? or params[:artwork_request][:deadline].nil?)
+      offset = (time.utc_offset)/60/60
+      adjusted_time = (time - offset.hours).utc
+      params[:artwork_request][:deadline] = adjusted_time
     rescue ArgumentError
       params[:artwork_request][:deadline]
     end
