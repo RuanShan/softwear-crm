@@ -60,4 +60,14 @@ module FormHelper
       select_tag('id', select_options, options)
     end
   end
+
+  def search_field(options={})
+    add_class options, 'form-control', 'search'
+    form_tag search_path, method: 'GET' do
+      is_textarea = options.delete :textarea
+      func = is_textarea ? :text_area_tag : :text_field_tag
+
+      send func, 'q', options
+    end
+  end
 end
