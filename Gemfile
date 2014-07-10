@@ -88,7 +88,7 @@ gem 'paperclip', github: 'thoughtbot/paperclip'
 gem 'google_drive'
 gem 'kaminari'
 gem 'remotipart'
-
+gem 'public_activity'
 gem 'sunspot_solr'
 
 
