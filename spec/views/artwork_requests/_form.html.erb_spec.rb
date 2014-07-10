@@ -9,6 +9,7 @@ describe 'artwork_requests/_form.html.erb', artwork_request_spec: true do
     render partial: 'artwork_requests/form', locals: {current_user: create(:user), order: order, artwork_request: ArtworkRequest.new, f: @f}
     within_form_for ArtworkRequest do
       expect(rendered).to have_selector("select#artwork_request_job_ids")
+      expect(rendered).to have_selector("select#artwork_request_priority")
       expect(rendered).to have_selector("select#artwork_imprint_method_fields")
       expect(rendered).to have_selector("div#imprint_method_print_locations_and_ink_colors")
       expect(rendered).to have_selector("select#artwork_request_artwork_status")

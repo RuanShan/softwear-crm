@@ -16,6 +16,7 @@ describe 'artwork_requests/_artwork_request.html.erb', artwork_request_spec: tru
       expect(rendered).to have_selector("div#artwork-request-#{artwork_request.id}")
       expect(rendered).to have_selector("div.the-notes")
       expect(rendered).to have_selector("h4.artwork-request-title")
+      expect(rendered).to have_css("dt", text: 'Priority')
       expect(rendered).to have_css("dt", text: 'Imprint Method')
       expect(rendered).to have_css("dd", text: "#{artwork_request.imprint_method.name}")
       expect(rendered).to have_css("dt", text: 'Print Location')

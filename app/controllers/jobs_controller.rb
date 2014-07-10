@@ -88,7 +88,7 @@ class JobsController < InheritedResources::Base
   private
   def permitted_params
     params.permit(:order_id, :job_id, :ids, job: [
-      :id, :name, :description
+      :id, :name, :description, :collapsed
     ], imprint: [:print_location_id])
   end
 

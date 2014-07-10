@@ -42,7 +42,7 @@ class Job < ActiveRecord::Base
   end
 
   def imprintable_variant_count
-    line_items.map{|li| li.imprintable_variant_id ? li.quantity : 0}.inject{|sum, x| sum + x }
+    line_items.empty? ? 0 : line_items.map{|li| li.imprintable_variant_id ? li.quantity : 0}.inject{|sum, x| sum + x }
   end
 
   def imprintable_color_names
@@ -58,6 +58,10 @@ class Job < ActiveRecord::Base
 
   def imprintable_info
     (imprintable_color_names).zip(imprintable_style_names, imprintable_style_catalog_nos).map{|array| array.join(' ')}.join(', ')
+  end
+
+  def total_quantity
+    line_items.empty? ? 0 : line_items.map{|li| li.quantity}.inject{|sum, x| sum + x }
   end
 
 
@@ -79,6 +83,7 @@ private
       self.name = new_job_name
     end
     self.description = "Click to edit description" if self.description.nil?
+    self.collapsed = true
   end
 
   def check_for_line_items

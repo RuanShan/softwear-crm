@@ -1,8 +1,9 @@
 FactoryGirl.define do
   factory :valid_artwork_request, class: ArtworkRequest do
     artwork_status 'Pending'
-    deadline '06/05/2014 3:07 PM'
+    deadline '06/05/2014 03:07 PM'
     description 'Description'
+    priority 'Normal'
 
     before(:create) do |artwork_request|
       order = create(:order_with_job)
@@ -10,7 +11,7 @@ FactoryGirl.define do
       artwork_request.artist_id = create(:user).id
       artwork_request.imprint_method_id = imprint_method.id
       artwork_request.salesperson_id = create(:alternate_user).id
-      artwork_request.print_location = imprint_method.print_locations.first
+      artwork_request.print_location_id = imprint_method.print_locations.first.id
       artwork_request.job_ids = order.job_ids
       artwork_request.ink_color_ids = imprint_method.ink_color_ids
     end

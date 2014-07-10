@@ -66,5 +66,9 @@ module Search
         model_name
       end.to_sym
     end
+
+    def model
+      Kernel.const_get @model_name
+    end
   end
 end

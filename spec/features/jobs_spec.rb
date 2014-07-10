@@ -36,14 +36,14 @@ feature 'Jobs management', js: true, job_spec: true do
   	visit edit_order_path(1, anchor: 'jobs')
   	click_button 'New Job'
   	sleep 0.5
-  	expect(all('form[id*="job"]').count).to eq 2
+  	expect(all('.job-container').count).to eq 2
   	expect(Job.all.count).to eq 2
   end
 
   scenario 'creating two jobs in a row does not fail on account of duplicate name' do
   	visit edit_order_path(1, anchor: 'jobs')
   	2.times { click_button 'New Job'; sleep 0.5 }
-  	expect(all('form[id*="job"').count).to eq 3
+  	expect(all('.job-container').count).to eq 3
   	expect(Job.all.count).to eq 3
   end
 
@@ -53,9 +53,8 @@ feature 'Jobs management', js: true, job_spec: true do
     click_button 'New Job'
     sleep 0.5
 
-    within_form_for job do
-      fill_in_inline 'name', with: 'Okay Job'
-    end
+    fill_in_inline 'name', with: 'Okay Job', first: true
+
     sleep 0.5
 
     expect(page).to have_content 'Name has already been taken'
@@ -90,5 +89,23 @@ feature 'Jobs management', js: true, job_spec: true do
     find('a', text: 'Confirm').click
     expect(page).to have_css("#job-#{order.jobs.second.id}", :visible => false)
     expect(order.jobs.count).to eq 1
+  end
+
+  scenario 'a job can be hidden and collapsed' do
+    visit edit_order_path(1, anchor: 'jobs')
+    expect(page).to have_content job.name
+    expect(page).to have_content job.description
+
+    find('.collapse-job-btn').click
+    sleep 0.5
+
+    expect(page).to have_content job.name
+    expect(page).to_not have_content job.description
+
+    find('.collapse-job-btn').click
+    sleep 0.5
+
+    expect(page).to have_content job.name
+    expect(page).to have_content job.description
   end
 end

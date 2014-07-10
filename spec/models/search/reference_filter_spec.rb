@@ -33,4 +33,10 @@ describe Search::ReferenceFilter, search_spec: true do
     end
     expect(Sunspot.session).to have_search_params(:without, 'salesperson', user)
   end
+
+  describe '.assure_value' do
+    it 'should return an actual record based off <model name>#<id>' do
+      expect(Search::ReferenceFilter.assure_value("User##{user.id}")).to eq user
+    end
+  end
 end

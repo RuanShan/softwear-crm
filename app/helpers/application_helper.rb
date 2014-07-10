@@ -74,7 +74,7 @@ module ApplicationHelper
   end
 
   def time_format(datetime)
-    datetime.strftime('%m/%d/%Y %H:%M %p') unless datetime.blank?
+    datetime.strftime('%m/%d/%Y %I:%M %p') unless datetime.blank?
   end
 
   def imprintable_modal(imprintable)

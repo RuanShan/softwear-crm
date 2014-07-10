@@ -51,8 +51,13 @@ module Search
       elsif params[:search]
         session[:last_search] = params[:search]
         @search = QueryBuilder.search({page: params[:page]}, &build_search_proc(params[:search]))
+      elsif params[:q]
+        text = params[:q]
+        @search = QueryBuilder.search page: params[:page] do
+          on(:all) { fulltext text }
+        end
       else
-        puts 'your params were useless, however'
+        return render text: "Can't search without a query of some sort!"
       end
 
       models = models_of params[:search] || @query
@@ -72,21 +77,23 @@ module Search
       ### Helper functions are defined in here as lambdas, since the context
       ### within the returned proc will not be this controller.
 
-      # Helper function to get with/without depending on whether or
-      # not a field is negated.
-      with_or_without = -> (metadata) { metadata.include?('negate') ? :without : :with }
       # Get any_of/all_of depending on metadata
       any_or_all_of = -> (metadata) { metadata.include?('any_of') ? :any_of : :all_of }
-      # Get a post-funtion for a filter call.
-      greater_or_less_than = -> (metadata) do
-        metadata.each { |m| case m; when 'greater_than', 'less_than'; return m; end }
-        nil
+      # Get comparator for number filters
+      comparator_for = -> (metadata) do
+        metadata.each do |m|
+          case m
+            when 'greater_than'; return '>'
+            when 'less_than'; return '<'
+          end
+        end
+        '='
       end
 
       default_fulltext = search['fulltext']
 
       # Turn hash search data into function calls
-      process_attrs = -> (attrs) do
+      process_attrs = -> (attrs, model, base_scope) do
         Proc.new do
           applied_fulltext = false
           attrs.each do |num, attr|
@@ -94,7 +101,7 @@ module Search
             # If it's a number, attr is a hash with { fieldname=>fieldvalue, posssiblemetadata=>array }
             # TODO boost fields, dang.
             if num == 'fulltext'
-              send(:fulltext, attr)
+              fulltext attr
               applied_fulltext = true
             else
               # puts attr.inspect
@@ -114,26 +121,26 @@ module Search
                   field_value = value
                 end
               end
-              # If the value is nil, it means we don't even want to filter on it.
-              next if field_value == 'nil' || (!group_attrs && field_value.nil?)
-              # Boolean metadata indicates we need to use ruby true/false values.
-              if metadata.include? 'boolean'
-                field_value = field_value == 'false' ? false : true
-              end
+
+              # If the value is nil or empty, it means we don't even want to filter on it.
+              next if field_value == 'nil' || (!group_attrs && field_value.nil?) || (field_value.respond_to?(:empty?) && field_value.empty?)
 
               # If we're in a group, recurse!
               if group_attrs
-                send(any_or_all_of.call(metadata), &process_attrs.call(group_attrs))
+                send(any_or_all_of.call(metadata), &process_attrs.call(group_attrs, model, base_scope))
               else
-                with = with_or_without.call(metadata)
-                post_func = greater_or_less_than.call(metadata)
+                # Get the search field we're working with, and its associated filter type.
+                field = Field[model, field_name]
+                filter_type = FilterType.of field
 
-                # The call is structured differently if it is a relative comparison
-                if post_func
-                  send(with, field_name).send(post_func, field_value)
-                else
-                  send(with, field_name, field_value)
-                end
+                # The field value will be a string; this will convert it into the proper
+                # Ruby type if possible.
+                field_value = filter_type.assure_value(field_value)
+
+                args = { field: field_name, value: field_value, negate: metadata.include?('negate') }
+                args.merge!(comparator: comparator_for.call(metadata)) if filter_type.uses_comparator?
+
+                filter_type.new(args).apply(self, base_scope)
               end
             end
           end
@@ -161,25 +168,27 @@ module Search
             raise SearchException.new "#{actual_model.inspect} is not searchable."
           end
 
-          on actual_model, &process_attrs.call(attrs)
+          on actual_model do
+            instance_eval(&process_attrs.call(attrs, actual_model, self))
+          end
         end
       end
     end
 
     def models_of(search_params)
-      if search_params.is_a? Hash
+      case search_params
+      when Hash
         search_params.keys.reject { |k| k == 'fulltext' }
-      else
+      when Query
         search_params.models.map(&:name)
+      else
+        Models.all.map(&:name)
       end
     end
 
     def permit_params
       params.permit(:search).permit!
-      params.permit(:id)
-      params.permit(:page)
-      params.permit(:target_path)
-      params.permit(:user_id)
+      params.permit(:id, :page, :target_path, :user_id, :q)
     end
 
     def query_params

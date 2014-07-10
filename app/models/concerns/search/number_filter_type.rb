@@ -8,7 +8,7 @@ module Search
         message: "must be '>', '<', or '='"
       after_initialize -> { self.comparator ||= '=' }
 
-      def apply(s)
+      def apply(s, base=nil)
         if comparator == '='
           s.send(with_func, field, value)
         else

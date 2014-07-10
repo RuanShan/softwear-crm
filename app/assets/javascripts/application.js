@@ -27,3 +27,4 @@
 //= require moment
 //= require bootstrap-datetimepicker/bootstrap-datetimepicker
 //= require jquery.remotipart
+//= require sortable/sortable

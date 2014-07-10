@@ -111,7 +111,7 @@ create_records([
 # ----------------
 
 create_records([
-                   {name: 'Screen Printing' }
+                   { name: 'Screen Printing' }
                ], ImprintMethod)
 im = ImprintMethod.all.first
 create_records([

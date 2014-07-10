@@ -16,7 +16,23 @@ describe Search::QueriesController, search_spec: true do
   let!(:test_params_with_boolean) do
     {search: {
       imprintable: {
-        '1' => { standard_offering: 'false', _metadata: ['boolean'] },
+        '1' => { standard_offering: 'false' },
+        fulltext: 'yeah'
+    }}}
+  end
+
+  let!(:test_params_with_reference) do
+    {search: {
+      order: {
+        '1' => { salesperson: "User##{valid_user.id}" },
+        fulltext: 'yeah'
+    }}}
+  end
+
+  let!(:test_params_with_phrase_filter) do
+    {search: {
+      order: {
+        '1' => { jobs: 'Whoa! This would also include a description.' },
         fulltext: 'yeah'
     }}}
   end
@@ -48,6 +64,15 @@ describe Search::QueriesController, search_spec: true do
         '1' => { firstname: 'Nigel', _metadata: ['negate'] },
         '2' => { lastname: 'Baillie' },
         '3' => { commission_amount: 15.00, _metadata: ['negate', 'greater_than'] },
+        fulltext: 'ftestasdlfkj'
+    }}}
+  end
+
+  let(:test_params_with_lessthan_metadata) do
+    {search: {
+      order: {
+        '1' => { lastname: 'Baillie' },
+        '2' => { commission_amount: 15.00, _metadata: ['less_than'] },
         fulltext: 'ftestasdlfkj'
     }}}
   end
@@ -128,6 +153,26 @@ describe Search::QueriesController, search_spec: true do
           expect(searches.last).to have_search_params(:fulltext, 'test')
         end
 
+        it 'applies booleans properly' do
+          get :search, test_params_with_boolean
+          expect(response).to be_ok
+
+          expect(assigns[:search].first).to be_a Sunspot::Search::StandardSearch
+
+          expect(Sunspot.session).to be_a_search_for Imprintable
+          expect(Sunspot.session).to have_search_params(:with, :standard_offering, false)
+        end
+
+        it 'applies references properly' do
+          get :search, test_params_with_reference
+          expect(response).to be_ok
+
+          expect(assigns[:search].first).to be_a Sunspot::Search::StandardSearch
+
+          expect(Sunspot.session).to be_a_search_for Order
+          expect(Sunspot.session).to have_search_params(:with, :salesperson, valid_user)
+        end
+
         context 'and metadata', metadata: true do
           it 'applies the "negate" metadata properly' do
             get :search, test_params_with_metadata
@@ -140,7 +185,19 @@ describe Search::QueriesController, search_spec: true do
             expect(Sunspot.session).to have_search_params(:without, :firstname, 'Nigel')
           end
 
-          it 'applies the "greater_than" metadata properly' do
+          it 'applies the "less_than" metadata properly' do
+            get :search, test_params_with_lessthan_metadata
+            expect(response).to be_ok
+
+            expect(assigns[:search].first).to be_a Sunspot::Search::StandardSearch
+
+            expect(Sunspot.session).to be_a_search_for Order
+            expect(Sunspot.session).to have_search_params(:with) {
+              with(:commission_amount).less_than(15.00)
+            }
+          end
+
+          it 'applies the "greater_than" AND "negate" metadata properly' do
             get :search, test_params_with_metadata
             expect(response).to be_ok
 
@@ -151,16 +208,6 @@ describe Search::QueriesController, search_spec: true do
             expect(Sunspot.session).to have_search_params(:with) {
               without(:commission_amount).greater_than(15.00)
             }
-          end
-
-          it 'applies booleans properly' do
-            get :search, test_params_with_boolean
-            expect(response).to be_ok
-
-            expect(assigns[:search].first).to be_a Sunspot::Search::StandardSearch
-
-            expect(Sunspot.session).to be_a_search_for Imprintable
-            expect(Sunspot.session).to have_search_params(:with, :standard_offering, false)
           end
         end
 
@@ -220,7 +267,7 @@ describe Search::QueriesController, search_spec: true do
         expect(valid_user.search_queries).to include assigns[:query]
       end
 
-      it 'redirects to params[:target_path] if present', wip: true do
+      it 'redirects to params[:target_path] if present' do
         post :create, test_params.merge(target_path: '/')
         expect(response).to redirect_to '/'
       end

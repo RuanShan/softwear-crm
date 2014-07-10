@@ -16,7 +16,7 @@ describe Job, job_spec: true do
 
   it 'should have many line items' do
     job = create(:job, name: 'job')
-    expect(job.line_items).to be_a ActiveRecord::Relation # I think
+    expect(job.line_items).to be_a ActiveRecord::Relation
   end
 
   context 'imprints', imprint_spec: true do
@@ -85,7 +85,7 @@ describe Job, job_spec: true do
       end
     end
 
-    it 'should sort the resulting arrays properly', pending: 'Need to review with Nigel' do
+    it 'should sort the resulting arrays by size' do
       sizes = [size_xl, size_m, size_s]
       sizes.each_with_index do |s,i|
         s.sort_order = i+1
@@ -151,6 +151,25 @@ describe Job, job_spec: true do
     end
   end
 
+  context '#imprintable_variant_count with job having no imprintable line items (bug #176)', artwork_request_spec: true do
+    before do
+      allow(subject).to receive(:line_items) { [
+          build_stubbed(:blank_line_item, imprintable_variant_id: nil, quantity: 5)
+      ]}
+    end
+
+    it 'should return the sum of all line item quantities where imprintable_id is not null' do
+      expect(subject.imprintable_variant_count).to eq(0)
+    end
+  end
+
+  context '#imprintable_variant_count with job having no line items (bug #176)', artwork_request_spec: true do
+    let!(:job) { create(:job) }
+    it 'should return the sum of all line item quantities where imprintable_id is not null' do
+      expect(job.imprintable_variant_count).to eq(0)
+    end
+  end
+
   describe '#imprintable_color_names', artwork_request_spec: true do
     before do
       allow(subject).to receive(:colors) { [
@@ -206,6 +225,20 @@ describe Job, job_spec: true do
 
     it 'should return all of the information for the imprintables ' do
       expect(subject.imprintable_info).to eq("ROYGBIV Hip 5, Obsidian Cool 55, Color Balla 555")
+    end
+  end
+
+  describe '#total_quantity', artwork_request_spec: true do
+    before do
+      allow(subject).to receive(:line_items) { [
+          build_stubbed(:blank_line_item, quantity: 25),
+          build_stubbed(:blank_line_item, quantity: 50),
+          build_stubbed(:blank_line_item, quantity: 30)
+      ]}
+    end
+
+    it 'should return the sum of all line item quantities' do
+      expect(subject.total_quantity).to eq(105)
     end
   end
 end

@@ -16,12 +16,12 @@ module FormHelper
   # Theoretically this could be used to save a search query to the 
   # database as well if you pass a query object after the model class.
   def search_form_for(model, *args, &block)
-    query = args.first
+    query = if args.first.is_a? Search::Query
+      args.first
+    else nil end
     options = if args.last.is_a? Hash
       args.last
-    else
-      {}
-    end
+    else {} end
 
     builder = SearchFormBuilder.new(
       model, query, self, @current_user, session[:last_search])
@@ -47,18 +47,50 @@ module FormHelper
 
     current = if session[:last_search] =~ /\d/
       session[:last_search].to_i
-    else
-      nil
     end
 
-    @current_user.search_queries.each do |query|
-      select_options.send :original_concat, content_tag(:option,
-        query.name, value: query.id, selected: query.id == current)
+    @current_user.search_queries.joins(:query_models).
+      where(search_query_models: { name: model.name }).each do |query|
+        
+        select_options.send :original_concat, content_tag(:option,
+          query.name, value: query.id, selected: query.id == current)
     end
 
-    # TODO some js to spawn a search button / form
     form_tag search_path, method: 'GET' do
       select_tag('id', select_options, options)
     end
+  end
+
+  def search_field(options={}, &block)
+    add_class options, 'form-control', 'search'
+
+    form_tag search_path, method: 'GET', role: 'form' do
+      is_textarea = options.delete :textarea
+      func = is_textarea ? :text_area_tag : :text_field_tag
+
+      send(func, 'q', '', options) + (block_given? ? capture(&block) : '')
+    end
+  end
+
+
+  def inline_field_tag(object, method, default_or_options={}, options={})
+    default = nil
+    if default_or_options.is_a? Hash
+      options = default_or_options
+      default = method.to_s.gsub(/_/, ' ')
+    else
+      default = default_or_options
+    end
+    add_class options, 'inline-field'
+    # TODO change resource- to data-resource for validity
+    options.merge! ({
+          :contenteditable   => true,
+          'resource-name'    => object.class.name.underscore,
+          'resource-plural'  => object.class.name.underscore.pluralize,
+          'resource-id'      => object.id,
+          'resource-method'  => method
+        })
+    content = object.send(method) || default
+    content_tag(:span, content, options)
   end
 end

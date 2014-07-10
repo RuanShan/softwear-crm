@@ -7,7 +7,12 @@ describe Search::Query, search_spec: true do
   it { should_not have_db_column :default_fulltext }
 
   it { should have_many :query_models }
-  # it { should have_many :fields, class_name: 'Search::QueryField', through: :models }
+
+  it 'should not allow an empty name if user_id is not nil' do
+    subject.user_id = 1
+    subject.name = ""
+    expect(subject).to_not be_valid
+  end
 
   describe '#models' do
     context 'when the query has no models' do
@@ -90,7 +95,7 @@ describe Search::Query, search_spec: true do
           order_model.add_field 'name'
         end
 
-        it 'just searches that field', :s1, solr: true do
+        it 'just searches that field', solr: true, random: true do
           search = assure_solr_search do
             subject.search 'keywordone'
           end
@@ -129,7 +134,7 @@ describe Search::Query, search_spec: true do
           filter.save
         end
 
-        it 'applies the filter', :s2, solr: true do
+        it 'applies the filter', solr: true do
           results = assure_solr_search do
             subject.search.first.results
           end

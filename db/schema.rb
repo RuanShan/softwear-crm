@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140707183701) do
+ActiveRecord::Schema.define(version: 20140709202452) do
 
   create_table "artwork_requests", force: true do |t|
     t.text     "description"
@@ -24,6 +24,7 @@ ActiveRecord::Schema.define(version: 20140707183701) do
     t.datetime "deleted_at"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.string   "priority"
   end
 
   create_table "artwork_requests_ink_colors", id: false, force: true do |t|
@@ -103,7 +104,7 @@ ActiveRecord::Schema.define(version: 20140707183701) do
   add_index "imprint_methods_imprintables", ["imprintable_id", "imprint_method_id"], name: "imprint_method_imprintables_index", using: :btree
 
   create_table "imprintable_categories", force: true do |t|
-    t.string   "category"
+    t.string   "name"
     t.integer  "imprintable_id"
     t.datetime "deleted_at"
     t.datetime "created_at"
@@ -183,6 +184,7 @@ ActiveRecord::Schema.define(version: 20140707183701) do
     t.datetime "deleted_at"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.boolean  "collapsed"
   end
 
   add_index "jobs", ["deleted_at"], name: "index_jobs_on_deleted_at", using: :btree
@@ -292,6 +294,12 @@ ActiveRecord::Schema.define(version: 20140707183701) do
     t.boolean "negate"
     t.decimal "value",                precision: 10, scale: 2
     t.string  "comparator", limit: 1
+  end
+
+  create_table "search_phrase_filters", force: true do |t|
+    t.string  "field"
+    t.boolean "negate"
+    t.string  "value"
   end
 
   create_table "search_queries", force: true do |t|

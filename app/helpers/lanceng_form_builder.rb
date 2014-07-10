@@ -59,23 +59,7 @@ class LancengFormBuilder < ActionView::Helpers::FormBuilder
 
   # Creates a contenteditable span that is updated through ajax
   def inline_field(method, default_or_options={}, options={})
-    default = nil
-    if default_or_options.is_a? Hash
-      options = default_or_options
-      default = method.to_s.gsub(/_/, ' ')
-    else
-      default = default_or_options
-    end
-    options.merge! ({
-          :contenteditable   => true,
-          :class             => 'inline-field',
-          'resource-name'    => @object_name,
-          'resource-plural'  => @object_name.pluralize,
-          'resource-id'      => @object.id,
-          'resource-method'  => method
-        })
-    content = @object.send(method) || default
-    @template.content_tag(:span, content, options)
+    @template.inline_field_tag(@object, method, default_or_options, options)
   end
 
   # Gives you a checkbox with a textfield attached to it.

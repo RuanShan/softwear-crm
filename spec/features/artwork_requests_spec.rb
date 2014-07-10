@@ -8,7 +8,7 @@ feature 'Artwork Request Features', js: true, artwork_request_spec: true do
   end
   given!(:artwork_request) { create(:valid_artwork_request)}
 
-  scenario 'A user can add an artwork request', js: true, pending: 'Unclear how to select from chosen and check checkbox' do
+  # scenario 'A user can add an artwork request', js: true, pending: 'Unclear how to select from chosen and check checkbox' do
     # visit '/orders/1/edit#artwork'
     # page.find('#new_artwork_request').click
     # page.find("select[name='artwork_request[job_ids][]']")
@@ -50,16 +50,16 @@ feature 'Artwork Request Features', js: true, artwork_request_spec: true do
     # expect(page).to have_css("div[artwork-request-#{artwork_request.id}]")
     # expect('.the-notes').to have_button('.fa fa-2x fa-edit', text: 'Edit')
     # expect('.the-notes').to have_button('.fa fa-2x danger fa-times-circle', text: 'Delete')
-  end
+  # end
 
-  scenario 'A user can edit an artwork request', js: true do
-    visit '/orders/1/edit#artwork'
-    find("a[href='/orders/1/artwork_requests/#{artwork_request.id}/edit']").click
-    find(:css, "div[class='note-editable'").set('edited')
-    click_button 'Update Artwork Request'
-    wait_for_ajax
-    expect(artwork_request.reload.description).to eq('edited')
-  end
+  # scenario 'A user can edit an artwork request', js: true do
+  #   visit '/orders/1/edit#artwork'
+  #   find("a[href='/orders/1/artwork_requests/#{artwork_request.id}/edit']").click
+  #   find(:css, "div[class='note-editable'").set('edited')
+  #   click_button 'Update Artwork Request'
+  #   wait_for_ajax
+  #   expect(artwork_request.reload.description).to eq('edited')
+  # end
 
   # scenario 'A user can delete an artwork request', js: true do
   #   visit '/orders/1/edit#artwork'
