@@ -60,7 +60,7 @@ feature 'Imprints Management', imprint_spec: true, js: true, imprint_features: t
     expect(Imprint.where(job_id: job.id, print_location_id: print_location2.id)).to exist
   end
 
-  scenario 'user can add and edit an imprint method, and update them both', new: true do
+  scenario 'user can add and edit an imprint method, and update them both' do
     imprint
     visit edit_order_path(order.id, anchor: 'jobs')
     wait_for_ajax
@@ -89,7 +89,7 @@ feature 'Imprints Management', imprint_spec: true, js: true, imprint_features: t
     expect(Imprint.where(job_id: job.id, print_location_id: print_location1.id)).to_not exist
   end
 
-  scenario 'user sees error when attempting to add 2 imprints with the same location', new: true do
+  scenario 'user sees error when attempting to add 2 imprints with the same location' do
     imprint
     visit edit_order_path(order.id, anchor: 'jobs')
     wait_for_ajax

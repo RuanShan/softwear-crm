@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe 'imprintables/index.html.erb', imprintable_spec: true, new: true do
+describe 'imprintables/index.html.erb', imprintable_spec: true do
 
   before(:each) do
     assign(:imprintables, Kaminari.paginate_array([]).page(1))

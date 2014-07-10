@@ -111,7 +111,7 @@ create_records([
 # ----------------
 
 create_records([
-                   {name: 'Screen Printing', production_name: 'Screen Printing'}
+                   {name: 'Screen Printing' }
                ], ImprintMethod)
 im = ImprintMethod.all.first
 create_records([
@@ -196,7 +196,7 @@ create_records([
       lastname: 'Tlast',
       email: 'test@test.com',
       twitter: '@test',
-      in_hand_by: '1/2/1015',
+      in_hand_by: '1/2/2015 12:00 PM',
       terms: 'Half down on purchase',
       tax_exempt: false,
       sales_status: 'Pending',

@@ -172,6 +172,12 @@ feature 'Imprintables management', imprintable_spec: true do
     expect(current_path).to eq(imprintables_path)
     expect(imprintable.reload.destroyed? ).to be_truthy
   end
+
+  scenario 'A user can click a link to open the modal price popup', js: true do
+    visit imprintables_path
+    find_link("pricing_button_#{imprintable.id}").click
+    expect(page).to have_selector '#contentModal.modal.fade.in'
+  end
   
   scenario 'A user can navigate to all tabs of the modal show menu (card #133)', js: true  do
     visit imprintables_path

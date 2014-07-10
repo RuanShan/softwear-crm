@@ -22,6 +22,9 @@ module CrmSoftwearcrmCom
     config.time_zone = 'Eastern Time (US & Canada)'
     config.active_record.default_timezone = :utc
 
+    # Autoload lib/ folder including all subdirectories
+    config.autoload_paths += Dir["#{config.root}/lib/**/"]
+
     if ENV['action_mailer_delivery_method'] == 'smtp'
       smtp_settings = {}
       config.action_mailer.delivery_method = :smtp

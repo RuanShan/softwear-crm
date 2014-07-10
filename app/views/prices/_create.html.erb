@@ -1,0 +1,26 @@
+<div class="box-info full">
+  <div class="table-responsive">
+    <table class="table table-hover" id="prices_hash_supplier_pricing">
+      <thead>
+      <tr>
+        <th>Base Price</th>
+        <th>2XL</th>
+        <th>3XL</th>
+        <th>4XL</th>
+        <th>5XL</th>
+        <th>6XL</th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr>
+        <td><%= number_to_currency prices_hash[:base_price] unless prices_hash[:base_price] == 0.0 %></td>
+        <td><%= number_to_currency prices_hash[:xxl_price] unless prices_hash[:xxl_price] == 0.0 %></td>
+        <td><%= number_to_currency prices_hash[:xxxl_price] unless prices_hash[:xxxl_price] == 0.0 %></td>
+        <td><%= number_to_currency prices_hash[:xxxxl_price] unless prices_hash[:xxxxl_price] == 0.0 %></td>
+        <td><%= number_to_currency prices_hash[:xxxxxl_price] unless prices_hash[:xxxxxl_price] == 0.0 %></td>
+        <td><%= number_to_currency prices_hash[:xxxxxxl_price] unless prices_hash[:xxxxxxl_price]== 0.0 %></td>
+      </tr>
+      </tbody>
+    </table>
+  </div>
+</div>

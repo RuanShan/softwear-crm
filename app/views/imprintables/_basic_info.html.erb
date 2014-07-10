@@ -22,10 +22,10 @@
     <dd><%= raw imprintable.description %></dd>
     <br />
     <dt>Coordinates</dt>
-    <dd><%= imprintable.coordinates.map{ |coordinate| coordinate.name }.join(', ') %></dd>
+    <dd><%= imprintable.coordinates.map { |coordinate| coordinate.name }.join(', ') %></dd>
     <br />
     <dt>Categories</dt>
-    <dd><%= imprintable.imprintable_categories.join(', ') %></dd>
+    <dd><%= imprintable.imprintable_categories.map { |ic| ic.category }.join(', ') %></dd>
     <br />
   </dl>
 </div>

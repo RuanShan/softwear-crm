@@ -1,0 +1,22 @@
+<div class="box-info full">
+  <%= form_tag({ controller: :prices, action: :create }, remote: true ) do %>
+    <div class="box-info">
+
+      <div class="form-group clearfix">
+        <label class="col-sm-4 control-label" for="decoration_price">Decoration Price</label>
+        <div class="col-sm-8">
+          <%= text_field_tag :decoration_price, nil, placeholder: 'Enter decoration price..' %>
+          <p class="help-block">The decoration price of the imprintable</p>
+        </div>
+      </div>
+    </div>
+
+    <%= hidden_field_tag :id, imprintable.id %>
+
+    <div class="form-group clearfix">
+      <div class="col-sm-offset-2 col-sm-8">
+        <button type="submit" id="price_submit_button" class="btn btn-info">Fetch Prices!</button>
+      </div>
+    </div>
+  <% end %>
+</div>
