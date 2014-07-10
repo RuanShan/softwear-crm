@@ -45,9 +45,8 @@
       </ul>
     </li>
   <%= nav_helper(:li, true, %w(artwork artwork_requests)) %>
-    <a href="#fakelink"><i class="fa fa-picture-o"></i> Artwork <span class="label label-danger new-circle">W.I.P.</span></a>
+    <a href="#fakelink"><i class="fa fa-picture-o"></i><i class="fa fa-angle-double-down i-right"></i>Artwork <span class="label label-danger new-circle">W.I.P.</span></a>
     <%= nav_helper(:ul, false, %w(artwork artwork_requests)) %>
-  <%= nav_helper :li, true, 'imprintables' %>
   <%= link_to artwork_requests_path do %><i class="fa fa-angle-right"></i> Artwork Requests<% end %>
   </li>
   </ul>

@@ -17,7 +17,8 @@
     <div class="row">
       <%= f.label :priority, class: 'col-sm-2 control-label' %>
       <div class="col-sm-10">
-        <%= f.select :priority, ArtworkRequest::PRIORITIES.collect{ |level, label| [label, level]}, include_blank: true %>
+        <% selected = artwork_request && !artwork_request.priority.nil? ? {selected: artwork_request.priority} : {selected: ArtworkRequest::PRIORITIES.invert['Normal']} %>
+        <%= f.select :priority, ArtworkRequest::PRIORITIES.collect{ |level, label| [label, level]}, selected %>
         <% if artwork_request.errors.include?(:priority) %>
             <% artwork_request.errors.full_messages_for(:priority).each do |message| %>
                 <p class="text-danger"><%= message %></p>

@@ -13,4 +13,9 @@ describe 'artwork_requests/_table.html.erb', artwork_request_spec: true do
     expect(rendered).to have_selector('th', text: 'Payment Terms')
     expect(rendered).to have_selector('th', text: 'Order Name')
   end
+
+  it 'should render _row.html.erb for every artwork_request' do
+
+  end
+
 end
