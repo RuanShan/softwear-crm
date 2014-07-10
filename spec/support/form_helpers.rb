@@ -22,7 +22,9 @@ module FormHelpers
     selector = "#{css_pre}span.inline-field[resource-method='#{field}']"
     selector += "[resource-name='#{@@model_form_context}']" if defined?(@@model_form_context) && @@model_form_context
     selector += "[resource-id='#{@@model_id}']" if defined?(@@model_id) && @@model_id
-    find(selector).set options[:with]
+
+    getter = options[:first] ? method(:first) : method(:find)
+    getter.call(selector).set options[:with]
   end
 
   RSpec::Matchers.define :have_button_or_link_to do |location|

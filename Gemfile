@@ -65,9 +65,6 @@ group :development do
   gem 'binding_of_caller'
 end
 
-group :development, :test do
-end
-
 group :test do
   gem 'rspec-rails', '~> 3.0.0.beta'
   gem 'factory_girl_rails', '>= 4.2.0'
@@ -78,6 +75,7 @@ group :test do
   gem 'selenium-webdriver'
   gem 'capybara-webkit'
   gem 'sunspot_matchers'
+  gem 'rspec-retry'
 end
 
 gem 'inherited_resources'

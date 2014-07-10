@@ -83,6 +83,7 @@ private
       self.name = new_job_name
     end
     self.description = "Click to edit description" if self.description.nil?
+    self.collapsed = true
   end
 
   def check_for_line_items

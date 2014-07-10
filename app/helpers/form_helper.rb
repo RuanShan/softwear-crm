@@ -71,4 +71,26 @@ module FormHelper
       send(func, 'q', '', options) + (block_given? ? capture(&block) : '')
     end
   end
+
+
+  def inline_field_tag(object, method, default_or_options={}, options={})
+    default = nil
+    if default_or_options.is_a? Hash
+      options = default_or_options
+      default = method.to_s.gsub(/_/, ' ')
+    else
+      default = default_or_options
+    end
+    add_class options, 'inline-field'
+    # TODO change resource- to data-resource for validity
+    options.merge! ({
+          :contenteditable   => true,
+          'resource-name'    => object.class.name.underscore,
+          'resource-plural'  => object.class.name.underscore.pluralize,
+          'resource-id'      => object.id,
+          'resource-method'  => method
+        })
+    content = object.send(method) || default
+    content_tag(:span, content, options)
+  end
 end

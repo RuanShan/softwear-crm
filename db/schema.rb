@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140708163318) do
+ActiveRecord::Schema.define(version: 20140709202452) do
 
   create_table "artwork_requests", force: true do |t|
     t.text     "description"
@@ -184,6 +184,7 @@ ActiveRecord::Schema.define(version: 20140708163318) do
     t.datetime "deleted_at"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.boolean  "collapsed"
   end
 
   add_index "jobs", ["deleted_at"], name: "index_jobs_on_deleted_at", using: :btree
