@@ -123,7 +123,7 @@ module Search
     end
 
     def name_is_not_empty_if_owned_by_a_user
-      if self.name.empty? && !self.user_id.nil?
+      if (self.name.nil? || self.name.empty?) && !self.user_id.nil?
         errors.add :name, "cannot be empty if owned by a user"
       end
     end
