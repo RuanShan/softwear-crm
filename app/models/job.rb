@@ -1,4 +1,9 @@
 class Job < ActiveRecord::Base
+  include PublicActivity::Model
+
+  acts_as_paranoid
+  tracked
+
   belongs_to :order
 
   has_many :line_items
@@ -14,9 +19,6 @@ class Job < ActiveRecord::Base
 
   validate :assure_name_and_description, on: :create
   validates :name, uniqueness: { scope: :order_id }
-
-
-  acts_as_paranoid
   
   def sort_line_items
     result = {}

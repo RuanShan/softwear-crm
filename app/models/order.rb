@@ -1,4 +1,8 @@
 class Order < ActiveRecord::Base
+  include PublicActivity::Model
+
+  acts_as_paranoid
+  tracked
 
   VALID_PAYMENT_TERMS = ['', 
      'Paid in full on purchase',
@@ -36,8 +40,6 @@ class Order < ActiveRecord::Base
 
   accepts_nested_attributes_for :payments
 
-  # non-deletable stuff
-  acts_as_paranoid
 
   def line_items
     LineItem.where(job_id: job_ids)
