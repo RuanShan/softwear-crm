@@ -1,5 +1,5 @@
 <% order.jobs.each do |job| %>
-	<%= render partial: 'job', locals: { job: job } %>
+	<%= render partial: 'job', locals: { job: job, collapsed: order.jobs.count == 1 } %>
 <% end %>
 
 <div class="form-group box-info">

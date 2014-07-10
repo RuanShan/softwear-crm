@@ -16,7 +16,7 @@ describe Job, job_spec: true do
 
   it 'should have many line items' do
     job = create(:job, name: 'job')
-    expect(job.line_items).to be_a ActiveRecord::Relation # I think
+    expect(job.line_items).to be_a ActiveRecord::Relation
   end
 
   context 'imprints', imprint_spec: true do
@@ -85,7 +85,7 @@ describe Job, job_spec: true do
       end
     end
 
-    it 'should sort the resulting arrays properly', pending: 'Need to review with Nigel' do
+    it 'should sort the resulting arrays by size' do
       sizes = [size_xl, size_m, size_s]
       sizes.each_with_index do |s,i|
         s.sort_order = i+1

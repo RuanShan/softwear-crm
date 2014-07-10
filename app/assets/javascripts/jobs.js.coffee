@@ -38,7 +38,41 @@
   ajax.fail (jqXHR, textStatus) ->
     alert "Failed to re-render job #{jobId}. Refresh the page to view changes."
 
+jobCollapse = (id, collapsed) ->
+  ajax = $.ajax
+    type: 'PUT'
+    url: Routes.job_path(id)
+    data: { 'job[collapsed]': collapsed.toString() }
+    dataType: 'json'
+
+  ajax.done (response) ->
+    unless response.result is 'success'
+      errorModal "The job couldn't be saved!"
+
+  ajax.fail (jqXHR, textStatus) ->
+    errorModal 'Either the server is messed up, or your internet is down!'
+
+@onJobCollapseShow = ->
+  jobCollapse $(this).data('job-id'), true
+
+@onJobCollapseHide = ->
+  jobCollapse $(this).data('job-id'), false
+
+@registerJobEvents = ($c) ->
+  refresh_inlines()
+  $jobCollapse = $c.find('.job-collapse')
+
+  $jobCollapse.off 'show.bs.collapse', onJobCollapseShow
+  $jobCollapse.off 'hide.bs.collapse', onJobCollapseHide
+
+  $jobCollapse.on 'show.bs.collapse', onJobCollapseShow
+  $jobCollapse.on 'hide.bs.collapse', onJobCollapseHide
+
+  # TODO replace inline job events with logic in here if Ricky insists
+
 $(window).load ->
+  registerJobEvents($('body'))
+
   $('#new-job-button').click ->
     $this = $(this)
     $this.attr 'disabled', 'disabled'
@@ -55,16 +89,15 @@ $(window).load ->
         alert msg
       else
         $newJob = $(response)
-        # The last child is the new button
+        # The last child is the new button (so append won't do it)
         $('#jobs').children().last().before $newJob
 
         $('.scroll-y').scrollTo $('h3.job-title').last(),
           duration: 1000,
           offsetTop: 100
 
-        # This should be called when .contenteditable fields are 
-        # added through js
-        refresh_inlines()
+        # This should be called when jobs are added through js
+        registerJobEvents($newJob)
 
     ajax.fail (jqXHR, textStatus) ->
       alert "Something went wrong with the server and
