@@ -1,0 +1,8 @@
+.artwork-request-notes dt, .artwork-request-notes dd{
+  display: inline;
+}
+
+.artwork-request-notes dd:after {
+  content:"\a";
+  white-space: pre;
+}

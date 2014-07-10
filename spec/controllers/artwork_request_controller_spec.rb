@@ -8,6 +8,27 @@ describe ArtworkRequestsController, js: true, artwork_request_spec: true do
   let!(:artwork_request){ create(:valid_artwork_request) }
   let!(:order){ create(:order_with_job) }
 
+  describe 'GET show' do
+    let!(:imprint_method) {create(:valid_imprint_method_with_color_and_location)}
+
+    it 'renders show.js.erb' do
+      get :show, order_id: order.id, id: artwork_request.id, artwork_request: attributes_for(:valid_artwork_request).merge(artist_id: create(:user).id,
+                                                                                                   imprint_method_id: imprint_method.id,
+                                                                                                   salesperson_id: create(:alternate_user).id,
+                                                                                                   print_location_id: imprint_method.print_locations.first.id,
+                                                                                                   job_ids: create(:order_with_job).job_ids,
+                                                                                                   ink_color_ids: imprint_method.ink_color_ids), format: 'js'
+      expect(response).to render_template('show')
+    end
+  end
+
+  describe 'GET index' do
+    it 'renders index.js.erb' do
+      get :index, order_id: order.id, artwork_request_id: artwork_request.id, format: 'js'
+      expect(response).to render_template('index')
+    end
+  end
+
   describe 'GET new' do
     it 'renders new.js.erb' do
       get :new, order_id: order.id, artwork_request_id: artwork_request.id, format: 'js'
