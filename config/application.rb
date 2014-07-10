@@ -41,5 +41,17 @@ module CrmSoftwearcrmCom
         Devise::PasswordsController
       ].each { |c| c.layout 'no_overlay' }
     end
+
+    unless ENV['aws_secret_access_key'].nil? && ENV['aws_access_key_id'].nil? && ENV['aws_bucket'].nil?
+      config.paperclip_defaults = {
+          storage: :s3,
+          s3_credentials: {
+              bucket: ENV['aws_bucket'],
+              access_key_id: ENV['aws_access_key_id'],
+              secret_access_key: ENV['aws_secret_access_key']
+          }
+      }
+    end
+
   end
 end
