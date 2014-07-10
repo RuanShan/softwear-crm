@@ -76,7 +76,7 @@ class LineItemsController < InheritedResources::Base
           quantity: 0,
           job_id: params[:job_id]
       )}
-      valid_line_items = line_items.select(&:valid)
+      valid_line_items = line_items.select(&:valid?)
       if !valid_line_items.empty?
         valid_line_items.each(&:save)
         render json: { result: 'success' }
