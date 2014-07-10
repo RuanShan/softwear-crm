@@ -5,7 +5,8 @@
 
     ajax = $.ajax
       type: 'DELETE'
-      url: "/jobs/#{jobId}"
+      url: Routes.job_path(jobId)
+      dataType: 'json'
 
     ajax.done (response) ->
       if response.result == 'success'
@@ -28,11 +29,12 @@
   
   ajax = $.ajax
     type: 'GET'
-    url: "/jobs/#{jobId}"
+    url: Routes.job_path(jobId)
+    dataType: 'json'
 
   ajax.done (response) ->
     console.log "Updated job #{jobId}"
-    $job.replaceWith response
+    $job.replaceWith response.content
     refresh_inlines()
 
   ajax.fail (jqXHR, textStatus) ->

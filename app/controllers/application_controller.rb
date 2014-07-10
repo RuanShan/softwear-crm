@@ -31,12 +31,21 @@ protected
     @current_url = request.original_url
   end
 
+  # Pulled this off the internet as a way to render templates to a string
+  # without using up your one render in a controller.
   def with_format(format)
     old_formats = formats
     self.formats = [format]
     r = yield
     self.formats = old_formats
     r
+  end
+
+  # Quicker way to render to a string using the previous function
+  def render_string(*args)
+    s = nil
+    with_format(:html) { s = render_to_string(*args) }
+    s
   end
 
   def last_search

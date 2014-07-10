@@ -80,7 +80,7 @@ feature 'Jobs management', js: true, job_spec: true do
     expect(order.jobs.count).to eq 0
   end
 
-  scenario 'a job can be created and deleted without refreshing the page' do
+  scenario 'a job can be created and deleted without refreshing the page', retry: 3 do
     visit edit_order_path(1, anchor: 'jobs')
     click_button 'New Job'
     sleep 1

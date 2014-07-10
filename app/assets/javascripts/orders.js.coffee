@@ -19,9 +19,24 @@ $(window).load ->
 
   $("a[data-toggle='tab']").click ->
     window.location.hash = $(this).attr 'href'
+
   if window.location.hash != ''
-    tab = $("a[href='#{window.location.hash}']")
+    dashIndex = window.location.hash.indexOf '-'
+    target = window.location.hash
+    data = null
+    if dashIndex > 0
+      data = parseInt target.substr dashIndex+1
+      target = target.substring 0, dashIndex
+
+    tab = $("a[href='#{target}']")
     tab.trigger $.Event('click')
+
+    if data && data != NaN
+      after 500, ->
+        if target == '#jobs'
+          $('.scroll-y').scrollTo $("#job-#{data}").find('.job-title'),
+            duration: 1000,
+            offsetTop: 100
 
   $('#datetimepicker1').datetimepicker()
 
