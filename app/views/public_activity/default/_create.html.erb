@@ -1,4 +1,4 @@
-Created <%= activity.trackable_type.humanize %>
+Created <%= activity.trackable_type.underscore.humanize.downcase %>
 <% if activity.trackable %>
     <%= link_to activity.trackable.name, activity.trackable %>
 <% else %>

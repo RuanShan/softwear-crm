@@ -1,8 +1,8 @@
 class Job < ActiveRecord::Base
-  include PublicActivity::Model
+  include TrackingHelpers
 
   acts_as_paranoid
-  tracked
+  tracked by_current_user
 
   belongs_to :order
 

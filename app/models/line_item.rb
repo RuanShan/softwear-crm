@@ -1,6 +1,9 @@
 class LineItem < ActiveRecord::Base
+  include TrackingHelpers
+
   belongs_to :job
   belongs_to :imprintable_variant
+  has_one :order, through: :job
 
   validates_presence_of :unit_price
   validates_presence_of :quantity
@@ -10,6 +13,7 @@ class LineItem < ActiveRecord::Base
   validates :imprintable_variant_id, uniqueness: { scope: :job_id }, if: :imprintable?
 
   acts_as_paranoid
+  tracked by_current_user
 
   scope :non_imprintable, -> { where imprintable_variant_id: nil }
   scope :imprintable, -> { where.not imprintable_variant_id: nil }

@@ -1,8 +1,8 @@
 class Order < ActiveRecord::Base
-  include PublicActivity::Model
+  include TrackingHelpers
 
   acts_as_paranoid
-  tracked
+  tracked by_current_user
 
   VALID_PAYMENT_TERMS = ['', 
      'Paid in full on purchase',

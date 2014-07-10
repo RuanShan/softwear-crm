@@ -8,4 +8,8 @@ String.class_eval do
       self[start_index..-1]
     end
   end
+
+  def a_or_an
+    (%w(a e i o u).include?(downcase.first) ? 'an ' : 'a ') + self
+  end
 end

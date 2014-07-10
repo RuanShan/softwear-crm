@@ -30,6 +30,23 @@ class OrdersController < InheritedResources::Base
     end
   end
 
+  def edit
+    super do
+      # Grab all activities associated with this order
+      @activities = PublicActivity::Activity.all.limit(100).order('created_at DESC').select do |activity|
+        if activity.trackable
+          if activity.trackable_type == Order.name
+            activity.trackable.id == @order.id
+          elsif activity.trackable.respond_to? :order
+            activity.trackable.order.id == @order.id
+          elsif activity.trackable.respond_to? :orders
+            activity.trackable.orders.any? { |o| o.id == @order.id }
+          end
+        end
+      end
+    end
+  end
+
   def create
     params[:order][:in_hand_by] = DateTime.strptime(params[:order][:in_hand_by], '%m/%d/%Y %H:%M %p') if params[:order][:in_hand_by].length > 0
     super

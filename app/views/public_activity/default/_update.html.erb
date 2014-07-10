@@ -1,4 +1,4 @@
-Updated <%= activity.trackable_type.humanize %>
+Updated <%= activity.trackable_type.underscore.humanize.downcase %>
 <% if activity.trackable %>
     <%= link_to activity.trackable.name, activity.trackable %>
 <% else %>
