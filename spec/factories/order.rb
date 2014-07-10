@@ -34,5 +34,9 @@ FactoryGirl.define do
       after(:create) { |o| o.jobs << create(:job) }
     end
 
+    factory :blank_order do
+
+    end
+
   end
 end

@@ -145,4 +145,94 @@ describe Order, order_spec: true do
       expect(@order.percent_paid).to eq((@payment.amount / @order.total)*100)
     end
   end
+
+  describe '#payment_status', wip: true do
+
+    context 'Terms: Paid in full on purchase' do
+      let!(:order){ (build_stubbed(:blank_order, terms: 'Paid in full on purchase')) }
+      context 'balance > 0' do
+        before(:each) do
+          allow(order).to receive(:balance).and_return(10)
+        end
+        it 'returns Awaiting Payment' do
+          expect(order.payment_status).to eq('Awaiting Payment')
+        end
+      end
+      context 'balance == 0' do
+        before(:each) do
+          allow(order).to receive(:balance).and_return(0)
+        end
+        it 'returns Payment Complete' do
+          expect(order.payment_status).to eq('Payment Complete')
+        end
+      end
+    end
+
+    context 'Terms: Half down on purchase' do
+      let!(:order){ (build_stubbed(:blank_order, terms: 'Half down on purchase')) }
+      context 'balance greater than 49% of the total' do
+        before(:each) do
+          allow(order).to receive(:balance).and_return(60)
+          allow(order).to receive(:total).and_return(100)
+        end
+        it 'returns Awaiting Payment' do
+          expect(order.payment_status).to eq('Awaiting Payment')
+        end
+      end
+      context 'balance less than 49% of the total' do
+        before(:each) do
+          allow(order).to receive(:balance).and_return(30)
+          allow(order).to receive(:total).and_return(100)
+        end
+        it 'returns Payment Terms Met' do
+          expect(order.payment_status).to eq('Payment Terms Met')
+        end
+      end
+    end
+
+    context 'Terms: Paid in full on pick up' do
+      context 'Time.now greater than or equal to in_hand_by' do
+        let!(:order){ (build_stubbed(:blank_order, terms: 'Paid in full on pick up', in_hand_by: Time.now - 1.day)) }
+        it 'returns Awaiting Payment' do
+          expect(order.payment_status).to eq('Awaiting Payment')
+        end
+      end
+      context 'Time.now less than in_hand_by' do
+        let!(:order){ (build_stubbed(:blank_order, terms: 'Paid in full on pick up', in_hand_by: Time.now + 1.day)) }
+        it 'returns Payment Terms Met' do
+          expect(order.payment_status).to eq('Payment Terms Met')
+        end
+      end
+    end
+
+    context 'Terms: Net 30' do
+      context 'Time.now greater than or equal to in_hand_by + 30 days' do
+        let!(:order){ (build_stubbed(:blank_order, terms: 'Paid in full on pick up', in_hand_by: Time.now - 55.day)) }
+        it 'returns Awaiting Payment' do
+          expect(order.payment_status).to eq('Awaiting Payment')
+        end
+      end
+      context 'Time.now less than in_hand_by + 30 days' do
+        let!(:order){ (build_stubbed(:blank_order, terms: 'Paid in full on pick up', in_hand_by: Time.now + 55.day)) }
+        it 'returns Payment Terms Met' do
+          expect(order.payment_status).to eq('Payment Terms Met')
+        end
+      end
+    end
+
+    context 'Terms: Net 60' do
+      context 'Time.now greater than or equal to in_hand_by + 60 days' do
+        let!(:order){ (build_stubbed(:blank_order, terms: 'Paid in full on pick up', in_hand_by: Time.now - 100.day)) }
+        it 'returns Awaiting Payment' do
+          expect(order.payment_status).to eq('Awaiting Payment')
+        end
+      end
+      context 'Time.now less than in_hand_by + 60 days' do
+        let!(:order){ (build_stubbed(:blank_order, terms: 'Paid in full on pick up', in_hand_by: Time.now + 100.day)) }
+        it 'returns Payment Terms Met' do
+          expect(order.payment_status).to eq('Payment Terms Met')
+        end
+      end
+    end
+  end
 end

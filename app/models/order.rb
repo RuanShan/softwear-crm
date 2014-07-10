@@ -81,6 +81,40 @@ class Order < ActiveRecord::Base
     (self.payment_total / self.total)*100
   end
 
+  def payment_status
+    if self.terms == 'Paid in full on purchase'
+      if self.balance > 0
+        'Awaiting Payment'
+      else
+        'Payment Complete'
+      end
+    elsif self.terms == 'Half down on purchase'
+      if self.balance >= (total * 0.49)
+        'Awaiting Payment'
+      else
+        'Payment Terms Met'
+      end
+    elsif self.terms == 'Paid in full on pick up'
+      if Time.now >= self.in_hand_by
+        'Awaiting Payment'
+      else
+        'Payment Terms Met'
+      end
+    elsif self.terms == 'Net 30'
+      if Time.now >= (self.in_hand_by + 30.days)
+        'Awaiting Payment'
+      else
+        'Payment Terms Met'
+      end
+    elsif self.terms == 'Net 60'
+      if Time.now >= (self.in_hand_by + 60.days)
+        'Awaiting Payment'
+      else
+        'Payment Terms Met'
+      end
+    end
+  end
+
   searchable do
     text :name, :email, :firstname, :lastname, :company, :twitter, :terms, :delivery_method, :sales_status
     text :jobs do
