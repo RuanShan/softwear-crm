@@ -21,10 +21,10 @@ $(document).ready ->
 @after = (ms, func) ->
   setTimeout(func, ms)
 
-@shine = (element, returnDefault) ->
+@shine = (element, returnDefault, duration) ->
   returnDefault = false if returnDefault is null
   $element = $(element)
   returnColor = 'default'
   returnColor = $element.css('background-color') unless returnDefault
   $element.css('background-color', '#99ffbb')
-  $element.animate {backgroundColor: returnColor}, 1000, -> $element.css 'background-color', ''
+  $element.animate {backgroundColor: returnColor}, (duration or 1000), -> $element.css 'background-color', ''

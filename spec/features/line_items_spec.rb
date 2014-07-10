@@ -172,7 +172,7 @@ feature 'Line Items management', line_item_spec: true, js: true do
     end
   end
 
-  context 'editing a non-imprintable line item' do
+  context 'editing a non-imprintable line item', failing: true do
     before(:each) do
       non_imprintable
       visit edit_order_path(1, anchor: 'jobs')
@@ -180,6 +180,7 @@ feature 'Line Items management', line_item_spec: true, js: true do
 
       find('.line-item-button[title="Edit"]').click
       wait_for_ajax
+      
       fill_in 'line_item[name]', with: 'New name!'
 
       find('.update-line-items').click

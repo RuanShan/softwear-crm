@@ -8,12 +8,26 @@ class LineItemsController < InheritedResources::Base
   def edit
     super do |format|
       format.html { render partial: 'standard_edit_entry', locals: { line_item: @line_item } }
+      format.json do
+        render json: {
+          result: 'success',
+          content: render_string(partial: 'standard_edit_entry', locals: { line_item: @line_item })
+        }
+      end
     end
   end
 
   def show
     super do |format|
-      format.html { render partial: 'standard_view_entry', locals: { line_item: @line_item } }
+      format.html do
+        redirect_to order_path(@line_item.order, anchor: "jobs-#{@line_item.job.id}-#{@line_item.id}")
+      end
+      format.json do
+        render json: {
+          result: 'success',
+          content: render_string(partial: 'standard_view_entry', locals: { line_item: @line_item })
+        }
+      end
     end
   end
 

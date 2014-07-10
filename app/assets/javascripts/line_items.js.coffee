@@ -132,17 +132,27 @@ initializeLineItemModal = (lineItemModal) ->
   lineItemModal.modal 'show'
   lineItemModal.find('#is_imprintable_no').prop('checked', false)
 
+@imprintableEditEntryChanged = ($this) ->
+  $this.parentsUntil("form").parent().addClass("editing-line-item")
+
 loadLineItemView = (lineItemId, url) ->
   $row = $("#line-item-#{lineItemId}")
   $oldChildren = $row.children()
-  $row.load url, ->
+
+  ajax = $.ajax
+    type: 'GET'
+    url: url
+    dataType: 'json'
+
+  ajax.done (response) ->
     $oldChildren.each -> $(this).remove()
+    $row.append response.content
 
 @editLineItem = (lineItemId) ->
-  loadLineItemView lineItemId, "/line_items/#{lineItemId}/edit"
+  loadLineItemView lineItemId, Routes.edit_line_item_path(lineItemId)
 
 @cancelEditLineItem = (lineItemId) ->
-  loadLineItemView lineItemId, "/line_items/#{lineItemId}"
+  loadLineItemView lineItemId, Routes.line_item_path(lineItemId)
 
 @deleteLineItem = (lineItemId) ->
   $(this).attr 'disabled', 'disabled'
@@ -208,7 +218,7 @@ loadLineItemView = (lineItemId, url) ->
 
   ajax = $.ajax
     type: 'GET'
-    url: "/jobs/#{jobId}/line_items/new"
+    url: Routes.new_job_line_item_path(jobId)
     dataType: 'html'
 
   ajax.done (response) ->
