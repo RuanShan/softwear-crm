@@ -87,6 +87,7 @@ gem 'aws-sdk'
 gem 'paperclip', github: 'thoughtbot/paperclip'
 gem 'google_drive'
 gem 'kaminari'
+gem 'api', path: 'engines/api'
 gem 'remotipart'
 
 gem 'sunspot_solr'
