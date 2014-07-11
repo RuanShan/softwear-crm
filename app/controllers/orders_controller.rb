@@ -33,17 +33,7 @@ class OrdersController < InheritedResources::Base
   def edit
     super do
       # Grab all activities associated with this order
-      @activities = PublicActivity::Activity.all.limit(100).order('created_at DESC').select do |activity|
-        if activity.trackable
-          if activity.trackable_type == Order.name
-            activity.trackable.id == @order.id
-          elsif activity.trackable.respond_to? :order
-            activity.trackable.order.id == @order.id
-          elsif activity.trackable.respond_to? :orders
-            activity.trackable.orders.any? { |o| o.id == @order.id }
-          end
-        end
-      end
+      @activities = @order.activities
     end
   end
 

@@ -2,7 +2,7 @@ class Job < ActiveRecord::Base
   include TrackingHelpers
 
   acts_as_paranoid
-  tracked by_current_user
+  tracked by_current_user + on_order
 
   belongs_to :order
 

@@ -2,7 +2,7 @@ class Order < ActiveRecord::Base
   include TrackingHelpers
 
   acts_as_paranoid
-  tracked by_current_user
+  tracked by_current_user + on_order
 
   VALID_PAYMENT_TERMS = ['', 
      'Paid in full on purchase',
@@ -40,6 +40,9 @@ class Order < ActiveRecord::Base
 
   accepts_nested_attributes_for :payments
 
+  def activities
+    PublicActivity::Activity.where(recipient_type: self.class.name, recipient_id: self.id)
+  end
 
   def line_items
     LineItem.where(job_id: job_ids)

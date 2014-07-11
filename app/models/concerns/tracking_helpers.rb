@@ -10,11 +10,21 @@ module TrackingHelpers
       end
 
       protected
+      ### Helper methods for #tracked parameters ###
+
+      # Assign the owner to the current user.
       def by_current_user
         { owner: ->(controller, record) { controller.current_user if controller } }
       end
+      # Assign the recipient to either the record's associated order, 
+      # or the current order based on the controller.
+      def on_order
+        { recipient: TrackingHelpers::Methods.method(:get_order) }
+      end
+      # Allows parameters to be applied through (controller, record) procs,
+      # or you can just pass one or more hashes.
       def with_params(*params)
-        {params: ->(controller, record) {
+        { params: ->(controller, record) {
             ([{}] + params).combine do |total, entry|
               total.merge case entry
                 when Proc
@@ -31,6 +41,18 @@ module TrackingHelpers
             end
           }
         }
+      end
+    end
+
+    class Methods
+      def self.get_order(controller, record)
+        if record.is_a? Order
+          record
+        elsif record.respond_to?(:order) && record.order
+          record.order
+        elsif controller
+          controller.instance_variable_get :@order
+        end
       end
     end
   end

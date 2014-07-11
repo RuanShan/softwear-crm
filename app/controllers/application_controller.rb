@@ -34,6 +34,7 @@ protected
   def fire_activity(record, activity_name, options={})
     options[:key] = record.class.activity_key activity_name
     options[:owner] = current_user
+    options[:recipient] = TrackingHelpers::Methods.get_order(self, record)
     record.create_activity options
   end
 

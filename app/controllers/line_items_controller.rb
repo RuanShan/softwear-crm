@@ -55,6 +55,7 @@ class LineItemsController < InheritedResources::Base
     super do |success, failure|
       success.json do
         content_html = ''
+        fire_activity @line_item, :update
         with_format :html do
           content_html = render_to_string(partial: entry_partial('view'), locals: line_item_locals)
         end
