@@ -33,7 +33,7 @@ class LineItemsController < InheritedResources::Base
 
   def destroy
     if params[:ids]
-      LineItem.destroy params[:ids].split('/').flatten.map { |e| e.to_i }
+      LineItem.destroy params[:ids].split('/').flatten.map(&:to_i)
       render json: { result: 'success' }
     else
       super do |success, failure|
@@ -86,7 +86,7 @@ class LineItemsController < InheritedResources::Base
       ).map { |variant|
         LineItem.new(
           imprintable_variant_id: variant.id,
-          unit_price: params[:base_unit_price] || 0,
+          unit_price: params[:base_unit_price] || variant.imprintable.base_price || 0,
           quantity: 0,
           job_id: params[:job_id]
       )}
