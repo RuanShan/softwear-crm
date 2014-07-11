@@ -2,7 +2,7 @@ class Order < ActiveRecord::Base
   include TrackingHelpers
 
   acts_as_paranoid
-  tracked by_current_user + on_order
+  tracked
 
   VALID_PAYMENT_TERMS = ['', 
      'Paid in full on purchase',
@@ -41,7 +41,14 @@ class Order < ActiveRecord::Base
   accepts_nested_attributes_for :payments
 
   def activities
-    PublicActivity::Activity.where(recipient_type: self.class.name, recipient_id: self.id).order('created_at DESC')
+    PublicActivity::Activity.where("
+      (
+        activities.recipient_type = ? AND activities.recipient_id = ?
+      ) OR
+      (
+        activities.trackable_type = ? AND activities.trackable_id = ?
+      )
+    ", *[self.class.name, self.id].*(2)).order('created_at DESC')
   end
 
   def line_items
