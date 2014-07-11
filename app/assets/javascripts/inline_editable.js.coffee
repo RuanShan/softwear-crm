@@ -4,6 +4,8 @@
 
 @registeredInlines = []
 
+@inlineEditableCallbacks = []
+
 # Milliseconds to wait after the user types a key before updating
 # the database
 updateDelay = 1000
@@ -98,6 +100,7 @@ updateDelay = 1000
 
           if response.result == 'success'
             console.log "Successfully updated #{self.resourceName}[#{self.field}]"
+            callback(true) for callback in inlineEditableCallbacks
           else if response.result == 'failure'
             console.log "Error updating #{self.resourceName}[#{self.field}]"
             # Add error stuff
@@ -119,6 +122,8 @@ updateDelay = 1000
                   class: 'text-danger'
                   text:  "#{capitalize field} #{error}"
                 )
+            
+            callback(false) for callback in inlineEditableCallbacks
 
         ajax.fail (jqXHR, textStatus) ->
           alert "Something went wrong with the server and 

@@ -3,6 +3,8 @@
   <h1>Edit Order #<%= @order.id %> <small><%= @order.name %></small></h1>
 </div>
 
+<%= content_tag(:div, id: "order-page", 'data-order-id' => @order.id) {} %>
+
 <div class="row">
     <div class="col-sm-12">
         <div class="box-info full">

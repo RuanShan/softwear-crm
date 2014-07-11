@@ -9,6 +9,25 @@ $ ->
 
   return
 
+# Calling this when asynchronously changing order related data would be nice.
+@updateOrderTimeline = ->
+  orderId = $('#order-page').data('order-id')
+  ajax = $.ajax
+    type: 'GET'
+    url: Routes.order_timeline_path(orderId)
+    data: { after: $('#timeline .the-timeline ul').children().first().find('.the-date').data('date') }
+    dataType: 'json'
+
+  ajax.done (response) ->
+    if response.result is 'success'
+      $('#timeline .the-timeline ul').prepend response.content
+      console.log 'updated timeline'
+    else
+      errorModal "Couldn't update the order timeline view. Refreshing should do it if you actually care.", force: false
+
+  ajax.fail (jqXHR, textStatus) ->
+    errorModal "Internal server error. If this is the only error you see, it's probably no big deal.", force: false
+
 $(window).load ->
   # Edit can't redirect, meaning it can't supply an anchor, so
   # we use data from the error modal to know which tab to switch 
@@ -16,6 +35,9 @@ $(window).load ->
   if $('#errorsModal').length > 0
     switch $('#errorsModal').attr 'resource'
       when 'order' then window.location.hash = 'details'
+
+  if $('#order-page').length > 0
+    inlineEditableCallbacks.push (success) -> updateOrderTimeline if success
 
   $("a[data-toggle='tab']").click ->
     if window.location.hash.indexOf($(this).attr 'href') == -1

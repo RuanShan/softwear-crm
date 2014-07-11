@@ -1,3 +1,4 @@
-$("#contentModal .modal-body").html("<%= escape_javascript(render partial: 'shared/timeline', locals: {activities: nil}) %>");
-$("#contentModal .modal-title").html("Order #<%= escape_javascript @order.id.to_s %>");
-$("#contentModal").modal("show");
+showContentModal({
+  title: $("Order #<%= escape_javascript @order.id.to_s %>")
+  body: $("<%= escape_javascript(render partial: 'shared/timeline', locals: {activities: @order.activities}) %>"),
+})

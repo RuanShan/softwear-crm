@@ -1,17 +1,5 @@
 <div class="the-timeline dashboard-timeline">
   <ul>
-    <% activities.each do |activity| %>
-        <li>
-          <div class="the-date">
-            <span><%= activity.created_at.strftime('%d') %></span>
-            <small><%= activity.created_at.strftime('%b') %></small>
-          </div>
-          <h4><%= activity.owner ? link_to(activity.owner.full_name, activity.owner) : 'Someone' %></h4>
-          <p>
-              <%= render_activity activity %>
-          </p>
-          <p class="time"><%= activity.created_at.strftime('%Y-%m-%d %I:%M%p') %></p>
-        </li>
-    <% end %>
+    <%= render partial: 'shared/activity_list_items', locals: { activities: activities } %>
   </ul>
 </div>
