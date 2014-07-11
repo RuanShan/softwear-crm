@@ -91,6 +91,7 @@ gem 'remotipart'
 
 gem 'sunspot_solr'
 gem 'progress_bar'
+gem 'whenever'
 
 
 # Use ActiveModel has_secure_password
