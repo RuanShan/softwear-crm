@@ -20,6 +20,14 @@ class ImprintsController < InheritedResources::Base
     end
   end
 
+  def show
+    super do |format|
+      format.html do
+        redirect_to order_path(@imprint.order, anchor: "jobs-#{@imprint.job.id}-imprint-#{@imprint.id}")
+      end
+    end
+  end
+
 private
   def permitted_params
     params.permit(:job_id, :id, imprint: [ :print_location_id, :job_id ])

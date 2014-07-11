@@ -40,7 +40,7 @@ CrmSoftwearcrmCom::Application.routes.draw do
     resources :artwork_requests
     resources :jobs, only: [:create, :update, :destroy, :show], shallow: true do
       resources :line_items
-      resources :imprints, only: [:create, :update, :destroy, :new]
+      resources :imprints, except: [:index]
     end
   end
   get '/line_item/select_options', to: 'line_items#select_options'

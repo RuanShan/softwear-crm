@@ -42,18 +42,28 @@ $(window).load ->
           $('.scroll-y').scrollTo $("#job-#{data[1]}").find('.job-title'),{
             duration: 1000,
             offsetTop: 100}, ->
-              # If data.length > 2, the url might look like: /orders/3/edit#jobs-4-10
+              # If data.length > 3, the url might look like: /orders/3/edit#jobs-4-line_item-10
               # In which case, we want to shine the line item with id 10.
-              if data.length > 2 and not shined
-                tryShineLineItem = ($lineItem) ->
-                  if $lineItem.length == 0
-                    false
-                  else
-                    shine $lineItem, null, 2000;true
+              if data.length > 3 and not shined
+                if data[2] is 'line_item'
+                  tryShineLineItem = ($lineItem) ->
+                    if $lineItem.length == 0
+                      false
+                    else
+                      shine $lineItem, null, 2000; true
 
-                tryShineLineItem($ "#line-item-#{data[2]}") or 
-                  tryShineLineItem($("#edit-line-item-#{data[2]}").parentsUntil('.row').parent())
-                shined = true
+                  tryShineLineItem($ "#line-item-#{data[3]}") or 
+                    tryShineLineItem($("#edit-line-item-#{data[3]}").parentsUntil('.row').parent())
+                  shined = true
+
+                else if data[2] is 'imprint'
+                  $imprint = $(".imprint-entry[data-id='#{data[3]}'] *")
+                  $('.scroll-y').scrollTo $imprint,{
+                    duration: 700
+                    offsetTop: 300}, ->
+                      shine $imprint, false, 2000
+                      shined = true
+
 
   $('#datetimepicker1').datetimepicker()
 

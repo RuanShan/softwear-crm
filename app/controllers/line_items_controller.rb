@@ -20,7 +20,7 @@ class LineItemsController < InheritedResources::Base
   def show
     super do |format|
       format.html do
-        redirect_to order_path(@line_item.order, anchor: "jobs-#{@line_item.job.id}-#{@line_item.id}")
+        redirect_to order_path(@line_item.order, anchor: "jobs-#{@line_item.job.id}-line_item-#{@line_item.id}")
       end
       format.json do
         render json: {
