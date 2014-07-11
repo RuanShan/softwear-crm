@@ -180,4 +180,54 @@ namespace :imprintables do
     end
   end
 
+  desc 'Import Imprintable Categories from the google Doc'
+  task import_imprintable_categories: :environment do
+    session = GoogleDrive.login(Figaro.env['google_drive_user_name'], Figaro.env['google_drive_password'])
+    ss = session.spreadsheet_by_key("1Als7xIDrcCLUt7yTy8_2li9C6bLrSWMV0U9c-9NGuVQ")
+    #ss.worksheets.each{|x| puts x.title}
+
+    sheets_category = {
+        3 => 'Tees & Tanks',
+        4 => 'Sweatshirts & Fleece',
+        5 => 'Pants & Shorts',
+        6 => 'Business & Industrial Wear',
+        7 => 'Jackets',
+        8 => 'Headwear & Bags',
+        9 => 'Athletics',
+        10 => 'Fashionable',
+        11 => 'Youth',
+        12 => 'Something Different',
+        13 => "What's Least Expensive"
+    }
+
+    sheets_category.each do |key, val|
+      puts "Key is #{key}"
+      ws = ss.worksheets[key]
+      puts ws[1,1]
+      for row in 7..ws.num_rows
+        if !ws[row,2].blank?
+          begin
+            brand = Brand.find_by(name: brand_name(ws[row, 2]))
+            style = Style.find_by(brand_id: brand.id, catalog_no: ws[row, 3])
+            imprintable = Imprintable.find_by(style_id: style.id)
+
+            if ws[row,3].include?('5000')
+              puts "[#{ws[row,3]}] #{val}"
+            end
+
+            if !imprintable.imprintable_categories.exists?(name: val)
+              ImprintableCategory.create(name: val, imprintable_id: imprintable.id)
+            end
+          rescue
+            puts "Errors finding #{ws[row,2]} #{ws[row, 3]}"
+          end
+
+        end
+      end
+    end
+
+  end
+
+
+
 end

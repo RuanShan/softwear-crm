@@ -3,6 +3,7 @@ class ImprintableCategory < ActiveRecord::Base
   VALID_CATEGORIES = ['',
                       'Tees & Tanks',
                       'Sweatshirts & Fleece',
+                      'Pants & Shorts',
                       'Business & Industrial Wear',
                       'Jackets',
                       'Headwear & Bags',
