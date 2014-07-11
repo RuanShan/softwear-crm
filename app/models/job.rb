@@ -46,7 +46,7 @@ class Job < ActiveRecord::Base
   end
 
   def imprintable_color_names
-    colors.map{|c| c.name}
+    colors.uniq.map{|c| c.name}
   end
 
   def imprintable_style_names
