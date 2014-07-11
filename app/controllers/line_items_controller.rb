@@ -33,11 +33,15 @@ class LineItemsController < InheritedResources::Base
 
   def destroy
     if params[:ids]
-      LineItem.destroy params[:ids].split('/').flatten.map(&:to_i)
+      ids = params[:ids].split('/').flatten.map(&:to_i)
+      fire_activity LineItem.find(ids.first), :destroy unless ids.empty?
+      
+      LineItem.destroy ids
       render json: { result: 'success' }
     else
       super do |success, failure|
         success.json do
+          fire_activity @line_item, :destroy
           render json: { result: 'success' }
         end
         failure.json do
@@ -56,7 +60,10 @@ class LineItemsController < InheritedResources::Base
         end
         render json: { result: 'success', content: content_html }
       end
-      success.html { render partial: 'standard_view_entry', locals: line_item_locals }
+      success.html do
+        fire_activity @line_item, :update
+        render partial: 'standard_view_entry', locals: line_item_locals
+      end
 
       failure.json do
         modal_html = ''
@@ -79,7 +86,7 @@ class LineItemsController < InheritedResources::Base
   end
 
   def create
-    if param_okay? :imprintable_id, :color_id
+    if param_okay? :imprintable_id, :color_id # We create multiple line items for the variants
       line_items = ImprintableVariant.where(
         imprintable_id: params[:imprintable_id],
         color_id: params[:color_id]
@@ -90,9 +97,12 @@ class LineItemsController < InheritedResources::Base
           quantity: 0,
           job_id: params[:job_id]
       )}
+
       valid_line_items = line_items.select(&:valid?)
       if !valid_line_items.empty?
         valid_line_items.each(&:save)
+
+        fire_activity valid_line_items.first, :create
         render json: { result: 'success' }
       else
         modal_html = ''
@@ -106,11 +116,12 @@ class LineItemsController < InheritedResources::Base
           modal: modal_html
         }
       end
-    else
+    else # Create a standard, non-imprintable line item
       super do |success, failure|
         success.json do
           @line_item.job_id = params[:job_id]
           @line_item.save
+          fire_activity @line_item, :create
           render json: { result: 'success' }
         end
         failure.json do

@@ -13,7 +13,14 @@ class LineItem < ActiveRecord::Base
   validates :imprintable_variant_id, uniqueness: { scope: :job_id }, if: :imprintable?
 
   acts_as_paranoid
-  tracked by_current_user
+  tracked skip_defaults: true
+  ### TODO manually call create_activity from the controller
+  # or somehow allow the default activity calls to be disabled
+  # (without global disable) (unless that doesn't stop you from 
+  # sending custom activities)
+  # 
+  # The idea is to make mass-create/update/destroys from the 
+  # imprintable line items to not cause activity spam.
 
   scope :non_imprintable, -> { where imprintable_variant_id: nil }
   scope :imprintable, -> { where.not imprintable_variant_id: nil }

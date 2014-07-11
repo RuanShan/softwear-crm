@@ -31,6 +31,12 @@ protected
     @current_url = request.original_url
   end
 
+  def fire_activity(record, activity_name, options={})
+    options[:key] = record.class.activity_key activity_name
+    options[:owner] = current_user
+    record.create_activity options
+  end
+
   # Pulled this off the internet as a way to render templates to a string
   # without using up your one render in a controller.
   def with_format(format)
