@@ -61,7 +61,6 @@ group :development do
   gem 'capistrano-rails'
   gem 'capistrano-bundler'
   gem 'better_errors', '>= 0.3.2'
-  gem 'progress_bar'
   gem 'binding_of_caller'
 end
 
@@ -91,6 +90,7 @@ gem 'kaminari'
 gem 'remotipart'
 
 gem 'sunspot_solr'
+gem 'progress_bar'
 
 
 # Use ActiveModel has_secure_password
