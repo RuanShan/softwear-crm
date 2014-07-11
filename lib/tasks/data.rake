@@ -30,10 +30,10 @@ namespace :data do
     end
   end
 
-  desc 'Dump database'
+  desc 'restore database from file saved on s3'
   task restore_from_s3: :environment do
     if ENV['aws_secret_access_key'].nil? or ENV['aws_access_key_id'].nil?
-      puts "rake_task[data:backup] AWS Variables are nil, exiting"
+      puts "rake_task[data:restore_from_s3] AWS Variables are nil, exiting"
       exit(1)
     end
 
@@ -46,17 +46,20 @@ namespace :data do
     AWS.config(access_key_id: ENV['aws_access_key_id'], secret_access_key: ENV['aws_secret_access_key'])
     s3 = AWS::S3.new
     key = 'database.sql.gz'
+    s3_file = s3.buckets['dev.crm.softwearcrm.com'].objects[key]
+
+    puts "rake_task[data:restore_from_s3] file last edited #{s3_file.last_modified.strftime('%Y-%m-%d %H:%M:%S')}"
 
     File.open("#{Rails.root}/tmp/database.sql.gz", 'wb') do |file|
-      s3.buckets['dev.crm.softwearcrm.com'].objects[key].read do |chunk|
+      s3_file.read do |chunk|
         file.write(chunk)
       end
     end
 
-    puts "rake_task[data:backup] unzipping database #{database}.gz"
+    puts "rake_task[data:restore_from_s3] unzipping database #{database}.gz"
     system "gzip -d -f #{Rails.root}/tmp/database.sql.gz"
 
-    puts "rake_task[data:backup] populating database #{database}"
+    puts "rake_task[data:restore_from_s3] populating database #{database}"
     system "mysql --host=#{host} --user=#{username} --password=#{password} #{database} < #{Rails.root}/tmp/database.sql"
 
 
