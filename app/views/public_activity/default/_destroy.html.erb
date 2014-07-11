@@ -1,1 +1,6 @@
 Deleted <%= activity.trackable_type.underscore.humanize.downcase.a_or_an %>
+<% if activity.recipient %>
+  from 
+  <%= activity.recipient_type.underscore.humanize.downcase %>
+  <%= link_to activity.recipient.name, activity.recipient %>
+<% end %>

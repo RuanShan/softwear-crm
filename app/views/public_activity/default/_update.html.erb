@@ -1,6 +1,16 @@
-Updated <%= activity.trackable_type.underscore.humanize.downcase %>
-<% if activity.trackable %>
-    <%= link_to activity.trackable.name, activity.trackable %>
+<% if activity.trackable_type %>
+  Updated <%= activity.trackable_type.underscore.humanize.downcase %>
+  <% if activity.trackable %>
+      <%= link_to activity.trackable.name, activity.trackable %>
+  <% else %>
+      which has since been removed
+  <% end %>
 <% else %>
-    which has since been removed
+  Changed something...
+<% end %>
+
+<% if activity.recipient && activity.recipient != activity.trackable %>
+  in
+  <%= activity.recipient_type.underscore.humanize.downcase %>
+  <%= link_to activity.recipient.name, activity.recipient %>
 <% end %>

@@ -41,6 +41,7 @@ class Order < ActiveRecord::Base
   accepts_nested_attributes_for :payments
 
   def activities
+    puts 'GETTING ORDER ACTIVITIES'
     PublicActivity::Activity.where(recipient_type: self.class.name, recipient_id: self.id)
   end
 

@@ -19,7 +19,7 @@ module TrackingHelpers
       # Assign the recipient to either the record's associated order, 
       # or the current order based on the controller.
       def on_order
-        { recipient: TrackingHelpers::Methods.method(:get_order) }
+        { recipient: Proc.new(&TrackingHelpers::Methods.method(:get_order)) }
       end
       # Allows parameters to be applied through (controller, record) procs,
       # or you can just pass one or more hashes.
