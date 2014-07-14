@@ -41,15 +41,4 @@ describe ShippingMethod do
       expect(shipping_method.deleted_at).to_not be_nil
     end
   end
-
-  describe '#destroy!' do
-    let!(:shipping_method) { create(:valid_shipping_method)}
-
-    it 'sets deleted_at to the current time without modifying updated_at' do
-      updated_at = shipping_method.updated_at
-      shipping_method.destroy!
-      expect(shipping_method.deleted_at).to_not be_nil
-      expect(shipping_method.updated_at).to eq(updated_at)
-    end
-  end
 end

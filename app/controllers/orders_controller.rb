@@ -10,7 +10,10 @@ class OrdersController < InheritedResources::Base
     params[:order][:in_hand_by] = DateTime.strptime(params[:order][:in_hand_by], '%m/%d/%Y %H:%M %p') if params[:order][:in_hand_by].length > 0
     super do |success, failure|
       success.html { redirect_to edit_order_path(params[:id])+'#details' }
-      failure.html { render action: :edit, anchor: 'details' }
+      failure.html do
+        assign_activities
+        render action: :edit, anchor: 'details'
+      end
     end
   end
 
@@ -33,7 +36,7 @@ class OrdersController < InheritedResources::Base
   def edit
     super do
       # Grab all activities associated with this order
-      @activities = @order.all_activities
+      assign_activities
     end
   end
 
@@ -43,6 +46,10 @@ class OrdersController < InheritedResources::Base
   end
 
   private
+
+  def assign_activities
+    @activities = @order.all_activities
+  end
 
   def permitted_params
     params.permit(order: [

@@ -172,7 +172,7 @@ feature 'Line Items management', line_item_spec: true, js: true do
     end
   end
 
-  context 'editing a non-imprintable line item', failing: true do
+  context 'editing a non-imprintable line item' do
     before(:each) do
       non_imprintable
       visit edit_order_path(1, anchor: 'jobs')

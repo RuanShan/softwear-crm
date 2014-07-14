@@ -175,7 +175,7 @@ class SearchFormBuilder
     add_class options, 'submit', 'btn', 'btn-primary', 'btn-search-save'
 
     @template.hidden_field_tag('query[name]', '', disabled: true, class: 'query_name') + 
-      @template.hidden_field_tag('query[user_id]', @current_user.id, disabled: true, class: 'user_id') +
+      @template.hidden_field_tag('query[user_id]', @current_user ? @current_user.id : -1, disabled: true, class: 'user_id') +
       @template.hidden_field_tag('target_path', '', disabled: true, class: 'target_path') +
       @template.button_tag(options[:value] || 'Save', options.merge(type: 'button'))
   end

@@ -1,3 +1,5 @@
-<% activities.each do |activity| %>
-  <%= render partial: 'shared/activity_list_item', locals: { activity: activity } %>
+<% if activities %>
+  <% activities.each do |activity| %>
+    <%= render partial: 'shared/activity_list_item', locals: { activity: activity } %>
+  <% end %>
 <% end %>

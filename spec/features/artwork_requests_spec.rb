@@ -56,9 +56,10 @@ feature 'Artwork Request Features', js: true, artwork_request_spec: true do
     visit '/orders/1/edit#artwork'
     find("a[href='/orders/1/artwork_requests/#{artwork_request.id}/edit']").click
     find(:css, "div[class='note-editable'").set('edited')
+    select 'Normal', from: 'Priority'
     click_button 'Update Artwork Request'
     wait_for_ajax
-    expect(artwork_request.reload.description).to eq('edited')
+    expect(ArtworkRequest.where(description: 'edited')).to exist
   end
 
   # scenario 'A user can delete an artwork request', js: true do
