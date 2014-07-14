@@ -23,7 +23,7 @@ $ ->
       $('#timeline .the-timeline ul').prepend response.content
       console.log 'updated timeline'
     else
-      errorModal "Couldn't update the order timeline view. Refreshing should do it if you actually care.", force: false
+      errorModal "Couldn't update the order timeline view. Refreshing should do it if you actually want to see the updated timeline.", force: false
 
   ajax.fail (jqXHR, textStatus) ->
     errorModal "Internal server error. If this is the only error you see, it's probably no big deal.", force: false

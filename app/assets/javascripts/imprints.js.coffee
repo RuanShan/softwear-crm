@@ -71,7 +71,7 @@
         ajax.done ajaxDone
         ajax.fail ajaxFail
 
-  after 5000, updateOrderTimeline
+  after 1000, updateOrderTimeline
 
 @addImprint = ($this, jobId) ->
   ajax = $.ajax
