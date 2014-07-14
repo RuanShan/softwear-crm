@@ -40,7 +40,7 @@
       # Place it before the input field
       $field.before $errorMsgDiv
       # Wrap the input field to make it red
-      $field.wrap $('<div/>', class: 'field_with_errors')
+      $field.wrap $('<div/>', class: 'field_with_errors') unless $field.data('no-wrap')
       # Populate error message div with messages
       for error in fieldErrors
         $errorMsgDiv.append $ '<p/>',
@@ -54,7 +54,7 @@
       $field = $form.find("*[name='#{getParamName(field)}']")
       $errorMsgDiv = $form.find(".error[for='#{getParamName(field)}']")
       $errorMsgDiv.remove()
-      $field.unwrap() if $field.parent().attr('class') == 'field_with_errors'
+      $field.unwrap() if $field.parent().attr('class') == 'field_with_errors' and not $field.data('no-wrap')
     handler.errorFields = []
 
   return handler
