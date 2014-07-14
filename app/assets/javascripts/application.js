@@ -28,3 +28,4 @@
 //= require bootstrap-datetimepicker/bootstrap-datetimepicker
 //= require jquery.remotipart
 //= require sortable/sortable
+//= require jquery-ui
