@@ -37,7 +37,8 @@ $(window).load ->
       when 'order' then window.location.hash = 'details'
 
   if $('#order-page').length > 0
-    inlineEditableCallbacks.push (success) -> updateOrderTimeline if success
+    inlineEditableCallbacks.push (success) ->
+      updateOrderTimeline() if success
 
   $("a[data-toggle='tab']").click ->
     if window.location.hash.indexOf($(this).attr 'href') == -1

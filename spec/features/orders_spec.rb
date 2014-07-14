@@ -105,11 +105,21 @@ feature 'Order management', order_spec: true,  js: true do
   end
 
   scenario 'when editing, submitting invalid information displays error content' do
-    visit edit_order_path(order)+'#details'
+    visit edit_order_path(order, anchor: 'details')
     fill_in 'Email', with: 'bad email!'
     click_button 'Save'
 
     expect(page).to have_content 'Email is invalid'
+  end
+
+  scenario 'user can view updates on the timeline', timeline_spec: true do
+    PublicActivity.with_tracking do
+      order.firstname = "Newfirst"
+      order.save
+    end
+    visit edit_order_path(order)
+
+    expect(page).to have_content "Updated order #{order.name}"
   end
 
   describe 'search', search_spec: true, solr: true do
