@@ -1,5 +1,5 @@
 <% if @artwork_request.valid? %>
-    $('#artwork-request-row-<%= @artwork_request.id %>').replaceWith("<%= escape_javascript(render(partial: 'row', locals: {ar: @artwork_request})).html_safe %>");
+    updateOrderTimeline();
     $('#artwork-request-<%= @artwork_request.id %>').replaceWith("<%= escape_javascript(render(partial: 'artwork_request', locals: {artwork_request: @artwork_request, order: @order})).html_safe %>");
     setupContentModal(function($contentModal){
         $contentModal.find('.modal-content').addClass('modal-content-success')

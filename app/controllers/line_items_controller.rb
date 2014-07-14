@@ -8,22 +8,40 @@ class LineItemsController < InheritedResources::Base
   def edit
     super do |format|
       format.html { render partial: 'standard_edit_entry', locals: { line_item: @line_item } }
+      format.json do
+        render json: {
+          result: 'success',
+          content: render_string(partial: 'standard_edit_entry', locals: { line_item: @line_item })
+        }
+      end
     end
   end
 
   def show
     super do |format|
-      format.html { render partial: 'standard_view_entry', locals: { line_item: @line_item } }
+      format.html do
+        redirect_to order_path(@line_item.order, anchor: "jobs-#{@line_item.job.id}-line_item-#{@line_item.id}")
+      end
+      format.json do
+        render json: {
+          result: 'success',
+          content: render_string(partial: 'standard_view_entry', locals: { line_item: @line_item })
+        }
+      end
     end
   end
 
   def destroy
     if params[:ids]
-      LineItem.destroy params[:ids].split('/').flatten.map { |e| e.to_i }
+      ids = params[:ids].split('/').flatten.map(&:to_i)
+      fire_activity LineItem.find(ids.first), :destroy unless ids.empty?
+      
+      LineItem.destroy ids
       render json: { result: 'success' }
     else
       super do |success, failure|
         success.json do
+          fire_activity @line_item, :destroy
           render json: { result: 'success' }
         end
         failure.json do
@@ -37,12 +55,16 @@ class LineItemsController < InheritedResources::Base
     super do |success, failure|
       success.json do
         content_html = ''
+        fire_activity @line_item, :update
         with_format :html do
           content_html = render_to_string(partial: entry_partial('view'), locals: line_item_locals)
         end
         render json: { result: 'success', content: content_html }
       end
-      success.html { render partial: 'standard_view_entry', locals: line_item_locals }
+      success.html do
+        fire_activity @line_item, :update
+        render partial: 'standard_view_entry', locals: line_item_locals
+      end
 
       failure.json do
         modal_html = ''
@@ -65,20 +87,23 @@ class LineItemsController < InheritedResources::Base
   end
 
   def create
-    if param_okay? :imprintable_id, :color_id
+    if param_okay? :imprintable_id, :color_id # We create multiple line items for the variants
       line_items = ImprintableVariant.where(
         imprintable_id: params[:imprintable_id],
         color_id: params[:color_id]
       ).map { |variant|
         LineItem.new(
           imprintable_variant_id: variant.id,
-          unit_price: params[:base_unit_price] || 0,
+          unit_price: params[:base_unit_price] || variant.imprintable.base_price || 0,
           quantity: 0,
           job_id: params[:job_id]
       )}
+
       valid_line_items = line_items.select(&:valid?)
       if !valid_line_items.empty?
         valid_line_items.each(&:save)
+
+        fire_activity valid_line_items.first, :create
         render json: { result: 'success' }
       else
         modal_html = ''
@@ -92,11 +117,12 @@ class LineItemsController < InheritedResources::Base
           modal: modal_html
         }
       end
-    else
+    else # Create a standard, non-imprintable line item
       super do |success, failure|
         success.json do
           @line_item.job_id = params[:job_id]
           @line_item.save
+          fire_activity @line_item, :create
           render json: { result: 'success' }
         end
         failure.json do

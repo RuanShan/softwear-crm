@@ -132,17 +132,29 @@ initializeLineItemModal = (lineItemModal) ->
   lineItemModal.modal 'show'
   lineItemModal.find('#is_imprintable_no').prop('checked', false)
 
+@imprintableEditEntryChanged = ($this) ->
+  $this.parentsUntil("form").parent().addClass("editing-line-item")
+
 loadLineItemView = (lineItemId, url) ->
   $row = $("#line-item-#{lineItemId}")
   $oldChildren = $row.children()
-  $row.load url, ->
+
+  ajax = $.ajax
+    type: 'GET'
+    url: url
+    dataType: 'json'
+
+  ajax.done (response) ->
     $oldChildren.each -> $(this).remove()
+    $row.append response.content
+
+    updateOrderTimeline()
 
 @editLineItem = (lineItemId) ->
-  loadLineItemView lineItemId, "/line_items/#{lineItemId}/edit"
+  loadLineItemView lineItemId, Routes.edit_line_item_path(lineItemId)
 
 @cancelEditLineItem = (lineItemId) ->
-  loadLineItemView lineItemId, "/line_items/#{lineItemId}"
+  loadLineItemView lineItemId, Routes.line_item_path(lineItemId)
 
 @deleteLineItem = (lineItemId) ->
   $(this).attr 'disabled', 'disabled'
@@ -155,7 +167,7 @@ loadLineItemView = (lineItemId, url) ->
 
   ajax.done (response) ->
     if response.result == 'success'
-      $row.fadeOut -> $row.remove() 
+      $row.fadeOut -> $row.remove(); updateOrderTimeline()
     else if response.result == 'failure'
       alert "Something weird happened and the line item couldn't be deleted."
 
@@ -170,7 +182,7 @@ loadLineItemView = (lineItemId, url) ->
 
   ajax.done (response) ->
     if response.result == 'success'
-      $row.fadeOut -> $row.remove()
+      $row.fadeOut -> $row.remove(); updateOrderTimeline()
     else
       alert 'Something weird happened and the line items could not be deleted.'
 
@@ -200,6 +212,9 @@ loadLineItemView = (lineItemId, url) ->
     ajax.fail (jqXHR, errorText) ->
       alert "Internal server error! Can't process request."
 
+  after 5000, updateOrderTimeline
+
+# Opens the modal to create a new line item.
 @addLineItem = (jobId) ->
   $this = $(this)
   $this.attr 'disabled', 'disabled'
@@ -208,7 +223,7 @@ loadLineItemView = (lineItemId, url) ->
 
   ajax = $.ajax
     type: 'GET'
-    url: "/jobs/#{jobId}/line_items/new"
+    url: Routes.new_job_line_item_path(jobId)
     dataType: 'html'
 
   ajax.done (response) ->

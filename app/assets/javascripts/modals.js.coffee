@@ -98,21 +98,17 @@ $(document).ready ->
 
 # Call this to invoke an error modal, sort of like alert
 # body parameter is optional, title will default to "Error"
-@errorModal = (titleOrBody, body) ->
-  title = 
-    if body
-      titleOrBody
-    else
-      body = titleOrBody
-      "Error"
+@errorModal = (body, options) ->
+  options = {} unless typeof options is 'object'
+  
+  options.title ||= 'Error'
+  options.body ||= body
+  options.footer ||= $('<button class="btn btn-danger" data-dismiss="modal">OK</button>')
 
   setupContentModal ($contentModal) ->
     $contentModal.find('.modal-content').addClass 'modal-content-error'
     $contentModal.find('.modal-body').addClass 'centered'
-  showContentModal
-    title: $("<strong>#{title}</strong>")
-    body: body
-    footer: $('<button class="btn btn-danger" data-dismiss="modal">OK</button>')
+  showContentModal options
 
 # Opens a modal that looks just like the flash modal when
 # the flash contains a success message.

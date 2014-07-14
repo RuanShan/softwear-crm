@@ -41,7 +41,13 @@ class JobsController < InheritedResources::Base
   def show
     super do |format|
       format.html do
-        render partial: 'orders/job', locals: { job: @job }
+        redirect_to order_path(@job.order, anchor: "jobs-#{@job.id}")
+      end
+      format.json do
+        render json: {
+          result: 'success',
+          content: render_string(partial: 'orders/job', locals: {job: @job})
+        }
       end
     end
   end

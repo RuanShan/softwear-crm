@@ -1,5 +1,8 @@
 class ArtworkRequest < ActiveRecord::Base
+  include TrackingHelpers
+
   acts_as_paranoid
+  tracked by_current_user + on_order
 
   PRIORITIES = {1 => 'High (Rush Job)', 3 => 'Customer Paid For Art', 5 => 'Normal', 7 => 'Low'}
 

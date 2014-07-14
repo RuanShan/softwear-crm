@@ -52,6 +52,15 @@ feature 'Artwork Request Features', js: true, artwork_request_spec: true do
     # expect('.the-notes').to have_button('.fa fa-2x danger fa-times-circle', text: 'Delete')
   # end
 
+  scenario 'A user can edit an artwork request', js: true do
+    visit '/orders/1/edit#artwork'
+    find("a[href='/orders/1/artwork_requests/#{artwork_request.id}/edit']").click
+    find(:css, "div[class='note-editable'").set('edited')
+    select 'Normal', from: 'Priority'
+    click_button 'Update Artwork Request'
+    wait_for_ajax
+    expect(ArtworkRequest.where(description: 'edited')).to exist
+  end
   # scenario 'A user can edit an artwork request', js: true do
   #   visit '/orders/1/edit#artwork'
   #   find("a[href='/orders/1/artwork_requests/#{artwork_request.id}/edit']").click

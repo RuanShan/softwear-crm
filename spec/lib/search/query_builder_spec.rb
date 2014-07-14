@@ -151,7 +151,7 @@ describe Search::QueryBuilder, search_spec: true do
         expect(group.filters.last.negate).to be_truthy
       end
 
-      it 'should add a phrase filter with :keywords', :wip do
+      it 'should add a phrase filter with :keywords' do
         query = Search::QueryBuilder.build do
           on(Order) do
             keywords('Excellent') do

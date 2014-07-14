@@ -80,7 +80,7 @@ feature 'Jobs management', js: true, job_spec: true do
     expect(order.jobs.count).to eq 0
   end
 
-  scenario 'a job can be created and deleted without refreshing the page' do
+  scenario 'a job can be created and deleted without refreshing the page', retry: 3 do
     visit edit_order_path(1, anchor: 'jobs')
     click_button 'New Job'
     sleep 1
@@ -107,5 +107,30 @@ feature 'Jobs management', js: true, job_spec: true do
 
     expect(page).to have_content job.name
     expect(page).to have_content job.description
+  end
+
+  context 'timeline', timeline_spec: true do
+    scenario 'job updates are updated on the order timeline' do
+      PublicActivity.with_tracking do
+        job.description = "New Job Description"
+        job.save
+      end
+      visit edit_order_path(1)
+
+      expect(page).to have_content "Updated job #{job.name} in order #{job.order.name}"
+    end
+
+    scenario 'making a change updates the timeline inline' do
+      PublicActivity.with_tracking do
+        visit edit_order_path(1, anchor: 'jobs')
+
+        fill_in_inline 'description', with: 'Here is our new job description, ladies and gentlemen.'        
+
+        find('a[href="#timeline"]').click
+        wait_for_ajax
+
+        expect(page).to have_content "Updated job #{job.name} in order #{job.order.name}"
+      end
+    end
   end
 end

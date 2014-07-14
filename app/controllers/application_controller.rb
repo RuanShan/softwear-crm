@@ -1,4 +1,5 @@
 class ApplicationController < ActionController::Base
+  include PublicActivity::StoreController
   # Prevent CSRF attacks by raising an exception.
   # For APIs, you may want to use :null_session instead.
   protect_from_forgery with: :exception
@@ -30,12 +31,28 @@ protected
     @current_url = request.original_url
   end
 
+  def fire_activity(record, activity_name, options={})
+    options[:key] = record.class.activity_key_for activity_name
+    options[:owner] = current_user
+    options[:recipient] = TrackingHelpers::Methods.get_order(self, record)
+    record.create_activity options
+  end
+
+  # Pulled this off the internet as a way to render templates to a string
+  # without using up your one render in a controller.
   def with_format(format)
     old_formats = formats
     self.formats = [format]
     r = yield
     self.formats = old_formats
     r
+  end
+
+  # Quicker way to render to a string using the previous function
+  def render_string(*args)
+    s = nil
+    with_format(:html) { s = render_to_string(*args) }
+    s
   end
 
   def last_search

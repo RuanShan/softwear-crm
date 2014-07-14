@@ -22,7 +22,7 @@ create_records([
   {name: "Wow", description: "Do you know how many jobs are in these seeds?",
     quantity: 12, unit_price: 10, taxable: true, job_id: 5},
 
-  {name: "It's dangerous to go along", description: "Take this!",
+  {name: "It's dangerous to go alone", description: "Take this!",
     quantity: 1, unit_price: 99, taxable: true, job_id: 6},
 
   {name: "Database entries", description: "Mmmmmmmm",

@@ -39,6 +39,7 @@ Sunspot::DSL::Fields.class_eval do
 end
 
 require_relative 'sunspot_custom_types'
+require Rails.root + 'lib/util/generic_decorators.rb'
 # Eager load all the models so that the search data is readily available
 require Rails.root + 'app/models/search.rb'
 Dir[Rails.root + 'app/models/**/*.rb'].each do |file|

@@ -10,7 +10,10 @@ class OrdersController < InheritedResources::Base
   def update
     super do |success, failure|
       success.html { redirect_to edit_order_path(params[:id])+'#details' }
-      failure.html { render action: :edit, anchor: 'details' }
+      failure.html do
+        assign_activities
+        render action: :edit, anchor: 'details'
+      end
     end
   end
 
@@ -30,6 +33,18 @@ class OrdersController < InheritedResources::Base
     end
   end
 
+  def edit
+    super do
+      # Grab all activities associated with this order
+      assign_activities
+    end
+  end
+
+  def create
+    params[:order][:in_hand_by] = DateTime.strptime(params[:order][:in_hand_by], '%m/%d/%Y %H:%M %p') if params[:order][:in_hand_by].length > 0
+    super
+  end
+
   private
 
   def format_time
@@ -41,6 +56,10 @@ class OrdersController < InheritedResources::Base
     rescue ArgumentError
       params[:order][:in_hand_by]
     end
+  end
+
+  def assign_activities
+    @activities = @order.all_activities
   end
 
   def permitted_params

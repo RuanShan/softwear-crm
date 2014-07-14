@@ -5,11 +5,12 @@
 
     ajax = $.ajax
       type: 'DELETE'
-      url: "/jobs/#{jobId}"
+      url: Routes.job_path(jobId)
+      dataType: 'json'
 
     ajax.done (response) ->
       if response.result == 'success'
-        $("#job-#{jobId}").fadeOut 500
+        $("#job-#{jobId}").fadeOut 500, updateOrderTimeline
       else if response.result == 'failure'
         errorModal response.error
         $this.removeAttr 'disabled'
@@ -28,12 +29,15 @@
   
   ajax = $.ajax
     type: 'GET'
-    url: "/jobs/#{jobId}"
+    url: Routes.job_path(jobId)
+    dataType: 'json'
 
   ajax.done (response) ->
-    console.log "Updated job #{jobId}"
-    $job.replaceWith response
+    $job.replaceWith response.content
     refresh_inlines()
+    registerJobEvents $("#job-#{jobId}")
+    console.log "Updated job #{jobId}"
+    updateOrderTimeline()
 
   ajax.fail (jqXHR, textStatus) ->
     alert "Failed to re-render job #{jobId}. Refresh the page to view changes."
@@ -67,7 +71,6 @@ jobCollapse = (id, collapsed) ->
 
   $jobCollapse.on 'show.bs.collapse', onJobCollapseShow
   $jobCollapse.on 'hide.bs.collapse', onJobCollapseHide
-
   # TODO replace inline job events with logic in here if Ricky insists
 
 $(window).load ->
@@ -98,6 +101,8 @@ $(window).load ->
 
         # This should be called when jobs are added through js
         registerJobEvents($newJob)
+
+        updateOrderTimeline()
 
     ajax.fail (jqXHR, textStatus) ->
       alert "Something went wrong with the server and

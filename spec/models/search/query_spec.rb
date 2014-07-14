@@ -95,7 +95,7 @@ describe Search::Query, search_spec: true do
           order_model.add_field 'name'
         end
 
-        it 'just searches that field', solr: true, random: true do
+        it 'just searches that field', solr: true, retry: 5 do
           search = assure_solr_search do
             subject.search 'keywordone'
           end

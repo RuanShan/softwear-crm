@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe TimelineController do
+describe TimelineController, timeline_spec: true do
   let!(:valid_user) { create :user }
   before(:each) { sign_in valid_user }
 

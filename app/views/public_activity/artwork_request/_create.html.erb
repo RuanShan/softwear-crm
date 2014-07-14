@@ -1,0 +1,17 @@
+<% if activity.trackable_type %>
+  Added art
+  <% if activity.trackable %>
+      by <%= activity.trackable.artist.full_name %>
+  <% else %>
+      which has since been removed
+  <% end %>
+<% else %>
+  Added some art...
+<% end %>
+<% if activity.recipient %>
+  to
+  <%= activity.recipient_type.underscore.humanize.downcase %>
+  <%= link_to activity.recipient.name, activity.recipient %>
+<% else %>
+  a deleted order
+<% end %>

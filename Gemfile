@@ -89,7 +89,7 @@ gem 'google_drive'
 gem 'kaminari'
 gem 'api', path: 'engines/api'
 gem 'remotipart'
-
+gem 'public_activity'
 gem 'sunspot_solr'
 gem 'progress_bar'
 gem 'whenever'

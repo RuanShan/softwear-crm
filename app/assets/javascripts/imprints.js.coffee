@@ -71,6 +71,8 @@
         ajax.done ajaxDone
         ajax.fail ajaxFail
 
+  after 1000, updateOrderTimeline
+
 @addImprint = ($this, jobId) ->
   ajax = $.ajax
     type: 'GET'
@@ -105,6 +107,7 @@
       ajax.done (response) ->
         if response.result is 'success'
           killContainer()
+          updateOrderTimeline()
         else
           alert 'Something strange happened!'
       ajax.fail (jqXHR, errorText) ->
