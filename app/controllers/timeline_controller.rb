@@ -7,9 +7,9 @@ class TimelineController < ApplicationController
       format.js { render layout: nil }
       format.json do
         activities = if params[:after]
-          @order.activities.where("created_at > ?", params[:after])
+          @order.all_activities.where("created_at > ?", params[:after])
         else
-          @order.activities
+          @order.all_activities
         end
         render json: { 
           result: 'success', 

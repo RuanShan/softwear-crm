@@ -5,7 +5,7 @@ module TrackingHelpers
     include PublicActivity::Model unless ancestors.include? PublicActivity::Model
 
     class << self
-      def activity_key(activity_name)
+      def activity_key_for(activity_name)
         "#{name.underscore}.#{activity_name}"
       end
 

@@ -33,7 +33,7 @@ class OrdersController < InheritedResources::Base
   def edit
     super do
       # Grab all activities associated with this order
-      @activities = @order.activities
+      @activities = @order.all_activities
     end
   end
 

@@ -1,4 +1,4 @@
 showContentModal({
   title: $("Order #<%= escape_javascript @order.id.to_s %>")
-  body: $("<%= escape_javascript(render partial: 'shared/timeline', locals: {activities: @order.activities}) %>"),
+  body: $("<%= escape_javascript(render partial: 'shared/timeline', locals: {activities: @order.all_activities}) %>"),
 })
