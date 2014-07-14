@@ -41,7 +41,7 @@ class Order < ActiveRecord::Base
   accepts_nested_attributes_for :payments
 
   def all_activities
-    PublicActivity::Activity.where("
+    PublicActivity::Activity.where( "
       (
         activities.recipient_type = ? AND activities.recipient_id = ?
       ) OR
