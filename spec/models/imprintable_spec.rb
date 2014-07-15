@@ -1,4 +1,5 @@
 require 'spec_helper'
+include PricingModule
 
 describe Imprintable, imprintable_spec: true do
   describe 'Relationship' do
@@ -93,6 +94,22 @@ describe Imprintable, imprintable_spec: true do
       expect(variants_hash[:size_variants][0].id).to eq(imprintable_variant.size_id)
       expect(variants_hash[:color_variants][0].id).to eq(imprintable_variant.color_id)
       expect(variants_hash[:variants_array][0].id).to eq(imprintable_variant.id)
+    end
+  end
+
+  describe 'pricing_hash' do
+    let!(:imprintable_variant) { create(:valid_imprintable_variant) }
+    it 'returns an array of hashes, each containing the imprintable name, sizes, supplier_url and prices' do
+      decoration_price = 5
+      imprintable = imprintable_variant.imprintable
+      resultant =
+      {
+          name: imprintable.name,
+          sizes: imprintable.sizes.map(&:display_value).join(', '),
+          supplier_link: imprintable.supplier_link,
+          prices: get_prices(imprintable, decoration_price)
+      }
+      expect(imprintable.pricing_hash(decoration_price)).to eq(resultant)
     end
   end
 
