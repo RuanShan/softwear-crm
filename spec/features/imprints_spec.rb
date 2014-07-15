@@ -28,17 +28,11 @@ feature 'Imprints Management', imprint_spec: true, js: true, imprint_features: t
     wait_for_ajax
 
     first('.add-imprint').click
-    wait_for_ajax
-
+    sleep 1
     select imprint_method2.name, from: 'Imprint method'
-    sleep 1.5
     select print_location2.name, from: 'Print location'
-
     expect(all('.editing-imprint').count).to be > 1
-
     find('.update-imprints').click
-
-    sleep 1.5
     expect(Imprint.where(job_id: job.id, print_location_id: print_location2.id)).to exist
   end
 
@@ -53,6 +47,7 @@ feature 'Imprints Management', imprint_spec: true, js: true, imprint_features: t
 
     expect(all('.editing-imprint').count).to be > 1
 
+    sleep 1.5
     find('.update-imprints').click
     wait_for_ajax
 

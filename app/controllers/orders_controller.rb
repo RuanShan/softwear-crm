@@ -40,11 +40,6 @@ class OrdersController < InheritedResources::Base
     end
   end
 
-  def create
-    params[:order][:in_hand_by] = DateTime.strptime(params[:order][:in_hand_by], '%m/%d/%Y %H:%M %p') if params[:order][:in_hand_by].length > 0
-    super
-  end
-
   private
 
   def format_time

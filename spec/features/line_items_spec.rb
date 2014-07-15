@@ -24,7 +24,7 @@ feature 'Line Items management', line_item_spec: true, js: true do
 
   given(:non_imprintable) { create(:non_imprintable_line_item, job_id: job.id) }
 
-  scenario 'user can add a new non-imprintable line item' do
+  scenario 'user can add a new non-imprintable line item', wip: true do
     visit edit_order_path(1, anchor: 'jobs')
     wait_for_ajax
 
@@ -41,6 +41,7 @@ feature 'Line Items management', line_item_spec: true, js: true do
       fill_in 'Unit price', with: '5.00'
     end
 
+    wait_for_ajax
     find('#line-item-submit').click
     sleep 3
 

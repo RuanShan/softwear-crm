@@ -20,13 +20,13 @@
     </div>
     <div class="col-sm-6 ">
       <dl>
-        <dt>Artwork Status</dt>
+        <dt>Artwork Status: </dt>
         <dd><%= artwork_request.artwork_status %></dd>
-        <dt>Deadline</dt>
+        <dt>Deadline: </dt>
         <dd><%= artwork_request.deadline.strftime('%b %d, %Y, %I:%M %p') %></dd>
-        <dt>Salesperson</dt>
+        <dt>Salesperson: </dt>
         <dd><%= current_user.full_name %></dd>
-        <dt>Artist</dt>
+        <dt>Artist: </dt>
         <dd><%= artwork_request.artist.full_name %></dd>
       </dl>
     </div>

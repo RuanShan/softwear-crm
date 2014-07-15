@@ -27,6 +27,7 @@ feature 'Styles management', style_spec: true do
     fill_in 'style_sku', :with => '99'
     page.find_by_id('style_brand_id').find("option[value='#{style.brand.id}']").click
     click_button('Create Style')
+    sleep 1
     expect(page).to have_selector '.modal-content-success', text: 'Style was successfully created.'
     expect(Style.find_by name: 'Sample Name').to_not be_nil
   end
@@ -36,6 +37,7 @@ feature 'Styles management', style_spec: true do
     fill_in 'style_name', :with => 'Edited Style Name'
     click_button 'Update Style'
     expect(current_path).to eq(styles_path)
+    sleep 1
     expect(page).to have_selector '.modal-content-success', text: 'Style was successfully updated.'
     expect(style.reload.name).to eq('Edited Style Name')
   end
@@ -46,6 +48,7 @@ feature 'Styles management', style_spec: true do
     page.driver.browser.switch_to.alert.accept
     wait_for_ajax
     expect(current_path).to eq(styles_path)
+    sleep 1
     expect(page).to have_selector '.modal-content-success', text: 'Style was successfully destroyed.'
     expect(style.reload.destroyed? ).to be_truthy
   end
