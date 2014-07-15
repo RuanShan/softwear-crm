@@ -12,7 +12,7 @@ describe 'artwork_requests/_edit.html.erb', artwork_request_spec: true do
   end
 
   it 'has a create artwork request button' do
-    expect(rendered).to have_selector("input#artwork-request-submit")
+    expect(rendered).to have_selector("input[type='submit']")
     expect(rendered).to have_selector("input[value='Update Artwork Request']")
   end
 

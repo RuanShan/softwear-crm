@@ -24,11 +24,6 @@
   $(".artwork-status-select").hide()
   $(".artwork-status-select").val "Pending"
 
-#@formatContentModal = ->
-#  $("#contentModal").modal
-#    backdrop: "static"
-#    keyboard: false
-
 @styleCheckboxes = ->
   $("input").iCheck
     checkboxClass: "icheckbox_minimal-grey"
