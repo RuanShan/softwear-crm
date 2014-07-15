@@ -3,6 +3,8 @@
     <table class="table table-hover" id="prices_hash_supplier_pricing">
       <thead>
       <tr>
+        <th>Item</th>
+        <th>Sizes</th>
         <th>Base Price</th>
         <th>2XL</th>
         <th>3XL</th>
@@ -12,13 +14,25 @@
       </tr>
       </thead>
       <tbody>
+      <% session[:prices].each_with_index do |hash, index| %>
+      <tr id=<%= "price_#{index}" %>>
+          <td><%= link_to(hash[:name], hash[:supplier_link]) %></td>
+          <td><%= hash[:sizes] %></td>
+          <td><%= number_to_currency hash[:prices][:base_price] %></td>
+          <td><%= number_to_currency hash[:prices][:xxl_price] %></td>
+          <td><%= number_to_currency hash[:prices][:xxxl_price] %></td>
+          <td><%= number_to_currency hash[:prices][:xxxxl_price] %></td>
+          <td><%= number_to_currency hash[:prices][:xxxxxl_price] %></td>
+          <td><%= number_to_currency hash[:prices][:xxxxxxl_price] %></td>
+          <td>
+            <div class="btn-group btn-group-xs">
+            <%= link_to price_path(index), 'data-action' => 'destroy', 'data-toggle' => 'tooltip', 'title' => 'Destroy', class: 'btn btn-default', method: :delete, remote: true, data: {confirm: 'Are you sure you would like to delete the price?'} do %><i class="fa fa-times"></i><% end %>
+            </div>
+          </td>
+      </tr>
+      <% end %>
       <tr>
-        <td><%= number_to_currency prices_hash[:base_price] unless prices_hash[:base_price] == 0.0 %></td>
-        <td><%= number_to_currency prices_hash[:xxl_price] unless prices_hash[:xxl_price] == 0.0 %></td>
-        <td><%= number_to_currency prices_hash[:xxxl_price] unless prices_hash[:xxxl_price] == 0.0 %></td>
-        <td><%= number_to_currency prices_hash[:xxxxl_price] unless prices_hash[:xxxxl_price] == 0.0 %></td>
-        <td><%= number_to_currency prices_hash[:xxxxxl_price] unless prices_hash[:xxxxxl_price] == 0.0 %></td>
-        <td><%= number_to_currency prices_hash[:xxxxxxl_price] unless prices_hash[:xxxxxxl_price]== 0.0 %></td>
+        <td><%= link_to 'Delete all prices', destroy_all_prices_path, remote: true, data: { confirm: 'Are you sure you want to delete every price?' }, class: 'btn btn-default' %></td>
       </tr>
       </tbody>
     </table>

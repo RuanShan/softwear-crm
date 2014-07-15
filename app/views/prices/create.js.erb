@@ -1,1 +1,3 @@
-$('#contentBody').html("<%=j render( partial: 'prices/create', :formats => [:html], locals: { imprintable: @imprintable, prices_hash: @prices_hash } ).html_safe %>");
+
+$('#contentModal .modal-content').width(900);
+$('#contentBody').html("<%=j render( partial: 'prices/create', :formats => [:html], locals: { imprintable: @imprintable } ).html_safe %>");

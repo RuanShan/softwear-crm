@@ -1,4 +1,6 @@
 class Imprintable < ActiveRecord::Base
+  include PricingModule
+
   paginates_per 50
 
   acts_as_paranoid
@@ -70,5 +72,26 @@ class Imprintable < ActiveRecord::Base
 
   def retail_sku
 
+  end
+
+  def pricing_hash(decoration_price)
+    imprintable = self
+    sizes_string = determine_sizes(imprintable.sizes)
+    {
+        name: imprintable.name,
+        supplier_link: imprintable.supplier_link,
+        sizes: sizes_string,
+        prices: get_prices(imprintable, decoration_price)
+    }
+  end
+
+  def determine_sizes(collection_proxy)
+    if collection_proxy.first == nil
+      return nil
+    elsif collection_proxy.first == collection_proxy.last
+      return collection_proxy.first.display_value
+    else
+      return "#{collection_proxy.first.display_value} - #{collection_proxy.last.display_value}"
+    end
   end
 end
