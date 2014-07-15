@@ -5,7 +5,10 @@
       <div class="form-group clearfix">
         <label class="col-sm-4 control-label" for="decoration_price">Decoration Price</label>
         <div class="col-sm-8">
-          <%= text_field_tag :decoration_price, nil, placeholder: 'Enter decoration price..' %>
+          <div class="input-group">
+            <span class="input-group-addon">$</span>
+            <%= text_field_tag :decoration_price, nil, placeholder: 'Enter decoration price..', class: 'form-control' %>
+          </div>
           <p class="help-block">The decoration price of the imprintable</p>
         </div>
       </div>
