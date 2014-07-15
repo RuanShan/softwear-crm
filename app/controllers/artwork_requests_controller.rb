@@ -1,9 +1,20 @@
 class ArtworkRequestsController < InheritedResources::Base
   before_filter :format_time, only: [:create, :update]
   before_filter :assign_order
-  after_filter :notify_artists, only: [:create, :update]
 
   respond_to :js
+
+  def update
+    super do |success, failure|
+      success.js {notify_artists}
+    end
+  end
+
+  def create
+    super do |success, failure|
+      success.js {notify_artists}
+    end
+  end
 
   private
 

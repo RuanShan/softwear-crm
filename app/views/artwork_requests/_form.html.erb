@@ -114,7 +114,7 @@
     <div class="row">
       <%= f.label :description, class: 'col-sm-2 control-label' %>
       <div class="col-sm-10">
-        <%= f.text_field :description, class: 'form-control summernote' %>
+        <%= f.text_field :description, class: 'form-control summernote', data: {'no-wrap' => true} %>
         <% if artwork_request.errors.include?(:description) %>
             <% artwork_request.errors.full_messages_for(:description).each do |message| %>
                 <p class="text-danger"><%= message %></p>
@@ -142,7 +142,7 @@
   <div class="form-group">
     <div class="row">
       <div class="col-sm-6">
-        <%= f.submit create_or_edit_text(artwork_request) + ' Artwork Request', class: 'btn btn-primary', id: 'artwork-request-submit' %>
+        <%= f.submit create_or_edit_text(artwork_request) + ' Artwork Request' %>
       </div>
     </div>
   </div>

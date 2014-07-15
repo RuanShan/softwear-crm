@@ -9,12 +9,10 @@
         body: 'Successfuly created Artwork Request!'
     }).delay(50)
 <% else %>
-    $('#contentModal .modal-body').html("<%= escape_javascript(render(partial: 'new', locals: {artwork_request: @artwork_request, order: @order})).html_safe %>");
-    styleCheckboxes();
-    initializeSummernote();
-    initializeDateTimePicker();
-    initializeJobsChosen();
-    summernoteArtworkRequest();
-    setNewArtworkRequestSelect();
-//    $('#errorsModal').modal('show');
+    var form = $('#contentModal .modal-body form');
+    if (form.data('errorHandler') == null) {
+        form.data('errorHandler', ErrorHandler('artwork_request', form));
+    }
+    var handler = form.data('errorHandler');
+    handler.handleErrors(JSON.parse("<%= escape_javascript(@artwork_request.errors.messages.to_json.html_safe) %>"), $("<%= escape_javascript(render(partial: 'shared/modal_errors', locals: { object: @artwork_request })).html_safe %>"));
 <% end %>

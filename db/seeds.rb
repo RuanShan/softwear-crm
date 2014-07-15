@@ -123,6 +123,9 @@ create_records([
                    {name: 'Indigo', imprint_method_id: im.id},
                    {name: 'Violet', imprint_method_id: im.id}
                ], InkColor)
+ic_one = InkColor.all.first
+ic_two = InkColor.all.second
+ic_three = InkColor.all.third
 create_records([
                    {name: 'Chest', max_height: 5.5, max_width: 5.5, imprint_method_id: im.id},
                    {name: 'Back', max_height: 5.5, max_width: 5.5, imprint_method_id: im.id}
@@ -221,4 +224,34 @@ create_records([
     job_id: j.id, print_location_id: pl.id
   ], Imprint)
 
-# Artwork Request Seeding
+# Artwork Request SEEDING
+#------------------------
+create_records([
+    {
+        description: 'No more thinking about bears.',
+        artist_id: 1,
+        imprint_method_id: im.id,
+        print_location_id: pl.id,
+        salesperson_id: 1,
+        deadline: Time.now,
+        artwork_status: 'Pending',
+        priority: 1,
+        ink_color_ids: [ic_one.id, ic_two.id, ic_three.id],
+        job_ids: [j.id]
+    },
+
+    {
+        description: 'Ill be taking these Huggies, and whatever cash ya got.',
+        artist_id: 1,
+        imprint_method_id: im.id,
+        print_location_id: pl.id,
+        salesperson_id: 1,
+        deadline: Time.now + 1.day,
+        artwork_status: 'Pending',
+        priority: 5,
+        ink_color_ids: [ic_one.id, ic_two.id, ic_three.id],
+        job_ids: [j.id]
+    }
+               ], ArtworkRequest)
+
+ar = ArtworkRequest.all.first
