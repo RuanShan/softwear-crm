@@ -14,4 +14,16 @@ module OrderHelper
     end
     salesperson_id = current_user.id
   end
+
+  def get_style_from_status(status)
+    if status == 'Payment Terms Pending'
+      'label-danger'
+    elsif status == 'Awaiting Payment'
+      'label-danger'
+    elsif status == 'Payment Terms Met'
+      'label-warning'
+    elsif status == 'Payment Complete'
+      'label-success'
+    end
+  end
 end

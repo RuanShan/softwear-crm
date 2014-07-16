@@ -5,12 +5,6 @@
 
         <h3><strong>Order</strong> Details</h3>
 
-        <div class="form-group">
-          <%= f.label :sales_status %>
-          <%= f.error_for :sales_status %>
-          <%= f.select :sales_status, Order::VALID_SALES_STATUSES %>
-        </div>
-
         <%= render partial: 'order_detail_fields', locals: { f: f, order: order } %>
 
 

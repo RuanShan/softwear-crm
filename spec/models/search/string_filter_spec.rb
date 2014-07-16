@@ -8,7 +8,7 @@ describe Search::StringFilter, search_spec: true do
   it { should have_db_column :negate }
 
   let!(:filter) { create :filter_type_string, 
-    field: 'sales_status', value: 'Pending' }
+    field: 'terms', value: 'Paid in full on pick up' }
 
   it 'should belong to search type string' do
     expect(Search::StringFilter.search_types).to eq [:string]
@@ -21,7 +21,7 @@ describe Search::StringFilter, search_spec: true do
     Order.search do
       filter.apply(self)
     end
-    expect(Sunspot.session).to have_search_params(:with, 'sales_status', 'Pending')
+    expect(Sunspot.session).to have_search_params(:with, 'terms', 'Paid in full on pick up')
   end
   it 'should apply properly when negated' do
     filter.negate = true
@@ -30,6 +30,6 @@ describe Search::StringFilter, search_spec: true do
     Order.search do
       filter.apply(self)
     end
-    expect(Sunspot.session).to have_search_params(:without, 'sales_status', 'Pending')
+    expect(Sunspot.session).to have_search_params(:without, 'terms', 'Paid in full on pick up')
   end
 end
