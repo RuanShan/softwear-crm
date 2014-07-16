@@ -141,7 +141,7 @@ feature 'Order management', order_spec: true,  js: true do
       expect(page).to_not have_content 'Dumb order'
     end
 
-    scenario 'user can save searches', pending: 'Nigel, order_id will likely be different for everyone, cant hardcode' do
+    scenario 'user can save searches', pending: 'Nigel, order_id will likely be different for everyone, cant hard code' do
       visit orders_path
       find('.additional-icon[data-toggle="collapse"]').click
       select 'Net 60', from: 'search_order_8_terms'

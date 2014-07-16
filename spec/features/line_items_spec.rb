@@ -24,7 +24,7 @@ feature 'Line Items management', line_item_spec: true, js: true do
 
   given(:non_imprintable) { create(:non_imprintable_line_item, job_id: job.id) }
 
-  scenario 'user can add a new non-imprintable line item', wip: true do
+  scenario 'user can add a new non-imprintable line item' do
     visit edit_order_path(1, anchor: 'jobs')
     wait_for_ajax
 
@@ -73,22 +73,23 @@ feature 'Line Items management', line_item_spec: true, js: true do
     expect(page).to have_content 'Add'
 
     within('.line-item-form') do
-      sleep(1)
+      sleep 1.5
       choose 'Yes'
-      wait_for_ajax
+      sleep 1.5
       select brand.name, from: 'Brand'
-      wait_for_ajax
+      sleep 1.5
       select style.name, from: 'Style'
-      wait_for_ajax
+      sleep 1.5
       select white.name, from: 'Color'
-      wait_for_ajax
+      sleep 1.5
       expect(page).to have_content shirt.style.name
       expect(page).to have_content shirt.style.description
       fill_in 'base_unit_price', with: '2.30'
     end
 
-    find('#line-item-submit').click
     wait_for_ajax
+    find('#line-item-submit').click
+    sleep 3
 
     expect(LineItem.where(imprintable_variant_id: white_shirt_s.id)).to exist
     expect(LineItem.where(imprintable_variant_id: white_shirt_m.id)).to exist
@@ -110,19 +111,20 @@ feature 'Line Items management', line_item_spec: true, js: true do
       expect(page).to have_content 'Add'
 
       within('.line-item-form') do
-        sleep(1)
+        sleep 1.5
         choose 'Yes'
-        wait_for_ajax
+        sleep 1.5
         select brand.name, from: 'Brand'
-        wait_for_ajax
+        sleep 1.5
         select style.name, from: 'Style'
-        wait_for_ajax
+        sleep 1.5
         select white.name, from: 'Color'
-        wait_for_ajax
+        sleep 1.5
       end
 
-      find('#line-item-submit').click
       wait_for_ajax
+      find('#line-item-submit').click
+      sleep 1.5
     end
 
     ['s', 'm', 'l'].each do |s|
@@ -130,7 +132,7 @@ feature 'Line Items management', line_item_spec: true, js: true do
     end
   end
 
-  scenario 'user cannot submit an imprintable line item without completing the form', pending: 'Need to review with Nigel'  do
+  it 'user cannot submit an imprintable line item without completing the form', pending: 'Need to review with Nigel'  do
     visit edit_order_path(1, anchor: 'jobs')
     wait_for_ajax
 

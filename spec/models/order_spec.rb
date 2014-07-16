@@ -151,8 +151,8 @@ describe Order, order_spec: true do
       before(:each) do
         allow(order).to receive(:balance).and_return(10)
       end
-      it 'returns Pending Terms' do
-        expect(order.payment_status).to eq('Pending Terms')
+      it 'returns Payment Terms Pending' do
+        expect(order.payment_status).to eq('Payment Terms Pending')
       end
     end
 
