@@ -63,8 +63,7 @@ class OrdersController < InheritedResources::Base
       :company, :twitter, :name, :po,
       :in_hand_by, :terms, :tax_exempt,
       :tax_id_number, :redo_reason,
-      :delivery_method, :phone_number,
-      :sales_status, :commission_amount,
+      :delivery_method, :phone_number, :commission_amount,
       :store_id, :salesperson_id, :total
     ])
   end

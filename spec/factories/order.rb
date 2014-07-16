@@ -19,7 +19,6 @@ FactoryGirl.define do
     in_hand_by Time.now + 1.day
     terms "Half down on purchase"
     tax_exempt false
-    sales_status 'Pending'
     delivery_method 'Ship to one location'
     phone_number '123-456-7890'
 
