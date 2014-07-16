@@ -277,6 +277,34 @@ ActiveRecord::Schema.define(version: 20140710143238) do
   add_index "print_locations", ["deleted_at"], name: "index_print_locations_on_deleted_at", using: :btree
   add_index "print_locations", ["imprint_method_id"], name: "index_print_locations_on_imprint_method_id", using: :btree
 
+  create_table "quotes", force: true do |t|
+    t.string   "email"
+    t.string   "phone_number"
+    t.string   "first_name"
+    t.string   "last_name"
+    t.string   "company"
+    t.string   "twitter"
+    t.string   "name"
+    t.datetime "valid_until_date"
+    t.datetime "estimated_delivery_date"
+    t.integer  "salesperson_id"
+    t.integer  "store_id"
+    t.datetime "deleted_at"
+    t.string   "line_item_name"
+    t.integer  "line_item_quantity"
+    t.boolean  "line_item_taxable"
+    t.text     "line_item_description"
+    t.integer  "line_item_job_id"
+    t.integer  "line_item_imprintable_variant_id"
+    t.datetime "line_item_deleted_at"
+    t.datetime "line_item_created_at"
+    t.datetime "line_item_updated_at"
+    t.decimal  "line_item_unit_price",             precision: 10, scale: 0
+
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
   create_table "search_boolean_filters", force: true do |t|
     t.string  "field"
     t.boolean "negate"

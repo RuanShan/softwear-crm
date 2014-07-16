@@ -23,6 +23,7 @@ CrmSoftwearcrmCom::Application.routes.draw do
 
   get 'tags/:tag', to: 'imprintables#index', as: :tag
 
+
   resources :styles, :brands, :colors, :users, :artwork_requests
   resources :prices, only: [:create, :new, :destroy] do
     collection do
