@@ -57,9 +57,7 @@ namespace :deploy do
     end
   end
 
-end
 
-namespace :deploy do
   before :updated, :setup_solr_data_dir do
     on roles(:app) do
       unless test "[ -d #{shared_path}/solr/data ]"
@@ -67,6 +65,7 @@ namespace :deploy do
       end
     end
   end
+
 end
 
 namespace :solr do
