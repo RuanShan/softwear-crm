@@ -35,6 +35,11 @@ namespace :data do
 
   desc 'restore database from file saved on s3'
   task restore_from_s3: :environment do
+    if Rails.env.production?
+      puts "rake_task[data:restore_from_s3] Cannot restore data in production using this task"
+      exit(1)
+    end
+
     if ENV['aws_secret_access_key'].nil? or ENV['aws_access_key_id'].nil?
       puts "rake_task[data:restore_from_s3] AWS Variables are nil, exiting"
       exit(1)
@@ -68,6 +73,11 @@ namespace :data do
 
   desc 'restore production from file saved on s3'
   task restore_production_from_s3: :environment do
+    if Rails.env.production?
+      puts "rake_task[data:restore_from_s3] Cannot restore data in production using this task"
+      exit(1)
+    end
+
     if ENV['aws_secret_access_key'].nil? or ENV['aws_access_key_id'].nil?
       puts "rake_task[data:restore_from_s3] AWS Variables are nil, exiting"
       exit(1)
