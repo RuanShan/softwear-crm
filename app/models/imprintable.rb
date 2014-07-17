@@ -1,5 +1,6 @@
 class Imprintable < ActiveRecord::Base
   include PricingModule
+  include Retailable
 
   paginates_per 50
 
@@ -8,8 +9,7 @@ class Imprintable < ActiveRecord::Base
 
   SIZING_CATEGORIES = ['Adult Unisex', 'Ladies', 'Youth Unisex', 'Girls', 'Toddler', 'Infant', 'n/a']
 
-  belongs_to :style
-  has_one :brand, through: :style, dependent: :destroy
+  belongs_to :brand
   has_many :imprintable_variants, dependent: :destroy
   has_many :colors, ->{ uniq }, through: :imprintable_variants, dependent: :destroy
   has_many :sizes, ->{ uniq },  through: :imprintable_variants, dependent: :destroy
@@ -22,11 +22,14 @@ class Imprintable < ActiveRecord::Base
   has_and_belongs_to_many :sample_locations, class_name: 'Store', association_foreign_key: 'store_id', join_table: 'imprintables_stores'
   has_and_belongs_to_many :compatible_imprint_methods, class_name: 'ImprintMethod', association_foreign_key: 'imprint_method_id', join_table: 'imprint_methods_imprintables'
 
-  validates :style, presence: true
+  validates :style_name, :uniqueness =>  { :scope => :brand_id }, presence: true
+  validates :style_sku, length: { is: 2 }, if: :is_retail?
+  validates :style_catalog_no, :uniqueness => { :scope => :brand_id }, presence: true
+  validates :brand, presence: true
   validates :sizing_category, inclusion: { in: SIZING_CATEGORIES, message: 'Invalid sizing category' }
   validates :supplier_link, format: {with: URI::regexp(%w(http https)), message: 'should be in format http://www.url.com/path'}, allow_blank: true
 
-  default_scope { eager_load(:style, :brand).order('brands.name, styles.catalog_no').joins(:brand).readonly(false) }
+  default_scope { eager_load(:brand).order('brands.name, imprintables.style_catalog_no').joins(:brand).readonly(false) }
   searchable do
     text :name, :special_considerations, :proofing_template_name, :main_supplier, :description
     text :all_categories
@@ -42,12 +45,16 @@ class Imprintable < ActiveRecord::Base
     imprintable_categories.map(&:name).join ' '
   end
 
+  def style_name_and_catalog_no
+    "#{style_catalog_no} - #{style_name}"
+  end
+
   def name
-    "#{brand.name} - #{style.catalog_no} - #{style.name}"
+    "#{brand.name} - #{style_catalog_no} - #{style_name}"
   end
 
   def description
-    style.description
+    style_description
   end
 
   def find_variants

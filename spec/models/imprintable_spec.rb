@@ -3,14 +3,11 @@ include PricingModule
 
 describe Imprintable, imprintable_spec: true do
   describe 'Relationship' do
-    it { should belong_to(:style) }
-
-    it { should have_one(:brand).through(:style).dependent(:destroy) }
+    it { should belong_to(:brand) }
 
     it { should have_many(:imprintable_variants).dependent(:destroy) }
     it { should have_many(:colors).through(:imprintable_variants).dependent(:destroy) }
     it { should have_many(:sizes).through(:imprintable_variants).dependent(:destroy) }
-
     it { should have_many(:coordinate_imprintables) }
     it { should have_many(:coordinates).through(:coordinate_imprintables) }
     it { should have_many(:mirrored_coordinate_imprintables).class_name('CoordinateImprintable') }
@@ -20,7 +17,24 @@ describe Imprintable, imprintable_spec: true do
   end
 
   describe 'Validations' do
-    it { should validate_presence_of(:style) }
+    it { should validate_presence_of(:style_name) }
+    it { should validate_uniqueness_of(:style_name).scoped_to(:brand_id) }
+
+    it { should validate_presence_of(:style_catalog_no) }
+    it { should validate_uniqueness_of(:style_catalog_no).scoped_to(:brand_id) }
+
+    it { should validate_presence_of(:brand) }
+
+    context "if retail" do
+      before { allow(subject).to receive_message_chain(:is_retail?).and_return(true)}
+      it { should ensure_length_of(:style_sku).is_equal_to(2) }
+    end
+
+    context "if not retail" do
+      before { allow(subject).to receive_message_chain(:is_retail?).and_return(false)}
+      it { should_not ensure_length_of(:style_sku).is_equal_to(2) }
+    end
+
     it { should ensure_inclusion_of(:sizing_category).in_array Imprintable::SIZING_CATEGORIES }
     it { should allow_value('http://www.foo.com', 'http://www.foo.com/shipping').for(:supplier_link) }
     it { should_not allow_value('bad_url.com', '').for(:supplier_link).with_message('should be in format http://www.url.com/path') }
@@ -69,14 +83,14 @@ describe Imprintable, imprintable_spec: true do
   describe '#name' do
     let!(:imprintable) { create(:valid_imprintable) }
     it 'returns a string of the style.brand - style.catalog_no - style.name' do
-      expect(imprintable.name).to eq("#{ imprintable.brand.name } - #{ imprintable.style.catalog_no } - #{ imprintable.style.name }")
+      expect(imprintable.name).to eq("#{ imprintable.brand.name } - #{ imprintable.style_catalog_no } - #{ imprintable.style_name }")
     end
   end
 
   describe '#description' do
     let!(:imprintable) { create(:valid_imprintable) }
     it 'returns the description for the associated style' do
-      expect(imprintable.description).to eq("#{imprintable.style.description}")
+      expect(imprintable.description).to eq("#{imprintable.style_description}")
     end
   end
 
@@ -136,5 +150,4 @@ describe Imprintable, imprintable_spec: true do
       end
     end
   end
-
 end

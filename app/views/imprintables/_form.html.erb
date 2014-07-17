@@ -13,7 +13,7 @@
               <%= f.error_for :brand %>
               <div class="col-sm-8">
                 <%= select_tag :brand,
-                               options_for_select(['Select a Brand'] + Brand.order(:name).collect{ |b| [b.name, b.id] }, find_brand(imprintable)),
+                               options_for_select(['Select a Brand'] + Brand.order(:name).collect{ |b| [b.name, b.id] }, imprintable.brand_id),
                                {
                                        class: 'form-control',
                                        id: 'imprintable_brand_id'
