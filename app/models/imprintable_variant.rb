@@ -9,13 +9,7 @@ class ImprintableVariant < ActiveRecord::Base
   validates :imprintable, presence: true
   validates :size, presence: true
   validates :color, presence: true
-  validates :color_id, uniqueness: { scope: :size_id }
-
-  ## Consider making this a thing
-  # scope :from_style_and_color, -> (style, color) { 
-  #   where( style_id: (style.respond_to?(:id) ? style.id : style ) ).
-  #   and(   color_id:  )
-  # }
+  validates :color_id, uniqueness: { scope: [:size_id, :imprintable_id] }
 
   def full_name
     "#{ brand.name } #{ style.catalog_no } #{ color.name } #{ size.name }"
@@ -44,4 +38,5 @@ class ImprintableVariant < ActiveRecord::Base
   def brand
     imprintable.brand
   end
+
 end

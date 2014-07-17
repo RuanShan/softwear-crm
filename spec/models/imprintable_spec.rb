@@ -137,4 +137,16 @@ describe Imprintable, imprintable_spec: true do
     end
   end
 
+  describe '#create_imprintable_variants_from_sizes_and_colors' do
+    let(:sizes) {[ create(:valid_size), create(:valid_size), create(:valid_size) ]}
+    let(:colors) {[ create(:valid_color), create(:valid_color)]}
+    let(:valid_imprintable) { create(:valid_imprintable) }
+
+    it 'generates an imprintable variant from arrays of sizes and colors' do
+      expect(valid_imprintable.imprintable_variants.count).to eq(0)
+      valid_imprintable.create_imprintable_variants_from_sizes_and_colors(sizes, colors)
+      expect(valid_imprintable.imprintable_variants.count).to eq(6)
+    end
+  end
+
 end

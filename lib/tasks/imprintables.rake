@@ -228,6 +228,28 @@ namespace :imprintables do
 
   end
 
+  desc 'Parse standard product set sizes and colors from spreadsheet data'
+  task import_sizes_and_colors_from_spreadsheet: :environment do
+    CSV.foreach('tmp/size-color-info.csv', headers: true) do |row|
+      if Imprintable.exists?
+        imprintable = Imprintable.find(row['id'])
+        colors = []
+        sizes = []
+        color_names = row['colors'].split('!')
+        size_display_values = row['sizes'].split('!')
 
+        size_display_values.each do |size_display_value|
+          sizes << Size.find_by(display_value: size_display_value)
+        end
+
+        color_names.each do |color_name|
+          colors << Color.find_or_create_by(name: color_name)
+        end
+        imprintable.create_imprintable_variants_from_sizes_and_colors(sizes, colors)
+      else
+        puts "Cannot find imprintable #{row['id']} '#{row['style']}'"
+      end
+    end
+  end
 
 end

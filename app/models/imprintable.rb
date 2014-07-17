@@ -94,4 +94,14 @@ class Imprintable < ActiveRecord::Base
       return "#{collection_proxy.first.display_value} - #{collection_proxy.last.display_value}"
     end
   end
+
+  def create_imprintable_variants_from_sizes_and_colors(sizes=[], colors=[])
+    colors.each do |color|
+      sizes.each do |size|
+        i = ImprintableVariant.unscoped.find_or_initialize_by(size_id: size.id, color_id: color.id, imprintable_id: self.id)
+        i.deleted_at = nil
+        i.save
+      end
+    end
+  end
 end
