@@ -2,7 +2,7 @@ require 'spec_helper'
 
 describe Brand, brand_spec: true do
   describe 'Relationships' do
-    it { should have_many(:styles).dependent(:destroy) }
+    it { should have_many(:imprintables) }
   end
 
   describe 'Validations' do
@@ -34,6 +34,6 @@ describe Brand, brand_spec: true do
     end
   end
 
-  it_behaves_like 'retailable'
+  # it_behaves_like 'retailable'
 
 end

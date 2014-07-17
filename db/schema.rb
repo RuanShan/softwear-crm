@@ -162,7 +162,7 @@ ActiveRecord::Schema.define(version: 20140716161035) do
     t.string   "style_name"
     t.string   "style_catalog_no"
     t.text     "style_description"
-    t.string   "style_sku"
+    t.string   "sku"
     t.boolean  "retail",                                          default: false
     t.integer  "brand_id"
   end

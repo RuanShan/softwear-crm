@@ -47,7 +47,7 @@ describe Job, job_spec: true do
   context '#sort_line_items', line_item_spec: true, sort_line_items: true do
     let!(:job) { create(:job) }
     [:red, :blue, :green].each { |c| let!(c) { create(:valid_color, name: c) } }
-    [:shirt, :hat].each { |s| let!(s) { create(:associated_imprintable) } }
+    [:shirt, :hat].each { |s| let!(s) { create(:valid_imprintable) } }
     
     make_variants :green, :shirt, [:S, :M, :L]
     make_variants :red,   :shirt, [:S, :M, :XL]
@@ -107,7 +107,7 @@ describe Job, job_spec: true do
     let!(:job) { create(:job) }
 
     let!(:white) { create(:valid_color, name: 'white') }
-    let!(:shirt) { create(:associated_imprintable) }
+    let!(:shirt) { create(:valid_imprintable) }
 
     make_variants :white, :shirt, [:S, :M, :L]
 
@@ -185,10 +185,10 @@ describe Job, job_spec: true do
 
   describe '#imprintable_style_names', artwork_request_spec: true do
     before do
-      allow(subject).to receive(:styles) { [
-          build_stubbed(:blank_style, name: 'Hip'),
-          build_stubbed(:blank_style, name: 'Cool'),
-          build_stubbed(:blank_style, name: 'Balla')
+      allow(subject).to receive(:imprintables) { [
+          build_stubbed(:blank_imprintable, style_name: 'Hip'),
+          build_stubbed(:blank_imprintable, style_name: 'Cool'),
+          build_stubbed(:blank_imprintable, style_name: 'Balla')
       ]}
     end
     it 'returns an array of the colors associated with the job through the imprintables' do
@@ -198,10 +198,10 @@ describe Job, job_spec: true do
 
   describe '#imprintable_style_catalog_nos', artwork_request_spec: true do
     before do
-      allow(subject).to receive(:styles) { [
-          build_stubbed(:blank_style, catalog_no: '5'),
-          build_stubbed(:blank_style, catalog_no: '55'),
-          build_stubbed(:blank_style, catalog_no: '555')
+      allow(subject).to receive(:imprintables) { [
+          build_stubbed(:blank_imprintable, style_catalog_no: '5'),
+          build_stubbed(:blank_imprintable, style_catalog_no: '55'),
+          build_stubbed(:blank_imprintable, style_catalog_no: '555')
       ]}
     end
     it 'returns an array of the colors associated with the job through the imprintables' do
@@ -216,10 +216,10 @@ describe Job, job_spec: true do
           build_stubbed(:blank_color, name: 'Obsidian'),
           build_stubbed(:blank_color, name: 'Color')
       ]}
-      allow(subject).to receive(:styles) { [
-          build_stubbed(:blank_style, name: 'Hip', catalog_no: '5'),
-          build_stubbed(:blank_style, name: 'Cool', catalog_no: '55'),
-          build_stubbed(:blank_style, name: 'Balla', catalog_no: '555')
+      allow(subject).to receive(:imprintables) { [
+          build_stubbed(:blank_imprintable, style_name: 'Hip', style_catalog_no: '5'),
+          build_stubbed(:blank_imprintable, style_name: 'Cool', style_catalog_no: '55'),
+          build_stubbed(:blank_imprintable, style_name: 'Balla', style_catalog_no: '555')
       ]}
     end
 

@@ -52,17 +52,21 @@ feature 'Imprintables management', imprintable_spec: true do
     end
   end
 
-  scenario 'A user can create a new imprintable', js: true do
+  scenario 'A user can create a new imprintable', wip: true, js: true do
     visit imprintables_path
     click_link('Add an Imprintable')
     fill_in 'Special Considerations', :with => 'Special Consideration'
     page.find_by_id('imprintable_sizing_category').find("option[value='#{imprintable.sizing_category}']").click
     page.find_by_id('imprintable_brand_id').find("option[value='#{imprintable.brand.id}']").click
-    page.find_by_id('imprintable_style_id').find("option[value='#{imprintable.style.id}']").click
+    fill_in 'Style name', :with => 'Sample Name'
+    fill_in 'Style catalog no', :with => '42'
+    fill_in_summernote('#imprintable_style_description', with: 'Description')
+    fill_in 'Sku', :with => '99'
     find_button('Create Imprintable').click
     expect(page).to have_selector '.modal-content-success', text: 'Imprintable was successfully created.'
     expect(current_path).to eq(imprintable_path 2)
     expect(Imprintable.find_by special_considerations: 'Special Consideration').to_not be_nil
+    expect(Imprintable.find_by style_name: 'Sample Name').to_not be_nil
   end
 
   describe 'Tagging', js: true do
@@ -157,10 +161,13 @@ feature 'Imprintables management', imprintable_spec: true do
   scenario 'A user can edit an existing imprintable', js: true  do
     visit edit_imprintable_path imprintable.id
     fill_in 'Special Considerations', :with => 'Edited Special Consideration'
+    fill_in 'Style name', :with => 'Edited Style Name'
     find_button('Update Imprintable').click
     expect(page).to have_selector '.modal-content-success', text: 'Imprintable was successfully updated.'
     expect(current_path).to eq(edit_imprintable_path imprintable.id)
     expect(imprintable.reload.special_considerations).to eq('Edited Special Consideration')
+    expect(imprintable.reload.style_name).to eq('Edited Style Name')
+
   end
 
   scenario 'A user can delete an existing imprintable', js: true  do

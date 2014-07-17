@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 describe 'line_items/select_options.html.erb', line_item_spec: true do
-	[Brand, Style, Color].each do |type|
+	[Brand, Imprintable, Color].each do |type|
 		context "with #{type.name.pluralize}" do
 			5.times { |n| let!("object#{n}".to_sym) { create "valid_#{type.name.underscore}".to_sym } }
 

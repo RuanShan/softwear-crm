@@ -46,8 +46,12 @@ class LineItem < ActiveRecord::Base
     imprintable_variant.imprintable
   end
 
-  def style
-    imprintable_variant.imprintable.style
+  def style_name
+    imprintable_variant.imprintable.style_name
+  end
+
+  def style_catalog_no
+    imprintable_variant.imprintable.style_catalog_no
   end
 
   [:name, :description].each do |method|

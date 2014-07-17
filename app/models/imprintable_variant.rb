@@ -4,7 +4,6 @@ class ImprintableVariant < ActiveRecord::Base
   belongs_to :imprintable
   belongs_to :size
   belongs_to :color
-  has_one :style, through: :imprintable
 
   validates :imprintable, presence: true
   validates :size, presence: true
@@ -18,7 +17,7 @@ class ImprintableVariant < ActiveRecord::Base
   # }
 
   def full_name
-    "#{ brand.name } #{ style.catalog_no } #{ color.name } #{ size.name }"
+    "#{ brand.name } #{ imprintable.style_catalog_no } #{ color.name } #{ size.name }"
   end
 
   def description
@@ -30,15 +29,11 @@ class ImprintableVariant < ActiveRecord::Base
   end
 
   def style_name
-    imprintable.style.name
+    imprintable.style_name
   end
 
   def style_catalog_no
-    imprintable.style.catalog_no
-  end
-
-  def style
-    imprintable.style
+    imprintable.style_catalog_no
   end
 
   def brand

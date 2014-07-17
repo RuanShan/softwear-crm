@@ -16,6 +16,6 @@ FactoryGirl.define do
   factory :associated_imprintable_variant, class: ImprintableVariant do
     color { |c| c.association(:valid_color) }
     size { |s| s.association(:valid_size) }
-    imprintable { |i| i.association(:associated_imprintable) }
+    imprintable { |i| i.association(:valid_imprintable) }
   end
 end

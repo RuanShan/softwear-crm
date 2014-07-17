@@ -20,8 +20,8 @@
             <% by_color.each do |color_name, line_items| %>
               <%= render partial: 'line_items/imprintable_edit', locals: {
                 color_name: color_name,
-                style_name: line_items.first.style.name,
-                style_catalog_no: line_items.first.style.catalog_no,
+                style_name: line_items.first.style_name,
+                style_catalog_no: line_items.first.style_catalog_no,
                 description: line_items.first.description,
                 line_items: line_items
               } %>
