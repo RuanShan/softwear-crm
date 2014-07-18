@@ -70,7 +70,7 @@ feature 'Order management', order_spec: true,  js: true do
     expect(page).to have_content 'Email is invalid'
   end
 
-  scenario 'phone number field enforces proper format', pending: 'Something weird happening filling in phone number, filling out 3654789512 instead of whats expected due to cursor entering field weirdly it seems' do
+  scenario 'phone number field enforces proper format' do
     visit root_path
     unhide_dashboard
     click_link 'Orders'
