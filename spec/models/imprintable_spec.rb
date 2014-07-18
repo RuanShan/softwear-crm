@@ -152,6 +152,7 @@ describe Imprintable, imprintable_spec: true do
   end
 
   it_behaves_like 'retailable'
+
   describe '#create_imprintable_variants_from_sizes_and_colors' do
     let(:sizes) {[ create(:valid_size), create(:valid_size), create(:valid_size) ]}
     let(:colors) {[ create(:valid_color), create(:valid_color)]}
