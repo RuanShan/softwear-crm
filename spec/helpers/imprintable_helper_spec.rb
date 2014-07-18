@@ -2,22 +2,6 @@ require 'spec_helper'
 
 describe ImprintableHelper, imprintable_helper_spec: true do
 
-  describe 'find_brand' do
-    let!(:imprintable) { create(:valid_imprintable) }
-    context 'there is an associated style and brand' do
-      it 'returns the brand id of the associated brand' do
-        expect(find_brand(imprintable)).to eq(imprintable.style.brand.id)
-      end
-    end
-
-    context 'there are no associated styles' do
-      before(:each) { imprintable.style_id = nil }
-      it 'returns nil' do
-        expect(find_brand(imprintable)).to eq(nil)
-      end
-    end
-  end
-
   describe 'table_entries' do
     context 'there are multiple entries in a table' do
       let!(:imprintable_one) { create(:valid_imprintable) }
