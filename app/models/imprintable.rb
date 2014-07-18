@@ -23,7 +23,7 @@ class Imprintable < ActiveRecord::Base
   has_and_belongs_to_many :compatible_imprint_methods, class_name: 'ImprintMethod', association_foreign_key: 'imprint_method_id', join_table: 'imprint_methods_imprintables'
 
   validates :style_name, :uniqueness =>  { :scope => :brand_id }, presence: true
-  validates :sku, length: { is: 2 }, if: :is_retail?
+  validates :sku, length: { is: 4 }, if: :is_retail?
   validates :style_catalog_no, :uniqueness => { :scope => :brand_id }, presence: true
   validates :brand, presence: true
   validates :sizing_category, inclusion: { in: SIZING_CATEGORIES, message: 'Invalid sizing category' }

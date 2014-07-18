@@ -27,12 +27,12 @@ describe Imprintable, imprintable_spec: true do
 
     context "if retail" do
       before { allow(subject).to receive_message_chain(:is_retail?).and_return(true)}
-      it { should ensure_length_of(:sku).is_equal_to(2) }
+      it { should ensure_length_of(:sku).is_equal_to(4) }
     end
 
     context "if not retail" do
       before { allow(subject).to receive_message_chain(:is_retail?).and_return(false)}
-      it { should_not ensure_length_of(:sku).is_equal_to(2) }
+      it { should_not ensure_length_of(:sku).is_equal_to(4) }
     end
 
     it { should ensure_inclusion_of(:sizing_category).in_array Imprintable::SIZING_CATEGORIES }
