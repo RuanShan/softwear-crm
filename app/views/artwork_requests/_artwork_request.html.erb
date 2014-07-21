@@ -20,6 +20,9 @@
     </div>
     <div class="col-sm-6 ">
       <dl>
+        <dt>Max Print Area: </dt>
+        <dd><% area = artwork_request.max_print_area(artwork_request.print_location)%>
+            <%= area[0] %> in. x <%= area[1] %> in.</dd>
         <dt>Artwork Status: </dt>
         <dd><%= artwork_request.artwork_status %></dd>
         <dt>Deadline: </dt>

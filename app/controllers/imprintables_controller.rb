@@ -82,7 +82,9 @@ class ImprintablesController < InheritedResources::Base
   def permitted_params
     params.permit(imprintable:
                     [:flashable, :polyester, :special_considerations, :material, :brand_id,
-                     :style_name, :style_catalog_no, :style_description, :sku, :retail, :color_check, :size_check, :weight, :supplier_link, :main_supplier,
+                     :style_name, :style_catalog_no, :style_description, :sku, :retail, :color_check, :size_check,
+                     :max_imprint_width, :max_imprint_height,
+                     :weight, :supplier_link, :main_supplier,
                      :base_price, :xxl_price, :xxxl_price, :xxxxl_price, :xxxxxl_price, :xxxxxxl_price,
                      :tag_list, :standard_offering, :proofing_template_name, :sizing_category,
                      sample_location_ids: [],

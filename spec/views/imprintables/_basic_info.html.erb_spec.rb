@@ -12,6 +12,8 @@ describe 'imprintables/_basic_info.html.erb', imprintable_spec: true do
     expect(rendered).to have_css('dt', text: /Sizes Offered/)
     expect(rendered).to have_css('dt', text: 'Sample Locations')
     expect(rendered).to have_css('dt', text: 'Weight')
+    expect(rendered).to have_css('dt', text: 'Max Imprint Height')
+    expect(rendered).to have_css('dt', text: 'Max Imprint Width')
     expect(rendered).to have_css('dt', text: 'Tags')
     expect(rendered).to have_css('dt', text: 'Description')
     expect(rendered).to have_css('dt', text: 'Coordinates')

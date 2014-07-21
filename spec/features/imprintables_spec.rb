@@ -62,6 +62,8 @@ feature 'Imprintables management', imprintable_spec: true do
     fill_in 'Style catalog no', :with => '42'
     fill_in_summernote('#imprintable_style_description', with: 'Description')
     fill_in 'Sku', :with => '99'
+    fill_in 'Max imprint width', :with => '5.5'
+    fill_in 'Max imprint height', :with => '5.5'
     find_button('Create Imprintable').click
     expect(page).to have_selector '.modal-content-success', text: 'Imprintable was successfully created.'
     expect(current_path).to eq(imprintable_path 2)

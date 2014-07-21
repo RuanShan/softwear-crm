@@ -28,6 +28,8 @@ class Imprintable < ActiveRecord::Base
   validates :brand, presence: true
   validates :sizing_category, inclusion: { in: SIZING_CATEGORIES, message: 'Invalid sizing category' }
   validates :supplier_link, format: {with: URI::regexp(%w(http https)), message: 'should be in format http://www.url.com/path'}, allow_blank: true
+  validates :max_imprint_height, numericality: true, presence: true
+  validates :max_imprint_width, numericality: true, presence: true
 
   default_scope { eager_load(:brand).order('brands.name, imprintables.style_catalog_no').joins(:brand).readonly(false) }
   searchable do

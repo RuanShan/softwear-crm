@@ -25,6 +25,11 @@ describe Imprintable, imprintable_spec: true do
 
     it { should validate_presence_of(:brand) }
 
+    it { should validate_presence_of(:max_imprint_width) }
+    it { should validate_presence_of(:max_imprint_height) }
+    it { should validate_numericality_of (:max_imprint_width) }
+    it { should validate_numericality_of(:max_imprint_height) }
+
     context "if retail" do
       before { allow(subject).to receive_message_chain(:is_retail?).and_return(true)}
       it { should ensure_length_of(:sku).is_equal_to(4) }

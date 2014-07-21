@@ -46,25 +46,32 @@ class Job < ActiveRecord::Base
     line_items.empty? ? 0 : line_items.map{|li| li.imprintable_variant_id ? li.quantity : 0}.inject{|sum, x| sum + x }
   end
 
-  def imprintable_color_names
-    colors.uniq.map{|c| c.name}
-  end
-
-  def imprintable_style_names
-    imprintables.map{|i| i.style_name}
-  end
-  def imprintable_style_catalog_nos
-    imprintables.map{|i| i.style_catalog_no}
-  end
-
   def imprintable_info
-    (imprintable_color_names).zip(imprintable_style_names, imprintable_style_catalog_nos).map{|array| array.join(' ')}.join(', ')
+    colors = []
+    style_names = []
+    style_catalog_nos = []
+    sorted_line_items = self.sort_line_items
+        unless sorted_line_items.empty?
+          sorted_line_items.each do |imprintable_name, by_color|
+            by_color.each do |color_name, line_items|
+              colors << color_name
+              style_names << line_items.first.style_name
+              style_catalog_nos << line_items.first.style_catalog_no
+            end
+          end
+        end
+    (colors).zip(style_names, style_catalog_nos).map{|array| array.join(' ')}.join(', ')
   end
 
   def total_quantity
     line_items.empty? ? 0 : line_items.map{|li| li.quantity}.inject{|sum, x| sum + x }
   end
 
+  def max_print_area(print_location)
+    width = (imprintables.map{|i| i.max_imprint_width.to_f} << print_location.max_width.to_f).min
+    height = (imprintables.map{|i| i.max_imprint_height.to_f} << print_location.max_height.to_f).min
+    return width, height
+  end
 
   searchable do
     text :name, :description

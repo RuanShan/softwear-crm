@@ -17,13 +17,13 @@ class ArtworkRequest < ActiveRecord::Base
 
   validates :deadline, presence: true
   validates :description, presence: true
-  validates :imprint_method_id, presence: true
+  validates :imprint_method, presence: true
   validates :artwork_status, presence: true
-  validates :print_location_id, presence: true
-  validates :job_ids, presence: true
-  validates :ink_color_ids, presence: true
-  validates :salesperson_id, presence: true
-  validates :artist_id, presence: true
+  validates :print_location, presence: true
+  validates :jobs, presence: true
+  validates :ink_colors, presence: true
+  validates :salesperson, presence: true
+  validates :artist, presence: true
   validates :priority, presence: true
 
   def imprintable_variant_count
@@ -36,6 +36,13 @@ class ArtworkRequest < ActiveRecord::Base
 
   def total_quantity
     jobs.map{|j| j.total_quantity}.inject{|sum,x| sum + x }
+  end
+
+  def max_print_area(print_location)
+    areas = jobs.map{|j| j.max_print_area(print_location)}
+    max_width = areas.map{|a| a[0]}.min
+    max_height = areas.map{|a| a[1]}.min
+    return max_width, max_height
   end
 
 end

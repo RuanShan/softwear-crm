@@ -11,6 +11,8 @@ describe 'imprintables/_form.html.erb', imprintable_spec: true do
       expect(rendered).to have_field_for :special_considerations
       expect(rendered).to have_field_for :material
       expect(rendered).to have_field_for :weight
+      expect(rendered).to have_field_for :max_imprint_width
+      expect(rendered).to have_field_for :max_imprint_height
       expect(rendered).to have_field_for :proofing_template_name
       expect(rendered).to have_field_for :standard_offering
       expect(rendered).to have_field_for :flashable

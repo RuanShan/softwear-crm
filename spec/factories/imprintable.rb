@@ -5,6 +5,8 @@ FactoryGirl.define do
     main_supplier 'SS-Activewear'
     supplier_link 'http://www.ssactivewear.com'
     weight '3.4 oz'
+    max_imprint_height 5.5
+    max_imprint_width 5.5
     base_price 9.99
     xxl_price 10.00
     xxxl_price 11.99
@@ -39,6 +41,8 @@ FactoryGirl.define do
   factory :associated_imprintable, class: Imprintable do
   	brand { |b| b.association(:valid_brand) }
   	sizing_category 'Ladies'
+    max_imprint_height 5.5
+    max_imprint_width 5.5
     sequence(:style_name) { |n| "style_#{n}" }
     sequence(:sku) { |n|
       n %= 100
