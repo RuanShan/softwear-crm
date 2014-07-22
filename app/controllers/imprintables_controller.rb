@@ -90,6 +90,6 @@ class ImprintablesController < InheritedResources::Base
                      sample_location_ids: [],
                      coordinate_ids: [],
                      compatible_imprint_method_ids: [],
-                     imprintable_categories_attributes: [:category, :imprintable_id, :id, :_destroy]])
+                     imprintable_categories_attributes: [:name, :imprintable_id, :id, :_destroy]])
   end
 end
