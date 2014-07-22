@@ -70,7 +70,7 @@ feature 'Order management', order_spec: true,  js: true do
     expect(page).to have_content 'Email is invalid'
   end
 
-  scenario 'phone number field enforces proper format' do
+  scenario 'phone number field enforces proper format', what: true do
     visit root_path
     unhide_dashboard
     click_link 'Orders'
