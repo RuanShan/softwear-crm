@@ -13,4 +13,8 @@ FactoryGirl.define do
       imprint_method { |pl| pl.association(:valid_imprint_method) }
     end
   end
+
+  factory :blank_print_location, class: PrintLocation do
+
+  end
 end

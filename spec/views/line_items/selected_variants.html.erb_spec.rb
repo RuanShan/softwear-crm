@@ -16,8 +16,8 @@ describe 'line_items/selected_variants.html.erb', line_item_spec: true do
   	end
 
   	it 'displays the name and description' do
-  		expect(rendered).to include shirt.style.catalog_no
-  		expect(rendered).to include shirt.style.name
+  		expect(rendered).to include shirt.style_catalog_no
+  		expect(rendered).to include shirt.style_name
   		expect(rendered).to include shirt.description
   	end
 

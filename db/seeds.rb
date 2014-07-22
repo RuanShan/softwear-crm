@@ -16,12 +16,12 @@ def create_records(params_array, model)
   end
 end
 
-def create_imprintable_line_items(style_maybe_id, color_maybe_id, options)
-  style = nil; color = nil
-  if style_maybe_id.respond_to? :id
-    style = style_maybe_id
+def create_imprintable_line_items(imprintable_maybe_id, color_maybe_id, options)
+  imprintable = nil; color = nil
+  if imprintable_maybe_id.respond_to? :id
+    imprintable = imprintable_maybe_id
   else
-    style = Style.find style_maybe_id
+    imprintable = Imprintable.find imprintable_maybe_id
   end
   if color_maybe_id.respond_to? :id
     color = color_maybe_id
@@ -29,11 +29,10 @@ def create_imprintable_line_items(style_maybe_id, color_maybe_id, options)
     color = Color.find color_maybe_id
   end
 
-  imprintable = Imprintable.where(style_id: style.id).first
   variants = ImprintableVariant.where imprintable_id: imprintable.id, color_id: color.id
   records = variants.map do |v|
-    options.merge imprintable_variant_id: v.id, 
-      unit_price: [5,10.55,12.99].sample, 
+    options.merge imprintable_variant_id: v.id,
+      unit_price: [5,10.55,12.99].sample,
       quantity: [0,0,1,2].sample
   end
   create_records(records, LineItem)
@@ -123,6 +122,9 @@ create_records([
                    {name: 'Indigo', imprint_method_id: im.id},
                    {name: 'Violet', imprint_method_id: im.id}
                ], InkColor)
+ic_one = InkColor.all.first
+ic_two = InkColor.all.second
+ic_three = InkColor.all.third
 create_records([
                    {name: 'Chest', max_height: 5.5, max_width: 5.5, imprint_method_id: im.id},
                    {name: 'Back', max_height: 5.5, max_width: 5.5, imprint_method_id: im.id}
@@ -146,22 +148,12 @@ create_records([
     { name: 'Red', sku: '004'}
 ], Color)
 
-# Style SEEDING
-# ----------------
-create_records([
-    { name: 'Unisex Fine Jersey Short Sleeve T-Shirt', catalog_no: '2001', description: 'The softest, smoothest, best-looking T-shirt available anywhere.', sku: '00', brand_id: Brand.find_by(name: 'American Apparel').id} ,
-    { name: "Fine Jersey Short Sleeve Women's T-Shirt", catalog_no: '2102', description: 'This classic fitted t-shirt for women. Ultra soft and smooth 100% Fine Jersey Cotton', sku: '01', brand_id: Brand.find_by(name: 'American Apparel').id},
-    { name: 'Tank top', catalog_no: 'style_3', description: 'description', sku: '12', brand_id: 2},
-    { name: 'Short sleeve', catalog_no: 'style_1', description: 'Short sleeved shirt.', sku: '10', brand_id: 1},
-    { name: 'Long sleeve', catalog_no: 'style_2', description: 'Long sleeved shirt.', sku: '11', brand_id: 1}
-], Style)
-
 # Imprintable SEEDING
 # ---------------
 create_records([
-    { flashable: false, special_considerations: 'none', polyester: false, style_id: 1, sizing_category: 'Adult Unisex', material: '100% Cotton', proofing_template_name: 'Template_name_1', standard_offering: true},
-    { flashable: false, special_considerations: 'line dry', polyester: true, style_id: 2, sizing_category: 'Ladies', material: 'Polyester Blend', proofing_template_name: 'Template_name_2', standard_offering: false},
-    { flashable: true, special_considerations: 'do not print', polyester: false, style_id: 3, sizing_category: 'Toddler', material: 'Spandex', proofing_template_name: 'Template_name_3', standard_offering: true}
+    { flashable: false, special_considerations: 'none', polyester: false, style_name: 'Unisex Fine Jersey Short Sleeve T-Shirt', style_catalog_no: '2001', style_description: 'The softest, smoothest, best-looking T-shirt available anywhere.', sku: '00', brand_id: Brand.find_by(name: 'American Apparel').id, sizing_category: 'Adult Unisex', material: '100% Cotton', proofing_template_name: 'Template_name_1', standard_offering: true},
+    { flashable: false, special_considerations: 'line dry', polyester: true, style_name: "Fine Jersey Short Sleeve Women's T-Shirt", style_catalog_no: '2102', style_description: 'This classic fitted t-shirt for women. Ultra soft and smooth 100% Fine Jersey Cotton', sku: '01', brand_id: Brand.find_by(name: 'American Apparel').id, sizing_category: 'Ladies', material: 'Polyester Blend', proofing_template_name: 'Template_name_2', standard_offering: false},
+    { flashable: true, special_considerations: 'do not print', polyester: false, style_name: 'Tank top', style_catalog_no: 'style_3', style_description: 'description', sku: '12', brand_id: 2, sizing_category: 'Toddler', material: 'Spandex', proofing_template_name: 'Template_name_3', standard_offering: true}
 ], Imprintable)
 
 # Imprintable Variant SEEDING
@@ -199,7 +191,6 @@ create_records([
       in_hand_by: '1/2/2015 12:00 PM',
       terms: 'Half down on purchase',
       tax_exempt: false,
-      sales_status: 'Pending',
       delivery_method: 'Ship to one location',
       phone_number: '123-456-8456',
       store_id: 1,
@@ -221,4 +212,34 @@ create_records([
     job_id: j.id, print_location_id: pl.id
   ], Imprint)
 
-# Artwork Request Seeding
+# Artwork Request SEEDING
+#------------------------
+create_records([
+    {
+        description: 'No more thinking about bears.',
+        artist_id: 1,
+        imprint_method_id: im.id,
+        print_location_id: pl.id,
+        salesperson_id: 1,
+        deadline: Time.now,
+        artwork_status: 'Pending',
+        priority: 1,
+        ink_color_ids: [ic_one.id, ic_two.id, ic_three.id],
+        job_ids: [j.id]
+    },
+
+    {
+        description: 'Ill be taking these Huggies, and whatever cash ya got.',
+        artist_id: 1,
+        imprint_method_id: im.id,
+        print_location_id: pl.id,
+        salesperson_id: 1,
+        deadline: Time.now + 1.day,
+        artwork_status: 'Pending',
+        priority: 5,
+        ink_color_ids: [ic_one.id, ic_two.id, ic_three.id],
+        job_ids: [j.id]
+    }
+               ], ArtworkRequest)
+
+ar = ArtworkRequest.all.first

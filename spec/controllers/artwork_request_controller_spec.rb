@@ -62,9 +62,9 @@ describe ArtworkRequestsController, js: true, artwork_request_spec: true do
 
 
     end
-    it "sends an email to the artist's email address" do
-      expect{ post *args }.to change{ActionMailer::Base.deliveries.count}.by 1
-    end
+    # it "sends an email to the artist's email address" do
+    #   expect{ post *args }.to change{ActionMailer::Base.deliveries.count}.by 1
+    # end
   end
 
   describe 'DELETE destroy' do
@@ -94,8 +94,8 @@ describe ArtworkRequestsController, js: true, artwork_request_spec: true do
 
 
     end
-    it "sends an email to the artist's email address" do
-      expect{ post *args }.to change{ActionMailer::Base.deliveries.count}.by 1
-    end
+    # it "sends an email to the artist's email address" do
+    #   expect{ post *args }.to change{ActionMailer::Base.deliveries.count}.by 1
+    # end
   end
 end

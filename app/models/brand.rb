@@ -3,7 +3,7 @@ class Brand < ActiveRecord::Base
 
   include Retailable
 
-  has_many :styles, dependent: :destroy
+  has_many :imprintables
 
   validates :name, uniqueness: true, presence: true
   validates :sku, length: { is: 2 }, if: :is_retail?

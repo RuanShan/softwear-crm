@@ -28,10 +28,10 @@
       continue if fieldErrors.length == 0
       handler.errorFields.push(field)
       # Grab the input field element
-      $field = $form.find("*[name='#{getParamName(field)}']")
-      $field = $form.find("*[name='#{getParamName(field.replace('_id', ''))}']") if $field.length == 0
+      $field = $form.find("*[name^='#{getParamName(field)}']")
+      $field = $form.find("*[name^='#{getParamName(field.replace('_id', ''))}']") if $field.length == 0
       if $field.length == 0
-        console.log "Couldn't find field #{field}"
+        console.log "Couldn't find field #{field} (name #{getParamName(field)})"
         continue
       # Create the error message div
       $errorMsgDiv = $ '<div/>',
@@ -40,7 +40,7 @@
       # Place it before the input field
       $field.before $errorMsgDiv
       # Wrap the input field to make it red
-      $field.wrap $('<div/>', class: 'field_with_errors')
+      $field.wrap $('<div/>', class: 'field_with_errors') unless $field.data ('no-wrap')
       # Populate error message div with messages
       for error in fieldErrors
         $errorMsgDiv.append $ '<p/>',
@@ -54,7 +54,7 @@
       $field = $form.find("*[name='#{getParamName(field)}']")
       $errorMsgDiv = $form.find(".error[for='#{getParamName(field)}']")
       $errorMsgDiv.remove()
-      $field.unwrap() if $field.parent().attr('class') == 'field_with_errors'
+      $field.unwrap() if $field.parent().attr('class') == 'field_with_errors' and not $field.data ('no-wrap')
     handler.errorFields = []
 
   return handler

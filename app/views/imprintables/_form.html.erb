@@ -8,26 +8,58 @@
           <div>
 
             <div class="form-group clearfix">
-              <%= f.label :brand, class: 'col-sm-4 control-label' %>
-              <%= f.error_for :brand %>
+              <%= f.label :brand_id, class: 'col-sm-4 control-label' %>
               <div class="col-sm-8">
-                <%= select_tag :brand,
-                               options_for_select(['Select a Brand'] + Brand.order(:name).collect{ |b| [b.name, b.id] }, find_brand(imprintable)),
-                               {
-                                       class: 'form-control',
-                                       id: 'imprintable_brand_id'
-                               } %>
+                <%= f.select :brand_id, Brand.order(:name).collect{ |b| [b.name, b.id] }, prompt: 'Select a brand' %>
               </div>
             </div>
 
             <div class="form-group clearfix">
-              <%= f.label :style, class: 'col-sm-4 control-label' %>
-              <%= f.error_for :style %>
+              <%= f.label :style_name, class: 'col-sm-4 control-label' %>
               <div class="col-sm-8">
-                <%= f.grouped_collection_select(:style_id, Brand.order(:name), :styles, :name, :id, :name, {}, { :class => 'form-control', :id => 'imprintable_style_id' }) %>
-                <p class="help-block">Catalog number as designated by manufacturer</p>
+                <%= f.text_field :style_name, class: 'form-control' %>
+                <p class="help-block">The name of the style</p>
               </div>
             </div>
+
+            <div class="form-group clearfix">
+              <%= f.label :style_catalog_no, class: 'col-sm-4 control-label' %>
+              <div class="col-sm-8">
+                <%= f.text_field :style_catalog_no, class: 'form-control' %>
+                <p class="help-block">The catalog number of the style</p>
+              </div>
+            </div>
+
+            <div class="form-group clearfix">
+              <%= f.label :sku, class: 'col-sm-4 control-label' %>
+              <div class="col-sm-8">
+                <%= f.text_field :sku, class: 'form-control' %>
+                <p class="help-block">SKU for this style</p>
+              </div>
+            </div>
+
+            <div class="form-group clearfix">
+              <%= f.label :retail, class: 'col-sm-4 control-label' %>
+              <div class="col-sm-8">
+                <div class="radio">
+                  <%= f.radio_button :retail, false, value: false %>
+                  No
+                </div>
+                <div class="radio">
+                  <%= f.radio_button :retail, true, value: false %>
+                  Yes
+                </div>
+                <p class="help-block">Select if the style is retail</p>
+              </div>
+            </div>
+
+            <div class="form-group clearfix">
+              <%= f.label :style_description, class: 'col-sm-4 control-label' %>
+              <div class="col-sm-8">
+                <%= f.text_area :style_description, class: 'summernote' %>
+              </div>
+            </div>
+
 
             <div class="form-group clearfix">
               <%= f.label :standard_offering, 'Standard Offering', class: 'col-sm-4 control-label' %>
@@ -36,6 +68,7 @@
                 <%= f.check_box :standard_offering, { class: 'checkbox' }, 'true', 'false' %>
               </div>
             </div>
+
 
             <div class="form-group clearfix">
               <%= f.label :material, class: 'col-sm-4 control-label' %>
@@ -52,6 +85,28 @@
               <div class="col-sm-8">
                 <%= f.text_field :weight, class: 'form-control' %>
                 <p class="help-block">The material weight</p>
+              </div>
+            </div>
+
+            <div class="form-group clearfix">
+              <%= f.label :max_imprint_width, class: 'col-sm-4 control-label' %>
+              <div class="col-sm-8">
+                <div class="input-group">
+                  <%= f.error_for :max_imprint_width %>
+                  <%= f.text_field :max_imprint_width, class: 'form-control', placeholder: 'Width (0.00) in inches' %>
+                  <span class='input-group-addon'>inches</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="form-group clearfix">
+              <%= f.label :max_imprint_height, class: 'col-sm-4 control-label' %>
+              <div class="col-sm-8">
+                <div class="input-group">
+                  <%= f.error_for :max_imprint_height %>
+                  <%= f.text_field :max_imprint_height, class: 'form-control', placeholder: 'Height (0.00) in inches' %>
+                  <span class='input-group-addon'>inches</span>
+                </div>
               </div>
             </div>
 

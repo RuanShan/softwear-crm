@@ -20,13 +20,16 @@
     </div>
     <div class="col-sm-6 ">
       <dl>
-        <dt>Artwork Status</dt>
+        <dt>Max Print Area: </dt>
+        <dd><% area = artwork_request.max_print_area(artwork_request.print_location)%>
+            <%= area[0] %> in. x <%= area[1] %> in.</dd>
+        <dt>Artwork Status: </dt>
         <dd><%= artwork_request.artwork_status %></dd>
-        <dt>Deadline</dt>
+        <dt>Deadline: </dt>
         <dd><%= artwork_request.deadline.strftime('%b %d, %Y, %I:%M %p') %></dd>
-        <dt>Salesperson</dt>
+        <dt>Salesperson: </dt>
         <dd><%= current_user.full_name %></dd>
-        <dt>Artist</dt>
+        <dt>Artist: </dt>
         <dd><%= artwork_request.artist.full_name %></dd>
       </dl>
     </div>

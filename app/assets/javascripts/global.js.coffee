@@ -18,6 +18,13 @@ $(document).ready ->
   $('.format-phone').mask("999-999-9999")
   return
 
+$(document).ajaxStart(->
+  $('#ajax_loading').modal('show')
+  console.log 'Ajax started')
+$(document).ajaxStop(->
+  $('#ajax_loading').modal('hide')
+  console.log 'Ajax stopped')
+
 @after = (ms, func) ->
   setTimeout(func, ms)
 
@@ -28,3 +35,10 @@ $(document).ready ->
   returnColor = $element.css('background-color') unless returnDefault
   $element.css('background-color', '#99ffbb')
   $element.animate {backgroundColor: returnColor}, (duration or 1000), -> $element.css 'background-color', ''
+
+@setSubmitTimeout = ->
+  $("input[type=submit]").click ->
+    $add = $(this)
+    $(this).parents("form").submit()
+    $add.attr 'disabled', 'disabled'
+    setTimeout (-> $add.removeAttr 'disabled'), 5000

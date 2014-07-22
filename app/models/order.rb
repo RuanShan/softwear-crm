@@ -11,18 +11,11 @@ class Order < ActiveRecord::Base
      'Net 30',
      'Net 60']
 
-  VALID_SALES_STATUSES   = ['Pending', 'Terms Set And Met', 'Paid', 'Cancelled']
   VALID_DELIVERY_METHODS = ['Pick up in Ann Arbor', 'Pick up in Ypsilanti', 'Ship to one location', 'Ship to multiple locations']
-
-  before_validation :initialize_fields, on: :create
 
   validates_presence_of :email, :firstname, :lastname, :name, :terms, :delivery_method
   validates :email, format: { with: /\A([^@\s]+)@((?:[-a-z0-9]+\.)+[a-z]{2,})\Z/i }
   validates :phone_number, format: { with: /\d{3}-\d{3}-\d{4}/, message: "is incorrectly formatted, use 000-000-0000" }
-  
-  validates_inclusion_of(:sales_status, 
-      in: VALID_SALES_STATUSES,
-      message: "is not a valid sales status")
 
   validates_inclusion_of(:delivery_method,
       in: VALID_DELIVERY_METHODS,
@@ -94,46 +87,48 @@ class Order < ActiveRecord::Base
   end
 
   def payment_status
-    if self.terms == 'Paid in full on purchase'
-      if self.balance > 0
-        'Awaiting Payment'
-      else
-        'Payment Complete'
-      end
-    elsif self.terms == 'Half down on purchase'
-      if self.balance >= (total * 0.49)
-        'Awaiting Payment'
-      else
-        'Payment Terms Met'
-      end
-    elsif self.terms == 'Paid in full on pick up'
-      if Time.now >= self.in_hand_by
-        'Awaiting Payment'
-      else
-        'Payment Terms Met'
-      end
-    elsif self.terms == 'Net 30'
-      if Time.now >= (self.in_hand_by + 30.days)
-        'Awaiting Payment'
-      else
-        'Payment Terms Met'
-      end
-    elsif self.terms == 'Net 60'
-      if Time.now >= (self.in_hand_by + 60.days)
-        'Awaiting Payment'
-      else
-        'Payment Terms Met'
+    if self.terms.empty?
+      'Payment Terms Pending'
+    elsif self.balance <= 0
+      return 'Payment Complete'
+    elsif self.balance > 0
+      if self.terms == 'Paid in full on purchase'
+        return 'Awaiting Payment'
+      elsif self.terms == 'Half down on purchase'
+        if self.balance >= (total * 0.49)
+          return 'Awaiting Payment'
+        else
+          return 'Payment Terms Met'
+        end
+      elsif self.terms == 'Paid in full on pick up'
+        if Time.now >= self.in_hand_by
+          return 'Awaiting Payment'
+        else
+          return 'Payment Terms Met'
+        end
+      elsif self.terms == 'Net 30'
+        if Time.now >= (self.in_hand_by + 30.days)
+          return 'Awaiting Payment'
+        else
+          return 'Payment Terms Met'
+        end
+      elsif self.terms == 'Net 60'
+        if Time.now >= (self.in_hand_by + 60.days)
+          return 'Awaiting Payment'
+        else
+          return 'Payment Terms Met'
+        end
       end
     end
   end
 
   searchable do
-    text :name, :email, :firstname, :lastname, :company, :twitter, :terms, :delivery_method, :sales_status
+    text :name, :email, :firstname, :lastname, :company, :twitter, :terms, :delivery_method
     text :jobs do
       jobs.map { |j| "#{j.name} #{j.description}" }
     end
 
-    [:firstname, :lastname, :email, :terms, :delivery_method, :sales_status, :company, :phone_number].each do |field|
+    [:firstname, :lastname, :email, :terms, :delivery_method, :company, :phone_number].each do |field|
       string field
     end
 
@@ -145,8 +140,4 @@ class Order < ActiveRecord::Base
     reference :salesperson
   end
 
-private
-  def initialize_fields
-    self.sales_status = 'Pending' if self.sales_status.nil? or self.sales_status.empty?
-  end
 end

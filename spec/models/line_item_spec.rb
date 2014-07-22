@@ -36,7 +36,7 @@ describe LineItem, line_item_spec: true do
       expect(subject.name).to eq subject.imprintable_variant.name
     end
     it 'description should return the description of its imprintable_variant' do
-      expect(subject.description).to eq subject.imprintable_variant.imprintable.style.description
+      expect(subject.description).to eq subject.imprintable_variant.imprintable.style_description
     end
   end
 
@@ -61,7 +61,7 @@ describe LineItem, line_item_spec: true do
     context 'on imprintable line items' do
       let!(:job) { create(:job) }
       let!(:white) { create(:valid_color, name: 'white') }
-      let!(:shirt) { create(:associated_imprintable) }
+      let!(:shirt) { create(:valid_imprintable) }
       make_variants :white, :shirt, [:M, :S, :L]
 
       before(:each) do

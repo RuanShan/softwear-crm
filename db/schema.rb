@@ -11,7 +11,8 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140716151026) do
+
+ActiveRecord::Schema.define(version: 20140718133112) do
 
   create_table "activities", force: true do |t|
     t.integer  "trackable_id"
@@ -145,7 +146,6 @@ ActiveRecord::Schema.define(version: 20140716151026) do
     t.boolean  "flashable"
     t.text     "special_considerations"
     t.boolean  "polyester"
-    t.integer  "style_id"
     t.string   "sizing_category"
     t.datetime "deleted_at"
     t.text     "proofing_template_name"
@@ -160,11 +160,18 @@ ActiveRecord::Schema.define(version: 20140716151026) do
     t.decimal  "xxxxl_price",            precision: 10, scale: 2
     t.decimal  "xxxxxl_price",           precision: 10, scale: 2
     t.decimal  "xxxxxxl_price",          precision: 10, scale: 2
+    t.string   "style_name"
+    t.string   "style_catalog_no"
+    t.text     "style_description"
+    t.string   "sku"
+    t.boolean  "retail",                                          default: false
+    t.integer  "brand_id"
+    t.decimal  "max_imprint_width",      precision: 8,  scale: 2
+    t.decimal  "max_imprint_height",     precision: 8,  scale: 2
   end
 
   add_index "imprintables", ["deleted_at"], name: "index_imprintables_on_deleted_at", using: :btree
   add_index "imprintables", ["main_supplier"], name: "index_imprintables_on_main_supplier", using: :btree
-  add_index "imprintables", ["style_id"], name: "style_id_ix", using: :btree
 
   create_table "imprintables_stores", id: false, force: true do |t|
     t.integer "imprintable_id"
@@ -234,7 +241,6 @@ ActiveRecord::Schema.define(version: 20140716151026) do
     t.string   "terms"
     t.boolean  "tax_exempt"
     t.string   "tax_id_number"
-    t.string   "sales_status"
     t.string   "delivery_method"
     t.datetime "deleted_at"
     t.string   "phone_number"
@@ -414,22 +420,6 @@ ActiveRecord::Schema.define(version: 20140716151026) do
   end
 
   add_index "stores", ["deleted_at"], name: "index_stores_on_deleted_at", using: :btree
-
-  create_table "styles", force: true do |t|
-    t.string   "name"
-    t.string   "catalog_no"
-    t.text     "description"
-    t.string   "sku"
-    t.datetime "created_at"
-    t.datetime "updated_at"
-    t.integer  "brand_id"
-    t.datetime "deleted_at"
-    t.boolean  "retail",      default: false
-  end
-
-  add_index "styles", ["brand_id"], name: "brand_id_ix", using: :btree
-  add_index "styles", ["deleted_at"], name: "index_styles_on_deleted_at", using: :btree
-  add_index "styles", ["retail"], name: "index_styles_on_retail", using: :btree
 
   create_table "taggings", force: true do |t|
     t.integer  "tag_id"

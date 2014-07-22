@@ -90,7 +90,7 @@ initializeLineItemModal = ($lineItemModal) ->
     ajax.done (response) ->
       data =
         brand_id: null
-        style_id: null
+        imprintable_id: null
         color_id: null
         clear: (attrs...) -> this[attr] = null for attr in attrs
       $response = $(response)
@@ -101,7 +101,7 @@ initializeLineItemModal = ($lineItemModal) ->
         $responseSelect = $response.find('select')
         $responseSelect.change ->
           data.brand_id = $(this).val()
-          data.clear 'style_id', 'color_id'
+          data.clear 'imprintable_id', 'color_id'
 
           ajax = getOptions data, (response) ->
             $response = $(response)
@@ -111,7 +111,7 @@ initializeLineItemModal = ($lineItemModal) ->
               $response.fadeIn()
               $responseSelect = $response.find('select')
               $responseSelect.change ->
-                data.style_id = $(this).val()
+                data.imprintable_id = $(this).val()
                 data.clear 'color_id'
 
                 ajax = getOptions data, (response) ->

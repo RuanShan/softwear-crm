@@ -4,7 +4,6 @@ include LineItemHelpers
 describe 'line_items/_imprintable_edit.html.erb', line_item_spec: true do
   let!(:white) { create(:valid_color, name: 'white') }
   let!(:shirt) { create(:valid_imprintable) }
-  let(:style) { shirt.style }
   make_variants :white, :shirt, [:S, :M, :L], not: [:job]
 
   let(:line_items) {[
@@ -17,8 +16,8 @@ describe 'line_items/_imprintable_edit.html.erb', line_item_spec: true do
     render partial: 'line_items/imprintable_edit', 
       locals: {
         color_name: 'white',
-        style_name: style.name,
-        style_catalog_no: style.catalog_no,
+        style_name: shirt.style_name,
+        style_catalog_no: shirt.style_catalog_no,
         description: white_shirt_s_item.description,
         line_items: line_items,
         class_name: 'Job'
@@ -26,7 +25,7 @@ describe 'line_items/_imprintable_edit.html.erb', line_item_spec: true do
   end
 
   it 'should format the title of the line item set correctly' do
-    expect(rendered).to have_css 'h6 > strong', text: "white #{style.name}"
+    expect(rendered).to have_css 'h6 > strong', text: "white #{shirt.style_name}"
     expect(rendered).to have_css 'p', text: white_shirt_s_item.description
   end
 

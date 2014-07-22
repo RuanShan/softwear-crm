@@ -8,4 +8,5 @@ module Retailable
   def is_retail?
     retail == true
   end
+
 end

@@ -6,13 +6,13 @@ describe ArtworkRequest, artwork_request_spec: true do
   describe 'Validations' do
     it { should validate_presence_of(:deadline) }
     it { should validate_presence_of(:description) }
-    it { should validate_presence_of(:imprint_method_id) }
+    it { should validate_presence_of(:imprint_method) }
     it { should validate_presence_of(:artwork_status) }
-    it { should validate_presence_of(:print_location_id) }
-    it { should validate_presence_of(:job_ids) }
-    it { should validate_presence_of(:ink_color_ids) }
-    it { should validate_presence_of(:artist_id) }
-    it { should validate_presence_of(:salesperson_id) }
+    it { should validate_presence_of(:print_location) }
+    it { should validate_presence_of(:jobs) }
+    it { should validate_presence_of(:ink_colors) }
+    it { should validate_presence_of(:artist) }
+    it { should validate_presence_of(:salesperson) }
     it { should validate_presence_of(:priority) }
   end
 

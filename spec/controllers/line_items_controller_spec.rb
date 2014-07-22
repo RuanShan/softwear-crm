@@ -10,7 +10,7 @@ describe LineItemsController, line_item_spec: true do
     context 'with an imprintable_id and a color_id' do
       let!(:job) { create(:job) }
       let!(:white) { create(:valid_color, name: 'white') }
-      let!(:shirt) { create(:associated_imprintable) }
+      let!(:shirt) { create(:valid_imprintable) }
       make_variants :white, :shirt, [:S, :M, :L, :XL], not: [:job, :line_items]
 
       it 'creates line items for each relevant size' do
@@ -61,7 +61,7 @@ describe LineItemsController, line_item_spec: true do
     context 'with a 4-size imprintable line item group' do
       let!(:job) { create(:job) }
       let!(:white) { create(:valid_color, name: 'white') }
-      let!(:shirt) { create(:associated_imprintable) }
+      let!(:shirt) { create(:valid_imprintable) }
       make_variants :white, :shirt, [:S, :M, :L, :XL]
 
       it 'destroys them all when supplied with their ids' do
@@ -99,14 +99,14 @@ describe LineItemsController, line_item_spec: true do
       end
 
       context 'with brand_id' do
-        2.times { |i| let!("style#{i}".to_sym) { create(:style, brand_id: brand1.id) } }
+        2.times { |i| let!("imprintable#{i}".to_sym) { create(:associated_imprintable, brand_id: brand1.id) } }
 
         context 'when there are matching styles' do
           it 'responds with a select tag for styles' do
             get :select_options, brand_id: brand1.id
             expect(response.body).to include '<select'
-            expect(response.body).to include style0.name
-            expect(response.body).to include style1.name
+            expect(response.body).to include imprintable0.style_name
+            expect(response.body).to include imprintable1.style_name
           end
         end
         context 'where there are no matching styles' do
@@ -116,21 +116,20 @@ describe LineItemsController, line_item_spec: true do
           end
         end
 
-        context 'with style_id' do
+        context 'with imprintable_id' do
           2.times { |i| let!("color#{i}".to_sym) { create(:valid_color) } }
           2.times { |i| let!("size#{i}".to_sym) { create(:valid_size) } }
-          let!(:imp) { create(:associated_imprintable, style_id: style1.id) }
 
-          let!(:iv0) { create(:associated_imprintable_variant, imprintable_id: imp.id, color_id: color0.id) }
-          2.times { |i| let!("iv1_#{i}".to_sym) { create(:associated_imprintable_variant, 
-            imprintable_id: imp.id,
+          let!(:iv0) { create(:associated_imprintable_variant, imprintable_id: imprintable0.id, color_id: color0.id) }
+          2.times { |i| let!("iv1_#{i}".to_sym) { create(:associated_imprintable_variant,
+            imprintable_id: imprintable0.id,
             size_id: send("size#{i}").id,
             color_id: color1.id
           ) } }
 
           context 'when there are matching colors' do
             it 'responds with a select tag for colors' do
-              get :select_options, style_id: style1.id
+              get :select_options, imprintable_id: imprintable0.id
               expect(response.body).to include '<select'
               expect(response.body).to include color0.name
               expect(response.body).to include color1.name
@@ -138,7 +137,7 @@ describe LineItemsController, line_item_spec: true do
           end
           context 'when there are no matching colors' do
             it 'responds with error message html' do
-              get :select_options, style_id: style0.id
+              get :select_options, imprintable_id: imprintable1.id
               expect(response.body).to include "Couldn't find"
             end
           end
@@ -146,15 +145,15 @@ describe LineItemsController, line_item_spec: true do
           context 'and color_id' do
             context 'when there are matching variants' do
               it 'responds with the name and description' do
-                get :select_options, style_id: style1.id, color_id: color1.id
-                expect(response.body).to include style1.name
-                expect(response.body).to include style1.catalog_no
-                expect(response.body).to include imp.description
+                get :select_options, imprintable_id: imprintable0.id, color_id: color1.id
+                expect(response.body).to include imprintable0.style_name
+                expect(response.body).to include imprintable0.style_catalog_no
+                expect(response.body).to include imprintable0.description
               end
             end
             context 'when there is no matching variant' do
               it 'responds with error message html' do
-                get :select_options, style_id: style0.id, color_id: color0.id
+                get :select_options, imprintable_id: imprintable1.id, color_id: color0.id
                 expect(response.body).to include "Couldn't find"
               end
             end

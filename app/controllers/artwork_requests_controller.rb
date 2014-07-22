@@ -1,9 +1,20 @@
 class ArtworkRequestsController < InheritedResources::Base
   before_filter :format_time, only: [:create, :update]
   before_filter :assign_order
-  after_filter :notify_artists, only: [:create, :update]
 
   respond_to :js
+
+  def update
+    super do |success, failure|
+      success.js {notify_artists}
+    end
+  end
+
+  def create
+    super do |success, failure|
+      success.js {notify_artists}
+    end
+  end
 
   private
 
@@ -28,10 +39,12 @@ class ArtworkRequestsController < InheritedResources::Base
   end
 
   def permitted_params
-    params.permit(:order_id,
+    params.permit(:order_id, :id,
                   artwork_request: [:id, :priority, :description, :artist_id,
                                     :imprint_method_id, :print_location_id,
-                                    :salesperson_id, :deadline, :artwork_status, assets_attributes: [:file, :description, :id, :_destroy], job_ids: [], ink_color_ids: []])
+                                    :salesperson_id, :deadline, :artwork_status,
+                                    job_ids: [], ink_color_ids: [],
+                                    assets_attributes: [:file, :description, :id, :_destroy]])
 
   end
 end

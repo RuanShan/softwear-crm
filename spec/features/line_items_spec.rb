@@ -6,16 +6,14 @@ feature 'Line Items management', line_item_spec: true, js: true do
   given(:job) { order.jobs.first }
 
   given!(:white) { create(:valid_color, name: 'white') }
-  given!(:shirt) { create(:associated_imprintable) }
+  given!(:shirt) { create(:valid_imprintable) }
 
   make_variants :white, :shirt, [:S, :M, :L], not: [:line_items, :job]
 
-  given(:style) { shirt.style }
   given(:brand) { shirt.brand }
 
-  given(:hat) { create(:associated_imprintable) }
+  given(:hat) { create(:valid_imprintable) }
   given(:hat_brand) { hat.brand }
-  given(:hat_style) { hat.style }
 
   given!(:valid_user) { create(:user) }
   before(:each) do
@@ -41,6 +39,7 @@ feature 'Line Items management', line_item_spec: true, js: true do
       fill_in 'Unit price', with: '5.00'
     end
 
+    wait_for_ajax
     find('#line-item-submit').click
     sleep 3
 
@@ -72,29 +71,30 @@ feature 'Line Items management', line_item_spec: true, js: true do
     expect(page).to have_content 'Add'
 
     within('.line-item-form') do
-      sleep(1)
+      sleep 1.5
       choose 'Yes'
-      wait_for_ajax
+      sleep 1.5
       select brand.name, from: 'Brand'
-      wait_for_ajax
-      select style.name, from: 'Style'
-      wait_for_ajax
+      sleep 1.5
+      select shirt.style_name, from: 'Imprintable'
+      sleep 1.5
       select white.name, from: 'Color'
-      wait_for_ajax
-      expect(page).to have_content shirt.style.name
-      expect(page).to have_content shirt.style.description
+      sleep 1.5
+      expect(page).to have_content shirt.style_name
+      expect(page).to have_content shirt.style_description
       fill_in 'base_unit_price', with: '2.30'
     end
 
-    find('#line-item-submit').click
     wait_for_ajax
+    find('#line-item-submit').click
+    sleep 3
 
     expect(LineItem.where(imprintable_variant_id: white_shirt_s.id)).to exist
     expect(LineItem.where(imprintable_variant_id: white_shirt_m.id)).to exist
     expect(LineItem.where(imprintable_variant_id: white_shirt_l.id)).to exist
 
-    expect(page).to have_content shirt.style.name
-    expect(page).to have_content shirt.style.catalog_no
+    expect(page).to have_content shirt.style_name
+    expect(page).to have_content shirt.style_catalog_no
     expect(page).to have_content shirt.description
     expect(page).to have_css 'input[value="2.30"]'
   end
@@ -109,19 +109,20 @@ feature 'Line Items management', line_item_spec: true, js: true do
       expect(page).to have_content 'Add'
 
       within('.line-item-form') do
-        sleep(1)
+        sleep 1.5
         choose 'Yes'
-        wait_for_ajax
+        sleep 1.5
         select brand.name, from: 'Brand'
-        wait_for_ajax
-        select style.name, from: 'Style'
-        wait_for_ajax
+        sleep 1.5
+        select shirt.style_name, from: 'Imprintable'
+        sleep 1.5
         select white.name, from: 'Color'
-        wait_for_ajax
+        sleep 1.5
       end
 
-      find('#line-item-submit').click
       wait_for_ajax
+      find('#line-item-submit').click
+      sleep 1.5
     end
 
     ['s', 'm', 'l'].each do |s|
@@ -129,7 +130,7 @@ feature 'Line Items management', line_item_spec: true, js: true do
     end
   end
 
-  scenario 'user cannot submit an imprintable line item without completing the form', pending: 'Need to review with Nigel'  do
+  it 'user cannot submit an imprintable line item without completing the form', pending: 'Need to review with Nigel'  do
     visit edit_order_path(1, anchor: 'jobs')
     wait_for_ajax
 
@@ -151,7 +152,7 @@ feature 'Line Items management', line_item_spec: true, js: true do
   end
 
   scenario 'creating an imprintable line item, user can switch a lower-level select and it will reset the higher levels' do
-    hat_brand; hat_style
+    hat_brand;
     visit edit_order_path(1, anchor: 'jobs')
     wait_for_ajax
 
@@ -164,11 +165,11 @@ feature 'Line Items management', line_item_spec: true, js: true do
       wait_for_ajax
       select hat_brand.name, from: 'Brand'
       wait_for_ajax
-      expect(page).to have_content hat_style.name
+      expect(page).to have_content hat.style_name
       select brand.name, from: 'Brand'
       wait_for_ajax
-      expect(page).to_not have_content hat_style.name
-      expect(page).to have_content style.name
+      expect(page).to_not have_content hat.style_name
+      expect(page).to have_content shirt.style_name
     end
   end
 
@@ -226,7 +227,7 @@ feature 'Line Items management', line_item_spec: true, js: true do
     visit edit_order_path(1, anchor: 'jobs')
     wait_for_ajax
 
-    expect(page).to have_content shirt.style.name
+    expect(page).to have_content shirt.style_name
 
     first('.line-item-button[title="Delete"]').click
     wait_for_ajax
@@ -236,7 +237,7 @@ feature 'Line Items management', line_item_spec: true, js: true do
       item = send("white_shirt_#{s}_item")
       expect(LineItem.where(id: item.id)).to_not exist
     end
-    expect(page).to_not have_content shirt.style.name
+    expect(page).to_not have_content shirt.style_name
   end
 
   scenario 'user can remove standard line item' do

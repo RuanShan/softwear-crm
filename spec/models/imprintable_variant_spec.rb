@@ -11,7 +11,7 @@ describe ImprintableVariant, imprintable_variant_spec: true do
     it { should validate_presence_of(:imprintable) }
     it { should validate_presence_of(:size) }
     it { should validate_presence_of(:color) }
-    it { should validate_uniqueness_of(:color_id).scoped_to(:size_id) }
+    it { should validate_uniqueness_of(:color_id).scoped_to([:size_id, :imprintable_id]) }
   end
 
   context 'There is a valid imprintable_variant' do
@@ -19,7 +19,7 @@ describe ImprintableVariant, imprintable_variant_spec: true do
 
     describe '#full_name' do
       it 'returns "imprintable.brand.name imprintable.catalog_no size.name color.name"' do
-        expect(imprintable_variant.full_name).to eq("#{ imprintable_variant.imprintable.brand.name } #{ imprintable_variant.imprintable.style.catalog_no } #{ imprintable_variant.color.name } #{ imprintable_variant.size.name }")
+        expect(imprintable_variant.full_name).to eq("#{ imprintable_variant.imprintable.brand.name } #{ imprintable_variant.imprintable.style_catalog_no } #{ imprintable_variant.color.name } #{ imprintable_variant.size.name }")
       end
     end
 
@@ -37,19 +37,13 @@ describe ImprintableVariant, imprintable_variant_spec: true do
 
     describe '#style_name' do
       it 'returns the associated style\'s name' do
-        expect(imprintable_variant.style_name).to eq(imprintable_variant.imprintable.style.name)
+        expect(imprintable_variant.style_name).to eq(imprintable_variant.imprintable.style_name)
       end
     end
 
     describe '#style_catalog_no' do
-      it 'returns teh associated style\'s catalog number' do
-        expect(imprintable_variant.style_catalog_no).to eq(imprintable_variant.imprintable.style.catalog_no)
-      end
-    end
-
-    describe '#style' do
-      it 'returns the style associated with the imprintable associated with the imprintable variant' do
-        expect(imprintable_variant.style).to eq(imprintable_variant.imprintable.style)
+      it 'returns the associated style\'s catalog number' do
+        expect(imprintable_variant.style_catalog_no).to eq(imprintable_variant.imprintable.style_catalog_no)
       end
     end
 
