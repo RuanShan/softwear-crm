@@ -30,7 +30,7 @@ describe LineItem, line_item_spec: true do
     end
   	it { should_not validate_presence_of :description }
   	it { should_not validate_presence_of :name }
-    it { should validate_uniqueness_of(:imprintable_variant_id).scoped_to(:job_id) }
+    it { should validate_uniqueness_of(:imprintable_variant_id).scoped_to([:line_itemable_id, :line_itemable_type]) }
 
     it 'name should return the name of its imprintable_variant' do
       expect(subject.name).to eq subject.imprintable_variant.name

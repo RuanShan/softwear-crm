@@ -52,7 +52,7 @@ class Order < ActiveRecord::Base
   end
 
   def line_items
-    LineItem.where(job_id: job_ids)
+    LineItem.where(line_itemable_id: job_ids, line_itemable_type: 'Job')
   end
 
   def tax; 0.6; end

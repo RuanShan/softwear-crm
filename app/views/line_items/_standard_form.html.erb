@@ -1,4 +1,5 @@
-<%= form_for [job, line_item], url: job_line_items_path(job, line_item), builder: LancengFormBuilder do |f| %>
+<% url = determine_url(@line_item, @line_itemable) %>
+<%= form_for [@line_itemable, @line_item], url: url, builder: LancengFormBuilder do |f| %>
 	<%= f.label.error.text_field :name %>
 	<%= f.label.error.text_area :description %>
 	<%= f.label.error.check_box :taxable, style: "width: 34px; height: 34px;" %>

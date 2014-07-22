@@ -18,7 +18,7 @@ feature 'Order management', order_spec: true,  js: true do
     expect(page).to have_css("tr#order_#{order.id}")
   end
 
-  scenario 'user creates a new order' do
+  scenario 'user creates a new order', new: true do
     visit root_path
     unhide_dashboard
     click_link 'Orders'

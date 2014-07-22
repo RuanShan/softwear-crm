@@ -1,0 +1,12 @@
+<h3>Editing <strong>Line Items</strong></h3>
+
+<%= render partial: 'line_items/standard_view', locals: { line_items: @quote.standard_line_items } %>
+
+<div class="form-group box-info">
+  <div class="col-sm-3">
+    <a class="btn btn-info btn-md btn-block add-line-item" onclick="addStandardLineItem('<%=@quote.id%>', 'Quote')"><i class="fa fa-list"></i> Add Line Item</a>
+  </div>
+  <div class="col-sm-3 col-xs-offset-6">
+    <a class="btn btn-info btn-md btn-block update-line-items" onclick="updateLineItems('<%=@quote.id%>', 'Quote')"><i class="fa fa-list-alt"></i> Update Line Items</a>
+  </div>
+</div>

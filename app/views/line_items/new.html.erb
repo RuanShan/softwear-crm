@@ -1,25 +1,32 @@
-<div class="modal fade " id="lineItemModal" tabindex="-1" role="dialog" aria-labelledby="lineItemModalLabel-<%= job.id %>" aria-hidden="true">
-    <div class="modal-dialog">
-      <div class="modal-content">
-        <div class="modal-header">
+<div class="modal fade " id="lineItemModal" tabindex="-1" role="dialog">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
         <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-        <h4 class="modal-title" id="lineItemModalLabel-<%= job.id %>">New Line Item </h4>
-        </div>
-        <div class="modal-body line-item-form">
+        <h4 class="modal-title">New Line Item </h4>
+      </div>
+      <div class="modal-body line-item-form">
+        <% if !@standard %>
           Imprintable?
-          <%= radio_button_tag :is_imprintable, 'yes', 'data-id'=>job.id %><%= label_tag :is_imprintable_yes, 'Yes' %>
-          <%= radio_button_tag :is_imprintable, 'no', 'data-id'=>job.id %><%= label_tag :is_imprintable_no, 'No' %>
-          <div id="li-standard-form" style='display: none;'>
-            <%= render partial: 'standard_form', locals: {job: job, line_item: @line_item} %>
-          </div>
+          <%= radio_button_tag :is_imprintable, 'yes' %><%= label_tag :is_imprintable_yes, 'Yes' %>
+          <%= radio_button_tag :is_imprintable, 'no' %><%= label_tag :is_imprintable_no, 'No' %>
           <div id="li-imprintable-form" style='display: none;'>
-            <%= render partial: 'imprintable_form', locals: {job: job, line_item: @line_item} %>
+            <%= render partial: 'imprintable_form' %>
           </div>
-        </div>
-        <div class="modal-footer">
-          <a class="btn btn-default" data-dismiss="modal">Cancel</a>
-          <a id='line-item-submit' class="btn btn-primary">Add</a>
-        </div>
+          <div id="li-standard-form" style='display: none;'>
+            <%= render partial: 'standard_form' %>
+          </div>
+        <% else %>
+          <div id="li-standard-form">
+            <%= render partial: 'standard_form' %>
+          </div>
+        <% end %>
+
+      </div>
+      <div class="modal-footer">
+        <a class="btn btn-default" data-dismiss="modal">Cancel</a>
+        <a id='line-item-submit' class="btn btn-primary">Add</a>
+      </div>
     </div>
   </div>
 </div>

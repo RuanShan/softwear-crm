@@ -6,7 +6,7 @@ class Job < ActiveRecord::Base
 
   belongs_to :order
 
-  has_many :line_items
+  has_many :line_items, as: :line_itemable
   has_many :imprints
   has_many :imprintable_variants, -> {readonly}, through: :line_items
   has_many :imprintables, -> {readonly}, through: :imprintable_variants
@@ -26,7 +26,7 @@ class Job < ActiveRecord::Base
       imprintable_variant: [
         { imprintable: :style }, :color, :size
       ]
-    ).where(job_id: id).where.not(imprintable_variant_id: nil).each do |line_item|
+    ).where(line_itemable_id: id, line_itemable_type: 'Job').where.not(imprintable_variant_id: nil).each do |line_item|
       imprintable_name = line_item.imprintable.name
       variant = line_item.imprintable_variant
       color_name = variant.color.name
@@ -40,7 +40,7 @@ class Job < ActiveRecord::Base
   end
 
   def standard_line_items
-    LineItem.non_imprintable.where job_id: id
+    LineItem.non_imprintable.where(line_itemable_id: id, line_itemable_type: 'Job')
   end
 
   def imprintable_variant_count
@@ -89,7 +89,7 @@ private
   end
 
   def check_for_line_items
-    if LineItem.where(job_id: id).exists?
+    if LineItem.where(line_itemable_id: id, line_itemable_type: 'Job').exists?
       self.errors[:deletion_status] = 'All line items must be manually removed before a job can be deleted'
       false
     else

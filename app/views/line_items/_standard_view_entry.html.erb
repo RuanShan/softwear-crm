@@ -1,9 +1,10 @@
 <div class="col-sm-2"><%= line_item.name %></div>
 <div class="col-sm-5"><%= line_item.description %></div>
-<div class="col-sm-1"><%= line_item.taxable? ? "YES" : "NO" %></div>
+<div class="col-sm-1"><%= human_boolean line_item.taxable? %></div>
 <div class="col-sm-1"><%= line_item.quantity %></div>
 <div class="col-sm-1"><%= number_to_currency line_item.unit_price %></div>
 <div class="col-sm-1"><%= number_to_currency line_item.price %></div>
+
 <div class='col-sm-1'>
   <span class='line-item-button' title="Edit" onclick="editLineItem(<%=line_item.id%>)"><i class="fa fa-2x fa-edit"></i></span>
   <span class='line-item-button' title="Delete" onclick="deleteLineItem(<%=line_item.id%>)"><i class="fa fa-2x danger fa-times-circle"></i></span>

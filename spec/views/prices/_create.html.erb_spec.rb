@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe 'prices/_create.html.erb', prices_spec: true, new: true do
+describe 'prices/_create.html.erb', prices_spec: true do
   let!(:imprintable) { create(:valid_imprintable) }
   it 'displays a table with the pricing information' do
 

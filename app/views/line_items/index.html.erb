@@ -1,0 +1,13 @@
+<div class="box-info full">
+  <h1>Line Items</h1>
+
+  <div id="line_items">
+    <% @line_items.each do |line_item| %>
+      <div class="line_item">
+        <%= @line_item.name %>
+      </div>
+    <% end %>
+  </div>
+
+  <p><%= link_to 'New Line Item', [:new, @line_itemable, :line_item] %></p>
+</div>

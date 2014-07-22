@@ -9,10 +9,10 @@ class Imprintable < ActiveRecord::Base
   SIZING_CATEGORIES = ['Adult Unisex', 'Ladies', 'Youth Unisex', 'Girls', 'Toddler', 'Infant', 'n/a']
 
   belongs_to :style
-  has_one :brand, through: :style, dependent: :destroy
+  has_one :brand, through: :style
   has_many :imprintable_variants, dependent: :destroy
-  has_many :colors, ->{ uniq }, through: :imprintable_variants, dependent: :destroy
-  has_many :sizes, ->{ uniq },  through: :imprintable_variants, dependent: :destroy
+  has_many :colors, ->{ uniq }, through: :imprintable_variants
+  has_many :sizes, ->{ uniq },  through: :imprintable_variants
   has_many :coordinate_imprintables
   has_many :coordinates, through: :coordinate_imprintables
   has_many :mirrored_coordinate_imprintables, class_name: 'CoordinateImprintable', foreign_key: 'coordinate_id'

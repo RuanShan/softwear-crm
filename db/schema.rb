@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140710143238) do
+ActiveRecord::Schema.define(version: 20140716151026) do
 
   create_table "activities", force: true do |t|
     t.integer  "trackable_id"
@@ -211,15 +211,16 @@ ActiveRecord::Schema.define(version: 20140710143238) do
     t.integer  "quantity"
     t.boolean  "taxable"
     t.text     "description"
-    t.integer  "job_id"
     t.integer  "imprintable_variant_id"
     t.datetime "deleted_at"
     t.datetime "created_at"
     t.datetime "updated_at"
     t.decimal  "unit_price",             precision: 10, scale: 2
+    t.integer  "line_itemable_id"
+    t.string   "line_itemable_type"
   end
 
-  add_index "line_items", ["job_id"], name: "index_line_items_on_job_id", using: :btree
+  add_index "line_items", ["line_itemable_id", "line_itemable_type"], name: "index_line_items_on_line_itemable_id_and_line_itemable_type", using: :btree
 
   create_table "orders", force: true do |t|
     t.string   "email"
@@ -290,17 +291,6 @@ ActiveRecord::Schema.define(version: 20140710143238) do
     t.integer  "salesperson_id"
     t.integer  "store_id"
     t.datetime "deleted_at"
-    t.string   "line_item_name"
-    t.integer  "line_item_quantity"
-    t.boolean  "line_item_taxable"
-    t.text     "line_item_description"
-    t.integer  "line_item_job_id"
-    t.integer  "line_item_imprintable_variant_id"
-    t.datetime "line_item_deleted_at"
-    t.datetime "line_item_created_at"
-    t.datetime "line_item_updated_at"
-    t.decimal  "line_item_unit_price",             precision: 10, scale: 0
-
     t.datetime "created_at"
     t.datetime "updated_at"
   end
@@ -379,6 +369,16 @@ ActiveRecord::Schema.define(version: 20140710143238) do
     t.boolean "negate"
     t.string  "value"
   end
+
+  create_table "sessions", force: true do |t|
+    t.string   "session_id", null: false
+    t.text     "data"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "sessions", ["session_id"], name: "index_sessions_on_session_id", unique: true, using: :btree
+  add_index "sessions", ["updated_at"], name: "index_sessions_on_updated_at", using: :btree
 
   create_table "shipping_methods", force: true do |t|
     t.string   "name"

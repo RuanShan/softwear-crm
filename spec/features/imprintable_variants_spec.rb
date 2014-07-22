@@ -21,6 +21,8 @@ feature 'Imprintable Variant Management', js: true, imprintable_variant_spec: tr
       select_from_chosen(size.id, from: 'size_ids')
       find('#submit_button').click
       expect(page).to have_selector '.modal-content-success', text: 'Imprintable was successfully updated.'
+      expect(ImprintableVariant.where(color_id: color.id)).to_not be_nil
+      expect(ImprintableVariant.where(size_id: size.id)).to_not be_nil
       expect(ImprintableVariant.where(imprintable_id: imprintable.id)).to_not be_nil
     end
   end

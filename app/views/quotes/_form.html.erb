@@ -1,0 +1,69 @@
+<%= render_error_modal_for quote %>
+
+<%= form_for quote, builder: LancengFormBuilder, html: { id: 'quotesWizard' } do |f| %>
+  <!-- First step -->
+  <section class="step" data-step-title="Customer Information">
+    <div class="row">
+      <div class="col-sm-6">
+        <div class="form-group">
+          <%= render partial: 'customer_detail_fields', locals: { f: f } %>
+        </div>
+      </div><!-- end div.col-sm-6 -->
+      <div class="col-sm-6">
+        <!-- Wizard notes -->
+        <div class="notes">
+          <h4>Customer Information Instructions</h4>
+          <p style="text-align: justify">
+            If the customers e-mail address exists in the system, <strong>be sure to still confirm their name and company</strong>
+          </p>
+          <p style="text-align: justify">
+            When asking the customer for their information, be sure to inform them of the following:
+          </p>
+          <ol>
+            <li><strong>Always ask for a phone number</strong>. Their phone number will only be used to contact them in the event of an emergency, and never for soliciting purposes.</li>
+            <li>If they provide a twitter alias, we will tweet at them upon completion of their order</li>
+          </ol>
+        </div><!-- End div .notes -->
+      </div><!-- End div .col-sm-6 -->
+    </div>
+  </section>
+  <!-- End first step -->
+
+  <!-- Second step -->
+  <section class="step" data-step-title="Quote Details">
+    <div class="row">
+      <div class="col-sm-6">
+        <%= render partial: 'quote_detail_fields', locals: { f: f, current_user: current_user } %>
+      </div>
+      <div class="col-sm-6">
+        <div class="notes">
+          <h4>Quote Information Instructions</h4>
+        </div><!-- End div.notes -->
+      </div><!-- End div.col-sm-6 -->
+    </div><!-- End div.row -->
+  </section>
+  <!-- End second step -->
+
+  <!-- Third step -->
+  <section class="step" data-step-title="Line Items">
+    <div class="col-sm-6">
+      <div class="row">
+        <div class="form-group">
+          <%= f.fields_for :line_items do |builder| %>
+            <%= render partial: 'line_item_fields', locals: { f: builder } %>
+          <% end %>
+          <%= link_to_add_fields 'Add Line Item', f, :line_items %>
+        </div>
+      </div>
+    </div>
+      <div class="col-sm-6">
+        <div class="notes">
+          <h4>Line Items Instructions</h4>
+          <p style="text-align: justify">
+          Make sure that there is<strong> at least one</strong> line item present
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+<% end %>

@@ -1,7 +1,21 @@
 class LineItemsController < InheritedResources::Base
+  before_filter :load_line_itemable, except: [:select_options, :destroy]
+
   def new
     super do |format|
-      format.html { render layout: nil, locals: { job: Job.find(params[:job_id]) } }
+      @line_item = @line_itemable.line_items.new
+      if params[:standard] == 'standard'
+        @standard = true
+      else
+        @standard = false
+      end
+      format.html { render layout: nil }
+    end
+  end
+
+  def index
+    super do
+      @line_items = @line_itemable.line_items
     end
   end
 
@@ -96,8 +110,9 @@ class LineItemsController < InheritedResources::Base
           imprintable_variant_id: variant.id,
           unit_price: params[:base_unit_price] || variant.imprintable.base_price || 0,
           quantity: 0,
-          job_id: params[:job_id]
-      )}
+          line_itemable_id: @line_itemable.id,
+          line_itemable_type: @line_itemable.class.name
+        )}
 
       valid_line_items = line_items.select(&:valid?)
       if !valid_line_items.empty?
@@ -120,7 +135,8 @@ class LineItemsController < InheritedResources::Base
     else # Create a standard, non-imprintable line item
       super do |success, failure|
         success.json do
-          @line_item.job_id = params[:job_id]
+          @line_item.line_itemable_id = @line_itemable.id
+          @line_item.line_itemable_type = @line_itemable.class.name
           @line_item.save
           fire_activity @line_item, :create
           render json: { result: 'success' }
@@ -186,11 +202,15 @@ class LineItemsController < InheritedResources::Base
     render render_options
   end
 
+  def form_partial
+    @line_item = LineItem.find params[:id]
+  end
+
 private
   def permitted_params
     params.permit(
-      :brand_id, :style_id, :color_id, :imprintable_id, :job_id,
-      :ids,
+      :brand_id, :style_id, :color_id, :imprintable_id,
+      :ids, :standard,
       line_item: [
       :id, :name, :description, :quantity, 
       :unit_price, :imprintable_variant_id,
@@ -209,7 +229,19 @@ private
   def entry_partial(kind)
     @line_item.imprintable? ? 'imprintable_edit_entry' : "standard_#{kind}_entry"
   end
+
   def line_item_locals(edit = false)
     {line_item: @line_item, edit: edit}
+  end
+
+  def load_line_itemable
+    if params[:id]
+      line_item = LineItem.find(params[:id])
+      klass = line_item.line_itemable_type.constantize
+      @line_itemable = klass.find(line_item.line_itemable_id)
+    else
+      klass = [Job, Quote].detect { |li| params["#{li.name.underscore}_id"] }
+      @line_itemable = klass.find(params["#{klass.name.underscore}_id"])
+    end
   end
 end

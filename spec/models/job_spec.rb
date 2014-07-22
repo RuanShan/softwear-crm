@@ -87,10 +87,10 @@ describe Job, job_spec: true do
 
     it 'should sort the resulting arrays by size', retry: 3 do
       sizes = [size_xl, size_m, size_s]
-      sizes.each_with_index do |s,i|
-        s.sort_order = i+1
-      end
-      sizes.each { |s| s.save }
+      sizes[0].sort_order = 3
+      sizes[1].sort_order = 2
+      sizes[2].sort_order = 1
+      sizes.each { |s| s.save! }
 
       result = job.sort_line_items
 
@@ -111,7 +111,7 @@ describe Job, job_spec: true do
 
     make_variants :white, :shirt, [:S, :M, :L]
 
-    5.times { |n| let!("standard#{n}".to_sym) { create(:non_imprintable_line_item, job_id: job.id) } }
+    5.times { |n| let!("standard#{n}".to_sym) { create(:non_imprintable_line_item, line_itemable_id: job.id, line_itemable_type: 'Job') } }
 
     it 'should return all the non-imprintable line items' do
       result = job.standard_line_items
@@ -130,7 +130,7 @@ describe Job, job_spec: true do
 
   it 'should not be deletable when it has line items', line_item_spec: true do
     job = create(:job)
-    line_item = create(:non_imprintable_line_item, job_id: job.id)
+    line_item = create(:non_imprintable_line_item, line_itemable_id: job.id, line_itemable_type: 'Job')
 
     job.destroy
     expect(job.destroyed?).to_not be_truthy

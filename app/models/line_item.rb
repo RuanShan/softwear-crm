@@ -1,7 +1,7 @@
 class LineItem < ActiveRecord::Base
   include TrackingHelpers
 
-  belongs_to :job
+  belongs_to :line_itemable, polymorphic: true
   belongs_to :imprintable_variant
   has_one :order, through: :job
 
@@ -10,16 +10,16 @@ class LineItem < ActiveRecord::Base
   validates_presence_of :name, unless: :imprintable?
   validates_presence_of :description, unless: :imprintable?
   validate :imprintable_variant_exists, if: :imprintable?
-  validates :imprintable_variant_id, uniqueness: { scope: :job_id }, if: :imprintable?
+  validates :imprintable_variant_id, uniqueness: { scope: [:line_itemable_id, :line_itemable_type] }, if: :imprintable?
 
   acts_as_paranoid
   tracked skip_defaults: true
   ### TODO manually call create_activity from the controller
   # or somehow allow the default activity calls to be disabled
-  # (without global disable) (unless that doesn't stop you from 
+  # (without global disable) (unless that doesn't stop you from
   # sending custom activities)
   # 
-  # The idea is to make mass-create/update/destroys from the 
+  # The idea is to make mass-create/update/destroys from the
   # imprintable line items to not cause activity spam.
 
   scope :non_imprintable, -> { where imprintable_variant_id: nil }
@@ -36,6 +36,10 @@ class LineItem < ActiveRecord::Base
     else
       'NAN'
     end
+  end
+
+  def taxable?
+    self.taxable == true
   end
 
   def imprintable?

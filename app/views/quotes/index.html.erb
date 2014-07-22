@@ -1,0 +1,50 @@
+<div class="page-heading animated fadeInDownBig col-lg-9">
+  <h1>Quotes <small> View and edit quotes</small></h1>
+</div>
+<div class="box-info row clear">
+  <div class="table-responsive">
+    <table class="table table-hover">
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Email</th>
+          <th>Phone</th>
+          <th>Company</th>
+          <th>Twitter</th>
+          <th>Name</th>
+          <th>Valid until date</th>
+          <th>Estimated delivery date</th>
+          <th>Salesperson</th>
+          <th>Store</th>
+          <th></th>
+          <th></th>
+          <th></th>
+        </tr>
+      </thead>
+
+      <tbody>
+        <% @quotes.each do |quote| %>
+          <tr>
+            <td><%= quote.full_name %></td>
+            <td><%= quote.email %></td>
+            <td><%= quote.phone_number %></td>
+            <td><%= quote.company %></td>
+            <td><%= quote.twitter %></td>
+            <td><%= quote.name %></td>
+            <td><%= quote.valid_until_date %></td>
+            <td><%= quote.estimated_delivery_date %></td>
+            <td><%= User.find(quote.salesperson_id).full_name %></td>
+            <td><%= Store.find(quote.store_id).name %></td>
+            <td>
+              <div class="btn-group btn-group-xs">
+                <%= link_to edit_quote_path(quote), 'data-action' => 'edit', 'data-toggle' => 'tooltip', 'title' => 'Edit', class: 'btn btn-default' do %><i class="fa fa-edit"></i><% end %>
+                <%= link_to quote_path(quote), 'data-action' => 'show', 'data-toggle' => 'tooltip', 'title' => 'show', class: 'btn btn-default' do %><i class="fa fa-eye"></i><% end %>
+                <%= link_to quote_path(quote), 'data-action' => 'destroy', 'data-toggle' => 'tooltip', 'title' => 'destroy', class: 'btn btn-default', method: :delete, data: { confirm: 'Are you sure you would like to delete the quote?' } do %><i class="fa fa-times"></i><% end %>
+              </div>
+            </td>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+  </div>
+</div>

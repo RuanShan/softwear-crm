@@ -1,0 +1,33 @@
+<div class="form-group">
+  <%= f.label :email %>
+  <%= f.error_for :email %>
+  <%= f.text_field :email, placeholder: 'Email' %>
+</div>
+<div class="form-group">
+  <%= f.label :phone_number %>
+  <%= f.error_for :phone_number %>
+  <%= f.text_field :phone_number, class: 'format-phone' %>
+</div>
+<div class="form-group">
+  <%= f.label :first_name, 'First name' %>
+  <%= f.error_for :first_name %>
+  <%= f.text_field :first_name, placeholder: 'First Name' %>
+</div>
+<div class="form-group">
+  <%= f.label :last_name, 'Last name' %>
+  <%= f.error_for :last_name %>
+  <%= f.text_field :last_name, placeholder: 'Last Name' %>
+</div>
+<div class="form-group">
+  <%= f.label :company %>
+  <%= f.error_for :company %>
+  <%= f.text_field :company, placeholder: 'Company' %>
+</div>
+<div class="form-group">
+  <%= f.label :twitter %>
+  <%= f.error_for :twitter %>
+  <div class="input-group">
+    <span class="input-group-addon">@</span>
+    <%= f.text_field :twitter, placeholder: 'twitteralias' %>
+  </div>
+</div>

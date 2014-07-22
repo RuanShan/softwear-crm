@@ -31,6 +31,10 @@ CrmSoftwearcrmCom::Application.routes.draw do
     end
   end
 
+  resources :quotes, shallow: true do
+    resources :line_items
+  end
+
   get '/logout' => 'users#logout'
   
   scope 'configuration' do
@@ -45,7 +49,9 @@ CrmSoftwearcrmCom::Application.routes.draw do
     resources :payments, shallow: true
     resources :artwork_requests
     resources :jobs, only: [:create, :update, :destroy, :show], shallow: true do
-      resources :line_items
+      resources :line_items do
+        get :form_partial, on: :member
+      end
       resources :imprints, except: [:index]
     end
   end

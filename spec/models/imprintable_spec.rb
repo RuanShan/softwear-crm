@@ -5,11 +5,11 @@ describe Imprintable, imprintable_spec: true do
   describe 'Relationship' do
     it { should belong_to(:style) }
 
-    it { should have_one(:brand).through(:style).dependent(:destroy) }
+    it { should have_one(:brand).through(:style) }
 
     it { should have_many(:imprintable_variants).dependent(:destroy) }
-    it { should have_many(:colors).through(:imprintable_variants).dependent(:destroy) }
-    it { should have_many(:sizes).through(:imprintable_variants).dependent(:destroy) }
+    it { should have_many(:colors).through(:imprintable_variants) }
+    it { should have_many(:sizes).through(:imprintable_variants) }
 
     it { should have_many(:coordinate_imprintables) }
     it { should have_many(:coordinates).through(:coordinate_imprintables) }

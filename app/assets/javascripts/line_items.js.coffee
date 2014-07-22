@@ -1,4 +1,4 @@
-initializeLineItemModal = (lineItemModal) ->
+initializeLineItemModal = ($lineItemModal) ->
   $currentFormDiv = null
   currentForm = -> $currentFormDiv.find('form')
 
@@ -42,10 +42,14 @@ initializeLineItemModal = (lineItemModal) ->
 
     ajax.done (response) ->
       if response.result == 'success'
-        console.log 'Successfully created line item!'
-        jobId = action.charAt(action.indexOf('jobs/')+'jobs/'.length)
-        refreshJob jobId
-        lineItemModal.modal 'hide'
+
+        if document.URL.split('/')[3] == 'orders'
+          jobId = action.charAt(action.indexOf('jobs/')+'jobs/'.length)
+          refreshJob jobId
+        else if document.URL.split('/')[3] == 'quotes'
+          quoteId = action.charAt(action.indexOf('quotes/')+'quotes/'.length)
+          refreshQuote quoteId
+        $lineItemModal.modal 'hide'
 
       else if response.result == 'failure'
         console.log 'Failed to create'
@@ -55,7 +59,7 @@ initializeLineItemModal = (lineItemModal) ->
     ajax.fail (jqXHR, textStatus) ->
       alert "Something's wrong with the server!"
 
-  lineItemModal.keyup (key) ->
+  $lineItemModal.keyup (key) ->
     $('#line-item-submit').click() if key.which is 13 # enter key
 
   handleImprintableForm = ($form) ->
@@ -129,8 +133,8 @@ initializeLineItemModal = (lineItemModal) ->
 
 
   handleImprintableForm $('#li-imprintable-form')
-  lineItemModal.modal 'show'
-  lineItemModal.find('#is_imprintable_no').prop('checked', false)
+  $lineItemModal.modal 'show'
+  $lineItemModal.find('#is_imprintable_no').prop('checked', false)
 
 @imprintableEditEntryChanged = ($this) ->
   $this.parentsUntil("form").parent().addClass("editing-line-item")
@@ -148,7 +152,8 @@ loadLineItemView = (lineItemId, url) ->
     $oldChildren.each -> $(this).remove()
     $row.append response.content
 
-    updateOrderTimeline()
+    if document.URL.split('/')[3] == 'jobs'
+      updateOrderTimeline()
 
 @editLineItem = (lineItemId) ->
   loadLineItemView lineItemId, Routes.edit_line_item_path(lineItemId)
@@ -167,11 +172,13 @@ loadLineItemView = (lineItemId, url) ->
 
   ajax.done (response) ->
     if response.result == 'success'
-      $row.fadeOut -> $row.remove(); updateOrderTimeline()
+      $row.fadeOut -> $row.remove()
+      if document.URL.split('/')[3] == 'jobs'
+        updateOrderTimeline()
     else if response.result == 'failure'
       alert "Something weird happened and the line item couldn't be deleted."
 
-@deleteLineItems = (lineItemIds, imprintableName) ->
+@deleteLineItems = (lineItemIds, imprintableName, class_name) ->
   $(this).attr 'disabled', 'disabled'
 
   $row = $('#'+imprintableName)
@@ -182,12 +189,20 @@ loadLineItemView = (lineItemId, url) ->
 
   ajax.done (response) ->
     if response.result == 'success'
-      $row.fadeOut -> $row.remove(); updateOrderTimeline()
+      $row.fadeOut -> $row.remove()
+      if class_name == 'Job'
+        updateOrderTimeline()
     else
       alert 'Something weird happened and the line items could not be deleted.'
 
-@updateLineItems = (jobId) ->
-  $("#job-#{jobId} .editing-line-item").each (i) ->
+@updateLineItems = (objectId, class_name) ->
+
+  if (class_name == 'Job')
+    selector = "#job-#{objectId} .editing-line-item"
+  else if (class_name == 'Quote')
+    selector = '.editing-line-item'
+
+  $(selector).each (i) ->
     $this = $(this)
     ajax = $.ajax
       type: 'PUT'
@@ -212,26 +227,62 @@ loadLineItemView = (lineItemId, url) ->
     ajax.fail (jqXHR, errorText) ->
       alert "Internal server error! Can't process request."
 
-  after 5000, updateOrderTimeline
+  if (class_name == 'Job')
+    after 5000, updateOrderTimeline
+
+@addStandardLineItem = (line_itemable_id, class_name) ->
+  $this = $(this)
+  $this.attr 'disabled', 'disabled'
+  setTimeout (-> $this.removeAttr 'disabled'), 1000
+
+  url = ''
+  if class_name == 'Job'
+    url = Routes.new_job_line_item_path(line_itemable_id)
+  else if class_name == 'Quote'
+    url = Routes.new_quote_line_item_path(line_itemable_id)
+
+  ajax = $.ajax
+    type: 'GET'
+    url: url
+    data: { standard: 'standard' }
+    dataType: 'html'
+
+  ajax.done (response) ->
+    $('body').append $(response)
+
+  ajax.fail ->
+    alert "Internal server error! Can't process request."
 
 # Opens the modal to create a new line item.
-@addLineItem = (jobId) ->
+@addLineItem = (line_itemable_id, class_name) ->
   $this = $(this)
   $this.attr 'disabled', 'disabled'
   setTimeout (-> $this.removeAttr 'disabled'), 1000
   # TODO if modal is already present, kill it and return maybe?
 
+  url = ''
+  if class_name == 'Job'
+    url = Routes.new_job_line_item_path(line_itemable_id)
+  else if class_name == 'Quote'
+    url = Routes.new_quote_line_item_path(line_itemable_id)
+
   ajax = $.ajax
     type: 'GET'
-    url: Routes.new_job_line_item_path(jobId)
+    url: url
     dataType: 'html'
 
   ajax.done (response) ->
     $('body').append $(response)
-    lineItemModal = $('#lineItemModal')
-    initializeLineItemModal lineItemModal
-    lineItemModal.on 'hidden.bs.modal', (e) ->
-      lineItemModal.remove()
+    $lineItemModal = $('#lineItemModal')
+    initializeLineItemModal $lineItemModal
+    $lineItemModal.on 'hidden.bs.modal', (e) ->
+      $lineItemModal.remove()
 
   ajax.fail (jqXHR, textStatus) ->
     alert "Internal server error! Can't process request."
+
+jQuery ->
+  $('#request_product_id').change ->
+    $.ajax({
+      url: '/line_items/' + this.value + '/form_partial'
+    })

@@ -1,7 +1,7 @@
 require 'spec_helper'
 include LineItemHelpers
 
-describe LineItemsController, line_item_spec: true, dear_god: true do
+describe LineItemsController, line_item_spec: true do
   render_views
   let!(:valid_user) { create :alternate_user }
   before(:each) { sign_in valid_user }
@@ -21,7 +21,7 @@ describe LineItemsController, line_item_spec: true, dear_god: true do
         expect(LineItem.where(imprintable_variant_id: white_shirt_m.id)).to exist
         expect(LineItem.where(imprintable_variant_id: white_shirt_l.id)).to exist
         expect(LineItem.where(imprintable_variant_id: white_shirt_xl.id)).to exist
-        expect(LineItem.where(job_id: job.id)).to exist
+        expect(LineItem.where(line_itemable_id: job.id, line_itemable_type: 'Job')).to exist
       end
 
       it 'only fires one public activity activity', activity_spec: true do

@@ -19,13 +19,13 @@
     </div>
 
     <% line_items.each do |line_item| %>
-      <div>
+
         <%= render partial: 'line_items/imprintable_edit_entry', locals: { line_item: line_item } %>
-      </div>
+
     <% end %>
 
     <div class="col-sm-1">
-      <span class='line-item-button' title='Delete' onclick='deleteLineItems("<%= line_items.map { |e| e.id }.join('/') %>", "<%= line_item_id(line_items.first) %>")'><i class="fa fa-2x danger fa-times-circle"></i></span>
+      <span class='line-item-button' title='Delete' onclick='deleteLineItems("<%= line_items.map { |e| e.id }.join('/') %>", "<%= line_item_id(line_items.first) %>", "<%= class_name %>")'><i class="fa fa-2x danger fa-times-circle"></i></span>
     </div>
   </div>
 </div>

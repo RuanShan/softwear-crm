@@ -22,7 +22,7 @@ feature 'Line Items management', line_item_spec: true, js: true do
     login_as valid_user
   end
 
-  given(:non_imprintable) { create(:non_imprintable_line_item, job_id: job.id) }
+  given(:non_imprintable) { create(:non_imprintable_line_item, line_itemable_id: job.id, line_itemable_type: 'Job') }
 
   scenario 'user can add a new non-imprintable line item' do
     visit edit_order_path(1, anchor: 'jobs')
