@@ -13,10 +13,15 @@
     <!-- <li> -->
     <%= nav_helper(:li, true, %w(imprintables brands colors sizes)) %>
 
-    <li><a href="#"><i class="fa fa-tasks"></i><i class="fa fa-angle-double-down i-right"></i> Quotes</a>
+    <!--
+    <li> --><%= nav_helper(:li, true, %w(quotes)) %>
+      <a href="#" id="quotes_list"><i class="fa fa-tasks"></i><i class="fa fa-angle-double-down i-right"></i> Quotes</a>
       <ul>
-        <li><%= link_to quotes_path do %><i class="fa fa-angle-right"></i> List<% end %></li>
-        <li><%= link_to new_quote_path do %><i class="fa fa-angle-right"></i> New <% end %></li>
+        <li>
+          <%= link_to quotes_path, id: 'quotes_path_link' do %><i class="fa fa-angle-right"></i> List<% end %>
+        </li>
+        <li>
+          <%= link_to new_quote_path do %><i class="fa fa-angle-right"></i> New <% end %></li>
       </ul>
     </li>
     <li><a href="#fakelink"><i class="fa fa-users"></i> Customers <span class="label label-danger new-circle">W.I.P.</span></a>
@@ -27,7 +32,6 @@
       <ul> --><%= nav_helper(:ul, false, %w(imprintables brands colors styles sizes)) %>
         <!--
         <li>  --><%= nav_helper :li, true, 'imprintables' %>
-
           <%= link_to imprintables_path, id: 'imprintables_list_link' do %><i class="fa fa-angle-right"></i> List<% end %>
         </li>
         <!--

@@ -6,22 +6,15 @@
         <h4 class="modal-title">New Line Item </h4>
       </div>
       <div class="modal-body line-item-form">
-        <% if !@standard %>
-          Imprintable?
-          <%= radio_button_tag :is_imprintable, 'yes' %><%= label_tag :is_imprintable_yes, 'Yes' %>
-          <%= radio_button_tag :is_imprintable, 'no' %><%= label_tag :is_imprintable_no, 'No' %>
-          <div id="li-imprintable-form" style='display: none;'>
-            <%= render partial: 'imprintable_form' %>
-          </div>
-          <div id="li-standard-form" style='display: none;'>
-            <%= render partial: 'standard_form' %>
-          </div>
-        <% else %>
-          <div id="li-standard-form">
-            <%= render partial: 'standard_form' %>
-          </div>
-        <% end %>
-
+        Imprintable?
+        <%= radio_button_tag :is_imprintable, 'yes' %><%= label_tag :is_imprintable_yes, 'Yes' %>
+        <%= radio_button_tag :is_imprintable, 'no' %><%= label_tag :is_imprintable_no, 'No' %>
+        <div id="li-standard-form" style='display: none;'>
+          <%= render partial: 'standard_form' %>
+        </div>
+        <div id="li-imprintable-form" style='display: none;'>
+          <%= render partial: 'imprintable_form' %>
+        </div>
       </div>
       <div class="modal-footer">
         <a class="btn btn-default" data-dismiss="modal">Cancel</a>

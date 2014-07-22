@@ -52,7 +52,7 @@ feature 'Imprintables management', imprintable_spec: true do
     end
   end
 
-  scenario 'A user can create a new imprintable', wip: true, js: true do
+  scenario 'A user can create a new imprintable', js: true do
     visit imprintables_path
     click_link('Add an Imprintable')
     fill_in 'Special Considerations', :with => 'Special Consideration'

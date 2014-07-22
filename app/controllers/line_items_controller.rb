@@ -4,11 +4,6 @@ class LineItemsController < InheritedResources::Base
   def new
     super do |format|
       @line_item = @line_itemable.line_items.new
-      if params[:standard] == 'standard'
-        @standard = true
-      else
-        @standard = false
-      end
       format.html { render layout: nil }
     end
   end

@@ -14,8 +14,7 @@ class Quote < ActiveRecord::Base
   validates :estimated_delivery_date, presence: true
   validates :salesperson_id, presence: true
   validates :store_id, presence: true
-  # add this back in l8r
-  # validate :has_line_items?
+  validate :has_line_items?
 
   def has_line_items?
     errors.add(:base, 'Quote must have at least one line item') if self.line_items.blank?

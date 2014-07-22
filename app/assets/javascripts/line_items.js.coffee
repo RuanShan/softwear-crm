@@ -230,29 +230,6 @@ loadLineItemView = (lineItemId, url) ->
   if (class_name == 'Job')
     after 5000, updateOrderTimeline
 
-@addStandardLineItem = (line_itemable_id, class_name) ->
-  $this = $(this)
-  $this.attr 'disabled', 'disabled'
-  setTimeout (-> $this.removeAttr 'disabled'), 1000
-
-  url = ''
-  if class_name == 'Job'
-    url = Routes.new_job_line_item_path(line_itemable_id)
-  else if class_name == 'Quote'
-    url = Routes.new_quote_line_item_path(line_itemable_id)
-
-  ajax = $.ajax
-    type: 'GET'
-    url: url
-    data: { standard: 'standard' }
-    dataType: 'html'
-
-  ajax.done (response) ->
-    $('body').append $(response)
-
-  ajax.fail ->
-    alert "Internal server error! Can't process request."
-
 # Opens the modal to create a new line item.
 @addLineItem = (line_itemable_id, class_name) ->
   $this = $(this)

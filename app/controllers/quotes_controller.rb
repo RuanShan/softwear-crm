@@ -19,7 +19,7 @@ class QuotesController < InheritedResources::Base
       format.json do
         render json: {
             result: 'success',
-            content: render_string(partial: 'edit_form', locals: { quote: @quote })
+            content: render_string(partial: 'line_items/standard_view', locals: { line_items: @quote.standard_line_items })
         }
       end
     end

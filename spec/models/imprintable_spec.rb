@@ -7,8 +7,8 @@ describe Imprintable, imprintable_spec: true do
     it { should belong_to(:brand) }
 
     it { should have_many(:imprintable_variants).dependent(:destroy) }
-    it { should have_many(:colors).through(:imprintable_variants).dependent(:destroy) }
-    it { should have_many(:sizes).through(:imprintable_variants).dependent(:destroy) }
+    it { should have_many(:colors).through(:imprintable_variants) }
+    it { should have_many(:sizes).through(:imprintable_variants) }
     it { should have_many(:coordinate_imprintables) }
     it { should have_many(:coordinates).through(:coordinate_imprintables) }
     it { should have_many(:mirrored_coordinate_imprintables).class_name('CoordinateImprintable') }

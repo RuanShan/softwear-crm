@@ -15,6 +15,7 @@ jQuery ->
     dataType: 'json'
 
   ajax.done (response) ->
+    console.log response.content
     $('#replaceable').replaceWith response.content
     refresh_inlines()
 

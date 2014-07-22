@@ -9,8 +9,8 @@ feature 'Jobs management', js: true, job_spec: true do
     login_as valid_user
   end
 
-  given(:standard_line_item) { create(:non_imprintable_line_item, job_id: job.id) }
-  given(:imprintable_line_item) { create(:imprintable_line_item, job_id: job.id) }
+  given(:standard_line_item) { create(:non_imprintable_line_item, line_itemable_id: job.id, line_itemable_type: 'Job') }
+  given(:imprintable_line_item) { create(:imprintable_line_item, line_itemable_id: job.id, line_itemable_type: 'Job') }
 
   scenario 'user visits /orders/1/edit#jobs and is switched to the jobs tab' do
   	visit edit_order_path(1, anchor: 'jobs')
