@@ -37,7 +37,7 @@ class Quote < ActiveRecord::Base
     self.line_items.each do |li|
       if li.taxable?
         # hard-coded 6% tax is probably subject to change
-        total += li.price*1.06
+        total += li.price*0.06
       end
     end
     total
