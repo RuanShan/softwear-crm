@@ -1,5 +1,9 @@
-<div class="box-info full">
+<div class="page-heading animated fadeInDownBig col-lg-9">
   <h1>Edit<strong> Quote</strong></h1>
+</div>
+
+<div class="col-lg-3 text-right">
+  <%= link_to quote_path(@quote), 'data-action' => 'show', 'data-toggle' => 'tooltip', 'title' => 'Print', class: 'btn btn-primary' do %>Print Quote<% end %>
 </div>
 
 <div class="row">
@@ -28,10 +32,28 @@
         </div>
 
         <div class="tab-pane animated fadeInRight" id="actions">
-          <%= render partial: 'actions', locals: { quote: @quote } %>
+          <%= render partial: 'actions' %>
         </div>
-        </div>
+      </div>
 
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" id="quote-mail-modal" tabindex="-1" role="dialog">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+        <h4 class="modal-title">Send Quote </h4>
+      </div>
+      <div class="modal-body">
+        <%= render file: 'quotes/email_customer' %>
+      </div>
+      <div class="modal-footer">
+        <a class="btn btn-default" data-dismiss="modal">Cancel</a>
+        <%= button_to 'Submit', { action: 'email_customer', quote_id: @quote.id, send: true }, { class: 'btn btn-primary' } %>
       </div>
     </div>
   </div>

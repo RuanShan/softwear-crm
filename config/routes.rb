@@ -32,6 +32,7 @@ CrmSoftwearcrmCom::Application.routes.draw do
   end
 
   resources :quotes, shallow: true do
+    post 'email_customer'
     resources :line_items
   end
 

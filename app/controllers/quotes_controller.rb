@@ -1,5 +1,6 @@
 class QuotesController < InheritedResources::Base
   before_filter :format_times, only: [:create, :update]
+  require 'mail'
 
   def new
     super do
@@ -23,6 +24,18 @@ class QuotesController < InheritedResources::Base
         }
       end
     end
+  end
+
+  def email_customer
+    @quote = Quote.find(params[:quote_id])
+    hash = {
+      quote: @quote,
+      body: params[:email_body],
+      subject: params[:email_subject]
+    }
+    QuoteMailer.email_customer(hash).deliver
+    # flash success
+    redirect_to edit_quote_path params[:quote_id]
   end
 
   private

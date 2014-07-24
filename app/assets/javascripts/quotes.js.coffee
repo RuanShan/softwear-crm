@@ -7,6 +7,9 @@ jQuery ->
 
   return
 
+@printPage = ->
+  window.print()
+
 @refreshQuote = (quoteId) ->
 
   ajax = $.ajax

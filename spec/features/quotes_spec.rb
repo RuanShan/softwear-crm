@@ -1,5 +1,6 @@
 require 'spec_helper'
 include ApplicationHelper
+require 'email_spec/cucumber'
 
 feature 'Quotes management', quote_spec: true, js: true do
   given!(:valid_user) { create(:alternate_user) }
@@ -31,5 +32,14 @@ feature 'Quotes management', quote_spec: true, js: true do
     click_button 'Save'
     expect(current_path).to eq(quote_path quote.id)
     expect(quote.reload.name).to eq('New Quote Name')
+  end
+
+  scenario 'A user can email a quote to the customer' do
+    visit edit_quote_path quote.id
+    find('a[href="#actions"]').click
+    click_button 'Email Quote'
+    wait_for_ajax
+    find('input[value="Submit"]').click
+    expect(current_path).to eq(edit_quote_path quote_id)
   end
 end

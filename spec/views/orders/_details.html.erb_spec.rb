@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe 'orders/_details.html.erb', order_spec: true do
+describe 'orders/_details.html.erb_spec.rb', order_spec: true do
   login_user
 
   before :each do
