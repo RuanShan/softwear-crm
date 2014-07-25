@@ -49,8 +49,10 @@
     <div class="col-sm-6">
       <div class="row">
         <div class="form-group">
-          <%= f.fields_for :line_items do |builder| %>
-            <%= render partial: 'line_item_fields', locals: { f: builder } %>
+          <% if params[:price_information] %>
+            <% params[:price_information].each_with_index do |hash| %>
+              <%= add_prepopulated_fields(f, :line_items, hash) %>
+            <% end %>
           <% end %>
           <%= link_to_add_fields 'Add Line Item', f, :line_items %>
         </div>

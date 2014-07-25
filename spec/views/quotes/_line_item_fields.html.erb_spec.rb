@@ -17,4 +17,17 @@ describe 'quotes/_line_item_fields.html.erb', quote_spec: true do
   it 'should display all of the basic information regarding the imprintable' do
     expect(rendered).to have_css('a.remove_fields', text: 'Remove Line Item')
   end
+
+  it 'should have have labels for line item attributes' do
+    expect(rendered).to have_css('label', text: 'Name')
+    expect(rendered).to have_css('label', text: 'Description')
+    expect(rendered).to have_css('label', text: 'Taxable')
+    expect(rendered).to have_css('label', text: 'Quantity')
+    expect(rendered).to have_css('label', text: 'Unit Price')
+  end
+
+  it 'should have appropriate fields for line item attributes' do
+    expect(rendered).to have_css('fieldset input', count: 6)
+    expect(rendered).to have_css('fieldset textarea', count: 1)
+  end
 end

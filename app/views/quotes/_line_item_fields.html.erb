@@ -1,7 +1,32 @@
-<div class="line-item-form removeable">
+<div class="line-item-form">
   <div class="li-standard-form">
-    <%= render partial: 'line_item_standard_form', locals: { f: f } %>
+    <fieldset class="removeable">
+      <%= f.label :name %>
+      <% if defined? name %>
+        <%= f.text_field :name, value: name %>
+      <% else %>
+        <%= f.text_field :name %>
+      <% end %>
+
+      <%= f.label :description %>
+      <%= f.text_area :description %>
+
+      <%= f.label :taxable, style: 'width: 34px; height: 34px;' %>
+      <%= f.check_box :taxable, style: 'width: 34px; height: 34px;' %>
+
+      <%= f.label :quantity %>
+      <%= f.number_field :quantity %>
+
+      <%= f.label :unit_price, 'Unit Price' %>
+      <% if defined? unit_price %>
+        <%= f.number_field :unit_price, value: unit_price %>
+      <% else %>
+        <%= f.number_field :unit_price %>
+      <% end %>
+
+      <%= f.hidden_field :_destroy %>
+      <%= link_to 'Remove Line Item', '#', class: 'remove_fields btn' %>
+    </fieldset>
   </div>
   <br/>
-  <%= link_to 'Remove Line Item', '#', class: 'remove_fields btn' %>
 </div>

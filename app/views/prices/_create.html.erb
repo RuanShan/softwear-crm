@@ -33,6 +33,7 @@
       <% end %>
       <tr>
         <td><%= link_to 'Delete all prices', destroy_all_prices_path, remote: true, data: { confirm: 'Are you sure you want to delete every price?' }, class: 'btn btn-default' %></td>
+        <td class="col-sm-3 text-right"><%= link_to 'Create Quote from Table', new_quote_path(price_information: session[:prices]) %> </td>
       </tr>
       </tbody>
     </table>

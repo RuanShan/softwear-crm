@@ -9,6 +9,7 @@ feature 'Quotes management', quote_spec: true, js: true do
   end
 
   given!(:quote) { create(:valid_quote) }
+  given!(:imprintable) { create(:valid_imprintable) }
 
   scenario 'A user can see a list of quotes' do
     visit root_path
@@ -41,5 +42,28 @@ feature 'Quotes management', quote_spec: true, js: true do
     wait_for_ajax
     find('input[value="Submit"]').click
     expect(current_path).to eq(edit_quote_path quote.id)
+  end
+
+  scenario 'A user can generate a quote from an imprintable pricing dialog' do
+    visit imprintables_path
+    decoration_price = 3.75
+    find('i.fa.fa-dollar').click
+    fill_in 'Decoration Price', with: decoration_price
+    click_button 'Fetch Prices!'
+    click_link 'Create Quote from Table'
+    fill_in 'Email', with: 'something@somethingelse.com'
+    fill_in 'First Name', with: 'Capy'
+    fill_in 'Last Name', with: 'Bara'
+    click_button 'Next'
+    fill_in 'Valid Until Date', with: Time.now + 1.day
+    fill_in 'Estimated Delivery Date', with: Time.now + 1.day
+    click_button 'Next'
+    expect(page).to have_css("input[value='#{ imprintable.name }']")
+    expect(page).to have_css("input[value='#{ imprintable.base_price + decoration_price }']")
+    fill_in 'Description', with: 'Gaga can\'t handle this shit'
+    fill_in 'Quantity', with: '1'
+    click_button 'Submit'
+    expect(page).to have_selector '.modal-content-success', text: 'Quote was successfully created.'
+    expect(current_path).to eq(quote_path(quote.id + 1))
   end
 end
