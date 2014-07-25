@@ -49,6 +49,9 @@ class LineItemsController < InheritedResources::Base
       render json: { result: 'success' }
     else
       super do |success, failure|
+        if @line_itemable.class.name == 'Quote'
+          @line_itemable.create_activity :destroyed_line_item, owner: current_user, params: { name: @line_item.name }
+        end
         success.json do
           fire_activity @line_item, :destroy
           render json: { result: 'success' }
@@ -63,6 +66,9 @@ class LineItemsController < InheritedResources::Base
   def update
     super do |success, failure|
       success.json do
+        if @line_itemable.class.name == 'Quote'
+          @line_itemable.create_activity :updated_line_item, owner: current_user, params: { name: @line_item.name }
+        end
         content_html = ''
         fire_activity @line_item, :update
         with_format :html do
@@ -129,6 +135,9 @@ class LineItemsController < InheritedResources::Base
       end
     else # Create a standard, non-imprintable line item
       super do |success, failure|
+        if @line_itemable.class.name == 'Quote'
+          @line_itemable.create_activity :added_line_item, owner: current_user, params: { name: @line_item.name }
+        end
         success.json do
           @line_item.line_itemable_id = @line_itemable.id
           @line_item.line_itemable_type = @line_itemable.class.name

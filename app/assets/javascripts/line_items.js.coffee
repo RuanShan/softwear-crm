@@ -43,11 +43,13 @@ initializeLineItemModal = ($lineItemModal) ->
     ajax.done (response) ->
       if response.result == 'success'
 
-        if document.URL.split('/')[3] == 'orders'
-          jobId = action.charAt(action.indexOf('jobs/')+'jobs/'.length)
+        urlArray = document.URL.split('/')
+        length = urlArray.length
+        if urlArray[length - 3] == 'orders'
+          jobId = urlArray[length - 2]
           refreshJob jobId
-        else if document.URL.split('/')[3] == 'quotes'
-          quoteId = action.charAt(action.indexOf('quotes/')+'quotes/'.length)
+        else if urlArray[length - 3] == 'quotes'
+          quoteId = urlArray[length - 2]
           refreshQuote quoteId
         $lineItemModal.modal 'hide'
 

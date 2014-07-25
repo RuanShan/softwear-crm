@@ -54,24 +54,3 @@ quoteCollapse = (id, collapsed) ->
 
   $quoteCollapse.on 'show.bs.collapse', onQuoteCollapseShow
   $quoteCollapse.on 'hide.bs.collapse', onQuoteCollapseHide
-
-#  clearFormInputs = ($formDiv) ->
-#    $formDiv.find('input:text, select, textarea, input[type="number"]').val('')
-#    $formDiv
-#
-#  $('#line_item_creation').change ->
-#    if $(this).val() == 'Yes'
-#      # clone #li-imprintable-form
-#      $li_imprintable_form = $('#li-imprintable-form')
-#      # append
-#      $li_imprintable_form.clone().attr('id', '').append($('#line-item-container')).show()
-#      # set display
-#      # remove id
-#    else
-#      # clone #li-standard-form
-#      $li_standard_form = $('#li-standard-form')
-#      $clone = clearFormInputs($li_standard_form.clone().attr('id', ''))
-#      $('#line-item-container').append($clone.show())
-#
-#    document.getElementById('line_item_creation').selectedIndex = 0
-

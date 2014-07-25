@@ -25,7 +25,7 @@ CrmSoftwearcrmCom::Application.routes.draw do
 
 
   resources :styles, :brands, :colors, :users, :artwork_requests
-  resources :prices, only: [:create, :new, :destroy] do
+  resources :prices, only: [:create, :new, :destroy, :index] do
     collection do
       get 'destroy_all'
     end
@@ -33,6 +33,10 @@ CrmSoftwearcrmCom::Application.routes.draw do
 
   resources :quotes, shallow: true do
     post 'email_customer'
+    collection do
+      get 'quote_select'
+      post 'stage_quote'
+    end
     resources :line_items
   end
 

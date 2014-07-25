@@ -12,6 +12,7 @@ class QuotesController < InheritedResources::Base
   def edit
     super do
       @current_user = current_user
+      @activities = @quote.all_activities
     end
   end
 
@@ -26,6 +27,27 @@ class QuotesController < InheritedResources::Base
     end
   end
 
+  def quote_select
+    respond_to do |format|
+      @quotes = Quote.all
+      @index = params[:index].to_i
+      name = session[:prices][@index][:name]
+      unit_price = session[:prices][@index][:prices][:base_price]
+      @new_line_item = LineItem.new(name: name, unit_price: unit_price, description: 'Canned Description')
+      format.js
+    end
+  end
+
+  def stage_quote
+    @quote = Quote.find(params[:quote_id])
+    @quote.line_items.new(name: params[:name],
+                         unit_price: params[:price],
+                         description: 'Canned Description',
+                         quantity: 0).save
+    @quote.create_activity :added_line_item, owner: current_user
+    redirect_to edit_quote_path params[:quote_id]
+  end
+
   def email_customer
     @quote = Quote.find(params[:quote_id])
     hash = {
@@ -33,6 +55,7 @@ class QuotesController < InheritedResources::Base
       body: params[:email_body],
       subject: params[:email_subject]
     }
+    @quote.create_activity :emailed_customer, owner: current_user, recipient: "#{ @quote.first_name } #{ @quote.last_name } at #{@quote.email}"
     QuoteMailer.email_customer(hash).deliver
     # flash success
     redirect_to edit_quote_path params[:quote_id]

@@ -1,4 +1,7 @@
 class Quote < ActiveRecord::Base
+  include TrackingHelpers
+  tracked by_current_user
+
   acts_as_paranoid
 
   has_many :line_items, as: :line_itemable
@@ -18,6 +21,17 @@ class Quote < ActiveRecord::Base
 
   def has_line_items?
     errors.add(:base, 'Quote must have at least one line item') if self.line_items.blank?
+  end
+
+  def all_activities
+    PublicActivity::Activity.where( "
+      (
+        activities.recipient_type = ? AND activities.recipient_id = ?
+      ) OR
+      (
+        activities.trackable_type = ? AND activities.trackable_id = ?
+      )
+    ", *([self.class.name, self.id] * 2) ).order('created_at DESC')
   end
 
   def full_name

@@ -7,6 +7,12 @@ class PricesController < ApplicationController
     end
   end
 
+  def index
+    respond_to do |format|
+      format.js
+    end
+  end
+
   def create
     respond_to do |format|
       @imprintable = Imprintable.find(params[:id])

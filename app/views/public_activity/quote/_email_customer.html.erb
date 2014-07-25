@@ -1,0 +1,16 @@
+<% if activity.trackable_type %>
+  Emailed <%= activity.trackable_type.underscore.humanize.downcase %>
+  <% if activity.trackable %>
+    <%= link_to activity.trackable.name, activity.trackable %>
+  <% else %>
+    which has since been removed
+  <% end %>
+<% else %>
+  Added something...
+<% end %>
+
+<% if activity.recipient && activity.recipient != activity.trackable %>
+  to
+  <%= activity.recipient_type.underscore.humanize.downcase %>
+  <%= link_to activity.recipient.name, activity.recipient %>
+<% end %>
