@@ -4,4 +4,4 @@
 <%= text_field_tag :email_subject, "Your quote ##{@quote.id} from the Ann Arbor T-shirt Company" %>
 <br/>
 <%= label_tag 'Body of Email' %>
-<%= text_area_tag :email_body, render('line_item_information'), class: 'summernote' %>
+<%= text_area_tag :email_body, render('line_item_information'), class: 'summernote', id: 'email-text-area' %>

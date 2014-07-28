@@ -296,16 +296,6 @@ ActiveRecord::Schema.define(version: 20140718133112) do
     t.integer  "salesperson_id"
     t.integer  "store_id"
     t.datetime "deleted_at"
-    t.string   "line_item_name"
-    t.integer  "line_item_quantity"
-    t.boolean  "line_item_taxable"
-    t.text     "line_item_description"
-    t.integer  "line_item_job_id"
-    t.integer  "line_item_imprintable_variant_id"
-    t.datetime "line_item_deleted_at"
-    t.datetime "line_item_created_at"
-    t.datetime "line_item_updated_at"
-    t.decimal  "line_item_unit_price",             precision: 10, scale: 0
     t.datetime "created_at"
     t.datetime "updated_at"
   end

@@ -55,9 +55,14 @@ class QuotesController < InheritedResources::Base
       body: params[:email_body],
       subject: params[:email_subject]
     }
-    @quote.create_activity :emailed_customer, owner: current_user, recipient: "#{ @quote.first_name } #{ @quote.last_name } at #{@quote.email}"
-    QuoteMailer.email_customer(hash).deliver
-    # flash success
+    begin
+      QuoteMailer.email_customer(hash).deliver
+      flash[:success] = 'Your email was successfully sent!'
+    rescue Net::SMTPAuthenticationError, Net::SMTPServerBusy, Net::SMTPSyntaxError, Net::SMTPFatalError, Net::SMTPUnknownError => e
+      flash[:notice] = 'Your email was unable to be sent'
+      flash[:success] = nil
+    end
+    @quote.create_activity :emailed_customer, owner: current_user
     redirect_to edit_quote_path params[:quote_id]
   end
 
