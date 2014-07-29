@@ -46,7 +46,7 @@ module Search
           session[:last_search] = query_id
           @search = @query.search page: params[:page]
         rescue ActiveRecord::RecordNotFound
-          return render text: '404!' 
+          return render text: '404!'
         end
       elsif params[:search]
         session[:last_search] = params[:search]
@@ -61,18 +61,34 @@ module Search
       end
 
       models = models_of params[:search] || @query
-      case models.count
-      when 1
-        models = models.first.underscore.pluralize
-        instance_variable_set "@#{models}", @search.first.results
-        destination = Rails.root.join('app', 'views', models, 'index.html.erb').to_s
-        render destination
-      else
-        render text: "Implement multi-model search results view plz!"
+
+      respond_to do |format|
+        [:html, :js, :json].each do |ext|
+          format.send(ext) { render_for ext, models }
+        end
       end
     end
 
-  private
+    private
+    def render_for(format, models)
+      case models.count
+        when 1
+          plural = models.first.underscore.pluralize
+
+          locals = if params[:locals]
+                     permitted_locals_for(models.first)
+                   else
+                     {}
+                   end
+
+          instance_variable_set "@#{plural}", @search.first.results
+          destination = Rails.root.join('app', 'views', plural, "index.#{format}.erb").to_s
+          render destination, locals: locals
+        else
+          render text: "Implement multi-model search results view plz!"
+      end
+    end
+
     def build_search_proc(search)
       ### Helper functions are defined in here as lambdas, since the context
       ### within the returned proc will not be this controller.
@@ -112,13 +128,13 @@ module Search
               group_attrs = nil
               attr.each do |key, value|
                 case key
-                when '_metadata'
-                  metadata = value
-                when '_group'
-                  group_attrs = value
-                else
-                  field_name = key
-                  field_value = value
+                  when '_metadata'
+                    metadata = value
+                  when '_group'
+                    group_attrs = value
+                  else
+                    field_name = key
+                    field_value = value
                 end
               end
 
@@ -154,11 +170,11 @@ module Search
         search.each do |model, attrs|
           next if model == 'fulltext'
           actual_model = case model
-            when Symbol, String
-              Kernel.const_get(model.camelize)
-            when Class
-              model
-            end
+                           when Symbol, String
+                             Kernel.const_get(model.camelize)
+                           when Class
+                             model
+                         end
 
           unless actual_model < ActiveRecord::Base
             raise SearchException.new "#{actual_model} is not a model."
@@ -177,18 +193,54 @@ module Search
 
     def models_of(search_params)
       case search_params
-      when Hash
-        search_params.keys.reject { |k| k == 'fulltext' }
-      when Query
-        search_params.models.map(&:name)
-      else
-        Models.all.map(&:name)
+        when Hash
+          search_params.keys.reject { |k| k == 'fulltext' }
+        when Query
+          search_params.models.map(&:name)
+        else
+          Models.all.map(&:name)
       end
     end
 
     def permit_params
       params.permit(:search).permit!
-      params.permit(:id, :page, :target_path, :user_id, :q)
+      params.permit(:id, :page, :target_path, :user_id, :q, :locals)
+    end
+
+    def permitted_locals_for(model)
+      controller_name = model.pluralize.camelize+"Controller"
+      controller = Kernel.const_get controller_name
+
+      if controller.respond_to?(:permitted_search_locals)
+        locals = {}
+
+        permitted = controller.permitted_search_locals
+        params.permit(locals: permitted)
+
+        params[:locals].each do |k,v|
+          unless permitted.include?(k.to_sym)
+            unpermitted_local_error(k, controller_name)
+          end
+          locals[k.to_sym] = v
+        end
+
+        if controller.respond_to?(:transform_search_locals)
+          controller.transform_search_locals locals
+        else
+          locals
+        end
+      end
+    end
+
+    def unpermitted_local_error(name, controller_name)
+      unless Rails.env.production?
+        raise %{
+          Unpermitted local variable passed through search: #{name}.
+          If you actually want to pass it, please include :#{name} in 
+          the array returned by #{controller_name}.permitted_search_locals
+          (Currently #{Kernel.const_get(controller_name).permitted_search_locals.inspect})
+        }
+      end
     end
 
     def query_params

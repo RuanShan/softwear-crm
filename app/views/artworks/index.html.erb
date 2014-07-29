@@ -1,0 +1,16 @@
+<div class="page-heading animated fadeInDownBig col-lg-9">
+  <h1>Artwork</h1>
+</div>
+
+<div class="col-lg-3 text-right">
+  <%= link_to new_artwork_path, class: 'btn btn-primary ', remote: true do %>Add Artwork <% end %>
+</div>
+<div class="col-lg-9">
+<%= render partial: 'artworks/search', locals: {remote: false, artwork_request: nil} %>
+  </div>
+<%= paginate @artworks %>
+<div class="box-info row clear">
+
+  <%= render partial: 'artworks/table', locals: {artworks: @artworks, artwork_request: nil} %>
+</div>
+<%= paginate @artworks %>

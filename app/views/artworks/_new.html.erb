@@ -1,0 +1,6 @@
+<div class='box-info'>
+  <%= render partial: 'shared/modal_errors', locals: {object: artwork} %>
+  <%= form_for artwork, url: artworks_path(artwork), builder: LancengFormBuilder, remote: true, multipart: true do |f| %>
+      <%= render partial: 'form', locals: {artwork: artwork, f: f} %>
+  <% end %>
+</div>

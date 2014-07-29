@@ -4,7 +4,6 @@ $tablerow.fadeOut();
 $row.fadeOut();
 $tablerow.remove();
 $row.remove();
-updateOrderTimeline();
 setupContentModal(function($contentModal){
     $contentModal.find('.modal-content').addClass('modal-content-success')
 })
@@ -12,3 +11,4 @@ showContentModal({
     title: 'SUCCESS',
     body: 'Successfuly destroyed Artwork Request!'
 })
+updateOrderTimeline();

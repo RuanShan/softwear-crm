@@ -85,7 +85,7 @@ describe Job, job_spec: true do
       end
     end
 
-    it 'should sort the resulting arrays by size', retry: 3, pending: 'Nigel, not working again:(' do
+    it 'should sort the resulting arrays by size', retry: 3 do
       sizes = [size_xl, size_m, size_s]
       sizes[0].sort_order = 3
       sizes[1].sort_order = 2
@@ -170,22 +170,18 @@ describe Job, job_spec: true do
     end
   end
 
-  describe '#imprintable_info', artwork_request_spec: true, pending: 'Nick, figure out how to rewrite this spec' do
-    before do
-      allow(subject).to receive(:colors) { [
-          build_stubbed(:blank_color, name: 'ROYGBIV'),
-          build_stubbed(:blank_color, name: 'Obsidian'),
-          build_stubbed(:blank_color, name: 'Color')
-      ]}
-      allow(subject).to receive(:imprintables) { [
-          build_stubbed(:blank_imprintable, style_name: 'Hip', style_catalog_no: '5'),
-          build_stubbed(:blank_imprintable, style_name: 'Cool', style_catalog_no: '55'),
-          build_stubbed(:blank_imprintable, style_name: 'Balla', style_catalog_no: '555')
-      ]}
-    end
+  describe '#imprintable_info', artwork_request_spec: true, wip: true do
+    let!(:job) { create(:job) }
+    [:red, :blue, :green].each { |c| let!(c) { create(:valid_color, name: c) } }
+    [:shirt, :hat].each { |s| let!(s) { create(:valid_imprintable) } }
+
+    make_variants :green, :shirt, [:S, :M, :L]
+    make_variants :red,   :shirt, [:S, :M, :XL]
+    make_variants :red,   :hat,   [:OSFA]
+    make_variants :blue,  :hat,   [:OSFA]
 
     it 'should return all of the information for the imprintables ' do
-      expect(subject.imprintable_info).to eq("ROYGBIV Hip 5, Obsidian Cool 55, Color Balla 555")
+      expect(job.imprintable_info).to eq("green style_1 1235, red style_1 1235, red style_2 1236, blue style_2 1236")
     end
   end
 
@@ -203,7 +199,7 @@ describe Job, job_spec: true do
     end
   end
 
-  describe '#max_print_area', artwork_request_spec: true, wip: true do
+  describe '#max_print_area', artwork_request_spec: true do
     let!(:imprintable) { create(:valid_imprintable) }
     before(:each)do
       allow(subject).to receive(:imprintables) { [

@@ -1,75 +1,88 @@
 <div id="artwork-request-<%= artwork_request.id %>" class="row">
   <div class="the-notes info artwork-request-notes">
-    <h4 class="artwork-request-title">Artwork Request
-      for <%= artwork_request.jobs.collect { |x| [x.name] }.join(', ') %></h4>
-    <div class="col-sm-6">
-      <dl>
-        <dt>Priority: </dt>
-        <dd><%= ArtworkRequest::PRIORITIES[artwork_request.priority.to_i] %></dd>
-        <dt>Imprint Method: </dt>
-        <dd><%= artwork_request.imprint_method.name %></dd>
-        <dt>Print Location: </dt>
-        <dd><%= artwork_request.print_location.name %></dd>
-        <dt>Ink Colors: </dt>
-        <dd><%= artwork_request.ink_colors.collect { |x| [x.name] }.join(', ') %></dd>
-        <dt>Imprintables Included: </dt>
-        <dd><%= artwork_request.imprintable_info %></dd>
-        <dt>No. of Pieces: </dt>
-        <dd><%= artwork_request.imprintable_variant_count %></dd>
-      </dl>
-    </div>
-    <div class="col-sm-6 ">
-      <dl>
-        <dt>Max Print Area: </dt>
-        <dd><% area = artwork_request.max_print_area(artwork_request.print_location)%>
-            <%= area[0] %> in. x <%= area[1] %> in.</dd>
-        <dt>Artwork Status: </dt>
-        <dd><%= artwork_request.artwork_status %></dd>
-        <dt>Deadline: </dt>
-        <dd><%= artwork_request.deadline.strftime('%b %d, %Y, %I:%M %p') %></dd>
-        <dt>Salesperson: </dt>
-        <dd><%= current_user.full_name %></dd>
-        <dt>Artist: </dt>
-        <dd><%= artwork_request.artist.full_name %></dd>
-      </dl>
-    </div>
-    <div class="col-sm-12">
-      <dl>
-        <dt>Description: </dt>
-        <br>
-        <dd><%= artwork_request.description.html_safe %></dd>
-        <br>
-        <dt>Attachments: </dt>
-        <% if artwork_request.assets.empty? %>
-            <dd>None</dd>
-        <% end %>
-      </dl>
-    </div>
-    <% artwork_request.assets.each do |a| %>
-        <div class="col-sm-4">
-          <div>
-            <dl>
-              <dd><strong>File Name:</strong> <%= a.file_file_name %></dd>
-              <dd><strong>File Size:</strong> <%= number_to_human_size(a.file_file_size) %></dd>
-              <dd><strong>Description:</strong> <%= a.description %></dd>
-              <dd><%= link_to "Download File", a.file.url %></dd>
-            </dl>
-          </div>
+    <% unless artwork_request.artwork_ids.empty? %>
+        <%= render partial: 'artwork_requests/artworks', locals: {artwork_request: artwork_request} %>
+    <% end %>
+     <div class="col-sm-8">
+      <div class="row">
+        <div class="col-sm-6">
+          <h4 class="artwork-request-title">Artwork Request
+            for <%= artwork_request.jobs.collect { |x| [x.name] }.join(', ') %></h4>
+          <dl>
+            <dt>Priority:</dt>
+            <dd><%= ArtworkRequest::PRIORITIES[artwork_request.priority.to_i] %></dd>
+            <dt>Imprint Method:</dt>
+            <dd><%= artwork_request.imprint_method.name %></dd>
+            <dt>Print Location:</dt>
+            <dd><%= artwork_request.print_location.name %></dd>
+            <dt>Ink Colors:</dt>
+            <dd><%= artwork_request.ink_colors.collect { |x| [x.name] }.join(', ') %></dd>
+            <dt>Imprintables Included:</dt>
+            <dd><%= artwork_request.imprintable_info %></dd>
+            <dt>No. of Pieces:</dt>
+            <dd><%= artwork_request.imprintable_variant_count %></dd>
+            <br>
+            <dt>Description:</dt>
+            <br>
+            <dd><%= artwork_request.description.html_safe %></dd>
+            <br>
+            <dt>Attachments:</dt>
+            <% if artwork_request.assets.empty? %>
+                <dd>None</dd>
+            <% end %>
+          </dl>
         </div>
+        <div class="col-sm-6 ">
+          <h4> &nbsp</h4>
+          <dl>
+            <dt>Max Print Area:</dt>
+            <dd><%= artwork_request.max_print_area(artwork_request.print_location) %></dd>
+            <dt>Artwork Status:</dt>
+            <dd><%= artwork_request.artwork_status %></dd>
+            <dt>Deadline:</dt>
+            <dd><%= artwork_request.deadline.strftime('%b %d, %Y, %I:%M %p') %></dd>
+            <dt>Salesperson:</dt>
+            <dd><%= current_user.full_name %></dd>
+            <dt>Artist:</dt>
+            <dd><%= artwork_request.artist.full_name %></dd>
+          </dl>
+        </div>
+      </div>
 
-    <% end %>
-    <% if params[:disable_buttons].nil? %>
-    <div class="col-sm-12 clear text-left">
-      <%= link_to edit_order_artwork_request_path(order, artwork_request), remote: true do %>
-          <i class="fa fa-2x fa-edit"></i> Edit
-      <% end %>
-      <%= link_to order_artwork_request_path(order, artwork_request), method: :delete, remote: true do %>
-          <i class="fa fa-2x danger fa-times-circle"></i> Delete
-      <% end %>
+      <div class="row">
+        <% artwork_request.assets.each do |a| %>
+            <div class="col-sm-5 indent">
+              <dl>
+                <dt>File Name:</dt>
+                <dd><%= a.file_file_name %></dd>
+                <dt>File Size:</dt>
+                <dd><%= number_to_human_size(a.file_file_size) %></dd>
+                <dt>Description:</dt>
+                <dd><%= a.description %></dd>
+                <dd><%= link_to "Download File", a.file.url %></dd>
+              </dl>
+            </div>
+        <% end %>
+      </div>
 
+      <div class="row">
+        <% if params[:disable_buttons].nil? %>
+            <div class="col-sm-12  clear text-left">
+              <%= link_to artworks_path(artwork_request_id: artwork_request.id), remote: true do %>
+                  <i class="fa fa-2x success fa-plus-circle"></i> Add Artwork &nbsp
+              <% end %>
+              <%= link_to edit_order_artwork_request_path(order, artwork_request), remote: true do %>
+                  <i class="fa fa-2x fa-edit"></i> Edit &nbsp
+              <% end %>
+              <%= link_to order_artwork_request_path(order, artwork_request), method: :delete, remote: true do %>
+                  <i class="fa fa-2x danger fa-times-circle"></i> Delete &nbsp
+              <% end %>
+            </div>
+        <% end %>
+      </div>
     </div>
-    <% end %>
-    <br clear="all" />
+
+    <br clear="all"/>
   </div>
   <hr>
 </div>

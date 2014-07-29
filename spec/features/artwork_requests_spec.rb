@@ -1,22 +1,22 @@
 require 'spec_helper'
 include ApplicationHelper
 
-feature 'Artwork Request Features', js: true, artwork_request_spec: true do
+feature 'Artwork Request Features', artwork_request_spec: true do
   given!(:valid_user) { create(:alternate_user) }
   before(:each) do
     login_as(valid_user)
   end
   given!(:artwork_request) { create(:valid_artwork_request)}
 
-  # scenario 'A user can add an artwork request', js: true, pending: 'Unclear how to select from chosen and check checkbox' do
-    # visit '/orders/1/edit#artwork'
-    # page.find('#new_artwork_request').click
-    # page.find("select[name='artwork_request[job_ids][]']")
-    # page.find("[name='artwork_request[job_ids][]']")
-    #
-    # sfind_field("[name='artwork_request[job_ids][]']")
-    #
-    # select_from_chosen('Test Job 1', from: 'job_ids')
+  scenario 'A user can add an artwork request', js: true, pending: 'Unclear how to select from chosen and check checkbox', wip: true do
+    visit '/orders/1/edit#artwork'
+    page.find('#new_artwork_request').click
+    page.find("select[name='artwork_request[job_ids][]']")
+    page.find("[name='artwork_request[job_ids][]']")
+
+    find_field("[name='artwork_request[job_ids][]']")
+
+    select_from_chosen('Test Job 1', from: 'job_ids')
     #
     #
     #
@@ -50,7 +50,7 @@ feature 'Artwork Request Features', js: true, artwork_request_spec: true do
     # expect(page).to have_css("div[artwork-request-#{artwork_request.id}]")
     # expect('.the-notes').to have_button('.fa fa-2x fa-edit', text: 'Edit')
     # expect('.the-notes').to have_button('.fa fa-2x danger fa-times-circle', text: 'Delete')
-  # end
+  end
 
   scenario 'A user can edit an artwork request', js: true do
     visit '/orders/1/edit#artwork'
@@ -61,28 +61,28 @@ feature 'Artwork Request Features', js: true, artwork_request_spec: true do
     wait_for_ajax
     expect(ArtworkRequest.where(description: 'edited')).to exist
   end
-  # scenario 'A user can edit an artwork request', js: true do
-  #   visit '/orders/1/edit#artwork'
-  #   find("a[href='/orders/1/artwork_requests/#{artwork_request.id}/edit']").click
-  #   find(:css, "div[class='note-editable'").set('edited')
-  #   click_button 'Update Artwork Request'
-  #   wait_for_ajax
-  #   expect(artwork_request.reload.description).to eq('edited')
-  # end
 
-  # scenario 'A user can delete an artwork request', js: true do
-  #   visit '/orders/1/edit#artwork'
-  #   click_link 'Delete'
-  #   wait_for_ajax
-  #   expect(ArtworkRequest.where(id: artwork_request.id)).to_not exist
-  #   expect(artwork_request.reload.destroyed? ).to be_truthy
-  #
-  # end
-  #
-  # scenario 'A user can view a list of artwork requests' do
-  #   visit '/orders/1/edit#artwork'
-  #   expect(page).to have_css('h3', text: 'Artwork Requests')
-  #   expect(page).to have_css('div.artwork-request-list', visible: false)
-  # end
+  scenario 'A user can delete an artwork request', js: true do
+    visit '/orders/1/edit#artwork'
+    click_link 'Delete'
+    wait_for_ajax
+    expect(ArtworkRequest.where(id: artwork_request.id)).to_not exist
+    expect(artwork_request.reload.destroyed? ).to be_truthy
+
+  end
+
+  scenario 'A user can view a list of artwork requests from the root path' do
+    visit root_path
+    find("a#artwork-sidebar").click
+    click_link 'Artwork Requests'
+    expect(page).to have_css('h1', text: 'Artwork Requests')
+    expect(page).to have_css('table#artwork-request-table')
+  end
+
+  scenario 'A user can view a list of artwork requests from the root path' do
+    visit '/orders/1/edit#artwork'
+    expect(page).to have_css('h3', text: 'Artwork Requests')
+    expect(page).to have_css('div.artwork-request-list', visible: false)
+  end
 
 end
