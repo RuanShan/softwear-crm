@@ -1,6 +1,6 @@
 <% if @artwork_request.valid? %>
-    updateOrderTimeline();
     $('#artwork-request-<%= @artwork_request.id %>').replaceWith("<%= escape_javascript(render(partial: 'artwork_request', locals: {artwork_request: @artwork_request, order: @order})).html_safe %>");
+    $('#artwork-request-row-<%= @artwork_request.id %>').html("<%= escape_javascript(render(partial: 'row', locals: {ar: @artwork_request})).html_safe %>");
     setupContentModal(function($contentModal){
         $contentModal.find('.modal-content').addClass('modal-content-success')
     })
@@ -8,6 +8,7 @@
         title: 'SUCCESS',
         body: 'Successfuly updated Artwork Request!'
     }).delay(50)
+    updateOrderTimeline();
 <% else %>
     var form = $('#contentModal .modal-body form');
     if (form.data('errorHandler') == null) {

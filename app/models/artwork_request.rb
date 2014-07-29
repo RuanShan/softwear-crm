@@ -13,6 +13,7 @@ class ArtworkRequest < ActiveRecord::Base
   has_many :assets, as: :assetable, dependent: :destroy
   has_and_belongs_to_many :ink_colors
   has_and_belongs_to_many :jobs
+  has_and_belongs_to_many :artworks
   accepts_nested_attributes_for :assets, allow_destroy: true
 
   validates :deadline, presence: true
@@ -42,7 +43,7 @@ class ArtworkRequest < ActiveRecord::Base
     areas = jobs.map{|j| j.max_print_area(print_location)}
     max_width = areas.map{|a| a[0]}.min
     max_height = areas.map{|a| a[1]}.min
-    return max_width, max_height
+    return max_width.to_s + ' in. x ' + max_height.to_s + ' in.'
   end
 
 end

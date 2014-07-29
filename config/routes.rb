@@ -10,7 +10,7 @@ CrmSoftwearcrmCom::Application.routes.draw do
 
   resources :imprintables do
     collection do
-      resources :styles, :brands, :colors
+      resources :brands, :colors
       post 'update_imprintable_variants'
 
       resources :sizes do
@@ -23,8 +23,7 @@ CrmSoftwearcrmCom::Application.routes.draw do
 
   get 'tags/:tag', to: 'imprintables#index', as: :tag
 
-
-  resources :styles, :brands, :colors, :users, :artwork_requests
+  resources :brands, :colors, :users, :artwork_requests, :artworks
   resources :prices, only: [:create, :new, :destroy, :index] do
     collection do
       get 'destroy_all'

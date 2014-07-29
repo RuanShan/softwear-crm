@@ -23,6 +23,7 @@ describe ArtworkRequest, artwork_request_spec: true do
     it { should belong_to(:print_location) }
     it { should have_many(:assets) }
     it { should have_and_belong_to_many(:jobs) }
+    it { should have_and_belong_to_many(:artworks) }
     it { should have_and_belong_to_many(:ink_colors) }
     it { should accept_nested_attributes_for(:assets)}
   end

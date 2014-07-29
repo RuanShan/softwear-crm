@@ -6,87 +6,93 @@ describe Search::QueriesController, search_spec: true do
 
   let(:test_params) do
     {search: {
-      order: {
-        '1' => { lastname: 'Johnson' },
-        '2' => { commission_amount: 200 },
-        fulltext: 'test'
-    }}}
+        order: {
+            '1' => { lastname: 'Johnson' },
+            '2' => { commission_amount: 200 },
+            fulltext: 'test'
+        }}}
+  end
+
+  let(:test_params_with_locals) do
+    test_params.merge(
+        locals: {test_val: 'hello'}
+    )
   end
 
   let!(:test_params_with_boolean) do
     {search: {
-      imprintable: {
-        '1' => { standard_offering: 'false' },
-        fulltext: 'yeah'
-    }}}
+        imprintable: {
+            '1' => { standard_offering: 'false' },
+            fulltext: 'yeah'
+        }}}
   end
 
   let!(:test_params_with_reference) do
     {search: {
-      order: {
-        '1' => { salesperson: "User##{valid_user.id}" },
-        fulltext: 'yeah'
-    }}}
+        order: {
+            '1' => { salesperson: "User##{valid_user.id}" },
+            fulltext: 'yeah'
+        }}}
   end
 
   let!(:test_params_with_phrase_filter) do
     {search: {
-      order: {
-        '1' => { jobs: 'Whoa! This would also include a description.' },
-        fulltext: 'yeah'
-    }}}
+        order: {
+            '1' => { jobs: 'Whoa! This would also include a description.' },
+            fulltext: 'yeah'
+        }}}
   end
 
   let(:test_params_with_nil) do
     {search: {
-      order: {
-        '1' => { lastname: 'nil' },
-        fulltext: 'test'
-    }}}
+        order: {
+            '1' => { lastname: 'nil' },
+            fulltext: 'test'
+        }}}
   end
 
   let(:test_params_with_model_level_fulltext) do
     {search: {
-      fulltext: 'test',
-      order: {
-        '1' => { lastname: 'Johnson' },
-        '2' => { commission_amount: 200 },
-      },
-      job: {
-        '1' => { name: 'whocares' }
-      }
+        fulltext: 'test',
+        order: {
+            '1' => { lastname: 'Johnson' },
+            '2' => { commission_amount: 200 },
+        },
+        job: {
+            '1' => { name: 'whocares' }
+        }
     }}
   end
 
   let(:test_params_with_metadata) do
     {search: {
-      order: {
-        '1' => { firstname: 'Nigel', _metadata: ['negate'] },
-        '2' => { lastname: 'Baillie' },
-        '3' => { commission_amount: 15.00, _metadata: ['negate', 'greater_than'] },
-        fulltext: 'ftestasdlfkj'
-    }}}
+        order: {
+            '1' => { firstname: 'Nigel', _metadata: ['negate'] },
+            '2' => { lastname: 'Baillie' },
+            '3' => { commission_amount: 15.00, _metadata: ['negate', 'greater_than'] },
+            fulltext: 'ftestasdlfkj'
+        }}}
   end
 
   let(:test_params_with_lessthan_metadata) do
     {search: {
-      order: {
-        '1' => { lastname: 'Baillie' },
-        '2' => { commission_amount: 15.00, _metadata: ['less_than'] },
-        fulltext: 'ftestasdlfkj'
-    }}}
+        order: {
+            '1' => { lastname: 'Baillie' },
+            '2' => { commission_amount: 15.00, _metadata: ['less_than'] },
+            fulltext: 'ftestasdlfkj'
+        }}}
   end
 
   let(:test_params_with_group) do
     {search: {
-      order: {
-        '1' => { company: 'Some Stuff' },
-        '2' => { _group: {
-                  '1' => { lastname: 'Whatever' },
-                  '2' => { lastname: 'Whatnot' },
-                }, _metadata: ['any_of'] },
-        fulltext: 'cool stuff'
-    }}}
+        order: {
+            '1' => { company: 'Some Stuff' },
+            '2' => { _group: {
+                '1' => { lastname: 'Whatever' },
+                '2' => { lastname: 'Whatnot' },
+            }, _metadata: ['any_of'] },
+            fulltext: 'cool stuff'
+        }}}
   end
 
   let(:query) { create(:search_query) }
@@ -227,6 +233,33 @@ describe Search::QueriesController, search_spec: true do
                 with :lastname, 'Whatnot'
               end
             }
+          end
+        end
+
+        context 'passing locals', locals: true do
+          it 'should allow the passing of locals, if permitted by the model\'s controller' do
+            allow(OrdersController).to receive(:permitted_search_locals).and_return [:test_val]
+            get :search, test_params_with_locals
+            expect(OrdersController).to have_received(:permitted_search_locals)
+          end
+
+          it 'should error out if there is an invalid local' do
+            allow(OrdersController).to receive(:permitted_search_locals).and_return []
+            expect{get :search, test_params_with_locals}.to raise_error
+          end
+
+          it 'should not error out if there are no invalid locals' do
+            allow(OrdersController).to receive(:permitted_search_locals).and_return [:test_val]
+            expect{get :search, test_params_with_locals}.to_not raise_error
+          end
+
+          context 'with custom logic' do
+            it "Should call the transform_search_locals method on the model's controller" do
+              allow(OrdersController).to receive(:permitted_search_locals).and_return [:test_val]
+              allow(OrdersController).to receive(:transform_search_locals).and_return(new_test_val: "transformed!")
+              get :search, test_params_with_locals
+              expect(OrdersController).to have_received :transform_search_locals
+            end
           end
         end
       end

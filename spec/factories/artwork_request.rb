@@ -14,6 +14,20 @@ FactoryGirl.define do
       artwork_request.print_location_id = imprint_method.print_locations.first.id
       artwork_request.job_ids = order.job_ids
       artwork_request.ink_color_ids = imprint_method.ink_color_ids
+
+    end
+
+    factory :valid_artwork_request_with_asset do
+      after(:create) { |ar| ar.assets << create(:valid_asset) }
+    end
+
+    factory :valid_artwork_request_with_artwork do
+      after(:create) { |ar| ar.artworks << create(:valid_artwork) }
+    end
+
+    factory :valid_artwork_request_with_asset_and_artwork do
+      after(:create) { |ar| ar.artworks << create(:valid_artwork) }
+      after(:create) { |ar| ar.assets << create(:valid_asset) }
     end
   end
 end
