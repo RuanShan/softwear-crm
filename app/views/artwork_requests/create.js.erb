@@ -1,5 +1,4 @@
 <% if @artwork_request.valid? %>
-    updateOrderTimeline();
     $('.artwork-request-list').append("<%= escape_javascript(render(partial: 'artwork_request', locals: {artwork_request: @artwork_request, order: @order})).html_safe %>");
     setupContentModal(function($contentModal){
         $contentModal.find('.modal-content').addClass('modal-content-success')
@@ -8,6 +7,7 @@
         title: 'SUCCESS',
         body: 'Successfuly created Artwork Request!'
     }).delay(50)
+    updateOrderTimeline();
 <% else %>
     var form = $('#contentModal .modal-body form');
     if (form.data('errorHandler') == null) {

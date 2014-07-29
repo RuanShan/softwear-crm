@@ -1,0 +1,11 @@
+<div class="box-info">
+  <h2>Search Artwork</h2>
+  <%= search_form_for Artwork, class: 'form-horizontal', remote: remote do |s| %>
+      <% artwork_request == nil ? id = nil : id = artwork_request.id%>
+      <%= s.pass_locals_to_controller artwork_request_id: id %>
+      <div class="col-sm-6">
+        <%= s.fulltext placeholder: 'Keywords' %>
+        <%= s.submit class: 'btn-lg btn-block margin-top-10' %>
+      </div>
+  <% end %>
+</div>

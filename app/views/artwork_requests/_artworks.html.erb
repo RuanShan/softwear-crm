@@ -1,0 +1,18 @@
+<div class="col-sm-4 artwork-request-artworks-info">
+  <h4 class="artwork-title">Artwork</h4>
+  <dl>
+    <% artwork_request.artworks.each do |a| %>
+        <dt>Name:</dt>
+        <dd><%= a.name %></dd>
+        <dd><%= image_tag a.preview.file.url(:medium) %></dd>
+        <dt>Description:</dt>
+        <dd><%= a.description %></dd>
+        <dt>Created By:</dt>
+        <dd><%= a.artist.full_name %></dd>
+        <%= link_to artwork_request_path(id: artwork_request.id, remove_artwork: true, artwork_id: a.id), remote: true, method: :put, class: 'btn btn-danger ' do %>
+            Remove
+        <% end %>
+        <br>
+    <% end %>
+  </dl>
+</div>

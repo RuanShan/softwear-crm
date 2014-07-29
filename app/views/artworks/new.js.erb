@@ -1,0 +1,7 @@
+showContentModal({
+    backdrop: "static",
+    keyboard: false,
+    title: 'New Artwork',
+    body: $("<%= escape_javascript(render(partial: 'new', locals: {artwork: @artwork})).html_safe %>")
+})
+setSubmitTimeout();

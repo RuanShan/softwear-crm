@@ -35,15 +35,20 @@
     </li>
     <li><a href="#fakelink"><i class="fa fa-bar-chart-o"></i><i class="fa fa-angle-double-down i-right"></i> Reports <span class="label label-danger new-circle">W.I.P.</span></a>
       <ul>
-        <li><a href="#fakelink"><i class="fa fa-angle-right"></i> Receivables</a></li>
+        <li><a href="#fakelink" id="artwork-sidebar"><i class="fa fa-angle-right"></i> Receivables</a></li>
         <li><a href="#fakelink"><i class="fa fa-angle-right"></i> Sales Tax</a></li>
         <li><a href="#fakelink"><i class="fa fa-angle-right"></i> Location</a></li>
       </ul>
     </li>
-  <%= nav_helper(:li, true, %w(artwork artwork_requests)) %>
+  <%= nav_helper(:li, true, %w(artwork)) %>
     <a href="#fakelink"><i class="fa fa-picture-o"></i><i class="fa fa-angle-double-down i-right"></i>Artwork <span class="label label-danger new-circle">W.I.P.</span></a>
-    <%= nav_helper(:ul, false, %w(artwork artwork_requests)) %>
+    <%= nav_helper(:ul, false, %w(artwork )) %>
+  <!-- <li> -->
+  <%= nav_helper :li, true, 'artwork_requests' %>
   <%= link_to artwork_requests_path do %><i class="fa fa-angle-right"></i> Artwork Requests<% end %>
+  </li>
+  <%= nav_helper :li, true, 'artwork_list' %>
+  <%= link_to artworks_path do %><i class="fa fa-angle-right"></i> Artwork List<% end %>
   </li>
   </ul>
   </li>

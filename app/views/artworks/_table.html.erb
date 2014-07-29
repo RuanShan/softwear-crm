@@ -1,0 +1,24 @@
+<div class="box-info full">
+  <div class="table-responsive">
+    <table data-sortable class="table" id="artwork-table">
+      <thead>
+      <tr>
+        <th>ID</th>
+        <th>Name</th>
+        <th>Artwork</th>
+        <th>Art File</th>
+        <th>Tags</th>
+        <th>Created By</th>
+        <th>Description</th>
+        <th>Actions</th>
+      </tr>
+      </thead>
+      <tbody>
+      <% artworks.each do |artwork| %>
+          <% local_assigns[:artwork_request].nil? ? artwork_request = nil : artwork_request = local_assigns[:artwork_request] %>
+          <%= render partial: 'artworks/row', locals: {artwork: artwork, artwork_request: artwork_request} %>
+      <% end %>
+      </tbody>
+    </table>
+  </div>
+</div>

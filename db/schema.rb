@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140718133112) do
+ActiveRecord::Schema.define(version: 20140722191828) do
 
   create_table "activities", force: true do |t|
     t.integer  "trackable_id"
@@ -44,6 +44,11 @@ ActiveRecord::Schema.define(version: 20140718133112) do
     t.string   "priority"
   end
 
+  create_table "artwork_requests_artworks", id: false, force: true do |t|
+    t.integer "artwork_request_id"
+    t.integer "artwork_id"
+  end
+
   create_table "artwork_requests_ink_colors", id: false, force: true do |t|
     t.integer "artwork_request_id"
     t.integer "ink_color_id"
@@ -52,6 +57,15 @@ ActiveRecord::Schema.define(version: 20140718133112) do
   create_table "artwork_requests_jobs", id: false, force: true do |t|
     t.integer "artwork_request_id"
     t.integer "job_id"
+  end
+
+  create_table "artworks", force: true do |t|
+    t.string   "name"
+    t.string   "description"
+    t.integer  "artist_id"
+    t.datetime "deleted_at"
+    t.datetime "created_at"
+    t.datetime "updated_at"
   end
 
   create_table "assets", force: true do |t|

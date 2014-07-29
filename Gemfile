@@ -78,6 +78,7 @@ group :test do
   gem 'capybara-webkit'
   gem 'sunspot_matchers'
   gem 'rspec-retry'
+  gem 'email_spec'
 end
 
 gem 'inherited_resources'
@@ -96,8 +97,6 @@ gem 'public_activity'
 gem 'sunspot_solr'
 gem 'progress_bar'
 gem 'whenever'
-
-
 # Use ActiveModel has_secure_password
 # gem 'bcrypt', '~> 3.1.7'
 

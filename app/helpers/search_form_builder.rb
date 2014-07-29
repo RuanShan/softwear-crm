@@ -21,15 +21,26 @@ class SearchFormBuilder
 
   YES_OR_NO_CHOICES = [YesOrNo.new('Yes', 'true'), YesOrNo.new('No', 'false')]
 
-  def initialize(model, query, template, current_user=nil, last_search=nil)
+  def initialize(model, query, template, current_user=nil, last_search=nil, locals={})
     @model = model
-    @query = query 
+    @query = query
     @template = template
     @last_search = last_search
     @current_user = current_user
+    @locals = locals
 
     @filter_group_stack = [:all] # Not currently actually using this.
     @field_count = 0
+  end
+
+  # Remember to define self.permitted_search_locals in your controller
+  def pass_locals_to_controller(locals)
+    raise "Locals should be a hash" unless locals.is_a? Hash
+    content = "".html_safe
+    locals.each do |k,v|
+      content.send :original_concat, @template.hidden_field_tag("locals[#{k}]", v.to_s)
+    end
+    content
   end
 
   # These methods are not actually useful right now.
@@ -55,32 +66,38 @@ class SearchFormBuilder
 
   def fulltext(options={})
     preprocess_options options, 'fulltext'
-    
+
     initial_value = if query_model
-      query_model.default_fulltext
-    elsif @last_search
-      if @last_search.is_a? Hash
-        (@last_search[model_name] && @last_search[model_name][:fulltext]) || 
-          @last_search[:fulltext]
-      else
-        begin
-          query = Search::Query.find(@last_search.to_i)
-          query_model = query.query_models.where(name: @model.name).first
-          if query_model.nil?
-            ''
-          else
-            query_model.default_fulltext
-          end
-        rescue ActiveRecord::RecordNotFound
-          ''
-        end
-      end
-    end
+                      query_model.default_fulltext
+                    elsif @last_search
+                      if @last_search.is_a? Hash
+                        (@last_search[model_name] && @last_search[model_name][:fulltext]) ||
+                            @last_search[:fulltext]
+                      else
+                        begin
+                          query = Search::Query.find(@last_search.to_i)
+                          query_model = query.query_models.where(name: @model.name).first
+                          if query_model.nil?
+                            ''
+                          else
+                            query_model.default_fulltext
+                          end
+                        rescue ActiveRecord::RecordNotFound
+                          ''
+                        end
+                      end
+                    end
 
     is_textarea = options.delete :textarea
     func = is_textarea ? :text_area_tag : :text_field_tag
 
-    @template.send func, "search[fulltext]", initial_value, options
+    name = if @model
+             "search[#{model_name}[fulltext]]"
+           else
+             "search[fulltext]"
+           end
+
+    @template.send func, name, initial_value, options
   end
 
   def select(field_name, choices, options={})
@@ -91,24 +108,24 @@ class SearchFormBuilder
     display_method = options.delete(:display) || :name
 
     select_options = @template.content_tag(:option, options.delete(:nil) || "#{field_name.to_s.humanize}...", value: 'nil')
-    
+
     choices.each do |item|
       name = if item.respond_to? display_method
-        item.send(display_method)
-      else item.to_s end
+               item.send(display_method)
+             else item.to_s end
 
       value = if item.respond_to? :id
-        "#{item.class.name}##{item.id}"
-      else item.to_s end
+                "#{item.class.name}##{item.id}"
+              else item.to_s end
 
-      select_options.send :original_concat, @template.content_tag(:option, 
-        name, value: value,
-        selected: value.to_s == initial_value.to_s ? 'selected' : nil) unless value.empty?
+      select_options.send :original_concat, @template.content_tag(:option,
+                                                                  name, value: value,
+                                                                  selected: value.to_s == initial_value.to_s ? 'selected' : nil) unless value.empty?
     end
 
     @field_count += 1
     process_options(field_name, options) +
-      @template.select_tag(input_name_for(field_name), select_options, options)
+        @template.select_tag(input_name_for(field_name), select_options, options)
   end
 
   def yes_or_no_select(field_name, options={})
@@ -117,13 +134,13 @@ class SearchFormBuilder
 
   [:text_field, :text_area, :number_field].each do |method_name|
     define_method method_name do |field_name, options={}|
-       raise "Cannot call #{model_name} unless a model is specified" if @model.nil?
-       preprocess_options options, field_name
-       add_class(options, 'number_field') if method_name == :number_field
+      raise "Cannot call #{model_name} unless a model is specified" if @model.nil?
+      preprocess_options options, field_name
+      add_class(options, 'number_field') if method_name == :number_field
 
-       @field_count += 1
-       process_options(field_name, options) + 
-        @template.send("#{method_name}_tag", input_name_for(field_name), initial_value_for(field_name), options)
+      @field_count += 1
+      process_options(field_name, options) +
+          @template.send("#{method_name}_tag", input_name_for(field_name), initial_value_for(field_name), options)
     end
   end
 
@@ -138,15 +155,15 @@ class SearchFormBuilder
 
     @field_count += 1
     process_options(field_name, options) +
-     @template.content_tag(:div, class: 'form-group') do
-      process_options(field_name, options) + 
-        @template.radio_button_tag(input_name_for(field_name), 'true', initial == 'true', options) +
-        @template.content_tag(:span, yes) +
-        @template.radio_button_tag(input_name_for(field_name), 'false', initial == 'false', options) +
-        @template.content_tag(:span, no) +
-        @template.radio_button_tag(input_name_for(field_name), 'nil', !initial, options) +
-        @template.content_tag(:span, "Either")
-    end
+        @template.content_tag(:div, class: 'form-group') do
+          process_options(field_name, options) +
+              @template.radio_button_tag(input_name_for(field_name), 'true', initial == 'true', options) +
+              @template.content_tag(:span, yes) +
+              @template.radio_button_tag(input_name_for(field_name), 'false', initial == 'false', options) +
+              @template.content_tag(:span, no) +
+              @template.radio_button_tag(input_name_for(field_name), 'nil', !initial, options) +
+              @template.content_tag(:span, "Either")
+        end
   end
 
   def check_box(field_name, options={})
@@ -159,8 +176,8 @@ class SearchFormBuilder
     @field_count += 1
     @template.content_tag(:div) do
       process_options(field_name, options) +
-        @template.hidden_field_tag(input_name_for(field_name), 'false') +
-        @template.check_box_tag(input_name_for(field_name), 'true', initial_value == 'true', options)
+          @template.hidden_field_tag(input_name_for(field_name), 'false') +
+          @template.check_box_tag(input_name_for(field_name), 'true', initial_value == 'true', options)
     end
   end
 
@@ -174,13 +191,13 @@ class SearchFormBuilder
   def save(options={})
     add_class options, 'submit', 'btn', 'btn-primary', 'btn-search-save'
 
-    @template.hidden_field_tag('query[name]', '', disabled: true, class: 'query_name') + 
-      @template.hidden_field_tag('query[user_id]', @current_user ? @current_user.id : -1, disabled: true, class: 'user_id') +
-      @template.hidden_field_tag('target_path', '', disabled: true, class: 'target_path') +
-      @template.button_tag(options[:value] || 'Save', options.merge(type: 'button'))
+    @template.hidden_field_tag('query[name]', '', disabled: true, class: 'query_name') +
+        @template.hidden_field_tag('query[user_id]', @current_user ? @current_user.id : -1, disabled: true, class: 'user_id') +
+        @template.hidden_field_tag('target_path', '', disabled: true, class: 'target_path') +
+        @template.button_tag(options[:value] || 'Save', options.merge(type: 'button'))
   end
 
-private
+  private
   def preprocess_options(options, field_name)
     add_class options, 'form-control'
     # options[:id] ||= id_for field_name
@@ -189,10 +206,10 @@ private
   def traverse(h,&b)
     h.each do |k,v|
       case v
-      when Hash
-        traverse(v,&b)
-      else
-        b.call k, v
+        when Hash
+          traverse(v,&b)
+        else
+          b.call k, v
       end
     end
   end
@@ -208,7 +225,7 @@ private
             return existing_filter.value unless existing_filter.nil?
           rescue ActiveRecord::RecordNotFound
           end
-        # Otherwise it must be a hash of search params
+          # Otherwise it must be a hash of search params
         elsif @last_search[model_name]
           traverse @last_search[model_name] do |k,v|
             if k.to_s == field_name.to_s

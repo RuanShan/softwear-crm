@@ -1,6 +1,6 @@
 <div class="box-info full">
   <div class="table-responsive">
-    <table data-sortable class="table">
+    <table data-sortable class="table" id="artwork-request-table">
       <thead>
       <tr>
         <th>Priority</th>
@@ -11,12 +11,12 @@
         <th>Imprint Method</th>
         <th>Ink Color Count</th>
         <th>Payment Status</th>
-        <th>Edit/Show</th>
+        <th>Actions</th>
       </tr>
       </thead>
       <tbody>
 
-      <% artwork_requests.where(artist_id: current_user.id).each do |ar| %>
+      <% artwork_requests.where(artist_id: @current_user.id).each do |ar| %>
           <tr id="artwork-request-row-<%= ar.id %>">
           <%= render partial: 'row', locals: {ar: ar} %>
           </tr>

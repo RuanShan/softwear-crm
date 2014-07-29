@@ -1,0 +1,9 @@
+setupContentModal(function($contentModal){
+    $contentModal.find('.modal-dialog').addClass('enlarge-modal')
+})
+showContentModal({
+    backdrop: "static",
+    keyboard: false,
+    title: 'Assign Artwork to the Artwork Request',
+    body: $("<%= escape_javascript(render(partial: 'artworks/artwork_request', locals: {artworks: @artworks, artwork_request: artwork_request})).html_safe %>")
+})

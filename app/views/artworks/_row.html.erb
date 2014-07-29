@@ -1,0 +1,32 @@
+<tr id="artwork-row-<%= artwork.id %>">
+  <td><%= artwork.id %></td>
+  <td><%= artwork.name %></td>
+  <td><%= image_tag artwork.preview.file.url(:thumb) %></td>
+  <td><%= link_to "Download File", artwork.artwork.file.url %></td>
+  <td><%= artwork.tag_list.join(', ') %></td>
+  <td><%= artwork.artist.full_name %></td>
+  <td><%= artwork.description %></td>
+  <td>
+    <div class="btn-group btn-group-xs">
+      <% if artwork_request.nil? %>
+          <%= link_to edit_artwork_path(artwork), remote: true, 'data-toggle' => 'tooltip', 'title' => 'Edit', class: 'btn btn-default' do %>
+              <i class="fa fa-edit"></i>
+          <% end %>
+          <%= link_to "#{artwork_path(artwork)}?disable_buttons=true", remote: true, 'data-toggle' => 'tooltip', 'title' => 'Show', class: 'btn btn-default' do %>
+              <i class="fa fa-eye"></i>
+          <% end %>
+          <%= link_to artwork_path(artwork), remote: true, 'data-action' => 'destroy', 'data-toggle' => 'tooltip', 'title' => 'Destroy', class: 'btn btn-default', method: :delete do %>
+              <i class="fa fa-times"></i>
+          <% end %>
+      <% else %>
+          <% if artwork_request.artwork_ids.empty? or !artwork_request.artwork_ids.include?(artwork.id)  %>
+          <%= link_to artwork_request_path(id: artwork_request.id, artwork_id: artwork.id), remote: true, method: :put, class: 'btn btn-primary ' do %>
+              Add
+          <% end %>
+          <% else %>
+            <span class="btn btn-success">Already Added</span>
+          <% end %>
+      <% end %>
+    </div>
+  </td>
+</tr>

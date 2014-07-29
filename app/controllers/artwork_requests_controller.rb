@@ -5,25 +5,43 @@ class ArtworkRequestsController < InheritedResources::Base
   respond_to :js
 
   def update
+    unless params[:artwork_id].nil?
+      @artwork_request = ArtworkRequest.find(params[:id])
+      @artwork = Artwork.find(params[:artwork_id])
+      if params[:remove_artwork].nil?
+        @artwork_request.artworks << @artwork
+        @artwork_request.artwork_status = 'Art Created'
+      else
+        @artwork_request.artworks.delete(@artwork)
+        if @artwork_request.artwork_ids.empty?
+          @artwork_request.artwork_status = 'Pending'
+        end
+      end
+      @order = Order.find(@artwork_request.jobs.first.order.id)
+    end
     super do |success, failure|
-      success.js {notify_artists}
+      if @artwork.nil?
+      success.js {notify_artist}
+      end
     end
   end
 
   def create
     super do |success, failure|
-      success.js {notify_artists}
+      success.js do
+        notify_artist
+      end
     end
   end
 
   private
 
-  def notify_artists
-    action = action_name + 'd'
-    ArtistMailer.notify_artist(@artwork_request.salesperson, @artwork_request, @artwork_request.artist, action).deliver
+  def notify_artist
+    ArtistMailer.artist_notification(@artwork_request, action_name).deliver
   end
 
   def format_time
+    if params[:artwork_id].nil?
     begin
       time = DateTime.strptime(params[:artwork_request][:deadline], '%m/%d/%Y %H:%M %p').to_time unless (params[:artwork_request].nil? or params[:artwork_request][:deadline].nil?)
       offset = (time.utc_offset)/60/60
@@ -31,6 +49,7 @@ class ArtworkRequestsController < InheritedResources::Base
       params[:artwork_request][:deadline] = adjusted_time
     rescue ArgumentError
       params[:artwork_request][:deadline]
+    end
     end
   end
 
@@ -43,7 +62,7 @@ class ArtworkRequestsController < InheritedResources::Base
                   artwork_request: [:id, :priority, :description, :artist_id,
                                     :imprint_method_id, :print_location_id,
                                     :salesperson_id, :deadline, :artwork_status,
-                                    job_ids: [], ink_color_ids: [],
+                                    job_ids: [], ink_color_ids: [], artwork_ids: [],
                                     assets_attributes: [:file, :description, :id, :_destroy]])
 
   end
