@@ -2,10 +2,12 @@
   <div class="page-heading animated fadeInDownBig col-lg-9">
     <h1><strong>Ann Arbor T-Shirt Company</strong> Quote</h1>
   </div>
-  <div class="col-sm-3 text-right">
+  <div class="col-sm-3 text-right hidden-print">
     <%= link_to 'Print', '#', onclick: 'window.print();return false;', class: 'btn btn-default' %>
   </div>
-  <div class="col-sm-6">
+</div>
+<div class="box-info">
+  <div class="col-sm-6 shrink-me">
     <div class="box-info">
       <h2><strong>Customer</strong> Information</h2>
       <div>
@@ -18,7 +20,7 @@
       </div>
     </div>
   </div>
-  <div class="col-sm-6">
+  <div class="col-sm-6 shrink-me">
     <div class="box-info">
       <h2><strong>Quote</strong> Details</h2>
       <div>
@@ -32,7 +34,7 @@
   </div>
 </div>
 
-<div class="box-info full">
+<div class="box-info">
   <!-- Line Item Information -->
   <div class="box-info">
     <%= render partial: 'line_item_information' %>

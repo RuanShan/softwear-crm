@@ -1,40 +1,84 @@
-<h2><strong>Line Item</strong> Information</h2>
-<div class="table-responsive container-fluid">
-  <table class="table table-hover">
-    <thead>
-    <tr>
-      <th>Name</th>
-      <th>Description</th>
-      <th>Unit Price</th>
-      <th>Quantity</th>
-      <th>Totals</th>
-    </tr>
-    </thead>
-    <tbody>
-    <% @quote.standard_line_items.each do |li| %>
+<div class="hidden-print">
+  <h2><strong>Line Item</strong> Information</h2>
+  <div class="table-responsive container-fluid">
+    <table class="table table-hover">
+      <thead>
       <tr>
-        <td class="col-sm-1"><%= li.name %></td>
-        <td class="col-sm-7"><%= li.description %></td>
-        <td class="col-sm-1"><%= number_to_currency(li.unit_price) %></td>
-        <td class="col-sm-1"><%= li.quantity %></td>
-        <td class="col-sm-2"><%= number_to_currency(li.price) %></td>
+        <th>Name</th>
+        <th>Description</th>
+        <th>Unit Price</th>
+        <th>Quantity</th>
+        <th>Totals</th>
       </tr>
-    <% end %>
-    <tr id="subtotal">
-      <td></td><td></td><td></td>
-      <td><strong>Subtotal:</strong></td>
-      <td><%= number_to_currency(@quote.line_items_subtotal) %></td>
-    </tr>
-    <tr id="tax">
-      <td></td><td></td><td></td>
-      <td><strong>Tax:</strong></td>
-      <td><%= number_to_currency(@quote.line_items_total_tax) %></td>
-    </tr>
-    <tr id="total">
-      <td></td><td></td><td></td>
-      <td><strong>Total:</strong></td>
-      <td><%= number_to_currency(@quote.line_items_total_with_tax) %></td>
-    </tr>
-    </tbody>
-  </table>
+      </thead>
+      <tbody>
+      <% @quote.standard_line_items.each do |li| %>
+        <tr>
+          <td class="col-sm-1"><%= li.name %></td>
+          <td class="col-sm-7"><%= li.description %></td>
+          <td class="col-sm-1"><%= number_to_currency(li.unit_price) %></td>
+          <td class="col-sm-1"><%= li.quantity %></td>
+          <td class="col-sm-2"><%= number_to_currency(li.price) %></td>
+        </tr>
+      <% end %>
+      <tr id="subtotal">
+        <td></td><td></td><td></td>
+        <td><strong>Subtotal:</strong></td>
+        <td><%= number_to_currency(@quote.line_items_subtotal) %></td>
+      </tr>
+      <tr id="tax">
+        <td></td><td></td><td></td>
+        <td><strong>Tax:</strong></td>
+        <td><%= number_to_currency(@quote.line_items_total_tax) %></td>
+      </tr>
+      <tr id="total">
+        <td></td><td></td><td></td>
+        <td><strong>Total:</strong></td>
+        <td><%= number_to_currency(@quote.line_items_total_with_tax) %></td>
+      </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+<div class="visible-print" style="page-break-inside: avoid;">
+  <h2><strong>Line Item</strong> Information</h2>
+  <div class="table">
+    <table class="table table-hover">
+      <thead>
+      <tr>
+        <th>Name</th>
+        <th>Description</th>
+        <th>Unit Price</th>
+        <th>Quantity</th>
+        <th>Totals</th>
+      </tr>
+      </thead>
+      <tbody>
+      <% @quote.standard_line_items.each do |li| %>
+        <tr>
+          <td class="col-sm-1"><%= li.name %></td>
+          <td class="col-sm-7"><%= li.description %></td>
+          <td class="col-sm-1"><%= number_to_currency(li.unit_price) %></td>
+          <td class="col-sm-1"><%= li.quantity %></td>
+          <td class="col-sm-2"><%= number_to_currency(li.price) %></td>
+        </tr>
+      <% end %>
+      <tr id="subtotal">
+        <td></td><td></td><td></td>
+        <td><strong>Subtotal:</strong></td>
+        <td><%= number_to_currency(@quote.line_items_subtotal) %></td>
+      </tr>
+      <tr id="tax">
+        <td></td><td></td><td></td>
+        <td><strong>Tax:</strong></td>
+        <td><%= number_to_currency(@quote.line_items_total_tax) %></td>
+      </tr>
+      <tr id="total">
+        <td></td><td></td><td></td>
+        <td><strong>Total:</strong></td>
+        <td><%= number_to_currency(@quote.line_items_total_with_tax) %></td>
+      </tr>
+      </tbody>
+    </table>
+  </div>
 </div>
