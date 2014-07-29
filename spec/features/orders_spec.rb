@@ -129,7 +129,7 @@ feature 'Order management', order_spec: true,  js: true do
       company: 'Order with the keyword keyword!') }
     let!(:order5) { create(:order_with_job, name: 'Dumb order') }
 
-    scenario 'user can search orders', retry: 3, pending: 'Nigel, this wont work but seems like it should' do
+    scenario 'user can search orders', retry: 3 do
       visit orders_path
 
       fill_in 'search_fulltext', with: 'Keyword'
@@ -140,7 +140,7 @@ feature 'Order management', order_spec: true,  js: true do
       expect(page).to_not have_content 'Dumb order'
     end
 
-    scenario 'user can save searches', pending: 'Nigel, order_id will likely be different for everyone, cant hard code' do
+    scenario 'user can save searches' do
       visit orders_path
       find('.additional-icon[data-toggle="collapse"]').click
       select 'Net 60', from: 'search_order_8_terms'
@@ -154,7 +154,7 @@ feature 'Order management', order_spec: true,  js: true do
       expect(Search::Query.where(name: 'Test Query')).to exist
     end
 
-    scenario 'user can use saved searches', pending: 'Nigel, unclear why this isnt working' do
+    scenario 'user can use saved searches' do
       query = Search::QueryBuilder.build('Test Query') do
         on Order do
           with :terms, 'Net 60'
