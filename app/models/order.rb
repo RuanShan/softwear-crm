@@ -53,7 +53,7 @@ class Order < ActiveRecord::Base
   def subtotal
     sum = 0
     line_items.each do |line_item|
-      sum += line_item.price
+      sum += line_item.total_price
     end
     sum
   end

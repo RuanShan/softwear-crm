@@ -46,11 +46,11 @@
         <h4 class="modal-title">Send Quote </h4>
       </div>
       <div class="modal-body">
-        <%= render file: 'quotes/email_customer' %>
+        <%= render file: 'quotes/_email_customer' %>
       </div>
       <div class="modal-footer">
         <a class="btn btn-default" data-dismiss="modal">Cancel</a>
-        <%= button_to 'Submit', { action: 'email_customer', quote_id: @quote.id, send: true }, { class: 'btn btn-primary' } %>
+        <%= button_to 'Submit', { action: 'email_customer', quote_id: @quote.id }, { class: 'btn btn-primary' } %>
       </div>
     </div>
   </div>

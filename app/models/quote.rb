@@ -41,7 +41,7 @@ class Quote < ActiveRecord::Base
   def line_items_subtotal
     total = 0
     self.line_items.each do |li|
-      total += li.price
+      total += li.total_price
     end
     total
   end
@@ -51,7 +51,7 @@ class Quote < ActiveRecord::Base
     self.line_items.each do |li|
       if li.taxable?
         # TODO hard-coded 6% tax is probably subject to change
-        total += li.price*0.06
+        total += li.total_price * 0.06
       end
     end
     total
@@ -62,9 +62,9 @@ class Quote < ActiveRecord::Base
     self.line_items.each do |li|
       if li.taxable?
       # TODO hard-coded 6% tax is probably subject to change
-        total += li.price*1.06
+        total += li.total_price * 1.06
       else
-        total += li.price
+        total += li.total_price
       end
     end
     total
@@ -79,26 +79,73 @@ class Quote < ActiveRecord::Base
     end
   end
 
-  def sort_line_items
-    result = {}
-    LineItem.includes(
-        imprintable_variant: [
-            { imprintable: :style }, :color, :size
-        ]
-    ).where(line_itemable_id: id, line_itemable_type: 'Quote').where.not(imprintable_variant_id: nil).each do |line_item|
-      imprintable_name = line_item.imprintable.name
-      variant = line_item.imprintable_variant
-      color_name = variant.color.name
-
-      result[imprintable_name] ||= {}
-      result[imprintable_name][color_name] ||= []
-      result[imprintable_name][color_name] << line_item
-    end
-    result.each { |k, v| v.each { |k, v| v.sort! } }
-    result
-  end
-
   def standard_line_items
     LineItem.non_imprintable.where(line_itemable_id: id, line_itemable_type: 'Quote')
+  end
+
+  def create_freshdesk_ticket(current_user)
+    freshdesk_info = fetch_data_to_h(current_user)
+    client = Freshdesk.new('http://annarbortees.freshdesk.com/', 'david.s@annarbortees.com', 'testdesk')
+    client.post_tickets(
+        email: email,
+        requester_id: freshdesk_info[:requester_id],
+        requester_name: freshdesk_info[:requester_name],
+        source: 2,
+        group_id: freshdesk_info[:group_id],
+        ticket_type: 'Lead',
+        subject: 'Custom Apparel',
+        custom_field: { department_7483: freshdesk_info[:department] }
+    )
+  end
+
+  def fetch_data_to_h(current_user)
+    # this function will, by default, set hash values to nil if anything is amiss
+    freshdesk_info = {}
+
+    # first add group_id and department
+    freshdesk_info = fetch_group_id_and_dept(freshdesk_info)
+
+    # now return that and requester id and name
+    fetch_requester_id_and_name(freshdesk_info, current_user)
+  end
+
+  def fetch_group_id_and_dept(old_hash)
+    new_hash = {}
+    if store.name.downcase.include? 'arbor'
+      # pretty sure this is the id freshdesk uses for Sales - Ann Arbor
+      new_hash[:group_id] = 86316
+      new_hash[:department] = 'Sales - Ann Arbor'
+    elsif store.name.downcase.include? 'ypsi'
+      new_hash[:group_id] = 86317
+      new_hash[:department] = 'Sales - Ypsilanti'
+    else
+      new_hash[:group_id] = nil
+      new_hash[:department] = nil
+    end
+    old_hash.merge(new_hash)
+  end
+
+  def fetch_requester_id_and_name(old_hash, current_user)
+    new_hash = {}
+    if current_user.full_name.downcase == 'jack koch'
+      new_hash[:requester_id] = Figaro.env['jacks_freshdesk_id']
+      new_hash[:requester_name] = Figaro.env['jacks_freshdesk_name']
+    elsif current_user.full_name.downcase == 'nathan kurple' || current_user.full_name.downcase == 'nate kurple'
+      new_hash[:requester_id] = Figaro.env['nates_freshdesk_id']
+      new_hash[:requester_name] = Figaro.env['nates_freshdesk_name']
+    elsif current_user.full_name.downcase == 'george bekris'
+      new_hash[:requester_id] = Figaro.env['georges_freshdesk_id']
+      new_hash[:requester_name] = Figaro.env['georges_freshdesk_name']
+    elsif current_user.full_name.downcase == 'barrie rupp'
+      new_hash[:requester_id] = Figaro.env['barries_freshdesk_id']
+      new_hash[:requester_name] = Figaro.env['barries_freshdesk_name']
+    elsif current_user.full_name.downcase == 'michael marasco'
+      new_hash[:requester_id] = Figaro.env['michaels_freshdesk_id']
+      new_hash[:requester_name] = Figaro.env['michaels_freshdesk_name']
+    else
+      new_hash[:requester_id] = nil
+      new_hash[:requester_name] = nil
+    end
+    old_hash.merge(new_hash)
   end
 end

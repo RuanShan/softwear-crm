@@ -54,3 +54,6 @@ Gemfile.lock
 
 # Ignore application configuration
 /config/application.yml
+
+# ignore everything in the public/assets folder
+/public/assets/*

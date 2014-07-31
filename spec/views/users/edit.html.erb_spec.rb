@@ -6,11 +6,11 @@ describe 'users/edit.html.erb', user_spec: true do
 		assign(:user, user)
 	end
 
-	it 'has fields for firstname, lastname and email' do
+	it 'has fields for first_name, last_name and email' do
 		render
 		within_form_for User do
-			expect(rendered).to have_field_for :firstname
-			expect(rendered).to have_field_for :lastname
+			expect(rendered).to have_field_for :first_name
+			expect(rendered).to have_field_for :last_name
 			expect(rendered).to have_field_for :email
       expect(rendered).to have_field_for :store_id
 		end

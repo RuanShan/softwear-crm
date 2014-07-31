@@ -14,11 +14,11 @@
       <tbody>
       <% @quote.standard_line_items.each do |li| %>
         <tr>
-          <td class="col-sm-1"><%= li.name %></td>
-          <td class="col-sm-7"><%= li.description %></td>
+          <td class="col-sm-4"><%= li.name %></td>
+          <td class="col-sm-4"><%= li.description %></td>
           <td class="col-sm-1"><%= number_to_currency(li.unit_price) %></td>
           <td class="col-sm-1"><%= li.quantity %></td>
-          <td class="col-sm-2"><%= number_to_currency(li.price) %></td>
+          <td class="col-sm-2"><%= number_to_currency(li.total_price) %></td>
         </tr>
       <% end %>
       <tr id="subtotal">
@@ -56,11 +56,11 @@
       <tbody>
       <% @quote.standard_line_items.each do |li| %>
         <tr>
-          <td class="col-sm-1"><%= li.name %></td>
-          <td class="col-sm-7"><%= li.description %></td>
+          <td class="col-sm-4"><%= li.name %></td>
+          <td class="col-sm-4"><%= li.description %></td>
           <td class="col-sm-1"><%= number_to_currency(li.unit_price) %></td>
           <td class="col-sm-1"><%= li.quantity %></td>
-          <td class="col-sm-2"><%= number_to_currency(li.price) %></td>
+          <td class="col-sm-2"><%= number_to_currency(li.total_price) %></td>
         </tr>
       <% end %>
       <tr id="subtotal">

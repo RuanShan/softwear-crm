@@ -90,7 +90,7 @@ describe Order, order_spec: true do
       expect { order.subtotal }.to_not raise_error
       sum = 0
       order.line_items.each do |line_item|
-        sum += line_item.price
+        sum += line_item.total_price
       end
       expect(order.subtotal).to eq sum
     end

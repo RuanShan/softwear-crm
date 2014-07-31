@@ -30,7 +30,7 @@ class LineItem < ActiveRecord::Base
     boolean(:is_imprintable) { imprintable? }
   end
 
-  def price
+  def total_price
     if unit_price && quantity
       unit_price * quantity
     else

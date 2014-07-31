@@ -23,7 +23,9 @@ describe QuotesController, js: true, quotes_spec: true do
   describe 'POST email_customer' do
     let!(:quote) { create(:valid_quote) }
     it 'assigns the quote and sends the customer an email' do
-      expect(QuoteMailer).to receive(:email_customer).with(an_instance_of(Hash)).and_return( double('QuoteMailer', deliver: true))
+      mailer = double(Mail::Message)
+      expect(mailer).to receive(:deliver)
+      expect(QuoteMailer).to receive(:email_customer).with(an_instance_of(Hash)).and_return(mailer)
       post :email_customer, quote_id: quote.id
       expect(assigns(:quote)).to eq(quote)
     end

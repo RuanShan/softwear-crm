@@ -5,10 +5,6 @@ jQuery ->
     buttonsClass: "btn btn-default"
     submitButtonClass: "btn btn-primary"
 
-  $(document).on('click', 'quote-email-button', ->
-    $('email-text-area').summernote
-  )
-
   return
 
 @printPage = ->

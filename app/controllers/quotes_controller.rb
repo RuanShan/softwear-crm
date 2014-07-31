@@ -10,9 +10,10 @@ class QuotesController < InheritedResources::Base
   end
 
   def edit
-    super do
+    super do |format|
       @current_user = current_user
       @activities = @quote.all_activities
+      format.html
     end
   end
 
@@ -24,6 +25,14 @@ class QuotesController < InheritedResources::Base
             content: render_string(partial: 'line_items/standard_view', locals: { line_items: @quote.standard_line_items })
         }
       end
+      format.html { render 'quotes/show', layout: 'no_overlay' }
+    end
+  end
+
+  def create
+    super do
+      # only want to create freshdesk tickets if we're not running the spec and we're not the admin (for development)
+      @quote.create_freshdesk_ticket(current_user) unless (current_user.full_name.downcase.include?('test') || current_user.full_name.downcase.include?('admin'))
     end
   end
 
@@ -41,7 +50,7 @@ class QuotesController < InheritedResources::Base
   def stage_quote
     @quote = Quote.find(params[:quote_id])
     @quote.line_items.new(name: params[:name],
-                         unit_price: params[:price],
+                         unit_price: params[:total_price],
                          description: 'Canned Description',
                          quantity: 0).save
     @quote.create_activity :added_line_item, owner: current_user
@@ -53,7 +62,9 @@ class QuotesController < InheritedResources::Base
     hash = {
       quote: @quote,
       body: params[:email_body],
-      subject: params[:email_subject]
+      subject: params[:email_subject],
+      from: current_user.email,
+      to: @quote.email
     }
     begin
       QuoteMailer.email_customer(hash).deliver
@@ -64,6 +75,13 @@ class QuotesController < InheritedResources::Base
     end
     @quote.create_activity :emailed_customer, owner: current_user
     redirect_to edit_quote_path params[:quote_id]
+  end
+
+  def populate_email_modal
+    respond_to do |format|
+      @quote = Quote.find(params[:quote_id])
+      format.js
+    end
   end
 
   private

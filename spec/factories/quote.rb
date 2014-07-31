@@ -1,6 +1,6 @@
 FactoryGirl.define do
   factory :valid_quote, class: Quote do
-    email 'test@example.com'
+    sequence(:email) { |n| "email_#{n}@testing.com" }
     first_name 'test'
     last_name 'mctesterson'
     valid_until_date Time.now + 1.day

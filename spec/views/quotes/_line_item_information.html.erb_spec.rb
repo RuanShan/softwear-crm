@@ -22,6 +22,6 @@ describe 'quotes/_line_item_information.html.erb', quote_spec: true do
     expect(rendered).to have_css('td', text: quote.standard_line_items.first.description)
     expect(rendered).to have_css('td', text: number_to_currency(quote.standard_line_items.first.unit_price))
     expect(rendered).to have_css('td', text: quote.standard_line_items.first.quantity)
-    expect(rendered).to have_css('td', text: number_to_currency(quote.standard_line_items.first.price))
+    expect(rendered).to have_css('td', text: number_to_currency(quote.standard_line_items.first.total_price))
   end
 end

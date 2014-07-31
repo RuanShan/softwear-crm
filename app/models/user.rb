@@ -6,11 +6,11 @@ class User < ActiveRecord::Base
   belongs_to :store
   has_many :search_queries, class_name: "Search::Query"
 
-  validates_presence_of :firstname, :lastname
+  validates_presence_of :first_name, :last_name
   validates :email, format: { with: /\A([^@\s]+)@((?:[-a-z0-9]+\.)+[a-z]{2,})\Z/i }
 
   def full_name
-    "#{firstname} #{lastname}"
+    "#{first_name} #{last_name}"
   end
 
   acts_as_paranoid

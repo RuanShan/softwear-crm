@@ -63,7 +63,7 @@ RSpec.configure do |config|
   # rspec-rails.
   config.infer_base_class_for_anonymous_controllers = false
 
-  config.order = "random"
+  config.order = 'random'
 
   config.before(:each) do |example|
     if example.metadata[:solr]
@@ -71,13 +71,13 @@ RSpec.configure do |config|
       if Sunspot.session.respond_to? :original_session
         Sunspot.session = Sunspot.session.original_session
         if Sunspot.session.respond_to? :original_session
-          raise "Sunspot session somehow got buried in spies!"
+          raise 'Sunspot session somehow got buried in spies!'
         end
       end
       # Solr process is lazy loaded, essentially.
       unless solr_running?
         if !start_solr
-          raise "Unable to start Solr."
+          raise 'Unable to start Solr.'
         end
         wait_for_solr
       end

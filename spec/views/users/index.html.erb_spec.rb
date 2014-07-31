@@ -4,15 +4,15 @@ describe 'users/index.html.erb', user_spec: true do
   before :each do
     assign(:users, [
       create(:user, 
-        firstname: 'first1', lastname: 'last1', 
+        first_name: 'first1', last_name: 'last1', 
         email: 'test1@example.com'),
       create(:user, 
-        firstname: 'first2', lastname: 'last2',
+        first_name: 'first2', last_name: 'last2',
         email: 'test2@example.com')
     ])
   end
 
-  it 'displays the firstname and lastname of all users' do
+  it 'displays the first_name and last_name of all users' do
     render
     expect(rendered).to have_selector '*', text: 'first1'
     expect(rendered).to have_selector '*', text: 'first2'

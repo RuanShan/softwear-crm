@@ -30,16 +30,19 @@ feature 'Quotes management', quote_spec: true, js: true do
     fill_in 'First Name', with: 'Capy'
     fill_in 'Last Name', with: 'Bara'
     click_button 'Next'
+    sleep 0.5
     fill_in 'Quote Name', with: 'Quote Name'
     fill_in 'Valid Until Date', with: Time.now + 1.day
     fill_in 'Estimated Delivery Date', with: Time.now + 1.day
     click_button 'Next'
+    sleep 0.5
     click_link 'Add Line Item'
     fill_in 'Name', with: 'Line Item Name'
     fill_in 'Description', with: 'Line Item Description'
     fill_in 'Quantity', with: 2
     fill_in 'Unit Price', with: 15
     click_button 'Submit'
+    wait_for_ajax
     expect(page).to have_selector '.modal-content-success', text: 'Quote was successfully created.'
     expect(current_path). to eq(quote_path(quote.id + 1))
   end
@@ -62,9 +65,11 @@ feature 'Quotes management', quote_spec: true, js: true do
   scenario 'A user can email a quote to the customer' do
     visit edit_quote_path quote.id
     find('a[href="#actions"]').click
-    click_button 'Email Quote'
+    click_link 'Email Quote'
     wait_for_ajax
     find('input[value="Submit"]').click
+    wait_for_ajax
+    expect(page).to have_selector '.modal-content-success'
     expect(current_path).to eq(edit_quote_path quote.id)
   end
 
@@ -79,9 +84,11 @@ feature 'Quotes management', quote_spec: true, js: true do
     fill_in 'First Name', with: 'Capy'
     fill_in 'Last Name', with: 'Bara'
     click_button 'Next'
+    sleep 0.5
     fill_in 'Valid Until Date', with: Time.now + 1.day
     fill_in 'Estimated Delivery Date', with: Time.now + 1.day
     click_button 'Next'
+    sleep 0.5
     expect(page).to have_css("input[value='#{ imprintable.name }']")
     expect(page).to have_css("input[value='#{ imprintable.base_price + decoration_price }']")
     fill_in 'Description', with: 'Gaga can\'t handle this shit'
@@ -132,7 +139,7 @@ feature 'Quotes management', quote_spec: true, js: true do
     scenario 'A quote being emailed to the customer' do
       visit edit_quote_path quote.id
       click_link 'Actions'
-      click_button 'Email Quote'
+      click_link 'Email Quote'
       sleep 1
       click_button 'Submit'
       expect(current_path).to eq(edit_quote_path quote.id)

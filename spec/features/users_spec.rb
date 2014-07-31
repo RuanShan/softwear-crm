@@ -20,7 +20,7 @@ feature 'Users', user_spec: true, js: true do
 	  scenario 'I see my name on the dashboard' do
 	  	visit root_path
 	  	unhide_dashboard
-	  	expect(page).to have_content "Welcome, #{valid_user.firstname} #{valid_user.lastname[0,1]}."
+	  	expect(page).to have_content "Welcome, #{valid_user.first_name} #{valid_user.last_name[0,1]}."
 	  end
 
 	  scenario 'I can view a list of users' do
@@ -36,11 +36,11 @@ feature 'Users', user_spec: true, js: true do
 	  scenario "I can edit a user's info" do
 	  	visit users_path
 	  	first('a[title=Edit]').click
-	  	fill_in 'Last name', with: 'NewLastname'
+	  	fill_in 'Last name', with: 'Newlast_name'
 	  	click_button 'Submit'
 	  	wait_for_ajax
 	  	expect(page).to have_content 'success'
-	  	expect(User.where(lastname: 'NewLastname')).to exist
+	  	expect(User.where(last_name: 'Newlast_name')).to exist
 	  end
 
 	  scenario "I can create a new user account" do

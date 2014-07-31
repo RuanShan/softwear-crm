@@ -1,14 +1,18 @@
 FactoryGirl.define do
 	factory :user do
-		firstname 'Test'
-		sequence(:lastname) { |n| "Last_#{n}" }
-		sequence(:email) { |n| "user_email_#{n}@gmail.com" }
+    # note: please include 'test' somewhere in first_name
+    # otherwise running the quote spec will create bogus freshdesk tickets
+		first_name 'Test_First'
+		sequence(:last_name) { |n| "Test_Last_#{n}" }
+		sequence(:email) { |n| "user_email_#{n}@hotmail.com" }
 		password '1234567890'
 
 		factory :alternate_user do
-			firstname 'First'
-			sequence(:lastname) { |n| "Last_#{n}" }
-			sequence(:email) { |n| "user_email_#{n}@umich.edu" }
+      # note: please include 'test' somewhere in first_name
+      # otherwise running the quote spec will create bogus freshdesk tickets
+			first_name 'Test_First'
+			sequence(:last_name) { |n| "Test_Alternate_Last_#{n}" }
+			sequence(:email) { |n| "alternate_user_email_#{n}@umich.edu" }
 		end
 
 		after(:create) { |u| u.confirm! }

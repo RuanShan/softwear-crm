@@ -6,8 +6,8 @@ describe User, user_spec: true do
   end
 
   context 'when validating' do
-    it { should validate_presence_of :firstname }
-    it { should validate_presence_of :lastname }
+    it { should validate_presence_of :first_name }
+    it { should validate_presence_of :last_name }
     it { should validate_presence_of :email }
 
     it { should allow_value('test@annarbortees.com').for :email }

@@ -5,7 +5,7 @@
   <div class="col-sm-1"><%= f.check_box :taxable, style: 'width: 24px; height: 24px;' %></div>
   <div class="col-sm-1"><%= f.number_field :quantity %></div>
   <div class="col-sm-1"><%= f.number_field :unit_price %></div>
-  <div class="col-sm-1"><span class='total'><%= number_to_currency line_item.price %></span></div>
+  <div class="col-sm-1"><span class='total'><%= number_to_currency line_item.total_price %></span></div>
   <div class="col-sm-1">
     <span class='line-item-button' title="Delete" onclick="cancelEditLineItem(<%=line_item.id%>)"><i class="fa fa-2x danger fa-times-circle"></i></span>
   </div>

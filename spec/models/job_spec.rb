@@ -180,7 +180,7 @@ describe Job, job_spec: true do
     make_variants :red,   :hat,   [:OSFA]
     make_variants :blue,  :hat,   [:OSFA]
 
-    it 'should return all of the information for the imprintables ' do
+    it 'should return all of the information for the imprintables' do
       expect(job.imprintable_info).to eq("green style_1 1235, red style_1 1235, red style_2 1236, blue style_2 1236")
     end
   end

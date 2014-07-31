@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140722191828) do
+ActiveRecord::Schema.define(version: 20140728210116) do
 
   create_table "activities", force: true do |t|
     t.integer  "trackable_id"
@@ -98,14 +98,12 @@ ActiveRecord::Schema.define(version: 20140722191828) do
     t.string   "sku"
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.integer  "imprintable_variant_id"
     t.datetime "deleted_at"
-    t.boolean  "retail",                 default: false
+    t.boolean  "retail",     default: false
     t.string   "hexcode"
   end
 
   add_index "colors", ["deleted_at"], name: "index_colors_on_deleted_at", using: :btree
-  add_index "colors", ["imprintable_variant_id"], name: "color_imprintable_variant_id_ix", using: :btree
   add_index "colors", ["retail"], name: "index_colors_on_retail", using: :btree
 
   create_table "coordinate_imprintables", force: true do |t|
@@ -473,8 +471,8 @@ ActiveRecord::Schema.define(version: 20140722191828) do
     t.datetime "locked_at"
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.string   "firstname"
-    t.string   "lastname"
+    t.string   "first_name"
+    t.string   "last_name"
     t.datetime "deleted_at"
     t.integer  "store_id"
   end

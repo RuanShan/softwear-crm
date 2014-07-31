@@ -1,0 +1,7 @@
+<%= form_tag action: 'email_customer', quote_id: @quote.id %>
+
+<%= label_tag 'Subject' %>
+<%= text_field_tag :email_subject, "Your quote ##{@quote.id} from the Ann Arbor T-shirt Company", class: 'form-control' %>
+<br/>
+<%= label_tag :email_body, 'Body of Email' %>
+<%= text_area_tag :email_body, render('line_item_information'), class: 'form-control summernote', id: 'email-form-textarea' %>

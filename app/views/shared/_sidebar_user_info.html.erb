@@ -5,7 +5,7 @@
   </a>
   <div class="media-body">
     Welcome,
-    <h4 class="media-heading"><strong><%= @current_user.firstname %> <%= @current_user.lastname[0,1] %>.</strong></h4>
+    <h4 class="media-heading"><strong><%= @current_user.first_name %> <%= @current_user.last_name[0,1] %>.</strong></h4>
     <%= link_to 'Edit', edit_user_path(@current_user) %>
     <%= link_to 'Logout', destroy_user_session_path, method: :delete, class: 'md-trigger', 'data-model'=>'logout-modal-alt' %>
   </div>
