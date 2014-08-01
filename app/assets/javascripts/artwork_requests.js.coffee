@@ -27,6 +27,7 @@
     no_results_text: "No results matched"
     width: "400px"
 
+    summernoteArtworkRequest()
 @summernoteArtworkRequest = ->
   $(".summernote").closest("form").submit ->
 #    $(".summernote").code() "" if $(".note-editable").html() is "<p><br></p>"

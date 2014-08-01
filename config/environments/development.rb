@@ -24,7 +24,7 @@ CrmSoftwearcrmCom::Application.configure do
 
   # using actionMailer, redirect to smtp://localhost:1025
   # config.action_mailer.delivery_method = :smtp
-  # config.action_mailer.smtp_settings = { :address => "localhost", :port => 1025 }
+  # config.action_mailer.smtp_settings = { :address => 'localhost', :port => 1025 }
   # config.action_mailer.default_url_options = { host: 'localhost' }
 
 
@@ -40,5 +40,5 @@ CrmSoftwearcrmCom::Application.configure do
   config.assets.debug = true
 
   #for Paperclip
-  Paperclip.options[:command_path] = "/usr/bin/convert/"
+  Paperclip.options[:command_path] = '/usr/bin/convert/'
 end

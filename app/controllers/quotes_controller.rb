@@ -59,6 +59,7 @@ class QuotesController < InheritedResources::Base
 
   def email_customer
     @quote = Quote.find(params[:quote_id])
+    
     hash = {
       quote: @quote,
       body: params[:email_body],
@@ -66,14 +67,18 @@ class QuotesController < InheritedResources::Base
       from: current_user.email,
       to: @quote.email
     }
+
     begin
       QuoteMailer.email_customer(hash).deliver
       flash[:success] = 'Your email was successfully sent!'
+      @quote.create_activity :emailed_customer, owner: current_user
     rescue Net::SMTPAuthenticationError, Net::SMTPServerBusy, Net::SMTPSyntaxError, Net::SMTPFatalError, Net::SMTPUnknownError => e
       flash[:notice] = 'Your email was unable to be sent'
       flash[:success] = nil
+      @activity = PublicActivity::Activity.find_by_trackable_id(params[:quote_id])
+      @activity.destroy
     end
-    @quote.create_activity :emailed_customer, owner: current_user
+
     redirect_to edit_quote_path params[:quote_id]
   end
 

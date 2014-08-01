@@ -172,7 +172,7 @@ feature 'Imprintables management', imprintable_spec: true do
 
   end
 
-  scenario 'A user can delete an existing imprintable', js: true  do
+  scenario 'A user can delete an existing imprintable', js: true do
     visit imprintables_path
     find("tr#imprintable_#{imprintable.id} a[data-action='destroy']").click
     page.driver.browser.switch_to.alert.accept
