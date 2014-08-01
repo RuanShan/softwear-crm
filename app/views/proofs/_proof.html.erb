@@ -1,0 +1,74 @@
+<div id="proof-<%= proof.id %>" class="row">
+  <div class="the-notes info proof-notes">
+    <div class="col-sm-12">
+      <div class="row">
+        <div class="col-sm-2">
+          <h4 class="proof-title">Proof</h4>
+          <dl>
+            <dt>Proof Status:</dt>
+            <dd><%= proof.status %></dd>
+            <dt>Approve By:</dt>
+            <dd><%= proof.approve_by.strftime('%b %d, %Y, %I:%M %p') %></dd>
+          </dl>
+        </div>
+
+        <div class="col-sm-2 ">
+          <h4> &nbsp</h4>
+          <dl>
+            <dt>Artworks:</dt>
+                <% proof.artworks.each do |artwork| %>
+                    <dd><%= image_tag artwork.preview.file.url(:thumb) %></dd>
+                    <dd><%= link_to "Download File", artwork.artwork.file.url %></dd>
+                <% end %>
+          </dl>
+        </div>
+
+      <div class="col-sm-8 ">
+        <h4> &nbsp</h4>
+        <dl>
+          <dt>Mockups:</dt>
+              <% proof.mockups.each do |mockup| %>
+                  <dd><%= image_tag mockup.file.url(:thumb) %></dd>
+                  <dd><%= link_to "Download File", mockup.file.url %></dd>
+              <% end %>
+        </dl>
+      </div>
+    </div>
+    </div>
+
+      <div class="row">
+        <% if params[:disable_buttons].nil? %>
+            <div class="col-sm-12  clear text-left">
+              <%= link_to edit_order_proof_path(order, proof), remote: true do %>
+                  <i class="fa fa-2x fa-edit"></i> Edit &nbsp
+              <% end %>
+              <%= link_to order_proof_path(order, proof), method: :delete, remote: true do %>
+                  <i class="fa fa-2x danger fa-times-circle"></i> Delete &nbsp
+              <% end %>
+              <% if proof.approved_at.nil? and proof.status != 'Rejected' %>
+                  <%= link_to email_customer_order_proofs_path(id: proof.id, order_id: order.id, reminder: 'false'), remote: true do %>
+                      <i class="fa fa-2x fa-envelope"></i> Email Customer Proof Approval Request &nbsp
+                  <% end %>
+                  <% if proof.status == 'Emailed Customer' %>
+                      <%= link_to email_customer_order_proofs_path(id: proof.id, order_id: order.id, reminder: 'true'), remote: true, method: :post,
+                                  data: {confirm: 'This will send a proof approval reminder for this proof to the customer, are you sure?'} do %>
+                          <i class="fa fa-2x warning fa-envelope"></i> Email Customer Proof Approval Reminder &nbsp
+                      <% end %>
+                  <% end %>
+                  <%= link_to order_proof_path(id: proof.id, status: 'Approved', order_id: order.id), remote: true, method: :put,
+                              data: {confirm: 'Approving this proof will queue up production processes, are you sure you want to proceed?'} do %>
+                      <i class="fa fa-2x success fa-thumbs-up"></i> Accept Proof &nbsp
+                  <% end %>
+                  <%= link_to order_proof_path(id: proof.id, status: 'Rejected', order_id: order.id), remote: true, method: :put,
+                              data: {confirm: 'Are you sure you want to reject this proof? Remember to create a new artwork request for revisions if you do reject this proof'} do %>
+                      <i class="fa fa-2x danger fa-thumbs-down"></i> Reject Proof &nbsp
+                  <% end %>
+              <% end %>
+            </div>
+        <% end %>
+      </div>
+    </div>
+
+    <br clear="all"/>
+  <hr>
+  </div>

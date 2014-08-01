@@ -1,0 +1,11 @@
+$row = $('#proof-<%= @proof.id %>');
+$row.fadeOut();
+$row.remove();
+setupContentModal(function($contentModal){
+    $contentModal.find('.modal-content').addClass('modal-content-success')
+})
+showContentModal({
+    title: 'SUCCESS',
+    body: 'Successfuly destroyed Proof'
+})
+updateOrderTimeline();

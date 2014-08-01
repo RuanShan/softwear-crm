@@ -25,6 +25,9 @@ class ArtworksController < InheritedResources::Base
   private
 
   def permitted_params
-    params.permit(:artwork_request_id, :artworks, artwork: [:id, :name, :description, :tag_list, :artist_id, artwork_request_ids: [], artwork_attributes: [:file, :description, :id, :_destroy], preview_attributes: [:file, :description, :id, :_destroy]])
+    params.permit(:artwork_request_id, :artworks,
+                  artwork: [:id, :name, :description, :tag_list, :artist_id, artwork_request_ids: [],
+                            artwork_attributes: [:file, :description, :id, :_destroy],
+                            preview_attributes: [:file, :description, :id, :_destroy]])
   end
 end

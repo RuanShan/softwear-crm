@@ -1,0 +1,10 @@
+showContentModal({
+    backdrop: "static",
+    keyboard: false,
+    title: 'New Proof',
+    body: $("<%= escape_javascript(render(partial: 'new', locals: {proof: @proof, order: @order})).html_safe %>")
+})
+initializeDateTimePicker();
+setSubmitTimeout();
+setNewProofSelect();
+styleCheckboxes();

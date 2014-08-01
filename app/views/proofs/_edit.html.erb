@@ -1,0 +1,6 @@
+<div class='box-info'>
+  <%= render partial: 'shared/modal_errors', locals: {object: proof} %>
+  <%= form_for proof, url: order_proof_path(order, proof), builder: LancengFormBuilder, remote: true, multipart: true do |f| %>
+      <%= render partial: 'form', locals: {proof: proof, order: order, f: f} %>
+  <% end %>
+</div>

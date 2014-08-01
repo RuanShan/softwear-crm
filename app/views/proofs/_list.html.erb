@@ -1,0 +1,13 @@
+<div class='user-profile-content'>
+  <div class="row">
+    <div class="col-sm-12">
+      <h3><strong>Proofs</strong></h3>
+      <div class="proof-list" >
+        <% order.proofs.each do |proof| %>
+            <%= render partial: 'proofs/proof', locals: {proof: proof, order: order} %>
+        <%end%>
+      </div>
+      <%= link_to new_order_proof_path(order), class: 'btn btn-info btn-lg btn-block', id: 'new_proof', remote: true do %><i class="fa fa-list-alt"> </i>Add Proof<% end %>
+    </div>
+  </div>
+</div>

@@ -31,7 +31,12 @@ FactoryGirl.define do
 
     factory :order_with_job do
       after(:create) { |o| o.jobs << create(:job) }
+      factory :order_with_proofs do
+        after(:create) { |o| o.proofs << create(:valid_proof) }
+      end
     end
+
+
 
     factory :blank_order do
 
