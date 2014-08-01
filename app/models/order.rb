@@ -30,6 +30,7 @@ class Order < ActiveRecord::Base
   has_many :jobs
   has_many :artwork_requests, through: :jobs
   has_many :payments
+  has_many :proofs
 
   accepts_nested_attributes_for :payments
 

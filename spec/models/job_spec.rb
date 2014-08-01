@@ -170,18 +170,16 @@ describe Job, job_spec: true do
     end
   end
 
-  describe '#imprintable_info', artwork_request_spec: true, wip: true do
+  describe '#imprintable_info', artwork_request_spec: true do
     let!(:job) { create(:job) }
-    [:red, :blue, :green].each { |c| let!(c) { create(:valid_color, name: c) } }
+    [:red, :green].each { |c| let!(c) { create(:valid_color, name: c) } }
     [:shirt, :hat].each { |s| let!(s) { create(:valid_imprintable) } }
 
     make_variants :green, :shirt, [:S, :M, :L]
-    make_variants :red,   :shirt, [:S, :M, :XL]
     make_variants :red,   :hat,   [:OSFA]
-    make_variants :blue,  :hat,   [:OSFA]
 
     it 'should return all of the information for the imprintables ' do
-      expect(job.imprintable_info).to eq("green style_1 1235, red style_1 1235, red style_2 1236, blue style_2 1236")
+      expect(job.imprintable_info).to eq("green #{shirt.style_name} #{shirt.style_catalog_no}, red #{hat.style_name} #{hat.style_catalog_no}")
     end
   end
 

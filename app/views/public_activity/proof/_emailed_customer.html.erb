@@ -1,0 +1,17 @@
+<% if activity.trackable_type %>
+    Emailed proof approval request
+    <% if activity.trackable %>
+        by <%= current_user.full_name %>
+    <% else %>
+        which has since been removed
+    <% end %>
+<% else %>
+    Emailed some proof...
+<% end %>
+in
+<% if activity.recipient %>
+    <%= activity.recipient_type.underscore.humanize.downcase %>
+    <%= link_to activity.recipient.name, activity.recipient %>
+<% else %>
+    a deleted order
+<% end %>

@@ -1,0 +1,27 @@
+<%= form_tag email_customer_order_proofs_path(order_id: order.id, id: proof.id, reminder: reminder), method: :post do %>
+    <div id="horizontal-form" class="collapse in">
+      <div class="form-group">
+        <div class="row">
+          <div class="col-sm-2">
+            <%= label_tag :email_subject %>
+          </div>
+          <div class="col-sm-10">
+            <%= text_field_tag :email_subject, t('proof_approval_request_subject', id: order.id), {class: 'form-control'} %>
+          </div>
+        </div>
+      </div>
+      <div class="form-group">
+        <div class="row">
+          <div class="col-sm-2">
+            <%= label_tag :email_body %>
+          </div>
+          <div class="col-sm-10">
+            <% artwork_links = proof.artworks.flat_map{|artwork| link_to "Download Artwork", artwork.preview.file.url}  %>
+            <% mockup_links = proof.mockups.flat_map{|mockup| link_to "Download Mockup", mockup.file.url}  %>
+            <%= text_field_tag :email_body, t('proof_approval_request_body_html', approve_by: proof.approve_by.strftime('%b %d, %Y'), deadline: (proof.approve_by + 2.days).strftime('%b %d, %Y'), firstname: order.firstname, lastname: order.lastname, artwork_links: artwork_links.map{|al| al}.join('<br>'), mockup_links: mockup_links.map{|ml| ml}.join('<br>')), {class: 'form-control summernote'} %>
+          </div>
+        </div>
+      </div>
+      <%= submit_tag 'Send Email', class: 'btn btn-primary' %>
+    </div>
+<% end %>

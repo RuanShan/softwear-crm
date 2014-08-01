@@ -52,6 +52,13 @@ CrmSoftwearcrmCom::Application.routes.draw do
     get 'timeline', to: 'timeline#show', as: :timeline
     resources :payments, shallow: true
     resources :artwork_requests
+    resources :proofs do
+      collection do
+        get 'email_customer'
+        post 'email_customer'
+      end
+    end
+
     resources :jobs, only: [:create, :update, :destroy, :show], shallow: true do
       resources :line_items do
         get :form_partial, on: :member

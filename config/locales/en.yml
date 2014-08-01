@@ -21,3 +21,39 @@
 
 en:
   hello: "Hello world"
+  proof_approval_request_subject: "Your Proof from the Ann Arbor T-shirt Company Order #%{id} is awaiting your approval"
+  proof_reminder_subject: "We're still waiting for you to approve your Proof from the Ann Arbor T-shirt Company Order #%{id}"
+  proof_reminder_body_html: <p>Hi %{firstname} %{lastname},</p>
+                             <p>Please respond to the previous email we sent, which included information regarding your Proof. If you need us to send the approval request email again, please let us know.</p>
+                             <p>Thank you, %{firstname} %{lastname}!</p>
+  proof_approval_request_body_html: <p>Hi %{firstname} %{lastname},</p>
+                                     <p>Attached is the proof for your order with us.</p>
+                                     <p>To ensure a high quality final product that meets your standards, please read through the following guidelines:</p>
+                                     <ol>
+                                       <li>
+                                         We will print <i>exactly</i> what is show in this proof.
+                                         <u>Please note that color accuracy cannot be guaranteed, as appearance varies across computer monitors.</u>
+                                       </li>
+                                       <li>
+                                         We highly recommend NOT reviewing your proof on a cell phone or mobile device. If there are small details in your print and you approve it without adequately reviewing them, we cannot be held responsible. If you wear reading glasses or corrective lenses, please put them on when reviewing your artwork.
+                                       </li>
+                                       <li>
+                                         If you are not 100% confident that you understand the content of what is going to be printed, we can provide additional close-up images upon request.
+                                       </li>
+                                       <li>
+                                       Let us know if you would like something changed, if anything is included that shouldn't be, or if something has been omitted (for example, if a name was mistakenly left off a list of group members).
+                                       </li>
+                                       <li>
+                                         <u>Your approval of the proofs communicates to us your acceptance of responsibility for the content of what is printed on your garments, provided we print exactly what you have approved. Once you have approved, we will not re-print or give refunds for art errors, provided we are not at fault.</u>
+                                       </li>
+                                     </ol>
+                                     <p>Below are links to download the Artwork for your Order:</p>
+                                     <p>%{artwork_links}</p>
+
+                                     <p>Below are links to download the Mockups for your Order:</p>
+                                     <p>%{mockup_links}</p>
+                                     <p><strong>Provided your design is finalized by 2:00 PM on %{approve_by}, we can guarantee that your order will be ready for pick-up at the latest by 4:30 PM on %{deadline}.</strong></p>
+                                     <p>Sticking to these guidelines will help all of us here at the Ann Arbor T-Shirt Company ensure that we can give you our best work, which is what we all want!</p>
+                                     <p>Thank you, %{firstname} %{lastname}!</p>
+
+

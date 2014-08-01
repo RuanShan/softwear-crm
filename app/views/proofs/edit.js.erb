@@ -1,0 +1,10 @@
+showContentModal({
+    backdrop: "static",
+    keyboard: false,
+    title: 'Edit Proof',
+    body: $("<%= escape_javascript(render(partial: 'edit', locals: {proof: @proof, order: @order})).html_safe %>")
+})
+initializeDateTimePicker();
+setSubmitTimeout();
+styleCheckboxes();
+showProofSelect();

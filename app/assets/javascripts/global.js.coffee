@@ -42,3 +42,7 @@ $(document).ajaxStop(->
     $(this).parents("form").submit()
     $add.attr 'disabled', 'disabled'
     setTimeout (-> $add.removeAttr 'disabled'), 5000
+
+@summernoteSubmit = ->
+  $(".summernote").closest("form").submit ->
+    $(".summernote").val $(".summernote").code()
