@@ -122,11 +122,14 @@ feature 'Quotes management', quote_spec: true, js: true do
       fill_in 'First Name', with: 'Capy'
       fill_in 'Last Name', with: 'Bara'
       click_button 'Next'
+      sleep 0.5
       fill_in 'Quote Name', with: 'Quote Name'
       fill_in 'Valid Until Date', with: Time.now + 1.day
       fill_in 'Estimated Delivery Date', with: Time.now + 1.day
       click_button 'Next'
+      sleep 0.5
       click_link 'Add Line Item'
+      sleep 0.5
       fill_in 'Name', with: 'Line Item Name'
       fill_in 'Description', with: 'Line Item Description'
       fill_in 'Quantity', with: 2

@@ -5,7 +5,15 @@ jQuery ->
     buttonsClass: "btn btn-default"
     submitButtonClass: "btn btn-primary"
 
+  $(document).on('click', '#email-form-submit-button', ->
+    submitSummernote()
+  )
+
   return
+
+@submitSummernote = ->
+  summer_note = $('.summernote')
+  summer_note.val summer_note.code()
 
 @printPage = ->
   window.print()

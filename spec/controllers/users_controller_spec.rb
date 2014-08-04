@@ -22,7 +22,7 @@ describe UsersController, user_spec: true do
 
 			it 'creates the new user' do
 				post *args
-				expect(User.where(first_name: 'Test')).to exist
+				expect(User.where(first_name: 'Test_First')).to exist
 			end
 		end
 

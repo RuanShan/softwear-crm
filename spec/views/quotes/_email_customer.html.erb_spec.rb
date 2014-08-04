@@ -13,6 +13,6 @@ describe 'quotes/_email_customer.html.erb', quote_spec: true do
     expect(rendered).to have_css('label', text: 'Subject')
     expect(rendered).to have_css('label', text: 'Body of Email')
     expect(rendered).to have_css('input#email_subject')
-    expect(rendered).to have_css('textarea#email-form-textarea.summernote')
+    expect(rendered).to have_css('textarea.summernote')
   end
 end

@@ -92,7 +92,7 @@ describe 'artwork_requests/_artwork_request.html.erb', artwork_request_spec: tru
     end
     context 'with just artwork attached' do
       let!(:artwork_request){ create(:valid_artwork_request_with_artwork) }
-      it 'displays the fields for the artwork as well as all the fields for the artwork request' do
+      it 'displays the fields for the artwork as well as all the fields for the artwork request', slow: true do
         expect(rendered).to have_selector("div#artwork-request-#{artwork_request.id}")
         expect(rendered).to have_selector("div.the-notes")
         expect(rendered).to have_selector("h4.artwork-title")
@@ -137,7 +137,7 @@ describe 'artwork_requests/_artwork_request.html.erb', artwork_request_spec: tru
     end
     context 'with both an asset and an artwork attached' do
       let!(:artwork_request){ create(:valid_artwork_request_with_asset_and_artwork) }
-      it 'displays the fields for the artwork as well as all the fields for the artwork request' do
+      it 'displays the fields for the artwork as well as all the fields for the artwork request', slow: true do
         expect(rendered).to have_selector("div#artwork-request-#{artwork_request.id}")
         expect(rendered).to have_selector("div.the-notes")
         expect(rendered).to have_selector("h4.artwork-title")

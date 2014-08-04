@@ -5,7 +5,7 @@ describe 'artwork_requests/_artworks.html.erb', artwork_request_spec: true do
   before(:each) do
     render partial: 'artwork_requests/artworks', locals: {artwork_request: artwork_request}
   end
-  it 'displays the fields for an artwork attached to an artwork request' do
+  it 'displays the fields for an artwork attached to an artwork request', slow: true do
     expect(rendered).to have_selector("h4.artwork-title")
     expect(rendered).to have_css("dt", text: 'Name:')
     expect(rendered).to have_css("dd", text: "#{artwork_request.artworks.first.name}")
