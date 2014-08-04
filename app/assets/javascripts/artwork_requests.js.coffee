@@ -27,13 +27,6 @@
     no_results_text: "No results matched"
     width: "400px"
 
-    summernoteArtworkRequest()
-@summernoteArtworkRequest = ->
-  $(".summernote").closest("form").submit ->
-#    $(".summernote").code() "" if $(".note-editable").html() is "<p><br></p>"
-    $(".summernote").val $(".summernote").code()
-
-
 @setNewArtworkRequestSelect = ->
   $(".artwork-status-select").hide()
   $(".artwork-status-select").val "Pending"

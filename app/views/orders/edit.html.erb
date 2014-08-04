@@ -16,6 +16,7 @@
               <li><a href="#payments" data-toggle="tab"><i class="fa fa-money"></i> Payments</a></li>
               <li><a href="#shipments" data-toggle="tab"><i class="fa fa-archive"></i> Shipments</a></li>
               <li><a href="#artwork" data-toggle="tab"><i class="fa fa-picture-o"></i> Artwork</a></li>
+              <li><a href="#proofs" data-toggle="tab"><i class="fa fa-file-text-o"></i> Proofs</a></li>
             </ul>
 
             <div class="tab-content">
@@ -34,6 +35,10 @@
 
                 <div class="tab-pane animated fadeInRight" id="artwork">
                   <%= render partial: 'artwork_requests/list', locals: { order: @order } %>
+                </div>
+
+                <div class="tab-pane animated fadeInRight" id="proofs">
+                  <%= render partial: 'proofs/list', locals: { order: @order } %>
                 </div>
 
                 <div class="tab-pane animated fadeInRight" id="payments">

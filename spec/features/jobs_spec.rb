@@ -80,13 +80,16 @@ feature 'Jobs management', js: true, job_spec: true do
     expect(order.jobs.count).to eq 0
   end
 
-  scenario 'a job can be created and deleted without refreshing the page', retry: 3, pending: 'Doesnt work with ajax spinner' do
+  scenario 'a job can be created and deleted without refreshing the page', pending: 'Odd failure activity, will work with commented out lines but will fail without them', wip: true do
     visit edit_order_path(1, anchor: 'jobs')
     click_button 'New Job'
     sleep 1
+    # puts order.jobs.inspect
     all('button', text: 'Delete Job').last.click
     sleep 0.5
     find('a', text: 'Confirm').click
+    # puts order.jobs.inspect
+    sleep 1
     expect(page).to have_css("#job-#{order.jobs.second.id}", :visible => false)
     expect(order.jobs.count).to eq 1
   end

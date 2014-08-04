@@ -1,0 +1,12 @@
+setupContentModal(function($contentModal){
+    $contentModal.find('.modal-dialog').addClass('enlarge-modal')
+})
+showContentModal({
+    backdrop: "static",
+    keyboard: false,
+    title: 'Proof Email',
+    body: $("<%= escape_javascript(render(partial: 'email_fields', locals: {proof: @proof, order: @order, reminder: @reminder})).html_safe %>")
+})
+initializeProofSummernote();
+summernoteSubmit();
+setSubmitTimeout();
