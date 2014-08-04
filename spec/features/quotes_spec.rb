@@ -66,9 +66,9 @@ feature 'Quotes management', quote_spec: true, js: true do
     visit edit_quote_path quote.id
     find('a[href="#actions"]').click
     click_link 'Email Quote'
-    wait_for_ajax
+    sleep 0.5
     find('input[value="Submit"]').click
-    wait_for_ajax
+    sleep 0.5
     expect(page).to have_selector '.modal-content-success'
     expect(current_path).to eq(edit_quote_path quote.id)
   end
