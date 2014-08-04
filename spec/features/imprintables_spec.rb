@@ -1,7 +1,7 @@
 require 'spec_helper'
 include ApplicationHelper
 
-feature 'Imprintables management', imprintable_spec: true do
+feature 'Imprintables management', imprintable_spec: true, slow: true do
   given!(:valid_user) { create(:alternate_user) }
   before(:each) do
     login_as(valid_user)
