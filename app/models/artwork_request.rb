@@ -4,7 +4,11 @@ class ArtworkRequest < ActiveRecord::Base
   acts_as_paranoid
   tracked by_current_user + on_order
 
-  PRIORITIES = {1 => 'High (Rush Job)', 3 => 'Customer Paid For Art', 5 => 'Normal', 7 => 'Low'}
+  PRIORITIES = {
+    1 => 'High (Rush Job)',
+    3 => 'Customer Paid For Art',
+    5 => 'Normal',
+    7 => 'Low' }
 
   belongs_to :imprint_method
   belongs_to :print_location
@@ -28,6 +32,7 @@ class ArtworkRequest < ActiveRecord::Base
   validates :priority, presence: true
 
   def imprintable_variant_count
+    #TODO: inject
    jobs.map{|j| j.imprintable_variant_count}.inject{|sum,x| sum + x }
   end
 
@@ -36,11 +41,13 @@ class ArtworkRequest < ActiveRecord::Base
   end
 
   def total_quantity
+    #TODO: inject
     jobs.map{|j| j.total_quantity}.inject{|sum,x| sum + x }
   end
 
   def max_print_area(print_location)
-    areas = jobs.map{|j| j.max_print_area(print_location)}
+    # TODO: refactor
+    areas = jobs.map{ |j| j.max_print_area(print_location) }
     max_width = areas.map{|a| a[0]}.min
     max_height = areas.map{|a| a[1]}.min
     return max_width.to_s + ' in. x ' + max_height.to_s + ' in.'

@@ -1,5 +1,4 @@
 class ColorsController < InheritedResources::Base
-
   def index
     super do
       @colors = Color.all.page(params[:page])

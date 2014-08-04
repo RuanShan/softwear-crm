@@ -10,6 +10,7 @@ class Imprintable < ActiveRecord::Base
   SIZING_CATEGORIES = ['Adult Unisex', 'Ladies', 'Youth Unisex', 'Girls', 'Toddler', 'Infant', 'n/a']
 
   belongs_to :brand
+
   has_many :imprintable_variants, dependent: :destroy
   has_many :colors, ->{ uniq }, through: :imprintable_variants
   has_many :sizes, ->{ uniq },  through: :imprintable_variants
@@ -18,6 +19,7 @@ class Imprintable < ActiveRecord::Base
   has_many :mirrored_coordinate_imprintables, class_name: 'CoordinateImprintable', foreign_key: 'coordinate_id'
   has_many :mirrored_coordinates, through: :mirrored_coordinate_imprintables, source: :imprintable
   has_many :imprintable_categories
+
   accepts_nested_attributes_for :imprintable_categories, allow_destroy: true
   has_and_belongs_to_many :sample_locations, class_name: 'Store', association_foreign_key: 'store_id', join_table: 'imprintables_stores'
   has_and_belongs_to_many :compatible_imprint_methods, class_name: 'ImprintMethod', association_foreign_key: 'imprint_method_id', join_table: 'imprint_methods_imprintables'
@@ -59,52 +61,53 @@ class Imprintable < ActiveRecord::Base
     style_description
   end
 
+  # TODO: appease rubymine
   def find_variants
-    if self.id
-      ImprintableVariant.includes(:size, :color).where(imprintable_id: self.id)
+    if id
+      ImprintableVariant.includes(:size, :color).where(imprintable_id: id)
     end
   end
 
   def create_variants_hash
     variants = self.find_variants
     variants_array = variants.to_a
-    size_variants = variants_array.uniq{ |v| v.size_id }
+    size_variants = variants_array.uniq(&:size_id)
+
     size_variants.sort! { |x,y| x.size.sort_order <=> y.size.sort_order }
 
-    color_variants = variants_array.uniq{ |v| v.color_id }
-    { :size_variants => size_variants, :color_variants => color_variants, :variants_array => variants_array }
+    color_variants = variants_array.uniq(&:color_id)
+    {
+      size_variants: size_variants,
+      color_variants: color_variants,
+      variants_array: variants_array
+    }
   end
 
-  def standard_offering?
-    standard_offering == true
-  end
-
-  def retail_sku
-
-  end
-
+  # TODO: refactor
   def pricing_hash(decoration_price)
     imprintable = self
     sizes_string = determine_sizes(imprintable.sizes)
     {
-        name: imprintable.name,
-        supplier_link: imprintable.supplier_link,
-        sizes: sizes_string,
-        prices: get_prices(imprintable, decoration_price)
+      name: imprintable.name,
+      supplier_link: imprintable.supplier_link,
+      sizes: sizes_string,
+      prices: get_prices(imprintable, decoration_price)
     }
   end
 
+  # TODO: clean this up
   def determine_sizes(collection_proxy)
     if collection_proxy.first == nil
-      return nil
+      nil
     elsif collection_proxy.first == collection_proxy.last
       return collection_proxy.first.display_value
     else
-      return "#{collection_proxy.first.display_value} - #{collection_proxy.last.display_value}"
+      "#{collection_proxy.first.display_value} - #{collection_proxy.last.display_value}"
     end
   end
 
-  def create_imprintable_variants_from_sizes_and_colors(sizes=[], colors=[])
+  # TODO: change parameters to from hash with :sizes, :colors
+  def create_imprintable_variants_from_sizes_and_colors(sizes = [], colors = [])
     colors.each do |color|
       sizes.each do |size|
         i = ImprintableVariant.unscoped.find_or_initialize_by(size_id: size.id, color_id: color.id, imprintable_id: self.id)

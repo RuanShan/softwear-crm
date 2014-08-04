@@ -4,8 +4,8 @@ class PrintLocation < ActiveRecord::Base
   belongs_to :imprint_method
   has_many :imprints
 
-  validates :name, uniqueness: {scope: :imprint_method, conditions: -> { where(deleted_at: nil)}}, presence: true
+  # TODO: make sure still testing this in spec
+  validates :name, uniqueness: { scope: :imprint_method }, presence: true
   validates :max_height, numericality: true, presence: true
   validates :max_width, numericality: true, presence: true
-
 end

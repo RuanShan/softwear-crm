@@ -1,15 +1,13 @@
 class PaymentsController < InheritedResources::Base
-
   def create
     super do |format|
-      format.html { redirect_to edit_order_path(params[:order_id])+'#payments' }
+      format.html { redirect_to edit_order_path(params[:order_id], anchor: 'payments') }
     end
   end
 
   def update
     super do |format|
-      format.html { redirect_to edit_order_path(params[:payment][:order_id])+'#payments' }
-
+      format.html { redirect_to edit_order_path(params[:payment][:order_id], anchor: 'payments') }
     end
   end
 
@@ -24,6 +22,7 @@ class PaymentsController < InheritedResources::Base
     super do |format|
       @payment = Payment.new(payment_method: params[:payment_method])
       @order = Order.find(params[:order_id])
+
       format.js
     end
   end

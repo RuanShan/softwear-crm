@@ -1,4 +1,6 @@
 module QuoteHelper
+
+  # TODO: refactor to model
   def get_quote_salesperson_id(id)
     if id
       return salesperson_id = Quote.find(id).salesperson_id
@@ -6,6 +8,7 @@ module QuoteHelper
     current_user.id
   end
 
+  # TODO: refactor to model
   def get_quote_store_id(id)
     if id
       return store_id = Quote.find(id).store_id
@@ -13,6 +16,7 @@ module QuoteHelper
     current_user.store_id
   end
 
+  # TODO: might want to make DRY
   def add_prepopulated_fields(f, association, field_hash)
     new_object = f.object.send(association).klass.new
     id = new_object.object_id

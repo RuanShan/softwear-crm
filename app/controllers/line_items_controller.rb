@@ -1,4 +1,5 @@
 class LineItemsController < InheritedResources::Base
+  # TODO: everything
   before_filter :load_line_itemable, except: [:select_options, :destroy]
 
   def new
@@ -29,6 +30,7 @@ class LineItemsController < InheritedResources::Base
   def show
     super do |format|
       format.html do
+        # TODO: 80 char
         redirect_to order_path(@line_item.order, anchor: "jobs-#{@line_item.job.id}-line_item-#{@line_item.id}")
       end
       format.json do

@@ -1,5 +1,4 @@
 class BrandsController < InheritedResources::Base
-
   def index
     super do
       @brands = Brand.all.page(params[:page])

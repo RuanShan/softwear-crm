@@ -10,6 +10,7 @@ class Quote < ActiveRecord::Base
 
   accepts_nested_attributes_for :line_items, allow_destroy: true
 
+  # TODO: refactor to validator file
   validates :email, presence: true, format: { with: /\A([^@\s]+)@((?:[-a-z0-9]+\.)+[a-z]{2,})\Z/i }
   validates :first_name, presence: true
   validates :last_name, presence: true
@@ -17,6 +18,7 @@ class Quote < ActiveRecord::Base
   validates :estimated_delivery_date, presence: true
   validates :salesperson_id, presence: true
   validates :store_id, presence: true
+  # TODO: move to custom validator? reference style guide
   validate :has_line_items?
 
   def has_line_items?
@@ -24,14 +26,15 @@ class Quote < ActiveRecord::Base
   end
 
   def all_activities
-    PublicActivity::Activity.where( "
+    # TODO: use string literal? also general style
+    PublicActivity::Activity.where( '
       (
         activities.recipient_type = ? AND activities.recipient_id = ?
       ) OR
       (
         activities.trackable_type = ? AND activities.trackable_id = ?
       )
-    ", *([self.class.name, self.id] * 2) ).order('created_at DESC')
+    ', *([self.class.name, id] * 2) ).order('created_at DESC')
   end
 
   def full_name
@@ -40,7 +43,7 @@ class Quote < ActiveRecord::Base
 
   def line_items_subtotal
     total = 0
-    self.line_items.each do |li|
+    line_items.each do |li|
       total += li.total_price
     end
     total
@@ -48,9 +51,9 @@ class Quote < ActiveRecord::Base
 
   def line_items_total_tax
     total = 0
-    self.line_items.each do |li|
+    line_items.each do |li|
       if li.taxable?
-        # TODO hard-coded 6% tax is probably subject to change
+        # TODO refactor to instance method
         total += li.total_price * 0.06
       end
     end
@@ -60,8 +63,9 @@ class Quote < ActiveRecord::Base
   def line_items_total_with_tax
     total = 0
     self.line_items.each do |li|
+      # TODO: ternary
       if li.taxable?
-      # TODO hard-coded 6% tax is probably subject to change
+      # TODO refactor to instance method
         total += li.total_price * 1.06
       else
         total += li.total_price
@@ -72,6 +76,7 @@ class Quote < ActiveRecord::Base
 
   def formatted_phone_number
     if phone_number
+      # TODO: indent equals signs?
       area_code = phone_number[0, 3]
       middle_three = phone_number[3, 3]
       last_four = phone_number[6, 4]
@@ -85,20 +90,23 @@ class Quote < ActiveRecord::Base
 
   def create_freshdesk_ticket(current_user)
     freshdesk_info = fetch_data_to_h(current_user)
+    # TODO: create softwearcrm freshdesk account
     client = Freshdesk.new('http://annarbortees.freshdesk.com/', 'david.s@annarbortees.com', 'testdesk')
+
     client.post_tickets(
-        email: email,
-        requester_id: freshdesk_info[:requester_id],
-        requester_name: freshdesk_info[:requester_name],
-        source: 2,
-        group_id: freshdesk_info[:group_id],
-        ticket_type: 'Lead',
-        subject: 'Custom Apparel',
-        custom_field: { department_7483: freshdesk_info[:department] }
+      email: email,
+      requester_id: freshdesk_info[:requester_id],
+      requester_name: freshdesk_info[:requester_name],
+      source: 2,
+      group_id: freshdesk_info[:group_id],
+      ticket_type: 'Lead',
+      subject: 'Custom Apparel',
+      custom_field: { department_7483: freshdesk_info[:department] }
     )
   end
 
   def fetch_data_to_h(current_user)
+    # TODO: shouldn't need these comments
     # this function will, by default, set hash values to nil if anything is amiss
     freshdesk_info = {}
 
@@ -112,7 +120,7 @@ class Quote < ActiveRecord::Base
   def fetch_group_id_and_dept(old_hash)
     new_hash = {}
     if store.name.downcase.include? 'arbor'
-      # pretty sure this is the id freshdesk uses for Sales - Ann Arbor
+      # HACK: pretty sure this is the id freshdesk uses for Sales - Ann Arbor
       new_hash[:group_id] = 86316
       new_hash[:department] = 'Sales - Ann Arbor'
     elsif store.name.downcase.include? 'ypsi'
@@ -125,23 +133,29 @@ class Quote < ActiveRecord::Base
     old_hash.merge(new_hash)
   end
 
+  # FIXME: fix this
   def fetch_requester_id_and_name(old_hash, current_user)
     new_hash = {}
     if current_user.full_name.downcase == 'jack koch'
       new_hash[:requester_id] = Figaro.env['jacks_freshdesk_id']
       new_hash[:requester_name] = Figaro.env['jacks_freshdesk_name']
+
     elsif current_user.full_name.downcase == 'nathan kurple' || current_user.full_name.downcase == 'nate kurple'
       new_hash[:requester_id] = Figaro.env['nates_freshdesk_id']
       new_hash[:requester_name] = Figaro.env['nates_freshdesk_name']
+
     elsif current_user.full_name.downcase == 'george bekris'
       new_hash[:requester_id] = Figaro.env['georges_freshdesk_id']
       new_hash[:requester_name] = Figaro.env['georges_freshdesk_name']
+
     elsif current_user.full_name.downcase == 'barrie rupp'
       new_hash[:requester_id] = Figaro.env['barries_freshdesk_id']
       new_hash[:requester_name] = Figaro.env['barries_freshdesk_name']
+
     elsif current_user.full_name.downcase == 'michael marasco'
       new_hash[:requester_id] = Figaro.env['michaels_freshdesk_id']
       new_hash[:requester_name] = Figaro.env['michaels_freshdesk_name']
+
     else
       new_hash[:requester_id] = nil
       new_hash[:requester_name] = nil

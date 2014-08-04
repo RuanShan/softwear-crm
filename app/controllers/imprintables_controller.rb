@@ -1,8 +1,7 @@
 class ImprintablesController < InheritedResources::Base
-
-
   def index
     super do
+      # TODO: refactor with ternary and conditional assignment
       if params[:tag]
         @imprintables = Imprintable.tagged_with(params[:tag])
       else
@@ -15,13 +14,15 @@ class ImprintablesController < InheritedResources::Base
     super do |success, failure|
       color_ids = (params[:color].nil? ? [] : params[:color][:ids])
       size_ids = (params[:size].nil? ? [] : params[:size][:ids])
+
       if color_ids && size_ids
         color_ids.each do |color_id|
           size_ids.each do |size_id|
-            ImprintableVariant.create(:imprintable_id => params[:id], :size_id => size_id, :color_id => color_id)
+            ImprintableVariant.create(imprintable_id: params[:id], size_id: size_id, color_id: color_id)
           end
         end
       end
+
       success.html { redirect_to edit_imprintable_path params[:id] }
       failure.html do
         set_variant_hashes
@@ -30,8 +31,8 @@ class ImprintablesController < InheritedResources::Base
     end
   end
 
-
   def show
+    # TODO: look at 3 different formats
     super do |format|
       @imprintable = Imprintable.find(params[:id])
       set_variant_hashes
@@ -43,10 +44,7 @@ class ImprintablesController < InheritedResources::Base
 
   def edit
     super do
-      variants_hash = Imprintable.find(params[:id]).create_variants_hash
-      @size_variants = variants_hash[:size_variants]
-      @color_variants = variants_hash[:color_variants]
-      @variants_array = variants_hash[:variants_array]
+      set_variant_hashes
     end
   end
 
@@ -55,25 +53,30 @@ class ImprintablesController < InheritedResources::Base
       variants_to_add = params[:update][:variants_to_add]
       variants_to_remove = params[:update][:variants_to_remove]
     end
-    if !variants_to_add.nil?
+
+    # TODO: David, take a look at this, unsafe assignment and usage?
+    unless variants_to_add.nil?
       variants_to_add.each_value do |hash|
         size_id = hash['size_id']
         color_id = hash['color_id']
-        ImprintableVariant.create(:imprintable_id => params[:id], :size_id => size_id, :color_id => color_id)
+        ImprintableVariant.create(imprintable_id: params[:id], size_id: size_id, color_id: color_id)
       end
     end
-    if !variants_to_remove.nil?
+
+    unless variants_to_remove.nil?
       variants_to_remove.each do |imprintable_variant_id|
         ImprintableVariant.delete(imprintable_variant_id)
       end
     end
-    render :json => {}
+    # TODO: what is this shite?
+    render json: {}
   end
 
   private
 
   def set_variant_hashes
     variants_hash = @imprintable.create_variants_hash
+    # TODO: look at this?
     @size_variants = variants_hash[:size_variants]
     @color_variants = variants_hash[:color_variants]
     @variants_array = variants_hash[:variants_array]

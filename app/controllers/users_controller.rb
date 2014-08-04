@@ -1,9 +1,10 @@
 class UsersController < InheritedResources::Base
   def create
     password = Devise.friendly_token.first 8
+    user = User.new(sign_up_params.merge(password: password,
+                                         password_confirmation: password))
 
-    user = User.new(sign_up_params.merge({password: password, 
-                                          password_confirmation: password}))
+    # TODO refactor this using ternary expression and assign with conditional expression
     unless user.valid?
       if user.errors.include? :email
         flash[:alert] = 'Email already in use'
@@ -12,9 +13,11 @@ class UsersController < InheritedResources::Base
       end
       return redirect_to new_user_path
     end
+
     user.confirm! # TODO perhaps move confirmation elsewhere using skip_confirmation!
     user.save
 
+    # TODO: take redirect branch and see what it does, refactor if necessary
     if user_signed_in?
       NewUserMailer.confirm_user(user, password, current_user).deliver
     else
@@ -22,12 +25,9 @@ class UsersController < InheritedResources::Base
       redirect_to '/'
     end
 
+    # TODO: wrap at 80 characters, using string literal?
     flash[:notice] = "User #{user.full_name} successfully created with email #{user.email}. Their password has been emailed to them."
     redirect_to users_path
-  end
-
-  def edit_password
-
   end
 
   def update_password
@@ -35,6 +35,7 @@ class UsersController < InheritedResources::Base
       flash[:alert] = 'Error changing password'
       return render :edit_password
     end
+
     sign_in @current_user, bypass: true
     flash[:notice] = "Password successfully changed!"
     redirect_to users_path
@@ -54,19 +55,18 @@ class UsersController < InheritedResources::Base
     redirect_to new_user_session_path
   end
 
-  def edit
-    super
-  end
-
   def show
     redirect_to users_path
   end
 
-private
+  private
+
   def permitted_params
-    params.permit(user: [
-      :email, :first_name, :last_name, :store_id
-    ])
+    # TODO: Look into this style
+    params.permit(
+      user: [
+        :email, :first_name, :last_name, :store_id
+      ])
   end
 
   def resource_name
@@ -76,6 +76,7 @@ private
   def sign_up_params
     permitted_params[:user].merge devise_parameter_sanitizer.sanitize(:sign_up)
   end
+
   def password_params
     params.permit(user: [:password, :password_confirmation, :current_password])[:user]
   end

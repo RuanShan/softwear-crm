@@ -1,5 +1,4 @@
 class SizesController < InheritedResources::Base
-
   def update
     super do |success, failure|
       success.html { redirect_to sizes_path }
@@ -15,14 +14,17 @@ class SizesController < InheritedResources::Base
 
   def update_size_order
     @size_ids = params[:categories]
+
     ActiveRecord::Base.transaction do
       @size_ids.each_with_index do |temp, n|
         temp = temp.split('_')
         id = temp[1]
+        # TODO: David, refactor to not use update_attribute
         Size.find(id).update_attribute :sort_order, n
       end
     end
-    render :json => {}
+
+    render json: {}
   end
 
   private

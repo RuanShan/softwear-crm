@@ -5,8 +5,8 @@ class ImprintMethod < ActiveRecord::Base
   has_many :print_locations, dependent: :destroy
   accepts_nested_attributes_for :ink_colors, allow_destroy: true
   accepts_nested_attributes_for :print_locations, allow_destroy: true
+  # TODO: habtm and 80 char limit and refactor?
   has_and_belongs_to_many :imprintables, association_foreign_key: 'imprint_method_id', join_table: 'imprint_methods_imprintables'
 
   validates :name, presence: true, uniqueness: true
-
 end

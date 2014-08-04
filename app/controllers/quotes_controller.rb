@@ -13,6 +13,7 @@ class QuotesController < InheritedResources::Base
     super do |format|
       @current_user = current_user
       @activities = @quote.all_activities
+
       format.html
     end
   end
@@ -21,8 +22,8 @@ class QuotesController < InheritedResources::Base
     super do |format|
       format.json do
         render json: {
-            result: 'success',
-            content: render_string(partial: 'line_items/standard_view', locals: { line_items: @quote.standard_line_items })
+          result: 'success',
+          content: render_string(partial: 'line_items/standard_view', locals: { line_items: @quote.standard_line_items })
         }
       end
       format.html { render 'quotes/show', layout: 'no_overlay' }
@@ -31,18 +32,22 @@ class QuotesController < InheritedResources::Base
 
   def create
     super do
+      # TODO: this is messed up, come back to this
       # only want to create freshdesk tickets if we're not running the spec and we're not the admin (for development)
       @quote.create_freshdesk_ticket(current_user) unless (current_user.full_name.downcase.include?('test') || current_user.full_name.downcase.include?('admin'))
     end
   end
 
   def quote_select
+    # TODO: more than 2 instance variables
     respond_to do |format|
       @quotes = Quote.all
       @index = params[:index].to_i
+
       name = session[:prices][@index][:name]
       unit_price = session[:prices][@index][:prices][:base_price]
       @new_line_item = LineItem.new(name: name, unit_price: unit_price, description: 'Canned Description')
+
       format.js
     end
   end
@@ -50,13 +55,16 @@ class QuotesController < InheritedResources::Base
   def stage_quote
     @quote = Quote.find(params[:quote_id])
     @quote.line_items.new(name: params[:name],
-                         unit_price: params[:total_price],
-                         description: 'Canned Description',
-                         quantity: 0).save
+                          unit_price: params[:total_price],
+                          description: 'Canned Description',
+                          quantity: 0).save
     @quote.create_activity :added_line_item, owner: current_user
+
     redirect_to edit_quote_path params[:quote_id]
   end
 
+  # TODO: generalize email_customer for usage both here and in proofs
+  # TODO: > 10 LOC
   def email_customer
     @quote = Quote.find(params[:quote_id])
     
@@ -72,7 +80,11 @@ class QuotesController < InheritedResources::Base
       QuoteMailer.email_customer(hash).deliver
       flash[:success] = 'Your email was successfully sent!'
       @quote.create_activity :emailed_customer, owner: current_user
-    rescue Net::SMTPAuthenticationError, Net::SMTPServerBusy, Net::SMTPSyntaxError, Net::SMTPFatalError, Net::SMTPUnknownError => e
+    rescue Net::SMTPAuthenticationError,
+           Net::SMTPServerBusy,
+           Net::SMTPSyntaxError,
+           Net::SMTPFatalError,
+           Net::SMTPUnknownError => e
       flash[:notice] = 'Your email was unable to be sent'
       flash[:success] = nil
       @activity = PublicActivity::Activity.find_by_trackable_id(params[:quote_id])
@@ -96,6 +108,7 @@ class QuotesController < InheritedResources::Base
     format_time(:estimated_delivery_date)
   end
 
+  # TODO: format_time!
   def format_time(attribute)
     begin
       time = DateTime.strptime(params[:quote][attribute], '%m/%d/%Y %H:%M %p').to_time unless (params[:quote].nil? or params[:quote][attribute].nil?)

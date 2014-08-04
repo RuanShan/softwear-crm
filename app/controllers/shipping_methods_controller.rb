@@ -1,5 +1,4 @@
 class ShippingMethodsController < InheritedResources::Base
-
   def update
     super do |success, failure|
       success.html { redirect_to shipping_methods_path }

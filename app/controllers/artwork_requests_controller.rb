@@ -5,29 +5,31 @@ class ArtworkRequestsController < InheritedResources::Base
   respond_to :js
 
   def update
+    # TODO: > 10 LOC, might want to refactor?
     unless params[:artwork_id].nil?
       @artwork_request = ArtworkRequest.find(params[:id])
       @artwork = Artwork.find(params[:artwork_id])
+
       if params[:remove_artwork].nil?
         @artwork_request.artworks << @artwork
         @artwork_request.artwork_status = 'Art Created'
       else
         @artwork_request.artworks.delete(@artwork)
-        if @artwork_request.artwork_ids.empty?
-          @artwork_request.artwork_status = 'Pending'
-        end
+        @artwork_request.artwork_status = 'Pending' if @artwork_request.artwork_ids.empty?
       end
+
       @order = Order.find(@artwork_request.jobs.first.order.id)
     end
-    super do |success, failure|
+
+    super do |success, _failure|
       if @artwork.nil?
-      success.js {notify_artist}
+        success.js { notify_artist }
       end
     end
   end
 
   def create
-    super do |success, failure|
+    super do |success, _failure|
       success.js do
         notify_artist
       end
@@ -40,16 +42,17 @@ class ArtworkRequestsController < InheritedResources::Base
     ArtistMailer.artist_notification(@artwork_request, action_name).deliver
   end
 
+  # TODO: Nick, David, extract and refactor format_time
   def format_time
     if params[:artwork_id].nil?
-    begin
-      time = DateTime.strptime(params[:artwork_request][:deadline], '%m/%d/%Y %H:%M %p').to_time unless (params[:artwork_request].nil? or params[:artwork_request][:deadline].nil?)
-      offset = (time.utc_offset)/60/60
-      adjusted_time = (time - offset.hours).utc
-      params[:artwork_request][:deadline] = adjusted_time
-    rescue ArgumentError
-      params[:artwork_request][:deadline]
-    end
+      begin
+        time = DateTime.strptime(params[:artwork_request][:deadline], '%m/%d/%Y %H:%M %p').to_time unless (params[:artwork_request].nil? or params[:artwork_request][:deadline].nil?)
+        offset = (time.utc_offset)/60/60
+        adjusted_time = (time - offset.hours).utc
+        params[:artwork_request][:deadline] = adjusted_time
+      rescue ArgumentError
+        params[:artwork_request][:deadline]
+      end
     end
   end
 
@@ -59,11 +62,12 @@ class ArtworkRequestsController < InheritedResources::Base
 
   def permitted_params
     params.permit(:order_id, :id,
-                  artwork_request: [:id, :priority, :description, :artist_id,
-                                    :imprint_method_id, :print_location_id,
-                                    :salesperson_id, :deadline, :artwork_status,
-                                    job_ids: [], ink_color_ids: [], artwork_ids: [],
-                                    assets_attributes: [:file, :description, :id, :_destroy]])
+                  artwork_request:
+                      [:id, :priority, :description, :artist_id,
+                       :imprint_method_id, :print_location_id,
+                       :salesperson_id, :deadline, :artwork_status,
+                       job_ids: [], ink_color_ids: [], artwork_ids: [],
+                       assets_attributes: [:file, :description, :id, :_destroy]])
 
   end
 end

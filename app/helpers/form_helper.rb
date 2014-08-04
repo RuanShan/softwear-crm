@@ -1,7 +1,9 @@
 module FormHelper
   def add_class(options, *values)
     options[:class] ||= ''
+
     values.each do |v|
+      # TODO: join?
       options[:class] << ' ' unless options[:class].empty?
       options[:class] << v
       options.merge!(@common_attrs) unless @common_attrs.nil?
@@ -75,13 +77,13 @@ module FormHelper
 
 
   def inline_field_tag(object, method, default_or_options={}, options={})
-    default = nil
     if default_or_options.is_a? Hash
       options = default_or_options
       default = method.to_s.gsub(/_/, ' ')
     else
       default = default_or_options
     end
+
     add_class options, 'inline-field'
     # TODO change resource- to data-resource for validity
     options.merge! ({
@@ -91,6 +93,7 @@ module FormHelper
           'resource-id'      => object.id,
           'resource-method'  => method
         })
+
     content = object.send(method) || default
     content_tag(:span, content, options)
   end

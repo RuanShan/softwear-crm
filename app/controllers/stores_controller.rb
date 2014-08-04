@@ -1,8 +1,8 @@
 class StoresController < InheritedResources::Base
-
   def index
     super do |format|
       format.html
+      # FIXME: sanitize SQL input
       format.json { render json: @stores.where('name like ?', "%#{params[:q]}%") }
     end
   end

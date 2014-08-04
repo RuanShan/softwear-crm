@@ -1,5 +1,4 @@
 class Artwork < ActiveRecord::Base
-
   paginates_per 100
 
   acts_as_paranoid
@@ -16,6 +15,7 @@ class Artwork < ActiveRecord::Base
 
   validates :name, presence: true
   validates :description, presence: true
+  # FIXME
   # validates_attachment_content_type :artwork, :content_type => /^image\/(png|gif|jpeg)/
   # validates_format_of :artwork, :with => %r{\.(png|jpg|gif)\z}i, :message => "must be a .jpg, .png, or .gif"
   # validates_format_of :preview, :with => %r{\.(ai|psd)}i, :message => "must be a .ai or .psd"
@@ -30,8 +30,8 @@ class Artwork < ActiveRecord::Base
   private
 
   def init_assets
+    # TODO: see if you need self here
     self.artwork ||= Asset.new if self.new_record?
     self.preview ||= Asset.new if self.new_record?
   end
-
 end

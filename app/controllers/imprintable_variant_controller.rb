@@ -1,5 +1,4 @@
 class ImprintableVariantsController < InheritedResources::Base
-
   def update
     super do |format|
       format.html { redirect_to imprintable_variant_path params[:id] }

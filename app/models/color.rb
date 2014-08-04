@@ -9,5 +9,4 @@ class Color < ActiveRecord::Base
   validates :sku, length: { is: 3 }, if: :is_retail?
 
   default_scope { order(:name) }
-
 end

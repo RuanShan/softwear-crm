@@ -10,7 +10,8 @@ class ApplicationController < ActionController::Base
   before_action :assign_current_user
   before_action :assign_current_url
 
-protected
+  protected
+
   def configure_user_parameters
     devise_parameter_sanitizer.for(:sign_up) do |u|
       u.permit :email, :firstname, :lastname
@@ -21,8 +22,11 @@ protected
     if current_user
       @current_user = current_user
     else
+      # TODO: Nigel, Look this over
       @current_user = Class.new do
-        def full_name; 'Error User'; end
+        def full_name
+          'Error User'
+        end
       end.new
     end
   end
@@ -34,12 +38,14 @@ protected
   def fire_activity(record, activity_name, options={})
     options[:key] = record.class.activity_key_for activity_name
     options[:owner] = current_user
+    # TODO: uncomment this and see if it still breaks
     # options[:recipient] = TrackingHelpers::Methods.get_order(self, record)
     record.create_activity options
   end
 
   # Pulled this off the internet as a way to render templates to a string
   # without using up your one render in a controller.
+  # TODO: Nigel, cite resource and merge with render string
   def with_format(format)
     old_formats = formats
     self.formats = [format]

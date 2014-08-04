@@ -9,7 +9,7 @@ class OrdersController < InheritedResources::Base
 
   def update
     super do |success, failure|
-      success.html { redirect_to edit_order_path(params[:id])+'#details' }
+      success.html { redirect_to "#{edit_order_path(params[:id])}#details" }
       failure.html do
         assign_activities
         render action: :edit, anchor: 'details'
@@ -25,6 +25,7 @@ class OrdersController < InheritedResources::Base
     super do
       @current_user = current_user
       stores = Store.all
+      # TODO: cond. assignment refactor
       if stores.empty?
         @empty = true
       else
@@ -35,13 +36,13 @@ class OrdersController < InheritedResources::Base
 
   def edit
     super do
-      # Grab all activities associated with this order
       assign_activities
     end
   end
 
   private
 
+  # TODO: format_time refactor
   def format_time
     begin
       time = DateTime.strptime(params[:order][:in_hand_by], '%m/%d/%Y %H:%M %p').to_time unless (params[:order].nil? or params[:order][:in_hand_by].nil?)
@@ -67,5 +68,4 @@ class OrdersController < InheritedResources::Base
       :store_id, :salesperson_id, :total
     ])
   end
-
 end

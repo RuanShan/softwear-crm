@@ -4,18 +4,24 @@ class Order < ActiveRecord::Base
   acts_as_paranoid
   tracked by_current_user
 
-  VALID_PAYMENT_TERMS = ['', 
-     'Paid in full on purchase',
-     'Half down on purchase',
-     'Paid in full on pick up',
-     'Net 30',
-     'Net 60']
+  VALID_PAYMENT_TERMS = [
+    '',
+    'Paid in full on purchase',
+    'Half down on purchase',
+    'Paid in full on pick up',
+    'Net 30',
+    'Net 60']
 
-  VALID_DELIVERY_METHODS = ['Pick up in Ann Arbor', 'Pick up in Ypsilanti', 'Ship to one location', 'Ship to multiple locations']
+  VALID_DELIVERY_METHODS = [
+    'Pick up in Ann Arbor',
+    'Pick up in Ypsilanti',
+    'Ship to one location',
+    'Ship to multiple locations']
 
+  # TODO: refactor validators
   validates_presence_of :email, :firstname, :lastname, :name, :terms, :delivery_method
   validates :email, format: { with: /\A([^@\s]+)@((?:[-a-z0-9]+\.)+[a-z]{2,})\Z/i }
-  validates :phone_number, format: { with: /\d{3}-\d{3}-\d{4}/, message: "is incorrectly formatted, use 000-000-0000" }
+  validates :phone_number, format: { with: /\d{3}-\d{3}-\d{4}/, message: 'is incorrectly formatted, use 000-000-0000' }
 
   validates_inclusion_of(:delivery_method,
       in: VALID_DELIVERY_METHODS,
@@ -34,45 +40,47 @@ class Order < ActiveRecord::Base
 
   accepts_nested_attributes_for :payments
 
+  # TODO: refactor this out to concern
   def all_activities
-    PublicActivity::Activity.where( "
+    PublicActivity::Activity.where( '
       (
         activities.recipient_type = ? AND activities.recipient_id = ?
       ) OR
       (
         activities.trackable_type = ? AND activities.trackable_id = ?
       )
-    ", *([self.class.name, self.id] * 2) ).order('created_at DESC')
+    ', *([self.class.name, self.id] * 2) ).order('created_at DESC')
   end
 
   def line_items
     LineItem.where(line_itemable_id: job_ids, line_itemable_type: 'Job')
   end
 
-  def tax; 0.6; end
-
-  def subtotal
-    sum = 0
-    line_items.each do |line_item|
-      sum += line_item.total_price
-    end
-    sum
+  def tax
+    0.6
   end
 
-  def total; subtotal + subtotal * tax; end
+  def subtotal
+    line_items.map(&:total_price).sum
+  end
+
+  def total
+    subtotal + subtotal * tax
+  end
 
   def salesperson
-    User.find(self.salesperson_id)
+    User.find(salesperson_id)
   end
 
   def salesperson_name
-    User.find(self.salesperson_id).full_name
+    User.find(salesperson_id).full_name
   end
 
   def payment_total
     total = 0
+    # TODO: make fancy, use select
     self.payments.each do |payment|
-      if !payment.nil? and !payment.is_refunded?
+      unless payment.nil? || payment.is_refunded?
         total += payment.amount
       end
     end
@@ -80,13 +88,14 @@ class Order < ActiveRecord::Base
   end
 
   def balance
-    self.total - self.payment_total
+    total - payment_total
   end
 
   def percent_paid
-    (self.payment_total / self.total)*100
+    payment_total / total * 100
   end
 
+  # TODO: > 10 LOC
   def payment_status
     if self.terms.empty?
       'Payment Terms Pending'
@@ -123,12 +132,13 @@ class Order < ActiveRecord::Base
     end
   end
 
+  # TODO: place this near top
   searchable do
     text :name, :email, :firstname, :lastname, :company, :twitter, :terms, :delivery_method
     text :jobs do
       jobs.map { |j| "#{j.name} #{j.description}" }
     end
-
+    # TODO: refactor
     [:firstname, :lastname, :email, :terms, :delivery_method, :company, :phone_number].each do |field|
       string field
     end
@@ -140,5 +150,4 @@ class Order < ActiveRecord::Base
 
     reference :salesperson
   end
-
 end

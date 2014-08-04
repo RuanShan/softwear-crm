@@ -15,6 +15,7 @@ class Size < ActiveRecord::Base
   private
 
   def set_sort_order
+    # TODO: ternary and refactor
     if self.sort_order.nil?
       if Size.order(:sort_order).last
         last_sort_order = Size.order(:sort_order).last.sort_order

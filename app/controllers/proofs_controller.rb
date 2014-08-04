@@ -1,12 +1,13 @@
 class ProofsController < InheritedResources::Base
-
   before_filter :format_time, only: [:create, :update]
   before_filter :approved?, only: [:update]
 
+  # TODO: inherited resources controller?
   belongs_to :order
 
   respond_to :js
 
+  # TODO: > 2 instance variables, can probably just be local
   def email_customer
     if request.get?
       @proof = Proof.find(params[:id])
@@ -19,6 +20,7 @@ class ProofsController < InheritedResources::Base
       body = @reminder ? t('proof_reminder_body_html', firstname: @order.firstname, lastname: @order.lastname) : params[:email_body]
       subject = @reminder ? t('proof_reminder_subject', id: @order.id) : params[:email_subject]
 
+      # TODO: abstract away?
       if @reminder
         ProofMailer.proof_reminder_email(@proof, @order, body, subject).deliver
         flash[:success] = 'Your reminder was successfully sent!'
@@ -30,6 +32,7 @@ class ProofsController < InheritedResources::Base
         flash[:success] = 'Your email was successfully sent!'
         @proof.create_activity :emailed_customer, owner: current_user
       end
+
       redirect_to edit_order_path(id: @order.id, anchor: 'proofs')
     end
   end
@@ -37,11 +40,13 @@ class ProofsController < InheritedResources::Base
   private
 
   def approved?
+    # TODO: maybe clean up?
     @proof = Proof.find(params[:id])
     if params[:status]=='Approved'
       if @proof.approved_at.nil?
         @proof.approved_at = DateTime.now
         @proof.status = 'Approved'
+        # TODO: fire_activity?
         @proof.create_activity :approved_proof, owner: current_user
       end
     elsif params[:status]=='Rejected'
@@ -53,6 +58,7 @@ class ProofsController < InheritedResources::Base
     end
   end
 
+  # TODO: format_time!!
   def format_time
     unless params[:status] == 'Approved' or  params[:status] == 'Rejected'
       begin

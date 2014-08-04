@@ -1,6 +1,7 @@
 class Payment < ActiveRecord::Base
   acts_as_paranoid
 
+  # TODO: this doesn't seem right
   default_scope { order(:created_at).with_deleted }
 
   belongs_to :order
@@ -9,7 +10,9 @@ class Payment < ActiveRecord::Base
 
   validates :store, presence: true
 
+  # TODO: make sure this works
+  #   as opposed to self.refunded == true
   def is_refunded?
-    self.refunded == true
+    refunded
   end
 end

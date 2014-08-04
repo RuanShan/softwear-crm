@@ -2,9 +2,9 @@ class Proof < ActiveRecord::Base
   include TrackingHelpers
 
   acts_as_paranoid
-
   tracked by_current_user + on_order
 
+  # TODO: possibly refactor this
   VALID_PROOF_STATUSES = ['Pending', 'Emailed Customer', 'Approved', 'Rejected']
 
   belongs_to :order
@@ -15,7 +15,4 @@ class Proof < ActiveRecord::Base
   validates :status, presence: true
   validates :approve_by, presence: true
   validates :artworks, presence: true
-
-  private
-
 end

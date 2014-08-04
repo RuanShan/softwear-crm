@@ -11,6 +11,7 @@ class CoordinateImprintable < ActiveRecord::Base
   after_update :update_mirror
   after_destroy :destroy_mirror
 
+  # TODO: try to refactor
   def add_mirror
     self.class.find_or_create_by(imprintable: coordinate, coordinate: imprintable)
   end
