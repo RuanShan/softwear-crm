@@ -60,7 +60,7 @@ pw = 'pw4admin'
 exists = !User.where(email: 'admin@softwearcrm.com').empty?
 deleted_exists = !User.deleted.where(email: 'admin@softwearcrm.com').empty?
 if !deleted_exists && !exists
-	default_user = User.new(firstname: 'Admin', lastname: 'User', 
+	default_user = User.new(first_name: 'Admin', last_name: 'User',
 													email: 'admin@softwearcrm.com',
 													password: pw, password_confirmation: pw,
                           store_id: 1)
@@ -82,10 +82,10 @@ else
 	puts "Default user already exists! Email is admin@softwearcrm.com and password is #{pw}"
 end
 create_records([
-  { firstname: 'Ricky', lastname: 'Winowiecki', email: 'something@somethingelse.com', password: 'something' },
-  { firstname: 'Nigel', lastname: 'Baillie', email: 'somethingelse@something.com', password: 'something' },
-  { firstname: 'Nicholas', lastname: 'Catoni', email: 'some@thing.com', password: 'something' },
-  { firstname: 'David', lastname: 'Suckstorff', email: 'something@else.com', password: 'something' }
+  { first_name: 'Ricky', last_name: 'Winowiecki', email: 'something@somethingelse.com', password: 'something' },
+  { first_name: 'Nigel', last_name: 'Baillie', email: 'somethingelse@something.com', password: 'something' },
+  { first_name: 'Nicholas', last_name: 'Catoni', email: 'some@thing.com', password: 'something' },
+  { first_name: 'David', last_name: 'Suckstorff', email: 'something@else.com', password: 'something' }
 ], User)
 
 

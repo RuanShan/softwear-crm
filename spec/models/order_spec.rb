@@ -4,7 +4,7 @@ describe Order, order_spec: true do
   describe 'Relationships' do
     it { should belong_to :store }
     it { should have_many :payments }
-    it { should have_many :proof }
+    it { should have_many :proofs }
   end
 
   let!(:store) { create(:valid_store) }
