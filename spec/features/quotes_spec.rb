@@ -105,6 +105,7 @@ feature 'Quotes management', quote_spec: true, js: true do
     click_button 'Fetch Prices!'
     click_link 'Add to Quote'
     page.select quote.name, from: 'quote_id'
+    sleep 0.5
     click_button 'Submit'
     expect(current_path).to eq(edit_quote_path quote.id)
     find('a[href="#line_items"]').click
