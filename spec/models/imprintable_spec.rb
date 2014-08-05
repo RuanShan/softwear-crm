@@ -133,30 +133,6 @@ describe Imprintable, imprintable_spec: true do
     end
   end
 
-  describe 'standard_offering?' do
-
-    subject { Imprintable.new }
-
-    context 'standard_offering is true' do
-
-      before { allow(subject).to receive_message_chain(:standard_offering).and_return(true) }
-
-      it 'returns true' do
-        expect(subject.standard_offering?).to be_truthy
-      end
-
-    end
-
-    context 'standard_offering is false' do
-
-      before { allow(subject).to receive_message_chain(:standard_offering).and_return(false) }
-
-      it 'returns false' do
-        expect(subject.standard_offering?).to be_falsy
-      end
-    end
-  end
-
   it_behaves_like 'retailable'
 
   describe '#create_imprintable_variants_from_sizes_and_colors' do

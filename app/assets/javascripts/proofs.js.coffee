@@ -5,13 +5,8 @@
 @showProofSelect = ->
   $(".proof-status-select").show()
 
-@styleCheckboxes = ->
-  $("input").iCheck(
-    checkboxClass: "icheckbox_minimal-grey proof-checkbox"
-    radioClass: "iradio_minimal-grey"
-    increaseArea: "20%"
-  )
 @initializeProofSummernote = ->
+  #TODO remove the summernote crap that's in global and call that in js.erb
   $(".summernote").summernote
     height: 300
     toolbar:[

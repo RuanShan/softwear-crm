@@ -22,6 +22,7 @@
         <tr>
           <td><%= link_to imprintable.name, imprintable.supplier_link %></td>
           <td><%= display_sizes(imprintable) %></td>
+          <% #TODO: possibly refactor into method or something %>
           <td><%= number_to_currency imprintable.base_price unless imprintable.base_price == 0.0 %></td>
           <td><%= number_to_currency imprintable.xxl_price unless imprintable.xxl_price == 0.0 %></td>
           <td><%= number_to_currency imprintable.xxxl_price unless imprintable.xxxl_price == 0.0 %></td>

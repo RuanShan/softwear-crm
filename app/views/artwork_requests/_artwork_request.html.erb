@@ -10,13 +10,14 @@
             for <%= artwork_request.jobs.collect { |x| [x.name] }.join(', ') %></h4>
           <dl>
             <dt>Priority:</dt>
+            <% #TODO: Model %>
             <dd><%= ArtworkRequest::PRIORITIES[artwork_request.priority.to_i] %></dd>
             <dt>Imprint Method:</dt>
             <dd><%= artwork_request.imprint_method.name %></dd>
             <dt>Print Location:</dt>
             <dd><%= artwork_request.print_location.name %></dd>
             <dt>Ink Colors:</dt>
-            <dd><%= artwork_request.ink_colors.collect { |x| [x.name] }.join(', ') %></dd>
+            <dd><%= artwork_request.ink_colors.map(&:name).join(', ') %></dd>
             <dt>Imprintables Included:</dt>
             <dd><%= artwork_request.imprintable_info %></dd>
             <dt>No. of Pieces:</dt>

@@ -1,29 +1,25 @@
 class Quote < ActiveRecord::Base
   include TrackingHelpers
-  tracked by_current_user
 
   acts_as_paranoid
 
-  has_many :line_items, as: :line_itemable
+  tracked by_current_user
+
   belongs_to :salesperson, class_name: User
   belongs_to :store
-
+  has_many :line_items, as: :line_itemable
   accepts_nested_attributes_for :line_items, allow_destroy: true
 
   # TODO: refactor to validator file
   validates :email, presence: true, format: { with: /\A([^@\s]+)@((?:[-a-z0-9]+\.)+[a-z]{2,})\Z/i }
-  validates :first_name, presence: true
-  validates :last_name, presence: true
-  validates :valid_until_date, presence: true
   validates :estimated_delivery_date, presence: true
-  validates :salesperson_id, presence: true
-  validates :store_id, presence: true
+  validates :first_name, presence: true
   # TODO: move to custom validator? reference style guide
   validate :has_line_items?
-
-  def has_line_items?
-    errors.add(:base, 'Quote must have at least one line item') if self.line_items.blank?
-  end
+  validates :last_name, presence: true
+  validates :salesperson_id, presence: true
+  validates :store_id, presence: true
+  validates :valid_until_date, presence: true
 
   def all_activities
     # TODO: use string literal? also general style
@@ -37,71 +33,20 @@ class Quote < ActiveRecord::Base
     ', *([self.class.name, id] * 2) ).order('created_at DESC')
   end
 
-  def full_name
-    "#{first_name} #{last_name}"
-  end
-
-  def line_items_subtotal
-    total = 0
-    line_items.each do |li|
-      total += li.total_price
-    end
-    total
-  end
-
-  def line_items_total_tax
-    total = 0
-    line_items.each do |li|
-      if li.taxable?
-        # TODO refactor to instance method
-        total += li.total_price * 0.06
-      end
-    end
-    total
-  end
-
-  def line_items_total_with_tax
-    total = 0
-    self.line_items.each do |li|
-      # TODO: ternary
-      if li.taxable?
-      # TODO refactor to instance method
-        total += li.total_price * 1.06
-      else
-        total += li.total_price
-      end
-    end
-    total
-  end
-
-  def formatted_phone_number
-    if phone_number
-      # TODO: indent equals signs?
-      area_code = phone_number[0, 3]
-      middle_three = phone_number[3, 3]
-      last_four = phone_number[6, 4]
-      "(#{area_code}) #{middle_three}-#{last_four}"
-    end
-  end
-
-  def standard_line_items
-    LineItem.non_imprintable.where(line_itemable_id: id, line_itemable_type: 'Quote')
-  end
-
   def create_freshdesk_ticket(current_user)
     freshdesk_info = fetch_data_to_h(current_user)
     # TODO: create softwearcrm freshdesk account
     client = Freshdesk.new('http://annarbortees.freshdesk.com/', 'david.s@annarbortees.com', 'testdesk')
 
     client.post_tickets(
-      email: email,
-      requester_id: freshdesk_info[:requester_id],
-      requester_name: freshdesk_info[:requester_name],
-      source: 2,
-      group_id: freshdesk_info[:group_id],
-      ticket_type: 'Lead',
-      subject: 'Custom Apparel',
-      custom_field: { department_7483: freshdesk_info[:department] }
+        email: email,
+        requester_id: freshdesk_info[:requester_id],
+        requester_name: freshdesk_info[:requester_name],
+        source: 2,
+        group_id: freshdesk_info[:group_id],
+        ticket_type: 'Lead',
+        subject: 'Custom Apparel',
+        custom_field: { department_7483: freshdesk_info[:department] }
     )
   end
 
@@ -161,5 +106,60 @@ class Quote < ActiveRecord::Base
       new_hash[:requester_name] = nil
     end
     old_hash.merge(new_hash)
+  end
+
+  def formatted_phone_number
+    if phone_number
+      # TODO: indent equals signs?
+      area_code = phone_number[0, 3]
+      middle_three = phone_number[3, 3]
+      last_four = phone_number[6, 4]
+      "(#{area_code}) #{middle_three}-#{last_four}"
+    end
+  end
+
+  def full_name
+    "#{first_name} #{last_name}"
+  end
+
+  def has_line_items?
+    errors.add(:base, 'Quote must have at least one line item') if self.line_items.blank?
+  end
+
+  def line_items_subtotal
+    total = 0
+    line_items.each do |li|
+      total += li.total_price
+    end
+    total
+  end
+
+  def line_items_total_tax
+    total = 0
+    line_items.each do |li|
+      if li.taxable?
+        # TODO refactor to instance method
+        total += li.total_price * 0.06
+      end
+    end
+    total
+  end
+
+  def line_items_total_with_tax
+    total = 0
+    self.line_items.each do |li|
+      # TODO: ternary
+      if li.taxable?
+      # TODO refactor to instance method
+        total += li.total_price * 1.06
+      else
+        total += li.total_price
+      end
+    end
+    total
+  end
+
+  def standard_line_items
+    LineItem.non_imprintable.where(line_itemable_id: id, line_itemable_type: 'Quote')
   end
 end

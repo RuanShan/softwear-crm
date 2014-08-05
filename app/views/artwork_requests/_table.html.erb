@@ -16,7 +16,7 @@
       </thead>
       <tbody>
 
-      <% artwork_requests.where(artist_id: @current_user.id).each do |ar| %>
+      <% artwork_requests.where(artist_id: @current_user.id).find_each do |ar| %>
           <tr id="artwork-request-row-<%= ar.id %>">
           <%= render partial: 'row', locals: {ar: ar} %>
           </tr>

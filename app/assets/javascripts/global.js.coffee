@@ -46,3 +46,30 @@ $(document).ajaxStop(->
 @summernoteSubmit = ->
   $(".summernote").closest("form").submit ->
     $(".summernote").val $(".summernote").code()
+
+@initializeDateTimePicker = ->
+  #TODO change everything to use this, call class .js-datetimepicker
+  $(".date").datetimepicker()
+
+@styleCheckboxes = ->
+  $("input").iCheck
+    checkboxClass: "icheckbox_minimal-grey"
+    radioClass: "iradio_minimal-grey"
+    increaseArea: "20%"
+
+@initializeSummernote = ->
+  $(".summernote").summernote
+    height: 300
+    toolbar:[
+      ['style', ['style']],
+      ['font', ['bold', 'italic', 'underline', 'clear']],
+      ['fontsize', ['fontsize']],
+      ['color', ['color']],
+      ['para', ['ul', 'ol', 'paragraph']],
+      ['height', ['height']],
+      ['table', ['table']],
+      ['view', ['fullscreen', 'codeview']]
+    ],
+
+  $(".summernote").code "" if $(".note-editable").html() is "<p><br></p>"
+  $(".summernote").val ""

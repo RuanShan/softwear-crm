@@ -1,7 +1,7 @@
 @idleTimeoutMs = 600000 # 10 minutes
 @idleWarningSec = 60    # 1 minute
 $(window).load ->
-  if $('#timeoutModal').length == 0 then return
+  if $('#timeoutModal').length is 0 then return
 
   assureIdle = -> Date.now() - localStorage.SWCRM_LastClickMs >= idleTimeoutMs
 
@@ -9,8 +9,7 @@ $(window).load ->
     # Stop counting down if we receive a click from another tab / window.
     return begin() unless assureIdle()
 
-    $('#timeoutModal .modal-body').html "You will be temporarily logged out in #{count} seconds"
-    count--
+    $('#timeoutModal .modal-body').html "You will be temporarily logged out in #{count--} seconds"
     $('#timeoutModal').modal 'show'
 
     if count < 0

@@ -11,7 +11,7 @@
           </tr>
           </thead>
           <tbody>
-          <% color_variants.sort! { |x,y| x.name <=> y.name }.each do |c| %>
+          <% color_variants.sort!{ |x,y| x.name <=> y.name }.each do |c| %>
             <tr>
               <td><%= c.color.name %></td>
               <% size_variants.each do |s| %>

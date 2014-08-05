@@ -1,3 +1,4 @@
+#TODO look into js response in controller to trim this??
 @imprintMethodSelected = ($this) ->
   id = $this.val()
   $this.addClass 'editing-imprint'
@@ -23,6 +24,7 @@
   $this.data('handler').clear() if $this.data 'handler'
   $this.addClass 'editing-imprint'
 
+# TODO js response Nigel
 @updateImprints = ($btn) ->
   $btn.attr 'disabled', 'disabled'
   setTimeout (-> $btn.removeAttr 'disabled'), 1000
@@ -73,6 +75,7 @@
 
   after 1000, updateOrderTimeline
 
+# TODO js response Nigel
 @addImprint = ($this, jobId) ->
   ajax = $.ajax
     type: 'GET'
@@ -84,6 +87,7 @@
     $response.find('select').addClass 'editing-imprint'
     $("#job-#{jobId}").find('.imprints-container').append $response
 
+# TODO js response Nigel
 @deleteImprint = ($btn, jobId) ->
   console.log "job id: #{jobId} imprintId: #{imprintId}"
   $jobContainer = $btn.parentsUntil('.job-container').parent()

@@ -2,7 +2,8 @@
   <h1>Brands <small>Configure the brands available for imprintables</small></h1>
 </div>
 <div class="col-lg-3 text-right">
-  <%= link_to "Add a Brand", new_brand_path, class: 'btn btn-primary', role: 'button' %>
+  <% #TODO: do you need role? %>
+  <%= link_to 'Add a Brand', new_brand_path, class: 'btn btn-primary', role: 'button' %>
 </div>
 
 <%= paginate @brands %>

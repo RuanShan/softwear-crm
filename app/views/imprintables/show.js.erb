@@ -1,4 +1,2 @@
-// replace html of modal
-$('#contentModal .modal-body').html("<%=j render( template: 'imprintables/show', :formats => [:html] ).html_safe %>");
-// display the modal
+$('#contentModal .modal-body').html("<%= j render( template: 'imprintables/show', formats: [:html] ).html_safe %>");
 $('#contentModal').modal('show');

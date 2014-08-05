@@ -1,3 +1,4 @@
+# TODO js response
 @deleteJob = ($this, jobId) ->
   $this.attr 'disabled', 'disabled'
   setTimeout (-> $this.removeAttr 'disabled'), 1000
@@ -21,6 +22,7 @@
       alert "Something went wrong with the server and
           the job couldn't be deleted for some reason."
 
+#TODO js response
 @refreshJob = (jobId) ->
   $job = $("#job-#{jobId}")
   if $job.length == 0
@@ -42,6 +44,7 @@
   ajax.fail (jqXHR, textStatus) ->
     alert "Failed to re-render job #{jobId}. Refresh the page to view changes."
 
+#TODO custom controller action
 jobCollapse = (id, collapsed) ->
   ajax = $.ajax
     type: 'PUT'
@@ -73,6 +76,7 @@ jobCollapse = (id, collapsed) ->
   $jobCollapse.on 'hide.bs.collapse', onJobCollapseHide
   # TODO replace inline job events with logic in here if Ricky insists
 
+# TODO Nigel, js response it up
 $(window).load ->
   registerJobEvents($('body'))
 

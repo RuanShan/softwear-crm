@@ -2,7 +2,8 @@
   <h1>Colors <small>View and edit colors available for imprintables</small></h1>
 </div>
 <div class="col-lg-3 text-right">
-  <%= link_to "Add a color", new_color_path, class:'btn btn-primary', role: 'button' %>
+  <% #TODO: role button? %>
+  <%= link_to 'Add a color', new_color_path, class:'btn btn-primary', role: 'button' %>
 </div>
 
 <%= paginate @colors %>

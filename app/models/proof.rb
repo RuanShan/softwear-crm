@@ -2,6 +2,7 @@ class Proof < ActiveRecord::Base
   include TrackingHelpers
 
   acts_as_paranoid
+
   tracked by_current_user + on_order
 
   # TODO: possibly refactor this
@@ -12,7 +13,7 @@ class Proof < ActiveRecord::Base
   has_and_belongs_to_many :artworks
   accepts_nested_attributes_for :mockups, allow_destroy: true
 
-  validates :status, presence: true
   validates :approve_by, presence: true
   validates :artworks, presence: true
+  validates :status, presence: true
 end

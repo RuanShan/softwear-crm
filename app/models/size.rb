@@ -1,9 +1,10 @@
 class Size < ActiveRecord::Base
-  acts_as_paranoid
-
   include Retailable
 
+  acts_as_paranoid
+
   default_scope { order(:sort_order) }
+
   before_validation :set_sort_order
 
   has_many :imprintable_variants, dependent: :destroy

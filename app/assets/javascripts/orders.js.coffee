@@ -1,8 +1,5 @@
-# Place all the behaviors and hooks related to the matching controller here.
-# All this logic will automatically be available in application.js.
-# You can use CoffeeScript in this file: http://coffeescript.org/
-
-$ ->
+jQuery ->
+  #TODO make global exists in quotes
   $("#myWizard").easyWizard
     buttonsClass: "btn btn-default"
     submitButtonClass: "btn btn-primary"
@@ -29,6 +26,8 @@ $ ->
     errorModal "Internal server error. If this is the only error you see, it's probably no big deal.", force: false
 
 $(window).load ->
+  # TODO is there commenting style?
+  # FIXME 'this is a hack, the whole thing is a hack' - Nigel
   # Edit can't redirect, meaning it can't supply an anchor, so
   # we use data from the error modal to know which tab to switch 
   # to when the user submits bad data to an edit
@@ -44,6 +43,7 @@ $(window).load ->
     if window.location.hash.indexOf($(this).attr 'href') == -1
       window.location.hash = $(this).attr 'href'
 
+  #TODO instead of Nigel's 'hack' possibly create a show for Job that would present relevant info
   if window.location.hash != ''
     dashIndex = window.location.hash.indexOf '-'
     target = window.location.hash
@@ -87,6 +87,6 @@ $(window).load ->
                       shine $imprint, false, 2000
                       shined = true
 
-
+#TODO use global datetimepicker
   $('#datetimepicker1').datetimepicker()
 

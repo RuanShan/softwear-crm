@@ -1,5 +1,5 @@
 showContentModal({
-    backdrop: "static",
-    keyboard: false,
-    body: $("<%= escape_javascript(render(partial: 'artwork_request', locals: {order: @order, artwork_request: @artwork_request})).html_safe %>")
+  backdrop: "static",
+  keyboard: false,
+  body: $("<%= escape_javascript(render(partial: 'artwork_request', locals: { order: @order, artwork_request: @artwork_request })).html_safe %>")
 })

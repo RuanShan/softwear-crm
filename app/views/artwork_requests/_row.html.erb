@@ -1,5 +1,6 @@
 <td><%= ArtworkRequest::PRIORITIES[ar.priority.to_i] %></td>
 <td><%= link_to ar.jobs[0].order.name, edit_order_path(ar.jobs[0].order.id) +'/#artwork' %></td>
+<% #TODO: are we using a function for strftime stuff? and remove array[0] and what about the Model call above? %>
 <td><%= ar.deadline.strftime('%b %d, %Y, %I:%M %p') %></td>
 <td><%= ar.jobs[0].order.in_hand_by.strftime('%b %d, %Y, %I:%M %p') %></td>
 <td><%= ar.total_quantity %></td>

@@ -46,7 +46,7 @@ describe ApplicationHelper, application_helper_spec: true do
     context 'there is a valid datetime' do
       let!(:datetime) { DateTime.new(1991, 9, 25) }
       it 'should return a formatted date' do
-        expect(time_format(datetime)).to eq('09/25/1991 00:00 AM')
+        expect(time_format(datetime)).to eq('09/25/1991 12:00 AM')
       end
     end
 

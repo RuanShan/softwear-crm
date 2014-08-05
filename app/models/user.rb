@@ -5,11 +5,12 @@ class User < ActiveRecord::Base
   devise(:database_authenticatable, :confirmable, :recoverable, :registerable,
          :rememberable, :trackable, :timeoutable, :validatable, :lockable)
 
-  has_many :orders
   belongs_to :store
+  has_many :orders
   has_many :search_queries, class_name: 'Search::Query'
 
-  validates_presence_of :first_name, :last_name
+  validates :first_name, presence: true
+  validates :last_name, presence: true
   # TODO: custom validator
   validates :email, format: { with: /\A([^@\s]+)@((?:[-a-z0-9]+\.)+[a-z]{2,})\Z/i }
 

@@ -12,13 +12,14 @@
         </th>
       <% end %>
       <th id="add_a_size">
+        <p>
         <%= select_tag nil,
                        options_for_select(['Select a Size'] + Size.order(:sort_order).collect{ |s| [s.display_value, s.id] }),
                        {
                            class: 'color-size-chosen-select',
                            id: 'size_select'
                        } %>
-        <br /><br />
+        </p>
         <button type="button" id="size_button">Add a size</button>
       </th>
     </tr>
@@ -49,13 +50,14 @@
     <% end %>
     <tr>
       <th id="add_a_color">
+        <p>
       <%= select_tag nil,
                      options_for_select(['Select a Color'] + Color.order(:name).collect{ |c| [c.name, c.id] }),
                      {
                          class: 'color-size-chosen-select',
                          id: 'color_select'
                      } %>
-        <br /><br />
+        </p>
         <button type="button" id="color_button">Add a color</button>
       </th>
       <% if variants_array.empty? %>

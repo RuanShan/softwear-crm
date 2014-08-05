@@ -1,5 +1,5 @@
 $(document).ready(function() {
-    // Return a helper with preserved width of cells
+    //TODO refactor, more specific variable names? indentation off and probably switch to coffee script
     var fixHelper = function(e, ui) {
         ui.children().each(function() {
             $(this).width($(this).width());

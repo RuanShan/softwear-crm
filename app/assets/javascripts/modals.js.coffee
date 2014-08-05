@@ -3,7 +3,6 @@ $(document).ready ->
 
   $contentModal.DEFAULTS
 
-
   storeClassFor = ($elem) ->
     $elem.data 'original-class', $elem.attr('class')
   retrieveClassFor = ($elem) ->
@@ -27,6 +26,7 @@ $(document).ready ->
     $contentModal.data 'open', true
 
 ##
+# TODO ensure comment formatting if it exists
 # Quick and easy way to show the content modal!
 # 
 # Valid options include: 'title', 'body', 'footer', and 'force'
@@ -84,7 +84,9 @@ $(document).ready ->
     setSection $('#contentBody'),   options.body
     setSection $('#contentFooter'), options.footer
 
-    options.title = null; options.body = null; options.footer = null
+    options.title = null
+    options.body = null
+    options.footer = null
 
     $contentModal.modal options
   
@@ -148,7 +150,7 @@ $(document).ready ->
 
   $yesBtn.click ->
     $modal.modal 'hide'
-    if callback.length == 0
+    if callback.length is 0
       callback()
     else
       callback(true)

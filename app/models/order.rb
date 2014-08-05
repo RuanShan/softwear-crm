@@ -2,6 +2,25 @@ class Order < ActiveRecord::Base
   include TrackingHelpers
 
   acts_as_paranoid
+
+  searchable do
+    text :name, :email, :firstname, :lastname, :company, :twitter, :terms, :delivery_method
+    text :jobs do
+      jobs.map { |j| "#{j.name} #{j.description}" }
+    end
+    # TODO: refactor
+    [:firstname, :lastname, :email, :terms, :delivery_method, :company, :phone_number].each do |field|
+      string field
+    end
+
+    double :total
+    double :commission_amount
+
+    date :in_hand_by
+
+    reference :salesperson
+  end
+
   tracked by_current_user
 
   VALID_PAYMENT_TERMS = [
@@ -10,34 +29,39 @@ class Order < ActiveRecord::Base
     'Half down on purchase',
     'Paid in full on pick up',
     'Net 30',
-    'Net 60']
+    'Net 60'
+  ]
 
   VALID_DELIVERY_METHODS = [
     'Pick up in Ann Arbor',
     'Pick up in Ypsilanti',
     'Ship to one location',
-    'Ship to multiple locations']
+    'Ship to multiple locations'
+  ]
 
-  # TODO: refactor validators
-  validates_presence_of :email, :firstname, :lastname, :name, :terms, :delivery_method
-  validates :email, format: { with: /\A([^@\s]+)@((?:[-a-z0-9]+\.)+[a-z]{2,})\Z/i }
+  #TODO: custom validators for phone and email??
+  #TODO: shouldn't validate salesperson_id, but rather salesperson?? could make relation like artwork_request?
+  validates :delivery_method, presence: true
+  validates :email, presence: true, format: { with: /\A([^@\s]+)@((?:[-a-z0-9]+\.)+[a-z]{2,})\Z/i }
+  validates :firstname, presence: true
+  validates :lastname, presence: true
+  validates :name, presence: true
   validates :phone_number, format: { with: /\d{3}-\d{3}-\d{4}/, message: 'is incorrectly formatted, use 000-000-0000' }
-
+  validates :salesperson_id, presence: true
+  validates :store, presence: true
+  validates :tax_id_number, presence: true, if: :tax_exempt?
+  validates :terms, presence: true
+  #TODO: can this be sexified?
   validates_inclusion_of(:delivery_method,
       in: VALID_DELIVERY_METHODS,
       message: 'Invalid delivery method')
 
-  validates_presence_of :tax_id_number, if: :tax_exempt?
-  validates :store, presence: true
-  validates :salesperson_id, presence: true
-
-  belongs_to :user, :foreign_key => :salesperson_id
   belongs_to :store
-  has_many :jobs
+  belongs_to :user, :foreign_key => :salesperson_id
   has_many :artwork_requests, through: :jobs
+  has_many :jobs
   has_many :payments
   has_many :proofs
-
   accepts_nested_attributes_for :payments
 
   # TODO: refactor this out to concern
@@ -52,50 +76,15 @@ class Order < ActiveRecord::Base
     ', *([self.class.name, self.id] * 2) ).order('created_at DESC')
   end
 
-  def line_items
-    LineItem.where(line_itemable_id: job_ids, line_itemable_type: 'Job')
-  end
-
-  def tax
-    0.6
-  end
-
-  def subtotal
-    line_items.map(&:total_price).sum
-  end
-
-  def total
-    subtotal + subtotal * tax
-  end
-
-  def salesperson
-    User.find(salesperson_id)
-  end
-
-  def salesperson_name
-    User.find(salesperson_id).full_name
-  end
-
-  def payment_total
-    total = 0
-    # TODO: make fancy, use select
-    self.payments.each do |payment|
-      unless payment.nil? || payment.is_refunded?
-        total += payment.amount
-      end
-    end
-    total
-  end
-
   def balance
     total - payment_total
   end
 
-  def percent_paid
-    payment_total / total * 100
+  def line_items
+    LineItem.where(line_itemable_id: job_ids, line_itemable_type: 'Job')
   end
 
-  # TODO: > 10 LOC
+  # TODO: Nick, > 10 LOC
   def payment_status
     if self.terms.empty?
       'Payment Terms Pending'
@@ -132,22 +121,38 @@ class Order < ActiveRecord::Base
     end
   end
 
-  # TODO: place this near top
-  searchable do
-    text :name, :email, :firstname, :lastname, :company, :twitter, :terms, :delivery_method
-    text :jobs do
-      jobs.map { |j| "#{j.name} #{j.description}" }
+  def payment_total
+    total = 0
+    # TODO: make fancy, use select
+    self.payments.each do |payment|
+      unless payment.nil? || payment.is_refunded?
+        total += payment.amount
+      end
     end
-    # TODO: refactor
-    [:firstname, :lastname, :email, :terms, :delivery_method, :company, :phone_number].each do |field|
-      string field
-    end
+    total
+  end
 
-    double :total
-    double :commission_amount
+  def percent_paid
+    payment_total / total * 100
+  end
 
-    date :in_hand_by
+  def salesperson
+    User.find(salesperson_id)
+  end
 
-    reference :salesperson
+  def salesperson_name
+    User.find(salesperson_id).full_name
+  end
+
+  def subtotal
+    line_items.map(&:total_price).reduce(0, :+)
+  end
+
+  def tax
+    0.6
+  end
+
+  def total
+    subtotal + subtotal * tax
   end
 end

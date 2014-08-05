@@ -1,68 +1,29 @@
 class LineItem < ActiveRecord::Base
   include TrackingHelpers
 
-  belongs_to :line_itemable, polymorphic: true
-  belongs_to :imprintable_variant
-  has_one :order, through: :job
-
-  # TODO: 'sexy' validator
-  validates_presence_of :unit_price
-  validates_presence_of :quantity
-  validates_presence_of :name, unless: :imprintable?
-  validates_presence_of :description, unless: :imprintable?
-  validate :imprintable_variant_exists, if: :imprintable?
-  validates :imprintable_variant_id, uniqueness: { scope: [:line_itemable_id, :line_itemable_type] }, if: :imprintable?
-
   acts_as_paranoid
-  tracked skip_defaults: true
-
-  scope :non_imprintable, -> { where imprintable_variant_id: nil }
-  scope :imprintable, -> { where.not imprintable_variant_id: nil }
 
   searchable do
     text :name, :description
     boolean(:is_imprintable) { imprintable? }
   end
 
-  def total_price
-    # TODO: look into refactoring
-    if unit_price && quantity
-      unit_price * quantity
-    else
-      'NAN'
-    end
-  end
+  scope :non_imprintable, -> { where imprintable_variant_id: nil }
+  scope :imprintable, -> { where.not imprintable_variant_id: nil }
 
-  def imprintable?
-    imprintable_variant_id != nil
-  end
+  tracked skip_defaults: true
 
-  def imprintable
-    imprintable_variant.imprintable
-  end
+  belongs_to :imprintable_variant
+  belongs_to :line_itemable, polymorphic: true
+  has_one :order, through: :job
 
-  def style_name
-    imprintable_variant.imprintable.style_name
-  end
-
-  def style_catalog_no
-    imprintable_variant.imprintable.style_catalog_no
-  end
-
-  %i(name description).each do |method|
-    define_method(method) do
-      # TODO: ternary
-      if imprintable?
-        imprintable_variant.send method
-      else
-        read_attribute method
-      end
-    end
-  end
-
-  def size_display
-    imprintable_variant.size.display_value
-  end
+  #TODO: ensure unless validations work after switching from validates_presence_of to sexiness
+  validates :description, presence: true, unless: :imprintable?
+  validates :imprintable_variant_id, uniqueness: { scope: [:line_itemable_id, :line_itemable_type] }, if: :imprintable?
+  validate :imprintable_variant_exists, if: :imprintable?
+  validates :name, presence: true, unless: :imprintable?
+  validates :quantity, presence: true
+  validates :unit_price, presence: true
 
   def <=>(other)
     # TODO: refactor
@@ -77,6 +38,47 @@ class LineItem < ActiveRecord::Base
         return +1
       end
       name <=> other.name
+    end
+  end
+
+  %i(name description).each do |method|
+    define_method(method) do
+      # TODO: ternary
+      if imprintable?
+        imprintable_variant.send method
+      else
+        read_attribute method
+      end
+    end
+  end
+
+  def imprintable
+    imprintable_variant.imprintable
+  end
+
+  #TODO: should it be unless rather than != nil?
+  def imprintable?
+    imprintable_variant_id != nil
+  end
+
+  def size_display
+    imprintable_variant.size.display_value
+  end
+
+  def style_catalog_no
+    imprintable_variant.imprintable.style_catalog_no
+  end
+
+  def style_name
+    imprintable_variant.imprintable.style_name
+  end
+
+  def total_price
+    # TODO: look into refactoring
+    if unit_price && quantity
+      unit_price * quantity
+    else
+      'NAN'
     end
   end
 

@@ -1,10 +1,11 @@
-<%= fields_for imprint_method, {}, builder: LancengFormBuilder  do |f| %>
+<%= fields_for imprint_method, {}, builder: LancengFormBuilder do |f| %>
     <div class="form-group">
       <div class="row">
         <%= f.label :print_locations, class: 'col-sm-2 control-label' %>
         <div class="col-sm-10">
+          <% #TODO: selected refactor? %>
           <% selected = artwork_request && !artwork_request.print_location_id.nil? ? {selected: artwork_request.print_location_id} : {include_blank: true} %>
-          <%= f.select :print_locations, imprint_method.print_locations.collect { |x| ["#{x.name}", x.id] }, selected, {name: "artwork_request[print_location_id]"} %>
+          <%= f.select :print_locations, imprint_method.print_locations.map{ |x| ["#{x.name}", x.id] }, selected, {name: "artwork_request[print_location_id]"} %>
         </div>
       </div>
     </div>
@@ -14,7 +15,7 @@
         <div class="col-sm-10">
           <% imprint_method.ink_colors.each do |i| %>
               <% checked = artwork_request && artwork_request.ink_color_ids.include?(i.id) ? {checked: true} : false %>
-              <%= check_box_tag "artwork_request[ink_color_ids][]", i.id, checked %>
+              <%= check_box_tag 'artwork_request[ink_color_ids][]', i.id, checked %>
               <%= i.name %>
           <% end %>
         </div>

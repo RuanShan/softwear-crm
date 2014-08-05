@@ -1,3 +1,5 @@
+#TODO comment format, review for possible refactor
+
 # Any span with the inline-field class will be editable without
 # the text field background, and updated automatically via AJAX. 
 # There is a helper method for inline fields in the LancengFormBuilder.
@@ -98,10 +100,10 @@ updateDelay = 1000
             $(".error-modal[for='#{self.getErrorFor()}']").remove()
             $this.focus()
 
-          if response.result == 'success'
+          if response.result is 'success'
             console.log "Successfully updated #{self.resourceName}[#{self.field}]"
             callback(true) for callback in inlineEditableCallbacks
-          else if response.result == 'failure'
+          else if response.result is 'failure'
             console.log "Error updating #{self.resourceName}[#{self.field}]"
             # Add error stuff
             $this.before $('<div/>',

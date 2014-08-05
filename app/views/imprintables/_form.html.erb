@@ -10,6 +10,7 @@
             <div class="form-group clearfix">
               <%= f.label :brand_id, class: 'col-sm-4 control-label' %>
               <div class="col-sm-8">
+                <% #TODO: Model call %>
                 <%= f.select :brand_id, Brand.order(:name).collect{ |b| [b.name, b.id] }, prompt: 'Select a brand' %>
               </div>
             </div>
@@ -124,6 +125,7 @@
               <%= f.label :sample_location_ids, 'Sample Locations', class: 'col-sm-4 control-label' %>
               <%= f.error_for :sample_location_ids %>
               <div class="col-sm-8">
+                <% #TODO: Model call %>
                 <%= f.collection_select :sample_location_ids, Store.order(:name), :id, :name, {}, {class: 'chosen-select', multiple: true, data: { placeholder: 'Select sample locations' } } %>
                 <p class="help-block">Stores at which there is a sample of the imprintable</p>
               </div>
@@ -133,6 +135,7 @@
               <%= f.label :coordinate_ids, 'Coordinates', class: 'col-sm-4 control-label' %>
               <%= f.error_for :coordinate_ids %>
               <div class="col-sm-8">
+                <% #TODO: Model call %>
                 <%= f.collection_select :coordinate_ids, Imprintable.all, :id, :name, {}, {class: 'chosen-select', multiple: true, data: { placeholder: 'Select coordinates' } } %>
                 <p class="help-block">Coordinate imprintables i.e. a ladies or youth version</p>
               </div>
@@ -152,12 +155,13 @@
               <%= f.label :sizing_category, 'Sizing Category', class: 'col-sm-4 control-label' %>
               <%= f.error_for :sizing_category %>
               <div class="col-sm-8">
+                <% #TODO: Model call %>
                 <%= f.select :sizing_category,
                              Imprintable::SIZING_CATEGORIES,
-                             { :prompt => 'Please select a sizing category' },
+                             { prompt: 'Please select a sizing category' },
                              {
-                                     class: 'form-control',
-                                     id: 'imprintable_sizing_category'
+                               class: 'form-control',
+                               id: 'imprintable_sizing_category'
                              } %>
                 <p class="help-block">Select the sizing category for the imprintable</p>
               </div>
@@ -202,6 +206,7 @@
               <%= f.label :compatible_imprint_method_ids, 'Compatible Imprint Methods', class: 'col-sm-4 control-label' %>
               <%= f.error_for :compatible_imprint_method_ids %>
               <div class="col-sm-8">
+                <% #TODO: Model call %>
                 <%= f.collection_select :compatible_imprint_method_ids, ImprintMethod.all, :id, :name, {}, {class: 'chosen-select', multiple: true, data: { placeholder: 'Select compatible imprint methods' } } %>
                 <p class="help-block">What imprint methods work with the imprintable</p>
               </div>

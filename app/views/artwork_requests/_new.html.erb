@@ -1,6 +1,6 @@
 <div class='box-info'>
-  <%= render partial: 'shared/modal_errors', locals: {object: artwork_request} %>
+  <%= render partial: 'shared/modal_errors', locals: { object: artwork_request } %>
   <%= form_for artwork_request, url: order_artwork_requests_path(order, artwork_request), builder: LancengFormBuilder, remote: true, multipart: true do |f| %>
-      <%= render partial: 'form', locals: {artwork_request: artwork_request, order: order, f: f} %>
+    <%= render partial: 'form', locals: { artwork_request: artwork_request, order: order, f: f } %>
   <% end %>
 </div>

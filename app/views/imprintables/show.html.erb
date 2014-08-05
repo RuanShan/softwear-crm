@@ -27,12 +27,14 @@
         <div class="tab-pane animated fadeInRight active" id="basic_info_<%= @imprintable.id %>">
           <%= render partial: 'basic_info', locals: { imprintable: @imprintable } %>
         </div>
-
+        <% #TODO: should we use top way for render partial or bottom? %>
         <div class="tab-pane animated fadeInRight" id="size_color_availability_<%= @imprintable.id %>">
-          <%= render partial: 'size_color_availability', locals: { imprintable: @imprintable,
-                                                                   size_variants: @size_variants,
-                                                                   color_variants: @color_variants,
-                                                                   variants_array: @variants_array } %>
+          <%= render partial: 'size_color_availability',
+                     locals: { imprintable: @imprintable,
+                               size_variants: @size_variants,
+                               color_variants: @color_variants,
+                               variants_array: @variants_array } %>
+          <% #TODO: rubymine isnt happy more than two variables bein' shared! %>
         </div>
 
         <div class="tab-pane animated fadeInRight" id="imprint_details_<%= @imprintable.id %>">
