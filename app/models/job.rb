@@ -55,10 +55,14 @@ class Job < ActiveRecord::Base
   end
 
   def max_print_area(print_location)
-    return max_print(:width), max_print(:height)
+    # TODO Currying like this is more DRY, but I am using #()
+    # instead of #call on the proc. This is considered bad,
+    # but using #call here looks like total ass.
+    max_print = method(:max_print).to_proc.curry.(print_location)
+    return max_print.(:width), max_print.(:height)
   end
 
-  #TODO: look at this
+  #TODO: Maybe still look at this
   def sort_line_items
     result = {}
     LineItem.includes(
@@ -90,7 +94,7 @@ class Job < ActiveRecord::Base
 
   private
 
-  def max_print(width_or_height)
+  def max_print(print_location, width_or_height)
     (
       imprintables.map(&"max_imprint_#{width_or_height}".to_sym) +
       [print_location.send("max_#{width_or_height}")]
