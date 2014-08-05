@@ -53,7 +53,7 @@ class JobsController < InheritedResources::Base
       format.json do
         render json: {
           result: 'success',
-          content: render_string(partial: 'job', locals: {job: @job})
+          content: render_string(partial: 'job', locals: { job: @job })
         }
       end
     end

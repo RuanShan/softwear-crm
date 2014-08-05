@@ -40,40 +40,42 @@ class Job < ActiveRecord::Base
         end
       end
     end
-    #TODO: too long
-    (colors).zip(style_names, style_catalog_nos).map{|array| array.join(' ')}.join(', ')
+    
+    colors
+      .zip(style_names, style_catalog_nos)
+      .map { |array| array.join(' ') }
+      .join(', ')
   end
 
   def imprintable_variant_count
-    # TODO: inject and nested ternary
-    line_items.empty? ? 0 : line_items.map{|li| li.imprintable_variant_id ? li.quantity : 0}.reduce(:+)
+    return 0 if line_items.empty?
+    line_items
+      .map { |li| li.imprintable_variant_id ? li.quantity : 0 }
+      .reduce(0, :+)
   end
 
   def max_print_area(print_location)
-    #TODO: refactor and lines over 80 char
-    width = (imprintables.map{ |i| i.max_imprint_width.to_f } << print_location.max_width.to_f).min
-    height = (imprintables.map{ |i| i.max_imprint_height.to_f } << print_location.max_height.to_f).min
-    return width, height
+    return max_print(:width), max_print(:height)
   end
 
   #TODO: look at this
   def sort_line_items
     result = {}
     LineItem.includes(
-      imprintable_variant: [
-        :color, :size
-      ]
-    #TODO: line is too long, also lots of chaining, see if can reduce
-    ).where(line_itemable_id: id, line_itemable_type: 'Job').where.not(imprintable_variant_id: nil).each do |line_item|
-      imprintable_name = line_item.imprintable.name
-      variant = line_item.imprintable_variant
-      color_name = variant.color.name
+      imprintable_variant: [:color, :size]
+    )
+      .where(line_itemable_id: id, line_itemable_type: 'Job')
+      .where.not(imprintable_variant_id: nil).each do |line_item|
+        imprintable_name = line_item.imprintable.name
+        variant          = line_item.imprintable_variant
+        color_name       = variant.color.name
 
-      result[imprintable_name] ||= {}
-      result[imprintable_name][color_name] ||= []
-      result[imprintable_name][color_name] << line_item
-    end
-    result.each { |k, v| v.each { |k, v| v.sort! } }
+        result[imprintable_name] ||= {}
+        result[imprintable_name][color_name] ||= []
+        result[imprintable_name][color_name] << line_item
+      end
+
+    result.each { |_k, v| v.each { |_k, v| v.sort! } }
     result
   end
 
@@ -83,11 +85,18 @@ class Job < ActiveRecord::Base
   end
 
   def total_quantity
-    # TODO: inject
-    line_items.empty? ? 0 : line_items.map{|li| li.quantity}.reduce(:+)
+    line_items.empty? ? 0 : line_items.map(&:quantity).reduce(0, :+)
   end
 
   private
+
+  def max_print(width_or_height)
+    (
+      imprintables.map(&"max_imprint_#{width_or_height}".to_sym) +
+      [print_location.send("max_#{width_or_height}")]
+    )
+      .map(&:to_f).min
+  end
 
   def assure_name_and_description
     # TODO: remove self?
@@ -109,7 +118,8 @@ class Job < ActiveRecord::Base
 
   def check_for_line_items
     if LineItem.where(line_itemable_id: id, line_itemable_type: 'Job').exists?
-      self.errors[:deletion_status] = 'All line items must be manually removed before a job can be deleted'
+      self.errors[:deletion_status] = 
+        'All line items must be manually removed before a job can be deleted'
       false
     else
       true
