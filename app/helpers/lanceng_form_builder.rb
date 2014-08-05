@@ -35,7 +35,6 @@ class LancengFormBuilder < ActionView::Helpers::FormBuilder
     end
   end
 
-  # TODO: write self commenting code?
   # Quick method for adding a label to a field. Can be called like
   # f.label.text_area :name
   # OR
@@ -51,17 +50,14 @@ class LancengFormBuilder < ActionView::Helpers::FormBuilder
     end
   end
 
-  # TODO: write self commenting code?
   # Another quick method, this time for errors. Stacks with label.
   # Potential use:
   # f.label.error.text_area :name
   def error(*args)
     # TODO: look at parenthesis being used here
-    (args.empty?) ? (proxy :error_for) : (error_for *args)
+    args.empty? ? proxy(:error_for) : error_for(*args)
   end
 
-  # TODO: write self commenting code?
-  # Creates a contenteditable span that is updated through ajax
   def inline_field(method, default_or_options = {}, options = {})
     @template.inline_field_tag(@object, method, default_or_options, options)
   end

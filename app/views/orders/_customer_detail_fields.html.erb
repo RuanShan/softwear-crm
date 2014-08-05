@@ -1,31 +1,20 @@
 <div class="form-group">
-  <%= f.label :email %>
-  <%= f.error_for :email %>
-  <%= f.text_field :email, placeholder: 'Email' %>
+  <%= f.label.error.text_field :email, placeholder: 'Email' %>
 </div>
 <div class="form-group">
-  <%= f.label :phone_number %>
-  <%= f.error_for :phone_number %>
-  <%= f.text_field :phone_number, class: 'format-phone' %>
+  <%= f.label.error.text_field :phone_number, class: 'format-phone' %>
 </div>
 <div class="form-group">
-  <%= f.label :firstname, 'First name' %>
-  <%= f.error_for :firstname %>
-  <%= f.text_field :firstname, placeholder: 'First Name' %>
+  <%= f.label('First name').error.text_field :firstname, placeholder: 'First Name' %>
 </div>
 <div class="form-group">
-  <%= f.label :lastname, 'Last name' %>
-  <%= f.error_for :lastname %>
-  <%= f.text_field :lastname, placeholder: 'Last Name' %>
+  <%= f.label('Last name').error.text_field :lastname, placeholder: 'Last Name' %>
 </div>
 <div class="form-group">
-  <%= f.label :company %>
-  <%= f.error_for :company %>
-  <%= f.text_field :company, placeholder: 'Company' %>
+  <%= f.label.error.text_field :company, placeholder: 'Company' %>
 </div>
 <div class="form-group">
-  <%= f.label :twitter %>
-  <%= f.error_for :twitter %>
+  <%= f.label.error_for :twitter %>
   <div class="input-group">
     <span class="input-group-addon">@</span>
     <%= f.text_field :twitter, placeholder: 'twitteralias' %>
