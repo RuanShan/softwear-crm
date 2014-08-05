@@ -5,13 +5,8 @@ class ArtworksController < InheritedResources::Base
   def index
     super do |format|
       @artworks = Artwork.all.page(params[:page])
-      # TODO: assign with conditional, refactor with ternary expression
-      if params[:artwork_request_id].nil?
-        @artwork_request = nil
-      else
-        @artwork_request = ArtworkRequest.find(params[:artwork_request_id])
-      end
-      format.js{render(locals: { artwork_request: @artwork_request })}
+      @artwork_request = params[:artwork_request_id].nil? ? nil : ArtworkRequest.find(params[:artwork_request_id])
+      format.js{ render(locals: { artwork_request: @artwork_request }) }
     end
   end
 

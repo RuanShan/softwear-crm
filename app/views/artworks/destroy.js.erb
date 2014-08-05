@@ -1,10 +1,11 @@
 $row = $('#artwork-row-<%= @artwork.id %>');
 $row.fadeOut($row.remove);
-// TODO put above into function, see if above works
+
 setupContentModal(function($contentModal){
-    $contentModal.find('.modal-content').addClass('modal-content-success')
+  $contentModal.find('.modal-content').addClass('modal-content-success')
 })
+
 showContentModal({
-    title: 'SUCCESS',
-    body: 'Successfuly destroyed Artwork!'
+  title: 'SUCCESS',
+  body: 'Successfuly destroyed Artwork!'
 })

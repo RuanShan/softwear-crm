@@ -2,12 +2,14 @@
   <div class="form-group">
     <div class="row">
       <%= f.label :name, class: 'col-sm-3 control-label' %>
+
       <div class="col-sm-9">
         <%= f.text_field :name %>
+
         <% if artwork.errors.include?(:name) %>
-            <% artwork.errors.full_messages_for(:name).each do |message| %>
-                <p class="text-danger"><%= message %></p>
-            <% end %>
+          <% artwork.errors.full_messages_for(:name).each do |message| %>
+            <p class="text-danger"><%= message %></p>
+          <% end %>
         <% end %>
       </div>
     </div>
@@ -16,12 +18,14 @@
   <div class="form-group">
     <div class="row">
       <%= f.label :description, class: 'col-sm-3 control-label' %>
+
       <div class="col-sm-9">
         <%= f.text_area :description, class: 'form-control' %>
+
         <% if artwork.errors.include?(:description) %>
-            <% artwork.errors.full_messages_for(:description).each do |message| %>
-                <p class="text-danger"><%= message %></p>
-            <% end %>
+          <% artwork.errors.full_messages_for(:description).each do |message| %>
+            <p class="text-danger"><%= message %></p>
+          <% end %>
         <% end %>
       </div>
     </div>
@@ -29,28 +33,33 @@
 
   <div class="form-group">
     <div class="row">
-    <%= f.label :tag_list, 'Tags (separated by commas)', class: 'col-sm-3 control-label' %>
-    <div class="col-sm-9">
-      <%= f.text_field :tag_list %>
-      <% if artwork.errors.include?(:tag_list) %>
+      <%= f.label :tag_list, 'Tags (separated by commas)', class: 'col-sm-3 control-label' %>
+
+      <div class="col-sm-9">
+        <%= f.text_field :tag_list %>
+
+        <% if artwork.errors.include?(:tag_list) %>
           <% artwork.errors.full_messages_for(:tag_list).each do |message| %>
-              <p class="text-danger"><%= message %></p>
+            <p class="text-danger"><%= message %></p>
           <% end %>
-      <% end %>
-      <p class="help-block">Tags are searchable characteristics or 'keywords'</p>
+        <% end %>
+
+        <p class="help-block">Tags are searchable characteristics or 'keywords'</p>
+      </div>
     </div>
-  </div>
   </div>
 
   <div class="form-group" style="display: none">
     <div class="row">
       <%= f.label :artist_id, "Artist", class: 'col-sm-3 control-label' %>
+
       <div class="col-sm-9">
         <%= f.select :artist_id, [current_user.id] %>
+
         <% if artwork.errors.include?(:artist_id) %>
-            <% artwork.errors.full_messages_for(:artist_id).each do |message| %>
-                <p class="text-danger"><%= message %></p>
-            <% end %>
+          <% artwork.errors.full_messages_for(:artist_id).each do |message| %>
+            <p class="text-danger"><%= message %></p>
+          <% end %>
         <% end %>
       </div>
     </div>
@@ -58,26 +67,27 @@
 
   <div class="form-group">
     <%= f.fields_for :artwork, multipart: true do |ff| %>
-        <%= render partial: 'asset_fields', locals: {f: ff, title: 'Artwork', text: 'Describe the artwork file', file_constraints: 'Must be .jpg, .png, or .gif'} %>
+      <%= render partial: 'asset_fields', locals: { f: ff, file_constraints: 'Must be .jpg, .png, or .gif', text: 'Describe the artwork file', title: 'Artwork' } %>
     <% end %>
+
     <% if artwork.errors.include?(:artwork) %>
-        <% artwork.errors.full_messages_for(:artwork).each do |message| %>
-            <p class="text-danger"><%= message %></p>
-        <% end %>
+      <% artwork.errors.full_messages_for(:artwork).each do |message| %>
+        <p class="text-danger"><%= message %></p>
+      <% end %>
     <% end %>
   </div>
 
   <div class="form-group">
     <%= f.fields_for :preview, multipart: true do |ff| %>
-        <%= render partial: 'asset_fields', locals: {f: ff, title: 'Preview', text: 'Describe the preview file', file_constraints: 'Must be .ai or .psd'} %>
+      <%= render partial: 'asset_fields', locals: { f: ff, file_constraints: 'Must be .ai or .psd', text: 'Describe the preview file', title: 'Preview' } %>
     <% end %>
+
     <% if artwork.errors.include?(:preview) %>
-        <% artwork.errors.full_messages_for(:preview).each do |message| %>
-            <p class="text-danger"><%= message %></p>
-        <% end %>
+      <% artwork.errors.full_messages_for(:preview).each do |message| %>
+        <p class="text-danger"><%= message %></p>
+      <% end %>
     <% end %>
   </div>
-
 </div>
 
 <hr>
@@ -88,5 +98,4 @@
       <%= f.submit create_or_edit_text(artwork) + ' Artwork' %>
     </div>
   </div>
-</div>
 </div>

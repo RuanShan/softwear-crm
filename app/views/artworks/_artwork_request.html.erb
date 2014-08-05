@@ -1,8 +1,11 @@
 <div class="col-lg-9">
-  <%= render partial: 'artworks/search', locals: {remote: true, artworks: artworks, artwork_request: artwork_request} %>
+  <%= render partial: 'artworks/search', locals: { artworks: artworks, artwork_request: artwork_request, remote: true } %>
 </div>
+
 <%= paginate @artworks %>
+
 <div class="box-info row clear">
-  <%= render partial: 'artworks/table', locals: {artworks: artworks, artwork_request: artwork_request} %>
+  <%= render partial: 'artworks/table', locals: { artworks: artworks, artwork_request: artwork_request } %>
 </div>
+
 <%= paginate @artworks %>
