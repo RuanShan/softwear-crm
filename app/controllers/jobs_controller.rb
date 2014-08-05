@@ -22,7 +22,7 @@ class JobsController < InheritedResources::Base
   def create
     super do |success, failure|
       success.html do
-        render partial: 'orders/job', locals: { job: @job, animated: true }
+        render partial: 'job', locals: { job: @job, animated: true }
       end
 
       failure.json do
@@ -53,7 +53,7 @@ class JobsController < InheritedResources::Base
       format.json do
         render json: {
           result: 'success',
-          content: render_string(partial: 'orders/job', locals: {job: @job})
+          content: render_string(partial: 'job', locals: {job: @job})
         }
       end
     end
