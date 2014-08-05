@@ -25,6 +25,9 @@ class JobsController < InheritedResources::Base
         render partial: 'job', locals: { job: @job, animated: true }
       end
 
+      success.js
+      failure.js
+
       failure.json do
         render json: {
           result: 'failure',
@@ -42,6 +45,8 @@ class JobsController < InheritedResources::Base
           error: @job.destroyed? ? @job.errors.messages[:deletion_status] : nil
         }
       end
+
+      format.js
     end
   end
 
@@ -56,6 +61,12 @@ class JobsController < InheritedResources::Base
           content: render_string(partial: 'job', locals: { job: @job })
         }
       end
+    end
+  end
+
+  def new
+    super do |format|
+      format.js
     end
   end
 

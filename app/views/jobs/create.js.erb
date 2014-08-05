@@ -1,0 +1,19 @@
+disableFor('.js-new-job', 1000);
+
+<% if @job.valid? %>
+  $newJob = $("<%= escape_javascript render partial: 'job', locals: { job: @job } %>");
+
+  $('#jobs').children().last().before($newJob);
+
+  $('.scroll-y').scrollTo($('h3.job-title').last(),{
+    duration: 1000,
+    offsetTop: 100
+  });
+
+  registerJobEvents($newJob);
+  updateOrderTimeline();
+
+<% else %>
+  
+  errorModal("Sorry, looks like the server had trouble creating the job.");
+<% end %>

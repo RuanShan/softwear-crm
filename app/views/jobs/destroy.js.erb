@@ -1,0 +1,9 @@
+disableFor('#delete-job-<%= @job.id %>', 1000);
+
+<% if @job.destroyed? %>
+  $("#job-<%= @job.id %>").fadeOut(500, updateOrderTimeline);
+
+<% else %>
+  
+  errorModal("<%= escape_javascript @job.errors.messages[:deletion_status].join(', ') %>");
+<% end %>
