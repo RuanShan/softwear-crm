@@ -1,9 +1,0 @@
-<%= form_tag action: 'email_customer', quote_id: @quote.id, send: true %>
-
-<%= label_tag 'Subject' %>
-<%= text_field_tag :email_subject %>
-<br/>
-<%= label_tag 'Body of Email' %>
-<%= text_area_tag :email_body, nil, class: 'summernote' %>
-
-<%= form_tag %>
