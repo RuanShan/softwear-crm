@@ -43,19 +43,26 @@ class Order < ActiveRecord::Base
   #TODO: custom validators for phone and email??
   #TODO: shouldn't validate salesperson_id, but rather salesperson?? could make relation like artwork_request?
   validates :delivery_method, presence: true
-  validates :email, presence: true, format: { with: /\A([^@\s]+)@((?:[-a-z0-9]+\.)+[a-z]{2,})\Z/i }
+  validates :email, 
+            presence: true, 
+            format: { with: /\A([^@\s]+)@((?:[-a-z0-9]+\.)+[a-z]{2,})\Z/i }
   validates :firstname, presence: true
   validates :lastname, presence: true
   validates :name, presence: true
-  validates :phone_number, format: { with: /\d{3}-\d{3}-\d{4}/, message: 'is incorrectly formatted, use 000-000-0000' }
+  validates :phone_number, 
+            format: { 
+              with: /\d{3}-\d{3}-\d{4}/, 
+              message: 'is incorrectly formatted, use 000-000-0000' 
+            }
   validates :salesperson_id, presence: true
   validates :store, presence: true
   validates :tax_id_number, presence: true, if: :tax_exempt?
   validates :terms, presence: true
-  #TODO: can this be sexified?
-  validates_inclusion_of(:delivery_method,
-      in: VALID_DELIVERY_METHODS,
-      message: 'Invalid delivery method')
+  validates :delivery_method,
+            inclusion: {
+              in: VALID_DELIVERY_METHODS,
+              message: 'Invalid delivery method'
+            }
 
   belongs_to :store
   belongs_to :user, :foreign_key => :salesperson_id
@@ -65,17 +72,7 @@ class Order < ActiveRecord::Base
   has_many :proofs
   accepts_nested_attributes_for :payments
 
-  # TODO: refactor this out to concern
-  def all_activities
-    PublicActivity::Activity.where( '
-      (
-        activities.recipient_type = ? AND activities.recipient_id = ?
-      ) OR
-      (
-        activities.trackable_type = ? AND activities.trackable_id = ?
-      )
-    ', *([self.class.name, self.id] * 2) ).order('created_at DESC')
-  end
+  is_activity_recipient
 
   def balance
     total - payment_total
@@ -123,20 +120,16 @@ class Order < ActiveRecord::Base
   end
 
   def payment_total
-    total = 0
-    # TODO: make fancy, use select
-    self.payments.each do |payment|
-      unless payment.nil? || payment.is_refunded?
-        total += payment.amount
-      end
+    self.payments.reduce(0) do |total, payment|
+      payment && !payment.is_refunded? ? total + payment.amount : total
     end
-    total
   end
 
   def percent_paid
     payment_total / total * 100
   end
 
+  # TODO belongs_to instead?
   def salesperson
     User.find(salesperson_id)
   end

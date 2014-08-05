@@ -45,6 +45,19 @@ module TrackingHelpers
           end
         }
       end
+
+      def is_activity_recipient
+        def all_activities
+          PublicActivity::Activity.where( '
+            (
+              activities.recipient_type = ? AND activities.recipient_id = ?
+            ) OR
+            (
+              activities.trackable_type = ? AND activities.trackable_id = ?
+            )
+          ', *([self.class.name, self.id] * 2) ).order('created_at DESC')
+        end
+      end
     end
 
     class Methods
