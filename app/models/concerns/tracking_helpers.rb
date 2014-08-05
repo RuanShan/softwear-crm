@@ -19,27 +19,30 @@ module TrackingHelpers
       # Assign the recipient to either the record's associated order, 
       # or the current order based on the controller.
       def on_order
-        { recipient: Proc.new(&TrackingHelpers::Methods.method(:get_order)) }
+        { recipient: TrackingHelpers::Methods.method(:get_order).to_proc }
       end
       # Allows parameters to be applied through (controller, record) procs,
       # or you can just pass one or more hashes.
       def with_params(*params)
-        { params: ->(controller, record) {
-            ([{}] + params).combine do |total, entry|
+        {
+          params: lambda(controller, record) do
+            params.reduce({}) do |total, entry|
               total.merge case entry
-                when Proc
+                when Proc, Method
                   hash = entry.call(controller, record)
                   unless hash.is_a? Hash
-                    raise "Result of proc must be a hash. Got #{entry.class.name} instead."
+                    raise "Result of proc must be a hash. "\
+                          "Got #{entry.class.name} instead."
                   end
                   hash
                 when Hash
                   entry
                 else
-                  raise "Must be a hash or proc. Got #{entry.class.name} instead."
+                  raise "Must be a hash or proc. "\
+                        "Got #{entry.class.name} instead."
                 end
             end
-          }
+          end
         }
       end
     end

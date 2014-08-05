@@ -4,14 +4,15 @@ class Order < ActiveRecord::Base
   acts_as_paranoid
 
   searchable do
-    text :name, :email, :firstname, :lastname, :company, :twitter, :terms, :delivery_method
+    text :name, :email, :firstname, :lastname, 
+         :company, :twitter, :terms, :delivery_method
+
     text :jobs do
       jobs.map { |j| "#{j.name} #{j.description}" }
     end
-    # TODO: refactor
-    [:firstname, :lastname, :email, :terms, :delivery_method, :company, :phone_number].each do |field|
-      string field
-    end
+    
+    string :firstname, :lastname, :email, :terms, 
+           :delivery_method, :company, :phone_number
 
     double :total
     double :commission_amount
