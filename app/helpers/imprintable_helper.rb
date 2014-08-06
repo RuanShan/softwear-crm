@@ -1,13 +1,6 @@
 module ImprintableHelper
   def table_entries(table)
-    string = String.new
-
-    # TODO: use join
-    table.each do |entry|
-      string += ', ' + entry.name.to_s
-    end
-
-    string.sub!(/, /, '')
+    table.to_a.map(&:name).join(', ')
   end
 
   def display_sizes(imprintable)

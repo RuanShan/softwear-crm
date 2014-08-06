@@ -31,10 +31,9 @@
         <div class="tab-pane animated fadeInRight" id="size_color_availability_<%= @imprintable.id %>">
           <%= render partial: 'size_color_availability',
                      locals: { imprintable: @imprintable,
-                               size_variants: @size_variants,
-                               color_variants: @color_variants,
-                               variants_array: @variants_array } %>
-          <% #TODO: rubymine isnt happy more than two variables bein' shared! %>
+                               size_variants: @variants_hash[:size_variants],
+                               color_variants: @variants_hash[:color_variants],
+                               variants_array: @variants_hash[:variants_array] } %>
         </div>
 
         <div class="tab-pane animated fadeInRight" id="imprint_details_<%= @imprintable.id %>">

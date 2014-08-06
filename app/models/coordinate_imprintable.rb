@@ -11,7 +11,6 @@ class CoordinateImprintable < ActiveRecord::Base
   validates :coordinate, presence: true
   validates :imprintable, presence: true
 
-  # TODO: try to refactor
   def add_mirror
     self.class.find_or_create_by(imprintable: coordinate,
                                  coordinate: imprintable)

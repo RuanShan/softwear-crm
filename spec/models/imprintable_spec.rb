@@ -3,7 +3,6 @@ include PricingModule
 
 describe Imprintable, imprintable_spec: true do
   describe 'Relationship' do
-
     it { should belong_to(:brand) }
 
     it { should have_many(:imprintable_variants).dependent(:destroy) }
@@ -18,26 +17,28 @@ describe Imprintable, imprintable_spec: true do
   end
 
   describe 'Validations' do
+    it { should validate_presence_of(:style_catalog_no) }
     it { should validate_presence_of(:style_name) }
+
+    it { should validate_uniqueness_of(:style_catalog_no).scoped_to(:brand_id) }
     it { should validate_uniqueness_of(:style_name).scoped_to(:brand_id) }
 
-    it { should validate_presence_of(:style_catalog_no) }
-    it { should validate_uniqueness_of(:style_catalog_no).scoped_to(:brand_id) }
-
     it { should validate_presence_of(:brand) }
-
     it { should validate_presence_of(:max_imprint_width) }
     it { should validate_presence_of(:max_imprint_height) }
-    it { should validate_numericality_of (:max_imprint_width) }
+
+    it { should validate_numericality_of(:max_imprint_width) }
     it { should validate_numericality_of(:max_imprint_height) }
 
-    context "if retail" do
-      before { allow(subject).to receive_message_chain(:is_retail?).and_return(true)}
+    context 'if retail' do
+      before { allow(subject).to receive_message_chain(:is_retail?).and_return(true) }
+
       it { should ensure_length_of(:sku).is_equal_to(4) }
     end
 
-    context "if not retail" do
-      before { allow(subject).to receive_message_chain(:is_retail?).and_return(false)}
+    context 'if not retail' do
+      before { allow(subject).to receive_message_chain(:is_retail?).and_return(false) }
+
       it { should_not ensure_length_of(:sku).is_equal_to(4) }
     end
 
@@ -48,7 +49,6 @@ describe Imprintable, imprintable_spec: true do
 
   describe 'Scopes' do
     context 'there are two sizes, colors and variants' do
-
       let!(:color_one) { create(:valid_color) }
       let!(:color_two) { create(:valid_color) }
       let!(:size_one) { create(:valid_size) }
@@ -103,7 +103,7 @@ describe Imprintable, imprintable_spec: true do
   describe 'find_variants' do
     let!(:imprintable_variant) { create(:valid_imprintable_variant) }
     it 'returns the variant that is associated with the imprintable that it is called on' do
-      expect(imprintable_variant.imprintable.find_variants.to_a[0]).to eq(imprintable_variant)
+      expect(Imprintable.variants(imprintable_variant.imprintable.id).to_a[0]).to eq(imprintable_variant)
     end
   end
 
@@ -142,9 +142,11 @@ describe Imprintable, imprintable_spec: true do
 
     it 'generates an imprintable variant from arrays of sizes and colors' do
       expect(valid_imprintable.imprintable_variants.count).to eq(0)
-      valid_imprintable.create_imprintable_variants_from_sizes_and_colors(sizes, colors)
+      from_hash = {}
+      from_hash[:sizes] = sizes
+      from_hash[:colors] = colors
+      valid_imprintable.create_imprintable_variants(from_hash)
       expect(valid_imprintable.imprintable_variants.count).to eq(6)
     end
   end
-
 end

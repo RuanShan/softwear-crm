@@ -26,7 +26,7 @@ jQuery ->
   `function addColumn(tblId, size, size_id)
   {
     var tblHeadObj = document.getElementById(tblId).tHead;
-    var select = document.getElementById('add_a_size');
+    var select = document.getElementById('add-a-size');
 
     // first make sure size hasn't already been selected
     var tableHeaders = tblHeadObj.rows[0].cells;
@@ -39,7 +39,7 @@ jQuery ->
 
     for (var h=0; h<tblHeadObj.rows.length; h++) {
       var newTH = document.createElement('th');
-      newTH.id = "col_"+String(tblHeadObj.rows[h].cells.length-1);
+      newTH.id = "col-"+String(tblHeadObj.rows[h].cells.length-1);
       newTH.setAttribute("data-size-id", size_id);
 
       tblHeadObj.rows[h].deleteCell(tblHeadObj.rows[h].cells.length-1);
@@ -48,8 +48,8 @@ jQuery ->
       var headerPlus = document.createElement('i');
       var headerMinus = document.createElement('i');
 
-      headerPlus.id = "col_plus_"+String(tblHeadObj.rows[h].cells.length-1);
-      headerMinus.id = 'col_minus_'+String(tblHeadObj.rows[h].cells.length-1);
+      headerPlus.id = "col-plus-"+String(tblHeadObj.rows[h].cells.length-1);
+      headerMinus.id = 'col-minus-'+String(tblHeadObj.rows[h].cells.length-1);
 
       newTH.innerHTML = size
 
@@ -65,7 +65,7 @@ jQuery ->
     var tblBodyObj = document.getElementById(tblId).tBodies[0];
     for (var i=0; i<tblBodyObj.rows.length-1; i++) {
       var newCell = tblBodyObj.rows[i].insertCell(-1);
-      newCell.id = "cell_"+String(i+1)+"_"+String(tblHeadObj.rows[0].cells.length-2);
+      newCell.id = "cell-"+String(i+1)+"-"+String(tblHeadObj.rows[0].cells.length-2);
 
       var cellPlus = document.createElement('i');
       var cellMinus = document.createElement('i');
@@ -75,7 +75,7 @@ jQuery ->
 
       var check = document.createElement('i');
       check.className = 'fa fa-check';
-      check.id = "image_"+String(i+1)+"_"+String(tblHeadObj.rows[0].cells.length-2);
+      check.id = "image-"+String(i+1)+"-"+String(tblHeadObj.rows[0].cells.length-2);
 
       newCell.appendChild(check);
       newCell.appendChild(cellPlus);
@@ -83,21 +83,21 @@ jQuery ->
     }
   }`
 
-  $(document).on('click', '#size_button', ->
+  $(document).on('click', '#size-button', ->
     size = $('#size_select :selected').text()
     size_id = $('#size_select :selected').val()
     if size == 'Select a Size'
       return
-    addColumn('imprintable_variants_list', size, size_id)
+    addColumn('imprintable-variants-list', size, size_id)
   )
 
-  $(document).on('click', '#color_button', ->
+  $(document).on('click', '#color-button', ->
     color = $('#color_select :selected').text()
     color_id = $('#color_select :selected').val()
     if color == 'Select a Color'
       return
 
-    table = document.getElementById('imprintable_variants_list')
+    table = document.getElementById('imprintable-variants-list')
     tblBodyObj = table.tBodies[0]
 
     # first make sure the color hasn't already been selected
@@ -115,7 +115,7 @@ jQuery ->
     row = table.insertRow(tblBodyObj.rows.length)
     if count > 0
       rowHeader = document.createElement('th')
-      row.id = "row_"+String(tblBodyObj.rows.length-1)
+      row.id = "row-"+String(tblBodyObj.rows.length-1)
       row.setAttribute('data-color-id', color_id)
       cellIndex += 1
       count -= 1
@@ -124,10 +124,10 @@ jQuery ->
       headerMinus = document.createElement('i')
 
       headerPlus.className = 'fa fa-plus'
-      headerPlus.id = "row_plus_"+String(tblBodyObj.rows.length)
+      headerPlus.id = "row-plus-"+String(tblBodyObj.rows.length)
 
       headerMinus.className = 'fa fa-minus'
-      headerMinus.id = "row_minus_"+String(tblBodyObj.rows.length)
+      headerMinus.id = "row-minus-"+String(tblBodyObj.rows.length)
 
       rowHeader.innerHTML = color
       rowHeader.appendChild(headerPlus)
@@ -140,14 +140,14 @@ jQuery ->
       newCell = row.insertCell(cellIndex)
       count -= 1
 
-      newCell.id = "cell_"+String(tblBodyObj.rows.length-1)+"_"+String(cellIndex)
+      newCell.id = "cell-"+String(tblBodyObj.rows.length-1)+"-"+String(cellIndex)
 
       cellCheck = document.createElement('i')
       cellMinus = document.createElement('i')
       cellPlus = document.createElement('i')
 
       cellCheck.className = 'fa fa-check'
-      cellCheck.id = "image_"+String(tblBodyObj.rows.length-1)+"_"+String(cellIndex)
+      cellCheck.id = "image-"+String(tblBodyObj.rows.length-1)+"-"+String(cellIndex)
 
       cellIndex += 1
 
@@ -177,8 +177,8 @@ jQuery ->
         item.firstElementChild.className = class_name
     else if /col_/.test(element.attr('id'))
       sub = element.attr('id').split('_')[2]
-      sub = 'i[id$=_' + sub.toString() + ']'
-      array_one = document.querySelectorAll('i[id^=image_]')
+      sub = 'i[id$=-' + sub.toString() + ']'
+      array_one = document.querySelectorAll('i[id^=image-]')
       array_two = document.querySelectorAll(sub)
       union = intersect_arrays(array_one, array_two)
       for item in union
@@ -198,12 +198,12 @@ jQuery ->
     checks = $('.fa-check')
     for item in checks
       if !$(item).attr('data-variant-id')
-        sub = $(item).attr('id').split('_')[2]
-        colhead = document.querySelectorAll('#col_'+String(sub))
+        sub = $(item).attr('id').split('-')[2]
+        colhead = document.querySelectorAll('#col-'+String(sub))
         size_id = $(colhead).attr('data-size-id')
 
-        sub = $(item).attr('id').split('_')[1]
-        rowhead = document.querySelectorAll('#row_'+String(sub))
+        sub = $(item).attr('id').split('-')[1]
+        rowhead = document.querySelectorAll('#row-'+String(sub))
         color_id = $(rowhead).attr('data-color-id')
 
         variants_to_add.push({size_id: size_id, color_id: color_id})
@@ -244,7 +244,7 @@ jQuery ->
   $(document).on('click', '#submit_button', ->
     innerHtml = document.getElementById('submit_button').innerHTML
     if innerHtml == 'Update Imprintable'
-      if $('#imprintable_variants_list').length
+      if $('#imprintable-variants-list').length
         # variants already exist
         # aggregate all the variants and populate params
         variant_hash = aggregate_variants()

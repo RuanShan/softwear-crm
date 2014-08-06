@@ -1,11 +1,11 @@
 require 'spec_helper'
 
 describe 'imprintables/_form.html.erb', imprintable_spec: true do
-  before(:each){ render partial: 'imprintables/form', locals: { imprintable: Imprintable.new } }
 
   it 'has text_field for special_considerations, material, proofing template name, standard offering, flashable, polyester, sizing category, brand, style name, style catalog no, style description, style sku, retail, and a submit button' do
     imprintable = Imprintable.new
     f = LancengFormBuilder.dummy_for imprintable
+    assign(:model_collection_hash, { brand_collection: [], store_collection: [], imprintable_collection: [], size_collection: [], color_collection: [], sizing_categories_collection: [], imprint_method_collection: [] })
     render partial: 'imprintables/form', locals: {imprintable: imprintable, f: f}
     within_form_for Imprintable, noscope: true do
       expect(rendered).to have_field_for :special_considerations

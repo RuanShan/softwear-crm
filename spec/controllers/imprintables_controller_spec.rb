@@ -69,7 +69,7 @@ describe ImprintablesController, imprintable_spec: true do
   describe 'PUT update' do
     context 'with valid input' do
       it 'updates the imprintable' do
-        expect{ put :update, id: imprintable.to_param, color: { ids: [1]}, size: {ids: [1]}, imprintable: attributes_for(:valid_imprintable) }.to_not change(Imprintable, :count)
+        expect{ put :update, id: imprintable.to_param, color: { ids: [1] }, size: { ids: [1] }, imprintable: attributes_for(:valid_imprintable) }.to_not change(Imprintable, :count)
         expect(imprintable.special_considerations).to eq('Special Consideration')
       end
     end
@@ -103,8 +103,8 @@ describe ImprintablesController, imprintable_spec: true do
     let!(:color) { create(:valid_color) }
     let!(:imprintable_variant) { ImprintableVariant.create(id: 1, imprintable_id: imprintable.id, created_at: Time.now, size_id: size.id, color_id: color.id) }
 
-    context 'an invariant is slated for removal' do
-      it 'removes the indicated invariant' do
+    context 'a variant is slated for removal' do
+      it 'removes the indicated variant' do
         put :update_imprintable_variants, id: imprintable_variant.imprintable.id.to_param, update: { variants_to_remove: [imprintable_variant.id] }
         expect(ImprintableVariant.exists?(imprintable_variant.id)).to be_falsey
       end

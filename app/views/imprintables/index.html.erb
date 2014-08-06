@@ -1,20 +1,23 @@
 <div class="page-heading animated fadeInDownBig col-lg-8">
   <h1>Imprintables <small>View and edit imprintables</small></h1>
 </div>
+
 <div class="col-lg-2 text-right">
   <%= link_to 'View Pricing Table', prices_path, class: 'btn btn-default', remote: true %>
 </div>
+
 <div class="col-lg-2 text-right">
-  <% #TODO: role button %>
-  <%= link_to 'Add an Imprintable', new_imprintable_path, class: 'btn btn-primary', role: 'button' %>
+  <%= link_to 'Add an Imprintable', new_imprintable_path, class: 'btn btn-primary' %>
 </div>
+
 <div class="col-lg-9">
   <%= render partial: 'imprintables/search' %>
 </div>
+
 <%= paginate @imprintables %>
 
 <div class="box-info row clear">
-  <%= render partial: 'imprintables/table', locals: { imprintables: @imprintables, sizes: @sizes, colors: @colors } %>
+  <%= render partial: 'imprintables/table', locals: { imprintables: @imprintables } %>
 </div>
 
 <%= paginate @imprintables %>
