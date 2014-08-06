@@ -1,10 +1,7 @@
-
-
 <%= render partial: 'shared/modal_errors', locals: {object: store} %>
-<%= form_for store, builder: LancengFormBuilder do |f| %>
-  <!-- Horizontal form body -->
-  <div id="horizontal-form" class="collapse in">
 
+<%= form_for store, builder: LancengFormBuilder do |f| %>
+  <div id="horizontal-form" class="collapse in">
     <div class="form-group">
       <%= f.label :name %>
       <%= f.text_field :name %>
@@ -13,6 +10,5 @@
     <div class="form-group">
       <%= f.submit class: 'btn btn-info' %>
     </div>
-
   </div>
 <% end %>
