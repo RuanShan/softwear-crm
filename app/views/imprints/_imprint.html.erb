@@ -1,4 +1,4 @@
-<div class="col-sm-4 imprint-entry" data-id="<%= local_assigns[:imprint_id] || -1 %>">
+<div class="col-sm-4 imprint-entry" data-id="<%= local_assigns[:imprint].try(:id) || -1 %>">
   <div class="box-info imprint-container">
   <% if ImprintMethod.all.empty? %>
     <p>
@@ -14,7 +14,7 @@
               ImprintMethod.first.print_locations
             end,
 
-          default: local_assigns[:imprint_id].try(:id)
+          default: local_assigns[:imprint].try(:print_location).try(:id)
         } %>
       </div>
 
