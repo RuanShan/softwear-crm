@@ -1,4 +1,6 @@
 class ImprintsController < InheritedResources::Base
+  belongs_to :job, shallow: true
+
   %i(create update destroy).each do |action|
     define_method action do
       send("#{action}!") do |success, failure|

@@ -7,7 +7,6 @@
     </p>
   <% else %>
       <div class="print-location-container">
-      <!-- TODO WEDNESDAY make sure this rework works. -->
         <%= render partial: 'imprint_methods/print_locations_select', locals: {
           print_locations: if local_assigns[:imprint_method]
               imprint_method.print_locations
