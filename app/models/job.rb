@@ -55,15 +55,47 @@ class Job < ActiveRecord::Base
   end
 
   def max_print_area(print_location)
-    # TODO Currying like this is more DRY, but I am using #()
-    # instead of #call on the proc. This is considered bad,
-    # but using #call here looks like total ass.
+    ## TODO
+    # 
+    # Okay, here are 3 possibilities for implementation. First, my (Nigel's)
+    # initial refactoring (which will remain uncommented for now):
+    # ----------------------------------
     max_print = method(:max_print).to_proc.curry.(print_location)
     return max_print.(:width), max_print.(:height)
     
-    # width = (imprintables.map(&:max_imprint_width) << print_location.max_width).map(&:to_f).min
-    # height = (imprintables.map(&:max_imprint_height) << print_location.max_height).map(&:to_f).min
-    # return width, height
+    # Currying is a little weird/inelegant in Ruby, so it looks kinda
+    # funky, but it is DRY and fairly concise.
+
+    # Here's the original implementation:
+    # ----------------------------------
+    #width = (imprintables.map(&:max_imprint_width) << print_location.max_width).map(&:to_f).min
+    #height = (imprintables.map(&:max_imprint_height) << print_location.max_height).map(&:to_f).min
+    #return width, height
+
+    # Seems redundant and hard to indent cleanly, but easier to understand
+    # if you aren't familiar with functional programming.
+    # Here's another potential solution I came up with:
+    # (Assuming no actual max_print method exists)
+    # ----------------------------------
+    #max_print = lambda(width_or_height) do
+    #  (
+    #    imprintables.map(&"max_imprint_#{width_or_height}".to_sym) +
+    #    [print_location.send("max_#{width_or_height}")]
+    #  )
+    #    .map(&:to_f).min
+    #end
+    #return max_print.(:width), max_print.(:height)
+
+    # This defines max_print inside this method, allowing direct access to
+    # the print_location argument, meaning no need to curry or repeat
+    # ourselves. I am unsure, however, if inner methods like this are
+    # considered good practice (seems fine to me but we know how much that
+    # weighs).
+    #
+    # Additionally, we should discuss the use of #() vs #call on procs.
+    # The style guide insists on using #call always, and while I definitely
+    # understand the clarity of #call, and I usually use it, but in cases
+    # like this, I feel it reads much better with #(), or even #[].
   end
 
   #TODO: Maybe still look at this
