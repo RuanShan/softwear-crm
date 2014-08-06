@@ -4,14 +4,18 @@ class Order < ActiveRecord::Base
   acts_as_paranoid
 
   searchable do
-    text :name, :email, :firstname, :lastname, :company, :twitter, :terms, :delivery_method
+    text :name, :email, :firstname, :lastname, 
+         :company, :twitter, :terms, :delivery_method
+
     text :jobs do
       jobs.map { |j| "#{j.name} #{j.description}" }
     end
-    # TODO: refactor
-    [:firstname, :lastname, :email, :terms, :delivery_method, :company, :phone_number].each do |field|
-      string field
-    end
+
+    [
+      :firstname, :lastname, :email, :terms, 
+      :delivery_method, :company, :phone_number
+    ]
+      .each { |f| string f }
 
     double :total
     double :commission_amount
@@ -40,21 +44,29 @@ class Order < ActiveRecord::Base
   ]
 
   #TODO: custom validators for phone and email??
-  #TODO: shouldn't validate salesperson_id, but rather salesperson?? could make relation like artwork_request?
+  #TODO: shouldn't validate salesperson_id, but rather salesperson??
+  #      could make relation like artwork_request?
   validates :delivery_method, presence: true
-  validates :email, presence: true, format: { with: /\A([^@\s]+)@((?:[-a-z0-9]+\.)+[a-z]{2,})\Z/i }
+  validates :email, 
+            presence: true, 
+            format: { with: /\A([^@\s]+)@((?:[-a-z0-9]+\.)+[a-z]{2,})\Z/i }
   validates :firstname, presence: true
   validates :lastname, presence: true
   validates :name, presence: true
-  validates :phone_number, format: { with: /\d{3}-\d{3}-\d{4}/, message: 'is incorrectly formatted, use 000-000-0000' }
+  validates :phone_number, 
+            format: { 
+              with: /\d{3}-\d{3}-\d{4}/, 
+              message: 'is incorrectly formatted, use 000-000-0000' 
+            }
   validates :salesperson_id, presence: true
   validates :store, presence: true
   validates :tax_id_number, presence: true, if: :tax_exempt?
   validates :terms, presence: true
-  #TODO: can this be sexified?
-  validates_inclusion_of(:delivery_method,
-      in: VALID_DELIVERY_METHODS,
-      message: 'Invalid delivery method')
+  validates :delivery_method,
+            inclusion: {
+              in: VALID_DELIVERY_METHODS,
+              message: 'Invalid delivery method'
+            }
 
   belongs_to :store
   belongs_to :user, :foreign_key => :salesperson_id
@@ -64,17 +76,7 @@ class Order < ActiveRecord::Base
   has_many :proofs
   accepts_nested_attributes_for :payments
 
-  # TODO: refactor this out to concern
-  def all_activities
-    PublicActivity::Activity.where( '
-      (
-        activities.recipient_type = ? AND activities.recipient_id = ?
-      ) OR
-      (
-        activities.trackable_type = ? AND activities.trackable_id = ?
-      )
-    ', *([self.class.name, self.id] * 2) ).order('created_at DESC')
-  end
+  is_activity_recipient
 
   def balance
     total - payment_total
@@ -88,29 +90,35 @@ class Order < ActiveRecord::Base
   def payment_status
     if self.terms.empty?
       'Payment Terms Pending'
+    
     elsif self.balance <= 0
       return 'Payment Complete'
+    
     elsif self.balance > 0
       if self.terms == 'Paid in full on purchase'
         return 'Awaiting Payment'
+      
       elsif self.terms == 'Half down on purchase'
         if self.balance >= (total * 0.49)
           return 'Awaiting Payment'
         else
           return 'Payment Terms Met'
         end
+      
       elsif self.terms == 'Paid in full on pick up'
         if Time.now >= self.in_hand_by
           return 'Awaiting Payment'
         else
           return 'Payment Terms Met'
         end
+      
       elsif self.terms == 'Net 30'
         if Time.now >= (self.in_hand_by + 30.days)
           return 'Awaiting Payment'
         else
           return 'Payment Terms Met'
         end
+      
       elsif self.terms == 'Net 60'
         if Time.now >= (self.in_hand_by + 60.days)
           return 'Awaiting Payment'
@@ -122,20 +130,16 @@ class Order < ActiveRecord::Base
   end
 
   def payment_total
-    total = 0
-    # TODO: make fancy, use select
-    self.payments.each do |payment|
-      unless payment.nil? || payment.is_refunded?
-        total += payment.amount
-      end
+    self.payments.reduce(0) do |total, payment|
+      payment && !payment.is_refunded? ? total + payment.amount : total
     end
-    total
   end
 
   def percent_paid
     payment_total / total * 100
   end
 
+  # TODO belongs_to instead?
   def salesperson
     User.find(salesperson_id)
   end
