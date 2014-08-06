@@ -1,5 +1,4 @@
 class LineItemsController < InheritedResources::Base
-  # TODO: everything
   before_filter :load_line_itemable, except: [:select_options, :destroy]
 
   def new
@@ -17,11 +16,15 @@ class LineItemsController < InheritedResources::Base
 
   def edit
     super do |format|
-      format.html { render partial: 'standard_edit_entry', locals: { line_item: @line_item } }
+      format.html do
+        render partial: 'standard_edit_entry', locals: { line_item: @line_item }
+      end
       format.json do
         render json: {
           result: 'success',
-          content: render_string(partial: 'standard_edit_entry', locals: { line_item: @line_item })
+          content: render_string(
+            partial: 'standard_edit_entry', locals: { line_item: @line_item }
+          )
         }
       end
     end
@@ -30,13 +33,18 @@ class LineItemsController < InheritedResources::Base
   def show
     super do |format|
       format.html do
-        # TODO: 80 char
-        redirect_to order_path(@line_item.order, anchor: "jobs-#{@line_item.job.id}-line_item-#{@line_item.id}")
+        redirect_to order_path(
+          @line_item.order,
+          anchor: "jobs-#{@line_item.job.id}-line_item-#{@line_item.id}"
+        )
       end
       format.json do
         render json: {
           result: 'success',
-          content: render_string(partial: 'standard_view_entry', locals: { line_item: @line_item })
+          content: render_string(
+            partial: 'standard_view_entry',
+            locals: { line_item: @line_item }
+          )
         }
       end
     end
@@ -52,12 +60,16 @@ class LineItemsController < InheritedResources::Base
     else
       super do |success, failure|
         if @line_itemable.class.name == 'Quote'
-          @line_itemable.create_activity :destroyed_line_item, owner: current_user, params: { name: @line_item.name }
+          @line_itemable.create_activity :destroyed_line_item, 
+            owner: current_user,
+            params: { name: @line_item.name }
         end
+
         success.json do
           fire_activity @line_item, :destroy
           render json: { result: 'success' }
         end
+
         failure.json do
           render json: { result: 'failure' }
         end
@@ -69,13 +81,15 @@ class LineItemsController < InheritedResources::Base
     super do |success, failure|
       success.json do
         if @line_itemable.class.name == 'Quote'
-          @line_itemable.create_activity :updated_line_item, owner: current_user, params: { name: @line_item.name }
+          @line_itemable.create_activity :updated_line_item, 
+            owner: current_user,
+            params: { name: @line_item.name }
         end
-        content_html = ''
+
         fire_activity @line_item, :update
-        with_format :html do
-          content_html = render_to_string(partial: entry_partial('view'), locals: line_item_locals)
-        end
+        content_html = render_string partial: entry_partial('view'),
+                                     locals: line_item_locals
+
         render json: { result: 'success', content: content_html }
       end
       success.html do
@@ -84,62 +98,61 @@ class LineItemsController < InheritedResources::Base
       end
 
       failure.json do
-        modal_html = ''
-        form_html = ''
-        with_format :html do
-          form_html = render_to_string(partial: entry_partial('edit'), locals: line_item_locals(true))
-        end
-        with_format :html do
-          modal_html = render_to_string(partial: 'shared/modal_errors', locals: { object: @line_item })
-        end
+        modal_html = render_string partial: entry_partial('edit'), 
+                                   locals: line_item_locals(true)
+        
+        error_html = render_string partial: 'shared/modal_errors', 
+                                   locals: { object: @line_item }
+
         render json: { 
           result: 'failure',
           errors: @line_item.errors.messages,
           modal: modal_html,
-          content: form_html
+          content: error_html
         }
       end
-      failure.html { render partial: entry_partial('edit'), locals: line_item_locals(true) }
+      failure.html do
+        render partial: entry_partial('edit'), locals: line_item_locals(true)
+      end
     end
   end
 
   def create
+    # TODO AHHHHHH THIS SHOULD BE IN THE MODEL
     if param_okay? :imprintable_id, :color_id # We create multiple line items for the variants
-      line_items = ImprintableVariant.where(
-        imprintable_id: params[:imprintable_id],
-        color_id: params[:color_id]
-      ).map { |variant|
-        LineItem.new(
-          imprintable_variant_id: variant.id,
-          unit_price: params[:base_unit_price] || variant.imprintable.base_price || 0,
-          quantity: 0,
-          line_itemable_id: @line_itemable.id,
-          line_itemable_type: @line_itemable.class.name
-        )}
+      line_items = LineItem.new_imprintables(
+        @line_itemable,
+        params[:imprintable_id], params[:color_id],
+        base_unit_price: params[:base_unit_price]
+      )
 
       valid_line_items = line_items.select(&:valid?)
-      if !valid_line_items.empty?
+      if valid_line_items.empty?
+        modal_html = render_string(
+          partial: 'shared/modal_errors',
+          locals: { object: line_items.first }
+        )
+        errors = line_items.map{ |l| l.errors.full_messages }.flatten.uniq
+
+        render json: {
+          result: 'failure',
+          errors: errors,
+          modal: modal_html
+        }
+      else
         valid_line_items.each(&:save)
 
         fire_activity valid_line_items.first, :create
         render json: { result: 'success' }
-      else
-        modal_html = ''
-        line_item = nil; line_items.each { |l| line_item = l unless l.valid? }
-        with_format :html do
-          modal_html = render_to_string(partial: 'shared/modal_errors', locals: { object: line_item })
-        end
-        render json: {
-          result: 'failure',
-          errors: line_item.errors.messages,
-          modal: modal_html
-        }
       end
     else # Create a standard, non-imprintable line item
       super do |success, failure|
         if @line_itemable.class.name == 'Quote'
-          @line_itemable.create_activity :added_line_item, owner: current_user, params: { name: @line_item.name }
+          @line_itemable.create_activity :added_line_item, 
+            owner:  current_user,
+            params: { name: @line_item.name }
         end
+
         success.json do
           @line_item.line_itemable_id = @line_itemable.id
           @line_item.line_itemable_type = @line_itemable.class.name
@@ -147,11 +160,13 @@ class LineItemsController < InheritedResources::Base
           fire_activity @line_item, :create
           render json: { result: 'success' }
         end
+
         failure.json do
-          modal_html = 'ERROR'
-          with_format :html do
-            modal_html = render_to_string(partial: 'shared/modal_errors', locals: { object: @line_item })
-          end
+          modal_html = render_string(
+            partial: 'shared/modal_errors',
+            locals: { object: @line_item }
+          )
+
           render json: {
             result: 'failure',
             errors: @line_item.errors.messages,
@@ -162,6 +177,7 @@ class LineItemsController < InheritedResources::Base
     end
   end
 
+  # Probably this, too should be in the model
   def select_options
     render_options = { layout: nil }
 
@@ -223,6 +239,8 @@ private
       :taxable
     ])
   end
+
+
 
   def param_okay?(*args)
     result = true

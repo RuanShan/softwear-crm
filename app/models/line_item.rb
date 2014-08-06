@@ -1,5 +1,6 @@
 class LineItem < ActiveRecord::Base
   include TrackingHelpers
+  extend ParamHelpers
 
   acts_as_paranoid
 
@@ -17,38 +18,60 @@ class LineItem < ActiveRecord::Base
   belongs_to :line_itemable, polymorphic: true
   has_one :order, through: :job
 
-  #TODO: ensure unless validations work after switching from validates_presence_of to sexiness
+  #TODO: ensure unless validations work after switching 
+  #      from validates_presence_of to sexiness
   validates :description, presence: true, unless: :imprintable?
-  validates :imprintable_variant_id, uniqueness: { scope: [:line_itemable_id, :line_itemable_type] }, if: :imprintable?
+  validates :imprintable_variant_id, 
+            uniqueness: {
+              scope: [
+                :line_itemable_id, :line_itemable_type
+              ]
+            }, if: :imprintable?
   validate :imprintable_variant_exists, if: :imprintable?
   validates :name, presence: true, unless: :imprintable?
   validates :quantity, presence: true
   validates :unit_price, presence: true
 
+  def self.create_imprintables(line_itemable, imprintable, color, options = {})
+    new_imprintables.each(&:save)
+  end
+
+  def self.new_imprintables(line_itemable, imprintable, color, options = {})
+    imprintable_variants = ImprintableVariant.size_variants_for(
+      param_record_id(imprintable),
+      param_record_id(color)
+    )
+
+    imprintable_variants.map do |variant|
+      LineItem.new(
+        imprintable_variant_id: variant.id,
+        unit_price: options[:base_unit_price] || 
+                    variant.imprintable.base_price || 0,
+        quantity: 0,
+        line_itemable_id: line_itemable.id,
+        line_itemable_type: line_itemable.class.name
+      )
+    end
+  end
+
   def <=>(other)
-    # TODO: refactor
     return 0 if other == self
+
     if imprintable?
-      unless other.imprintable?
-        return -1
-      end
-      imprintable_variant.size.sort_order <=> other.imprintable_variant.size.sort_order
+      return -1 unless other.imprintable?
+
+      imprintable_variant.size.sort_order <=>
+        other.imprintable_variant.size.sort_order
     else
-      if other.imprintable?
-        return +1
-      end
+      return +1 if other.imprintable?
+
       name <=> other.name
     end
   end
 
   %i(name description).each do |method|
     define_method(method) do
-      # TODO: ternary
-      if imprintable?
-        imprintable_variant.send method
-      else
-        read_attribute method
-      end
+      imprintable? ? imprintable_variant.send(method) : self[method]
     end
   end
 
@@ -56,9 +79,8 @@ class LineItem < ActiveRecord::Base
     imprintable_variant.imprintable
   end
 
-  #TODO: should it be unless rather than != nil?
   def imprintable?
-    imprintable_variant_id != nil
+    !imprintable_variant_id.nil?
   end
 
   def size_display
@@ -74,12 +96,7 @@ class LineItem < ActiveRecord::Base
   end
 
   def total_price
-    # TODO: look into refactoring
-    if unit_price && quantity
-      unit_price * quantity
-    else
-      'NAN'
-    end
+    unit_price && quantity ? unit_price * quantity : 'NAN'
   end
 
   private
