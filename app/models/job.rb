@@ -77,7 +77,7 @@ class Job < ActiveRecord::Base
     # Here's another potential solution I came up with:
     # (Assuming no actual max_print method exists)
     # ----------------------------------
-    #max_print = lambda(width_or_height) do
+    #max_print = lambda do |width_or_height|
     #  (
     #    imprintables.map(&"max_imprint_#{width_or_height}".to_sym) +
     #    [print_location.send("max_#{width_or_height}")]
