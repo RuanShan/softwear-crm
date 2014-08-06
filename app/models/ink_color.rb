@@ -4,5 +4,5 @@ class InkColor < ActiveRecord::Base
   belongs_to :imprint_method
   has_and_belongs_to_many :artwork_requests
 
-  validates :name, uniqueness: { scope: :imprint_method }, presence: true
+  validates :name, presence: true, uniqueness: { scope: :imprint_method }
 end
