@@ -1,17 +1,24 @@
 <% if @artwork.valid? %>
-    $('#artwork-row-<%= @artwork.id %>').replaceWith("<%= escape_javascript(render(partial: 'row', locals: {artwork: @artwork, artwork_request: nil})).html_safe %>");
-    setupContentModal(function($contentModal){
-        $contentModal.find('.modal-content').addClass('modal-content-success')
-    })
-    showContentModal({
-        title: 'SUCCESS',
-        body: 'Successfuly updated Artwork!'
-    }).delay(50)
+
+  $('#artwork-row-<%= @artwork.id %>').replaceWith("<%= escape_javascript(render(partial: 'row', locals: { artwork: @artwork, artwork_request: nil })).html_safe %>");
+
+  setupContentModal(function($contentModal){
+    $contentModal.find('.modal-content').addClass('modal-content-success')
+  })
+
+  showContentModal({
+    title: 'SUCCESS',
+    body: 'Successfuly updated Artwork!'
+  }).delay(50)
+
 <% else %>
-    var form = $('#contentModal .modal-body form');
-    if (form.data('errorHandler') == null) {
-        form.data('errorHandler', ErrorHandler('artwork', form));
-    }
-    var handler = form.data('errorHandler');
-    handler.handleErrors(JSON.parse("<%= escape_javascript(@artwork.errors.messages.to_json.html_safe) %>"), $("<%= escape_javascript(render(partial: 'shared/modal_errors', locals: { object: @artwork })).html_safe %>"));
+
+  var form = $('#contentModal .modal-body form');
+  if (form.data('errorHandler') === null) {
+    form.data('errorHandler', ErrorHandler('artwork', form));
+  }
+
+  var handler = form.data('errorHandler');
+  handler.handleErrors(JSON.parse("<%= escape_javascript(@artwork.errors.messages.to_json.html_safe) %>"), $("<%= escape_javascript(render(partial: 'shared/modal_errors', locals: { object: @artwork })).html_safe %>"));
+
 <% end %>

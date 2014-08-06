@@ -42,14 +42,12 @@ feature 'Imprintable Variant Management', js: true, imprintable_variant_spec: tr
     scenario 'A user can add a size column' do
       select_from_chosen(size.display_value, from: 'size_select')
       find('#size_button').click
-      page.driver.browser.switch_to.alert.accept
       expect(page).to have_selector 'th', text: size.display_value
     end
 
     scenario 'A user can add a color row' do
       select_from_chosen(color.name, from: 'color_select')
       find('#color_button').click
-      page.driver.browser.switch_to.alert.accept
       expect(page).to have_selector 'th', text: color.name
     end
 

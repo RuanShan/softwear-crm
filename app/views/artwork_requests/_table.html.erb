@@ -2,26 +2,25 @@
   <div class="table-responsive">
     <table data-sortable class="table" id="artwork-request-table">
       <thead>
-      <tr>
-        <th>Priority</th>
-        <th>Order Name</th>
-        <th>Artwork Request Deadline</th>
-        <th>Order In Hand By Date</th>
-        <th>No. of Pieces</th>
-        <th>Imprint Method</th>
-        <th>Ink Color Count</th>
-        <th>Payment Status</th>
-        <th>Actions</th>
-      </tr>
+        <tr>
+          <th>Priority</th>
+          <th>Order Name</th>
+          <th>Artwork Request Deadline</th>
+          <th>Order In Hand By Date</th>
+          <th>No. of Pieces</th>
+          <th>Imprint Method</th>
+          <th>Ink Color Count</th>
+          <th>Payment Status</th>
+          <th>Actions</th>
+        </tr>
       </thead>
+
       <tbody>
-
-      <% artwork_requests.where(artist_id: @current_user.id).find_each do |ar| %>
-          <tr id="artwork-request-row-<%= ar.id %>">
-          <%= render partial: 'row', locals: {ar: ar} %>
+        <% artwork_requests.where(artist_id: @current_user.id).find_each do |artwork_request| %>
+          <tr id="artwork-request-row-<%= artwork_request.id %>">
+            <%= render partial: 'row', locals: {artwork_request: artwork_request} %>
           </tr>
-      <% end %>
-
+        <% end %>
       </tbody>
     </table>
   </div>

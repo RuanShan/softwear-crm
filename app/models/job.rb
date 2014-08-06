@@ -60,6 +60,10 @@ class Job < ActiveRecord::Base
     # but using #call here looks like total ass.
     max_print = method(:max_print).to_proc.curry.(print_location)
     return max_print.(:width), max_print.(:height)
+    
+    # width = (imprintables.map(&:max_imprint_width) << print_location.max_width).map(&:to_f).min
+    # height = (imprintables.map(&:max_imprint_height) << print_location.max_height).map(&:to_f).min
+    # return width, height
   end
 
   #TODO: Maybe still look at this
