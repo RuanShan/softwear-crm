@@ -10,9 +10,12 @@ class Order < ActiveRecord::Base
     text :jobs do
       jobs.map { |j| "#{j.name} #{j.description}" }
     end
-    
-    string :firstname, :lastname, :email, :terms, 
-           :delivery_method, :company, :phone_number
+
+    [
+      :firstname, :lastname, :email, :terms, 
+      :delivery_method, :company, :phone_number
+    ]
+      .each { |f| string f }
 
     double :total
     double :commission_amount
@@ -41,7 +44,8 @@ class Order < ActiveRecord::Base
   ]
 
   #TODO: custom validators for phone and email??
-  #TODO: shouldn't validate salesperson_id, but rather salesperson?? could make relation like artwork_request?
+  #TODO: shouldn't validate salesperson_id, but rather salesperson??
+  #      could make relation like artwork_request?
   validates :delivery_method, presence: true
   validates :email, 
             presence: true, 
@@ -86,29 +90,35 @@ class Order < ActiveRecord::Base
   def payment_status
     if self.terms.empty?
       'Payment Terms Pending'
+    
     elsif self.balance <= 0
       return 'Payment Complete'
+    
     elsif self.balance > 0
       if self.terms == 'Paid in full on purchase'
         return 'Awaiting Payment'
+      
       elsif self.terms == 'Half down on purchase'
         if self.balance >= (total * 0.49)
           return 'Awaiting Payment'
         else
           return 'Payment Terms Met'
         end
+      
       elsif self.terms == 'Paid in full on pick up'
         if Time.now >= self.in_hand_by
           return 'Awaiting Payment'
         else
           return 'Payment Terms Met'
         end
+      
       elsif self.terms == 'Net 30'
         if Time.now >= (self.in_hand_by + 30.days)
           return 'Awaiting Payment'
         else
           return 'Payment Terms Met'
         end
+      
       elsif self.terms == 'Net 60'
         if Time.now >= (self.in_hand_by + 60.days)
           return 'Awaiting Payment'
