@@ -137,7 +137,7 @@ describe Job, job_spec: true do
     expect(job.errors.messages[:deletion_status]).to include "All line items must be manually removed before a job can be deleted"
   end
 
-  describe '#imprintable_variant_count', artwork_request_spec: true do
+  describe '#imprintable_variant_count', artwork_requests_spec: true do
     before do
       allow(subject).to receive(:line_items) { [
           build_stubbed(:blank_line_item, imprintable_variant_id: 1, quantity: 25),
@@ -151,7 +151,7 @@ describe Job, job_spec: true do
     end
   end
 
-  context '#imprintable_variant_count with job having no imprintable line items (bug #176)', artwork_request_spec: true do
+  context '#imprintable_variant_count with job having no imprintable line items (bug #176)', artwork_requests_spec: true do
     before do
       allow(subject).to receive(:line_items) { [
           build_stubbed(:blank_line_item, imprintable_variant_id: nil, quantity: 5)
@@ -163,14 +163,14 @@ describe Job, job_spec: true do
     end
   end
 
-  context '#imprintable_variant_count with job having no line items (bug #176)', artwork_request_spec: true do
+  context '#imprintable_variant_count with job having no line items (bug #176)', artwork_requests_spec: true do
     let!(:job) { create(:job) }
     it 'should return the sum of all line item quantities where imprintable_id is not null' do
       expect(job.imprintable_variant_count).to eq(0)
     end
   end
 
-  describe '#imprintable_info', artwork_request_spec: true do
+  describe '#imprintable_info', artwork_requests_spec: true do
     let!(:job) { create(:job) }
     [:red, :green].each { |c| let!(c) { create(:valid_color, name: c) } }
     [:shirt, :hat].each { |s| let!(s) { create(:valid_imprintable) } }
@@ -183,7 +183,7 @@ describe Job, job_spec: true do
     end
   end
 
-  describe '#total_quantity', artwork_request_spec: true do
+  describe '#total_quantity', artwork_requests_spec: true do
     before do
       allow(subject).to receive(:line_items) { [
           build_stubbed(:blank_line_item, quantity: 25),
@@ -197,7 +197,7 @@ describe Job, job_spec: true do
     end
   end
 
-  describe '#max_print_area', artwork_request_spec: true do
+  describe '#max_print_area', artwork_requests_spec: true do
     let!(:imprintable) { create(:valid_imprintable) }
     before(:each)do
       allow(subject).to receive(:imprintables) { [

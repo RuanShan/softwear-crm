@@ -50,9 +50,8 @@ class Job < ActiveRecord::Base
   end
 
   def max_print_area(print_location)
-    #TODO: refactor and lines over 80 char
-    width = (imprintables.map{ |i| i.max_imprint_width.to_f } << print_location.max_width.to_f).min
-    height = (imprintables.map{ |i| i.max_imprint_height.to_f } << print_location.max_height.to_f).min
+    width = (imprintables.map(&:max_imprint_width) << print_location.max_width).map(&:to_f).min
+    height = (imprintables.map(&:max_imprint_height) << print_location.max_height).map(&:to_f).min
     return width, height
   end
 

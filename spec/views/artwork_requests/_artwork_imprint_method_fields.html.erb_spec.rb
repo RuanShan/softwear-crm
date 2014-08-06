@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe 'artwork_requests/_artwork_imprint_method_fields.html.erb', artwork_request_spec: true do
+describe 'artwork_requests/_artwork_imprint_method_fields.html.erb', artwork_requests_spec: true do
   let!(:artwork_request){ create(:valid_artwork_request) }
   let!(:imprint_method){ create(:valid_imprint_method_with_color_and_location)}
 

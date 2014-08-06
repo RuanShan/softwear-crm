@@ -1,7 +1,7 @@
 require 'spec_helper'
 include ApplicationHelper
 
-feature 'Artwork Request Features', artwork_request_spec: true do
+feature 'Artwork Request Features', artwork_requests_spec: true do
   given!(:valid_user) { create(:alternate_user) }
   before(:each) do
     login_as(valid_user)
@@ -57,6 +57,7 @@ feature 'Artwork Request Features', artwork_request_spec: true do
     find("a[href='/orders/1/artwork_requests/#{artwork_request.id}/edit']").click
     find(:css, "div[class='note-editable'").set('edited')
     select 'Normal', from: 'Priority'
+    sleep 5
     click_button 'Update Artwork Request'
     wait_for_ajax
     expect(ArtworkRequest.where(description: 'edited')).to exist

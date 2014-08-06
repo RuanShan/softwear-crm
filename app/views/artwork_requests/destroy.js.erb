@@ -1,14 +1,16 @@
 $row = $('#artwork-request-<%= @artwork_request.id %>');
+$row.fadeOut($row.remove);
+
 $tablerow = $('#artwork-request-row-<%= @artwork_request.id %>');
-$tablerow.fadeOut();
-$row.fadeOut();
-$tablerow.remove();
-$row.remove();
+$tablerow.fadeOut($tablerow.remove);
+
 setupContentModal(function($contentModal){
-    $contentModal.find('.modal-content').addClass('modal-content-success')
+  $contentModal.find('.modal-content').addClass('modal-content-success')
 })
+
 showContentModal({
-    title: 'SUCCESS',
-    body: 'Successfuly destroyed Artwork Request!'
+  title: 'SUCCESS',
+  body: 'Successfuly destroyed Artwork Request!'
 })
+
 updateOrderTimeline();

@@ -1,16 +1,19 @@
 <div id="artwork-request-<%= artwork_request.id %>" class="row">
   <div class="the-notes info artwork-request-notes">
     <% unless artwork_request.artwork_ids.empty? %>
-        <%= render partial: 'artwork_requests/artworks', locals: {artwork_request: artwork_request} %>
+      <%= render partial: 'artwork_requests/artworks', locals: { artwork_request: artwork_request } %>
     <% end %>
+
      <div class="col-sm-8">
       <div class="row">
         <div class="col-sm-6">
           <h4 class="artwork-request-title">Artwork Request
-            for <%= artwork_request.jobs.collect { |x| [x.name] }.join(', ') %></h4>
+            for <%= artwork_request.jobs.collect { |x| [x.name] }.join(', ') %>
+          </h4>
+
           <dl>
             <dt>Priority:</dt>
-            <% #TODO: Model %>
+            <% #TODO: Model call %>
             <dd><%= ArtworkRequest::PRIORITIES[artwork_request.priority.to_i] %></dd>
             <dt>Imprint Method:</dt>
             <dd><%= artwork_request.imprint_method.name %></dd>
@@ -28,11 +31,13 @@
             <dd><%= artwork_request.description.html_safe %></dd>
             <br>
             <dt>Attachments:</dt>
+
             <% if artwork_request.assets.empty? %>
-                <dd>None</dd>
+              <dd>None</dd>
             <% end %>
           </dl>
         </div>
+
         <div class="col-sm-6 ">
           <h4> &nbsp</h4>
           <dl>
@@ -51,40 +56,43 @@
       </div>
 
       <div class="row">
-        <% artwork_request.assets.each do |a| %>
-            <div class="col-sm-5 indent">
-              <dl>
-                <dt>File Name:</dt>
-                <dd><%= a.file_file_name %></dd>
-                <dt>File Size:</dt>
-                <dd><%= number_to_human_size(a.file_file_size) %></dd>
-                <dt>Description:</dt>
-                <dd><%= a.description %></dd>
-                <dd><%= link_to "Download File", a.file.url %></dd>
-              </dl>
-            </div>
+        <% artwork_request.assets.each do |asset| %>
+          <div class="col-sm-5 indent">
+            <dl>
+              <dt>File Name:</dt>
+              <dd><%= asset.file_file_name %></dd>
+              <dt>File Size:</dt>
+              <dd><%= number_to_human_size(asset.file_file_size) %></dd>
+              <dt>Description:</dt>
+              <dd><%= asset.description %></dd>
+              <dd><%= link_to 'Download File', asset.file.url %></dd>
+            </dl>
+          </div>
         <% end %>
       </div>
 
       <div class="row">
         <% if params[:disable_buttons].nil? %>
-            <div class="col-sm-12  clear text-left">
-              <%= link_to artworks_path(artwork_request_id: artwork_request.id), remote: true do %>
-                  <i class="fa fa-2x success fa-plus-circle"></i> Add Artwork &nbsp
-              <% end %>
-              <%= link_to edit_order_artwork_request_path(order, artwork_request), remote: true do %>
-                  <i class="fa fa-2x fa-edit"></i> Edit &nbsp
-              <% end %>
-              <%= link_to order_artwork_request_path(order, artwork_request), method: :delete, remote: true do %>
-                  <i class="fa fa-2x danger fa-times-circle"></i> Delete &nbsp
-              <% end %>
-            </div>
+          <div class="col-sm-12  clear text-left">
+            <%= link_to artworks_path(artwork_request_id: artwork_request.id), remote: true do %>
+              <i class="fa fa-2x success fa-plus-circle"></i> Add Artwork &nbsp
+            <% end %>
+
+            <%= link_to edit_order_artwork_request_path(order, artwork_request), remote: true do %>
+              <i class="fa fa-2x fa-edit"></i> Edit &nbsp
+            <% end %>
+
+            <%= link_to order_artwork_request_path(order, artwork_request), method: :delete, remote: true do %>
+              <i class="fa fa-2x danger fa-times-circle"></i> Delete &nbsp
+            <% end %>
+          </div>
         <% end %>
       </div>
     </div>
 
     <br clear="all"/>
   </div>
+
   <hr>
 </div>
 

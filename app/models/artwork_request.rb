@@ -12,6 +12,12 @@ class ArtworkRequest < ActiveRecord::Base
     7 => 'Low'
   }
 
+  STATUSES = [
+      'Pending',
+      'In Progress',
+      'Art Created'
+  ]
+
   belongs_to :artist, class_name: User
   belongs_to :imprint_method
   belongs_to :print_location
@@ -41,15 +47,14 @@ class ArtworkRequest < ActiveRecord::Base
     jobs.map(&:imprintable_info).join(', ')
   end
 
-  def total_quantity
-    jobs.map(&:total_quantity).reduce(:+)
+  def max_print_area(print_location)
+    areas = jobs.map{ |j| j.max_print_area(print_location) }
+    max_width = areas.map(&:first).min
+    max_height = areas.map(&:last).min
+    "#{max_width.to_s} in. x #{max_height.to_s} in."
   end
 
-  def max_print_area(print_location)
-    # TODO: refactor
-    areas = jobs.map{ |j| j.max_print_area(print_location) }
-    max_width = areas.map{|a| a[0]}.min
-    max_height = areas.map{|a| a[1]}.min
-    return max_width.to_s + ' in. x ' + max_height.to_s + ' in.'
+  def total_quantity
+    jobs.map(&:total_quantity).reduce(:+)
   end
 end

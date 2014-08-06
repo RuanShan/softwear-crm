@@ -17,6 +17,7 @@
       <tbody>
       <% artworks.each do |artwork| %>
         <% artwork_request = local_assigns[:artwork_request].nil? ? nil : local_assigns[:artwork_request] %>
+
         <%= render partial: 'artworks/row', locals: { artwork: artwork, artwork_request: artwork_request } %>
       <% end %>
       </tbody>

@@ -4,8 +4,8 @@ class ArtworkRequestsController < InheritedResources::Base
 
   respond_to :js
 
+  #TODO couldn't figure out a way to refactor this, but could possibly be too much for a controller?
   def update
-    # TODO: > 10 LOC, might want to refactor?
     unless params[:artwork_id].nil?
       @artwork_request = ArtworkRequest.find(params[:id])
       @artwork = Artwork.find(params[:artwork_id])
@@ -30,9 +30,7 @@ class ArtworkRequestsController < InheritedResources::Base
 
   def create
     super do |success, _failure|
-      success.js do
-        notify_artist
-      end
+      success.js { notify_artist }
     end
   end
 
