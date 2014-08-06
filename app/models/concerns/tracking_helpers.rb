@@ -47,7 +47,7 @@ module TrackingHelpers
       end
 
       def is_activity_recipient
-        def all_activities
+        define_method :all_activities do
           PublicActivity::Activity.where( '
             (
               activities.recipient_type = ? AND activities.recipient_id = ?

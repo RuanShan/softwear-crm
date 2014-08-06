@@ -23,7 +23,7 @@ feature 'Imprints Management', imprint_spec: true, js: true, imprint_features: t
 
   given(:imprint) { create(:imprint, job_id: job.id, print_location_id: print_location1.id) }
 
-  scenario 'user can add a new imprint to a job' do
+  scenario 'user can add a new imprint to a job', retry: 3 do
     visit edit_order_path(order.id, anchor: 'jobs')
     wait_for_ajax
 
