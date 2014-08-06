@@ -6,6 +6,7 @@ class ArtworksController < InheritedResources::Base
     super do |format|
       @artworks = Artwork.all.page(params[:page])
       @artwork_request = params[:artwork_request_id].nil? ? nil : ArtworkRequest.find(params[:artwork_request_id])
+
       format.js{ render(locals: { artwork_request: @artwork_request }) }
     end
   end

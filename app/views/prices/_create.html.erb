@@ -1,41 +1,48 @@
 <div class="box-info full">
   <div class="table-responsive">
-    <table class="table table-hover" id="prices_hash_supplier_pricing">
+    <table class="table table-hover">
       <thead>
-      <tr>
-        <th>Item</th>
-        <th>Sizes</th>
-        <th>Base Price</th>
-        <th>2XL</th>
-        <th>3XL</th>
-        <th>4XL</th>
-        <th>5XL</th>
-        <th>6XL</th>
-      </tr>
+        <tr>
+          <th>Item</th>
+          <th>Sizes</th>
+          <th>Base Price</th>
+          <th>2XL</th>
+          <th>3XL</th>
+          <th>4XL</th>
+          <th>5XL</th>
+          <th>6XL</th>
+        </tr>
       </thead>
+
       <tbody>
-      <% session[:prices].each_with_index do |hash, index| %>
-      <tr id=<%= "price_#{index}" %>>
-          <td><%= link_to(hash[:name], hash[:supplier_link]) %></td>
-          <td><%= hash[:sizes] %></td>
-          <td><%= number_to_currency hash[:prices][:base_price] %></td>
-          <td><%= number_to_currency hash[:prices][:xxl_price] %></td>
-          <td><%= number_to_currency hash[:prices][:xxxl_price] %></td>
-          <td><%= number_to_currency hash[:prices][:xxxxl_price] %></td>
-          <td><%= number_to_currency hash[:prices][:xxxxxl_price] %></td>
-          <td><%= number_to_currency hash[:prices][:xxxxxxl_price] %></td>
-          <td>
-            <div class="btn-group btn-group-xs">
-            <%= link_to price_path(index), 'data-action' => 'destroy', 'data-toggle' => 'tooltip', 'title' => 'Destroy', class: 'btn btn-default', method: :delete, remote: true, data: { confirm: 'Are you sure you would like to delete the price?' } do %><i class="fa fa-times"></i><% end %>
-            <%= link_to quote_select_quotes_path(index: index), class: 'btn btn-default', 'title' => 'Add to Quote', remote: true do %>Add to Quote<% end %>
-            </div>
-          </td>
-      </tr>
-      <% end %>
-      <tr>
-        <td><%= link_to 'Delete all Prices', destroy_all_prices_path, remote: true, data: { confirm: 'Are you sure you want to delete every price?' }, class: 'btn btn-default' %></td>
-        <td class="col-sm-3 text-right"><%= link_to 'Create Quote from Table', new_quote_path(price_information: session[:prices]), class: 'btn btn-default' %> </td>
-      </tr>
+        <% session[:prices].each_with_index do |hash, index| %>
+          <tr id=<%= "price_#{index}" %>>
+            <td><%= link_to(hash[:name], hash[:supplier_link]) %></td>
+            <td><%= hash[:sizes] %></td>
+            <td><%= number_to_currency hash[:prices][:base_price] %></td>
+            <td><%= number_to_currency hash[:prices][:xxl_price] %></td>
+            <td><%= number_to_currency hash[:prices][:xxxl_price] %></td>
+            <td><%= number_to_currency hash[:prices][:xxxxl_price] %></td>
+            <td><%= number_to_currency hash[:prices][:xxxxxl_price] %></td>
+            <td><%= number_to_currency hash[:prices][:xxxxxxl_price] %></td>
+            <td>
+              <div class="btn-group btn-group-xs">
+                <%= link_to price_path(index), class: 'btn btn-default', data: { confirm: 'Are you sure you would like to delete the price?' }, method: :delete, remote: true, 'data-action' => 'destroy', 'data-toggle' => 'tooltip', 'title' => 'Destroy' do %>
+                  <i class="fa fa-times"></i>
+                <% end %>
+
+                <%= link_to quote_select_quotes_path(index: index), class: 'btn btn-default', remote: true , 'title' => 'Add to Quote' do %>
+                  Add to Quote
+                <% end %>
+              </div>
+            </td>
+          </tr>
+        <% end %>
+
+        <tr>
+          <td><%= link_to 'Delete all Prices', { destroy_all: true }, class: 'btn btn-default', data: { confirm: 'Are you sure you want to delete every price?' }, method: :delete, remote: true %></td>
+          <td class="col-sm-3 text-right"><%= link_to 'Create Quote from Table', new_quote_path(price_information: session[:prices]), class: 'btn btn-default' %></td>
+        </tr>
       </tbody>
     </table>
   </div>
