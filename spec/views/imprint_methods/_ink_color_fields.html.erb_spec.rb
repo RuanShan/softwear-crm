@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe 'imprint_methods/_print_location_fields.html.erb', imprint_method_spec: true do
+describe 'imprint_methods/_print_location_fields.html.erb', imprint_methods_spec: true do
   let(:imprint_method){ create(:valid_imprint_method_with_color_and_location) }
 
   it 'has remove button' do

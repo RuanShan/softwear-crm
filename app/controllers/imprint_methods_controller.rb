@@ -23,7 +23,15 @@ class ImprintMethodsController < InheritedResources::Base
   private
 
   def permitted_params
-    # TODO: format
-    params.permit(imprint_method: [:name, ink_colors_attributes: [:name, :imprint_method_id, :id, :_destroy], print_locations_attributes: [:name, :max_height, :max_width, :imprint_method_id, :id, :_destroy]])
+    params.permit(imprint_method: [
+                    :name,
+                    ink_colors_attributes: [
+                      :name, :imprint_method_id, :id, :_destroy
+                    ],
+                    print_locations_attributes: [
+                      :name, :max_height, :max_width, :imprint_method_id, :id,
+                      :_destroy
+                    ]
+                  ])
   end
 end

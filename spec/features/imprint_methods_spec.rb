@@ -1,7 +1,7 @@
 require 'spec_helper'
 include ApplicationHelper
 
-feature 'Imprint Method Features', imprint_method_spec: true do
+feature 'Imprint Method Features', imprint_methods_spec: true do
   given!(:valid_user) { create(:alternate_user) }
   before(:each) do
     login_as(valid_user)

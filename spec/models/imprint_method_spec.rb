@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe ImprintMethod, imprint_method_spec: true do
+describe ImprintMethod, imprint_methods_spec: true do
 
   describe 'Validations' do
     it { should validate_presence_of(:name) }
