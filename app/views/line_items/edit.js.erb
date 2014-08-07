@@ -1,0 +1,10 @@
+$row = $("#line-item-<%= @line_item.id %>");
+$oldChildren = $row.children();
+
+$oldChildren.each(function() {
+  $(this).remove();
+});
+
+$row.append("<%= escape_javascript render partial: 'standard_edit_entry', locals: { line_item: @line_item } %>");
+
+updateOrderTimeline();

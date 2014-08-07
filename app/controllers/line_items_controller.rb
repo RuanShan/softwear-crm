@@ -2,7 +2,6 @@ class LineItemsController < InheritedResources::Base
   include LineItemHelper
 
   before_filter :load_line_itemable, except: [:select_options, :destroy]
-  belongs_to :job, shallow: true
 
   def new
     super do |format|
@@ -32,6 +31,9 @@ class LineItemsController < InheritedResources::Base
           )
         }
       end
+      format.js do
+        render
+      end
     end
   end
 
@@ -51,6 +53,9 @@ class LineItemsController < InheritedResources::Base
             locals: { line_item: @line_item }
           )
         }
+      end
+      format.js do
+        render
       end
     end
   end
@@ -103,6 +108,9 @@ class LineItemsController < InheritedResources::Base
         fire_activity @line_item, :update
         render partial: 'standard_view_entry', locals: line_item_locals
       end
+
+      success.js { raise 'js cool' }
+      failure.js { raise 'js cool (but i failed)' }
 
       failure.json do
         modal_html = render_string partial: entry_partial('edit'), 
