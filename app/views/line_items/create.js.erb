@@ -1,0 +1,23 @@
+<% if success %>
+  refreshJob(<%= @job.id %>);
+  $('#lineItemModal').modal('hide');
+<% else %>
+  $currentForm = $('#lineItemModal').data('current-form-div').find('form');
+  errorHandler = $currentForm.data('error-handler');
+
+  if (typeof errorHandler === 'undefined') {
+    errorHandler = ErrorHandler('line_item', $currentForm);
+    $currentForm.data('error-handler', errorHandler);
+  }
+
+  try {
+    errorHandler.handleErrors(
+      <%= @line_item.errors.messages.to_json.html_safe %>,
+      "<%= escape_javascript render partial: 'shared/modal_errors', locals: { object: @line_item } %>"
+    );
+  } catch(e) {
+    alert(e.message);
+  }
+
+  console.log("DONE");
+<% end %>

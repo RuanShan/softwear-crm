@@ -7,5 +7,8 @@
 
 <div class='col-sm-1'>
   <span class='line-item-button' title="Edit" onclick="editLineItem(<%=line_item.id%>)"><i class="fa fa-2x fa-edit"></i></span>
-  <span class='line-item-button' title="Delete" onclick="deleteLineItem(<%=line_item.id%>)"><i class="fa fa-2x danger fa-times-circle"></i></span>
+  
+  <%= link_to line_item_path(line_item), title: 'Delete', remote: true, method: :delete do %>
+    <i class="fa fa-2x danger fa-times-circle"></i>
+  <% end %>
 </div>

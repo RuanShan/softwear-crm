@@ -1,0 +1,14 @@
+var $button = $("#add-line-item-for-<%= @job.id %>");
+
+disableFor($button, 1000);
+
+$modal = $("<%= escape_javascript render partial: 'create_modal' %>");
+$('body').append($modal);
+
+try {
+  initializeLineItemModal($modal, true);
+} catch (e) {
+  alert(e.message);
+}
+
+$modal.on('hidden.bs.modal', thenRemove($modal));

@@ -37,7 +37,9 @@
 
       <div class="form-group box-info">
         <div class="col-sm-4">
-            <a class="btn btn-info btn-lg btn-block add-line-item" data-id="<%=job.id%>" onclick="addLineItem('<%=job.id%>', 'Job')"><i class="fa fa-list-alt"></i> Add Line Item </a>
+          <%= link_to new_job_line_item_path(job), class: 'btn btn-info btn-lg btn-block add-line-item', id: "add-line-item-for-#{job.id}", remote: true do %>
+            <i class="fa fa-list-alt"></i> Add Line Item
+          <% end %>
         </div>
         <div class="col-sm-4 col-xs-offset-4">
           <a class="btn btn-info btn-lg btn-block update-line-items" onclick="updateLineItems('<%=job.id%>', 'Job')"><i class="fa fa-list-alt"></i> Update Line Items</a>

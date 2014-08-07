@@ -1,9 +1,12 @@
-initializeLineItemModal = ($lineItemModal) ->
+@initializeLineItemModal = ($lineItemModal, fromJsResponse) ->
   $currentFormDiv = null
   currentForm = -> $currentFormDiv.find('form')
 
+  $('#lineItemModal').data('current-form-div', $currentFormDiv);
+
   errorHandler = null
 
+  console.log 'SETTING THAT SHIT'
   $('input:radio[name="is_imprintable"]').change ->
     $radio = $(this)
     $radio.attr 'disabled', 'disabled'
@@ -22,9 +25,15 @@ initializeLineItemModal = ($lineItemModal) ->
       errorHandler.clear() if errorHandler != null
       errorHandler = null
       $currentFormDiv = $in
+      $('#lineItemModal').data('current-form-div', $currentFormDiv);
       $in.fadeIn 400
 
   $('#line-item-submit').click ->
+    if fromJsResponse
+      console.log 'I am submitting it.'
+      $('#lineItemModal').data('current-form-div').find('form').submit();
+      return
+
     $add = $(this)
     $add.attr 'disabled', 'disabled'
     setTimeout (-> $add.removeAttr 'disabled'), 5000
@@ -51,6 +60,7 @@ initializeLineItemModal = ($lineItemModal) ->
         else if urlArray[length - 3] == 'quotes'
           quoteId = urlArray[length - 2]
           refreshQuote quoteId
+
         $lineItemModal.modal 'hide'
 
       else if response.result == 'failure'
@@ -198,7 +208,6 @@ loadLineItemView = (lineItemId, url) ->
       alert 'Something weird happened and the line items could not be deleted.'
 
 @updateLineItems = (objectId, class_name) ->
-
   if (class_name == 'Job')
     selector = "#job-#{objectId} .editing-line-item"
   else if (class_name == 'Quote')

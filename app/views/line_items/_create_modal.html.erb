@@ -1,0 +1,27 @@
+<div class="modal fade " id="lineItemModal" tabindex="-1" role="dialog">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+        <h4 class="modal-title">New Line Item </h4>
+      </div>
+      <div class="modal-body line-item-form">
+        Imprintable?
+        <%= radio_button_tag :is_imprintable, 'yes' %>
+        <%= label_tag :is_imprintable_yes, 'Yes' %>
+        <%= radio_button_tag :is_imprintable, 'no' %>
+        <%= label_tag :is_imprintable_no, 'No' %>
+        <div id="li-standard-form" style='display: none;'>
+          <%= render partial: 'standard_form', locals: { hide_submit: true } %>
+        </div>
+        <div id="li-imprintable-form" style='display: none;'>
+          <%= render partial: 'imprintable_form', locals: { hide_submit: true } %>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <a class="btn btn-default" data-dismiss="modal">Cancel</a>
+        <a id='line-item-submit' class="btn btn-primary">Add</a>
+      </div>
+    </div>
+  </div>
+</div>

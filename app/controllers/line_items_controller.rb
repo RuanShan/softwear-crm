@@ -1,10 +1,15 @@
 class LineItemsController < InheritedResources::Base
+  include LineItemHelper
+
   before_filter :load_line_itemable, except: [:select_options, :destroy]
+  belongs_to :job, shallow: true
 
   def new
     super do |format|
       @line_item = @line_itemable.line_items.new
-      format.html { render layout: nil }
+      # TODO make this actually render the new page
+      format.html { render partial: 'create_modal' }
+      format.js
     end
   end
 
@@ -51,28 +56,30 @@ class LineItemsController < InheritedResources::Base
   end
 
   def destroy
-    if params[:ids]
-      ids = params[:ids].split('/').flatten.map(&:to_i)
-      fire_activity LineItem.find(ids.first), :destroy unless ids.empty?
-      
-      LineItem.destroy ids
-      render json: { result: 'success' }
+    if param_okay? :ids
+      destroy_multiple params[:ids] do |format|
+        format.json { render json: { result: 'success' } }
+        format.js do
+          render locals: {
+            success: true,
+            selector: line_item_id(@line_item)
+          }
+        end
+      end
     else
-      super do |success, failure|
-        if @line_itemable.class.name == 'Quote'
+      destroy_single params[:id] do |format, success|
+        if @line_itemable.is_a? Quote
           @line_itemable.create_activity :destroyed_line_item, 
             owner: current_user,
             params: { name: @line_item.name }
         end
 
-        success.json do
-          fire_activity @line_item, :destroy
-          render json: { result: 'success' }
-        end
+        fire_activity @line_item, :destroy if success
 
-        failure.json do
-          render json: { result: 'failure' }
+        format.json do
+          render json: { result: success ? 'success' : 'failure' }
         end
+        format.js { render locals: { success: success } }
       end
     end
   end
@@ -80,7 +87,7 @@ class LineItemsController < InheritedResources::Base
   def update
     super do |success, failure|
       success.json do
-        if @line_itemable.class.name == 'Quote'
+        if @line_itemable.is_a? Quote
           @line_itemable.create_activity :updated_line_item, 
             owner: current_user,
             params: { name: @line_item.name }
@@ -128,7 +135,7 @@ class LineItemsController < InheritedResources::Base
 
       valid_line_items = line_items.select(&:valid?)
       if valid_line_items.empty?
-        modal_html = render_string(
+          modal_html = render_string(
           partial: 'shared/modal_errors',
           locals: { object: line_items.first }
         )
@@ -143,7 +150,10 @@ class LineItemsController < InheritedResources::Base
         valid_line_items.each(&:save)
 
         fire_activity valid_line_items.first, :create
-        render json: { result: 'success' }
+        respond_to do |format|
+          format.json { render json: { result: 'success' } }
+          format.js
+        end
       end
     else # Create a standard, non-imprintable line item
       super do |success, failure|
@@ -159,6 +169,13 @@ class LineItemsController < InheritedResources::Base
           @line_item.save
           fire_activity @line_item, :create
           render json: { result: 'success' }
+        end
+
+        success.js do
+          render locals: { success: true }
+        end
+        failure.js do
+          render locals: { success: false }
         end
 
         failure.json do
@@ -241,6 +258,24 @@ private
   end
 
 
+  def destroy_multiple(ids, &respond)
+    ids = ids.split('/').flat_map(&:to_i)
+    @line_item = LineItem.find(ids.first)
+    fire_activity @line_item, :destroy unless ids.empty?
+    
+    LineItem.destroy ids
+
+    respond_to(&respond)
+  end
+
+  def destroy_single(id)
+    @line_item = LineItem.find(id)
+    @line_item.destroy
+
+    respond_to do |format|
+      yield format, @line_item.destroyed?
+    end
+  end
 
   def param_okay?(*args)
     result = true

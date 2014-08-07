@@ -25,7 +25,9 @@
     <% end %>
 
     <div class="col-sm-1">
-      <span class='line-item-button' title='Delete' onclick='deleteLineItems("<%= line_items.map { |e| e.id }.join('/') %>", "<%= line_item_id(line_items.first) %>", "<%= class_name %>")'><i class="fa fa-2x danger fa-times-circle"></i></span>
+      <%= link_to line_item_path(line_items.map(&:id).join('/')), title: 'Delete', remote: true, method: :delete do %>
+        <i class="fa fa-2x danger fa-times-circle"></i>
+      <% end %>
     </div>
   </div>
 </div>

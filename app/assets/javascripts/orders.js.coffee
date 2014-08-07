@@ -8,6 +8,7 @@ jQuery ->
 
 # Calling this when asynchronously changing order related data would be nice.
 @updateOrderTimeline = ->
+  return if $('#order-page').length is 0
   orderId = $('#order-page').data('order-id')
   ajax = $.ajax
     type: 'GET'

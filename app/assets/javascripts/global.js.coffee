@@ -77,3 +77,6 @@ $(document).ajaxStop(->
 @disableFor = (element, ms) ->
   $(element).attr 'disabled', 'disabled'
   after ms, -> $(element).removeAttr 'disabled'
+
+@thenRemove = ($element) ->
+  -> $element.remove()

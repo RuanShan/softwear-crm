@@ -21,7 +21,7 @@
     $modal = null
     unless modal is null
       $modal = $(modal)
-      $('body').children().last().after $modal
+      $('body').append $modal
       $modal.on 'hidden.bs.modal', (e) -> $modal.remove()
     # Mark fields
     for field, fieldErrors of errors
