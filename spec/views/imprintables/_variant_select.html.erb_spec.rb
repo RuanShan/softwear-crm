@@ -8,7 +8,8 @@ describe 'imprintables/_variant_select.html.erb', imprintable_variant_spec: true
 
   it 'has modal select for color and size' do
     f = LancengFormBuilder.dummy_for imprintable
-    render partial: 'variant_select', locals: {imprintable: imprintable, size: size, color: color, f: f}
+    assign(:model_collection_hash, { all_colors: [color], all_sizes: [size] })
+    render partial: 'variant_select', locals: { imprintable: imprintable, size: size, color: color, f: f }
     within_form_for ImprintableVariant, noscope: true do
       expect(rendered).to have_css("input[name='color[ids][]']")
       expect(rendered).to have_css("option", text: color.name)

@@ -17,6 +17,6 @@ class ImprintableCategory < ActiveRecord::Base
   belongs_to :imprintable
 
   validates :name, inclusion: { in: VALID_CATEGORIES, message: 'Invalid category' },
-                   uniqueness: {scope: imprintable },
+                   uniqueness: { scope: :imprintable },
                    presence: true
 end

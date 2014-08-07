@@ -14,8 +14,8 @@ class ImprintablesController < InheritedResources::Base
 
   def update
     super do |success, failure|
-      color_ids = params[:color].nil? ? [] : params[:color][:ids]
-      size_ids = params[:size].nil? ? [] : params[:size][:ids]
+      color_ids = (params[:color].nil? ? [] : params[:color][:ids])
+      size_ids = (params[:size].nil? ? [] : params[:size][:ids])
 
       if color_ids && size_ids
         color_ids.each do |color_id|
@@ -52,7 +52,8 @@ class ImprintablesController < InheritedResources::Base
   end
 
   def update_imprintable_variants
-    if params[:update]
+
+    if params.fetch(:update).is_a? Hash
       variants_to_add = params[:update][:variants_to_add]
       variants_to_remove = params[:update][:variants_to_remove]
     end

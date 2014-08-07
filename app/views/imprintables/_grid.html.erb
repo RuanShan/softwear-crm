@@ -1,17 +1,17 @@
 <div class="table-responsive">
-  <table class="table table-hover" id="imprintable-variants-list">
+  <table class="table table-hover" id="imprintable_variants_list">
     <thead>
     <tr>
       <th></th>
       <% size_variants.each_with_index do |size_variant, size_index| %>
         <% size = size_variant.size %>
-        <th id="col-<%= size_index + 1 %>" data-size-id="<%= size.id%>"  class="size-col-header">
+        <th id="col_<%= size_index + 1 %>" data-size-id="<%= size.id%>"  class="size-col-header">
           <%= size.display_value %>
-          <i class="fa fa-plus" id="col-plus-<%= size_index + 1 %>"></i>
-          <i class="fa fa-minus" id="col-minus-<%= size_index + 1 %>"></i>
+          <i class="fa fa-plus" id="col_plus_<%= size_index + 1 %>"></i>
+          <i class="fa fa-minus" id="col_minus_<%= size_index + 1 %>"></i>
         </th>
       <% end %>
-      <th id="add-a-size">
+      <th id="add_a_size">
         <p>
         <%= select_tag nil,
                        options_for_select(
@@ -22,27 +22,27 @@
                              id: 'size-select'
                          } %>
         </p>
-        <button type="button" id="size-button">Add a size</button>
+        <button type="button" id="size_button">Add a size</button>
       </th>
     </tr>
     </thead>
     <tbody>
     <% color_variants.each_with_index do |color_variant, color_index| %>
       <% color = color_variant.color %>
-      <tr id="row-<%= color_index + 1 %>" data-color-id="<%=color.id%>">
+      <tr id="row_<%= color_index + 1 %>" data-color-id="<%=color.id%>">
         <th>
           <%= color.name %>
-          <i class="fa fa-plus" id="row-plus-<%= color_index + 1 %>"></i>
-          <i class="fa fa-minus" id="row-minus-<%= color_index + 1%>"></i>
+          <i class="fa fa-plus" id="row_plus_<%= color_index + 1 %>"></i>
+          <i class="fa fa-minus" id="row_minus_<%= color_index + 1 %>"></i>
         </th>
         <% size_variants.each_with_index do |size_variant, size_index| %>
           <% size = size_variant.size %>
-          <td id="cell-<%= color_index + 1 %>-<%= size_index + 1 %>">
+          <td id="cell_<%= color_index + 1 %>_<%= size_index + 1 %>">
           <% v = variants_array.find { |v| (v.color_id == color.id) && (v.size_id == size.id) } %>
           <% if v %>
-            <i class="fa fa-check" id="image-<%= color_index + 1 %>-<%= size_index + 1 %>" data-variant-id="<%=v.id%>"></i>
+            <i class="fa fa-check" id="image_<%= color_index + 1 %>_<%= size_index + 1 %>" data-variant-id="<%= v.id %>"></i>
           <% else %>
-            <i class="fa fa-times" id="image-<%= color_index + 1 %>-<%= size_index + 1 %>"></i>
+            <i class="fa fa-times" id="image_<%= color_index + 1 %>_<%= size_index + 1 %>"></i>
           <% end %>
             <i class="fa fa-plus cell"></i>
             <i class="fa fa-minus cell"></i>
@@ -51,7 +51,7 @@
       </tr>
     <% end %>
     <tr>
-      <th id="add-a-color">
+      <th id="add_a_color">
         <p>
         <%= select_tag nil,
                        options_for_select(
@@ -62,10 +62,10 @@
                              id: 'color-select'
                          } %>
         </p>
-        <button type="button" id="color-button">Add a color</button>
+        <button type="button" id="color_button">Add a color</button>
       </th>
       <% if variants_array.empty? %>
-        <td><a class="button" id="select-button">Select</a></td>
+        <td><a class="button" id="select_button">Select</a></td>
       <% end %>
     </tr>
     </tbody>
