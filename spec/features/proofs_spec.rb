@@ -60,7 +60,7 @@ feature 'Proof Features', proof_spec: true do
   scenario 'A user can delete an Proof from the Proof List', js: true do
     visit edit_order_path(order.id)
     find("a[href='#proofs']").click
-    find("a[href='#{order_proof_path(id: proof.id, order_id: order.id)}']").click
+    find("a[href='#{order_proof_path(order_id: order.id, id: proof.id)}']").click
     expect(page).to have_selector('.modal-content-success')
     sleep 0.5
     find(:css, "button.close").click

@@ -12,6 +12,6 @@ describe 'proofs/_list.html.erb', proof_spec: true do
   end
 
   it 'has a button to add artwork requests' do
-    expect(rendered).to have_selector("a#new_proof")
+    expect(rendered).to have_selector("a[href='#{new_order_proof_path(order)}']")
   end
 end

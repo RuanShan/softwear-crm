@@ -1,7 +1,4 @@
 jQuery ->
-  #TODO ensure proper usage with global datetimepicker
-  $('.datetimepicker').datetimepicker()
-
   #TODO make global exists in orders
   $("#quotesWizard").easyWizard
     buttonsClass: "btn btn-default"

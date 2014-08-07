@@ -4,11 +4,6 @@
     no_results_text: "No results matched"
     width: "400px"
 
-# TODO possibly create global function since repeated in proofs.js.coffee
-@setNewArtworkRequestSelect = ->
-  $(".artwork-status-select").hide()
-  $(".artwork-status-select").val "Pending"
-
 $(document).ready ->
   $(document).on "change", "#artwork_imprint_method_fields", ->
     if $(this).find(":selected").attr("value")?

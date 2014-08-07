@@ -3,40 +3,38 @@ class ProofMailer < ActionMailer::Base
 
   default from: 'noreply@softwearcrm.com'
 
-  # TODO: try to refactor as hash
-  def proof_approval_email(proof, order, body, subject)
-    @subject = subject
-    @body = body
-    @order = order
-    @proof = proof
+  def proof_approval_email(hash)
+    @subject = hash[:subject]
+    @body = hash[:body]
+    @order = hash[:order]
+    @proof = hash[:proof]
 
     @proof.artworks.each do |artwork|
-      # TODO: refactor conditional assignment
-      if Paperclip::Attachment.default_options[:storage] == :s3
-        attachments[artwork.preview.file_file_name] = open("#{artwork.preview.file.url}").read
-      else
-        # TODO: use url, not path
-        attachments[artwork.preview.file_file_name] = File.read(artwork.preview.file.path)
-      end
+      attach(artwork.preview)
     end
 
     @proof.mockups.each do |mockup|
-      if Paperclip::Attachment.default_options[:storage] == :s3
-        attachments[mockup.file_file_name] = open("#{mockup.file.url}").read
-      else
-        attachments[mockup.file_file_name] = File.read(mockup.file.path)
-      end
+      attach(mockup)
     end
 
     mail(to: @order.email, subject: @subject)
   end
 
-  # TODO: try to refactor as hash
-  def proof_reminder_email(proof, order, body, subject)
-    @subject = subject
-    @body = body
-    @order = order
-    @proof = proof
+  def attach(attachment)
+    storage_type = Paperclip::Attachment.default_options[:storage]
+    if storage_type == :s3
+      attachments[attachment.file_file_name] = open("#{attachment.file.url}").read
+    else
+      # TODO: use url, not path
+      attachments[attachment.file_file_name] = File.read(attachment.file.path)
+    end
+  end
+
+  def proof_reminder_email(hash)
+    @subject = hash[:subject]
+    @body = hash[:body]
+    @order = hash[:order]
+    @proof = hash[:proof]
 
     mail(to: @order.email, subject: @subject)
   end
