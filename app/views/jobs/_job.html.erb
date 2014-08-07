@@ -4,9 +4,9 @@
       <%= inline_field_tag job, :name, 'Job Name Here' %>
     </h3>
     <div class='additional-btn'>
-      <a class="additional-icon collapse-job-btn" href="#jobs" data-toggle="collapse" data-target="#job-<%=job.id%>-collapse"><i class="fa fa-chevron-down"></i></a>
+      <a class="additional-icon collapse-job-btn" href="#jobs" data-toggle="collapse" data-target="#job-<%= job.id %>-collapse"><i class="fa fa-chevron-down"></i></a>
     </div>
-    <div id='job-<%=job.id%>-collapse' data-job-id='<%=job.id%>' class='job-collapse collapse <%= job.collapsed? ? "in" : "out" %>'>
+    <div id='job-<%= job.id %>-collapse' data-job-id='<%= job.id %>' class='job-collapse collapse <%= job.collapsed? ? "in" : "out" %>'>
       <p class="job-description">
         Description: <%= inline_field_tag job, :description, 'Job Description Here' %>
       </p>
@@ -14,37 +14,45 @@
       <% unless job.line_items.empty? %>
         <h4>Line Items</h4>
       <% end %>
-      <% using(job.sort_line_items) do |sorted_line_items| %>
-        <% unless sorted_line_items.empty? %>
-          <% sorted_line_items.each do |imprintable_name, by_color| %>
-            <% by_color.each do |color_name, line_items| %>
-              <%= render partial: 'line_items/imprintable_edit', locals: {
-                color_name: color_name,
-                style_name: line_items.first.style_name,
-                style_catalog_no: line_items.first.style_catalog_no,
-                description: line_items.first.description,
-                line_items: line_items,
-                class_name: 'Job'
-              } %>
+      <%= form_for :line_item, method: :put, url: line_items_update_path, remote: true, builder: BatchFormBuilder do |f| %>
+
+        <% job.sort_line_items.tap do |sorted_line_items| %>
+          <% unless sorted_line_items.empty? %>
+            <% sorted_line_items.each do |imprintable_name, by_color| %>
+              <% by_color.each do |color_name, line_items| %>
+                <%= render partial: 'line_items/imprintable_edit', locals: {
+                  color_name: color_name,
+                  style_name: line_items.first.style_name,
+                  style_catalog_no: line_items.first.style_catalog_no,
+                  description: line_items.first.description,
+                  line_items: line_items,
+                  class_name: 'Job'
+                } %>
+              <% end %>
             <% end %>
           <% end %>
         <% end %>
-      <% end %>
 
-      <% unless job.standard_line_items.empty? %>
-        <%= render partial: 'line_items/standard_view', locals: {line_items: job.standard_line_items} %>
-      <% end %>
+        <% unless job.standard_line_items.empty? %>
+          <%= render partial: 'line_items/standard_view', locals: {
+            line_items: job.standard_line_items
+          } %>
+        <% end %>
 
-      <div class="form-group box-info">
-        <div class="col-sm-4">
-          <%= link_to new_job_line_item_path(job), class: 'btn btn-info btn-lg btn-block add-line-item', id: "add-line-item-for-#{job.id}", remote: true do %>
-            <i class="fa fa-list-alt"></i> Add Line Item
-          <% end %>
+        <div class="form-group box-info">
+          <div class="col-sm-4">
+            <%= link_to new_job_line_item_path(job), class: 'btn btn-info btn-lg btn-block add-line-item', id: "add-line-item-for-#{job.id}", remote: true do %>
+              <i class="fa fa-list-alt"></i> Add Line Item
+            <% end %>
+          </div>
+          <div class="col-sm-4 col-xs-offset-4">
+            <%= button_tag class: 'btn btn-info btn-lg btn-block update-line-items' do %>
+              <i class="fa fa-list-alt"></i> Update Line Items
+            <% end %>
+          </div>
         </div>
-        <div class="col-sm-4 col-xs-offset-4">
-          <a class="btn btn-info btn-lg btn-block update-line-items" onclick="updateLineItems('<%=job.id%>', 'Job')"><i class="fa fa-list-alt"></i> Update Line Items</a>
-        </div>
-      </div>
+
+      <% end %>
 
       <h4>Imprints</h4>
       <%= render partial: 'imprints/imprints', locals: { job: job } %>

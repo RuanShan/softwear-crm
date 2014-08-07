@@ -207,11 +207,9 @@ loadLineItemView = (lineItemId, url) ->
     else
       alert 'Something weird happened and the line items could not be deleted.'
 
-@updateLineItems = (objectId, class_name) ->
-  if (class_name == 'Job')
-    selector = "#job-#{objectId} .editing-line-item"
-  else if (class_name == 'Quote')
-    selector = '.editing-line-item'
+@updateLineItems = (parentSelector) ->
+  selector = '.editing-line-item'
+  selector = "#{parentSelector} #{selector}" if parentSelector
 
   $(selector).each (i) ->
     $this = $(this)

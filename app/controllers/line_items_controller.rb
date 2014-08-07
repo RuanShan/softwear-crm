@@ -1,7 +1,7 @@
 class LineItemsController < InheritedResources::Base
   include LineItemHelper
 
-  before_filter :load_line_itemable, except: [:select_options, :destroy]
+  before_filter :load_line_itemable, except: [:select_options, :destroy, :update]
 
   def new
     super do |format|
@@ -90,51 +90,69 @@ class LineItemsController < InheritedResources::Base
   end
 
   def update
-    super do |success, failure|
-      success.json do
-        if @line_itemable.is_a? Quote
-          @line_itemable.create_activity :updated_line_item, 
-            owner: current_user,
-            params: { name: @line_item.name }
-        end
+#    super do |success, failure|
+#      success.json do
+#        if @line_itemable.is_a? Quote
+#          @line_itemable.create_activity :updated_line_item, 
+#            owner: current_user,
+#            params: { name: @line_item.name }
+#        end
+#
+#        fire_activity @line_item, :update
+#        content_html = render_string partial: entry_partial('view'),
+#                                     locals: line_item_locals
+#
+#        render json: { result: 'success', content: content_html }
+#      end
+#      success.html do
+#        fire_activity @line_item, :update
+#        render partial: 'standard_view_entry', locals: line_item_locals
+#      end
+#
+#      success.js do
+#        raise 'js cool'
+#      end
+#      failure.js do
+#        raise 'js cool (but i failed)'
+#      end
+#
+#      failure.json do
+#        modal_html = render_string partial: entry_partial('edit'), 
+#                                   locals: line_item_locals(true)
+#        
+#        error_html = render_string partial: 'shared/modal_errors', 
+#                                   locals: { object: @line_item }
+#
+#        render json: { 
+#          result: 'failure',
+#          errors: @line_item.errors.messages,
+#          modal: modal_html,
+#          content: error_html
+#        }
+#      end
+#      failure.html do
+#        render partial: entry_partial('edit'), locals: line_item_locals(true)
+#      end
+#    end
+    params.permit(:line_item).permit!
 
-        fire_activity @line_item, :update
-        content_html = render_string partial: entry_partial('view'),
-                                     locals: line_item_locals
+    line_item_attributes = params[:line_item].to_hash
+    @line_items = line_item_attributes.keys.map(&LineItem.method(:find))
 
-        render json: { result: 'success', content: content_html }
+    @line_items.each do |line_item|
+      line_item.update_attributes(line_item_attributes[line_item.id.to_s])
+    end
+
+    respond_to do |format|
+      format.html do
+        redirect_to root_path
       end
-      success.html do
-        fire_activity @line_item, :update
-        render partial: 'standard_view_entry', locals: line_item_locals
-      end
-
-      success.js { raise 'js cool' }
-      failure.js { raise 'js cool (but i failed)' }
-
-      failure.json do
-        modal_html = render_string partial: entry_partial('edit'), 
-                                   locals: line_item_locals(true)
-        
-        error_html = render_string partial: 'shared/modal_errors', 
-                                   locals: { object: @line_item }
-
-        render json: { 
-          result: 'failure',
-          errors: @line_item.errors.messages,
-          modal: modal_html,
-          content: error_html
-        }
-      end
-      failure.html do
-        render partial: entry_partial('edit'), locals: line_item_locals(true)
-      end
+      format.js
     end
   end
 
   def create
-    # TODO AHHHHHH THIS SHOULD BE IN THE MODEL
-    if param_okay? :imprintable_id, :color_id # We create multiple line items for the variants
+    if param_okay? :imprintable_id, :color_id
       line_items = LineItem.new_imprintables(
         @line_itemable,
         params[:imprintable_id], params[:color_id],
@@ -259,18 +277,18 @@ private
       :brand_id, :color_id, :imprintable_id, :job_id,
       :ids, :standard,
       line_item: [
-      :id, :name, :description, :quantity, 
-      :unit_price, :imprintable_variant_id,
-      :taxable
-    ])
+        :id, :name, :description, :quantity, 
+        :unit_price, :imprintable_variant_id,
+        :taxable
+      ]
+    )
   end
-
 
   def destroy_multiple(ids, &respond)
     ids = ids.split('/').flat_map(&:to_i)
     @line_item = LineItem.find(ids.first)
     fire_activity @line_item, :destroy unless ids.empty?
-    
+
     LineItem.destroy ids
 
     respond_to(&respond)

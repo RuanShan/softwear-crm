@@ -86,6 +86,43 @@ describe LineItemsController, line_item_spec: true do
     end
   end
 
+  describe '#update' do
+    context 'with params in a format of line_item[id[field_name[value]]]' do
+      let!(:line_item_1) { create :imprintable_line_item }
+      let!(:line_item_2) { create :imprintable_line_item }
+      let(:id1) { line_item_1.id }
+      let(:id2) { line_item_2.id }
+
+      let(:params_hash) do
+        {
+          line_item: {
+            id1.to_s => {
+              quantity: 999,
+              unit_price: 999
+            },
+
+            id2.to_s => {
+              quantity: 1,
+              unit_price: 1
+            }
+          }
+        }
+      end
+
+      it 'should update the line items with the given ids', plzzz: true do
+        put :update, params_hash
+
+        [line_item_1, line_item_2].each(&:reload)
+
+        expect(line_item_1.quantity).to eq 999
+        expect(line_item_1.unit_price).to eq 999
+
+        expect(line_item_2.quantity).to eq 1
+        expect(line_item_2.unit_price).to eq 1
+      end
+    end
+  end
+
   describe '#select_options' do
 
     context 'when there are brands' do

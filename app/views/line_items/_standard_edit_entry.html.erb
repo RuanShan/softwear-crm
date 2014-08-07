@@ -1,14 +1,17 @@
-<%= form_for line_item, remote: true, html: { id: "edit-line-item-#{line_item.id}", 
-  class: 'line_item editing-line-item' }, builder: LancengFormBuilder do |f| %>
-  <div class="col-sm-2"><%= f.text_field :name %></div>
-  <div class="col-sm-5"><%= f.text_area :description %></div>
-  <div class="col-sm-1"><%= f.check_box :taxable, style: 'width: 24px; height: 24px;' %></div>
-  <div class="col-sm-1"><%= f.number_field :quantity %></div>
-  <div class="col-sm-1"><%= f.number_field :unit_price %></div>
-  <div class="col-sm-1"><span class='total'><%= number_to_currency line_item.total_price %></span></div>
-  <div class="col-sm-1">
-    <%= link_to line_item_path(line_item), title: 'Cancel', remote: true, method: :get do %>
-      <i class="fa fa-2x danger fa-times-circle"></i>
-    <% end %>
-  </div>
-<% end %>
+<div id="edit-line-item<%= line_item.id %>" class="line_item editing-line-item">
+  <%= batch_fields_for line_item do |f| %>
+
+    <div class="col-sm-2"><%= f.text_field :name %></div>
+    <div class="col-sm-5"><%= f.text_area :description %></div>
+    <div class="col-sm-1"><%= f.check_box :taxable, style: 'width: 24px; height: 24px;' %></div>
+    <div class="col-sm-1"><%= f.number_field :quantity %></div>
+    <div class="col-sm-1"><%= f.number_field :unit_price %></div>
+    <div class="col-sm-1"><span class='total'><%= number_to_currency line_item.total_price %></span></div>
+    <div class="col-sm-1">
+      <%= link_to line_item_path(line_item), title: 'Cancel', remote: true, method: :get do %>
+        <i class="fa fa-2x danger fa-times-circle"></i>
+      <% end %>
+    </div>
+
+  <% end %>
+</div>
