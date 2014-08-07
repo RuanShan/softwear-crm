@@ -1,30 +1,33 @@
+<div class="form-group">
+  <div class="row">
+    <%= f.label :file, title, class: 'col-sm-3 control-label' %>
 
-    <div class="form-group">
-      <div class="row">
-        <%= f.label :file, title, class: 'col-sm-3 control-label' %>
-        <div class="col-sm-9">
-          <%= (f.object.file_file_name.nil?) ? (f.file_field :file) : (f.object.file_file_name) %>
-          <p class="help-block"><%= file_constraints %></p>
-        </div>
-      </div>
-      <% if f.object.errors.include?(:file) %>
-          <% f.object.errors.full_messages_for(:file).each do |message| %>
-              <p class="text-danger"><%= message %></p>
-          <% end %>
-      <% end %>
+    <div class="col-sm-9">
+      <%= (f.object.file_file_name.nil?) ? (f.file_field :file) : (f.object.file_file_name) %>
+
+      <p class="help-block"><%= file_constraints %></p>
     </div>
+  </div>
 
-    <div class="form-group">
-      <div class="row">
-        <%= f.label :description, class: 'col-sm-3 control-label' %>
-        <div class="col-sm-9">
-          <%= f.text_area :description, class: 'form-control', placeholder: text %>
-        </div>
-      </div>
-      <% if f.object.errors.include?(:description) %>
-          <% f.object.errors.full_messages_for(:description).each do |message| %>
-              <p class="text-danger"><%= message %></p>
-          <% end %>
-      <% end %>
+  <% if f.object.errors.include?(:file) %>
+    <% f.object.errors.full_messages_for(:file).each do |message| %>
+      <p class="text-danger"><%= message %></p>
+    <% end %>
+  <% end %>
+</div>
+
+<div class="form-group">
+  <div class="row">
+    <%= f.label :description, class: 'col-sm-3 control-label' %>
+
+    <div class="col-sm-9">
+      <%= f.text_area :description, class: 'form-control', placeholder: text %>
     </div>
+  </div>
 
+  <% if f.object.errors.include?(:description) %>
+    <% f.object.errors.full_messages_for(:description).each do |message| %>
+      <p class="text-danger"><%= message %></p>
+    <% end %>
+  <% end %>
+</div>

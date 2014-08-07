@@ -73,3 +73,7 @@ $(document).ajaxStop(->
 
   $(".summernote").code "" if $(".note-editable").html() is "<p><br></p>"
   $(".summernote").val ""
+
+@disableFor = (element, ms) ->
+  $(element).attr 'disabled', 'disabled'
+  after ms, -> $(element).removeAttr 'disabled'

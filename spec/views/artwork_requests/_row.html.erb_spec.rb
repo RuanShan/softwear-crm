@@ -1,9 +1,9 @@
 require 'spec_helper'
 
-describe 'artwork_requests/_row.html.erb', artwork_request_spec: true do
+describe 'artwork_requests/_row.html.erb', artwork_requests_spec: true do
   let!(:artwork_request) { create(:valid_artwork_request) }
   before(:each) do
-    render partial: 'artwork_requests/row', locals: {ar: artwork_request}
+    render partial: 'artwork_requests/row', locals: {artwork_request: artwork_request}
   end
 
   it 'has the artwork_request priority, a link to the order, deadline, order in hand by date, total quantity, imprint method name, count of ink colors, payment status, and actions (edit, show, destroy) ' do

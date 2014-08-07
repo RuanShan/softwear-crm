@@ -109,6 +109,9 @@ class SearchFormBuilder
 
     select_options = @template.content_tag(:option, options.delete(:nil) || "#{field_name.to_s.humanize}...", value: 'nil')
 
+    # TODO rather than doing this imperatively, you can use 
+    # reduce(<insert initial value of select_options here>) 
+    # with a block similar to that.
     choices.each do |item|
       name = if item.respond_to? display_method
                item.send(display_method)

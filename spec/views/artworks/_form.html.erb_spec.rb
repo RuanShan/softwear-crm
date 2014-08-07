@@ -1,11 +1,11 @@
 require 'spec_helper'
 
-describe 'artwork_requests/_form.html.erb', artwork_request_spec: true do
+describe 'artworks/_form.html.erb', artworks_spec: true do
   let!(:artwork){ create(:valid_artwork) }
   let!(:current_user){ create(:user) }
 
 
-  it 'displays the correct form fields for artwork_requests' do
+  it 'displays the correct form fields for artworks' do
     form_for(artwork, url: artworks_path(artwork)){|f| @f = f }
     render partial: 'artworks/form', locals: {artwork: Artwork.new, f: @f, current_user: current_user}
     within_form_for Artwork do

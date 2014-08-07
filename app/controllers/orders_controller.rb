@@ -9,7 +9,7 @@ class OrdersController < InheritedResources::Base
 
   def update
     super do |success, failure|
-      success.html { redirect_to "#{edit_order_path(params[:id])}#details" }
+      success.html { redirect_to edit_order_path(params[:id], anchor: 'details') }
       failure.html do
         assign_activities
         render action: :edit, anchor: 'details'
@@ -25,12 +25,7 @@ class OrdersController < InheritedResources::Base
     super do
       @current_user = current_user
       stores = Store.all
-      # TODO: cond. assignment refactor
-      if stores.empty?
-        @empty = true
-      else
-        @empty = false
-      end
+      @empty = stores.empty?
     end
   end
 

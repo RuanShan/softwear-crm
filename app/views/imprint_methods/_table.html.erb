@@ -3,27 +3,33 @@
   <div class="table-responsive">
     <table class="table table-hover" id="imprint_methods_list">
       <thead>
-      <tr>
-        <th>Name</th>
-        <th>Ink Colors</th>
-        <th>Print Locations</th>
-        <th>Actions</th>
-      </tr>
+        <tr>
+          <th>Name</th>
+          <th>Ink Colors</th>
+          <th>Print Locations</th>
+          <th>Actions</th>
+        </tr>
       </thead>
+
       <tbody>
-      <% imprint_methods.each do |imprint_method| %>
-      <tr id="<%= model_table_row_id imprint_method %>">
-        <td><%= imprint_method.name %></td>
-        <td><%= imprint_method.ink_colors.collect{|x| [x.name]}.join(', ') %></td>
-        <td><%= imprint_method.print_locations.collect{|x| [x.name]}.join(', ') %></td>
-        <td>
-          <div class="btn-group btn-group-xs">
-            <%= link_to edit_imprint_method_path(imprint_method), 'data-action' => 'edit', 'data-toggle' => 'tooltip', 'title' => 'Edit', class: 'btn btn-default' do %><i class="fa fa-edit"></i><% end %>
-            <%= link_to imprint_method_path(imprint_method), 'data-action' => 'destroy', 'data-toggle' => 'tooltip', 'title' => 'Destroy', class: 'btn btn-default', method: :delete, data: {confirm: 'Are you sure you would like to delete the imprint method?'} do %><i class="fa fa-times"></i><% end %>
-          </div>
-        </td>
-      </tr>
-      <% end %>
+        <% imprint_methods.each do |imprint_method| %>
+          <tr id="<%= model_table_row_id imprint_method %>">
+            <td><%= imprint_method.name %></td>
+            <td><%= imprint_method.ink_colors.map(&:name).join(', ') %></td>
+            <td><%= imprint_method.print_locations.map(&:name).join(', ') %></td>
+            <td>
+              <div class="btn-group btn-group-xs">
+                <%= link_to edit_imprint_method_path(imprint_method), class: 'btn btn-default', 'data-action' => 'edit', 'data-toggle' => 'tooltip', 'title' => 'Edit' do %>
+                  <i class="fa fa-edit"></i>
+                <% end %>
+
+                <%= link_to imprint_method_path(imprint_method), class: 'btn btn-default', data: { confirm: 'Are you sure you would like to delete the imprint method?' }, method: :delete, 'data-action' => 'destroy', 'data-toggle' => 'tooltip', 'title' => 'Destroy' do %>
+                  <i class="fa fa-times"></i>
+                <% end %>
+              </div>
+            </td>
+          </tr>
+        <% end %>
       </tbody>
     </table>
   </div>

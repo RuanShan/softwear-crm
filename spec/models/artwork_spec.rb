@@ -1,7 +1,7 @@
 require 'spec_helper'
 include ApplicationHelper
 
-describe Artwork, artwork_spec: true do
+describe Artwork, artworks_spec: true do
 
   describe 'Validations' do
     it { should validate_presence_of(:name) }

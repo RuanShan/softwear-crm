@@ -17,19 +17,3 @@ end
 Hash.class_eval do
   alias_method :+, :merge
 end
-
-Array.class_eval do
-  def combine(method_name=nil, &block)
-    if method_name
-      return combine do |total, entry|
-        total.method(method_name.to_sym).call(entry)
-      end
-    end
-
-    total = first
-    self[1..-1].each do |entry|
-      total = yield total, entry
-    end
-    total
-  end
-end

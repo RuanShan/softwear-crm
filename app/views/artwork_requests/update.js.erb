@@ -1,19 +1,27 @@
 <% if @artwork_request.valid? %>
-    $('#artwork-request-<%= @artwork_request.id %>').replaceWith("<%= escape_javascript(render(partial: 'artwork_request', locals: {artwork_request: @artwork_request, order: @order})).html_safe %>");
-    $('#artwork-request-row-<%= @artwork_request.id %>').html("<%= escape_javascript(render(partial: 'row', locals: {ar: @artwork_request})).html_safe %>");
-    setupContentModal(function($contentModal){
-        $contentModal.find('.modal-content').addClass('modal-content-success')
-    })
-    showContentModal({
-        title: 'SUCCESS',
-        body: 'Successfuly updated Artwork Request!'
-    }).delay(50)
-    updateOrderTimeline();
+
+  $('#artwork-request-<%= @artwork_request.id %>').replaceWith("<%= escape_javascript(render(partial: 'artwork_request', locals: { artwork_request: @artwork_request, order: @order })).html_safe %>");
+  $('#artwork-request-row-<%= @artwork_request.id %>').html("<%= escape_javascript(render(partial: 'row', locals: { artwork_request: @artwork_request })).html_safe %>");
+
+  setupContentModal(function($contentModal){
+    $contentModal.find('.modal-content').addClass('modal-content-success')
+  })
+
+  showContentModal({
+    title: 'SUCCESS',
+    body: 'Successfuly updated Artwork Request!'
+  }).delay(50)
+
+  updateOrderTimeline();
+
 <% else %>
-    var form = $('#contentModal .modal-body form');
-    if (form.data('errorHandler') == null) {
-        form.data('errorHandler', ErrorHandler('artwork_request', form));
-    }
-    var handler = form.data('errorHandler');
-    handler.handleErrors(JSON.parse("<%= escape_javascript(@artwork_request.errors.messages.to_json.html_safe) %>"), $("<%= escape_javascript(render(partial: 'shared/modal_errors', locals: { object: @artwork_request })).html_safe %>"));
+
+  var form = $('#contentModal .modal-body form');
+  if (form.data('errorHandler') == null) {
+    form.data('errorHandler', ErrorHandler('artwork_request', form));
+  }
+
+  var handler = form.data('errorHandler');
+  handler.handleErrors(JSON.parse("<%= escape_javascript(@artwork_request.errors.messages.to_json.html_safe) %>"), $("<%= escape_javascript(render(partial: 'shared/modal_errors', locals: { object: @artwork_request })).html_safe %>"));
+
 <% end %>

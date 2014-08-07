@@ -1,15 +1,16 @@
 showContentModal({
-    backdrop: "static",
-    keyboard: false,
-    title: 'New Artwork Request',
-    body: $("<%= escape_javascript(render(partial: 'new', locals: {artwork_request: @artwork_request, order: @order})).html_safe %>")
+  backdrop: "static",
+  keyboard: false,
+  title: 'New Artwork Request',
+  body: $("<%= escape_javascript(render(partial: 'new', locals: { artwork_request: @artwork_request, order: @order })).html_safe %>")
 })
-initializeSummernote();
+
 initializeDateTimePicker();
 initializeJobsChosen();
-summernoteSubmit();
+initializeSummernote();
 setNewArtworkRequestSelect();
 setSubmitTimeout();
+summernoteSubmit();
 
 
 

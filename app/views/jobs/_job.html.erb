@@ -45,7 +45,7 @@
       </div>
 
       <h4>Imprints</h4>
-      <%= render partial: 'orders/imprints', locals: { job: job } %>
+      <%= render partial: 'imprints/imprints', locals: { job: job } %>
 
       <div class="form-group box-info">
         <div class="col-sm-4">
@@ -57,7 +57,7 @@
       </div>
       <div class="form-group box-info">
         <div class="col-sm-4 col-xs-offset-4">
-          <%= button_tag onclick: "deleteJob($(this), #{job.id})", class: 'delete-job-button btn btn-danger btn-lg btn-block', type: 'button' do %>
+          <%= link_to job_path(job), method: 'DELETE', class: 'btn btn-danger btn-lg btn-block delete-job-button', id: "delete-job-#{job.id}", remote: true do %>
             <i class="fa fa-times-circle"></i> Delete Job
           <% end %>
         </div>

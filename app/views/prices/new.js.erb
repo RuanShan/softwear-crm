@@ -1,4 +1,2 @@
-// replace html of modal
-$('#contentModal .modal-body').html("<%=j render( partial: 'prices/new', :formats => [:html], locals: { imprintable: @imprintable } ).html_safe %>");
-// display the modal
+$('#contentModal .modal-body').html("<%=escape_javascript(render(partial: 'prices/new', formats: [:html], locals: { imprintable: @imprintable } ).html_safe) %>");
 $('#contentModal').modal('show');

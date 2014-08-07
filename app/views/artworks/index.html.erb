@@ -3,14 +3,19 @@
 </div>
 
 <div class="col-lg-3 text-right">
-  <%= link_to new_artwork_path, class: 'btn btn-primary ', remote: true do %>Add Artwork <% end %>
+  <%= link_to new_artwork_path, class: 'btn btn-primary ', remote: true do %>
+    Add Artwork
+  <% end %>
 </div>
-<div class="col-lg-9">
-<%= render partial: 'artworks/search', locals: {remote: false, artwork_request: nil} %>
-  </div>
-<%= paginate @artworks %>
-<div class="box-info row clear">
 
-  <%= render partial: 'artworks/table', locals: {artworks: @artworks, artwork_request: nil} %>
+<div class="col-lg-9">
+  <%= render partial: 'artworks/search', locals: { artwork_request: nil, remote: false } %>
 </div>
+
+<%= paginate @artworks %>
+
+<div class="box-info row clear">
+  <%= render partial: 'artworks/table', locals: { artworks: @artworks, artwork_request: nil } %>
+</div>
+
 <%= paginate @artworks %>

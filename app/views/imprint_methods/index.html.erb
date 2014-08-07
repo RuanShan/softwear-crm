@@ -2,9 +2,9 @@
   <h1>Imprint Methods <small>Configure the imprint methods available for imprintables</small></h1>
 </div>
 <div class="col-lg-3 text-right">
-  <%= link_to "Add an Imprint Method", new_imprint_method_path, class: 'btn btn-primary', role: 'button' %>
+  <%= link_to 'Add an Imprint Method', new_imprint_method_path, class: 'btn btn-primary' %>
 </div>
 
 <div class="box-info row clear">
-  <%= render partial: 'table', locals: {imprint_methods: @imprint_methods } %>
+  <%= render partial: 'table', locals: { imprint_methods: @imprint_methods } %>
 </div>

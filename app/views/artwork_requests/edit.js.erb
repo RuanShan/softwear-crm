@@ -4,10 +4,12 @@ showContentModal({
     title: 'Edit Artwork Request',
     body: $("<%= escape_javascript(render(partial: 'edit', locals: { artwork_request: @artwork_request, order: @order })).html_safe %>")
 })
-styleCheckboxes();
-initializeSummernote();
+
 initializeDateTimePicker();
 initializeJobsChosen();
-$('.summernote').code('<%= (@artwork_request.description).html_safe %>');
-summernoteSubmit();
+initializeSummernote();
 setSubmitTimeout();
+summernoteSubmit();
+styleCheckboxes();
+
+$('.summernote').code('<%= (@artwork_request.description).html_safe %>');

@@ -24,11 +24,7 @@ CrmSoftwearcrmCom::Application.routes.draw do
   get 'tags/:tag', to: 'imprintables#index', as: :tag
 
   resources :brands, :colors, :users, :artwork_requests, :artworks
-  resources :prices, only: [:create, :new, :destroy, :index] do
-    collection do
-      get 'destroy_all'
-    end
-  end
+  resources :prices, only: [:create, :new, :destroy, :index]
 
   resources :quotes, shallow: true do
     post 'email_customer'

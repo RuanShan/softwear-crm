@@ -1,22 +1,24 @@
-<td><%= ArtworkRequest::PRIORITIES[ar.priority.to_i] %></td>
-<td><%= link_to ar.jobs[0].order.name, edit_order_path(ar.jobs[0].order.id) +'/#artwork' %></td>
-<% #TODO: are we using a function for strftime stuff? and remove array[0] and what about the Model call above? %>
-<td><%= ar.deadline.strftime('%b %d, %Y, %I:%M %p') %></td>
-<td><%= ar.jobs[0].order.in_hand_by.strftime('%b %d, %Y, %I:%M %p') %></td>
-<td><%= ar.total_quantity %></td>
-<td><%= ar.imprint_method.name %></td>
-<td><%= ar.ink_colors.count %></td>
-<td><%= ar.jobs[0].order.payment_status %></td>
+<td><%= ArtworkRequest::PRIORITIES[artwork_request.priority.to_i] %></td>
+<td><%= link_to artwork_request.jobs.first.order.name, edit_order_path("#{artwork_request.jobs.first.order.id}/#artwork") %></td>
+<% #TODO: Model call above %>
+<td><%= artwork_request.deadline.strftime('%b %d, %Y, %I:%M %p') %></td>
+<td><%= artwork_request.jobs.first.order.in_hand_by.strftime('%b %d, %Y, %I:%M %p') %></td>
+<td><%= artwork_request.total_quantity %></td>
+<td><%= artwork_request.imprint_method.name %></td>
+<td><%= artwork_request.ink_colors.count %></td>
+<td><%= artwork_request.jobs.first.order.payment_status %></td>
 <td>
   <div class="btn-group btn-group-xs">
-    <%= link_to edit_order_artwork_request_path(ar.jobs[0].order, ar), remote: true, 'data-toggle' => 'tooltip', 'title' => 'Edit', class: 'btn btn-default' do %>
-        <i class="fa fa-edit"></i>
+    <%= link_to edit_order_artwork_request_path(artwork_request.jobs.first.order, artwork_request), class: 'btn btn-default', remote: true, 'data-toggle' => 'tooltip', 'title' => 'Edit' do %>
+      <i class="fa fa-edit"></i>
     <% end %>
-    <%= link_to "#{order_artwork_request_path(ar.jobs[0].order, ar)}?disable_buttons=true", remote: true, 'data-toggle' => 'tooltip', 'title' => 'Show', class: 'btn btn-default' do %>
-        <i class="fa fa-eye"></i>
+
+    <%= link_to "#{order_artwork_request_path(artwork_request.jobs.first.order, artwork_request)}?disable_buttons=true", class: 'btn btn-default', remote: true, 'data-toggle' => 'tooltip', 'title' => 'Show' do %>
+      <i class="fa fa-eye"></i>
     <% end %>
-    <%= link_to order_artwork_request_path(ar.jobs[0].order, ar), remote: true,'data-action' => 'destroy', 'data-toggle' => 'tooltip', 'title' => 'Destroy', class: 'btn btn-default', method: :delete do %>
-        <i class="fa fa-times"></i>
+
+    <%= link_to order_artwork_request_path(artwork_request.jobs.first.order, artwork_request), class: 'btn btn-default', method: :delete, remote: true,'data-action' => 'destroy', 'data-toggle' => 'tooltip', 'title' => 'Destroy' do %>
+      <i class="fa fa-times"></i>
     <% end %>
   </div>
 </td>
