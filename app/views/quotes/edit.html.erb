@@ -3,13 +3,12 @@
 </div>
 
 <div class="col-lg-3 text-right">
-  <%= link_to quote_path(@quote), 'data-action' => 'show', 'data-toggle' => 'tooltip', 'title' => 'Print', class: 'btn btn-primary' do %>Print Quote<% end %>
+  <%= link_to quote_path(@quote), class: 'btn btn-primary', 'data-action' => 'show', 'data-toggle' => 'tooltip', 'title' => 'Print' do %>Print Quote<% end %>
 </div>
 
 <div class="row">
   <div class="col-sm-12">
     <div class="box-info full">
-
       <ul class="nav nav-tabs nav-justified">
         <li class="active"><a href="#timeline" data-toggle="tab"><i class="fa fa-clock-o"></i> Timeline</a></li>
         <li><a href="#details" data-toggle="tab"><i class="fa fa-search"></i> Details</a></li>

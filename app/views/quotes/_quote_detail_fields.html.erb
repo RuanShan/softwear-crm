@@ -1,35 +1,51 @@
 <div class="form-group">
   <%= f.label :name, 'Quote Name' %>
+
   <%= f.error_for :name %>
+
   <%= f.text_field :name %>
 </div>
+
 <div class="form-group">
   <%= f.label :valid_until_date, 'Valid Until Date' %>
+
   <%= f.error_for :valid_until_date %>
+
   <div class="input-group date js-datetimepicker">
     <%= f.text_field :valid_until_date, { value: time_format(f.object.valid_until_date), placeholder: 'Valid Until', class: 'form-control' } %>
+
     <span class="input-group-addon">
       <span class="glyphicon glyphicon-calendar"></span>
     </span>
   </div>
 </div>
+
 <div class="form-group">
   <%= f.label :estimated_delivery_date, 'Estimated Delivery Date' %>
+
   <%= f.error_for :estimated_delivery_date %>
+
   <div class="input-group date js-datetimepicker">
     <%= f.text_field :estimated_delivery_date, { value: time_format(f.object.estimated_delivery_date), placeholder: 'Estimated Delivery', class: 'form-control' } %>
+
     <span class="input-group-addon">
       <span class="glyphicon glyphicon-calendar"></span>
     </span>
   </div>
 </div>
+
 <div class="form-group">
   <%= f.label :salesperson_id, 'Salesperson' %>
+
   <%= f.error_for :salesperson_id %>
-  <%= f.select :salesperson_id, options_for_select(User.all().collect{ |u| [u.full_name, u.id] }, get_quote_salesperson_id(params[:id]) ) %>
+
+  <%= f.select :salesperson_id, options_for_select(User.all.map{ |u| [u.full_name, u.id] }, get_quote_salesperson_id(params[:id]) ) %>
 </div>
+
 <div class="form-group">
   <%= f.label :store_id, 'Store' %>
+
   <%= f.error_for :store_id %>
-  <%= f.select :store_id, options_for_select(Store.order(:name).collect{ |s| [s.name, s.id] }, get_quote_store_id(params[:id]) ) %>
+
+  <%= f.select :store_id, options_for_select(Store.order(:name).map{ |s| [s.name, s.id] }, get_quote_store_id(params[:id]) ) %>
 </div>
