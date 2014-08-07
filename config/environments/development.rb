@@ -23,9 +23,9 @@ CrmSoftwearcrmCom::Application.configure do
   }
 
   # using actionMailer, redirect to smtp://localhost:1025
-  # config.action_mailer.delivery_method = :smtp
-  # config.action_mailer.smtp_settings = { :address => 'localhost', :port => 1025 }
-  # config.action_mailer.default_url_options = { host: 'localhost' }
+  config.action_mailer.delivery_method = :smtp
+  config.action_mailer.smtp_settings = { :address => 'localhost', :port => 1025 }
+  config.action_mailer.default_url_options = { host: 'localhost' }
 
 
       # Print deprecation notices to the Rails logger.

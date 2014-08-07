@@ -1,5 +1,5 @@
 class QuotesController < InheritedResources::Base
-  before_filter :format_times, only: [:create, :update]
+  before_filter :format_dates, only: [:create, :update]
   require 'mail'
 
   def new
@@ -63,8 +63,8 @@ class QuotesController < InheritedResources::Base
     redirect_to edit_quote_path params[:quote_id]
   end
 
-  # TODO: generalize email_customer for usage both here and in proofs
   # TODO: > 10 LOC
+  # TODO: should proof mailer rescue all of those errors as well?
   def email_customer
     @quote = Quote.find(params[:quote_id])
     
@@ -103,20 +103,15 @@ class QuotesController < InheritedResources::Base
 
   private
 
-  def format_times
-    format_time(:valid_until_date)
-    format_time(:estimated_delivery_date)
-  end
+  def format_dates
+    unless params[:quote].nil? or params[:quote][:valid_until_date].nil?
+      valid_until_date = params[:quote][:valid_until_date]
+      params[:quote][:valid_until_date] = format_time(valid_until_date)
+    end
 
-  # TODO: format_time!
-  def format_time(attribute)
-    begin
-      time = DateTime.strptime(params[:quote][attribute], '%m/%d/%Y %H:%M %p').to_time unless (params[:quote].nil? or params[:quote][attribute].nil?)
-      offset = (time.utc_offset)/60/60
-      adjusted_time = (time - offset.hours).utc
-      params[:quote][attribute] = adjusted_time
-    rescue ArgumentError
-      params[:quote][attribute]
+    unless params[:quote].nil? or params[:quote][:estimated_delivery_date].nil?
+      estimated_delivery_date = params[:quote][:estimated_delivery_date]
+      params[:quote][:estimated_delivery_date] = format_time(estimated_delivery_date)
     end
   end
 

@@ -48,8 +48,7 @@ $(document).ajaxStop(->
     $(".summernote").val $(".summernote").code()
 
 @initializeDateTimePicker = ->
-  #TODO change everything to use this, call class .js-datetimepicker
-  $(".date").datetimepicker()
+  $(".js-datetimepicker").datetimepicker()
 
 @styleCheckboxes = ->
   $("input").iCheck
@@ -72,8 +71,11 @@ $(document).ajaxStop(->
     ],
 
   $(".summernote").code "" if $(".note-editable").html() is "<p><br></p>"
-  $(".summernote").val ""
 
 @disableFor = (element, ms) ->
   $(element).attr 'disabled', 'disabled'
   after ms, -> $(element).removeAttr 'disabled'
+
+@setPendingSelect = ->
+  $(".js-pending-select").hide()
+  $(".js-pending-select").val "Pending"
