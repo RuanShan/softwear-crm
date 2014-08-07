@@ -55,38 +55,29 @@ describe ProofsController, js: true, proofs_spec: true do
   describe 'email_customer' do
     context 'GET request' do
       let!(:proof){ create(:valid_proof) }
-      it 'assigns proof, order, and reminder as well as rendering email_customer.js.erb, regardless of reminder value' do
+      it 'assigns variable_hash as well as rendering email_customer.js.erb, regardless of reminder value' do
         get :email_customer, id: proof.id, order_id: proof.order_id, reminder: 'false', format: 'js'
         expect(response).to render_template('email_customer')
-        expect(assigns(:proof)).to eq(proof)
-        expect(assigns(:order).id).to eq(proof.order_id)
-        expect(assigns(:reminder)).to eq(false)
+        expect(assigns(:variable_hash)).to eq({order: Order.find(proof.order_id), proof: proof, reminder: false})
       end
     end
     context 'POST request' do
       context 'reminder is false' do
         let!(:proof){ create(:valid_proof) }
-        it 'assigns proof, order, and reminder, sends approval email, and changes status to Emailed Customer' do
-          expect(ProofMailer).to receive(:proof_approval_email).with(an_instance_of(Proof), an_instance_of(Order), nil, nil).and_return( double('ProofMailer', deliver: true) )
+        it 'sends approval email, and changes status to Emailed Customer' do
+          expect(ProofMailer).to receive(:proof_approval_email).with(an_instance_of(Hash)).and_return( double('ProofMailer', deliver: true) )
           post :email_customer, id: proof.id, order_id: proof.order_id, reminder: 'false', format: 'js'
-          expect(assigns(:proof)).to eq(proof)
-          expect(assigns(:order).id).to eq(proof.order_id)
-          expect(assigns(:reminder)).to eq(false)
-          expect(assigns(:proof).status).to_not eq(proof.status)
-          expect(assigns(:proof).status).to eq('Emailed Customer')
+          expect(Proof.find(proof.id).status).to eq('Emailed Customer')
         end
       end
 
       context 'reminder is true' do
         let!(:proof){ create(:valid_proof) }
         let!(:order){ Order.find(proof.order_id) }
-        it 'assigns proof, order, and reminder, sends reminder email, and doesnt change the proof status' do
-          expect(ProofMailer).to receive(:proof_reminder_email).with(an_instance_of(Proof), an_instance_of(Order), I18n.t('proof_reminder_body_html', firstname: order.firstname, lastname: order.lastname), I18n.t('proof_reminder_subject', id: order.id)).and_return( double('ProofMailer', deliver: true) )
+        it 'sends reminder email, and doesnt change the proof status' do
+          expect(ProofMailer).to receive(:proof_reminder_email).with(an_instance_of(Hash)).and_return( double('ProofMailer', deliver: true) )
           post :email_customer, id: proof.id, order_id: proof.order_id, reminder: 'true', format: 'js'
-          expect(assigns(:proof)).to eq(proof)
-          expect(assigns(:order).id).to eq(proof.order_id)
-          expect(assigns(:reminder)).to eq(true)
-          expect(assigns(:proof).status).to eq(proof.status)
+          expect(Proof.find(proof.id).status).to eq(proof.status)
         end
       end
     end
