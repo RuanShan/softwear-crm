@@ -1,10 +1,11 @@
 <div class="page-heading animated fadeInDownBig col-lg-9">
   <h1>Shipping Methods <small>Configure the shipping methods available for shipments</small></h1>
 </div>
+
 <div class="col-lg-3 text-right">
   <%= link_to 'Add a Shipping Method', new_shipping_method_path, class: 'btn btn-primary' %>
 </div>
 
 <div class="box-info row clear">
-  <%= render partial: 'table', locals: {shipping_methods: @shipping_methods } %>
+  <%= render partial: 'table', locals: { shipping_methods: @shipping_methods } %>
 </div>

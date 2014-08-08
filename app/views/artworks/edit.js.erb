@@ -2,7 +2,7 @@ showContentModal({
   backdrop: "static",
   keyboard: false,
   title: 'Edit Artwork Request',
-  body: $("<%= escape_javascript(render(partial: 'edit', locals: { artwork: @artwork })).html_safe %>")
+  body: $("<%= escape_javascript(render partial: 'edit', locals: { artwork: @artwork }).html_safe %>")
 });
 
 setSubmitTimeout();

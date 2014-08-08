@@ -6,7 +6,7 @@ showContentModal({
   backdrop: "static",
   keyboard: false,
   title: 'Proof Email',
-  body: $("<%= escape_javascript(render(partial: 'email_fields', locals: { order: @variable_hash[:order], proof: @variable_hash[:proof], reminder: @variable_hash[:reminder] })).html_safe %>")
+  body: $("<%= escape_javascript(render partial: 'email_fields', locals: { order: @variable_hash[:order], proof: @variable_hash[:proof], reminder: @variable_hash[:reminder] }).html_safe %>")
 });
 
 initializeSummernote();

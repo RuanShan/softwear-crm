@@ -36,17 +36,17 @@ describe ApplicationHelper, application_helper_spec: true do
     end
   end
 
-  describe '#time_format' do
+  describe '#display_time' do
     context 'datetime is nil' do
       it 'should return nil' do
-        expect(time_format('')).to eq(nil)
+        expect(display_time('')).to eq(nil)
       end
     end
 
     context 'there is a valid datetime' do
       let!(:datetime) { DateTime.new(1991, 9, 25) }
       it 'should return a formatted date' do
-        expect(time_format(datetime)).to eq('09/25/1991 12:00 AM')
+        expect(display_time(datetime)).to eq('09/25/1991 12:00 AM')
       end
     end
 

@@ -22,6 +22,9 @@
 en:
   hello: "Hello world"
 
+  imprintables_variant_select_html: "<strong>No colors or sizes are set for this product yet.</strong> You can initialize the color/size set by selecting which colors and
+                                     sizes you'd like to add. You can individually add and remove colors and sizes after."
+
   user_creation: "User %{full_name} successfully created with email %{email}. Their password has been emailed to them."
 
   proof_reminder_subject: "We're still waiting for you to approve your Proof from the Ann Arbor T-shirt Company Order #%{id}"

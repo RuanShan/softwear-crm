@@ -8,11 +8,14 @@
  * You're free to add application-wide styles to this file and they'll appear at the top of the
  * compiled file, but it's generally better to create a new file per style scope.
  *
- *= require bootstrap
- *= require style
- *= require style-responsive
+ *= require bootstrap/bootstrap
+ *= require lanceng/style
+ *= require style-responsive/style-responsive
  *= require_self
  *= require_tree .
+ *= require animate/animate
+ *= require bootstrap/sizes-theme-boostrap
+ *= require table-fixed-header/table-fixed-header
  *= require font-awesome/font-awesome
  *= require icheck/skins/minimal/grey
  *= require bootstrap-datetimepicker

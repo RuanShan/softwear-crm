@@ -20,7 +20,6 @@ class SizesController < InheritedResources::Base
         temp = temp.split('_')
         id = temp[1]
 
-        # TODO: David, refactor to not use update_attribute
         Size.find(id).update(sort_order: n)
       end
     end

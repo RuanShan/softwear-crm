@@ -2,7 +2,7 @@ showContentModal({
   backdrop: "static",
   keyboard: false,
   title: 'Edit Proof',
-  body: $("<%= escape_javascript(render(partial: 'edit', locals: { order: @order, proof: @proof })).html_safe %>")
+  body: $("<%= escape_javascript(render partial: 'edit', locals: { order: @order, proof: @proof }).html_safe %>")
 });
 
 initializeDateTimePicker();

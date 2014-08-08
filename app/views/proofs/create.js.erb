@@ -1,6 +1,6 @@
 <% if @proof.valid? %>
 
-  $('.proof-list').append("<%= escape_javascript(render(partial: 'proof', locals: { order: @order, proof: @proof })).html_safe %>");
+  $('.proof-list').append("<%= escape_javascript(render partial: 'proof', locals: { order: @order, proof: @proof }).html_safe %>");
 
   setupContentModal(function($contentModal){
     $contentModal.find('.modal-content').addClass('modal-content-success')

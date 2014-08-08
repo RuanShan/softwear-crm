@@ -25,7 +25,7 @@ class ProofMailer < ActionMailer::Base
     if storage_type == :s3
       attachments[attachment.file_file_name] = open("#{attachment.file.url}").read
     else
-      # TODO: use url, not path
+      # FIXME: use url, not path
       attachments[attachment.file_file_name] = File.read(attachment.file.path)
     end
   end

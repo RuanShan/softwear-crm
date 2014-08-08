@@ -25,9 +25,7 @@ class LancengFormBuilder < ActionView::Helpers::FormBuilder
     alias_method "original_#{method_name}".to_sym, method_name
     define_method method_name do |*args|
       # TODO: refactor
-      options =
-        args.size == 2 ? args.last.merge({}) : {}
-
+      options = args.size == 2 ? args.last.merge({}) : {}
       add_class options, 'form-control'
       add_class(options, 'number_field') if method_name == :number_field
 

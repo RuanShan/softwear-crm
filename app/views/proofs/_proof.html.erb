@@ -9,7 +9,7 @@
             <dt>Proof Status:</dt>
             <dd><%= proof.status %></dd>
             <dt>Approve By:</dt>
-            <dd><%= proof.approve_by.strftime('%b %d, %Y, %I:%M %p') %></dd>
+            <dd><%= display_time(proof.approve_by) %></dd>
           </dl>
         </div>
 

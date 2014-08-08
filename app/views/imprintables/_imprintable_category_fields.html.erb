@@ -1,4 +1,4 @@
-<div class="form-group removeable">
+<div class="form-group js-removeable">
   <div class="input-group">
     <%= f.collection_select :name,
                             ImprintableCategory::VALID_CATEGORIES,
@@ -12,7 +12,7 @@
     %>
     <span class="input-group-btn">
       <%= f.hidden_field :_destroy %>
-      <%= link_to 'Remove', '#', class: 'btn btn-danger remove_fields' %>
+      <%= link_to 'Remove', '#', class: 'btn btn-danger js-remove-fields' %>
     </span>
   </div>
   <% if f.object.errors.include?(:name) %>

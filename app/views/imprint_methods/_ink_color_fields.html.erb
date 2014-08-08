@@ -1,4 +1,4 @@
-<div class="form-group removeable">
+<div class="form-group js-removeable">
   <div class="input-group">
     <%= f.text_field :name, class: 'form-control', placeholder: 'The ink color name (wavelengths from about 400 to 700nm, for example)' %>
 
@@ -11,7 +11,7 @@
     <span class="input-group-btn">
       <%= f.hidden_field :_destroy %>
 
-      <%= button_tag 'x', class: 'btn btn-danger remove_fields' %>
+      <%= button_tag 'x', class: 'btn btn-danger js-remove-fields' %>
      </span>
   </div>
 </div>
