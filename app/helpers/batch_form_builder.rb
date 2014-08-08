@@ -10,7 +10,7 @@ class BatchFormBuilder < LancengFormBuilder
         @template.#{method_name}_tag(
           field_name(field),
           @object.try(field),
-          options
+          with_common_attrs(options)
         )
       end
     RUBY
@@ -20,14 +20,14 @@ class BatchFormBuilder < LancengFormBuilder
     #   @template.text_field_tag(
     #     field_name(field),
     #     @object.try(field),
-    #     options
+    #     with_common_attrs(options)
     #   )
     # end
   end
 
   def select(method, *other_args)
     raise 'Not implemented in BatchFormBuilder. '\
-          'Remove this line if you really want to.'
+          'Remove this definition if you really want to.'
   end
 
   def fields_for(object, *args)

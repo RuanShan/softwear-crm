@@ -2,6 +2,6 @@
   cursor: pointer
 }
 
-form.imprintable-line-item.editing-line-item > div > input, select.editing-imprint {
+.imprintable-line-item.editing-line-item > div > input, select.editing-imprint {
   background-color: #FFFF99;
 }

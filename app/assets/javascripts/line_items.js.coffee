@@ -149,7 +149,7 @@
   $lineItemModal.find('#is_imprintable_no').prop('checked', false)
 
 @imprintableEditEntryChanged = ($this) ->
-  $this.parentsUntil("form").parent().addClass("editing-line-item")
+  $this.parentsUntil(".line_item").parent().addClass("editing-line-item")
 
 loadLineItemView = (lineItemId, url) ->
   $row = $("#line-item-#{lineItemId}")

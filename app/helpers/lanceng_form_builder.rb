@@ -117,6 +117,12 @@ class LancengFormBuilder < ActionView::Helpers::FormBuilder
     super
   end
 
+  protected
+
+  def with_common_attrs(options)
+    options.merge(@common_attrs || {})
+  end
+
   private
 
   def proxy(method_name, *extras)

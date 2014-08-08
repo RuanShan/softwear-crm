@@ -1,4 +1,4 @@
-<div id="edit-line-item-<%= line_item.id %>" class="line_item imprintable-line-item <%= 'editing-line-item' if local_assigns[:edit] %>">
+<div id="edit-line-item-<%= line_item.id %>" class="line_item imprintable-line-item <%= 'editing-line-item' if local_assigns[:edit] %>" data-line-item-id: "<%= line_item.id %>">
   <%= batch_fields_for line_item do |f| %>
 
     <div class="col-sm-1 imprintable-line-item-input">

@@ -1,5 +1,5 @@
-$row = $("#line-item-<%= @line_item.id %>");
-$oldChildren = $row.children();
+var $row = $("#line-item-<%= @line_item.id %>");
+var $oldChildren = $row.children();
 
 $oldChildren.each(function() {
   $(this).remove();

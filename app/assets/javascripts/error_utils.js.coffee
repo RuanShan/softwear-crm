@@ -1,7 +1,7 @@
 # Handy little module for ajax error handling!
 # Doesn't actually do the ajaxing for you; just 
 # adds and removes error content from the page.
-@ErrorHandler = (resourceName, $form) ->
+@ErrorHandler = (resourceName, $form, resourceId) ->
   handler = {}
   capitalize = (str) -> (str.charAt(0).toUpperCase() + str.substr(1)).replace('_id', '').replace('_', ' ')
   contains = (array, thing) -> 
@@ -11,7 +11,10 @@
     if resourceName is null
       field
     else
-      "#{resourceName}[#{field}]"
+      if resourceId
+        "#{resourceName}[#{resourceId}[#{field}]]"
+      else
+        "#{resourceName}[#{field}]"
 
   handler.errorFields = []
 
@@ -30,9 +33,11 @@
       # Grab the input field element
       $field = $form.find("*[name^='#{getParamName(field)}']")
       $field = $form.find("*[name^='#{getParamName(field.replace('_id', ''))}']") if $field.length == 0
+      
       if $field.length == 0
         console.log "Couldn't find field #{field} (name #{getParamName(field)})"
         continue
+      
       # Create the error message div
       $errorMsgDiv = $ '<div/>',
         class: 'error'
@@ -58,3 +63,12 @@
     handler.errorFields = []
 
   return handler
+
+@errorHandlerFrom = (element, resourceName, $form, resourceId) ->
+  $element = $(element)
+  handler = $element.data 'error-handler'
+  if typeof handler is 'undefined'
+    handler = ErrorHandler(resourceName, $form, resourceId)
+    $element.data 'error-handler', handler
+
+  handler

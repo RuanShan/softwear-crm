@@ -1,0 +1,53 @@
+<% @line_items.each do |line_item| %>
+  <% if line_item.imprintable? %>
+    var $container = $("#edit-line-item-<%= line_item.id %>");
+
+    // TODO okay, consider .editing-line-item and do the stuff
+    // that updateLineItems does so we can can it.
+
+    <% if line_item.valid? %>
+      if ($container.hasClass('editing-line-item')) {
+        $container.removeClass('editing-line-item');
+
+        var $inputs = $container.find('input');
+        shine($inputs, true);
+        shine($container, false);
+      }
+
+    <% else %>
+
+      errorHandlerFrom($container, 'line_item', $container, <%= line_item.id %>)
+        .handleErrors(
+          <%= line_item.errors.messages.to_json.html_safe %>,
+          "<%= escape_javascript render partial: 'shared/modal_errors', locals: { object: line_item } %>"
+        );
+    <% end %>
+
+  <% else %>
+
+    var $row = $("#line-item-<%= line_item.id %>");
+
+    <% if line_item.valid? %>    
+      var $oldChildren = $row.children();
+
+      $oldChildren.each(function() {
+        $(this).remove();
+      });
+
+      $row.append(
+        "<%= escape_javascript render partial: 'standard_view_entry', locals: { line_item: line_item } %>"
+      );
+
+      var $inputs = $row.find('input');
+      shine($inputs, true);
+      shine($row, false);
+
+    <% else %>
+
+      errorHandlerFrom($row, 'line_item', $row, <%= line_item.id %>)
+        .handleErrors(<%= line_item.errors.messages.to_json.html_safe %>);
+    <% end %>
+  <% end %>
+<% end %>
+
+updateOrderTimeline();

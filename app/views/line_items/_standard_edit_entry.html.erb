@@ -1,4 +1,4 @@
-<div id="edit-line-item<%= line_item.id %>" class="line_item editing-line-item">
+<div id="edit-line-item-<%= line_item.id %>" class="line_item editing-line-item" data-line-item-id="<%= line_item.id %>">
   <%= batch_fields_for line_item do |f| %>
 
     <div class="col-sm-2"><%= f.text_field :name %></div>
