@@ -1,11 +1,3 @@
-jQuery ->
-  #TODO make global exists in quotes
-  $("#myWizard").easyWizard
-    buttonsClass: "btn btn-default"
-    submitButtonClass: "btn btn-primary"
-
-  return
-
 # Calling this when asynchronously changing order related data would be nice.
 @updateOrderTimeline = ->
   orderId = $('#order-page').data('order-id')

@@ -7,7 +7,6 @@ module ImprintableHelper
     if imprintable.sizes.first.nil?
       'There are no sizes available'.html_safe
     elsif imprintable.sizes.first == imprintable.sizes.last
-      # TODO: is this return necessary?
       return imprintable.sizes.first.display_value
     else
       "#{imprintable.sizes.first.display_value} - #{imprintable.sizes.last.display_value}"

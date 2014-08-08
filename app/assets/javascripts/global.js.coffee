@@ -16,6 +16,11 @@ $(document).ready ->
     event.preventDefault()
 
   $('.format-phone').mask("999-999-9999")
+
+  $("#quotesWizard").easyWizard
+    buttonsClass: "btn btn-default"
+    submitButtonClass: "btn btn-primary"
+
   return
 
 $(document).ajaxStart(->

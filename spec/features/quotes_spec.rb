@@ -91,7 +91,7 @@ feature 'Quotes management', quote_spec: true, js: true do
     sleep 0.5
     expect(page).to have_css("input[value='#{ imprintable.name }']")
     expect(page).to have_css("input[value='#{ imprintable.base_price + decoration_price }']")
-    fill_in 'Description', with: 'Gaga can\'t handle this shit'
+    fill_in 'Description', with: 'Description'
     fill_in 'Quantity', with: '1'
     click_button 'Submit'
     expect(page).to have_selector '.modal-content-success', text: 'Quote was successfully created.'

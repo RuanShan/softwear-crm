@@ -11,8 +11,7 @@ class User < ActiveRecord::Base
 
   validates :first_name, presence: true
   validates :last_name, presence: true
-  # TODO: custom validator
-  validates :email, format: { with: /\A([^@\s]+)@((?:[-a-z0-9]+\.)+[a-z]{2,})\Z/i }
+  validates :email, email: true
 
   def full_name
     "#{first_name} #{last_name}"
