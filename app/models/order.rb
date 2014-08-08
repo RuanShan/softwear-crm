@@ -82,11 +82,11 @@ class Order < ActiveRecord::Base
     total - payment_total
   end
 
-  def get_salesperson_id(id)
+  def get_salesperson_id(id, current_user)
     id ? Order.find(id).salesperson_id : current_user.id
   end
 
-  def get_store_id(id)
+  def get_store_id(id, current_user)
     id ? Order.find(id).store_id : current_user.store_id
   end
 
