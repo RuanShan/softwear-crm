@@ -6,11 +6,11 @@
 <div class="col-sm-1"><%= number_to_currency line_item.total_price %></div>
 
 <div class='col-sm-1'>
-  <%= link_to edit_line_item_path(line_item), title: 'Edit', remote: true, method: :get do %>
+  <%= link_to edit_line_item_path(line_item), class: 'line-item-button', title: 'Edit', remote: true, method: :get do %>
     <i class="fa fa-2x fa-edit"></i>
   <% end %>
 
-  <%= link_to line_item_path(line_item), title: 'Delete', remote: true, method: :delete do %>
+  <%= link_to line_item_path(line_item), class: 'line-item-button', title: 'Delete', remote: true, method: :delete do %>
     <i class="fa fa-2x danger fa-times-circle"></i>
   <% end %>
 </div>

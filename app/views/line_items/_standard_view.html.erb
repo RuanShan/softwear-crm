@@ -10,7 +10,7 @@
   </div>
   <% line_items.each do |l| %>
     <div id="line-item-<%=l.id%>" class="row" style="margin-top: 10px; border-bottom: solid 1px #dddddd;">
-      <%= render partial: 'line_items/standard_view_entry', locals: {line_item: l} %>
+      <%= render partial: 'line_items/standard_view_entry', locals: { line_item: l } %>
     </div>
   <% end %>
 </div>

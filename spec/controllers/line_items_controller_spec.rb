@@ -109,7 +109,7 @@ describe LineItemsController, line_item_spec: true do
         }
       end
 
-      it 'should update the line items with the given ids', plzzz: true do
+      it 'should update the line items with the given ids' do
         put :update, params_hash
 
         [line_item_1, line_item_2].each(&:reload)

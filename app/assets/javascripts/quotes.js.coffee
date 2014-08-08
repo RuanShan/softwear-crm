@@ -8,9 +8,7 @@ jQuery ->
     submitButtonClass: "btn btn-primary"
 
     #TODO should work if submit button is in form, don't need
-  $(document).on('click', '#email-form-submit-button', ->
-    submitSummernote()
-  )
+  $(document).on 'click', '#email-form-submit-button', submitSummernote
 
   return
 

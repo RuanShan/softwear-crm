@@ -1,5 +1,5 @@
 <% if success %>
-  refreshJob(<%= @job.id %>);
+  refresh<%= @line_itemable.class.name -%>(<%= @line_itemable.id %>);
   $('#lineItemModal').modal('hide');
 <% else %>
   $currentForm = $('#lineItemModal').data('current-form-div').find('form');

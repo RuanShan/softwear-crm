@@ -2,9 +2,6 @@
   <% if line_item.imprintable? %>
     var $container = $("#edit-line-item-<%= line_item.id %>");
 
-    // TODO okay, consider .editing-line-item and do the stuff
-    // that updateLineItems does so we can can it.
-
     <% if line_item.valid? %>
       if ($container.hasClass('editing-line-item')) {
         $container.removeClass('editing-line-item');

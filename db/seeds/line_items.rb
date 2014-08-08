@@ -4,7 +4,7 @@ create_records([
   {name: "When's lunch?", description: "I'm hungry...",
     quantity: 2, unit_price: 0.5, line_itemable_id: 1, line_itemable_type: 'Job'},
 
-  {name: 'Airplane food', description: "What's up with it, anyways?!",
+  {name: 'Airplane food', description: "What's the deal with it, anyways",
     quantity: 3, unit_price: 5.12, line_itemable_id: 2, line_itemable_type: 'Job'},
 
   {name: "Can't wait", description: "To start on imprints",
@@ -22,33 +22,33 @@ create_records([
   {name: "Wow", description: "Do you know how many jobs are in these seeds?",
     quantity: 12, unit_price: 10, taxable: true, line_itemable_id: 5, line_itemable_type: 'Job'},
 
-  {name: "It's dangerous to go alone", description: "Take this!",
+  {name: "It's dangerous to go alone", description: "Take this",
     quantity: 1, unit_price: 99, taxable: true, line_itemable_id: 6, line_itemable_type: 'Job'},
 
   {name: "Database entries", description: "Mmmmmmmm",
     quantity: 9001, unit_price: 0.01, line_itemable_id: 7, line_itemable_type: 'Job'},
-  {name: "Apology", description: '---',
+  {name: "Stuff", description: '---',
     quantity: 0, unit_price: 10, line_itemable_id: 7, line_itemable_type: 'Job'},
 
   {name: "Seeds, seeds", description: "Hopefully worth the effort",
     quantity: 123, unit_price: 0.05, line_itemable_id: 8, line_itemable_type: 'Job'},
 
-  {name: "Hip threads", description: "Those would probably be imprintable, though",
+  {name: "Hip threads", description: "Those would probably be imprintable, though, hah",
     quantity: 2, unit_price: 10, taxable: true, line_itemable_id: 9, line_itemable_type: 'Job'},
-  {name: "Precious Ruby", description: "What could this possibly have to do with 
-    printing t-shirts?", quantity: 1, unit_price: 0, line_itemable_id: 9, line_itemable_type: 'Job'},
+  {name: "Maybe", description: "I do know what kind of stuff would go here", 
+    quantity: 1, unit_price: 0, line_itemable_id: 9, line_itemable_type: 'Job'},
 
-  {name: "Megapixel", description: "hah", quantity: 16,
+  {name: "More stuff", description: "----------", quantity: 16,
     unit_price: 20, line_itemable_id: 10, line_itemable_type: 'Job'},
 
-  {name: "Excellence", description: 'Where exactly do you buy this?',
+  {name: "----", description: 'Where exactly do you buy this?',
     quantity: 12, unit_price: 12, line_itemable_id: 11, line_itemable_type: 'Job'},
   {name: "Why are your hands so cold?", description: "That me hook.",
     quantity: 1, unit_price: 100, line_itemable_id: 11, line_itemable_type: 'Job'},
 
   {name: "db:seed last ran on: ", description: Time.now.to_s,
     quantity: 1, unit_price: 20, line_itemable_id: 12, line_itemable_type: 'Job'},
-  {name: "A job well done", description: '-',
+  {name: "Blah", description: '-',
     quantity: 1, unit_price: 100, line_itemable_id: 12, line_itemable_type: 'Job'}
   
   ], LineItem)

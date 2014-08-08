@@ -6,17 +6,28 @@
         <h4 class="modal-title">New Line Item </h4>
       </div>
       <div class="modal-body line-item-form">
-        Imprintable?
-        <%= radio_button_tag :is_imprintable, 'yes' %>
-        <%= label_tag :is_imprintable_yes, 'Yes' %>
-        <%= radio_button_tag :is_imprintable, 'no' %>
-        <%= label_tag :is_imprintable_no, 'No' %>
-        <div id="li-standard-form" style='display: none;'>
-          <%= render partial: 'standard_form', locals: { hide_submit: true } %>
-        </div>
-        <div id="li-imprintable-form" style='display: none;'>
-          <%= render partial: 'imprintable_form', locals: { hide_submit: true } %>
-        </div>
+        <% if local_assigns[:standard_only] %>
+
+          <div id="li-standard-form">
+            <%= render partial: 'standard_form', locals: { hide_submit: true } %>
+          </div>
+
+        <% else %>
+
+          Imprintable?
+
+          <%= radio_button_tag :is_imprintable, 'yes' %>
+          <%= label_tag :is_imprintable_yes, 'Yes' %>
+          <%= radio_button_tag :is_imprintable, 'no' %>
+          <%= label_tag :is_imprintable_no, 'No' %>
+          <div id="li-standard-form" style='display: none;'>
+            <%= render partial: 'standard_form', locals: { hide_submit: true } %>
+          </div>
+          <div id="li-imprintable-form" style='display: none;'>
+            <%= render partial: 'imprintable_form', locals: { hide_submit: true } %>
+          </div>
+
+        <% end %>
       </div>
       <div class="modal-footer">
         <a class="btn btn-default" data-dismiss="modal">Cancel</a>

@@ -2,13 +2,14 @@ class LineItemsController < InheritedResources::Base
   include LineItemHelper
 
   before_filter :load_line_itemable, except: [:select_options, :destroy, :update]
+  after_filter :assign_line_itemable, only: [:create]
 
   def new
     super do |format|
       @line_item = @line_itemable.line_items.new
-      # TODO make this actually render the new page
+      
       format.html { render partial: 'create_modal' }
-      format.js
+      format.js { render locals: { standard_only: params[:standard_only] } }
     end
   end
 
@@ -90,50 +91,6 @@ class LineItemsController < InheritedResources::Base
   end
 
   def update
-#    super do |success, failure|
-#      success.json do
-#        if @line_itemable.is_a? Quote
-#          @line_itemable.create_activity :updated_line_item, 
-#            owner: current_user,
-#            params: { name: @line_item.name }
-#        end
-#
-#        fire_activity @line_item, :update
-#        content_html = render_string partial: entry_partial('view'),
-#                                     locals: line_item_locals
-#
-#        render json: { result: 'success', content: content_html }
-#      end
-#      success.html do
-#        fire_activity @line_item, :update
-#        render partial: 'standard_view_entry', locals: line_item_locals
-#      end
-#
-#      success.js do
-#        raise 'js cool'
-#      end
-#      failure.js do
-#        raise 'js cool (but i failed)'
-#      end
-#
-#      failure.json do
-#        modal_html = render_string partial: entry_partial('edit'), 
-#                                   locals: line_item_locals(true)
-#        
-#        error_html = render_string partial: 'shared/modal_errors', 
-#                                   locals: { object: @line_item }
-#
-#        render json: { 
-#          result: 'failure',
-#          errors: @line_item.errors.messages,
-#          modal: modal_html,
-#          content: error_html
-#        }
-#      end
-#      failure.html do
-#        render partial: entry_partial('edit'), locals: line_item_locals(true)
-#      end
-#    end
     params.permit(:line_item).permit!
 
     line_item_attributes = params[:line_item].to_hash
@@ -167,18 +124,26 @@ class LineItemsController < InheritedResources::Base
         )
         errors = line_items.map{ |l| l.errors.full_messages }.flatten.uniq
 
-        render json: {
-          result: 'failure',
-          errors: errors,
-          modal: modal_html
-        }
+        respond_to do |format|
+          format.json do
+            render json: {
+              result: 'failure',
+              errors: errors,
+              modal: modal_html
+            }
+          end
+          format.html do
+            redirect_to root_path
+          end
+          format.js { render locals: { success: false } }
+        end
       else
         valid_line_items.each(&:save)
 
         fire_activity valid_line_items.first, :create
         respond_to do |format|
           format.json { render json: { result: 'success' } }
-          format.js
+          format.js { render locals: { success: true } }
         end
       end
     else # Create a standard, non-imprintable line item
@@ -190,9 +155,6 @@ class LineItemsController < InheritedResources::Base
         end
 
         success.json do
-          @line_item.line_itemable_id = @line_itemable.id
-          @line_item.line_itemable_type = @line_itemable.class.name
-          @line_item.save
           fire_activity @line_item, :create
           render json: { result: 'success' }
         end
@@ -215,6 +177,13 @@ class LineItemsController < InheritedResources::Base
             errors: @line_item.errors.messages,
             modal: modal_html
           }
+        end
+
+        success.html do
+          redirect_to root_path
+        end
+        failure.html do
+          redirect_to root_path
         end
       end
     end
@@ -275,7 +244,7 @@ private
   def permitted_params
     params.permit(
       :brand_id, :color_id, :imprintable_id, :job_id,
-      :ids, :standard,
+      :standard_only, :ids, :standard,
       line_item: [
         :id, :name, :description, :quantity, 
         :unit_price, :imprintable_variant_id,
@@ -328,5 +297,12 @@ private
       klass = [Job, Quote].detect { |li| params["#{li.name.underscore}_id"] }
       @line_itemable = klass.find(params["#{klass.name.underscore}_id"])
     end
+  end
+
+  def assign_line_itemable
+    return unless @line_item.line_itemable.nil?
+
+    @line_item.line_itemable = @line_itemable
+    @line_item.save
   end
 end
