@@ -1,6 +1,10 @@
 <%= form_for(@quote_select_hash[:new_line_item], url: { action: 'stage_quote' } ) do %>
-  <%= select_tag :quote_id, options_from_collection_for_select(@quote_select_hash[:quotes], 'id', 'name'), { prompt: 'Please select a quote to add to:' } %><br/>
+  <%= select_tag :quote_id, options_from_collection_for_select(@quote_select_hash[:quotes], 'id', 'name'), { prompt: 'Please select a quote to add to:' } %>
+
+  <br/>
+
   <%= hidden_field_tag :name, @quote_select_hash[:new_line_item].name %>
   <%= hidden_field_tag :total_price, @quote_select_hash[:new_line_item].unit_price %>
+
   <%= submit_tag 'Submit' %>
 <% end %>

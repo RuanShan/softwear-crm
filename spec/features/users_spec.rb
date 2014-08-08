@@ -37,7 +37,7 @@ feature 'Users', user_spec: true, js: true do
 	  	visit users_path
 	  	first('a[title=Edit]').click
 	  	fill_in 'Last name', with: 'Newlast_name'
-	  	click_button 'Submit'
+	  	click_button 'Update'
 	  	wait_for_ajax
 	  	expect(page).to have_content 'success'
 	  	expect(User.where(last_name: 'Newlast_name')).to exist

@@ -82,6 +82,14 @@ class Order < ActiveRecord::Base
     total - payment_total
   end
 
+  def get_salesperson_id(id, current_user)
+    id ? Order.find(id).salesperson_id : current_user.id
+  end
+
+  def get_store_id(id, current_user)
+    id ? Order.find(id).store_id : current_user.store_id
+  end
+
   def line_items
     LineItem.where(line_itemable_id: job_ids, line_itemable_type: 'Job')
   end

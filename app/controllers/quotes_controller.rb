@@ -1,5 +1,5 @@
 class QuotesController < InheritedResources::Base
-  before_filter :format_times, only: [:create, :update]
+  before_filter :format_dates, only: [:create, :update]
   require 'mail'
 
   def new
@@ -90,9 +90,16 @@ class QuotesController < InheritedResources::Base
 
   private
 
-  def format_times
-    format_time(:valid_until_date)
-    format_time(:estimated_delivery_date)
+  def format_dates
+    unless params[:quote].nil? or params[:quote][:valid_until_date].nil?
+      valid_until_date = params[:quote][:valid_until_date]
+      params[:quote][:valid_until_date] = format_time(valid_until_date)
+    end
+
+    unless params[:quote].nil? or params[:quote][:estimated_delivery_date].nil?
+      estimated_delivery_date = params[:quote][:estimated_delivery_date]
+      params[:quote][:estimated_delivery_date] = format_time(estimated_delivery_date)
+    end
   end
 
   def deliver_email(hash)
@@ -109,18 +116,6 @@ class QuotesController < InheritedResources::Base
       flash[:success] = nil
       @activity = PublicActivity::Activity.find_by_trackable_id(params[:quote_id])
       @activity.destroy
-    end
-  end
-
-  # TODO: format_time!
-  def format_time(attribute)
-    begin
-      time = DateTime.strptime(params[:quote][attribute], '%m/%d/%Y %H:%M %p').to_time unless (params[:quote].nil? or params[:quote][attribute].nil?)
-      offset = (time.utc_offset)/60/60
-      adjusted_time = (time - offset.hours).utc
-      params[:quote][attribute] = adjusted_time
-    rescue ArgumentError
-      params[:quote][attribute]
     end
   end
 

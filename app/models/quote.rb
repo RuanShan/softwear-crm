@@ -123,36 +123,15 @@ class Quote < ActiveRecord::Base
   end
 
   def line_items_subtotal
-    total = 0
-    line_items.each do |li|
-      total += li.total_price
-    end
-    total
+    line_items.map(&:total_price).reduce(0, :+)
   end
 
   def line_items_total_tax
-    total = 0
-    line_items.each do |li|
-      if li.taxable?
-        # TODO refactor to instance method
-        total += li.total_price * tax
-      end
-    end
-    total
+    line_items.map{ |l| l.taxable? ? l.total_price * tax : 0 }.reduce(0, :+)
   end
 
   def line_items_total_with_tax
-    total = 0
-    self.line_items.each do |li|
-      # TODO: ternary
-      if li.taxable?
-      # TODO refactor to instance method
-        total += li.total_price * (1 + tax)
-      else
-        total += li.total_price
-      end
-    end
-    total
+    line_items.map { |l| l.taxable? ? l.total_price * (1 + tax) : l.total_price }.reduce(0, :+)
   end
 
   def post_request_for_new_customer

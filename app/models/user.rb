@@ -1,7 +1,6 @@
 class User < ActiveRecord::Base
   acts_as_paranoid
 
-  # TODO: styling
   devise(:database_authenticatable, :confirmable, :recoverable, :registerable,
          :rememberable, :trackable, :timeoutable, :validatable, :lockable)
 

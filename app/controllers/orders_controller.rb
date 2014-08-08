@@ -1,5 +1,5 @@
 class OrdersController < InheritedResources::Base
-  before_filter :format_time, only: [:create, :update]
+  before_filter :format_in_hand_by, only: [:create, :update]
 
   def index
     super do
@@ -37,15 +37,10 @@ class OrdersController < InheritedResources::Base
 
   private
 
-  # TODO: format_time refactor
-  def format_time
-    begin
-      time = DateTime.strptime(params[:order][:in_hand_by], '%m/%d/%Y %H:%M %p').to_time unless (params[:order].nil? or params[:order][:in_hand_by].nil?)
-      offset = (time.utc_offset)/60/60
-      adjusted_time = (time - offset.hours).utc
-      params[:order][:in_hand_by] = adjusted_time
-    rescue ArgumentError
-      params[:order][:in_hand_by]
+  def format_in_hand_by
+    unless params[:order].nil? || params[:order][:in_hand_by].nil?
+      in_hand_by = params[:order][:in_hand_by]
+      params[:order][:in_hand_by] = format_time(in_hand_by)
     end
   end
 

@@ -1,20 +1,15 @@
 <div class='full-content-center animated fadeInDownBig'>
+  <div class='box-info'>
+    <h2>Forgot your password?</h2>
 
-<div class='box-info'>
+    <%= form_for(resource, as: resource_name, url: password_path(resource_name), html: { method: :post }, builder: LancengFormBuilder) do |f| %>
+      <div class='text-left'>
+        <%= f.label :email %>
+        <%= f.error_for :email %>
+        <%= f.email_field :email, autofocus: true, class: 'text-input' %>
+      </div>
 
-	<h2>Forgot your password?</h2>
-
-	<%= form_for(resource, as: resource_name, url: password_path(resource_name), html: { method: :post }, builder: LancengFormBuilder) do |f| %>
-
-	  <div class='text-left'>
-		  <%= f.label :email %>
-		  <%= f.error_for :email %>
-		  <%= f.email_field :email, autofocus: true, class: 'text-input' %>
-	  </div>
-
-	  <div><%= f.submit "Send me reset password instructions" %></div>
-	<% end %>
-
-</div>
-
+      <div><%= f.submit 'Send me reset password instructions' %></div>
+    <% end %>
+  </div>
 </div>

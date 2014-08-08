@@ -77,6 +77,7 @@ feature 'Quotes management', quote_spec: true, js: true do
     visit imprintables_path
     decoration_price = 3.75
     find('i.fa.fa-dollar').click
+    sleep 0.5
     find(:css, "input#decoration_price").set(decoration_price)
     click_button 'Fetch Prices!'
     click_link 'Create Quote from Table'

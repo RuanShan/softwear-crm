@@ -5,8 +5,8 @@ module ApplicationHelper
     fields = f.fields_for(association, new_object, child_index: id) do |builder|
       render("#{association.to_s.singularize}_fields", f: builder)
     end
-    # TODO: change to add-fields
-    link_to(name, '#', class: 'btn btn-info add_fields', data: { id: id, fields: fields.gsub("\n", "") })
+    link_to(name, '#', class: 'btn btn-info js-add-fields',
+            data: { id: id, fields: fields.gsub("\n", "") })
   end
 
   def model_table_row_id(object)
@@ -75,12 +75,12 @@ module ApplicationHelper
     bool ? 'Yes' : 'No'
   end
 
-  # TODO: what? could refactor to use globally
-  def time_format(datetime)
-    datetime.strftime('%m/%d/%Y %I:%M %p') unless datetime.blank?
+  def display_time(datetime)
+    datetime.strftime('%b %d, %Y, %I:%M %p') unless datetime.blank?
   end
 
   def imprintable_modal(imprintable)
-    link_to imprintable.name, imprintable_path(imprintable), remote: true, class: 'imprintable_modal_link'
+    link_to imprintable.name, imprintable_path(imprintable),
+            class: 'imprintable_modal_link',remote: true
   end
 end

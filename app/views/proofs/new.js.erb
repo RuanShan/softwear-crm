@@ -1,10 +1,11 @@
 showContentModal({
-    backdrop: "static",
-    keyboard: false,
-    title: 'New Proof',
-    body: $("<%= escape_javascript(render(partial: 'new', locals: {proof: @proof, order: @order})).html_safe %>")
-})
+  backdrop: "static",
+  keyboard: false,
+  title: 'New Proof',
+  body: $("<%= escape_javascript(render partial: 'new', locals: { order: @order, proof: @proof }).html_safe %>")
+});
+
 initializeDateTimePicker();
 setSubmitTimeout();
-setNewProofSelect();
+setPendingSelect();
 styleCheckboxes();

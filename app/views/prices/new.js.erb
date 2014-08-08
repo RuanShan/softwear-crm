@@ -1,2 +1,2 @@
-$('#contentModal .modal-body').html("<%=escape_javascript(render(partial: 'prices/new', formats: [:html], locals: { imprintable: @imprintable } ).html_safe) %>");
+$('#contentModal .modal-body').html("<%= escape_javascript(render partial: 'prices/new', locals: { imprintable: @imprintable }).html_safe %>");
 $('#contentModal').modal('show');

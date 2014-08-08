@@ -220,7 +220,7 @@ jQuery ->
         size_ids.push($(item).children().first().attr('value'))
     return {color_ids: color_ids, size_ids: size_ids}
 
-    $(document).on('click', '.add_fields', ->
+    $(document).on('click', '.js-add-fields', ->
       $('.chosen-select').chosen()
     )
 

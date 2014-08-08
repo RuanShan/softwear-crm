@@ -78,7 +78,3 @@ $(window).load ->
                     offsetTop: 300}, ->
                       shine $imprint, false, 2000
                       shined = true
-
-#TODO use global datetimepicker
-  $('#datetimepicker1').datetimepicker()
-

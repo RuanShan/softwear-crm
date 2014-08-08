@@ -4,18 +4,16 @@
 
 <div class='box-info row clear'>
   <%= form_for @user, url: user_path(@user), html: { method: :put }, builder: LancengFormBuilder do |f| %>
-  <%= render_error_modal_for @user %>
+    <%= render_error_modal_for @user %>
 
     <%= render partial: 'users/fields', locals: { f: f } %>
 
     <div class='form-group'>
-    <%= f.submit "Submit" %>
+      <%= f.submit 'Update' %>
     </div>
-
   <% end %>
 
   <% if @current_user && @current_user == @user %>
     <%= link_to 'Change password', change_password_path %>
   <% end %>
-
 </div>
