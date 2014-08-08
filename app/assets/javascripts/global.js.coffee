@@ -17,7 +17,7 @@ $(document).ready ->
 
   $('.format-phone').mask("999-999-9999")
 
-  $("#quotesWizard").easyWizard
+  $("#easyWizard").easyWizard
     buttonsClass: "btn btn-default"
     submitButtonClass: "btn btn-primary"
 
