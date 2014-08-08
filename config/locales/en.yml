@@ -21,12 +21,18 @@
 
 en:
   hello: "Hello world"
-  proof_approval_request_subject: "Your Proof from the Ann Arbor T-shirt Company Order #%{id} is awaiting your approval"
+
+  user_creation: "User %{full_name} successfully created with email %{email}. Their password has been emailed to them."
+
   proof_reminder_subject: "We're still waiting for you to approve your Proof from the Ann Arbor T-shirt Company Order #%{id}"
-  proof_reminder_body_html: <p>Hi %{firstname} %{lastname},</p>
+
+  proof_reminder_body_html: "<p>Hi %{firstname} %{lastname},</p>
                              <p>Please respond to the previous email we sent, which included information regarding your Proof. If you need us to send the approval request email again, please let us know.</p>
-                             <p>Thank you, %{firstname} %{lastname}!</p>
-  proof_approval_request_body_html: <p>Hi %{firstname} %{lastname},</p>
+                             <p>Thank you, %{firstname} %{lastname}!</p>"
+
+  proof_approval_request_subject: "Your Proof from the Ann Arbor T-shirt Company Order #%{id} is awaiting your approval"
+
+  proof_approval_request_body_html: "<p>Hi %{firstname} %{lastname},</p>
                                      <p>Attached is the proof for your order with us.</p>
                                      <p>To ensure a high quality final product that meets your standards, please read through the following guidelines:</p>
                                      <ol>
@@ -54,6 +60,6 @@ en:
                                      <p>%{mockup_links}</p>
                                      <p><strong>Provided your design is finalized by 2:00 PM on %{approve_by}, we can guarantee that your order will be ready for pick-up at the latest by 4:30 PM on %{deadline}.</strong></p>
                                      <p>Sticking to these guidelines will help all of us here at the Ann Arbor T-Shirt Company ensure that we can give you our best work, which is what we all want!</p>
-                                     <p>Thank you, %{firstname} %{lastname}!</p>
+                                     <p>Thank you, %{firstname} %{lastname}!</p>"
 
 

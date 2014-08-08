@@ -2,4 +2,4 @@ showContentModal({
   backdrop: "static",
   keyboard: false,
   body: $("<%= escape_javascript(render(partial: 'artwork_request', locals: { artwork_request: @artwork_request, order: @order })).html_safe %>")
-})
+});

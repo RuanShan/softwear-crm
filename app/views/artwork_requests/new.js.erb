@@ -3,7 +3,7 @@ showContentModal({
   keyboard: false,
   title: 'New Artwork Request',
   body: $("<%= escape_javascript(render(partial: 'new', locals: { artwork_request: @artwork_request, order: @order })).html_safe %>")
-})
+});
 
 initializeDateTimePicker();
 initializeJobsChosen();

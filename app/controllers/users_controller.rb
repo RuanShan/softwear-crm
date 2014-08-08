@@ -4,29 +4,24 @@ class UsersController < InheritedResources::Base
     user = User.new(sign_up_params.merge(password: password,
                                          password_confirmation: password))
 
-    # TODO refactor this using ternary expression and assign with conditional expression
     unless user.valid?
-      if user.errors.include? :email
-        flash[:alert] = 'Email already in use'
-      else
-        flash[:alert] = 'Error creating user'
-      end
+      flash[:alert] = user.errors.include? :email ? 'Email already in use' : 'Error creating user'
       return redirect_to new_user_path
     end
 
-    user.confirm! # TODO perhaps move confirmation elsewhere using skip_confirmation!
+    # TODO perhaps move confirmation elsewhere using skip_confirmation!
+    user.confirm!
     user.save
 
-    # TODO: take redirect branch and see what it does, refactor if necessary
     if user_signed_in?
-      NewUserMailer.confirm_user(user, password, current_user).deliver
+      hash = {new_user: user, password: password, granter: current_user}
+      NewUserMailer.confirm_user(hash).deliver
     else
       flash[:alert] = 'Not signed in!'
       redirect_to '/'
     end
 
-    # TODO: wrap at 80 characters, using string literal?
-    flash[:notice] = "User #{user.full_name} successfully created with email #{user.email}. Their password has been emailed to them."
+    flash[:notice] = t('user_creation', full_name: user.full_name, email: user.email)
     redirect_to users_path
   end
 
@@ -37,7 +32,7 @@ class UsersController < InheritedResources::Base
     end
 
     sign_in @current_user, bypass: true
-    flash[:notice] = "Password successfully changed!"
+    flash[:notice] = 'Password successfully changed!'
     redirect_to users_path
   end
 
@@ -62,11 +57,7 @@ class UsersController < InheritedResources::Base
   private
 
   def permitted_params
-    # TODO: Look into this style
-    params.permit(
-      user: [
-        :email, :first_name, :last_name, :store_id
-      ])
+    params.permit(user: [:email, :first_name, :last_name, :store_id])
   end
 
   def resource_name
