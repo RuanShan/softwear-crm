@@ -110,19 +110,19 @@ class LineItemsController < InheritedResources::Base
 
   def create
     if param_okay? :imprintable_id, :color_id
-      line_items = LineItem.new_imprintables(
+      @line_items = LineItem.new_imprintables(
         @line_itemable,
         params[:imprintable_id], params[:color_id],
         base_unit_price: params[:base_unit_price]
       )
 
-      valid_line_items = line_items.select(&:valid?)
+      valid_line_items = @line_items.select(&:valid?)
       if valid_line_items.empty?
           modal_html = render_string(
           partial: 'shared/modal_errors',
-          locals: { object: line_items.first }
+          locals: { object: @line_items.first }
         )
-        errors = line_items.map{ |l| l.errors.full_messages }.flatten.uniq
+        errors = @line_items.map{ |l| l.errors.full_messages }.flatten.uniq
 
         respond_to do |format|
           format.json do
@@ -143,15 +143,15 @@ class LineItemsController < InheritedResources::Base
         fire_activity valid_line_items.first, :create
         respond_to do |format|
           format.json { render json: { result: 'success' } }
-          format.js { render locals: { success: true } }
+          format.js { render locals: { success: true, line_items: @line_items } }
         end
       end
     else # Create a standard, non-imprintable line item
       super do |success, failure|
         if @line_itemable.class.name == 'Quote'
           @line_itemable.create_activity :added_line_item, 
-            owner:  current_user,
-            params: { name: @line_item.name }
+                                          owner:  current_user,
+                                          params: { name: @line_item.name }
         end
 
         success.json do
@@ -189,51 +189,16 @@ class LineItemsController < InheritedResources::Base
     end
   end
 
-  # Probably this, too should be in the model
   def select_options
-    render_options = { layout: nil }
-
-    if param_okay? :imprintable_id
-      # Get colors from style
-      imprintable = Imprintable.find(params[:imprintable_id])
-      if imprintable.nil?
-        render_options[:locals] = {
-          objects: [],
-          type_name: Imprintable.name
-        }
-      else
-        variants = ImprintableVariant.includes(:color).where(
-          imprintable_id: imprintable.id
+    respond_to do |format|
+      format.html do
+        render(
+          layout:   nil,
+          template: select_options_template,
+          locals:   select_options_locals
         )
-        if param_okay? :color_id
-          # Get imprintable variants from the imprintable + color id
-          render_options[:locals] = {
-            objects: variants.includes(:size).where(color_id: params[:color_id]),
-            imprintable_id: imprintable.id,
-            color_id: params[:color_id]
-          }
-          render_options[:template] = 'line_items/selected_variants'
-        else
-          render_options[:locals] = {
-            objects: variants.map { |v| v.color }.uniq,
-            type_name: Color.name
-          }
-        end
       end
-    elsif param_okay? :brand_id
-      # Get styles from brand
-      render_options[:locals] = {
-        objects: Imprintable.where(brand_id: params[:brand_id]),
-        type_name: Imprintable.name
-      }
-    else
-      # Get all brands
-      render_options[:locals] = {
-        objects: Brand.all,
-        type_name: Brand.name
-      }
     end
-    render render_options
   end
 
   def form_partial
@@ -241,6 +206,65 @@ class LineItemsController < InheritedResources::Base
   end
 
 private
+  def select_options_locals # TODO plug this in
+    if param_okay? :imprintable_id
+      return select_style_locals([]) if select_imprintable.nil?
+      return show_variants_locals    if param_okay? :color_id
+      return select_color_locals
+    else
+      return select_style_locals if param_okay? :brand_id
+      return select_brand_locals
+    end
+  end
+
+  def select_options_template
+    if param_okay?(:imprintable_id, :color_id)
+      'line_items/selected_variants'
+    else
+      'line_items/select_options'
+    end
+  end
+
+  def select_brand_locals
+    {
+      objects: Brand.all,
+      type_name: Brand.name
+    }
+  end
+
+  def select_style_locals(objects = nil)
+    {
+      objects: objects || Imprintable.where(brand_id: params[:brand_id]),
+      type_name: Imprintable.name
+    }
+  end
+
+  def select_imprintable
+    Imprintable.find(params[:imprintable_id])
+  end
+
+  def select_variants
+    ImprintableVariant.includes(:color).where(
+      imprintable_id: select_imprintable.id
+    )
+  end
+
+  def select_color_locals
+    {
+      objects: select_variants.map { |v| v.color }.uniq,
+      type_name: Color.name
+    }
+  end
+
+  def show_variants_locals
+    variants = select_variants
+    {
+      objects: variants.includes(:size).where(color_id: params[:color_id]),
+      imprintable_id: variants.first.imprintable_id,
+      color_id: params[:color_id]
+    }
+  end
+
   def permitted_params
     params.permit(
       :brand_id, :color_id, :imprintable_id, :job_id,
@@ -300,7 +324,7 @@ private
   end
 
   def assign_line_itemable
-    return unless @line_item.line_itemable.nil?
+    return unless @line_item && @line_item.line_itemable.nil?
 
     @line_item.line_itemable = @line_itemable
     @line_item.save

@@ -29,47 +29,9 @@
       $in.fadeIn 400
 
   $('#line-item-submit').click ->
-    if fromJsResponse
-      console.log 'I am submitting it.'
-      $('#lineItemModal').data('current-form-div').find('form').submit();
-      return
-
-    $add = $(this)
-    $add.attr 'disabled', 'disabled'
-    setTimeout (-> $add.removeAttr 'disabled'), 5000
-
-    errorHandler.clear() if errorHandler != null
-
-    $currentFormDiv ||= $('#li-standard-form')
-    action = currentForm().attr('action')
-
-    ajax = $.ajax
-      type: 'POST'
-      url: action
-      data: currentForm().serialize()
-      dataType: 'json'
-
-    ajax.done (response) ->
-      if response.result == 'success'
-
-        urlArray = document.URL.split('/')
-        length = urlArray.length
-        if urlArray[length - 3] == 'orders'
-          jobId = urlArray[length - 2]
-          refreshJob jobId
-        else if urlArray[length - 3] == 'quotes'
-          quoteId = urlArray[length - 2]
-          refreshQuote quoteId
-
-        $lineItemModal.modal 'hide'
-
-      else if response.result == 'failure'
-        console.log 'Failed to create'
-        errorHandler ||= ErrorHandler('line_item', currentForm())
-        errorHandler.handleErrors(response.errors, response.modal)
-
-    ajax.fail (jqXHR, textStatus) ->
-      alert "Something's wrong with the server!"
+    console.log 'I am submitting it.'
+    $('#lineItemModal').data('current-form-div').find('form').submit();
+    return
 
   $lineItemModal.keyup (key) ->
     $('#line-item-submit').click() if key.which is 13 # enter key
