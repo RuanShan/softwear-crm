@@ -2,14 +2,13 @@
   <h1>Brands <small>Configure the brands available for imprintables</small></h1>
 </div>
 <div class="col-lg-3 text-right">
-  <% #TODO: do you need role? %>
-  <%= link_to 'Add a Brand', new_brand_path, class: 'btn btn-primary', role: 'button' %>
+  <%= link_to 'Add a Brand', new_brand_path, class: 'btn btn-primary' %>
 </div>
 
 <%= paginate @brands %>
 
 <div class="box-info row clear">
-  <%= render partial: 'table', locals: {brands: @brands} %>
+  <%= render partial: 'table', locals: { brands: @brands } %>
 </div>
 
 <%= paginate @brands %>

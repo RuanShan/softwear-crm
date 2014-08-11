@@ -1,23 +1,7 @@
 jQuery ->
-  #TODO ensure proper usage with global datetimepicker
   $('.datetimepicker').datetimepicker()
 
-  #TODO make global exists in orders
-  $("#quotesWizard").easyWizard
-    buttonsClass: "btn btn-default"
-    submitButtonClass: "btn btn-primary"
-
-    #TODO should work if submit button is in form, don't need
-  $(document).on('click', '#email-form-submit-button', ->
-    submitSummernote()
-  )
-
   return
-
-  #TODO use summernoteSubmit in global
-@submitSummernote = ->
-  summer_note = $('.summernote')
-  summer_note.val summer_note.code()
 
 @printPage = ->
   window.print()

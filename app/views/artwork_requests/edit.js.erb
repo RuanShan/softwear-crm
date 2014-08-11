@@ -2,8 +2,8 @@ showContentModal({
     backdrop: "static",
     keyboard: false,
     title: 'Edit Artwork Request',
-    body: $("<%= escape_javascript(render(partial: 'edit', locals: { artwork_request: @artwork_request, order: @order })).html_safe %>")
-})
+    body: $("<%= escape_javascript(render partial: 'edit', locals: { artwork_request: @artwork_request, order: @order }).html_safe %>")
+});
 
 initializeDateTimePicker();
 initializeJobsChosen();

@@ -12,7 +12,7 @@ describe 'artwork_requests/_asset_fields.html.erb', artwork_requests_spec: true 
         expect(rendered).to have_selector("input#artwork_request_asset_file")
         expect(rendered).to have_selector("textarea#artwork_request_asset_description")
         expect(rendered).to have_selector("input#artwork_request_asset__destroy")
-        expect(rendered).to have_selector("a.remove_fields")
+        expect(rendered).to have_selector("a.js-remove-fields")
       end
     end
   end
@@ -25,7 +25,7 @@ describe 'artwork_requests/_asset_fields.html.erb', artwork_requests_spec: true 
         expect(rendered).to have_css("div", text: "#{assets.file_file_name}")
         expect(rendered).to have_selector("textarea#artwork_request_asset_description", text: "#{assets.description}")
         expect(rendered).to have_selector("input#artwork_request_asset__destroy")
-        expect(rendered).to have_selector("a.remove_fields")
+        expect(rendered).to have_selector("a.js-remove-fields")
       end
     end
   end

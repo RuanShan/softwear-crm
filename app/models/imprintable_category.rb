@@ -16,7 +16,7 @@ class ImprintableCategory < ActiveRecord::Base
 
   belongs_to :imprintable
 
-  #TODO: does validates :name need to be called twice?
-  validates :name, inclusion: { in: VALID_CATEGORIES, message: 'Invalid category' }
-  validates :name, uniqueness: { scope: :imprintable }, presence: true
+  validates :name, inclusion: { in: VALID_CATEGORIES, message: 'Invalid category' },
+                   uniqueness: { scope: :imprintable },
+                   presence: true
 end

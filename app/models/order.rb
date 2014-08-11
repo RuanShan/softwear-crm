@@ -82,49 +82,34 @@ class Order < ActiveRecord::Base
     total - payment_total
   end
 
+  def get_salesperson_id(id, current_user)
+    id ? Order.find(id).salesperson_id : current_user.id
+  end
+
+  def get_store_id(id, current_user)
+    id ? Order.find(id).store_id : current_user.store_id
+  end
+
   def line_items
     LineItem.where(line_itemable_id: job_ids, line_itemable_type: 'Job')
   end
 
-  # TODO: Nick, > 10 LOC
   def payment_status
-    if self.terms.empty?
-      'Payment Terms Pending'
-    
-    elsif self.balance <= 0
-      return 'Payment Complete'
-    
-    elsif self.balance > 0
-      if self.terms == 'Paid in full on purchase'
-        return 'Awaiting Payment'
-      
-      elsif self.terms == 'Half down on purchase'
-        if self.balance >= (total * 0.49)
-          return 'Awaiting Payment'
-        else
-          return 'Payment Terms Met'
-        end
-      
-      elsif self.terms == 'Paid in full on pick up'
-        if Time.now >= self.in_hand_by
-          return 'Awaiting Payment'
-        else
-          return 'Payment Terms Met'
-        end
-      
-      elsif self.terms == 'Net 30'
-        if Time.now >= (self.in_hand_by + 30.days)
-          return 'Awaiting Payment'
-        else
-          return 'Payment Terms Met'
-        end
-      
-      elsif self.terms == 'Net 60'
-        if Time.now >= (self.in_hand_by + 60.days)
-          return 'Awaiting Payment'
-        else
-          return 'Payment Terms Met'
-        end
+    if balance <= 0
+      'Payment Complete'
+    else
+      case terms
+      when 'Paid in full on purchase'
+          'Awaiting Payment'
+      when 'Half down on purchase'
+        balance >= (total * 0.49) ? 'Awaiting Payment' : 'Payment Terms Met'
+      when 'Paid in full on pick up'
+        Time.now >= self.in_hand_by ? 'Awaiting Payment' : 'Payment Terms Met'
+      when 'Net 30'
+        Time.now >= (self.in_hand_by + 30.days) ? 'Awaiting Payment' : 'Payment Terms Met'
+      when 'Net 60'
+        Time.now >= (self.in_hand_by + 60.days) ? 'Awaiting Payment' : 'Payment Terms Met'
+      else 'Payment Terms Pending'
       end
     end
   end

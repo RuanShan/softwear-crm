@@ -7,7 +7,11 @@ describe ArtistMailer do
     let!(:order) { Order.find(proof.order_id) }
     subject = 'Subject'
     body = 'Body'
-    let!(:mailer) { ProofMailer.proof_approval_email(proof, order, body, subject) }
+    let!(:mailer) { ProofMailer.proof_approval_email({ body: body,
+                                                       subject: subject,
+                                                       order: order,
+                                                       proof: proof,
+                                                       reminder: false }) }
 
     it 'renders the subject' do
       expect(mailer.subject).to eql(subject)
@@ -36,7 +40,11 @@ describe ArtistMailer do
     let!(:order) { Order.find(proof.order_id) }
     subject = 'Subject'
     body = 'Body'
-    let!(:mailer) { ProofMailer.proof_reminder_email(proof, order, body, subject) }
+    let!(:mailer) { ProofMailer.proof_reminder_email({ body: body,
+                                                       subject: subject,
+                                                       order: order,
+                                                       proof: proof,
+                                                       reminder: true }) }
 
     it 'renders the subject' do
       expect(mailer.subject).to eql(subject)

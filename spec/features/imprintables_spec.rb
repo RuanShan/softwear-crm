@@ -138,7 +138,7 @@ feature 'Imprintables management', imprintable_spec: true, slow: true do
       scenario 'A user can delete an imprintable category' do
         expect(ImprintableCategory.where(imprintable_id: imprintable.id)).to_not be_nil
         visit edit_imprintable_path imprintable.id
-        find(:css, '.remove_fields').click
+        find(:css, '.js-remove-fields').click
         find_button('Update Imprintable').click
         expect(page).to have_selector '.modal-content-success', text: 'Imprintable was successfully updated.'
         expect(ImprintableCategory.where(imprintable_id: imprintable.id).empty?).to be_truthy

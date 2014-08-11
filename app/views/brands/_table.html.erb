@@ -1,4 +1,3 @@
-
 <div class="box-info full">
   <div class="table-responsive">
     <table class="table table-hover" id="brands_list">
@@ -10,16 +9,20 @@
       </thead>
       <tbody>
       <% brands.each do |brand| %>
-          <tr id="<%= model_table_row_id brand %>">
-            <td><%= brand.name %></td>
-            <td><%= brand.sku %></td>
-            <td>
-              <div class="btn-group btn-group-xs">
-                <%= link_to edit_brand_path(brand), 'data-action' => 'edit', 'data-toggle' => 'tooltip', 'title' => 'Edit', class: 'btn btn-default' do %><i class="fa fa-edit"></i><% end %>
-                <%= link_to brand_path(brand), 'data-action' => 'destroy', 'data-toggle' => 'tooltip', 'title' => 'Destroy', class: 'btn btn-default', method: :delete, data: {confirm: 'Are you sure you would like to delete the brand?'} do %><i class="fa fa-times"></i><% end %>
-              </div>
-            </td>
-          </tr>
+        <tr id="<%= model_table_row_id brand %>">
+          <td><%= brand.name %></td>
+          <td><%= brand.sku %></td>
+          <td>
+            <div class="btn-group btn-group-xs">
+              <%= link_to edit_brand_path(brand), 'data-action' => 'edit', 'data-toggle' => 'tooltip', 'title' => 'Edit', class: 'btn btn-default' do %>
+                <i class="fa fa-edit"></i>
+              <% end %>
+              <%= link_to brand_path(brand), 'data-action' => 'destroy', 'data-toggle' => 'tooltip', 'title' => 'Destroy', class: 'btn btn-default', method: :delete, data: { confirm: 'Are you sure you would like to delete the brand?' } do %>
+                <i class="fa fa-times"></i>
+              <% end %>
+            </div>
+          </td>
+        </tr>
       <% end %>
       </tbody>
     </table>

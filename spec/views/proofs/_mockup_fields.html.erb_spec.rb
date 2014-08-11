@@ -11,7 +11,7 @@ describe 'proofs/_mockup_fields.html.erb', proof_spec: true do
       within_form_for Asset do
         expect(rendered).to have_selector("input[id$='file']")
         expect(rendered).to have_selector("textarea[id$='description']")
-        expect(rendered).to have_selector("a.remove_fields")
+        expect(rendered).to have_selector("a.js-remove-fields")
       end
     end
   end

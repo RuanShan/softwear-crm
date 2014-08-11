@@ -6,7 +6,7 @@
     position:relative;
   }
 
-  th.size-col-header {
+  th.size_col_header {
     min-width: 100px;
   }
 
@@ -45,6 +45,9 @@
 }
 #add_a_color {
   cursor:pointer;
+}
+#actions {
+  width: 100px;
 }
 #add_a_size {
   cursor:pointer;

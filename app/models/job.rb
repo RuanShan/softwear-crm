@@ -24,11 +24,8 @@ class Job < ActiveRecord::Base
   validate :assure_name_and_description, on: :create
   validates :name, uniqueness: { scope: :order_id }
 
-  #TODO: more than ten LOC
   def imprintable_info
-    colors = []
-    style_names = []
-    style_catalog_nos = []
+    colors, style_names, style_catalog_nos = [], [], []
     sorted_line_items = self.sort_line_items
 
     unless sorted_line_items.empty?
@@ -41,10 +38,8 @@ class Job < ActiveRecord::Base
       end
     end
     
-    colors
-      .zip(style_names, style_catalog_nos)
-      .map { |array| array.join(' ') }
-      .join(', ')
+    colors.zip(style_names, style_catalog_nos)
+      .map { |array| array.join(' ') }.join(', ')
   end
 
   def imprintable_variant_count
@@ -77,7 +72,7 @@ class Job < ActiveRecord::Base
     # Here's another potential solution I came up with:
     # (Assuming no actual max_print method exists)
     # ----------------------------------
-    #max_print = lambda(width_or_height) do
+    #max_print = lambda do |width_or_height|
     #  (
     #    imprintables.map(&"max_imprint_#{width_or_height}".to_sym) +
     #    [print_location.send("max_#{width_or_height}")]

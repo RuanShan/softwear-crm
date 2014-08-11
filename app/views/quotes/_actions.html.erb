@@ -1,5 +1,7 @@
 <h3><strong>Actions</strong></h3>
-<br/>
+
+<br>
+
 <div class="box-info full">
-  <%= link_to 'Email Quote', quote_populate_email_modal_path(@quote.id), remote: true, class: 'btn btn-primary btn-lg', 'data-toggle' => 'modal', 'data-target' => '#contentModal' %>
+  <%= link_to 'Email Quote', quote_populate_email_modal_path(@quote.id), class: 'btn btn-primary btn-lg', remote: true, 'data-toggle' => 'modal', 'data-target' => '#contentModal' %>
 </div>

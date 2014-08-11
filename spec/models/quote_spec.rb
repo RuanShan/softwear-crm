@@ -9,14 +9,18 @@ describe Quote, quote_spec: true do
     it { should accept_nested_attributes_for(:line_items) }
   end
 
-  describe 'Validations' do
-    it { should validate_presence_of(:email) }
+  describe 'when validating' do
+    it { should validate_presence_of(:store_id) }
     it { should validate_presence_of(:first_name) }
     it { should validate_presence_of(:last_name) }
+
     it { should validate_presence_of(:valid_until_date) }
     it { should validate_presence_of(:estimated_delivery_date) }
     it { should validate_presence_of(:salesperson_id) }
-    it { should validate_presence_of(:store_id) }
+
+    it { should validate_presence_of(:email) }
+    it { should allow_value('test@example.com').for :email }
+    it { should_not allow_value('not_an-email').for :email }
   end
 
   let!(:quote) { create(:valid_quote) }
@@ -104,72 +108,6 @@ describe Quote, quote_spec: true do
         return_hash = quote.fetch_group_id_and_dept({})
         expect(return_hash[:group_id]).to eq(nil)
         expect(return_hash[:department]).to eq(nil)
-      end
-    end
-  end
-
-
-  describe 'fetch_requester_id_and_name' do
-    # not sure if all this is neccessary, but for the sake of 100% code coverage!!!11!
-    let!(:current_user) { create(:user) }
-    context 'jack is the current user' do
-      it 'sets the requester id and name to the jack\'s environment variables' do
-        current_user.first_name = 'Jack'
-        current_user.last_name = 'Koch'
-        return_hash = quote.fetch_requester_id_and_name({}, current_user)
-        expect(return_hash[:requester_id]).to eq(Figaro.env['jacks_freshdesk_id'])
-        expect(return_hash[:requester_name]).to eq(Figaro.env['jacks_freshdesk_name'])
-      end
-    end
-
-
-    context 'nathan is the current user' do
-      it 'sets the requester id and name to nates\'s environment variables' do
-        current_user.first_name = 'Nathan'
-        current_user.last_name = 'Kurple'
-        return_hash = quote.fetch_requester_id_and_name({}, current_user)
-        expect(return_hash[:requester_id]).to eq(Figaro.env['nates_freshdesk_id'])
-        expect(return_hash[:requester_name]).to eq(Figaro.env['nates_freshdesk_name'])
-      end
-    end
-
-    context 'george is the current user' do
-      it 'sets the requester id and name to george\'s environment variables' do
-        current_user.first_name = 'George'
-        current_user.last_name = 'Bekris'
-        return_hash = quote.fetch_requester_id_and_name({}, current_user)
-        expect(return_hash[:requester_id]).to eq(Figaro.env['georges_freshdesk_id'])
-        expect(return_hash[:requester_name]).to eq(Figaro.env['georges_freshdesk_name'])
-      end
-    end
-
-    context 'barrie is the current user' do
-      it 'sets the requester id and name to barrie\'s environment variables' do
-        current_user.first_name = 'Barrie'
-        current_user.last_name = 'Rupp'
-        return_hash = quote.fetch_requester_id_and_name({}, current_user)
-        expect(return_hash[:requester_id]).to eq(Figaro.env['barries_freshdesk_id'])
-        expect(return_hash[:requester_name]).to eq(Figaro.env['barries_freshdesk_name'])
-      end
-    end
-
-    context 'michael is the current user' do
-      it 'sets the requester id and name to michael\'s environment variables' do
-        current_user.first_name = 'Michael'
-        current_user.last_name = 'Marasco'
-        return_hash = quote.fetch_requester_id_and_name({}, current_user)
-        expect(return_hash[:requester_id]).to eq(Figaro.env['michaels_freshdesk_id'])
-        expect(return_hash[:requester_name]).to eq(Figaro.env['michaels_freshdesk_name'])
-      end
-    end
-
-    context 'someone else is the current user' do
-      it 'sets the requester id and name to nil' do
-        current_user.first_name = 'Stone Cold'
-        current_user.last_name = 'Steve Austin'
-        return_hash = quote.fetch_requester_id_and_name({}, current_user)
-        expect(return_hash[:requester_id]).to eq(nil)
-        expect(return_hash[:requester_name]).to eq(nil)
       end
     end
   end

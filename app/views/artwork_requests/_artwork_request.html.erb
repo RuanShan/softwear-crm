@@ -46,7 +46,7 @@
             <dt>Artwork Status:</dt>
             <dd><%= artwork_request.artwork_status %></dd>
             <dt>Deadline:</dt>
-            <dd><%= artwork_request.deadline.strftime('%b %d, %Y, %I:%M %p') %></dd>
+            <dd><%= display_time(artwork_request.deadline) %></dd>
             <dt>Salesperson:</dt>
             <dd><%= current_user.full_name %></dd>
             <dt>Artist:</dt>

@@ -3,10 +3,10 @@ class Color < ActiveRecord::Base
 
   acts_as_paranoid
 
+  default_scope { order(:name) }
+
   has_many :imprintable_variants, dependent: :destroy
 
   validates :name, uniqueness: true, presence: true
   validates :sku, length: { is: 3 }, if: :is_retail?
-
-  default_scope { order(:name) }
 end

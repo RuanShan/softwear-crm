@@ -5,11 +5,10 @@ class ImprintableVariant < ActiveRecord::Base
   belongs_to :imprintable
   belongs_to :size
 
-  #TODO: validating color_id?
-  validates :color, presence: true
-  validates :color_id, uniqueness: { scope: [:size_id, :imprintable_id] }
   validates :imprintable, presence: true
   validates :size, presence: true
+  validates :color, presence: true
+  validates :color_id, uniqueness: { scope: [:size, :imprintable] }
 
   def brand
     imprintable.brand

@@ -5,8 +5,12 @@ class Proof < ActiveRecord::Base
 
   tracked by_current_user + on_order
 
-  # TODO: possibly refactor this
-  VALID_PROOF_STATUSES = ['Pending', 'Emailed Customer', 'Approved', 'Rejected']
+  VALID_PROOF_STATUSES = [
+      'Pending',
+      'Emailed Customer',
+      'Approved',
+      'Rejected'
+  ]
 
   belongs_to :order
   has_many :mockups, as: :assetable, class_name: Asset, dependent: :destroy

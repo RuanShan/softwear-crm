@@ -12,7 +12,7 @@
     <li><a href="#fakelink"><i class="fa fa-users"></i> Customers <span class="label label-danger new-circle">W.I.P.</span></a>
     <!--
     <li> -->
-    <%= nav_helper(:li, true, %w(imprintables brands colors sizes)) %>
+    <%= nav_helper(:li, true, %w(quotes)) %>
 
     <!--
     <li> --><%= nav_helper(:li, true, %w(quotes)) %>
@@ -83,11 +83,11 @@
     </li>
 
     <!-- <li> -->
-    <%= nav_helper(:li, true, %w(configuration shipping_methods)) %>
+    <%= nav_helper(:li, true, %w(configuration imprint_methods stores shipping_methods)) %>
 
       <a href="#fakelink"><i class="fa fa-gears"></i><i class="fa fa-angle-double-down i-right"></i> Configuration</a>
       <!-- <ul> -->
-      <%= nav_helper(:ul, false, %w(configuration shipping_methods)) %>
+      <%= nav_helper(:ul, false, %w(configuration imprint_methods stores shipping_methods)) %>
         <!-- <li> -->
       <%= nav_helper :li, true, 'imprint_methods' %>
         <%= link_to imprint_methods_path do %><i class="fa fa-angle-right"></i> Imprint Methods <% end %>

@@ -3,18 +3,21 @@
   <%= f.error_for :email %>
   <%= f.email_field :email, autofocus: true %>
 </div>
+
 <div class='form-group'>
   <%= f.label :first_name, 'First name' %>
   <%= f.error_for :first_name %>
   <%= f.text_field :first_name %>
 </div>
+
 <div class='form-group'>
   <%= f.label :last_name, 'Last name' %>
   <%= f.error_for :last_name %>
   <%= f.text_field :last_name %>
 </div>
+
 <div class='form-group'>
   <%= f.label :store_id, 'Store' %>
   <%= f.error_for :store_id %>
-  <%= f.select :store_id, Store.order(:name).collect{ |s| [s.name, s.id] }, { :prompt => 'Please select a store' } %>
+  <%= f.select :store_id, Store.order(:name).map{ |s| [s.name, s.id] }, { prompt: 'Please select a store' } %>
 </div>

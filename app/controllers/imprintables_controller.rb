@@ -1,12 +1,14 @@
 class ImprintablesController < InheritedResources::Base
   def index
     super do
-      # TODO: refactor with ternary and conditional assignment
-      if params[:tag]
-        @imprintables = Imprintable.tagged_with(params[:tag])
-      else
-        @imprintables = Imprintable.all.page(params[:page])
-      end
+      # TODO: ternary with parenthesis
+      @imprintables = (params[:tag]) ? (Imprintable.tagged_with(params[:tag])) : (Imprintable.all.page(params[:page]))
+    end
+  end
+
+  def new
+    super do
+      set_model_collection_hash
     end
   end
 
@@ -25,37 +27,41 @@ class ImprintablesController < InheritedResources::Base
 
       success.html { redirect_to edit_imprintable_path params[:id] }
       failure.html do
-        set_variant_hashes
+        set_model_collection_hash
+        set_variants_hash
         render action: :edit
       end
     end
   end
 
   def show
-    # TODO: look at 3 different formats
     super do |format|
       @imprintable = Imprintable.find(params[:id])
-      set_variant_hashes
+      set_model_collection_hash
+      set_variants_hash
       format.html
       format.js
-      format.json { render json: @imprintable }
     end
   end
 
   def edit
+    set_model_collection_hash
     super do
-      set_variant_hashes
+      set_variants_hash
     end
   end
 
   def update_imprintable_variants
-    if params[:update]
+
+    if params.fetch(:update).is_a? Hash
       variants_to_add = params[:update][:variants_to_add]
       variants_to_remove = params[:update][:variants_to_remove]
     end
 
-    # TODO: David, take a look at this, unsafe assignment and usage?
-    unless variants_to_add.nil?
+    variants_to_add ||= []
+    variants_to_remove ||= []
+
+    unless variants_to_add.empty?
       variants_to_add.each_value do |hash|
         size_id = hash['size_id']
         color_id = hash['color_id']
@@ -63,36 +69,52 @@ class ImprintablesController < InheritedResources::Base
       end
     end
 
-    unless variants_to_remove.nil?
+    unless variants_to_remove.empty?
       variants_to_remove.each do |imprintable_variant_id|
         ImprintableVariant.delete(imprintable_variant_id)
       end
     end
-    # TODO: what is this shite?
+
     render json: {}
   end
 
   private
 
-  def set_variant_hashes
-    variants_hash = @imprintable.create_variants_hash
-    # TODO: look at this?
-    @size_variants = variants_hash[:size_variants]
-    @color_variants = variants_hash[:color_variants]
-    @variants_array = variants_hash[:variants_array]
+  def set_variants_hash
+    @variants_hash = @imprintable.create_variants_hash
+  end
+
+  def set_model_collection_hash
+    @model_collection_hash = {}
+    @model_collection_hash[:brand_collection] = Brand.order(:name).map{ |b| [b.name, b.id] }
+    @model_collection_hash[:store_collection] = Store.order(:name)
+    @model_collection_hash[:imprintable_collection] = Imprintable.all
+    @model_collection_hash[:size_collection] = Size.order(:sort_order)
+    @model_collection_hash[:color_collection] = Color.order(:name)
+    @model_collection_hash[:imprint_method_collection] = ImprintMethod.all
+    @model_collection_hash[:all_colors] = Color.all
+    @model_collection_hash[:all_sizes] = Size.all
   end
 
   def permitted_params
     params.permit(imprintable:
-                    [:flashable, :polyester, :special_considerations, :material, :brand_id,
-                     :style_name, :style_catalog_no, :style_description, :sku, :retail, :color_check, :size_check,
-                     :max_imprint_width, :max_imprint_height,
-                     :weight, :supplier_link, :main_supplier,
-                     :base_price, :xxl_price, :xxxl_price, :xxxxl_price, :xxxxxl_price, :xxxxxxl_price,
-                     :tag_list, :standard_offering, :proofing_template_name, :sizing_category,
-                     sample_location_ids: [],
-                     coordinate_ids: [],
-                     compatible_imprint_method_ids: [],
-                     imprintable_categories_attributes: [:name, :imprintable_id, :id, :_destroy]])
+                    [
+                      :flashable, :polyester, :special_considerations,
+                      :material, :brand_id, :style_name, :style_catalog_no,
+                      :style_description, :sku, :retail, :color_check,
+                      :size_check, :max_imprint_width, :max_imprint_height,
+                      :weight, :supplier_link, :main_supplier, :base_price,
+                      :xxl_price, :xxxl_price, :xxxxl_price, :xxxxxl_price,
+                      :xxxxxxl_price, :tag_list, :standard_offering,
+                      :proofing_template_name, :sizing_category,
+                      sample_location_ids: [],
+                      coordinate_ids: [],
+                      compatible_imprint_method_ids: [],
+                      imprintable_categories_attributes:
+                        [
+                          :name, :imprintable_id, :id, :_destroy
+                        ]
+                    ]
+    )
   end
 end

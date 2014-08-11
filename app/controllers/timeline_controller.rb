@@ -4,13 +4,10 @@ class TimelineController < ApplicationController
   def show
     respond_to do |format|
       format.html
-      # TODO: layout: nil?
-      format.js { render layout: nil }
+      format.js
       format.json do
-        # TODO: ternary
         activities =
           if params[:after]
-            #FIXME: sanitize
             @order.all_activities.where("created_at > ?", params[:after])
           else
             @order.all_activities

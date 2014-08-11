@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe CoordinateImprintable, imprintable_spec: true do
+describe CoordinateImprintable, imprintable_spec: true, coordinate_imprintable_spec: true do
   describe 'Relationships' do
     it { should belong_to(:imprintable) }
     it { should belong_to(:coordinate).class_name('Imprintable') }
@@ -16,7 +16,7 @@ describe CoordinateImprintable, imprintable_spec: true do
       let!(:imprintable_one) { create(:valid_imprintable) }
       let!(:imprintable_two) { create(:valid_imprintable) }
 
-      it 'should add create a mirrored version of the imprintable' do
+      it 'creates a mirrored version of the imprintable' do
         CoordinateImprintable.create(coordinate: imprintable_one, imprintable: imprintable_two)
         expect(CoordinateImprintable.find_by(coordinate: imprintable_two)).to_not be_nil
       end
@@ -30,7 +30,7 @@ describe CoordinateImprintable, imprintable_spec: true do
       context 'there is another imprintable' do
         let!(:imprintable) { create(:valid_imprintable) }
 
-        it 'should update both coordinates with the correct information' do
+        it 'updates both coordinates with the correct information' do
           coordinate.imprintable.id = imprintable.id
           coordinate.save!
           expect(CoordinateImprintable.where(imprintable: imprintable)).to exist

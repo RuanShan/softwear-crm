@@ -25,6 +25,9 @@ module CrmSoftwearcrmCom
     # Autoload lib/ folder including all subdirectories
     config.autoload_paths += Dir["#{config.root}/lib/**/"]
 
+    # add customer validators path
+    config.autoload_paths += %W["#{config.root}/app/validators/"]
+
     if ENV['action_mailer_delivery_method'] == 'smtp'
       smtp_settings = {}
       config.action_mailer.delivery_method = :smtp

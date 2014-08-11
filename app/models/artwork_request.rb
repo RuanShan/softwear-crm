@@ -13,9 +13,9 @@ class ArtworkRequest < ActiveRecord::Base
   }
 
   STATUSES = [
-      'Pending',
-      'In Progress',
-      'Art Created'
+    'Pending',
+    'In Progress',
+    'Art Created'
   ]
 
   belongs_to :artist, class_name: User
@@ -26,6 +26,7 @@ class ArtworkRequest < ActiveRecord::Base
   has_and_belongs_to_many :artworks
   has_and_belongs_to_many :ink_colors
   has_and_belongs_to_many :jobs
+
   accepts_nested_attributes_for :assets, allow_destroy: true
 
   validates :artist, presence: true

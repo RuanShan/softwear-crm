@@ -14,11 +14,13 @@
       <th id="add_a_size">
         <p>
         <%= select_tag nil,
-                       options_for_select(['Select a Size'] + Size.order(:sort_order).collect{ |s| [s.display_value, s.id] }),
-                       {
-                           class: 'color-size-chosen-select',
-                           id: 'size_select'
-                       } %>
+                       options_for_select(
+                         ['Select a Size'] + @model_collection_hash[:size_collection]
+                                               .map{ |s| [s.display_value, s.id] }),
+                         {
+                             class: 'color-size-chosen-select',
+                             id: 'size-select'
+                         } %>
         </p>
         <button type="button" id="size_button">Add a size</button>
       </th>
@@ -31,14 +33,14 @@
         <th>
           <%= color.name %>
           <i class="fa fa-plus" id="row_plus_<%= color_index + 1 %>"></i>
-          <i class="fa fa-minus" id="row_minus_<%= color_index + 1%>"></i>
+          <i class="fa fa-minus" id="row_minus_<%= color_index + 1 %>"></i>
         </th>
         <% size_variants.each_with_index do |size_variant, size_index| %>
           <% size = size_variant.size %>
           <td id="cell_<%= color_index + 1 %>_<%= size_index + 1 %>">
           <% v = variants_array.find { |v| (v.color_id == color.id) && (v.size_id == size.id) } %>
           <% if v %>
-            <i class="fa fa-check" id="image_<%= color_index + 1 %>_<%= size_index + 1 %>" data-variant-id="<%=v.id%>"></i>
+            <i class="fa fa-check" id="image_<%= color_index + 1 %>_<%= size_index + 1 %>" data-variant-id="<%= v.id %>"></i>
           <% else %>
             <i class="fa fa-times" id="image_<%= color_index + 1 %>_<%= size_index + 1 %>"></i>
           <% end %>
@@ -51,12 +53,14 @@
     <tr>
       <th id="add_a_color">
         <p>
-      <%= select_tag nil,
-                     options_for_select(['Select a Color'] + Color.order(:name).collect{ |c| [c.name, c.id] }),
-                     {
-                         class: 'color-size-chosen-select',
-                         id: 'color_select'
-                     } %>
+        <%= select_tag nil,
+                       options_for_select(
+                         ['Select a Color'] + @model_collection_hash[:color_collection]
+                                                .map{ |c| [c.name, c.id] }),
+                         {
+                             class: 'color-size-chosen-select',
+                             id: 'color-select'
+                         } %>
         </p>
         <button type="button" id="color_button">Add a color</button>
       </th>
