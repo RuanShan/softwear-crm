@@ -1,0 +1,14 @@
+var $button = $("#add-line-item-for-<%= @line_itemable.id %>");
+
+disableFor($button, 1000);
+
+$modal = $("<%= escape_javascript render partial: 'create_modal', locals: { standard_only: local_assigns[:standard_only] } %>");
+$('body').append($modal);
+
+try {
+  initializeLineItemModal($modal, true);
+} catch (e) {
+  alert(e.message);
+}
+
+$modal.on('hidden.bs.modal', thenRemove($modal));

@@ -1,8 +1,6 @@
 jQuery ->
   $('.datetimepicker').datetimepicker()
 
-  return
-
 @printPage = ->
   window.print()
 

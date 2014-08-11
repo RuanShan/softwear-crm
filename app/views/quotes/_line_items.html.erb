@@ -1,20 +1,26 @@
 <h3>Editing <strong>Line Items</strong></h3>
 
-<div id="replaceable">
-  <%= render partial: 'line_items/standard_view', locals: { line_items: @quote.standard_line_items } %>
-</div>
+<%= form_for :line_item, method: :put, url: line_items_update_path, remote: true, builder: BatchFormBuilder do |f| %>
+
+  <div id="replaceable">
+    <%= render partial: 'line_items/standard_view', locals: { line_items: @quote.standard_line_items } %>
+  </div>
 
   <div class="form-group box-info">
     <div class="col-sm-3">
-      <a class="btn btn-info btn-md btn-block add-line-item" onclick="addLineItem('<%=@quote.id%>', 'Quote')">
-        <i class="fa fa-list"></i> Add Line Item
-      </a>
-    </div>
 
+      <%= link_to new_quote_line_item_path(@quote), class: 'btn btn-info btn-lg btn-block add-line-item', id: "add-line-item-for-#{@quote.id}", remote: true, data: { params: { standard_only: true }.to_param } do %>
+        <i class="fa fa-list-alt"></i> Add Line Item
+      <% end %>
+
+    </div>
     <div class="col-sm-3 col-xs-offset-6">
-      <a class="btn btn-info btn-md btn-block update-line-items" onclick="updateLineItems('<%=@quote.id%>', 'Quote')">
+
+      <%= button_tag class: 'btn btn-info btn-lg btn-block update-line-items' do %>
         <i class="fa fa-list-alt"></i> Update Line Items
-      </a>
+      <% end %>
+
     </div>
   </div>
 
+<% end %>

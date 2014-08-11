@@ -130,7 +130,7 @@ feature 'Line Items management', line_item_spec: true, js: true do
     end
   end
 
-  it 'user cannot submit an imprintable line item without completing the form', pending: 'Need to review with Nigel'  do
+  it 'user cannot submit an imprintable line item without completing the form' do
     visit edit_order_path(1, anchor: 'jobs')
     wait_for_ajax
 
@@ -182,7 +182,7 @@ feature 'Line Items management', line_item_spec: true, js: true do
       find('.line-item-button[title="Edit"]').click
       wait_for_ajax
       
-      fill_in 'line_item[name]', with: 'New name!'
+      fill_in "line_item[#{non_imprintable.id}[name]]", with: 'New name!'
 
       find('.update-line-items').click
       wait_for_ajax
@@ -211,12 +211,11 @@ feature 'Line Items management', line_item_spec: true, js: true do
 
     find('.line-item-button[title="Edit"]').click
     wait_for_ajax
-    fill_in 'line_item[quantity]', with: ''
+    fill_in "line_item[#{non_imprintable.id}[quantity]]", with: ''
 
     first('.update-line-items').click
     wait_for_ajax
 
-    expect(page).to have_content 'error'
     expect(page).to have_content "Quantity can't be blank"
   end
 
@@ -229,7 +228,7 @@ feature 'Line Items management', line_item_spec: true, js: true do
 
     expect(page).to have_content shirt.style_name
 
-    first('.line-item-button[title="Delete"]').click
+    first('a[title="Delete"]').click
     wait_for_ajax
     sleep 2
 

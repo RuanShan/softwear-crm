@@ -1,4 +1,4 @@
-<% if !object.errors.empty?  %>
+<% if object && !object.errors.empty? %>
     <div class="modal fade" id="errorsModal" tabindex="-1" role="dialog" aria-labelledby="errorsModalLabel" aria-hidden="true" resource='<%= object.class.name.underscore %>'>
       <div class="modal-dialog">
         <div class="modal-content modal-content-error">

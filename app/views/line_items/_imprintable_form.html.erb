@@ -1,5 +1,5 @@
 <% url = determine_url(@line_item, @line_itemable) %>
-<%= form_for [@line_itemable, @line_item], url: url, html: { id: 'new_imprintable_line_item' }, builder: LancengFormBuilder do |f| %>
+<%= form_for [@line_itemable, @line_item], url: url, remote: true, html: { id: 'new_imprintable_line_item' }, builder: LancengFormBuilder do |f| %>
 	<div class='select-level' data-level='1'>
 		<div class='select-level' data-level='2'>
 			<div class='select-level' data-level='3'>

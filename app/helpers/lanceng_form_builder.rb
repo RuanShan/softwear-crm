@@ -22,15 +22,14 @@ class LancengFormBuilder < ActionView::Helpers::FormBuilder
   # Super efficient mass method reassignment, go!
   %i(text_field password_field text_area
      number_field check_box).each do |method_name|
-    alias_method "original_#{method_name}".to_sym, method_name
-    define_method method_name do |*args|
-      # TODO: refactor
-      options = args.size == 2 ? args.last.merge({}) : {}
-      add_class options, 'form-control'
-      add_class(options, 'number_field') if method_name == :number_field
+    class_eval <<-RUBY, __FILE__, __LINE__ + 1
+      def #{method_name}(field, options = {})
+        add_class options, 'form-control'
+        #{"add_class options, 'number_field'" if method_name == :number_field}
 
-      send("original_#{method_name}".to_sym, args.first, options)
-    end
+        super(field, options)
+      end
+    RUBY
   end
 
   # Quick method for adding a label to a field. Can be called like
@@ -40,7 +39,7 @@ class LancengFormBuilder < ActionView::Helpers::FormBuilder
   # 
   # or just used normally
   def label(*args)
-    if args.empty? || args.first.is_a?(String)
+    if args.empty? || (args.size == 1 && args.first.is_a?(String))
       l = args.first.is_a?(String) ? args.first : nil
       proxy :label, l
     else
@@ -52,7 +51,6 @@ class LancengFormBuilder < ActionView::Helpers::FormBuilder
   # Potential use:
   # f.label.error.text_area :name
   def error(*args)
-    # TODO: look at parenthesis being used here
     args.empty? ? proxy(:error_for) : error_for(*args)
   end
 
@@ -60,17 +58,17 @@ class LancengFormBuilder < ActionView::Helpers::FormBuilder
     @template.inline_field_tag(@object, method, default_or_options, options)
   end
 
-  # TODO: write self commenting code?
-  # Gives you a checkbox with a textfield attached to it.
-  # Useful for a condition and a reason
-  # TODO: refactor to not use +
   def check_box_with_text_field(check_method, text_method, options = {})
     @template.content_tag(:div, class: 'input-group') do
       add_class options, 'form-control'
-      @template.content_tag(:span, class: 'input-group-addon') do
+
+      check_box = @template.content_tag(:span, class: 'input-group-addon') do
         @template.check_box @object_name, check_method
-      end +
-      @template.text_area(@object_name, text_method, options)
+      end
+
+      text_field = @template.text_area(@object_name, text_method, options)
+
+      check_box + text_field
     end
   end
 
@@ -106,9 +104,14 @@ class LancengFormBuilder < ActionView::Helpers::FormBuilder
     super
   end
 
+  protected
+
+  def with_common_attrs(options)
+    options.merge(@common_attrs || {})
+  end
+
   private
 
-  # TODO: refactor
   def proxy(method_name, *extras)
     @proxy_stack ||= []
     @proxy_stack << { func: method_name, args: extras }

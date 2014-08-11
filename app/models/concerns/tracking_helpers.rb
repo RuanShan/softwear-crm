@@ -48,14 +48,14 @@ module TrackingHelpers
 
       def is_activity_recipient
         define_method :all_activities do
-          PublicActivity::Activity.where( '
+          PublicActivity::Activity.where( %{
             (
               activities.recipient_type = ? AND activities.recipient_id = ?
             ) OR
             (
               activities.trackable_type = ? AND activities.trackable_id = ?
             )
-          ', *([self.class.name, self.id] * 2) ).order('created_at DESC')
+          }, *([self.class.name, self.id] * 2) ).order('created_at DESC')
         end
       end
     end

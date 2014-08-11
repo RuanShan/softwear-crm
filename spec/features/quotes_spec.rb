@@ -172,8 +172,8 @@ feature 'Quotes management', quote_spec: true, js: true do
       line_item_id = quote.line_items.first.id
       find("#line-item-#{line_item_id} .line-item-button[title='Edit']").click
       wait_for_ajax
-      find('#line_item_taxable').click
-      find('a.update-line-items').click
+      find("#line_item_#{line_item_id}_taxable").click
+      find('.btn.update-line-items').click
       wait_for_ajax
       activity = quote.all_activities.to_a.select{ |a| a[:key] = 'quote.updated_line_item' }
       expect(activity).to_not be_nil

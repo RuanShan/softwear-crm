@@ -1,5 +1,5 @@
 $row = $('#artwork-row-<%= @artwork.id %>');
-$row.fadeOut($row.remove);
+$row.fadeOut(thenRemove($row));
 
 setupContentModal(function($contentModal){
   $contentModal.find('.modal-content').addClass('modal-content-success')
