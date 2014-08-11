@@ -1,17 +1,17 @@
 class ImprintMethodsController < InheritedResources::Base
   before_action :set_current_action
 
-  def update
-    super do |success, failure|
-      success.html { redirect_to imprint_methods_path }
-      failure.html { render action: :edit }
-    end
-  end
-
   def show
     super do |format|
       format.html { redirect_to edit_imprint_method_path params[:id] }
       format.js { render layout: nil, locals: { imprint_method: ImprintMethod.find(params[:id]) } }
+    end
+  end
+
+  def update
+    super do |success, failure|
+      success.html { redirect_to imprint_methods_path }
+      failure.html { render action: :edit }
     end
   end
 

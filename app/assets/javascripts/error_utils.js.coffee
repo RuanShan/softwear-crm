@@ -1,7 +1,7 @@
 # Handy little module for ajax error handling!
 # Doesn't actually do the ajaxing for you; just 
 # adds and removes error content from the page.
-@ErrorHandler = (resourceName, $form) ->
+@ErrorHandler = (resourceName, $form, resourceId) ->
   handler = {}
   capitalize = (str) -> (str.charAt(0).toUpperCase() + str.substr(1)).replace('_id', '').replace('_', ' ')
   contains = (array, thing) -> 
@@ -11,7 +11,10 @@
     if resourceName is null
       field
     else
-      "#{resourceName}[#{field}]"
+      if resourceId
+        "#{resourceName}[#{resourceId}[#{field}]]"
+      else
+        "#{resourceName}[#{field}]"
 
   handler.errorFields = []
 
@@ -21,7 +24,7 @@
     $modal = null
     unless modal is null
       $modal = $(modal)
-      $('body').children().last().after $modal
+      $('body').append $modal
       $modal.on 'hidden.bs.modal', (e) -> $modal.remove()
     # Mark fields
     for field, fieldErrors of errors
@@ -30,9 +33,11 @@
       # Grab the input field element
       $field = $form.find("*[name^='#{getParamName(field)}']")
       $field = $form.find("*[name^='#{getParamName(field.replace('_id', ''))}']") if $field.length == 0
+      
       if $field.length == 0
         console.log "Couldn't find field #{field} (name #{getParamName(field)})"
         continue
+      
       # Create the error message div
       $errorMsgDiv = $ '<div/>',
         class: 'error'
@@ -40,7 +45,7 @@
       # Place it before the input field
       $field.before $errorMsgDiv
       # Wrap the input field to make it red
-      $field.wrap $('<div/>', class: 'field_with_errors') unless $field.data ('no-wrap')
+      $field.wrap $('<div/>', class: 'field_with_errors') unless $field.data('no-wrap')
       # Populate error message div with messages
       for error in fieldErrors
         $errorMsgDiv.append $ '<p/>',
@@ -54,7 +59,16 @@
       $field = $form.find("*[name='#{getParamName(field)}']")
       $errorMsgDiv = $form.find(".error[for='#{getParamName(field)}']")
       $errorMsgDiv.remove()
-      $field.unwrap() if $field.parent().attr('class') == 'field_with_errors' and not $field.data ('no-wrap')
+      $field.unwrap() if $field.parent().attr('class') == 'field_with_errors' and not $field.data('no-wrap')
     handler.errorFields = []
 
   return handler
+
+@errorHandlerFrom = (element, resourceName, $form, resourceId) ->
+  $element = $(element)
+  handler = $element.data 'error-handler'
+  if typeof handler is 'undefined'
+    handler = ErrorHandler(resourceName, $form, resourceId)
+    $element.data 'error-handler', handler
+
+  handler

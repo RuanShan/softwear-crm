@@ -1,4 +1,6 @@
 class ImprintableVariant < ActiveRecord::Base
+  extend ParamHelpers
+
   acts_as_paranoid
 
   belongs_to :color
@@ -9,6 +11,13 @@ class ImprintableVariant < ActiveRecord::Base
   validates :size, presence: true
   validates :color, presence: true
   validates :color_id, uniqueness: { scope: [:size, :imprintable] }
+
+  scope :size_variants_for, ->(imprintable, color) do
+    where(
+      imprintable_id: param_record_id(imprintable),
+      color_id:       param_record_id(color)
+    )
+  end
 
   def brand
     imprintable.brand

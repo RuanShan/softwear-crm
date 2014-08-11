@@ -208,7 +208,7 @@ module Search
     end
 
     def permitted_locals_for(model)
-      controller_name = model.pluralize.camelize+"Controller"
+      controller_name = "#{model.pluralize.camelize}Controller"
       controller = Kernel.const_get controller_name
 
       if controller.respond_to?(:permitted_search_locals)

@@ -83,3 +83,10 @@ $(document).ajaxStop(->
     checkboxClass: "icheckbox_minimal-grey"
     radioClass: "iradio_minimal-grey"
     increaseArea: "20%"
+
+@disableFor = (element, ms) ->
+  $(element).attr 'disabled', 'disabled'
+  after ms, -> $(element).removeAttr 'disabled'
+
+@thenRemove = ($element) ->
+  -> $element.remove()

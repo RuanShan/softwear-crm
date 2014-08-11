@@ -33,7 +33,7 @@ CrmSoftwearcrmCom::Application.routes.draw do
       get 'quote_select'
       post 'stage_quote'
     end
-    resources :line_items
+    resources :line_items, except: [:update]
   end
 
   get '/logout' => 'users#logout'
@@ -57,14 +57,17 @@ CrmSoftwearcrmCom::Application.routes.draw do
     end
 
     resources :jobs, only: [:create, :update, :destroy, :show], shallow: true do
-      resources :line_items do
+      resources :line_items, except: [:update] do
         get :form_partial, on: :member
       end
       resources :imprints, except: [:index]
     end
   end
+
   get '/line_item/select_options', to: 'line_items#select_options'
-  delete '/line_items/*ids', to: 'line_items#destroy'
+  delete 'line_items/*ids',   to: 'line_items#destroy'
+  put    'line_items/update', to: 'line_items#update'
+  patch  'line_items/update', to: 'line_items#update'
 
   namespace 'search' do
     resources :queries

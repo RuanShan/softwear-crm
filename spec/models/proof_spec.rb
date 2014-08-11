@@ -2,11 +2,7 @@ require 'spec_helper'
 
 describe Proof, proof_spec: true do
 
-  describe 'Validations' do
-    it { should validate_presence_of(:status) }
-    it { should validate_presence_of(:approve_by) }
-    it { should validate_presence_of(:artworks) }
-  end
+  it { is_expected.to be_paranoid }
 
   describe 'Relationships' do
     it { should belong_to(:order) }
@@ -15,4 +11,9 @@ describe Proof, proof_spec: true do
     it { should accept_nested_attributes_for(:mockups) }
   end
 
+  describe 'Validations' do
+    it { should validate_presence_of(:approve_by) }
+    it { should validate_presence_of(:artworks) }
+    it { should validate_presence_of(:status) }
+  end
 end

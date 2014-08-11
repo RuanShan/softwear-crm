@@ -75,8 +75,16 @@ module FormHelper
     end
   end
 
+  def batch_fields_for(object, options = {}, &block)
+    builder = BatchFormBuilder.new(
+        object.class.name.underscore, object, self, options
+      )
+    return builder unless block_given?
 
-  def inline_field_tag(object, method, default_or_options={}, options={})
+    capture(builder, &block)
+  end
+
+  def inline_field_tag(object, method, default_or_options = {}, options = {})
     if default_or_options.is_a? Hash
       options = default_or_options
       default = method.to_s.gsub(/_/, ' ')
