@@ -6,6 +6,13 @@ class QuotesController < InheritedResources::Base
     super do
       @quote.line_items.build
       @current_user = current_user
+      @current_action = 'quotes#new'
+    end
+  end
+
+  def index
+    super do
+      @current_action = 'quotes#index'
     end
   end
 

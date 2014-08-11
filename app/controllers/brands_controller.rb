@@ -1,4 +1,6 @@
 class BrandsController < InheritedResources::Base
+  before_action :set_current_action
+
   def index
     super do
       @brands = Brand.all.page(params[:page])
@@ -16,6 +18,12 @@ class BrandsController < InheritedResources::Base
     super do |format|
       format.html { redirect_to edit_brand_path params[:id] }
     end
+  end
+
+  protected
+
+  def set_current_action
+    @current_action = 'brands'
   end
 
   private

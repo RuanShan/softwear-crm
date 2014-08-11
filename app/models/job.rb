@@ -50,8 +50,7 @@ class Job < ActiveRecord::Base
   end
 
   def max_print_area(print_location)
-    ## TODO
-    # 
+    #
     # Okay, here are 3 possibilities for implementation. First, my (Nigel's)
     # initial refactoring (which will remain uncommented for now):
     # ----------------------------------

@@ -1,6 +1,7 @@
 class ArtworkRequestsController < InheritedResources::Base
   before_filter :assign_order
   before_filter :format_deadline, only: [:create, :update]
+  before_filter :set_current_action
 
   respond_to :js
 
@@ -32,6 +33,12 @@ class ArtworkRequestsController < InheritedResources::Base
     super do |success, _failure|
       success.js { notify_artist }
     end
+  end
+
+  protected
+
+  def set_current_action
+    @current_action = 'artwork_requests'
   end
 
   private

@@ -1,105 +1,122 @@
 <%= render partial: 'shared/sidebar_search' %>
 <div id="sidebar-menu">
   <ul>
-    <li><a href="/"><i class="fa fa-home"></i> Dashboard</a></li>
-    <li><a href="#fakelink"><i class="fa fa-shopping-cart"></i><i class="fa fa-angle-double-down i-right"></i> Orders</a>
-      <ul>
-        <li><%= link_to orders_path do %><i class="fa fa-angle-right"></i> List<% end %></li>
-        <li><%= link_to new_order_path do %><i class="fa fa-angle-right"></i> New<% end %></li>
-      </ul>
-    </li>
+    <%= content_tag :li, class: ('active' if current_action == 'dashboard') do %>
+      <a href="/"><i class="fa fa-home"></i> Dashboard</a>
+    <% end %>
+
+    <%= content_tag :li, class: ('active' if current_url.include?('orders')) do %>
+      <a href="#fakelink"><i class="fa fa-shopping-cart"></i><i class="fa fa-angle-double-down i-right"></i> Orders</a>
+
+      <%= content_tag :ul, class: ('visible' if current_url.include?('orders')) do %>
+
+        <%= content_tag :li, class: ('active' if current_action == 'orders#index') do %>
+          <%= link_to orders_path do %><i class="fa fa-angle-right"></i> List<% end %>
+        <% end %>
+
+        <%= content_tag :li, class: ('active' if current_action == 'orders#new' ) do %>
+          <%= link_to new_order_path do %><i class="fa fa-angle-right"></i> New<% end %>
+        <% end %>
+      <% end %>
+    <% end %>
 
     <li><a href="#fakelink"><i class="fa fa-users"></i> Customers <span class="label label-danger new-circle">W.I.P.</span></a>
-    <!--
-    <li> -->
-    <%= nav_helper(:li, true, %w(quotes)) %>
 
-    <!--
-    <li> --><%= nav_helper(:li, true, %w(quotes)) %>
+    <%= content_tag :li, class: ('active' if current_url.include?('quotes')) do %>
       <a href="#" id="quotes_list"><i class="fa fa-tasks"></i><i class="fa fa-angle-double-down i-right"></i> Quotes</a>
-      <ul>
-        <li>
+
+      <%= content_tag :ul, class: ('visible' if current_url.include?('quotes')) do %>
+
+        <%= content_tag :li, class: ('active' if current_action == 'quotes#index') do %>
           <%= link_to quotes_path, id: 'quotes_path_link' do %><i class="fa fa-angle-right"></i> List<% end %>
-        </li>
-        <li>
-          <%= link_to new_quote_path, id: 'new_quote_link' do %><i class="fa fa-angle-right"></i> New <% end %></li>
-      </ul>
-    </li>
-    <li><a href="#fakelink"><i class="fa fa-users"></i> Customers <span class="label label-danger new-circle">W.I.P.</span></a>
-    <!--
-    <li> --><%= nav_helper(:li, true, %w(imprintables brands colors styles sizes)) %>
+        <% end %>
+
+        <%= content_tag :li, class: ('active' if current_action == 'quotes#new') do %>
+          <%= link_to new_quote_path, id: 'new_quote_link' do %><i class="fa fa-angle-right"></i> New <% end %>
+        <% end %>
+      <% end %>
+    <% end %>
+
+    <%= content_tag :li, class: ('active' if current_url.include?('imprintables')) do %>
       <a href="#fakelink"><i class="fa fa-archive"></i><i class="fa fa-angle-double-down i-right"></i> Imprintables</a>
-      <!--
-      <ul> --><%= nav_helper(:ul, false, %w(imprintables brands colors styles sizes)) %>
-        <!--
-        <li>  --><%= nav_helper :li, true, 'imprintables' %>
+
+      <%= content_tag :ul, class: ('visible' if current_url.include?('imprintables')) do %>
+
+        <%= content_tag :li, class: ('active' if current_action == 'imprintables') do %>
           <%= link_to imprintables_path, id: 'imprintables_list_link' do %><i class="fa fa-angle-right"></i> List<% end %>
-        </li>
-        <!--
-        <li> --><%= nav_helper :li, true, 'brands' %>
+        <% end %>
+
+        <%= content_tag :li, class: ('active' if current_url.include?('brands')) do %>
           <%= link_to brands_path, id: 'brands_list_link' do %><i class="fa fa-angle-right"></i> Brands<% end %>
-        </li>
-        <!--
-        <li> --><%= nav_helper :li, true, 'colors' %>
+        <% end %>
+
+        <%= content_tag :li, class: ('active' if current_url.include?('colors')) do %>
           <%= link_to colors_path, id: 'colors_list_link' do %><i class="fa fa-angle-right"></i> Colors<% end %>
-        </li>
-        <!-- <li> -->
-        <%= nav_helper :li, true, 'sizes' %>
+        <% end %>
+
+        <%= content_tag :li, class: ('active' if current_url.include?('sizes')) do %>
           <%= link_to sizes_path, id: 'sizes_list_link' do %><i class="fa fa-angle-right"></i> Sizes<% end %>
-        </li>
-      </ul>
-    </li>
-    <li><a href="#fakelink"><i class="fa fa-bar-chart-o"></i><i class="fa fa-angle-double-down i-right"></i> Reports <span class="label label-danger new-circle">W.I.P.</span></a>
+        <% end %>
+      <% end %>
+    <% end %>
+
+    <li>
+      <a href="#fakelink"><i class="fa fa-bar-chart-o"></i><i class="fa fa-angle-double-down i-right"></i> Reports <span class="label label-danger new-circle">W.I.P.</span></a>
       <ul>
         <li><a href="#fakelink" id="artwork-sidebar"><i class="fa fa-angle-right"></i> Receivables</a></li>
         <li><a href="#fakelink"><i class="fa fa-angle-right"></i> Sales Tax</a></li>
         <li><a href="#fakelink"><i class="fa fa-angle-right"></i> Location</a></li>
       </ul>
     </li>
-  <%= nav_helper(:li, true, %w(artwork)) %>
-    <a href="#fakelink"><i class="fa fa-picture-o"></i><i class="fa fa-angle-double-down i-right"></i>Artwork <span class="label label-danger new-circle">W.I.P.</span></a>
-    <%= nav_helper(:ul, false, %w(artwork )) %>
-  <!-- <li> -->
-  <%= nav_helper :li, true, 'artwork_requests' %>
-  <%= link_to artwork_requests_path do %><i class="fa fa-angle-right"></i> Artwork Requests<% end %>
-  </li>
-  <%= nav_helper :li, true, 'artwork_list' %>
-  <%= link_to artworks_path do %><i class="fa fa-angle-right"></i> Artwork List<% end %>
-  </li>
-  </ul>
-  </li>
-  <!-- <li> -->
-    <%= nav_helper(:li, true, %w(administration users)) %>
 
+    <%= content_tag :li, class: ('active' if current_url.include?('artwork')) do %>
+      <a href="#fakelink"><i class="fa fa-picture-o"></i><i class="fa fa-angle-double-down i-right"></i>Artwork <span class="label label-danger new-circle">W.I.P.</span></a>
+
+      <%= content_tag :ul, class: ('visible' if current_url.include?('artwork')) do %>
+
+        <%= content_tag :li, class: ('active' if current_action == 'artwork_requests') do %>
+          <%= link_to artwork_requests_path do %><i class="fa fa-angle-right"></i> Artwork Requests<% end %>
+        <% end %>
+
+        <%= content_tag :li, class: ('active' if current_action == 'artworks') do %>
+          <%= link_to artworks_path do %><i class="fa fa-angle-right"></i> Artwork List<% end %>
+        <% end %>
+      <% end %>
+    <% end %>
+
+    <%= content_tag :li, class: ('active' if current_url.include?('users')) do %>
       <a href="#fakelink"><i class="fa fa-folder-open"></i><i class="fa fa-angle-double-down i-right"></i> Administration</a>
-      <!-- <ul> -->
-      <%= nav_helper(:ul, false, %w(users)) %>
-         <!-- <li> -->
-         <%= nav_helper(:li, true, 'users') %>
+
+      <%= content_tag :ul, class: ('visible' if current_url.include?('users')) do %>
+
+         <%= content_tag :li, class:('active' if current_action == 'users') do %>
             <%= link_to users_path do %><i class="fa fa-angle-right"></i> Users<% end %>
+         <% end %>
+
+         <li>
+           <a href="gallery.html"><i class="fa fa-dollar"></i> Cash Drawer</a>
          </li>
-         <li><a href="gallery.html"><i class="fa fa-dollar"></i> Cash Drawer</a></li>
-      </ul>
-    </li>
+      <% end %>
+    <% end %>
 
-    <!-- <li> -->
-    <%= nav_helper(:li, true, %w(configuration imprint_methods stores shipping_methods)) %>
-
+    <%= content_tag :li, class: ('active' if current_url.include?('configuration')) do %>
       <a href="#fakelink"><i class="fa fa-gears"></i><i class="fa fa-angle-double-down i-right"></i> Configuration</a>
-      <!-- <ul> -->
-      <%= nav_helper(:ul, false, %w(configuration imprint_methods stores shipping_methods)) %>
-        <!-- <li> -->
-      <%= nav_helper :li, true, 'imprint_methods' %>
-        <%= link_to imprint_methods_path do %><i class="fa fa-angle-right"></i> Imprint Methods <% end %>
-      </li>
-      <%= nav_helper :li, true, 'shipping_methods' %>
-        <%= link_to shipping_methods_path do %><i class="fa fa-angle-right"></i> Shipping Methods<% end %>
-      </li>
-      <%= nav_helper :li, true, 'stores' %>
-        <%= link_to stores_path do %><i class="fa fa-angle-right"></i> Stores<% end %>
-      </li>
-    </ul>
-  </li>
-</ul>
+
+      <%= content_tag :ul, class: ('visible' if current_url.include?('configuration')) do %>
+
+        <%= content_tag :li, class: ('active' if current_url.include?('imprint_methods')) do %>
+          <%= link_to imprint_methods_path do %><i class="fa fa-angle-right"></i> Imprint Methods <% end %>
+        <% end %>
+
+        <%= content_tag :li, class: ('active' if current_url.include?('shipping_methods')) do %>
+          <%= link_to shipping_methods_path do %><i class="fa fa-angle-right"></i> Shipping Methods<% end %>
+        <% end %>
+
+        <%= content_tag :li, class: ('active' if current_url.include?('stores')) do %>
+          <%= link_to stores_path do %><i class="fa fa-angle-right"></i> Stores<% end %>
+        <% end %>
+      <% end %>
+    <% end %>
+  </ul>
   <div class="clear"></div>
 </div>

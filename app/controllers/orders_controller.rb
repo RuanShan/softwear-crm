@@ -3,6 +3,7 @@ class OrdersController < InheritedResources::Base
 
   def index
     super do
+      @current_action = 'orders#index'
       @orders = Order.all.page(params[:page])
     end
   end
@@ -23,6 +24,7 @@ class OrdersController < InheritedResources::Base
 
   def new
     super do
+      @current_action = 'orders#new'
       @current_user = current_user
       stores = Store.all
       @empty = stores.empty?

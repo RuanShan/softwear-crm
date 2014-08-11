@@ -83,7 +83,7 @@ describe Quote, quote_spec: true do
   describe 'fetch_data_to_h', pending: 'Does this method need to be spec\'d if it only calls 2 other methods?' do
   end
 
-  describe 'fetch_group_id_and_dept' do
+  describe '#fetch_group_id_and_dept' do
     context 'the quote is from the ann arbor store' do
       before(:each) { quote.store.name = 'Ann Arbor Store' }
       it 'sets the group id to "86316" and department to "Sales - Ann Arbor"' do

@@ -9,6 +9,7 @@ class ApplicationController < ActionController::Base
   # These allow current_user and the current url to be available to views
   before_action :assign_current_user
   before_action :assign_current_url
+  before_action :assign_current_action
 
   protected
 
@@ -43,6 +44,10 @@ class ApplicationController < ActionController::Base
 
   def assign_current_url
     @current_url = request.original_url
+  end
+
+  def assign_current_action
+    @current_action ||= 'dashboard'
   end
 
   def fire_activity(record, activity_name, options={})

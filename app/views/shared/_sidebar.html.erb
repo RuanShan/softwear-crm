@@ -4,7 +4,7 @@
   <div class="body rows scroll-y">
     <div class="sidebar-inner slimscroller">
     <%= render partial: 'shared/sidebar_user_info' %>
-    <%= render partial: 'shared/sidebar_menu' %>
+    <%= render partial: 'shared/sidebar_menu', locals: { current_url: current_url, current_action: current_action } %>
     </div>
   </div>
 </div>

@@ -1,4 +1,6 @@
 class ImprintablesController < InheritedResources::Base
+  before_action :set_current_action
+
   def index
     super do
       # TODO: ternary with parenthesis
@@ -76,6 +78,12 @@ class ImprintablesController < InheritedResources::Base
     end
 
     render json: {}
+  end
+
+  protected
+
+  def set_current_action
+    @current_action = 'imprintables'
   end
 
   private

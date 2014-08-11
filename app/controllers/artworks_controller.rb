@@ -1,4 +1,5 @@
 class ArtworksController < InheritedResources::Base
+  before_action :set_current_action
 
   respond_to :js
 
@@ -17,6 +18,12 @@ class ArtworksController < InheritedResources::Base
 
   def self.transform_search_locals(locals)
     locals[:artwork_request_id].empty? ? {} : { artwork_request: ArtworkRequest.find(locals[:artwork_request_id]) }
+  end
+
+  protected
+
+  def set_current_action
+    @current_action = 'artworks'
   end
 
   private
