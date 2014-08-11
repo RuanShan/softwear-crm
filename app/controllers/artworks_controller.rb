@@ -1,5 +1,4 @@
 class ArtworksController < InheritedResources::Base
-
   respond_to :js
 
   def index

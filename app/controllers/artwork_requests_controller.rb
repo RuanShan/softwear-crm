@@ -4,6 +4,12 @@ class ArtworkRequestsController < InheritedResources::Base
 
   respond_to :js
 
+  def create
+    super do |success, _failure|
+      success.js { notify_artist }
+    end
+  end
+
   #TODO couldn't figure out a way to refactor this, but could possibly be too much for a controller?
   def update
     unless params[:artwork_id].nil?
@@ -25,12 +31,6 @@ class ArtworkRequestsController < InheritedResources::Base
       if @artwork.nil?
         success.js { notify_artist }
       end
-    end
-  end
-
-  def create
-    super do |success, _failure|
-      success.js { notify_artist }
     end
   end
 
