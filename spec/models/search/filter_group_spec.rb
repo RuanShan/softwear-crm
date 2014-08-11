@@ -31,7 +31,7 @@ describe Search::FilterGroup, search_spec: true do
         field: 'firstname', negate: true)
     end
 
-    it 'should destroy the filters when destroyed' do
+    it 'should destroy the filters when destroyed', :donow do
       group.destroy
       expect(Search::Filter.count).to eq 0
     end

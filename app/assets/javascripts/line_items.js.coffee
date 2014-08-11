@@ -1,4 +1,4 @@
-@initializeLineItemModal = ($lineItemModal) ->
+@initializeLineItemModal = ($lineItemModal, fromJsResponse) ->
   $currentFormDiv = null
   currentForm = -> $currentFormDiv.find('form')
 
@@ -14,7 +14,7 @@
 
     $out = null
     $in = null
-    if $(this).val() is 'yes'
+    if $(this).val() == 'yes'
       $out = $('#li-standard-form')
       $in  = $('#li-imprintable-form')
     else
@@ -39,8 +39,7 @@
   handleImprintableForm = ($form) ->
     $select_level = (num) -> $(".select-level[data-level='#{num}']")
     clearSelectLevel = (num, after) ->
-      $selected =
-        $(".select-level[data-level='#{num}'] *:not(div.select-level)")
+      $selected = $(".select-level[data-level='#{num}'] *:not(div.select-level)")
       if $selected.size() > 0
         # console.log 'clearing after fade out'
         did_callback = false
@@ -57,7 +56,7 @@
         url: '/line_item/select_options'
         data: data
       a.fail (jqXHR, textStatus) ->
-        errorModal 'Internal server error (or the internet is down). Sorry!'
+        errorModal('Internal server error (that or the internet is down). Sorry!')
       a.done(done) unless done is null
       a
 
@@ -114,6 +113,124 @@
 @imprintableEditEntryChanged = ($this) ->
   $this.parentsUntil(".line_item").parent().addClass("editing-line-item")
 
+loadLineItemView = (lineItemId, url) ->
+  $row = $("#line-item-#{lineItemId}")
+  $oldChildren = $row.children()
+
+  ajax = $.ajax
+    type: 'GET'
+    url: url
+    dataType: 'json'
+
+  ajax.done (response) ->
+    $oldChildren.each -> $(this).remove()
+    $row.append response.content
+
+    if document.URL.split('/')[3] == 'jobs'
+      updateOrderTimeline()
+
+@editLineItem = (lineItemId) ->
+  loadLineItemView lineItemId, Routes.edit_line_item_path(lineItemId)
+
+@cancelEditLineItem = (lineItemId) ->
+  loadLineItemView lineItemId, Routes.line_item_path(lineItemId)
+
+@deleteLineItem = (lineItemId) ->
+  $(this).attr 'disabled', 'disabled'
+
+  $row = $("#line-item-#{lineItemId}")
+  ajax = $.ajax
+    type: 'DELETE'
+    url: "/line_items/#{lineItemId}"
+    dataType: 'json'
+
+  ajax.done (response) ->
+    if response.result == 'success'
+      $row.fadeOut -> $row.remove()
+      if document.URL.split('/')[3] == 'jobs'
+        updateOrderTimeline()
+    else if response.result == 'failure'
+      alert "Something weird happened and the line item couldn't be deleted."
+
+@deleteLineItems = (lineItemIds, imprintableName, class_name) ->
+  $(this).attr 'disabled', 'disabled'
+
+  $row = $('#'+imprintableName)
+  ajax = $.ajax
+    type: 'DELETE'
+    url: "/line_items/#{lineItemIds}"
+    dataType: 'json'
+
+  ajax.done (response) ->
+    if response.result == 'success'
+      $row.fadeOut -> $row.remove()
+      if class_name == 'Job'
+        updateOrderTimeline()
+    else
+      alert 'Something weird happened and the line items could not be deleted.'
+
+@updateLineItems = (parentSelector) ->
+  selector = '.editing-line-item'
+  selector = "#{parentSelector} #{selector}" if parentSelector
+
+  $(selector).each (i) ->
+    $this = $(this)
+    ajax = $.ajax
+      type: 'PUT'
+      url: $this.attr 'action'
+      data: $this.serialize()
+      dataType: 'json'
+
+    ajax.done (response) ->
+      $container = $this.parent()
+      $container.children().each -> $(this).remove()
+      $content = $(response.content)
+      $container.append $content
+      if response.result == 'failure'
+        eh = ErrorHandler('line_item', $container.find('form'))
+        eh.handleErrors(response.errors, response.modal)
+      else
+        $inputs = $content.find 'input'
+        shine $inputs, true
+        shine $content, false
+
+
+    ajax.fail (jqXHR, errorText) ->
+      alert "Internal server error! Can't process request."
+
+  if (class_name == 'Job')
+    after 5000, updateOrderTimeline
+
+# Opens the modal to create a new line item.
+@addLineItem = (line_itemable_id, class_name) ->
+  $this = $(this)
+  $this.attr 'disabled', 'disabled'
+  setTimeout (-> $this.removeAttr 'disabled'), 1000
+  # TODO if modal is already present, kill it and return maybe?
+
+  url = ''
+  if class_name == 'Job'
+    url = Routes.new_job_line_item_path(line_itemable_id)
+  else if class_name == 'Quote'
+    url = Routes.new_quote_line_item_path(line_itemable_id)
+
+  ajax = $.ajax
+    type: 'GET'
+    url: url
+    dataType: 'html'
+
+  ajax.done (response) ->
+    $('body').append $(response)
+    $lineItemModal = $('#lineItemModal')
+    initializeLineItemModal $lineItemModal
+    $lineItemModal.on 'hidden.bs.modal', (e) ->
+      $lineItemModal.remove()
+
+  ajax.fail (jqXHR, textStatus) ->
+    alert "Internal server error! Can't process request."
+
 jQuery ->
   $('#request_product_id').change ->
-    $.ajax url: '/line_items/' + this.value + '/form_partial'
+    $.ajax({
+      url: '/line_items/' + this.value + '/form_partial'
+    })
