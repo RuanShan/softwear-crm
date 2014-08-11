@@ -18,8 +18,6 @@ class LineItem < ActiveRecord::Base
   belongs_to :line_itemable, polymorphic: true
   has_one :order, through: :job
 
-  #TODO: ensure unless validations work after switching 
-  #      from validates_presence_of to sexiness
   validates :description, presence: true, unless: :imprintable?
   validates :imprintable_variant_id, 
             uniqueness: {

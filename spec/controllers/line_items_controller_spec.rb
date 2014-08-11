@@ -14,7 +14,7 @@ describe LineItemsController, line_item_spec: true do
       make_variants :white, :shirt, [:S, :M, :L, :XL], not: [:job, :line_items]
 
       it 'creates line items for each relevant size' do
-        post :create, job_id: job.id, imprintable_id: shirt.id, color_id: white.id
+        post :create, format: :json, job_id: job.id, imprintable_id: shirt.id, color_id: white.id
         json_response = JSON.parse response.body
         expect(json_response['result']).to eq 'success'
         expect(LineItem.where(imprintable_variant_id: white_shirt_s.id)).to exist
@@ -27,7 +27,7 @@ describe LineItemsController, line_item_spec: true do
       it 'only fires one public activity activity', activity_spec: true do
         PublicActivity.with_tracking do
           expect(PublicActivity::Activity.all.count).to eq 0
-          post :create, job_id: job.id, imprintable_id: shirt.id, color_id: white.id
+          post :create, format: :json, job_id: job.id, imprintable_id: shirt.id, color_id: white.id
           expect(PublicActivity::Activity.all.count).to eq 1
         end
       end
@@ -38,8 +38,8 @@ describe LineItemsController, line_item_spec: true do
           job.line_items << white_shirt_l_item
         end
 
-        it "still succeeds and only adds new ones" do
-          post :create, job_id: job.id, imprintable_id: shirt.id, color_id: white.id
+        it "still succeeds and only adds new ones", pending: "I recall Ricky saying this scenario doesn't matter" do
+          post :create, format: :json, job_id: job.id, imprintable_id: shirt.id, color_id: white.id
           json_response = JSON.parse response.body
           expect(json_response['result']).to eq 'success'
           expect(LineItem.where(imprintable_variant_id: white_shirt_s.id)).to exist
@@ -49,7 +49,7 @@ describe LineItemsController, line_item_spec: true do
         it 'fails when the job has all line items' do
           job.line_items << white_shirt_s_item
           job.line_items << white_shirt_xl_item
-          post :create, job_id: job.id, imprintable_id: shirt.id, color_id: white.id
+          post :create, format: :json, job_id: job.id, imprintable_id: shirt.id, color_id: white.id
           json_response = JSON.parse response.body
           expect(json_response['result']).to eq 'failure'
         end
@@ -66,7 +66,7 @@ describe LineItemsController, line_item_spec: true do
 
       it 'destroys them all when supplied with their ids' do
         line_items = job.line_items.to_a
-        delete :destroy, ids: line_items.map(&:id)
+        delete :destroy, format: :json, ids: line_items.map(&:id)
 
         json_response = JSON.parse response.body
         expect(json_response['result']).to eq 'success'
@@ -79,7 +79,7 @@ describe LineItemsController, line_item_spec: true do
       it 'only fires one activity', activity_spec: true do
         PublicActivity.with_tracking do
           expect(PublicActivity::Activity.all.count).to eq 0
-          delete :destroy, ids: job.line_items.map(&:id)
+          delete :destroy, format: :json, ids: job.line_items.map(&:id)
           expect(PublicActivity::Activity.all.count).to eq 1
         end
       end
