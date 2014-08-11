@@ -59,10 +59,16 @@
 
       <div class="form-group box-info">
         <div class="col-sm-4">
-          <button type="button" class="btn btn-info btn-lg btn-block add-imprint" onclick="addImprint($(this), <%=job.id%>)"><i class="fa fa-pagelines"></i> Add Imprint </button>
+
+          <%= link_to new_job_imprint_path(job), class: 'btn btn-info btn-lg btn-block add-imprint', remote: true, method: :get do %>
+            <i class="fa fa-pagelines"></i> Add Imprint
+          <% end %>
+
         </div>
         <div class="col-sm-4 col-xs-offset-4">
+
           <button type="button" class="btn btn-info btn-lg btn-block update-imprints" onclick="updateImprints($(this))"><i class="fa fa-pagelines"></i> Update Imprints</button>
+          
         </div>
       </div>
       <div class="form-group box-info">

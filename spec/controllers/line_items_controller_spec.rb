@@ -38,7 +38,7 @@ describe LineItemsController, line_item_spec: true do
           job.line_items << white_shirt_l_item
         end
 
-        it "still succeeds and only adds new ones", pending: "I recall Ricky saying this scenario doesn't matter" do
+        it "still succeeds and only adds new ones", pending: "This fails, but I recall Ricky saying this scenario doesn't matter" do
           post :create, format: :json, job_id: job.id, imprintable_id: shirt.id, color_id: white.id
           json_response = JSON.parse response.body
           expect(json_response['result']).to eq 'success'

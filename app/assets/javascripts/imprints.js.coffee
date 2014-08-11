@@ -86,36 +86,21 @@
     $response = $(response)
     $response.find('select').addClass 'editing-imprint'
     $("#job-#{jobId}").find('.imprints-container').append $response
+    $response.find('.js-delete-imprint-button').click deleteImprint
 
-# TODO js response Nigel
-@deleteImprint = ($btn, jobId) ->
-  console.log "job id: #{jobId} imprintId: #{imprintId}"
-  $jobContainer = $btn.parentsUntil('.job-container').parent()
-  if $jobContainer.data('id') is jobId
-    $container = $btn.parentsUntil('.imprint-entry').parent()
-    imprintId = $container.data('id')
-    killContainer = ->
-      $container.fadeOut -> $container.remove() 
+@deleteImprint = ->
+  $btn = $(this)
+  $container    = $btn.parentsUntil('.imprint-entry').parent()
+  imprintId     = $container.data('id')
 
-    if imprintId is -1
-      killContainer()
-    else
-      $btn.attr 'disabled', 'disabled'
-      setTimeout (-> $btn.removeAttr 'disabled'), 10000
+  if imprintId is -1
+    $container.fadeOut thenRemove $container
+  else
+    ajax = $.ajax
+      type: 'DELETE'
+      url: Routes.imprint_path(imprintId)
+      dataType: 'script'
+    
+    ajax.done eval
 
-      ajax = $.ajax
-        type: 'DELETE'
-        url: Routes.imprint_path(imprintId)
-        dataType: 'json'
-
-      ajax.done (response) ->
-        if response.result is 'success'
-          killContainer()
-          updateOrderTimeline()
-        else
-          alert 'Something strange happened!'
-      ajax.fail (jqXHR, errorText) ->
-        if jqXHR.statusCode is 404
-          killContainer()
-        else
-          errorModal "Either the internet is down, or there was an error in the server."
+  false

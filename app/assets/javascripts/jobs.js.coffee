@@ -53,5 +53,7 @@ jobCollapse = (id, collapsed) ->
   $jobCollapse.on 'show.bs.collapse', onJobCollapseShow
   $jobCollapse.on 'hide.bs.collapse', onJobCollapseHide
 
+  $c.find('.js-delete-imprint-button').click deleteImprint
+
 $(window).load ->
   registerJobEvents($('body'))

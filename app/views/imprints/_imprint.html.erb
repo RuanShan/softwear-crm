@@ -26,9 +26,9 @@
       </div>
 
       <div class="full text-right">
-        <span class="line-item-button" onclick="deleteImprint($(this), <%=job.id%>)">
+        <%= link_to '#', class: 'js-delete-imprint-button' do %>
           <i class="fa fa-2x danger fa-times-circle"></i>
-        </span>
+        <% end %>
       </div>
 
     <% end %>

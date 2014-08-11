@@ -1,4 +1,6 @@
 class ImprintsController < InheritedResources::Base
+  include BatchUpdate
+
   belongs_to :job, shallow: true
 
   %i(create update destroy).each do |action|
@@ -11,6 +13,8 @@ class ImprintsController < InheritedResources::Base
         failure.json do
           render json: { result: 'failure', errors: @imprint.errors.messages }
         end
+        success.js
+        failure.js
       end
     end
   end
@@ -21,6 +25,8 @@ class ImprintsController < InheritedResources::Base
         render partial: 'imprints/imprint', 
                locals: { job: Job.find(params[:job_id]) }
       end
+
+      format.js
     end
   end
 
