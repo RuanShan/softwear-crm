@@ -6,20 +6,14 @@ FactoryGirl.define do
     priority 'Normal'
 
     before(:create) do |artwork_request|
-      # order = create(:order_with_job)
       imprint_method = create(:valid_imprint_method_with_color_and_location)
       artwork_request.artist_id = create(:user).id
       artwork_request.imprint_method_id = imprint_method.id
       artwork_request.salesperson_id = create(:alternate_user).id
       artwork_request.print_location_id = imprint_method.print_locations.first.id
-      # artwork_request.job_ids = order.job_ids
       artwork_request.ink_color_ids = imprint_method.ink_color_ids
       artwork_request.jobs << create(:job)
     end
-
-    # after(:create) do |artwork_request|
-    #
-    # end
 
     factory :valid_artwork_request_with_asset do
       after(:create) { |ar| ar.assets << create(:valid_asset) }
