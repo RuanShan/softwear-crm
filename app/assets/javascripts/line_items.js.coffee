@@ -106,7 +106,6 @@
                           $select_level(4).prepend $response
                           $response.fadeIn()
 
-
   handleImprintableForm $('#li-imprintable-form')
   $lineItemModal.modal 'show'
   $lineItemModal.find('#is_imprintable_no').prop('checked', false)
