@@ -28,4 +28,7 @@ FactoryGirl.define do
       after(:create) { |ar| ar.assets << create(:valid_asset) }
     end
   end
+
+  factory :blank_artwork_request, class: ArtworkRequest do
+  end
 end

@@ -7,4 +7,7 @@ FactoryGirl.define do
       proof.artworks = [create(:valid_artwork)]
     end
   end
+
+  factory :blank_proof, class: Proof do
+  end
 end

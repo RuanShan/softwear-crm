@@ -24,6 +24,5 @@ FactoryGirl.define do
   end
 
   factory :blank_user, class: User do
-
   end
 end

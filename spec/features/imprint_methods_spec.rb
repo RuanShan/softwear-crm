@@ -1,19 +1,20 @@
 require 'spec_helper'
 include ApplicationHelper
 
-feature 'Imprint Method Features', js: true, imprint_methods_spec: true do
+feature 'Imprint Method Features', imprint_method_spec: true do
   given!(:imprint_method) { create(:valid_imprint_method_with_color_and_location) }
   given!(:valid_user) { create(:alternate_user) }
   before(:each) { login_as(valid_user) }
 
   scenario 'A user can view a list of imprint methods' do
     visit root_path
+    unhide_dashboard
     click_link 'Configuration'
     click_link 'Imprint Methods'
     expect(page).to have_css("tr##{model_table_row_id(imprint_method)}")
   end
 
-  scenario 'A user can add an imprint method' do
+  scenario 'A user can add an imprint method', js: true do
     visit imprint_methods_path
     click_link 'Add an Imprint Method'
     fill_in 'Name', with: 'New Imprint Method Name'
@@ -37,7 +38,7 @@ feature 'Imprint Method Features', js: true, imprint_methods_spec: true do
     expect(page).to have_selector('#flash_notice', text: 'Imprint method was successfully updated.')
   end
 
-  scenario 'A user can delete an imprint method' do
+  scenario 'A user can delete an imprint method', js: true do
     visit imprint_methods_path
     find("tr#imprint_method_#{imprint_method.id} a[data-action='destroy']").click
     page.driver.browser.switch_to.alert.accept

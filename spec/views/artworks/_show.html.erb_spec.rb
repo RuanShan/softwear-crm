@@ -1,7 +1,7 @@
 require 'spec_helper'
 
-describe 'artworks/_show.html.erb', artworks_spec: true do
-  let!(:artwork){ create(:valid_artwork) }
+describe 'artworks/_show.html.erb', artwork_spec: true do
+  let!(:artwork){ build_stubbed(:blank_artwork, artist: build_stubbed(:blank_user)) }
 
   before(:each) do
     render partial: 'artworks/show', locals: {artwork: artwork}
@@ -16,5 +16,4 @@ describe 'artworks/_show.html.erb', artworks_spec: true do
     expect(rendered).to include("(#{number_to_human_size(artwork.artwork.file_file_size)})")
     expect(rendered).to have_selector("a[href='#{artwork.preview.file.url}']")
   end
-
 end

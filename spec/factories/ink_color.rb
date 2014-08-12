@@ -3,4 +3,7 @@ FactoryGirl.define do
     name 'Red'
     imprint_method { |ic| ic.association(:valid_imprint_method) }
   end
+
+  factory :blank_ink_color, class: InkColor do
+  end
 end

@@ -1,7 +1,7 @@
 require 'spec_helper'
 include ApplicationHelper
 
-feature 'Artwork Request Features', js: true, artwork_requests_spec: true do
+feature 'Artwork Request Features', js: true, artwork_request_spec: true do
   given!(:artwork_request) { create(:valid_artwork_request) }
   given!(:valid_user) { create(:alternate_user) }
   before(:each) { login_as(valid_user) }
@@ -28,11 +28,10 @@ feature 'Artwork Request Features', js: true, artwork_requests_spec: true do
 
   scenario 'A user can add an artwork request' do
     visit "/orders/#{artwork_request.jobs.first.order.id}/edit#artwork"
-    page.find('#new_artwork_request').click
+    page.find("a[href='#{new_order_artwork_request_path(artwork_request.jobs.first.order)}']").click
     sleep 0.5
     page.find('div.chosen-container').click
     page.find('li.active-result').click
-    sleep 0.5
     page.find_by_id('artwork_imprint_method_fields').find("option[value='#{artwork_request.imprint_method.id}']").click
     sleep 0.5
     page.find_by_id('imprint_method_print_locations').find("option[value='#{artwork_request.print_location.id}']").click
@@ -42,7 +41,6 @@ feature 'Artwork Request Features', js: true, artwork_requests_spec: true do
     find(:css, "div[class='note-editable'").set('hello')
     click_button 'Create Artwork Request'
     expect(page).to have_selector('.modal-content-success')
-    sleep 0.5
     find(:css, 'button.close').click
     expect(ArtworkRequest.where(description: 'hello')).to exist
     expect(page).to have_css("div#artwork-request-#{artwork_request.id}")
@@ -53,10 +51,8 @@ feature 'Artwork Request Features', js: true, artwork_requests_spec: true do
     find("a[href='/orders/1/artwork_requests/#{artwork_request.id}/edit']").click
     find(:css, "div[class='note-editable'").set('edited')
     select 'Normal', from: 'Priority'
-    sleep 0.5
     click_button 'Update Artwork Request'
     expect(page).to have_selector('.modal-content-success')
-    sleep 0.5
     find(:css, "button.close").click
     expect(ArtworkRequest.where(description: 'edited')).to exist
   end
@@ -65,7 +61,6 @@ feature 'Artwork Request Features', js: true, artwork_requests_spec: true do
     visit "/orders/#{artwork_request.jobs.first.order.id}/edit#artwork"
     click_link 'Delete'
     expect(page).to have_selector('.modal-content-success')
-    sleep 0.5
     find(:css, 'button.close').click
     expect(ArtworkRequest.where(id: artwork_request.id)).to_not exist
     expect(page).to_not have_css("div#artwork-request-#{artwork_request.id}")

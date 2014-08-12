@@ -10,4 +10,7 @@ FactoryGirl.define do
       artwork.artwork.description = create(:valid_asset).description
     end
   end
+
+  factory :blank_artwork, class: Artwork do
+  end
 end

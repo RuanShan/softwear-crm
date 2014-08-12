@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe 'artworks/index.html.erb', artworks_spec: true do
+describe 'artworks/index.html.erb', artwork_spec: true do
   let!(:artworks){ [create(:valid_artwork)] }
 
   it 'renders _table.html.erb and _search.html.erb' do
@@ -11,5 +11,4 @@ describe 'artworks/index.html.erb', artworks_spec: true do
     expect(rendered).to render_template(partial: '_table')
     expect(rendered).to render_template(partial: '_search')
   end
-
 end

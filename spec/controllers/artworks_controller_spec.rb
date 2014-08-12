@@ -1,7 +1,7 @@
 require 'spec_helper'
 include ApplicationHelper
 
-describe ArtworksController, js: true, artworks_spec: true do
+describe ArtworksController, js: true, artwork_spec: true do
 
   let!(:artwork){ create(:valid_artwork) }
   let!(:valid_user) { create :alternate_user }
