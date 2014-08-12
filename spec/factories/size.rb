@@ -12,6 +12,7 @@ FactoryGirl.define do
     }
     sequence(:sort_order) { |n| n }
   end
-
+  factory :blank_size, class: Size do
+  end
 
 end

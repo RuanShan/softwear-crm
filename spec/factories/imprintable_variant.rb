@@ -18,4 +18,7 @@ FactoryGirl.define do
     size { |s| s.association(:valid_size) }
     imprintable { |i| i.association(:valid_imprintable) }
   end
+
+  factory :blank_imprintable_variant, class: ImprintableVariant do
+  end
 end

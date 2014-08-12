@@ -1,19 +1,22 @@
 require 'spec_helper'
 
 describe Payment, payment_spec: true do
+
+  it { is_expected.to be_paranoid }
+
   describe 'Relationship' do
-    it { should belong_to(:order) }
-    it { should belong_to(:store) }
-    it { should belong_to(:user).with_foreign_key(:salesperson_id) }
+    it { is_expected.to belong_to(:order) }
+    it { is_expected.to belong_to(:store) }
+    it { is_expected.to belong_to(:user).with_foreign_key(:salesperson_id) }
   end
 
   describe 'Validations' do
-    it { should validate_presence_of(:store) }
+    it { is_expected.to validate_presence_of(:store) }
   end
 
   describe '#is_refunded?' do
     context 'the payment has been refunded' do
-      let!(:refunded_payment) { create(:refunded_payment) }
+      let(:refunded_payment) { build_stubbed(:blank_payment, refunded: true, refund_reason: 'reason') }
       it 'returns true' do
         expect(refunded_payment.is_refunded?).to be_truthy
         expect(refunded_payment.refund_reason).to_not be_nil
@@ -21,7 +24,7 @@ describe Payment, payment_spec: true do
     end
 
     context 'the payment has not been refunded' do
-      let!(:payment) { create(:valid_payment) }
+      let(:payment) { build_stubbed(:blank_payment) }
       it 'returns false' do
         expect(payment.is_refunded?).to be_falsey
         expect(payment.refund_reason).to be_nil

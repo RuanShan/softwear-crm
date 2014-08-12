@@ -8,4 +8,7 @@ FactoryGirl.define do
     name nil
     sku nil
   end
+  factory :blank_brand, class: Brand do
+
+  end
 end

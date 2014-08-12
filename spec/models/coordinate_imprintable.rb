@@ -1,20 +1,23 @@
 require 'spec_helper'
 
 describe CoordinateImprintable, imprintable_spec: true, coordinate_imprintable_spec: true do
+
+  it { is_expected.to be_paranoid }
+
   describe 'Relationships' do
-    it { should belong_to(:imprintable) }
-    it { should belong_to(:coordinate).class_name('Imprintable') }
+    it { is_expected.to belong_to(:coordinate).class_name('Imprintable') }
+    it { is_expected.to belong_to(:imprintable) }
   end
 
   describe 'Validations' do
-    it { should validate_presence_of(:imprintable) }
-    it { should validate_presence_of(:coordinate) }
+    it { is_expected.to validate_presence_of(:coordinate) }
+    it { is_expected.to validate_presence_of(:imprintable) }
   end
 
   describe '#add_mirror' do
     context 'there are 2 different imprintables' do
-      let!(:imprintable_one) { create(:valid_imprintable) }
-      let!(:imprintable_two) { create(:valid_imprintable) }
+      let!(:imprintable_one) { build_stubbed(:blank_imprintable) }
+      let!(:imprintable_two) { build_stubbed(:blank_imprintable) }
 
       it 'creates a mirrored version of the imprintable' do
         CoordinateImprintable.create(coordinate: imprintable_one, imprintable: imprintable_two)
@@ -40,7 +43,7 @@ describe CoordinateImprintable, imprintable_spec: true, coordinate_imprintable_s
     end
 
     describe '#destroy_mirror' do
-      it 'should destroy both the mirror and the original' do
+      it 'destroys both the mirror and the original' do
         coordinate.destroy
         expect(CoordinateImprintable.find_by(imprintable: coordinate.imprintable)).to be_nil
         expect(CoordinateImprintable.find_by(coordinate: coordinate.imprintable)).to be_nil

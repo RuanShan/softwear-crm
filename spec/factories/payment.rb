@@ -12,4 +12,7 @@ FactoryGirl.define do
     refunded true
     refund_reason 'for testing purposes'
   end
+  factory :blank_payment, class: Payment do
+
+  end
 end

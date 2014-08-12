@@ -3,6 +3,8 @@ class Order < ActiveRecord::Base
 
   acts_as_paranoid
 
+  is_activity_recipient
+
   searchable do
     text :name, :email, :firstname, :lastname, 
          :company, :twitter, :terms, :delivery_method
@@ -43,10 +45,22 @@ class Order < ActiveRecord::Base
     'Ship to multiple locations'
   ]
 
-  #TODO: custom validators for phone and email??
-  #TODO: shouldn't validate salesperson_id, but rather salesperson??
-  #      could make relation like artwork_request?
-  validates :delivery_method, presence: true
+  belongs_to :salesperson, class_name: User
+  belongs_to :store
+  has_many :artwork_requests, through: :jobs
+  has_many :jobs
+  has_many :payments
+  has_many :proofs
+
+  accepts_nested_attributes_for :payments
+
+  #TODO: custom validator for phone?
+  validates :delivery_method,
+            presence: true,
+            inclusion: {
+                in: VALID_DELIVERY_METHODS,
+                message: 'Invalid delivery method'
+            }
   validates :email, 
             presence: true, 
             format: { with: /\A([^@\s]+)@((?:[-a-z0-9]+\.)+[a-z]{2,})\Z/i }
@@ -58,29 +72,14 @@ class Order < ActiveRecord::Base
               with: /\d{3}-\d{3}-\d{4}/, 
               message: 'is incorrectly formatted, use 000-000-0000' 
             }
-  validates :salesperson_id, presence: true
+  validates :salesperson, presence: true
   validates :store, presence: true
   validates :tax_id_number, presence: true, if: :tax_exempt?
   validates :terms, presence: true
-  validates :delivery_method,
-            inclusion: {
-              in: VALID_DELIVERY_METHODS,
-              message: 'Invalid delivery method'
-            }
-
-  belongs_to :store
-  belongs_to :user, :foreign_key => :salesperson_id
-  has_many :artwork_requests, through: :jobs
-  has_many :jobs
-  has_many :payments
-  has_many :proofs
-  accepts_nested_attributes_for :payments
-
-  is_activity_recipient
 
   def balance
     total - payment_total
-  end
+end
 
   def get_salesperson_id(id, current_user)
     id ? Order.find(id).salesperson_id : current_user.id
@@ -124,11 +123,6 @@ class Order < ActiveRecord::Base
     payment_total / total * 100
   end
 
-  # TODO belongs_to instead?
-  def salesperson
-    User.find(salesperson_id)
-  end
-
   def salesperson_name
     User.find(salesperson_id).full_name
   end
@@ -138,7 +132,7 @@ class Order < ActiveRecord::Base
   end
 
   def tax
-    0.6
+    0.06
   end
 
   def total

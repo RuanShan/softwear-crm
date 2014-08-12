@@ -4,22 +4,21 @@ include ApplicationHelper
 
 feature 'Imprintable Variant Management', js: true, imprintable_variant_spec: true do
   given!(:valid_user) { create(:alternate_user) }
-  before (:each) do
-    login_as(valid_user)
-  end
-
   given!(:color) { create(:valid_color) }
   given!(:size) { create(:valid_size) }
 
-  context 'There are no imprintable variants' do
+  before(:each) { login_as(valid_user) }
 
+  context 'There are no imprintable variants' do
     given!(:imprintable) { create(:valid_imprintable) }
 
     scenario 'A user can create an initial size and color' do
       visit edit_imprintable_path imprintable.id
+
       select_from_chosen(color.id, from: 'color_ids')
       select_from_chosen(size.id, from: 'size_ids')
       find('#submit_button').click
+
       expect(page).to have_selector '.modal-content-success', text: 'Imprintable was successfully updated.'
       expect(ImprintableVariant.where(color_id: color.id)).to_not be_nil
       expect(ImprintableVariant.where(size_id: size.id)).to_not be_nil
@@ -28,7 +27,6 @@ feature 'Imprintable Variant Management', js: true, imprintable_variant_spec: tr
   end
 
   context 'There is an imprintable invariant' do
-
     given!(:imprintable_variant) { create(:valid_imprintable_variant) }
 
     before(:each) do
