@@ -23,11 +23,11 @@ class LancengFormBuilder < ActionView::Helpers::FormBuilder
   %i(text_field password_field text_area
      number_field check_box).each do |method_name|
     class_eval <<-RUBY, __FILE__, __LINE__ + 1
-      def #{method_name}(field, options = {})
+      def #{method_name}(field, options = {}, *args)
         add_class options, 'form-control'
         #{"add_class options, 'number_field'" if method_name == :number_field}
 
-        super(field, options)
+        super(field, options, *args)
       end
     RUBY
   end
