@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 describe 'artworks/_table.html.erb', artworks_spec: true do
-  let!(:artworks){ [create(:valid_artwork)] }
+  let!(:artworks){ [build_stubbed(:blank_artwork, artist: build_stubbed(:blank_user))] }
 
   before(:each) do
     render partial: 'artworks/table', locals: { artworks: artworks }
@@ -21,5 +21,4 @@ describe 'artworks/_table.html.erb', artworks_spec: true do
   it 'should render _row.html.erb for every artwork, regardless of artwork_request being defined' do
     expect(rendered).to render_template(partial: '_row')
   end
-
 end

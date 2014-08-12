@@ -8,6 +8,7 @@ feature 'Imprint Method Features', js: true, imprint_methods_spec: true do
 
   scenario 'A user can view a list of imprint methods' do
     visit root_path
+    unhide_dashboard
     click_link 'Configuration'
     click_link 'Imprint Methods'
     expect(page).to have_css("tr##{model_table_row_id(imprint_method)}")

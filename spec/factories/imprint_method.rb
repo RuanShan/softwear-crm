@@ -7,4 +7,7 @@ FactoryGirl.define do
       after(:create) {|pl| create(:valid_print_location, imprint_method_id: pl.id)}
     end
   end
+
+  factory :blank_imprint_method, class: ImprintMethod do
+  end
 end

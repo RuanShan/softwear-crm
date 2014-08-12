@@ -1,6 +1,5 @@
 <td><%= ArtworkRequest::PRIORITIES[artwork_request.priority.to_i] %></td>
 <td><%= link_to artwork_request.jobs.first.order.name, edit_order_path("#{artwork_request.jobs.first.order.id}/#artwork") %></td>
-<% #TODO: Model call above %>
 <td><%= display_time(artwork_request.deadline) %></td>
 <td><%= display_time(artwork_request.jobs.first.order.in_hand_by) %></td>
 <td><%= artwork_request.total_quantity %></td>

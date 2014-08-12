@@ -1,7 +1,7 @@
 require 'spec_helper'
 include ApplicationHelper
 
-describe Asset, asset_spec: true do
+describe Asset, assets_spec: true do
 
   it { is_expected.to be_paranoid }
   
