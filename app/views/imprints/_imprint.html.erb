@@ -1,4 +1,5 @@
-<div class="col-sm-4 imprint-entry" data-id="<%= local_assigns[:imprint].try(:id) || -1 %>">
+<% select_field_name_for = method(:imprint_select_field_name_for).to_proc.curry.(local_assigns[:imprint]) %>
+<div class="col-sm-4 imprint-entry" data-id="<%= local_assigns[:imprint].try(:id) || increment_new_imprint_counter %>">
   <div class="box-info imprint-container">
   <% if ImprintMethod.all.empty? %>
     <p>
@@ -14,6 +15,7 @@
               ImprintMethod.first.print_locations
             end,
 
+          name: select_field_name_for.(:print_location_id),
           default: local_assigns[:imprint].try(:print_location).try(:id)
         } %>
       </div>
@@ -22,13 +24,13 @@
         <%= label_tag :imprint_method %>
         <%= select_tag :imprint_method, options_from_collection_for_select(
           ImprintMethod.all, :id, :name, local_assigns[:imprint_method].try(:id)
-        ), class: 'form-control', onchange: "imprintMethodSelected($(this))" %>
+        ), class: 'form-control js-imprint-method-select' %>
       </div>
 
       <div class="full text-right">
-        <span class="line-item-button" onclick="deleteImprint($(this), <%=job.id%>)">
+        <%= link_to '#', class: 'js-delete-imprint-button' do %>
           <i class="fa fa-2x danger fa-times-circle"></i>
-        </span>
+        <% end %>
       </div>
 
     <% end %>

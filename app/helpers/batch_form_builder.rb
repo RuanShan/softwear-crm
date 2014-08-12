@@ -14,15 +14,6 @@ class BatchFormBuilder < LancengFormBuilder
         )
       end
     RUBY
-    # def text_field(field, options = {})
-    #   add_class options, 'form-control'
-    # 
-    #   @template.text_field_tag(
-    #     field_name(field),
-    #     @object.try(field),
-    #     with_common_attrs(options)
-    #   )
-    # end
   end
 
   def select(method, *other_args)

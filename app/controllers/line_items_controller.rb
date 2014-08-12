@@ -1,7 +1,9 @@
 class LineItemsController < InheritedResources::Base
+  include BatchUpdate
   include LineItemHelper
 
-  before_filter :load_line_itemable, except: [:select_options, :destroy, :update]
+  before_filter :load_line_itemable, 
+                except: [:select_options, :destroy, :update]
   after_filter :assign_line_itemable, only: [:create]
 
   def new
@@ -87,19 +89,8 @@ class LineItemsController < InheritedResources::Base
   end
 
   def update
-    params.permit(:line_item).permit!
-
-    line_item_attributes = params[:line_item].to_hash
-    @line_items = line_item_attributes.keys.map(&LineItem.method(:find))
-
-    @line_items.each do |line_item|
-      line_item.update_attributes(line_item_attributes[line_item.id.to_s])
-    end
-
-    respond_to do |format|
-      format.html do
-        redirect_to root_path
-      end
+    batch_update do |format|
+      format.html { redirect_to root_path }
       format.js
     end
   end
@@ -282,7 +273,8 @@ private
   end
 
   def entry_partial(kind)
-    @line_item.imprintable? ? 'imprintable_edit_entry' : "standard_#{kind}_entry"
+    return 'imprintable_edit_entry' if @line_item.imprintable?
+    "standard_#{kind}_entry"
   end
 
   def line_item_locals(edit = false)

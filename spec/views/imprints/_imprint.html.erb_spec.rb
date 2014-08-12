@@ -31,7 +31,7 @@ describe 'imprints/_imprint.html.erb', order_spec: true, imprint_spec: true do
     it 'should render a select box for imprint methods and print locations' do
       render partial: 'imprints/imprint', locals: { job: job, imprint_method: imprint_method }
       expect(rendered).to have_css 'select[name="imprint_method"]'
-      expect(rendered).to have_css 'select[name="print_location"]'
+      expect(rendered).to have_css 'select[name*="print_location"]'
     end
 
     it 'should render the local imprint method as the default option' do

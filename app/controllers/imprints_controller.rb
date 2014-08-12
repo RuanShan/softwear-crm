@@ -1,7 +1,9 @@
 class ImprintsController < InheritedResources::Base
+  include BatchUpdate
+
   belongs_to :job, shallow: true
 
-  %i(create update destroy).each do |action|
+  %i(create destroy).each do |action|
     define_method action do
       send("#{action}!") do |success, failure|
         success.json do
@@ -11,6 +13,8 @@ class ImprintsController < InheritedResources::Base
         failure.json do
           render json: { result: 'failure', errors: @imprint.errors.messages }
         end
+        success.js
+        failure.js
       end
     end
   end
@@ -21,6 +25,8 @@ class ImprintsController < InheritedResources::Base
         render partial: 'imprints/imprint', 
                locals: { job: Job.find(params[:job_id]) }
       end
+
+      format.js
     end
   end
 
@@ -35,10 +41,19 @@ class ImprintsController < InheritedResources::Base
     end
   end
 
+  def update
+    @job = Job.find(params[:job_id])
+    batch_update(create_negatives: true, parent: @job) do |format|
+      format.js
+    end
+  end
+
   private
 
   def permitted_params
-    params.permit(:job_id, :id,
-                  imprint: [:print_location_id, :job_id])
+    params.permit(
+      :job_id, :id,
+      imprint: [:print_location_id, :job_id]
+    )
   end
 end
