@@ -30,7 +30,7 @@ gem 'jquery-rails'
 # Used to beautify rails console output, type Hirb.enable after entering rails console to use
 gem 'hirb', '~> 0.7.1'
 
-# Makes it so save_and_open_page
+# Makes it so save_and_open_page automatically opens page
 gem 'launchy', '~> 2.4.2'
 
 # For token inputs

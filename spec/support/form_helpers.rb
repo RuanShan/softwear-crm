@@ -2,6 +2,12 @@ require 'rspec/expectations'
 
 module FormHelpers
 
+  def expect_field_within_form(table, field)
+    within_form_for table, noscope: true do
+      expect(rendered).to have_field_for field
+    end
+  end
+
   def within_form_for(model, options={})
     if model.is_a? ActiveRecord::Base
       @@model_id = model.id
