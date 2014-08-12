@@ -20,19 +20,8 @@ class LancengFormBuilder < ActionView::Helpers::FormBuilder
     super method, choices, o, options
   end
   # Super efficient mass method reassignment, go!
-  %i(text_field password_field text_area number_field check_box)
-      .each do |method_name|
-#    alias_method "original_#{method_name}".to_sym, method_name
-#
-#    define_method method_name do |*args|
-#      options = args.size == 2 ? args.last : {}
-#
-#      add_class options, 'form-control'
-#      add_class(options, 'number_field') if method_name == :number_field
-#
-#      send("original_#{method_name}".to_sym, args.first, options)
-#    end
-
+  %i(text_field password_field text_area
+     number_field check_box).each do |method_name|
     class_eval <<-RUBY, __FILE__, __LINE__ + 1
       def #{method_name}(field, options = {})
         add_class options, 'form-control'
@@ -69,8 +58,6 @@ class LancengFormBuilder < ActionView::Helpers::FormBuilder
     @template.inline_field_tag(@object, method, default_or_options, options)
   end
 
-  # Gives you a checkbox with a textfield attached to it.
-  # Useful for a condition and a reason
   def check_box_with_text_field(check_method, text_method, options = {})
     @template.content_tag(:div, class: 'input-group') do
       add_class options, 'form-control'

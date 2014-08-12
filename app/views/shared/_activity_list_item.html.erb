@@ -3,9 +3,14 @@
     <span><%= activity.created_at.strftime('%d') %></span>
     <small><%= activity.created_at.strftime('%b') %></small>
   </div>
+
   <h4><%= activity.owner ? link_to(activity.owner.full_name, activity.owner) : 'A script' %></h4>
+
   <p>
-      <%= render_activity activity %>
+    <%= render_activity activity %>
   </p>
-  <p class="time"><%= activity.created_at.strftime('%Y-%m-%d %I:%M%p') %></p>
+
+  <p class="time">
+    <%= display_time(activity.created_at) %>
+  </p>
 </li>

@@ -26,7 +26,7 @@ describe ArtistMailer do
     it 'assigns @artwork_request' do
       expect(mailer.body.encoded).to match(artwork_request.imprint_method.name)
       expect(mailer.body.encoded).to match(artwork_request.print_location.name)
-      expect(mailer.body.encoded).to match(artwork_request.deadline.strftime('%b %d, %Y, %I:%M %p'))
+      expect(mailer.body.encoded).to match(display_time(artwork_request.deadline))
     end
 
     it 'assigns @action_name' do

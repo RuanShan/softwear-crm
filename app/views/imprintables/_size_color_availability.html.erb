@@ -1,28 +1,31 @@
 <div class="user-profile-content">
   <div class="box-info full">
-      <div class="table-responsive">
-        <table class="table table-hover">
-          <thead>
+    <div class="table-responsive">
+      <table class="table table-hover">
+        <thead>
+        <tr>
+          <th></th>
+          <% size_variants.each do |s| %>
+            <th><%= s.size.display_value %></th>
+          <% end %>
+        </tr>
+        </thead>
+        <tbody>
+        <% color_variants.sort!{ |x,y| x.name <=> y.name }.each do |c| %>
           <tr>
-            <th></th>
+            <td><%= c.color.name %></td>
             <% size_variants.each do |s| %>
-              <th><%= s.size.display_value %></th>
+              <% v = variants_array.find { |v| (v.color_id == c.color.id) && (v.size_id == s.size.id) } %>
+              <td>
+                <% if v %>
+                  <i class="fa fa-check-square"></i>
+                <% end %>
+              </td>
             <% end %>
           </tr>
-          </thead>
-          <tbody>
-          <% color_variants.sort!{ |x,y| x.name <=> y.name }.each do |c| %>
-            <tr>
-              <td><%= c.color.name %></td>
-              <% size_variants.each do |s| %>
-                <% v = variants_array.find { |v| (v.color_id == c.color.id) && (v.size_id == s.size.id) } %>
-                <td><% if v %><i class="fa fa-check-square"></i><% end %></td>
-              <% end %>
-            </tr>
-          <% end %>
-          </tbody>
-        </table>
-      </div>
-
+        <% end %>
+        </tbody>
+      </table>
+    </div>
   </div>
 </div>

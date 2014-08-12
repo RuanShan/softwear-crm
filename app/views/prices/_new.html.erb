@@ -1,12 +1,13 @@
 <div class="box-info full">
-  <%= form_tag({ controller: :prices, action: :create }, remote: true ) do %>
+  <%= form_tag({ controller: :prices, action: :create }, remote: true) do %>
     <div class="box-info">
-
       <div class="form-group clearfix">
-        <label class="col-sm-4 control-label" for="decoration_price">Decoration Price</label>
+        <label class="col-sm-4 control-label" for=".">Decoration Price</label>
+
         <div class="col-sm-8">
           <div class="input-group">
             <span class="input-group-addon">$</span>
+
             <%= text_field_tag :decoration_price, nil, placeholder: 'Enter decoration price..', class: 'form-control' %>
           </div>
           <p class="help-block">The decoration price of the imprintable</p>
@@ -18,7 +19,7 @@
 
     <div class="form-group clearfix">
       <div class="col-sm-offset-2 col-sm-8">
-        <button type="submit" id="price_submit_button" class="btn btn-info">Fetch Prices!</button>
+        <button type="submit" class="btn btn-info">Fetch Prices!</button>
       </div>
     </div>
   <% end %>

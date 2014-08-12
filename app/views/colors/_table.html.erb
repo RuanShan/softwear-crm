@@ -1,4 +1,3 @@
-
 <div class="box-info full">
   <div class="table-responsive">
     <table class="table table-hover" id="colors_list">
@@ -10,18 +9,21 @@
       </thead>
       <tbody>
       <% colors.each do |color| %>
-          <tr id="<%= model_table_row_id color %>">
-            <td><%= color.name %></td>
-            <td><%= color.sku %></td>
-            <td>
-              <div class="btn-group btn-group-xs">
-                <%= link_to edit_color_path(color), 'data-action' => 'edit', 'data-toggle' => 'tooltip', 'title' => 'Edit', class: 'btn btn-default' do %>
-                  <i class="fa fa-edit"></i>
-                <% end %>
-                <%= link_to color_path(color), 'data-action' => 'destroy', 'data-toggle' => 'tooltip', 'title' => 'Destroy', class: 'btn btn-default', method: :delete, data: {confirm: 'Are you sure you would like to delete the color?'} do %><i class="fa fa-times"></i><% end %>
-              </div>
-            </td>
-          </tr>
+        <tr id="<%= model_table_row_id color %>">
+          <td><%= color.name %></td>
+          <td><%= color.sku %></td>
+          <td>
+            <div class="btn-group btn-group-xs">
+              <%= link_to edit_color_path(color), 'data-action' => 'edit', 'data-toggle' => 'tooltip', 'title' => 'Edit', class: 'btn btn-default' do %>
+                <i class="fa fa-edit"></i>
+              <% end %>
+
+              <%= link_to color_path(color), 'data-action' => 'destroy', 'data-toggle' => 'tooltip', 'title' => 'Destroy', class: 'btn btn-default', data: { confirm: 'Are you sure you would like to delete the color?' }, method: :delete do %>
+                <i class="fa fa-times"></i>
+              <% end %>
+            </div>
+          </td>
+        </tr>
       <% end %>
       </tbody>
     </table>

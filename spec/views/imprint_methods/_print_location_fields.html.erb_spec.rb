@@ -9,7 +9,7 @@ describe 'imprint_methods/_print_location_fields.html.erb', imprint_methods_spec
     expect(rendered).to have_selector("input[id^='imprint_method_print_locations_attributes_'][id$='_name']")
     expect(rendered).to have_selector("input[id^='imprint_method_print_locations_attributes_'][id$='_max_height']")
     expect(rendered).to have_selector("input[id^='imprint_method_print_locations_attributes_'][id$='_max_width']")
-    expect(rendered).to have_selector("a.remove_fields")
-    expect(rendered).to have_selector("div.removeable")
+    expect(rendered).to have_selector("a.js-remove-fields")
+    expect(rendered).to have_selector("div.js-removeable")
   end
 end

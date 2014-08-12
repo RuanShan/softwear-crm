@@ -6,6 +6,7 @@ describe 'imprintables/_grid.html.erb', imprintable_variant_spec: true do
       imprintable = Imprintable.new
 
       f = LancengFormBuilder.dummy_for imprintable
+      assign(:model_collection_hash, { color_collection: [], size_collection: [] } )
       render partial: 'grid', locals: { imprintable: imprintable, f: f, size_variants: [],
                                         color_variants: [], variants_array: [] }
       within_form_for ImprintableVariant, noscope: true do
@@ -20,6 +21,7 @@ describe 'imprintables/_grid.html.erb', imprintable_variant_spec: true do
     it 'has a table containing size columns and color rows' do
       imprintable_variant = FactoryGirl.create(:valid_imprintable_variant)
       f = LancengFormBuilder.dummy_for :imprintable
+      assign(:model_collection_hash, { color_collection: [], size_collection: [] } )
       render partial: 'grid', locals: { imprintable: imprintable_variant.imprintable, imprintable_variant: imprintable_variant, f: f,
                                         size_variants: [imprintable_variant], color_variants: [imprintable_variant],
                                         variants_array: [imprintable_variant] }

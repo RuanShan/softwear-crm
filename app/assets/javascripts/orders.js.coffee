@@ -1,11 +1,3 @@
-jQuery ->
-  #TODO make global exists in quotes
-  $("#myWizard").easyWizard
-    buttonsClass: "btn btn-default"
-    submitButtonClass: "btn btn-primary"
-
-  return
-
 # Calling this when asynchronously changing order related data would be nice.
 @updateOrderTimeline = ->
   return if $('#order-page').length is 0
@@ -87,7 +79,3 @@ $(window).load ->
                     offsetTop: 300}, ->
                       shine $imprint, false, 2000
                       shined = true
-
-#TODO use global datetimepicker
-  $('#datetimepicker1').datetimepicker()
-

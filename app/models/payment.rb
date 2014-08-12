@@ -10,7 +10,6 @@ class Payment < ActiveRecord::Base
 
   validates :store, presence: true
 
-  # TODO: make sure this works as opposed to self.refunded == true
   def is_refunded?
     refunded
   end

@@ -12,6 +12,16 @@ class ApplicationController < ActionController::Base
 
   protected
 
+  def format_time(input_time)
+    begin
+      time_zone = Time.zone.now.strftime('%Z')
+      utc_time = DateTime.strptime("#{input_time} #{time_zone}", '%m/%d/%Y %l:%M %p %Z').to_time.utc
+      return utc_time
+    rescue ArgumentError
+      return input_time
+    end
+  end
+
   def configure_user_parameters
     devise_parameter_sanitizer.for(:sign_up) do |u|
       u.permit :email, :firstname, :lastname

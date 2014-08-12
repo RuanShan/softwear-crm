@@ -10,7 +10,7 @@
 // Read Sprockets README (https://github.com/sstephenson/sprockets#sprockets-directives) for details
 // about supported directives.
 
-//= require jquery
+//= require jquery/jquery.js
 //= require jquery_ujs
 //= require slimscroll/jquery.slimscroll
 //= require summernote/summernote
@@ -20,9 +20,14 @@
 //= require datepicker/bootstrap-datepicker
 //= require icheck/icheck
 //= require wizard/jquery.easyWizard
-//= require jquery.maskedinput.min.js
+//= require jquery/jquery.maskedinput.min.js
 //= require chosen-jquery
 //= require_tree .
+//= require bigdecimal/bigdecimal-all-last.min.js
+//= require bootstrap/bootstrap
+//= require_tree ../../../vendor/assets/javascripts/jquery/.
+//= require lanceng/lanceng
+//= require table-fixed-header/table-fixed-header
 //= require js-routes
 //= require moment
 //= require bootstrap-datetimepicker/bootstrap-datetimepicker

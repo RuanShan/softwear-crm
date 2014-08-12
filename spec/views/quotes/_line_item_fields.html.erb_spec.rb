@@ -15,7 +15,7 @@ describe 'quotes/_line_item_fields.html.erb', quote_spec: true do
   end
 
   it 'should display all of the basic information regarding the imprintable' do
-    expect(rendered).to have_css('a.remove_fields', text: 'Remove Line Item')
+    expect(rendered).to have_css('a.js-remove-fields', text: 'Remove Line Item')
   end
 
   it 'should have have labels for line item attributes' do

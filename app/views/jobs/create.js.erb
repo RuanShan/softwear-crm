@@ -1,7 +1,8 @@
 disableFor('.js-new-job', 1000);
 
 <% if @job.valid? %>
-  $newJob = $("<%= escape_javascript render partial: 'job', locals: { job: @job } %>");
+
+  $newJob = $("<%= escape_javascript(render partial: 'job', locals: { job: @job }).html_safe %>");
 
   $('#jobs').children().last().before($newJob);
 
@@ -16,4 +17,5 @@ disableFor('.js-new-job', 1000);
 <% else %>
   
   errorModal("Sorry, looks like the server had trouble creating the job.");
+
 <% end %>

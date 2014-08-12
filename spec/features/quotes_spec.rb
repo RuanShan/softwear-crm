@@ -73,11 +73,12 @@ feature 'Quotes management', quote_spec: true, js: true do
     expect(current_path).to eq(edit_quote_path quote.id)
   end
 
-  scenario 'A user can generate a quote from an imprintable pricing dialog' do
+  scenario 'A user can generate a quote from an imprintable pricing dialog', wip: true do
     visit imprintables_path
     decoration_price = 3.75
     find('i.fa.fa-dollar').click
-    fill_in 'Decoration Price', with: decoration_price
+    sleep 0.5
+    find(:css, "input#decoration_price").set(decoration_price)
     click_button 'Fetch Prices!'
     click_link 'Create Quote from Table'
     fill_in 'Email', with: 'something@somethingelse.com'
@@ -91,22 +92,23 @@ feature 'Quotes management', quote_spec: true, js: true do
     sleep 0.5
     expect(page).to have_css("input[value='#{ imprintable.name }']")
     expect(page).to have_css("input[value='#{ imprintable.base_price + decoration_price }']")
-    fill_in 'Description', with: 'Gaga can\'t handle this shit'
+    fill_in 'Description', with: 'Description'
     fill_in 'Quantity', with: '1'
     click_button 'Submit'
     expect(page).to have_selector '.modal-content-success', text: 'Quote was successfully created.'
     expect(current_path).to eq(quote_path(quote.id + 1))
   end
 
-  scenario 'A user can add a single price from the pricing table to an existing quote', retry: 2 do
+  scenario 'A user can add a single price from the pricing table to an existing quote', retry: 2, wip: true  do
     visit imprintables_path
     find("#pricing_button_#{imprintable.id}").click
-    fill_in 'Decoration Price', with: 3.95
+    find(:css, "input#decoration_price").set(3.95)
     click_button 'Fetch Prices!'
     click_link 'Add to Quote'
     page.select quote.name, from: 'quote_id'
     sleep 0.5
     click_button 'Submit'
+    sleep 1
     expect(current_path).to eq(edit_quote_path quote.id)
     find('a[href="#line_items"]').click
     expect(page).to have_content(imprintable.name)

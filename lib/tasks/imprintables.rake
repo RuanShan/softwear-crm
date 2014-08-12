@@ -233,19 +233,23 @@ namespace :imprintables do
     CSV.foreach('tmp/size-color-info.csv', headers: true) do |row|
       if Imprintable.exists?
         imprintable = Imprintable.find(row['id'])
-        colors = []
-        sizes = []
+
+        from_hash = {}
+        from_hash[:colors] = []
+        from_hash[:sizes] = []
+
         color_names = row['colors'].split('!')
         size_display_values = row['sizes'].split('!')
 
         size_display_values.each do |size_display_value|
-          sizes << Size.find_by(display_value: size_display_value)
+          from_hash[:sizes] << Size.find_by(display_value: size_display_value)
         end
 
         color_names.each do |color_name|
-          colors << Color.find_or_create_by(name: color_name)
+          from_hash[:colors] << Color.find_or_create_by(name: color_name)
         end
-        imprintable.create_imprintable_variants_from_sizes_and_colors(sizes, colors)
+        # imprintable.create_imprintable_variants_from_sizes_and_colors(sizes, colors)
+        imprintable.create_imprintable_variants(from_hash)
       else
         puts "Cannot find imprintable #{row['id']} '#{row['style']}'"
       end

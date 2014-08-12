@@ -1,37 +1,58 @@
 <div class="user-profile-content">
   <dl>
-    <dt>Material</dt>
-    <dd><%= imprintable.material %></dd>
-    <br />
-    <dt>Weight</dt>
-    <dd><%= imprintable.weight %></dd>
-    <br />
-    <dt>Max Imprint Width</dt>
-    <dd><%= imprintable.max_imprint_width %></dd>
-    <br />
-    <dt>Max Imprint Height</dt>
-    <dd><%= imprintable.max_imprint_height %></dd>
-    <br />
-    <dt>Colors Offered (<%= imprintable.colors.size %>)</dt>
-    <dd><%= table_entries(imprintable.colors) %></dd>
-    <br />
-    <dt>Sizes Offered (<%= imprintable.sizes.size %>)</dt>
-    <dd><%= table_entries(imprintable.sizes) %></dd>
-    <br />
-    <dt>Sample Locations</dt>
-    <dd><%= imprintable.sample_locations.map{ |sl| sl.name }.join(', ') %></dd>
-    <br />
-    <dt>Tags</dt>
-    <dd><%= imprintable.tag_list.join(', ') %></dd>
-    <br />
-    <dt>Description</dt>
-    <dd><%= raw imprintable.description %></dd>
-    <br />
-    <dt>Coordinates</dt>
-    <dd><%= imprintable.coordinates.map { |coordinate| coordinate.name }.join(', ') %></dd>
-    <br />
-    <dt>Categories</dt>
-    <dd><%= imprintable.imprintable_categories.map(&:name).join(', ') %></dd>
-    <br />
+    <p>
+      <dt>Material</dt>
+      <dd><%= imprintable.material %></dd>
+    </p>
+
+    <p>
+      <dt>Weight</dt>
+      <dd><%= imprintable.weight %></dd>
+    </p>
+
+    <p>
+      <dt>Max Imprint Width</dt>
+      <dd><%= imprintable.max_imprint_width %></dd>
+    </p>
+
+    <p>
+      <dt>Max Imprint Height</dt>
+      <dd><%= imprintable.max_imprint_height %></dd>
+    </p>
+
+    <p>
+      <dt>Colors Offered (<%= imprintable.colors.size %>)</dt>
+      <dd><%= table_entries(imprintable.colors) %></dd>
+    </p>
+
+    <p>
+      <dt>Sizes Offered (<%= imprintable.sizes.size %>)</dt>
+      <dd><%= table_entries(imprintable.sizes) %></dd>
+    </p>
+
+    <p>
+      <dt>Sample Locations</dt>
+      <dd><%= imprintable.sample_locations.map{ |sl| sl.name }.join(', ') %></dd>
+    </p>
+
+    <p>
+      <dt>Tags</dt>
+      <dd><%= imprintable.tag_list.join(', ') %></dd>
+    </p>
+
+    <p>
+      <dt>Description</dt>
+      <dd><%= raw imprintable.description %></dd>
+    </p>
+
+    <p>
+      <dt>Coordinates</dt>
+      <dd><%= imprintable.coordinates.map { |coordinate| coordinate.name }.join(', ') %></dd>
+    </p>
+
+    <p>
+      <dt>Categories</dt>
+      <dd><%= imprintable.imprintable_categories.map(&:name).join(', ') %></dd>
+    </p>
   </dl>
 </div>

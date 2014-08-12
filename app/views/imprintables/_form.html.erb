@@ -1,340 +1,46 @@
 <div class="box-info full">
   <%= render partial: 'shared/modal_errors', locals: { object: imprintable } %>
   <%= form_for imprintable, builder: LancengFormBuilder do |f| %>
-      <div class="col-sm-6">
-        <!-- Basic form -->
-        <div class="box-info">
-          <h2><strong>Basic</strong> Information</h2>
-          <div>
-
-            <div class="form-group clearfix">
-              <%= f.label :brand_id, class: 'col-sm-4 control-label' %>
-              <div class="col-sm-8">
-                <% #TODO: Model call %>
-                <%= f.select :brand_id, Brand.order(:name).collect{ |b| [b.name, b.id] }, prompt: 'Select a brand' %>
-              </div>
-            </div>
-
-            <div class="form-group clearfix">
-              <%= f.label :style_name, class: 'col-sm-4 control-label' %>
-              <div class="col-sm-8">
-                <%= f.text_field :style_name, class: 'form-control' %>
-                <p class="help-block">The name of the style</p>
-              </div>
-            </div>
-
-            <div class="form-group clearfix">
-              <%= f.label :style_catalog_no, class: 'col-sm-4 control-label' %>
-              <div class="col-sm-8">
-                <%= f.text_field :style_catalog_no, class: 'form-control' %>
-                <p class="help-block">The catalog number of the style</p>
-              </div>
-            </div>
-
-            <div class="form-group clearfix">
-              <%= f.label :sku, class: 'col-sm-4 control-label' %>
-              <div class="col-sm-8">
-                <%= f.text_field :sku, class: 'form-control' %>
-                <p class="help-block">SKU for this style</p>
-              </div>
-            </div>
-
-            <div class="form-group clearfix">
-              <%= f.label :retail, class: 'col-sm-4 control-label' %>
-              <div class="col-sm-8">
-                <div class="radio">
-                  <%= f.radio_button :retail, false, value: false %>
-                  No
-                </div>
-                <div class="radio">
-                  <%= f.radio_button :retail, true, value: false %>
-                  Yes
-                </div>
-                <p class="help-block">Select if the style is retail</p>
-              </div>
-            </div>
-
-            <div class="form-group clearfix">
-              <%= f.label :style_description, class: 'col-sm-4 control-label' %>
-              <div class="col-sm-8">
-                <%= f.text_area :style_description, class: 'summernote' %>
-              </div>
-            </div>
-
-
-            <div class="form-group clearfix">
-              <%= f.label :standard_offering, 'Standard Offering', class: 'col-sm-4 control-label' %>
-              <%= f.error_for :standard_offering %>
-              <div class="col-sm-8">
-                <%= f.check_box :standard_offering, { class: 'checkbox' }, 'true', 'false' %>
-              </div>
-            </div>
-
-
-            <div class="form-group clearfix">
-              <%= f.label :material, class: 'col-sm-4 control-label' %>
-              <%= f.error_for :material %>
-              <div class="col-sm-8">
-                <%= f.text_field :material, class: 'form-control' %>
-                <p class="help-block">The material</p>
-              </div>
-            </div>
-
-            <div class="form-group clearfix">
-              <%= f.label :weight, class: 'col-sm-4 control-label' %>
-              <%= f.error_for :weight %>
-              <div class="col-sm-8">
-                <%= f.text_field :weight, class: 'form-control' %>
-                <p class="help-block">The material weight</p>
-              </div>
-            </div>
-
-            <div class="form-group clearfix">
-              <%= f.label :max_imprint_width, class: 'col-sm-4 control-label' %>
-              <div class="col-sm-8">
-                <div class="input-group">
-                  <%= f.error_for :max_imprint_width %>
-                  <%= f.text_field :max_imprint_width, class: 'form-control', placeholder: 'Width (0.00) in inches' %>
-                  <span class='input-group-addon'>inches</span>
-                </div>
-              </div>
-            </div>
-
-            <div class="form-group clearfix">
-              <%= f.label :max_imprint_height, class: 'col-sm-4 control-label' %>
-              <div class="col-sm-8">
-                <div class="input-group">
-                  <%= f.error_for :max_imprint_height %>
-                  <%= f.text_field :max_imprint_height, class: 'form-control', placeholder: 'Height (0.00) in inches' %>
-                  <span class='input-group-addon'>inches</span>
-                </div>
-              </div>
-            </div>
-
-            <div class="form-group clearfix">
-              <%= f.label :tag_list, 'Tags (separated by commas)', class: 'col-sm-4 control-label' %>
-              <%= f.error_for :tag_list %>
-              <div class="col-sm-8">
-                <%= f.text_field :tag_list %>
-                <p class="help-block">Tags are additional searchable characteristics or 'keywords'</p>
-              </div>
-            </div>
-
-
-            <div class="form-group clearfix">
-              <%= f.label :sample_location_ids, 'Sample Locations', class: 'col-sm-4 control-label' %>
-              <%= f.error_for :sample_location_ids %>
-              <div class="col-sm-8">
-                <% #TODO: Model call %>
-                <%= f.collection_select :sample_location_ids, Store.order(:name), :id, :name, {}, {class: 'chosen-select', multiple: true, data: { placeholder: 'Select sample locations' } } %>
-                <p class="help-block">Stores at which there is a sample of the imprintable</p>
-              </div>
-            </div>
-
-            <div class="form-group clearfix">
-              <%= f.label :coordinate_ids, 'Coordinates', class: 'col-sm-4 control-label' %>
-              <%= f.error_for :coordinate_ids %>
-              <div class="col-sm-8">
-                <% #TODO: Model call %>
-                <%= f.collection_select :coordinate_ids, Imprintable.all, :id, :name, {}, {class: 'chosen-select', multiple: true, data: { placeholder: 'Select coordinates' } } %>
-                <p class="help-block">Coordinate imprintables i.e. a ladies or youth version</p>
-              </div>
-            </div>
-
-          </div>
-        </div>
+    <div class="box-info full">
+      <div class="col-sm-6 clearfix">
+        <%= render partial: 'basic_information_form', locals: { object: imprintable, f: f } %>
       </div>
 
       <div class="col-sm-6 clearfix">
-        <!-- Basic form -->
-        <div class="box-info">
-          <h2><strong>Imprint</strong> Information</h2>
-          <div>
-
-            <div class="form-group full">
-              <%= f.label :sizing_category, 'Sizing Category', class: 'col-sm-4 control-label' %>
-              <%= f.error_for :sizing_category %>
-              <div class="col-sm-8">
-                <% #TODO: Model call %>
-                <%= f.select :sizing_category,
-                             Imprintable::SIZING_CATEGORIES,
-                             { prompt: 'Please select a sizing category' },
-                             {
-                               class: 'form-control',
-                               id: 'imprintable_sizing_category'
-                             } %>
-                <p class="help-block">Select the sizing category for the imprintable</p>
-              </div>
-            </div>
-
-            <div class="form-group clearfix">
-              <%= f.label :polyester, class: 'col-sm-4 control-label' %>
-              <%= f.error_for :polyester %>
-              <div class="col-sm-8">
-                <%= f.check_box :polyester, { class: 'checkbox' }, 'true', 'false' %>
-              </div>
-            </div>
-
-            <div class="form-group clearfix">
-              <%= f.label :flashable, class: 'col-sm-4 control-label' %>
-              <%= f.error_for :flashable %>
-              <div class="col-sm-8">
-                <%=  f.check_box :flashable, { class: 'checkbox' }, 'true', 'false' %>
-              </div>
-            </div>
-
-            <div class="form-group clearfix">
-              <%= f.label :proofing_template_name, 'Proofing Template Name', class: 'col-sm-4 control-label' %>
-              <%= f.error_for :proofing_template_name %>
-              <div class="col-sm-8">
-                <%= f.text_field :proofing_template_name, class: 'form-control' %>
-                <p class="help-block">The proofing template used by the art department</p>
-              </div>
-            </div>
-
-
-            <div class="form-group clearfix">
-              <%= f.label :special_considerations, 'Special Considerations', class: 'col-sm-4 control-label' %>
-              <%= f.error_for :special_considerations %>
-              <div class="col-sm-8">
-                <%= f.text_area :special_considerations, class: 'form-control' %>
-              </div>
-            </div>
-
-
-            <div class="form-group clearfix">
-              <%= f.label :compatible_imprint_method_ids, 'Compatible Imprint Methods', class: 'col-sm-4 control-label' %>
-              <%= f.error_for :compatible_imprint_method_ids %>
-              <div class="col-sm-8">
-                <% #TODO: Model call %>
-                <%= f.collection_select :compatible_imprint_method_ids, ImprintMethod.all, :id, :name, {}, {class: 'chosen-select', multiple: true, data: { placeholder: 'Select compatible imprint methods' } } %>
-                <p class="help-block">What imprint methods work with the imprintable</p>
-              </div>
-            </div>
-
-            <div class="form-group clearfix">
-              <%= f.label :imprintable_categories, 'Imprintable Category', class: 'col-sm-4 control-label' %>
-              <%= f.error_for :imprintable_categories %>
-              <div class="col-sm-8">
-                <%= f.fields_for :imprintable_categories do |ff| %>
-                  <%= render partial: 'imprintable_category_fields', locals: { f: ff } %>
-                <% end %>
-                <%= link_to_add_fields "<i class='fa fa-plus'></i> Add Imprintable Category".html_safe, f, :imprintable_categories %>
-              </div>
-            </div>
-
-
-          </div>
-        </div>
+        <%= render partial: 'imprint_information_form', locals: { object: imprintable, f: f } %>
       </div>
-</div>
+    </div>
 
-<div class="box-info full">
-        <!-- Basic form -->
-        <div class="box-info">
-          <h2><strong>Supplier</strong> Information</h2>
-          <div>
+    <div class="box-info full">
+      <%= render partial: 'supplier_information_form', locals: { object: imprintable, f: f } %>
+    </div>
 
-            <div class="form-group clearfix">
-              <%= f.label :main_supplier, class: 'col-sm-4 control-label' %>
-              <%= f.error_for :main_supplier %>
-              <div class="col-sm-8">
-                <%= f.text_field :main_supplier, class: 'form-control' %>
-                <p class="help-block">The primary supplier of purchase</p>
-              </div>
-            </div>
-
-            <div class="form-group clearfix">
-              <%= f.label :supplier_link, class: 'col-sm-4 control-label' %>
-              <%= f.error_for :supplier_link %>
-              <div class="col-sm-8">
-                <%= f.text_field :supplier_link, class: 'form-control' %>
-                <p class="help-block">URL to imprintable on suppliers website</p>
-              </div>
-            </div>
-
-
-
-            <div class="form-group clearfix">
-              <%= f.label :pricing, class: 'col-sm-4 control-label' %>
-              <div class="col-sm-8">
-                <table>
-                  <thead>
-                      <tr>
-                        <th>Base</th>
-                        <th>2XL</th>
-                        <th>3XL</th>
-                        <th>4XL</th>
-                        <th>5XL</th>
-                        <th>6XL</th>
-                      </tr>
-                  </thead>
-
-                  <tbody>
-                  <tr>
-                    <td><div class="input-group">
-                      <span class="input-group-addon">$</span>
-                      <%= f.text_field :base_price, class: 'form-control', :value => (number_with_precision(f.object.base_price, :precision => 2) || 0) %>
-                    </div></td>
-                    <td><div class="input-group">
-                      <span class="input-group-addon">$</span>
-                      <%= f.text_field :xxl_price, class: 'form-control', :value => (number_with_precision(f.object.xxl_price, :precision => 2) || 0) %>
-                    </div></td>
-                    <td><div class="input-group">
-                      <span class="input-group-addon">$</span>
-                      <%= f.text_field :xxxl_price, class: 'form-control', :value => (number_with_precision(f.object.xxxl_price, :precision => 2) || 0) %>
-                    </div></td>
-                    <td><div class="input-group">
-                      <span class="input-group-addon">$</span>
-                      <%= f.text_field :xxxxl_price, class: 'form-control', :value => (number_with_precision(f.object.xxxxl_price, :precision => 2) || 0) %>
-                    </div></td>
-                    <td><div class="input-group">
-                      <span class="input-group-addon">$</span>
-                      <%= f.text_field :xxxxxl_price, class: 'form-control', :value => (number_with_precision(f.object.xxxxxl_price, :precision => 2) || 0) %>
-                    </div></td>
-                    <td><div class="input-group">
-                      <span class="input-group-addon">$</span>
-                      <%= f.text_field :xxxxxxl_price, class: 'form-control', :value => (number_with_precision(f.object.xxxxxxl_price, :precision => 2) || 0) %>
-                    </div></td>
-                  </tr>
-                  </tbody>
-                </table>
-              </div>
-            </div>
-
-          </div>
-        </div>
-
-</div>
-<div class="box-info full">
-      <!-- Basic form -->
+    <div class="box-info full">
       <div class="box-info">
         <h2><strong>Size/Color</strong> Availability Information</h2>
         <div>
-          <% text = create_or_edit_text(imprintable) %>
-          <% if text == 'Update' %>
-              <% variants = imprintable.find_variants %>
-              <% if variants.empty? %>
-                  <%= render partial: 'variant_select', locals: { imprintable: imprintable, f: f } %>
-              <% else %>
-                  <%= render partial: 'grid', locals: { imprintable: imprintable,
-                                                        variants: variants,
-                                                        size_variants: @size_variants,
-                                                        color_variants: @color_variants,
-                                                        variants_array: @variants_array } %>
-              <% end %>
+          <% if create_or_edit_text(imprintable) == 'Update' %>
+            <% variants = Imprintable.variants(imprintable.id) %>
+            <% if variants.empty? %>
+                <%= render partial: 'variant_select',
+                           locals: { imprintable: imprintable, f: f } %>
+            <% else %>
+                <%= render partial: 'grid',
+                           locals: { imprintable: imprintable,
+                                     variants: variants,
+                                     size_variants: @variants_hash[:size_variants],
+                                     color_variants: @variants_hash[:color_variants],
+                                     variants_array: @variants_hash[:variants_array] } %>
+            <% end %>
           <% end %>
         </div>
-       </div>
-
-
-
-
-      <div class="form-group clearfix">
-        <div class="col-sm-offset-2 col-sm-8">
-          <button type="submit" id="submit_button" class="btn btn-info"><%= text %> Imprintable</button>
-        </div>
       </div>
+    </div>
 
+    <div class="form-group clearfix">
+      <div class="col-sm-offset-2 col-sm-8">
+        <button type="submit" id="submit_button" class="btn btn-info"><%= create_or_edit_text(imprintable) %> Imprintable</button>
+      </div>
+    </div>
   <% end %>
 </div>

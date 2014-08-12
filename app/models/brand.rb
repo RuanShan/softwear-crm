@@ -3,7 +3,6 @@ class Brand < ActiveRecord::Base
 
   acts_as_paranoid
 
-  #TODO: look at this?
   default_scope { order(:name) }
 
   has_many :imprintables

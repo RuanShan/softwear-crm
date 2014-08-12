@@ -1,8 +1,14 @@
 class ArtworkRequestsController < InheritedResources::Base
-  before_filter :format_time, only: [:create, :update]
   before_filter :assign_order
+  before_filter :format_deadline, only: [:create, :update]
 
   respond_to :js
+
+  def create
+    super do |success, _failure|
+      success.js { notify_artist }
+    end
+  end
 
   #TODO couldn't figure out a way to refactor this, but could possibly be too much for a controller?
   def update
@@ -28,34 +34,23 @@ class ArtworkRequestsController < InheritedResources::Base
     end
   end
 
-  def create
-    super do |success, _failure|
-      success.js { notify_artist }
-    end
-  end
-
   private
+
+  def assign_order
+    @order = Order.find(params[:order_id]) unless params[:order_id].nil?
+  end
 
   def notify_artist
     ArtistMailer.artist_notification(@artwork_request, action_name).deliver
   end
 
-  # TODO: Nick, David, extract and refactor format_time
-  def format_time
+  def format_deadline
     if params[:artwork_id].nil?
-      begin
-        time = DateTime.strptime(params[:artwork_request][:deadline], '%m/%d/%Y %H:%M %p').to_time unless (params[:artwork_request].nil? or params[:artwork_request][:deadline].nil?)
-        offset = (time.utc_offset)/60/60
-        adjusted_time = (time - offset.hours).utc
-        params[:artwork_request][:deadline] = adjusted_time
-      rescue ArgumentError
-        params[:artwork_request][:deadline]
+      unless params[:artwork_request].nil? || params[:artwork_request][:deadline].nil?
+        deadline = params[:artwork_request][:deadline]
+        params[:artwork_request][:deadline] = format_time(deadline)
       end
     end
-  end
-
-  def assign_order
-    @order = Order.find(params[:order_id]) unless params[:order_id].nil?
   end
 
   def permitted_params
