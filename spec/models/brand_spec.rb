@@ -1,6 +1,10 @@
 require 'spec_helper'
 
 describe Brand, brand_spec: true do
+  it_behaves_like 'retailable'
+
+  it { is_expected.to be_paranoid }
+
   describe 'Relationships' do
     it { is_expected.to have_many :imprintables }
   end
@@ -25,13 +29,13 @@ describe Brand, brand_spec: true do
       let!(:brand_one) { create(:valid_brand, name: 'Urban Outfitters') }
       let!(:brand_two) { create(:valid_brand, name: 'American Apparel') }
 
-      it 'orders the brands by name' do
+      it 'orders so the first brand is brand_two' do
         expect(Brand.first).to eq(brand_two)
+      end
+
+      it 'orders so the last brand is brand_one' do
         expect(Brand.last).to eq(brand_one)
       end
     end
   end
-
-  it_behaves_like 'retailable'
-
 end

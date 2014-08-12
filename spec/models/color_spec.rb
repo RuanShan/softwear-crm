@@ -1,7 +1,6 @@
 require 'spec_helper'
 
 describe Color, color_spec: true do
-
   it_behaves_like 'retailable'
 
   it { is_expected.to be_paranoid }
@@ -32,8 +31,11 @@ describe Color, color_spec: true do
       let!(:color_one) { create(:valid_color, name: 'Red') }
       let!(:color_two) { create(:valid_color, name: 'Blue') }
 
-      it 'orders the colors by name' do
+      it 'orders so the first color is color_two' do
         expect(Color.first).to eq(color_two)
+      end
+
+      it 'orders so the last color is color_one' do
         expect(Color.last).to eq(color_one)
       end
     end
