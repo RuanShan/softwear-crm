@@ -33,6 +33,7 @@
       # Grab the input field element
       $field = $form.find("*[name^='#{getParamName(field)}']")
       $field = $form.find("*[name^='#{getParamName(field.replace('_id', ''))}']") if $field.length == 0
+      $field = $form.find("*[name^='#{getParamName(field + '_id')}']") if $field.length == 0
       
       if $field.length == 0
         console.log "Couldn't find field #{field} (name #{getParamName(field)})"

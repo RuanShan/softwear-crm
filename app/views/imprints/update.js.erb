@@ -1,0 +1,29 @@
+<% @imprints.each do |imprint| %>
+
+  var $container = $(".imprint-entry[data-id='<%= imprint.id %>']");
+
+  <% if imprint.valid? %>    
+
+    $container.attr('data-id', <%= imprint.id %>);
+
+    $editing = $container.find('.editing-imprint');
+    if ($editing.length) {
+      $editing.each(function() {
+        $(this).removeClass('editing-imprint');
+        shine($(this), true);
+      });
+    }
+
+  <% else %>
+
+    $printLocation = $container.find('.print-location-container');
+
+    handler = errorHandlerFrom($printLocation, 'imprint', $printLocation, <%= imprint.id %>);
+    handler.handleErrors(<%= imprint.errors.messages.to_json.html_safe %>);
+
+  <% end %>
+<% end %>
+
+<% @new_imprints.each do |new_imprint| %>
+  console.log ("NO!!!!!!!!!");
+<% end %>

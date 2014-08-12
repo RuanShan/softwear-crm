@@ -55,22 +55,31 @@
       <% end %>
 
       <h4>Imprints</h4>
-      <%= render partial: 'imprints/imprints', locals: { job: job } %>
+      <%= form_for :imprint, method: :put, url: imprints_update_path, remote: true, builder: BatchFormBuilder do |f| %>
 
-      <div class="form-group box-info">
-        <div class="col-sm-4">
+        <%= render partial: 'imprints/imprints', locals: { job: job } %>
 
-          <%= link_to new_job_imprint_path(job), class: 'btn btn-info btn-lg btn-block add-imprint', remote: true, method: :get do %>
-            <i class="fa fa-pagelines"></i> Add Imprint
-          <% end %>
+        <div class="form-group box-info">
+          <div class="col-sm-4">
 
+            <%= link_to new_job_imprint_path(job), class: 'btn btn-info btn-lg btn-block add-imprint', remote: true, method: :get do %>
+              <i class="fa fa-pagelines"></i> Add Imprint
+            <% end %>
+
+          </div>
+          <div class="col-sm-4 col-xs-offset-4">
+
+            <!-- <button type="button" class="btn btn-info btn-lg btn-block update-imprints" onclick="updateImprints($(this))"><i class="fa fa-pagelines"></i> Update Imprints</button> -->
+
+            <%= button_tag class: 'btn btn-info btn-lg btn-block update-imprints' do %>
+              <i class="fa fa-pagelines"></i> Update Imprints
+            <% end %>
+
+          </div>
         </div>
-        <div class="col-sm-4 col-xs-offset-4">
 
-          <button type="button" class="btn btn-info btn-lg btn-block update-imprints" onclick="updateImprints($(this))"><i class="fa fa-pagelines"></i> Update Imprints</button>
-          
-        </div>
-      </div>
+      <% end %>
+
       <div class="form-group box-info">
         <div class="col-sm-4 col-xs-offset-4">
           <%= link_to job_path(job), method: 'DELETE', class: 'btn btn-danger btn-lg btn-block delete-job-button', id: "delete-job-#{job.id}", remote: true do %>

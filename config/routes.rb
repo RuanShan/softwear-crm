@@ -69,6 +69,9 @@ CrmSoftwearcrmCom::Application.routes.draw do
   put    'line_items/update', to: 'line_items#update'
   patch  'line_items/update', to: 'line_items#update'
 
+  put    'imprints/update', to: 'imprints#update'
+  patch  'imprints/update', to: 'imprints#update'
+
   namespace 'search' do
     resources :queries
   end

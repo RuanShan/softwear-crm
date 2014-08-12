@@ -3,7 +3,7 @@ class ImprintsController < InheritedResources::Base
 
   belongs_to :job, shallow: true
 
-  %i(create update destroy).each do |action|
+  %i(create destroy).each do |action|
     define_method action do
       send("#{action}!") do |success, failure|
         success.json do
@@ -41,10 +41,18 @@ class ImprintsController < InheritedResources::Base
     end
   end
 
+  def update
+    batch_update(true) do |format|
+      format.js
+    end
+  end
+
   private
 
   def permitted_params
-    params.permit(:job_id, :id,
-                  imprint: [:print_location_id, :job_id])
+    params.permit(
+      :job_id, :id,
+      imprint: [:print_location_id, :job_id]
+    )
   end
 end

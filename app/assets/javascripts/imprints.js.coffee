@@ -1,30 +1,48 @@
 #TODO look into js response in controller to trim this??
-@imprintMethodSelected = ($this) ->
+@imprintMethodSelected = ->
+  $this = $(this)
   id = $this.val()
+  
   $this.addClass 'editing-imprint'
   $imprintContainer = $this.parentsUntil('.imprint-container').parent()
+  
+  $imprintEntry = $this.parentsUntil('.imprint-entry').parent()
+  imprintId = $imprintEntry.data('id')
+
   $printLocationContainer = $imprintContainer.find('.print-location-container')
   $printLocationContainer.addClass 'editing-imprint'
 
   ajax = $.ajax
     type: 'GET'
     url: Routes.imprint_method_print_locations_path(id)
+    data: { name: "imprint[#{imprintId}[print_location_id]]" }
     dataType: 'html'
+
+  # TODO TUESDAY
+  # Well... For one, this ajax replacement of
+  # imprint_methods/print_locations_select does not pass the :name option
+  # parameter, meaning it defaults to just 'imprint_method', meaning
+  # nothing gets sent to the server. :( so we need the imprint id.
+  # 
+  # After that is taken care of, we must deal with visually handling the
+  # creation (or failure to do so) of new imprints within
+  # imprints/update.js.erb. This shouldn't be much of a hardship.
 
   ajax.done (response) ->
     $response = $(response)
     $printLocationContainer.children().remove()
     $printLocationContainer.append $response
-    printLocationSelected($response.find('select'))
+    printLocationSelected.call $response.find('select').get()
 
   ajax.fail (jqXHR, textStatus) ->
     alert "Internal server error, oh no!"
 
-@printLocationSelected = ($this) ->
+@printLocationSelected = ->
+  $this = $(this)
   $this.data('handler').clear() if $this.data 'handler'
   $this.addClass 'editing-imprint'
 
-# TODO js response Nigel
+# TODO js response Nigel - I think this is handled in js now
 @updateImprints = ($btn) ->
   $btn.attr 'disabled', 'disabled'
   setTimeout (-> $btn.removeAttr 'disabled'), 1000
@@ -75,6 +93,11 @@
 
   after 1000, updateOrderTimeline
 
+@registerImprintEvents = ($parent) ->
+  $parent.find('.js-delete-imprint-button').click deleteImprint
+  $parent.find('.js-print-location-select').change printLocationSelected
+  $parent.find('.js-imprint-method-select').change imprintMethodSelected
+
 # TODO js response Nigel
 @addImprint = ($this, jobId) ->
   ajax = $.ajax
@@ -86,7 +109,7 @@
     $response = $(response)
     $response.find('select').addClass 'editing-imprint'
     $("#job-#{jobId}").find('.imprints-container').append $response
-    $response.find('.js-delete-imprint-button').click deleteImprint
+    registerImprintEvents $response
 
 @deleteImprint = ->
   $btn = $(this)

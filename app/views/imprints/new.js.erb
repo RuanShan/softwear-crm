@@ -1,4 +1,4 @@
-$imprint = $("<%= escape_javascript render partial: 'imprints/imprint', locals: { job: @job } %>");
+var $imprint = $("<%= escape_javascript render partial: 'imprints/imprint', locals: { job: @job } %>");
 
 $("#job-<%= @job.id %>")
   .find(".imprints-container")
