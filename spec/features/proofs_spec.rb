@@ -6,6 +6,7 @@ feature 'Proof Features', js: true, proof_spec: true do
   given!(:order) { create(:order_with_proofs) }
   given(:proof) { order.proofs.first }
   given!(:valid_user) { create(:alternate_user) }
+
   before(:each) do
     login_as(valid_user)
     allow(Order).to receive(:find).and_return(order)

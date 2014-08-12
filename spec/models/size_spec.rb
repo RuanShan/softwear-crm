@@ -24,7 +24,6 @@ describe Size, size_spec: true do
       it { is_expected.to_not ensure_length_of(:sku).is_equal_to(2) }
     end
 
-    it { is_expected.to validate_presence_of(:sort_order) }
     it { is_expected.to validate_uniqueness_of(:sort_order) }
   end
 

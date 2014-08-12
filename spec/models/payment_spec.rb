@@ -7,7 +7,7 @@ describe Payment, payment_spec: true do
   describe 'Relationship' do
     it { is_expected.to belong_to(:order) }
     it { is_expected.to belong_to(:store) }
-    it { is_expected.to belong_to(:user).with_foreign_key(:salesperson_id) }
+    it { is_expected.to belong_to(:salesperson).class_name('User') }
   end
 
   describe 'Validations' do
