@@ -11,4 +11,7 @@ FactoryGirl.define do
       end
     }
   end
+  factory :blank_brand, class: Brand do
+
+  end
 end

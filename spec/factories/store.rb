@@ -6,4 +6,8 @@ FactoryGirl.define do
   factory :valid_store, class: Store do
     name { generate :store_name }
   end
+
+  factory :blank_store, class: Store do
+
+  end
 end

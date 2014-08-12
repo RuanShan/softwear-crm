@@ -35,7 +35,6 @@ FactoryGirl.define do
   end
 
   factory :blank_imprintable, class: Imprintable do
-
   end
 
   factory :associated_imprintable, class: Imprintable do

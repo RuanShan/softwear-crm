@@ -8,4 +8,8 @@ FactoryGirl.define do
     name { generate :category_name }
     imprintable { |s| s.association :valid_imprintable }
   end
+
+  factory :blank_imprintable_category, class: ImprintableCategory do
+
+  end
 end

@@ -1,5 +1,7 @@
 FactoryGirl.define do
-  factory :imprint do
-    
+  factory :blank_imprint, class: Imprint do
+    factory :imprint do
+
+    end
   end
 end
