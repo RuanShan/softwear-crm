@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe 'imprint_methods/_print_location_fields.html.erb', imprint_methods_spec: true do
+describe 'imprint_methods/_print_location_fields.html.erb', imprint_method_spec: true do
   let(:imprint_method){ build_stubbed(:blank_imprint_method,
                                         ink_colors: [build_stubbed(:blank_ink_color)],
                                         print_locations: [build_stubbed(:blank_print_location)]) }

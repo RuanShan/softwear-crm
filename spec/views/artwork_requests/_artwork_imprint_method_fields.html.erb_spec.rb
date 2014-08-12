@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe 'artwork_requests/_artwork_imprint_method_fields.html.erb', artwork_requests_spec: true do
+describe 'artwork_requests/_artwork_imprint_method_fields.html.erb', artwork_request_spec: true do
 
   before do
     @imprint_method = build_stubbed(:blank_imprint_method)

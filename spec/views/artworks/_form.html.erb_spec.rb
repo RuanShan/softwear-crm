@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe 'artworks/_form.html.erb', artworks_spec: true do
+describe 'artworks/_form.html.erb', artwork_spec: true do
   let!(:artwork){ build_stubbed(:blank_artwork) }
 
   it 'displays the correct form fields for artworks' do

@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe 'artworks/_row.html.erb', artworks_spec: true do
+describe 'artworks/_row.html.erb', artwork_spec: true do
   let!(:artwork){ build_stubbed(:blank_artwork, artist: build_stubbed(:blank_user)) }
 
   context 'given a single artwork and artwork_request is nil' do

@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe 'artwork_requests/_form.html.erb', artwork_requests_spec: true do
+describe 'artwork_requests/_form.html.erb', artwork_request_spec: true do
   let!(:artwork_request){ build_stubbed(:blank_artwork_request) }
   let!(:order){ build_stubbed(:blank_order) }
 

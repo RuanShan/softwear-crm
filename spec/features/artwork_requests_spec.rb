@@ -1,7 +1,7 @@
 require 'spec_helper'
 include ApplicationHelper
 
-feature 'Artwork Request Features', js: true, artwork_requests_spec: true do
+feature 'Artwork Request Features', js: true, artwork_request_spec: true do
   given!(:artwork_request) { create(:valid_artwork_request) }
   given!(:valid_user) { create(:alternate_user) }
   before(:each) { login_as(valid_user) }

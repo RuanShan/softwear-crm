@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe 'artworks/_search.html.erb', artworks_spec: true do
+describe 'artworks/_search.html.erb', artwork_spec: true do
   context 'no artwork_request exists and remote is false' do
     before(:each) do
       render partial: 'artworks/search', locals: { artwork_request: nil, remote: false }

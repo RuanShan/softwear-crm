@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe 'artworks/_asset_fields.html.erb', artworks_spec: true do
+describe 'artworks/_asset_fields.html.erb', artwork_spec: true do
   let!(:artwork){ build_stubbed(:blank_artwork) }
 
   context 'no asset exists yet' do

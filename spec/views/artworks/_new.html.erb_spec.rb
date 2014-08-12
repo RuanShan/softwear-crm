@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe 'artworks/_new.html.erb', artworks_spec: true do
+describe 'artworks/_new.html.erb', artwork_spec: true do
   before(:each) do
     allow(view).to receive(:current_user).and_return(build_stubbed(:blank_user))
     render partial: 'artworks/new', locals: { artwork: build_stubbed(:blank_artwork) }

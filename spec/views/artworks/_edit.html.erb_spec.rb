@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe 'artworks/_edit.html.erb', artworks_spec: true do
+describe 'artworks/_edit.html.erb', artwork_spec: true do
   let!(:artwork){ build_stubbed(:blank_artwork) }
 
   before(:each) do

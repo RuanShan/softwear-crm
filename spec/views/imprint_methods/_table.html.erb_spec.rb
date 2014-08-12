@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe 'imprint_methods/_table.html.erb', imprint_methods_spec: true do
+describe 'imprint_methods/_table.html.erb', imprint_method_spec: true do
 
   let(:imprint_methods){ [build_stubbed(:blank_imprint_method,
                                           ink_colors: [build_stubbed(:blank_ink_color)],

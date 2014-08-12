@@ -14,6 +14,5 @@ FactoryGirl.define do
   end
 
   factory :blank_color, class: Color do
-
   end
 end

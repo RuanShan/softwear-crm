@@ -1,7 +1,7 @@
 require 'spec_helper'
 include ApplicationHelper
 
-describe ArtworkRequestsController, js: true, artwork_requests_spec: true do
+describe ArtworkRequestsController, js: true, artwork_request_spec: true do
   let!(:order){ create(:order_with_job) }
   let!(:valid_user) { create :alternate_user }
   before(:each) { sign_in valid_user }
