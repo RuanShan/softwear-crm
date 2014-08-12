@@ -19,7 +19,11 @@ class ImprintMethodsController < InheritedResources::Base
     @imprint_method = ImprintMethod.find params[:imprint_method_id]
     @print_locations = @imprint_method.print_locations
 
-    render partial: 'print_locations_select', locals: { print_locations: @print_locations }
+    render partial: 'print_locations_select',
+           locals: {
+             print_locations: @print_locations, 
+             name: params[:name]
+           }
   end
 
   protected
@@ -31,7 +35,7 @@ class ImprintMethodsController < InheritedResources::Base
   private
 
   def permitted_params
-    params.permit(imprint_method: [
+    params.permit(:name, imprint_method: [
                     :name,
                     ink_colors_attributes: [
                       :name, :imprint_method_id, :id, :_destroy
