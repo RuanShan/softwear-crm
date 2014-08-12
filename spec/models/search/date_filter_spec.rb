@@ -3,11 +3,11 @@ require 'spec_helper'
 describe Search::DateFilter, search_spec: true do
   it { expect(subject.class.ancestors).to include Search::FilterType }
 
-  it { should have_db_column :field }
-  it { should have_db_column :comparator }
-  it { should ensure_inclusion_of(:comparator).in_array ['>', '<', '='] }
-  it { should have_db_column :negate }
-  it { should have_db_column :value }
+  it { is_expected.to have_db_column :field }
+  it { is_expected.to have_db_column :comparator }
+  it { is_expected.to ensure_inclusion_of(:comparator).in_array ['>', '<', '='] }
+  it { is_expected.to have_db_column :negate }
+  it { is_expected.to have_db_column :value }
 
   let(:query) { create :query }
   let(:order_model) { create :search_order_model, query_id: query.id }
@@ -19,11 +19,11 @@ describe Search::DateFilter, search_spec: true do
     comparator: '>',
     field: 'in_hand_by' }
 
-  it 'should belong to search type date' do
+  it 'belongs to search type date' do
     expect(Search::DateFilter.search_types).to eq [:date]
   end
 
-  it 'should apply properly with negate set to false' do
+  it 'applies properly with negate set to false' do
     filter.negate = false
     filter.comparator = '='
     filter.save
@@ -34,7 +34,7 @@ describe Search::DateFilter, search_spec: true do
     expect(Sunspot.session).to have_search_params(:with, :in_hand_by, date)
   end
 
-  it 'should apply properly with negate set to true' do
+  it 'applies properly with negate set to true' do
     filter.negate = true
     filter.save
 

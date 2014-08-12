@@ -2,20 +2,20 @@ require 'spec_helper'
 include GeneralHelpers
 
 describe Search::QueryModel, search_spec: true do
-  it { should belong_to :query }
-  it { should have_db_column :name }
-  it { should have_many :query_fields }
-  it { should have_db_column :default_fulltext }
-  it { should have_one :filter }
+  it { is_expected.to belong_to :query }
+  it { is_expected.to have_db_column :name }
+  it { is_expected.to have_many :query_fields }
+  it { is_expected.to have_db_column :default_fulltext }
+  it { is_expected.to have_one :filter }
 
   let!(:model) { create(:query_order_model) }
 
-  it 'should validate that the represented model is searchable' do
+  it 'validates that the represented model is searchable' do
     expect(Search::QueryModel.new(name: 'Order')).to be_valid
     expect(Search::QueryModel.new(name: 'Search::Query')).to_not be_valid
   end
 
-  it 'should destroy its filter when destroyed' do
+  it 'destroys its filter when destroyed' do
     model.filter = create(:number_filter)
     expect(Search::Filter.count).to eq 1
     expect(Search::NumberFilter.count).to eq 1
@@ -45,11 +45,11 @@ describe Search::QueryModel, search_spec: true do
   describe '#add_field' do
     let!(:model) { create(:query_order_model) }
     
-    it 'should add a field with the given name if it is fulltext searchable' do
+    it 'adds a field with the given name if it is fulltext searchable' do
       model.add_field 'email'
       expect(model.fields).to eq [Search::Field[:Order, :email]]
     end
-    it 'should raise an error if the field with the given name is not text' do
+    it 'raises an error if the field with the given name is not text' do
       expect(model).to respond_to :add_field
       expect{model.add_field 'commission_amount'}.to raise_error
     end

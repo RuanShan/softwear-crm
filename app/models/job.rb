@@ -124,14 +124,6 @@ class Job < ActiveRecord::Base
 
   private
 
-  def max_print(print_location, width_or_height)
-    (
-      imprintables.map(&"max_imprint_#{width_or_height}".to_sym) +
-      [print_location.send("max_#{width_or_height}")]
-    )
-      .map(&:to_f).min
-  end
-
   def assure_name_and_description
     # TODO: remove self?
     if self.name.nil?
@@ -152,11 +144,19 @@ class Job < ActiveRecord::Base
 
   def check_for_line_items
     if LineItem.where(line_itemable_id: id, line_itemable_type: 'Job').exists?
-      self.errors[:deletion_status] = 
-        'All line items must be manually removed before a job can be deleted'
+      self.errors[:deletion_status] =
+          'All line items must be manually removed before a job can be deleted'
       false
     else
       true
     end
+  end
+
+  def max_print(print_location, width_or_height)
+    (
+      imprintables.map(&"max_imprint_#{width_or_height}".to_sym) +
+      [print_location.send("max_#{width_or_height}")]
+    )
+      .map(&:to_f).min
   end
 end
