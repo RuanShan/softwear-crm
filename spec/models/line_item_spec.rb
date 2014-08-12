@@ -17,7 +17,9 @@ describe LineItem, line_item_spec: true do
     it { is_expected.to validate_presence_of :unit_price }
 
     context 'when imprintable_variant_id is nil' do
-      before(:each) { allow(subject).to receive(:imprintable_variant_id).and_return nil }
+      before :each do
+        allow(subject).to receive(:imprintable_variant_id).and_return nil
+      end
 
       it { is_expected.to validate_presence_of :description }
       it { is_expected.to validate_presence_of :name }
@@ -45,10 +47,10 @@ describe LineItem, line_item_spec: true do
       it { is_expected.to_not validate_presence_of :name }
       it { is_expected.to validate_uniqueness_of(:imprintable_variant_id).scoped_to([:line_itemable_id, :line_itemable_type]) }
 
-      it 'description is_expected.to return the description of its imprintable_variant' do
+      it 'description should return the description of its imprintable_variant' do
         expect(subject.description).to eq subject.imprintable_variant.imprintable.style_description
       end
-      it 'name is_expected.to return the name of its imprintable_variant' do
+      it 'name should return the name of its imprintable_variant' do
         expect(subject.name).to eq subject.imprintable_variant.name
       end
     end

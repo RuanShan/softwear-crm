@@ -2,16 +2,21 @@ require 'spec_helper'
 include LineItemHelpers
 
 describe Job, job_spec: true do
+  subject { build_stubbed :blank_job }
 
   it { is_expected.to be_paranoid }
 
   it 'is not deletable when it has line items', line_item_spec: true do
     job = create(:job)
-    _line_item = create(:non_imprintable_line_item, line_itemable_id: job.id, line_itemable_type: 'Job')
+    _line_item = create(
+      :non_imprintable_line_item,
+      line_itemable_id: job.id, line_itemable_type: 'Job'
+    )
 
     job.destroy
     expect(job.destroyed?).to_not be_truthy
-    expect(job.errors.messages[:deletion_status]).to include 'All line items must be manually removed before a job can be deleted'
+    expect(job.errors.messages[:deletion_status])
+      .to include 'All line items must be manually removed before a job can be deleted'
   end
 
   describe 'Relationships' do
@@ -29,24 +34,29 @@ describe Job, job_spec: true do
   end
 
   describe '#imprintable_info', artwork_request_spec: true do
-    let!(:job) { create(:job) }
-    [:red, :green].each { |c| let!(c) { create(:valid_color, name: c) } }
-    [:shirt, :hat].each { |s| let!(s) { create(:valid_imprintable) } }
+    [:red, :green].each { |c| let!(c) { build_stubbed(:valid_color, name: c) } }
+    [:shirt, :hat].each { |s| let!(s) { build_stubbed(:valid_imprintable) } }
 
-    make_variants :green, :shirt, [:S, :M, :L]
-    make_variants :red,   :hat,   [:OSFA]
+    make_stubbed_variants :green, :shirt, [:S, :M, :L]
+    make_stubbed_variants :red,   :hat,   [:OSFA]
+
+    before(:each) do
+      stub_imprintable_line_items with: green_shirt_items + red_hat_items
+    end
 
     it 'should return all of the information for the imprintables ' do
-      expect(job.imprintable_info).to eq("green #{shirt.style_name} #{shirt.style_catalog_no}, red #{hat.style_name} #{hat.style_catalog_no}")
+      expect(subject.imprintable_info).to eq(
+        "green #{shirt.style_name} #{shirt.style_catalog_no}, red #{hat.style_name} #{hat.style_catalog_no}"
+      )
     end
   end
 
   describe '#imprintable_variant_count', artwork_request_spec: true do
     before do
       allow(subject).to receive(:line_items) { [
-          build_stubbed(:blank_line_item, imprintable_variant_id: 1, quantity: 25),
-          build_stubbed(:blank_line_item, imprintable_variant_id: nil, quantity: 50),
-          build_stubbed(:blank_line_item, imprintable_variant_id: 1, quantity: 30)
+        build_stubbed(:blank_line_item, imprintable_variant_id: 1, quantity: 25),
+        build_stubbed(:blank_line_item, imprintable_variant_id: nil, quantity: 50),
+        build_stubbed(:blank_line_item, imprintable_variant_id: 1, quantity: 30)
       ]}
     end
 
@@ -58,7 +68,7 @@ describe Job, job_spec: true do
   context '#imprintable_variant_count with job having no imprintable line items (bug #176)', artwork_request_spec: true do
     before do
       allow(subject).to receive(:line_items) { [
-          build_stubbed(:blank_line_item, imprintable_variant_id: nil, quantity: 5)
+        build_stubbed(:blank_line_item, imprintable_variant_id: nil, quantity: 5)
       ]}
     end
 
@@ -77,34 +87,60 @@ describe Job, job_spec: true do
 
   describe '#max_print_area', artwork_request_spec: true, wip: true do
     let!(:job){ build_stubbed(:blank_job) }
-
-    before do
-      allow(job).to receive(:imprintables).and_return([build_stubbed(:blank_imprintable, max_imprint_width: 5.5, max_imprint_height: 5.5)])
+    let!(:stub_imprintables) do
+      [
+        build_stubbed(
+          :blank_imprintable,
+          max_imprint_width: 5.5, max_imprint_height: 5.5
+        )
+      ]
     end
 
+    before do
+      allow(job).to receive(:imprintables).and_return stub_imprintables
+    end
+
+    let!(:print_location) { build_stubbed :blank_print_location, name: 'Chest' }
+
     context 'print_location constricts both width and height' do
-      let!(:print_location) { build_stubbed(:blank_print_location, name: 'Chest', max_width: 3.1, max_height: 2.6) }
+      before do
+        print_location.max_width  = 3.1
+        print_location.max_height = 2.6
+      end
+
       it 'should return the max print area' do
         expect(job.max_print_area(print_location)).to eq([3.1, 2.6])
       end
     end
 
     context 'print_location constricts just width' do
-      let!(:print_location) { build_stubbed(:blank_print_location, name: 'Chest', max_width: 3.1, max_height: 8.6) }
+      before do
+        print_location.max_width  = 3.1
+        print_location.max_height = 8.6
+      end
+
       it 'should return the max print area' do
         expect(job.max_print_area(print_location)).to eq([3.1, 5.5])
       end
     end
 
     context 'print_location constricts just height' do
-      let!(:print_location) { build_stubbed(:blank_print_location, name: 'Chest', max_width: 9.1, max_height: 2.6) }
+      before do
+        print_location.max_width  = 9.1
+        print_location.max_height = 2.6
+      end
+
       it 'should return the max print area' do
         expect(job.max_print_area(print_location)).to eq([5.5, 2.6])
       end
     end
 
     context 'print_location constricts neither width or height' do
-      let!(:print_location) { build_stubbed(:blank_print_location, name: 'Chest', max_width: 9.1, max_height: 8.6) }
+      before do
+        print_location.max_width  = 9.1
+        print_location.max_height = 8.6
+      end
+
       it 'should return the max print area' do
         expect(job.max_print_area(print_location)).to eq([5.5, 5.5])
       end
@@ -112,9 +148,10 @@ describe Job, job_spec: true do
   end
 
   context '#sort_line_items', line_item_spec: true, sort_line_items: true do
-    let!(:job) { create(:job) }
-    [:red, :blue, :green].each { |c| let!(c) { create(:valid_color, name: c) } }
-    [:shirt, :hat].each { |s| let!(s) { create(:valid_imprintable) } }
+    let!(:job) { build_stubbed(:job) }
+    [:red, :blue, :green]
+      .each { |c| let!(c) { build_stubbed(:valid_color, name: c) } }
+    [:shirt, :hat].each { |s| let!(s) { build_stubbed(:valid_imprintable) } }
 
     make_stubbed_variants :green, :shirt, [:S, :M, :L]
     make_stubbed_variants :red,   :shirt, [:S, :M, :XL]
@@ -129,10 +166,7 @@ describe Job, job_spec: true do
     end
 
     before :each do
-      allow(LineItem).to receive_message_chain(
-        :includes, :where, :where, :not
-      )
-        .and_return line_items
+      stub_imprintable_line_items with: line_items
     end
 
     it 'organizes the line items by imprintable, then color' do
@@ -209,9 +243,9 @@ describe Job, job_spec: true do
   describe '#total_quantity', artwork_request_spec: true do
     before do
       allow(subject).to receive(:line_items) {[
-          build_stubbed(:blank_line_item, quantity: 25),
-          build_stubbed(:blank_line_item, quantity: 50),
-          build_stubbed(:blank_line_item, quantity: 30)
+        build_stubbed(:blank_line_item, quantity: 25),
+        build_stubbed(:blank_line_item, quantity: 50),
+        build_stubbed(:blank_line_item, quantity: 30)
       ]}
     end
 

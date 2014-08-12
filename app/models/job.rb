@@ -31,8 +31,8 @@ class Job < ActiveRecord::Base
     unless sorted_line_items.empty?
       sorted_line_items.each do |_imprintable_name, by_color|
         by_color.each do |color_name, line_items|
-          colors << color_name
-          style_names << line_items.first.style_name
+          colors            << color_name
+          style_names       << line_items.first.style_name
           style_catalog_nos << line_items.first.style_catalog_no
         end
       end

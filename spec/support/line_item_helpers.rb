@@ -58,9 +58,9 @@ module LineItemHelpers
       let!(imprintable_variant) do
         build_stubbed(
           :associated_imprintable_variant,
-          color: send(color),
+          color:       send(color),
           imprintable: send(imprintable),
-          size: send("size_#{size.to_s.underscore}")
+          size:        send("size_#{size.to_s.underscore}")
         )
       end
 
@@ -71,9 +71,17 @@ module LineItemHelpers
           imprintable_variant: send(imprintable_variant),
         )
       end
+
       line_items << line_item
     end
 
     let("#{color}_#{imprintable}_items") { line_items.map(&method(:send)) }
+  end
+
+  def stub_imprintable_line_items(options)
+    allow(LineItem).to receive_message_chain(
+      :includes, :where, :where, :not
+    )
+      .and_return options[:with]
   end
 end
