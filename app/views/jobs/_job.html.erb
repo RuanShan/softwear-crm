@@ -55,7 +55,7 @@
       <% end %>
 
       <h4>Imprints</h4>
-      <%= form_for :imprint, method: :put, url: imprints_update_path, remote: true, builder: BatchFormBuilder do |f| %>
+      <%= form_for :imprint, method: :put, url: job_imprints_update_path(job), remote: true, builder: BatchFormBuilder do |f| %>
 
         <%= render partial: 'imprints/imprints', locals: { job: job } %>
 

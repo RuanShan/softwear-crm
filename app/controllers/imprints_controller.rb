@@ -42,7 +42,8 @@ class ImprintsController < InheritedResources::Base
   end
 
   def update
-    batch_update(true) do |format|
+    @job = Job.find(params[:job_id])
+    batch_update(create_negatives: true, parent: @job) do |format|
       format.js
     end
   end

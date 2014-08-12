@@ -6,3 +6,4 @@ $("#job-<%= @job.id %>")
 
 $imprint.find("select").addClass("editing-imprint");
 $imprint.find(".js-delete-imprint-button").click(deleteImprint);
+registerImprintEvents($imprint);
