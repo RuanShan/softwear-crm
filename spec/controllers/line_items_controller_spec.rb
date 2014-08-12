@@ -123,6 +123,8 @@ describe LineItemsController, line_item_spec: true do
     end
   end
 
+  it_can 'batch update'
+
   describe '#select_options' do
 
     context 'when there are brands' do
