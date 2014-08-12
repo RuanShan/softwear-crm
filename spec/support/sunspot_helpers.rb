@@ -32,6 +32,31 @@ module SunspotHelpers
     end
   end
 
+  def lazy_load_solr
+    if Sunspot.session.respond_to? :original_session
+      Sunspot.session = Sunspot.session.original_session
+      if Sunspot.session.respond_to? :original_session
+        raise 'Sunspot session somehow got buried in spies!'
+      end
+    end
+    
+    unless solr_running?
+      raise 'Unadle to start Solr.' unless start_solr
+      wait_for_solr
+    end
+  end
+
+  def refresh_sunspot_session_spy
+    # If we just keep making session spies out of the current session
+    # (as suggested on the SunspotMatchers github page), it will just
+    # keep piling up and further burrying the original session!
+    if Sunspot.session.respond_to? :original_session
+      Sunspot.session = SunspotMatchers::SunspotSessionSpy.new(Sunspot.session.original_session)
+    else
+      Sunspot.session = SunspotMatchers::SunspotSessionSpy.new(Sunspot.session)
+    end
+  end
+
   def ping_solr
     Net::HTTP.get URI "#{Sunspot.config.solr.url}/admin/ping"
   end
