@@ -55,32 +55,30 @@ describe Job, job_spec: true do
     make_variants :blue,  :hat,   [:OSFA]
 
     it 'should organize the line items by imprintable, then color' do
-      with = ->(t,&b) { b.call t }
-
       result = job.sort_line_items
 
       expect(result.keys).to include shirt.name
       expect(result.keys).to include hat.name
 
-      with.call(result[shirt.name].keys) do |it|
+      result[shirt.name].keys.tap do |it|
         expect(it).to include 'green'
         expect(it).to include 'red'
         expect(it).to_not include 'blue'
       end
 
-      with.call(result[hat.name].keys) do |it|
+      result[hat.name].keys.tap do |it|
         expect(it).to include 'red'
         expect(it).to include 'blue'
         expect(it).to_not include 'green'
       end
 
-      with.call(result[shirt.name]['green']) do |it|
+      result[shirt.name]['green'].tap do |it|
         expect(it).to include green_shirt_s_item
         expect(it).to include green_shirt_m_item
         expect(it).to include green_shirt_l_item
       end
 
-      with.call(result[hat.name]['blue']) do |it|
+      result[hat.name]['blue'].tap do |it|
         expect(it).to eq [blue_hat_osfa_item]
       end
     end

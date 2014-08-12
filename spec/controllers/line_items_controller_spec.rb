@@ -26,9 +26,9 @@ describe LineItemsController, line_item_spec: true do
 
       it 'only fires one public activity activity', activity_spec: true do
         PublicActivity.with_tracking do
-          expect(PublicActivity::Activity.all.count).to eq 0
+          expect(PublicActivity::Activity.all.size).to eq 0
           post :create, format: :json, job_id: job.id, imprintable_id: shirt.id, color_id: white.id
-          expect(PublicActivity::Activity.all.count).to eq 1
+          expect(PublicActivity::Activity.all.size).to eq 1
         end
       end
 

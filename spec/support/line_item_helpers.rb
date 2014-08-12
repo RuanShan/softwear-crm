@@ -19,7 +19,7 @@ module LineItemHelpers
     sizes << :M if sizes.count == 0
     
     excluded = [options[:not]].flatten.compact
-    letfunc = -> (category) { 
+    letfunc = -> (category) {
       if options[:lazy] || excluded.include?(category) || excluded.include?(category.to_s.pluralize.to_sym)
         method(:let)
       else
@@ -44,8 +44,32 @@ module LineItemHelpers
     end
   end
 
-  # Same as tossing lazy: true onto a standard make_variants call
-  def make_variants!(color, imprintable, sizes=[], options={})
-    make_variants color, imprintable, sizes, options.merge(lazy: true)
+  def make_variants(color, imprintable, sizes = [], options = {})
+    sizes << :M if sizes.empty?
+
+    sizes.each do |size|
+      let("size_#{size.to_s.underscore}") do
+        build_stubbed :valid_size, name: size
+      end
+
+      imprintable_variant = "#{color}_#{imprintable}_#{size.to_s.underscore}"
+      let(imprintable_variant) do
+        build_stubbed(
+          :associated_imprintable_variant,
+          color: send(color),
+          imprintable: send(imprintable),
+          size: send("size_#{size.to_s.underscore}")
+        )
+      end
+
+      line_item = "#{color}_#{imprintable}_#{size.to_s.downcase}_item"
+      let(line_item) do
+        build_stubbed(
+          :imprintable_line_item,
+          imprintable_variant: send(imprintable_variant),
+        )
+      end
+
+    end
   end
 end
