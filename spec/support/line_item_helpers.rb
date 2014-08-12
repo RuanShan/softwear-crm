@@ -44,16 +44,18 @@ module LineItemHelpers
     end
   end
 
-  def make_variants(color, imprintable, sizes = [], options = {})
+  def make_stubbed_variants(color, imprintable, sizes = [], options = {})
     sizes << :M if sizes.empty?
 
+    line_items = []
+
     sizes.each do |size|
-      let("size_#{size.to_s.underscore}") do
+      let!("size_#{size.to_s.underscore}") do
         build_stubbed :valid_size, name: size
       end
 
       imprintable_variant = "#{color}_#{imprintable}_#{size.to_s.underscore}"
-      let(imprintable_variant) do
+      let!(imprintable_variant) do
         build_stubbed(
           :associated_imprintable_variant,
           color: send(color),
@@ -63,13 +65,15 @@ module LineItemHelpers
       end
 
       line_item = "#{color}_#{imprintable}_#{size.to_s.downcase}_item"
-      let(line_item) do
+      let!(line_item) do
         build_stubbed(
           :imprintable_line_item,
           imprintable_variant: send(imprintable_variant),
         )
       end
-
+      line_items << line_item
     end
+
+    let("#{color}_#{imprintable}_items") { line_items.map(&method(:send)) }
   end
 end

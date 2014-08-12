@@ -36,7 +36,7 @@ describe Job, job_spec: true do
     make_variants :green, :shirt, [:S, :M, :L]
     make_variants :red,   :hat,   [:OSFA]
 
-    it 'is_expected.to return all of the information for the imprintables ' do
+    it 'should return all of the information for the imprintables ' do
       expect(job.imprintable_info).to eq("green #{shirt.style_name} #{shirt.style_catalog_no}, red #{hat.style_name} #{hat.style_catalog_no}")
     end
   end
@@ -50,7 +50,7 @@ describe Job, job_spec: true do
       ]}
     end
 
-    it 'is_expected.to return the sum of all line item quantities where imprintable_id is not null' do
+    it 'should return the sum of all line item quantities where imprintable_id is not null' do
       expect(subject.imprintable_variant_count).to eq(55)
     end
   end
@@ -62,7 +62,7 @@ describe Job, job_spec: true do
       ]}
     end
 
-    it 'is_expected.to return the sum of all line item quantities where imprintable_id is not null' do
+    it 'should return the sum of all line item quantities where imprintable_id is not null' do
       expect(subject.imprintable_variant_count).to eq(0)
     end
   end
@@ -70,7 +70,7 @@ describe Job, job_spec: true do
   context '#imprintable_variant_count with job having no line items (bug #176)', artwork_request_spec: true do
     let!(:job) { build_stubbed(:blank_job) }
 
-    it 'is_expected.to return the sum of all line item quantities where imprintable_id is not null' do
+    it 'should return the sum of all line item quantities where imprintable_id is not null' do
       expect(job.imprintable_variant_count).to eq(0)
     end
   end
@@ -84,28 +84,28 @@ describe Job, job_spec: true do
 
     context 'print_location constricts both width and height' do
       let!(:print_location) { build_stubbed(:blank_print_location, name: 'Chest', max_width: 3.1, max_height: 2.6) }
-      it 'is_expected.to return the max print area' do
+      it 'should return the max print area' do
         expect(job.max_print_area(print_location)).to eq([3.1, 2.6])
       end
     end
 
     context 'print_location constricts just width' do
       let!(:print_location) { build_stubbed(:blank_print_location, name: 'Chest', max_width: 3.1, max_height: 8.6) }
-      it 'is_expected.to return the max print area' do
+      it 'should return the max print area' do
         expect(job.max_print_area(print_location)).to eq([3.1, 5.5])
       end
     end
 
     context 'print_location constricts just height' do
       let!(:print_location) { build_stubbed(:blank_print_location, name: 'Chest', max_width: 9.1, max_height: 2.6) }
-      it 'is_expected.to return the max print area' do
+      it 'should return the max print area' do
         expect(job.max_print_area(print_location)).to eq([5.5, 2.6])
       end
     end
 
     context 'print_location constricts neither width or height' do
       let!(:print_location) { build_stubbed(:blank_print_location, name: 'Chest', max_width: 9.1, max_height: 8.6) }
-      it 'is_expected.to return the max print area' do
+      it 'should return the max print area' do
         expect(job.max_print_area(print_location)).to eq([5.5, 5.5])
       end
     end
@@ -116,57 +116,72 @@ describe Job, job_spec: true do
     [:red, :blue, :green].each { |c| let!(c) { create(:valid_color, name: c) } }
     [:shirt, :hat].each { |s| let!(s) { create(:valid_imprintable) } }
 
-    make_variants :green, :shirt, [:S, :M, :L]
-    make_variants :red,   :shirt, [:S, :M, :XL]
-    make_variants :red,   :hat,   [:OSFA]
-    make_variants :blue,  :hat,   [:OSFA]
+    make_stubbed_variants :green, :shirt, [:S, :M, :L]
+    make_stubbed_variants :red,   :shirt, [:S, :M, :XL]
+    make_stubbed_variants :red,   :hat,   [:OSFA]
+    make_stubbed_variants :blue,  :hat,   [:OSFA]
+
+    let(:line_items) do
+      green_shirt_items +
+      red_shirt_items +
+      red_hat_items +
+      blue_hat_items
+    end
+
+    before :each do
+      allow(LineItem).to receive_message_chain(
+        :includes, :where, :where, :not
+      )
+        .and_return line_items
+    end
 
     it 'organizes the line items by imprintable, then color' do
-      with = ->(t,&b) { b.call t }
-
       result = job.sort_line_items
 
       expect(result.keys).to include shirt.name
       expect(result.keys).to include hat.name
 
-      with.call(result[shirt.name].keys) do |it|
-        expect(it).to include 'green'
-        expect(it).to include 'red'
-        expect(it).to_not include 'blue'
+      result[shirt.name].keys.tap do |it|
+        expect(it).to include :green
+        expect(it).to include :red
+        expect(it).to_not include :blue
       end
 
-      with.call(result[hat.name].keys) do |it|
-        expect(it).to include 'red'
-        expect(it).to include 'blue'
-        expect(it).to_not include 'green'
+      result[hat.name].keys.tap do |it|
+        expect(it).to include :red
+        expect(it).to include :blue
+        expect(it).to_not include :green
       end
 
-      with.call(result[shirt.name]['green']) do |it|
+      result[shirt.name][:green].tap do |it|
         expect(it).to include green_shirt_s_item
         expect(it).to include green_shirt_m_item
         expect(it).to include green_shirt_l_item
       end
 
-      with.call(result[hat.name]['blue']) do |it|
+      result[hat.name][:blue].tap do |it|
         expect(it).to eq [blue_hat_osfa_item]
       end
     end
 
-    it 'sorts the resulting arrays by size', retry: 3 do
+    it 'sorts the resulting arrays by size' do
       sizes = [size_xl, size_m, size_s]
       sizes[0].sort_order = 3
       sizes[1].sort_order = 2
       sizes[2].sort_order = 1
-      sizes.each { |s| s.save! }
 
       result = job.sort_line_items
 
-      expect(result[shirt.name]['red'])
-      .to eq [red_shirt_s_item, red_shirt_m_item, red_shirt_xl_item]
+      expect(result[shirt.name][:red])
+        .to eq [red_shirt_s_item, red_shirt_m_item, red_shirt_xl_item]
     end
 
-    it 'takes 6 SQL queries', pending: 'Look into this' do
-      expect(queries_after{job.sort_line_items}).to eq 6
+    it 'should eager load imprintable variant color and size' do
+      expect(LineItem).to receive(:includes)
+        .with(imprintable_variant: [:color, :size])
+        .and_call_original
+
+      job.sort_line_items
     end
   end
 
@@ -176,28 +191,24 @@ describe Job, job_spec: true do
     let!(:white) { create(:valid_color, name: 'white') }
     let!(:shirt) { create(:valid_imprintable) }
 
-    make_variants :white, :shirt, [:S, :M, :L]
+    make_stubbed_variants :white, :shirt, [:S, :M, :L]
 
-    5.times { |n| let!("standard#{n}".to_sym) { create(:non_imprintable_line_item, line_itemable_id: job.id, line_itemable_type: 'Job') } }
+    let!(:standard0) { create :non_imprintable_line_item, line_itemable: job }
+    let!(:standard1) { create :non_imprintable_line_item, line_itemable: job }
 
-    it 'returns all the non-imprintable line items' do
-      result = job.standard_line_items
-      5.times do |n|
-        expect(result).to include send("standard#{n}")
-      end
-    end
+    subject { job.standard_line_items }
 
-    it 'does not contain any imprintable line items' do
-      result = job.standard_line_items
-      ['s', 'm', 'l'].each do |s|
-        expect(result).to_not include send("white_shirt_#{s}_item")
-      end
+    it { is_expected.to include standard0 }
+    it { is_expected.to include standard1 }
+
+    %w(s m l).each do |size|
+      it { is_expected.to_not include send("white_shirt_#{size}_item") }
     end
   end
 
   describe '#total_quantity', artwork_request_spec: true do
     before do
-      allow(subject).to receive(:line_items) { [
+      allow(subject).to receive(:line_items) {[
           build_stubbed(:blank_line_item, quantity: 25),
           build_stubbed(:blank_line_item, quantity: 50),
           build_stubbed(:blank_line_item, quantity: 30)
@@ -213,17 +224,8 @@ describe Job, job_spec: true do
     job1 = create(:job, name: 'Job Name')
     job1.destroy
 
-    job2 = create(:job, name: 'Job Name')
+    job2 = build(:job, name: 'Job Name')
     expect(job2).to be_valid
-  end
-
-  it 'has many line items' do
-    job = create(:job, name: 'job')
-    expect(job.line_items).to be_a ActiveRecord::Relation
-  end
-
-  context 'imprints', imprint_spec: true do
-    it { is_expected.to have_many :imprints }
   end
 
   it 'subsequent jobs created with a nil name will be named "New Job #"' do
