@@ -1,17 +1,18 @@
 module SunspotHelpers
   def solr_running?
-    File.exists? Rails.root.join('solr', 'pids', 'test', 'sunspot-solr-test.pid').to_s
+    File.exists? Rails.root
+      .join('solr', 'pids', 'test', 'sunspot-solr-test.pid').to_s
   end
 
   # Pass false if you want solr to not output to console
-  def start_solr(*do_output)
-    solr_cmd 'start', do_output.first == false
+  def start_solr(do_output = true)
+    solr_cmd 'start', !do_output
   end
-  def stop_solr(*do_output)
-    solr_cmd 'stop', do_output.first == false
+  def stop_solr(do_output = true)
+    solr_cmd 'stop', !do_output
   end
-  def reindex_solr(*do_output)
-    solr_cmd 'reindex', do_output.first == false
+  def reindex_solr(do_output = true)
+    solr_cmd 'reindex', !do_output
   end
 
   def clear_solr
@@ -19,9 +20,9 @@ module SunspotHelpers
     FileUtils.rm_rf data_path.to_s
   end
 
-  def wait_for_solr(*timeout_seconds)
-    Timeout::timeout(timeout_seconds.first || 5) do
-      while true
+  def wait_for_solr(timeout_seconds = nil)
+    Timeout::timeout(timeout_seconds || 5) do
+      loop do
         begin
           ping_solr
           break
@@ -41,7 +42,7 @@ module SunspotHelpers
     end
     
     unless solr_running?
-      raise 'Unadle to start Solr.' unless start_solr
+      raise 'Unable to start Solr.' unless start_solr
       wait_for_solr
     end
   end
@@ -79,6 +80,7 @@ module SunspotHelpers
   end
 
   private
+
   def solr_cmd(command, supress_output)
     actual_command = "rake sunspot:solr:#{command} RAILS_ENV=test"
     if (supress_output)

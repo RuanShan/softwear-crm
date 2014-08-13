@@ -54,7 +54,7 @@ describe LineItem, line_item_spec: true do
       it { is_expected.to validate_uniqueness_of(:imprintable_variant_id)
              .scoped_to([:line_itemable_id, :line_itemable_type]) }
 
-      it 'description should return the description of its imprintable_variant' do
+      it 'description should return the imprintable_variant description' do
         expect(subject.description)
           .to eq subject.imprintable_variant.imprintable.style_description
       end
