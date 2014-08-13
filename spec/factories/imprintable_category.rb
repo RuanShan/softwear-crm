@@ -4,12 +4,11 @@ FactoryGirl.define do
      'Headwear & Bags', 'Athletics', 'Fashionable', 'Youth', 'Something Different', 'What\'s Least Expensive'][n%10]
   end
 
-  factory :imprintable_category, class: ImprintableCategory do
-    name { generate :category_name }
-    imprintable { |s| s.association :valid_imprintable }
-  end
-
   factory :blank_imprintable_category, class: ImprintableCategory do
 
+    factory :imprintable_category do
+      name { generate :category_name }
+      imprintable { |s| s.association :valid_imprintable }
+    end
   end
 end

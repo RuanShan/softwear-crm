@@ -227,21 +227,21 @@ describe Job, job_spec: true do
   end
 
   it 'subsequent jobs created with a nil name will be named "New Job #"' do
-    job0 = create(:empty_job)
-    job1 = create(:empty_job)
-    job2 = create(:empty_job)
+    job0 = create(:blank_job)
+    job1 = create(:blank_job)
+    job2 = create(:blank_job)
     expect(job0.name).to eq 'New Job'
     expect(job1.name).to eq 'New Job 2'
     expect(job2.name).to eq 'New Job 3'
   end
 
   it "deleting a job doesn't stop subsequent job name generation from working" do
-    job = create(:empty_job)
+    job = create(:blank_job)
     job.destroy
 
-    job0 = create(:empty_job)
-    job1 = create(:empty_job)
-    job2 = create(:empty_job)
+    job0 = create(:blank_job)
+    job1 = create(:blank_job)
+    job2 = create(:blank_job)
     expect(job0.name).to eq 'New Job'
     expect(job1.name).to eq 'New Job 2'
     expect(job2.name).to eq 'New Job 3'

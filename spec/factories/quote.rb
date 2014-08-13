@@ -1,5 +1,6 @@
 FactoryGirl.define do
   factory :blank_quote, class: Quote do
+
     factory :valid_quote do
       sequence(:email) { |n| "email_#{n}@testing.com" }
       first_name 'test'
