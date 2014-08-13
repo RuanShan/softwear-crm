@@ -67,7 +67,7 @@ describe Job, job_spec: true do
 
   context '#imprintable_variant_count with job having no imprintable line items (bug #176)', artwork_request_spec: true do
     before do
-      allow(subject).to receive(:line_items) { [
+      allow(subject).to receive(:line_items) {[
         build_stubbed(:blank_line_item, imprintable_variant_id: nil, quantity: 5)
       ]}
     end

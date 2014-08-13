@@ -46,7 +46,8 @@ describe LineItem, line_item_spec: true do
       it 'validates the existance of imprintable_variant' do
         subject.imprintable_variant_id = 99
         subject.save
-        expect(subject.errors[:imprintable_variant]).to include('does not exist')
+        expect(subject.errors[:imprintable_variant])
+          .to include('does not exist')
       end
 
       it { is_expected.to_not validate_presence_of :description }
