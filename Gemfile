@@ -71,6 +71,7 @@ group :development do
   gem 'binding_of_caller'
   gem 'mailcatcher'
   gem 'mailcatcher'
+  gem 'byebug'
 end
 
 group :test do

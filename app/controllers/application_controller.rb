@@ -10,13 +10,17 @@ class ApplicationController < ActionController::Base
   before_action :assign_current_user
   before_action :assign_current_url
   before_action :assign_current_action
+  before_action :assign_request_time
 
   protected
 
   def format_time(input_time)
     begin
       time_zone = Time.zone.now.strftime('%Z')
-      utc_time = DateTime.strptime("#{input_time} #{time_zone}", '%m/%d/%Y %l:%M %p %Z').to_time.utc
+      utc_time = DateTime.strptime(
+        "#{input_time} #{time_zone}", '%m/%d/%Y %l:%M %p %Z'
+      )
+        .to_time.utc
       return utc_time
     rescue ArgumentError
       return input_time
@@ -33,12 +37,7 @@ class ApplicationController < ActionController::Base
     if current_user
       @current_user = current_user
     else
-      # TODO: Nigel, Look this over
-      @current_user = Class.new do
-        def full_name
-          'Error User'
-        end
-      end.new
+      @current_user = Struct.new(:full_name).new('Error User')
     end
   end
 
@@ -50,11 +49,14 @@ class ApplicationController < ActionController::Base
     @current_action ||= 'dashboard'
   end
 
+  def assign_request_time
+    @request_time ||= Time.now
+  end
+
   def fire_activity(record, activity_name, options={})
     options[:key] = record.class.activity_key_for activity_name
     options[:owner] = current_user
-    # TODO: uncomment this and see if it still breaks
-    # options[:recipient] = TrackingHelpers::Methods.get_order(self, record)
+    options[:recipient] = TrackingHelpers::Methods.get_order(self, record)
     record.create_activity options
   end
 

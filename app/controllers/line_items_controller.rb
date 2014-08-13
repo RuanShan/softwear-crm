@@ -90,6 +90,15 @@ class LineItemsController < InheritedResources::Base
 
   def update
     batch_update do |format|
+      logged = {}
+
+      @line_items.each do |line_item|
+        next if line_item.imprintable? && logged[line_item.name]
+
+        fire_activity line_item, :update
+        logged[line_item.name] = true if line_item.imprintable?
+      end
+
       format.html { redirect_to root_path }
       format.js
     end
