@@ -15,12 +15,12 @@ class Job < ActiveRecord::Base
 
   belongs_to :order
   has_many :artwork_request_jobs
+  has_many :artwork_requests, through: :artwork_request_jobs
   has_many :colors, -> {readonly}, through: :imprintable_variants
   has_many :imprints
   has_many :imprintables, -> {readonly}, through: :imprintable_variants
   has_many :imprintable_variants, -> {readonly}, through: :line_items
   has_many :line_items, as: :line_itemable
-  has_many :artwork_requests, through: :artwork_request_jobs
 
   validate :assure_name_and_description, on: :create
   validates :name, uniqueness: { scope: :order_id }

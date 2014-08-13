@@ -31,12 +31,14 @@ describe Order, order_spec: true do
     it { is_expected.to validate_presence_of :store }
     it { is_expected.to validate_presence_of :terms }
 
-    let(:user) { create(:user) }
+    let!(:store) { create(:valid_store) }
+    let!(:user) { create(:user) }
+    #TODO struggled and failed to find a way to use build_stubbed here
     it 'requires a tax id number if tax_exempt? is true' do
-      expect(build_stubbed(:blank_order, store: build_stubbed(:blank_store), salesperson: user, tax_exempt: true)).to_not be_valid
+      expect(build(:order, store_id: store.id, store: store, salesperson_id: user.id, tax_exempt: true)).to_not be_valid
     end
     it 'is valid when tax_exempt? is true and a tax id number is present' do
-      expect(build_stubbed(:blank_order, store: build_stubbed(:blank_store), salesperson: user, tax_exempt: true, tax_id_number: 12)).to be_valid
+      expect(build(:order, store_id: store.id, store: store, salesperson_id: user.id, tax_exempt: true, tax_id_number: 12)).to be_valid
     end
   end
 
