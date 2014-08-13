@@ -14,20 +14,36 @@ describe LineItemsController, line_item_spec: true do
       make_variants :white, :shirt, [:S, :M, :L, :XL], not: [:job, :line_items]
 
       it 'creates line items for each relevant size' do
-        post :create, format: :json, job_id: job.id, imprintable_id: shirt.id, color_id: white.id
+        post :create, format: :json, 
+                      job_id:         job.id,
+                      imprintable_id: shirt.id,
+                      color_id:       white.id
         json_response = JSON.parse response.body
         expect(json_response['result']).to eq 'success'
-        expect(LineItem.where(imprintable_variant_id: white_shirt_s.id)).to exist
-        expect(LineItem.where(imprintable_variant_id: white_shirt_m.id)).to exist
-        expect(LineItem.where(imprintable_variant_id: white_shirt_l.id)).to exist
-        expect(LineItem.where(imprintable_variant_id: white_shirt_xl.id)).to exist
-        expect(LineItem.where(line_itemable_id: job.id, line_itemable_type: 'Job')).to exist
+        expect(
+          LineItem.where(imprintable_variant_id: white_shirt_s.id)
+        ).to exist
+        expect(
+          LineItem.where(imprintable_variant_id: white_shirt_m.id)
+        ).to exist
+        expect(
+          LineItem.where(imprintable_variant_id: white_shirt_l.id)
+        ).to exist
+        expect(
+          LineItem.where(imprintable_variant_id: white_shirt_xl.id)
+        ).to exist
+        expect(
+          LineItem.where(line_itemable_id: job.id, line_itemable_type: 'Job')
+        ).to exist
       end
 
       it 'only fires one public activity activity', activity_spec: true do
         PublicActivity.with_tracking do
           expect(PublicActivity::Activity.all.size).to eq 0
-          post :create, format: :json, job_id: job.id, imprintable_id: shirt.id, color_id: white.id
+          post :create, format: :json,
+                        job_id: job.id,
+                        imprintable_id: shirt.id,
+                        color_id: white.id
           expect(PublicActivity::Activity.all.size).to eq 1
         end
       end
@@ -38,18 +54,31 @@ describe LineItemsController, line_item_spec: true do
           job.line_items << white_shirt_l_item
         end
 
-        it "still succeeds and only adds new ones", pending: "This fails, but I recall Ricky saying this scenario doesn't matter" do
-          post :create, format: :json, job_id: job.id, imprintable_id: shirt.id, color_id: white.id
+        it "still succeeds and only adds new ones" do
+          pending(
+            "This fails, but I recall Ricky saying this scenario doesn't matter"
+          )
+          post :create, format: :json,
+                        job_id: job.id,
+                        imprintable_id: shirt.id,
+                        color_id: white.id
           json_response = JSON.parse response.body
           expect(json_response['result']).to eq 'success'
-          expect(LineItem.where(imprintable_variant_id: white_shirt_s.id)).to exist
-          expect(LineItem.where(imprintable_variant_id: white_shirt_xl.id)).to exist
+          expect(
+            LineItem.where(imprintable_variant_id: white_shirt_s.id)
+          ).to exist
+          expect(
+            LineItem.where(imprintable_variant_id: white_shirt_xl.id)
+          ).to exist
         end
 
         it 'fails when the job has all line items' do
           job.line_items << white_shirt_s_item
           job.line_items << white_shirt_xl_item
-          post :create, format: :json, job_id: job.id, imprintable_id: shirt.id, color_id: white.id
+          post :create, format: :json,
+                        job_id: job.id,
+                        imprintable_id: shirt.id,
+                        color_id: white.id
           json_response = JSON.parse response.body
           expect(json_response['result']).to eq 'failure'
         end
@@ -128,7 +157,7 @@ describe LineItemsController, line_item_spec: true do
   describe '#select_options' do
 
     context 'when there are brands' do
-      2.times { |i| let!("brand#{i}".to_sym) { create(:valid_brand) } }
+      2.times { |i| let!("brand#{i}") { create(:valid_brand) } }
 
       it 'responds with a select tag for brands' do
         get :select_options
@@ -138,7 +167,11 @@ describe LineItemsController, line_item_spec: true do
       end
 
       context 'with brand_id' do
-        2.times { |i| let!("imprintable#{i}".to_sym) { create(:associated_imprintable, brand_id: brand1.id) } }
+        2.times do |i|
+          let!("imprintable#{i}") do
+            create(:associated_imprintable, brand_id: brand1.id)
+          end
+        end
 
         context 'when there are matching styles' do
           it 'responds with a select tag for styles' do
@@ -156,14 +189,22 @@ describe LineItemsController, line_item_spec: true do
         end
 
         context 'with imprintable_id' do
-          2.times { |i| let!("color#{i}".to_sym) { create(:valid_color) } }
-          2.times { |i| let!("size#{i}".to_sym) { create(:valid_size) } }
+          2.times { |i| let!("color#{i}") { create(:valid_color) } }
+          2.times { |i| let!("size#{i}") { create(:valid_size) } }
 
-          let!(:iv0) { create(:associated_imprintable_variant, imprintable_id: imprintable0.id, color_id: color0.id) }
-          2.times { |i| let!("iv1_#{i}".to_sym) { create(:associated_imprintable_variant,
-            imprintable_id: imprintable0.id,
-            size_id: send("size#{i}").id,
-            color_id: color1.id
+          let!(:iv0) do
+            create(
+              :associated_imprintable_variant,
+              imprintable_id: imprintable0.id,
+              color_id:       color0.id
+            )
+          end
+          2.times { |i| let!("iv1_#{i}") {
+            create(
+              :associated_imprintable_variant,
+              imprintable_id: imprintable0.id,
+              size_id:        send("size#{i}").id,
+              color_id:       color1.id
           ) } }
 
           context 'when there are matching colors' do
@@ -184,7 +225,8 @@ describe LineItemsController, line_item_spec: true do
           context 'and color_id' do
             context 'when there are matching variants' do
               it 'responds with the name and description' do
-                get :select_options, imprintable_id: imprintable0.id, color_id: color1.id
+                get :select_options, imprintable_id: imprintable0.id,
+                                     color_id: color1.id
                 expect(response.body).to include imprintable0.style_name
                 expect(response.body).to include imprintable0.style_catalog_no
                 expect(response.body).to include imprintable0.description
@@ -192,7 +234,8 @@ describe LineItemsController, line_item_spec: true do
             end
             context 'when there is no matching variant' do
               it 'responds with error message html' do
-                get :select_options, imprintable_id: imprintable1.id, color_id: color0.id
+                get :select_options, imprintable_id: imprintable1.id,
+                                     color_id: color0.id
                 expect(response.body).to include "Couldn't find"
               end
             end

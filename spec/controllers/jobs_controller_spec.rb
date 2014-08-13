@@ -9,7 +9,13 @@ describe JobsController, job_spec: true do
 
   describe '#destroy' do
     context 'when the job has line items' do
-      let!(:line_item) { create(:non_imprintable_line_item, line_itemable_id: job.id, line_itemable_type: 'Job') }
+      let!(:line_item) do
+        create(
+          :non_imprintable_line_item,
+          line_itemable_id: job.id,
+          line_itemable_type: 'Job'
+        )
+      end
       it 'should return json with response.result == "failure"' do
         delete :destroy, id: job.id, format: :json
         jsonResponse = JSON.parse response.body
