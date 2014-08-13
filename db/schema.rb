@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140813154404) do
+ActiveRecord::Schema.define(version: 20140813161117) do
 
   create_table "activities", force: true do |t|
     t.integer  "trackable_id"
@@ -129,6 +129,15 @@ ActiveRecord::Schema.define(version: 20140813154404) do
 
   add_index "coordinate_imprintables", ["coordinate_id", "imprintable_id"], name: "coordinate_imprintable_index", using: :btree
 
+  create_table "imprint_method_imprintables", force: true do |t|
+    t.integer  "imprint_method_id"
+    t.integer  "imprintable_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "imprint_method_imprintables", ["imprintable_id", "imprint_method_id"], name: "imprint_method_imprintables_index", using: :btree
+
   create_table "imprint_methods", force: true do |t|
     t.string   "name"
     t.datetime "deleted_at"
@@ -137,13 +146,6 @@ ActiveRecord::Schema.define(version: 20140813154404) do
   end
 
   add_index "imprint_methods", ["deleted_at"], name: "index_imprint_methods_on_deleted_at", using: :btree
-
-  create_table "imprint_methods_imprintables", id: false, force: true do |t|
-    t.integer "imprint_method_id"
-    t.integer "imprintable_id"
-  end
-
-  add_index "imprint_methods_imprintables", ["imprintable_id", "imprint_method_id"], name: "imprint_method_imprintables_index", using: :btree
 
   create_table "imprintable_categories", force: true do |t|
     t.string   "name"

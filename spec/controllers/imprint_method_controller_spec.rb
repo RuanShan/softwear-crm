@@ -3,11 +3,11 @@ require 'spec_helper'
 describe ImprintMethodsController, imprint_method_spec: true do
 
   let!(:imprint_method) { create :valid_imprint_method }
-  let(:print_location) { create :valid_print_location, imprint_method_id: imprint_method.id }
+  let(:print_location) { create :print_location, imprint_method_id: imprint_method.id }
   let!(:valid_user) { create :alternate_user }
   before(:each) { sign_in valid_user }
 
-  describe 'GET print_locations' do
+  describe 'GET print_locations', wip: true do
     it 'assigns @imprint_method, @print_locations, and renders _print_locations_select.html.erb' do
       print_location
       get :print_locations, imprint_method_id: imprint_method.id

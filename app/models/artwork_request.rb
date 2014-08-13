@@ -22,11 +22,11 @@ class ArtworkRequest < ActiveRecord::Base
   belongs_to :imprint_method
   belongs_to :print_location
   belongs_to :salesperson, class_name: User
-  has_many :assets, as: :assetable, dependent: :destroy
   has_many :artworks, through: :artwork_request_artworks
   has_many :artwork_request_artworks
   has_many :artwork_request_ink_colors
   has_many :artwork_request_jobs
+  has_many :assets, as: :assetable, dependent: :destroy
   has_many :ink_colors, through: :artwork_request_ink_colors
   has_many :jobs, through: :artwork_request_jobs
 
