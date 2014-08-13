@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140729165326) do
+ActiveRecord::Schema.define(version: 20140813141223) do
 
   create_table "activities", force: true do |t|
     t.integer  "trackable_id"
@@ -30,6 +30,13 @@ ActiveRecord::Schema.define(version: 20140729165326) do
   add_index "activities", ["recipient_id", "recipient_type"], name: "index_activities_on_recipient_id_and_recipient_type", using: :btree
   add_index "activities", ["trackable_id", "trackable_type"], name: "index_activities_on_trackable_id_and_trackable_type", using: :btree
 
+  create_table "artwork_request_artworks", force: true do |t|
+    t.integer  "artwork_request_id"
+    t.integer  "artwork_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
   create_table "artwork_requests", force: true do |t|
     t.text     "description"
     t.integer  "artist_id"
@@ -42,11 +49,6 @@ ActiveRecord::Schema.define(version: 20140729165326) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.string   "priority"
-  end
-
-  create_table "artwork_requests_artworks", id: false, force: true do |t|
-    t.integer "artwork_request_id"
-    t.integer "artwork_id"
   end
 
   create_table "artwork_requests_ink_colors", id: false, force: true do |t|

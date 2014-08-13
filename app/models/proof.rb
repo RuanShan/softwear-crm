@@ -15,6 +15,7 @@ class Proof < ActiveRecord::Base
   belongs_to :order
   has_many :mockups, as: :assetable, class_name: Asset, dependent: :destroy
   has_and_belongs_to_many :artworks
+
   accepts_nested_attributes_for :mockups, allow_destroy: true
 
   validates :approve_by, presence: true

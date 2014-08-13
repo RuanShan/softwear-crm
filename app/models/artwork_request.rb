@@ -23,7 +23,8 @@ class ArtworkRequest < ActiveRecord::Base
   belongs_to :print_location
   belongs_to :salesperson, class_name: User
   has_many :assets, as: :assetable, dependent: :destroy
-  has_and_belongs_to_many :artworks
+  has_many :artworks, through: :artwork_request_artworks
+  has_many :artwork_request_artworks
   has_and_belongs_to_many :ink_colors
   has_and_belongs_to_many :jobs
 
