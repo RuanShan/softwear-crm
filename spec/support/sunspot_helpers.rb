@@ -48,10 +48,11 @@ module SunspotHelpers
 
   def refresh_sunspot_session_spy
     # If we just keep making session spies out of the current session
-    # (as suggested on the SunspotMatchers github page), it will just
-    # keep piling up and further burrying the original session!
+    # (as suggested on the SunspotMatchers github page), it will 
+    # actually make a spy ontop of the last spy, and keep piling up.
     if Sunspot.session.respond_to? :original_session
-      Sunspot.session = SunspotMatchers::SunspotSessionSpy.new(Sunspot.session.original_session)
+      Sunspot.session = 
+        SunspotMatchers::SunspotSessionSpy.new(Sunspot.session.original_session)
     else
       Sunspot.session = SunspotMatchers::SunspotSessionSpy.new(Sunspot.session)
     end
@@ -62,16 +63,17 @@ module SunspotHelpers
   end
 
   # For some reason, Solr likes to occasionally return 
-  # empty arrays when testing. This deals with that.
+  # empty arrays when testing. You can either use the
+  # RSpec retry gem, or do your search inside this block
+  # and the method will return the result.
   def assure_solr_search(*args)
     options = args.first || {}
     results = []
     Timeout::timeout(10) do
-      while if options[:expect]
-              results.count != options[:expect]
-            else results.empty? end
+      begin
         results = yield
-      end
+      end while
+         options[:expect] && results.count != options[:expect] || results.empty?
     end
     results
   end

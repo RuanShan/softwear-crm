@@ -71,7 +71,6 @@ RSpec.configure do |config|
     example.metadata[:solr] ? lazy_load_solr : refresh_sunspot_session_spy
   end
 
-  # Stop solr if we were using it in any earlier tests.
   config.after(:suite) do
     stop_solr if solr_running?
   end

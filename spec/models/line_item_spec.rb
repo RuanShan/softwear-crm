@@ -35,7 +35,13 @@ describe LineItem, line_item_spec: true do
     end
 
     context 'when imprintable_variant_id is not nil' do
-      let!(:subject){ create(:imprintable_line_item, imprintable_variant: create(:associated_imprintable_variant)) }
+      let!(:subject){}
+      subject do
+        create(
+          :imprintable_line_item,
+          imprintable_variant: create(:associated_imprintable_variant)
+        )
+      end
 
       it 'validates the existance of imprintable_variant' do
         subject.imprintable_variant_id = 99
@@ -45,10 +51,12 @@ describe LineItem, line_item_spec: true do
 
       it { is_expected.to_not validate_presence_of :description }
       it { is_expected.to_not validate_presence_of :name }
-      it { is_expected.to validate_uniqueness_of(:imprintable_variant_id).scoped_to([:line_itemable_id, :line_itemable_type]) }
+      it { is_expected.to validate_uniqueness_of(:imprintable_variant_id)
+             .scoped_to([:line_itemable_id, :line_itemable_type]) }
 
       it 'description should return the description of its imprintable_variant' do
-        expect(subject.description).to eq subject.imprintable_variant.imprintable.style_description
+        expect(subject.description)
+          .to eq subject.imprintable_variant.imprintable.style_description
       end
       it 'name should return the name of its imprintable_variant' do
         expect(subject.name).to eq subject.imprintable_variant.name
@@ -59,7 +67,9 @@ describe LineItem, line_item_spec: true do
   describe '#<=>' do
     context 'on standard line items' do
       ['c', 'a', 'b'].each do |v|
-        let!("line_item_#{v}".to_sym){ build_stubbed(:blank_line_item, name: "line_item_#{v}") }
+        let!("line_item_#{v}".to_sym) do
+          build_stubbed(:blank_line_item, name: "line_item_#{v}")
+        end
       end
 
       it 'sorts them alphabetically' do
@@ -69,7 +79,7 @@ describe LineItem, line_item_spec: true do
     end
 
     context 'on imprintable line items' do
-      let!(:job) { build_stubbed(:blank_job) }
+      let!(:job)   { build_stubbed(:blank_job) }
       let!(:white) { build_stubbed(:blank_color, name: 'white') }
       let!(:shirt) { build_stubbed(:blank_imprintable) }
       make_stubbed_variants :white, :shirt, [:M, :S, :L]
@@ -101,7 +111,8 @@ describe LineItem, line_item_spec: true do
     end
 
     it 'returns the imprintable' do
-      expect(line_item.imprintable).to eq(line_item.imprintable_variant.imprintable)
+      expect(line_item.imprintable)
+        .to eq(line_item.imprintable_variant.imprintable)
     end
   end
 
