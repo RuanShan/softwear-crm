@@ -32,7 +32,7 @@ feature 'Artwork Features', js: true, artwork_spec: true do
     expect(Artwork.where(name: 'Rspec Artwork')).to exist
   end
 
-  scenario 'A user can search exiting artwork for tags and names', solr: true do
+  scenario 'A user can search existing artwork for tags and names', solr: true do
     visit artworks_path
     expect(page).to have_css("tr#artwork-row-#{artwork.id}")
     find(:css, "input#search_artwork_fulltext").set('adsflk;jasdpfiuawekfjasdf;klj')

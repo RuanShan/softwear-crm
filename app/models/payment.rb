@@ -6,7 +6,7 @@ class Payment < ActiveRecord::Base
 
   belongs_to :order
   belongs_to :store
-  belongs_to :user, foreign_key: :salesperson_id
+  belongs_to :salesperson, class_name: User
 
   validates :store, presence: true
 

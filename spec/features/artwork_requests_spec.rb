@@ -26,11 +26,12 @@ feature 'Artwork Request Features', js: true, artwork_request_spec: true do
     expect(page).to have_css('table#artwork-request-table')
   end
 
-  scenario 'A user can add an artwork request' do
+  scenario 'A user can add an artwork request', retry: 3 do
     visit "/orders/#{artwork_request.jobs.first.order.id}/edit#artwork"
     page.find("a[href='#{new_order_artwork_request_path(artwork_request.jobs.first.order)}']").click
     sleep 0.5
     page.find('div.chosen-container').click
+    sleep 1
     page.find('li.active-result').click
     page.find_by_id('artwork_imprint_method_fields').find("option[value='#{artwork_request.imprint_method.id}']").click
     sleep 0.5

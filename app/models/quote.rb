@@ -10,6 +10,7 @@ class Quote < ActiveRecord::Base
   belongs_to :salesperson, class_name: User
   belongs_to :store
   has_many :line_items, as: :line_itemable
+
   accepts_nested_attributes_for :line_items, allow_destroy: true
 
   validates :email, presence: true, email: true
@@ -17,8 +18,8 @@ class Quote < ActiveRecord::Base
   validates :first_name, presence: true
   validate :has_line_items?
   validates :last_name, presence: true
-  validates :salesperson_id, presence: true
-  validates :store_id, presence: true
+  validates :salesperson, presence: true
+  validates :store, presence: true
   validates :valid_until_date, presence: true
 
   def all_activities
@@ -63,7 +64,7 @@ class Quote < ActiveRecord::Base
     )
   end
 
-  def fetch_data_to_h(current_user)
+  def fetch_data_to_h(_current_user)
     freshdesk_info = {}
     freshdesk_info = fetch_group_id_and_dept(freshdesk_info)
     fetch_requester_id_and_name(freshdesk_info)

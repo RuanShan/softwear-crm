@@ -10,7 +10,7 @@
     <%= order.firstname %> <%= order.lastname %><br />
     <%= order.email %>
   </td>
-  <td><%= order.salesperson_name %></td>
+  <td><%= order.salesperson.full_name %></td>
   <td>
     <span class="label <%= get_style_from_status(order.payment_status)%>"><%= order.payment_status %></span>
     <!--<div class="btn-group btn-group-xs"><a data-toggle="tooltip" title="Email Payment Request to Customer" class="btn btn-default"><i class="fa fa-envelope"></i></a></div>-->

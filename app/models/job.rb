@@ -14,12 +14,13 @@ class Job < ActiveRecord::Base
   before_destroy :check_for_line_items
 
   belongs_to :order
+  has_many :artwork_request_jobs
   has_many :colors, -> {readonly}, through: :imprintable_variants
   has_many :imprints
   has_many :imprintables, -> {readonly}, through: :imprintable_variants
   has_many :imprintable_variants, -> {readonly}, through: :line_items
   has_many :line_items, as: :line_itemable
-  has_and_belongs_to_many :artwork_requests
+  has_many :artwork_requests, through: :artwork_request_jobs
 
   validate :assure_name_and_description, on: :create
   validates :name, uniqueness: { scope: :order_id }
@@ -124,14 +125,6 @@ class Job < ActiveRecord::Base
 
   private
 
-  def max_print(print_location, width_or_height)
-    (
-      imprintables.map(&"max_imprint_#{width_or_height}".to_sym) +
-      [print_location.send("max_#{width_or_height}")]
-    )
-      .map(&:to_f).min
-  end
-
   def assure_name_and_description
     # TODO: remove self?
     if self.name.nil?
@@ -152,11 +145,19 @@ class Job < ActiveRecord::Base
 
   def check_for_line_items
     if LineItem.where(line_itemable_id: id, line_itemable_type: 'Job').exists?
-      self.errors[:deletion_status] = 
-        'All line items must be manually removed before a job can be deleted'
+      self.errors[:deletion_status] =
+          'All line items must be manually removed before a job can be deleted'
       false
     else
       true
     end
+  end
+
+  def max_print(print_location, width_or_height)
+    (
+      imprintables.map(&"max_imprint_#{width_or_height}".to_sym) +
+      [print_location.send("max_#{width_or_height}")]
+    )
+      .map(&:to_f).min
   end
 end

@@ -1,21 +1,27 @@
 require 'spec_helper'
+
 describe ImprintableVariant, imprintable_variant_spec: true do
 
+  it { is_expected.to be_paranoid }
+
   describe 'Relationships' do
-    it { should belong_to(:imprintable) }
-    it { should belong_to(:size) }
-    it { should belong_to(:color) }
+    it { is_expected.to belong_to(:color) }
+    it { is_expected.to belong_to(:imprintable) }
+    it { is_expected.to belong_to(:size) }
   end
 
   describe 'Validations' do
-    it { should validate_presence_of(:imprintable) }
-    it { should validate_presence_of(:size) }
-    it { should validate_presence_of(:color) }
-    it { should validate_uniqueness_of(:color_id).scoped_to([:size_id, :imprintable_id]) }
+    it { is_expected.to validate_presence_of(:color) }
+    it { is_expected.to validate_uniqueness_of(:color_id).scoped_to([:size_id, :imprintable_id]) }
+    it { is_expected.to validate_presence_of(:imprintable) }
+    it { is_expected.to validate_presence_of(:size) }
   end
 
   context 'There is a valid imprintable_variant' do
-    let!(:imprintable_variant) { create(:valid_imprintable_variant) }
+    let!(:imprintable_variant) { build_stubbed(:blank_imprintable_variant,
+                                                 imprintable: build_stubbed(:blank_imprintable, brand: build_stubbed(:blank_brand)),
+                                                 color: build_stubbed(:blank_color),
+                                                 size: build_stubbed(:blank_size)) }
 
     describe '#full_name' do
       it 'returns "imprintable.brand.name imprintable.catalog_no size.name color.name"' do

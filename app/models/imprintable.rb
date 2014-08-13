@@ -40,23 +40,18 @@ class Imprintable < ActiveRecord::Base
 
   #TODO: HABTM relationship
   belongs_to :brand
-
   has_many :colors, ->{ uniq }, through: :imprintable_variants
-  has_many :sizes, ->{ uniq }, through: :imprintable_variants
-
-  has_many :imprintable_variants, dependent: :destroy
   has_many :coordinates, through: :coordinate_imprintables
-
   has_many :coordinate_imprintables
   has_many :imprintable_categories
-
+  has_many :imprintable_variants, dependent: :destroy
   has_many :mirrored_coordinates,
-            through: :mirrored_coordinate_imprintables,
-            source: :imprintable
+           through: :mirrored_coordinate_imprintables,
+           source: :imprintable
   has_many :mirrored_coordinate_imprintables,
-            class_name: 'CoordinateImprintable',
-            foreign_key: 'coordinate_id'
-
+           class_name: 'CoordinateImprintable',
+           foreign_key: 'coordinate_id'
+  has_many :sizes, ->{ uniq }, through: :imprintable_variants
   has_and_belongs_to_many :compatible_imprint_methods,
                            class_name: 'ImprintMethod',
                            association_foreign_key: 'imprint_method_id',
@@ -64,21 +59,18 @@ class Imprintable < ActiveRecord::Base
   has_and_belongs_to_many :sample_locations,
                            class_name: 'Store',
                            association_foreign_key: 'store_id',
-                           join_table: 'imprintables_stores'
+                           join_table: 'imprintable_stores'
 
   accepts_nested_attributes_for :imprintable_categories, allow_destroy: true
 
   validates :brand, presence: true
   validates :max_imprint_height, numericality: true, presence: true
   validates :max_imprint_width, numericality: true, presence: true
-
   validates :sizing_category,
              inclusion: { in: SIZING_CATEGORIES, message: 'Invalid sizing category' }
-
   validates :sku, length: { is: 4 }, if: :is_retail?
   validates :style_catalog_no, uniqueness: { scope: :brand_id }, presence: true
   validates :style_name, uniqueness: { scope: :brand_id }, presence: true
-
   validates :supplier_link,
              format: {
                         with: URI::regexp(%w(http https)),

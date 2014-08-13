@@ -21,7 +21,7 @@
     <div class="form-group">
       <%= f.label :store %>
 
-      <%= f.collection_select :store_id, Store.order(:name), :id, :name, { selected: @order.user.store_id }, { class: 'form-control' } %>
+      <%= f.collection_select :store_id, Store.order(:name), :id, :name, { selected: @order.salesperson.store_id }, { class: 'form-control' } %>
     </div>
 
     <div class="form-group">

@@ -3,11 +3,11 @@ require 'spec_helper'
 describe Search::NumberFilter, search_spec: true do
   it { expect(subject.class.ancestors).to include Search::NumberFilterType }
 
-  it { should have_db_column :field }
-  it { should have_db_column :comparator }
-  it { should ensure_inclusion_of(:comparator).in_array ['>', '<', '='] }
-  it { should have_db_column :negate }
-  it { should have_db_column :value }
+  it { is_expected.to have_db_column :field }
+  it { is_expected.to have_db_column :comparator }
+  it { is_expected.to ensure_inclusion_of(:comparator).in_array ['>', '<', '='] }
+  it { is_expected.to have_db_column :negate }
+  it { is_expected.to have_db_column :value }
 
   let(:query) { create :query }
   let(:order_model) { create :search_order_model, query_id: query.id }
@@ -17,13 +17,13 @@ describe Search::NumberFilter, search_spec: true do
     comparator: '>',
     field: 'commission_amount' }
 
-  it 'should belong to search types double float and integer' do
+  it 'belongs to search types double float and integer' do
     expect(Search::NumberFilter.search_types).to include :double
     expect(Search::NumberFilter.search_types).to include :float
     expect(Search::NumberFilter.search_types).to include :integer
   end
 
-  it 'should apply properly with negate set to false' do
+  it 'applies properly with negate set to false' do
     filter.negate = false
     filter.comparator = '='
     filter.save
@@ -34,7 +34,7 @@ describe Search::NumberFilter, search_spec: true do
     expect(Sunspot.session).to have_search_params(:with, :commission_amount, 10)
   end
 
-  it 'should apply properly with negate set to true' do
+  it 'iapplies properly with negate set to true' do
     filter.negate = true
     filter.save
 
@@ -46,7 +46,7 @@ describe Search::NumberFilter, search_spec: true do
     }
   end
 
-  it 'should default the comparator to "="' do
+  it 'defaults the comparator to "="' do
     filter = Search::NumberFilter.new
     expect(filter.comparator).to eq '='
   end
@@ -56,7 +56,7 @@ describe Search::NumberFilter, search_spec: true do
     let!(:order2) { create :order_with_job, commission_amount: 5 }
     let!(:order3) { create :order_with_job, commission_amount: 1 }
 
-    it 'should retrieve the correct ones', solr: true do
+    it 'retrieves the correct ones', solr: true do
       filter.value = 10
       filter.comparator = '<'
       filter.save

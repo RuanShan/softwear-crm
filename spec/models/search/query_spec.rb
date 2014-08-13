@@ -1,14 +1,14 @@
 require 'spec_helper'
 
 describe Search::Query, search_spec: true do
-  it { should belong_to :user }
-  it { should have_db_column :name }
-  it { should validate_uniqueness_of(:name).scoped_to :user_id }
-  it { should_not have_db_column :default_fulltext }
+  it { is_expected.to belong_to :user }
+  it { is_expected.to have_db_column :name }
+  it { is_expected.to validate_uniqueness_of(:name).scoped_to :user_id }
+  it { is_expected.to_not have_db_column :default_fulltext }
 
-  it { should have_many :query_models }
+  it { is_expected.to have_many :query_models }
 
-  it 'should not allow an empty name if user_id is not nil' do
+  it 'does not allow an empty name if user_id is not nil' do
     subject.user_id = 1
     subject.name = ""
     expect(subject).to_not be_valid

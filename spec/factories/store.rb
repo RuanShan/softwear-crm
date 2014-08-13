@@ -3,7 +3,10 @@ FactoryGirl.define do
     %w(Ypsilanti\ Tees Ann\ Arbor\ Tees)[n%2]
   end
 
-  factory :valid_store, class: Store do
-    name { generate :store_name }
+  factory :blank_store, class: Store do
+
+    factory :valid_store do
+      name { generate :store_name }
+    end
   end
 end

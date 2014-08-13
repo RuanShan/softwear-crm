@@ -7,7 +7,7 @@ describe ArtworkRequestsController, js: true, artwork_request_spec: true do
   before(:each) { sign_in valid_user }
 
   describe 'POST create' do
-    let(:imprint_method) { create(:valid_imprint_method_with_color_and_location) }
+    let(:imprint_method) { create(:valid_imprint_method) }
     let(:artwork_request) { attributes_for(:valid_artwork_request)
       .merge(artist_id: create(:user).id,
              imprint_method_id: imprint_method.id,

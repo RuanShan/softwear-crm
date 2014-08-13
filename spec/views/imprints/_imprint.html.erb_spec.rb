@@ -4,7 +4,7 @@ describe 'imprints/_imprint.html.erb', order_spec: true, imprint_spec: true do
   let!(:order) { create(:order_with_job) }
   let(:job) { order.jobs.first }
 
-  let(:imprint_method) { create(:valid_imprint_method_with_color_and_location) }
+  let(:imprint_method) { create(:valid_imprint_method) }
   let(:print_location) { imprint_method.print_locations.first }
   let(:print_location2) { create(:print_location, imprint_method_id: imprint_method.id, name: 'pl2') }
 
@@ -25,8 +25,8 @@ describe 'imprints/_imprint.html.erb', order_spec: true, imprint_spec: true do
   end
 
   context 'with an imprint method' do
-    let!(:imprint_method2) { create(:valid_imprint_method_with_color_and_location, name: 'imp2') }
-    let!(:imprint_method3) { create(:valid_imprint_method_with_color_and_location, name: 'imp3') }
+    let!(:imprint_method2) { create(:valid_imprint_method, name: 'imp2') }
+    let!(:imprint_method3) { create(:valid_imprint_method, name: 'imp3') }
 
     it 'should render a select box for imprint methods and print locations' do
       render partial: 'imprints/imprint', locals: { job: job, imprint_method: imprint_method }
