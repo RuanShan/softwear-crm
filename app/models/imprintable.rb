@@ -59,7 +59,7 @@ class Imprintable < ActiveRecord::Base
   has_and_belongs_to_many :sample_locations,
                            class_name: 'Store',
                            association_foreign_key: 'store_id',
-                           join_table: 'imprintables_stores'
+                           join_table: 'imprintable_stores'
 
   accepts_nested_attributes_for :imprintable_categories, allow_destroy: true
 

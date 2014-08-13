@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140813152241) do
+ActiveRecord::Schema.define(version: 20140813154404) do
 
   create_table "activities", force: true do |t|
     t.integer  "trackable_id"
@@ -153,6 +153,15 @@ ActiveRecord::Schema.define(version: 20140813152241) do
     t.datetime "updated_at"
   end
 
+  create_table "imprintable_stores", force: true do |t|
+    t.integer  "imprintable_id"
+    t.integer  "store_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "imprintable_stores", ["imprintable_id", "store_id"], name: "index_imprintable_stores_on_imprintable_id_and_store_id", using: :btree
+
   create_table "imprintable_variants", force: true do |t|
     t.integer  "imprintable_id"
     t.datetime "created_at"
@@ -196,13 +205,6 @@ ActiveRecord::Schema.define(version: 20140813152241) do
 
   add_index "imprintables", ["deleted_at"], name: "index_imprintables_on_deleted_at", using: :btree
   add_index "imprintables", ["main_supplier"], name: "index_imprintables_on_main_supplier", using: :btree
-
-  create_table "imprintables_stores", id: false, force: true do |t|
-    t.integer "imprintable_id"
-    t.integer "store_id"
-  end
-
-  add_index "imprintables_stores", ["imprintable_id", "store_id"], name: "index_imprintables_stores_on_imprintable_id_and_store_id", using: :btree
 
   create_table "imprints", force: true do |t|
     t.integer  "print_location_id"
