@@ -48,6 +48,6 @@ module ApplicationHelper
 
   def imprintable_modal(imprintable)
     link_to imprintable.name, imprintable_path(imprintable),
-            class: 'imprintable_modal_link',remote: true
+            class: 'imprintable_modal_link', remote: true
   end
 end

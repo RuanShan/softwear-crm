@@ -5,7 +5,7 @@
       <th></th>
       <% size_variants.each_with_index do |size_variant, size_index| %>
         <% size = size_variant.size %>
-        <th id="col_<%= size_index + 1 %>" data-size-id="<%= size.id%>"  class="size-col-header">
+        <th id="col_<%= size_index + 1 %>" data-size-id="<%= size.id %>"  class="size-col-header">
           <%= size.display_value %>
           <i class="fa fa-plus" id="col_plus_<%= size_index + 1 %>"></i>
           <i class="fa fa-minus" id="col_minus_<%= size_index + 1 %>"></i>

@@ -2,11 +2,24 @@ require 'spec_helper'
 
 describe 'imprintables/_basic_information_form.html.erb', imprintable_spec: true do
 
-  it 'has field for brand, style name, style catalog no, sku, retail, style description, standard offering, material, weight, max imprint width, max imprint height, tag list, sample locations and coordinates' do
-    imprintable = Imprintable.new
+  before(:each) do
+    imprintable = build_stubbed(:valid_imprintable)
     f = LancengFormBuilder.dummy_for imprintable
-    assign(:model_collection_hash, { brand_collection: [], store_collection: [], imprintable_collection: [], size_collection: [], color_collection: [] })
-    render partial: 'imprintables/basic_information_form', locals: { imprintable: imprintable, f: f }
+    assign(:model_collection_hash,
+           {
+             brand_collection: [],
+             store_collection: [],
+             imprintable_collection: [],
+           }
+    )
+    render partial: 'imprintables/basic_information_form',
+           locals: { imprintable: imprintable, f: f }
+  end
+
+  it 'has field for brand, style name, style catalog no, sku, retail,
+        style description, standard offering, material, weight,
+        max imprint width, max imprint height, tag list,
+        sample locations and coordinates' do
     within_form_for Imprintable, noscope: true do
       expect(rendered).to have_field_for :brand_id
       expect(rendered).to have_field_for :style_name
