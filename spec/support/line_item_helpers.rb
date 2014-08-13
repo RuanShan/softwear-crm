@@ -16,31 +16,50 @@ module LineItemHelpers
   #   not: array/symbol - 'let's for these types will be
   #                       lazy loaded
   def make_variants(color, imprintable, sizes=[], options={})
-    sizes << :M if sizes.count == 0
+    sizes << :M if sizes.empty?
     
     excluded = [options[:not]].flatten.compact
-    letfunc = -> (category) {
-      if options[:lazy] || excluded.include?(category) || excluded.include?(category.to_s.pluralize.to_sym)
+    letfunc = lambda do |category|
+      if options[:lazy] ||
+         excluded.include?(category) ||
+         excluded.include?(category.to_s.pluralize.to_sym)
         method(:let)
       else
         method(:let!)
       end
-    }
+    end
 
     sizes.each do |size|
-      letfunc.call(:size).call("size_#{size.to_s.downcase}".to_sym) do
-        create(:valid_size, name: size) 
-      end if Size.where(name: size).count <= 0
+      letfunc.(:size).("size_#{size.to_s.downcase}") do
+        create(:valid_size, name: size)
+      end
 
-      letfunc.call(:imprintable_variant).call("#{color}_#{imprintable}_#{size.to_s.downcase}".to_sym) do
-        create :associated_imprintable_variant, color: send(color), imprintable: send(imprintable), size: send("size_#{size.to_s.downcase}")
+      letfunc.(:imprintable_variant)
+             .("#{color}_#{imprintable}_#{size.to_s.downcase}") do
+        create(
+          :associated_imprintable_variant,
+          color:       send(color),
+          imprintable: send(imprintable),
+          size:        send("size_#{size.to_s.downcase}")
+        )
       end
-      letfunc.call(:line_item).call("#{color}_#{imprintable}_#{size.to_s.downcase}_item".to_sym) do
-        create :imprintable_line_item, imprintable_variant: send("#{color}_#{imprintable}_#{size.to_s.downcase}")
+
+      letfunc.(:line_item)
+             .("#{color}_#{imprintable}_#{size.to_s.downcase}_item") do
+        create(
+          :imprintable_line_item,
+          imprintable_variant: send(
+            "#{color}_#{imprintable}_#{size.to_s.downcase}"
+          )
+        )
       end
-      before(:each) do
-        job.line_items << send("#{color}_#{imprintable}_#{size.to_s.downcase}_item")
-      end unless options[:lazy] || excluded.include?(:job)
+
+      unless options[:lazy] || excluded.include?(:job)
+        before(:each) do
+          job.line_items <<
+            send("#{color}_#{imprintable}_#{size.to_s.downcase}_item")
+        end
+      end
     end
   end
 
