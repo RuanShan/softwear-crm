@@ -25,7 +25,8 @@ class ArtworkRequest < ActiveRecord::Base
   has_many :assets, as: :assetable, dependent: :destroy
   has_many :artworks, through: :artwork_request_artworks
   has_many :artwork_request_artworks
-  has_and_belongs_to_many :ink_colors
+  has_many :artwork_request_ink_colors
+  has_many :ink_colors, through: :artwork_request_ink_colors
   has_and_belongs_to_many :jobs
 
   accepts_nested_attributes_for :assets, allow_destroy: true

@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140813141223) do
+ActiveRecord::Schema.define(version: 20140813145656) do
 
   create_table "activities", force: true do |t|
     t.integer  "trackable_id"
@@ -37,6 +37,13 @@ ActiveRecord::Schema.define(version: 20140813141223) do
     t.datetime "updated_at"
   end
 
+  create_table "artwork_request_ink_colors", force: true do |t|
+    t.integer  "artwork_request_id"
+    t.integer  "ink_color_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
   create_table "artwork_requests", force: true do |t|
     t.text     "description"
     t.integer  "artist_id"
@@ -49,11 +56,6 @@ ActiveRecord::Schema.define(version: 20140813141223) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.string   "priority"
-  end
-
-  create_table "artwork_requests_ink_colors", id: false, force: true do |t|
-    t.integer "artwork_request_id"
-    t.integer "ink_color_id"
   end
 
   create_table "artwork_requests_jobs", id: false, force: true do |t|
