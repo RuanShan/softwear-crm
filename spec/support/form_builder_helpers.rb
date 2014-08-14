@@ -9,24 +9,6 @@ module FormBuilderHelpers
     end
   end
 
-  class BuilderWithOutput
-    def initialize(builder, buffer)
-      @builder = builder
-      @buffer  = buffer
-    end
-
-    def buffer
-      @buffer.output_buffer
-    end
-
-    def respond_to?(*args)
-      @builder.respond_to?(*args)
-    end
-    def method_missing(name, *args, &block)
-      @builder.send(name, *args, &block)
-    end
-  end
-
   def test_form_for(object, options = {})
     builder_class = options[:builder] || ActionView::Base.default_form_builder
 
@@ -38,6 +20,6 @@ module FormBuilderHelpers
     buffer  = DummyOutputBuffer.new
     builder = builder_class.new(object_name, object, buffer, {}, nil)
 
-    BuilderWithOutput.new(builder, buffer)
+    builder
   end
 end

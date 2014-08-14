@@ -23,12 +23,11 @@ class LancengFormBuilder < ActionView::Helpers::FormBuilder
     @common_attrs.merge! attrs
   end
 
-  # Adding form-control class to standard field functions
   def select(method, choices, o = {}, options = {})
     add_class options, 'form-control'
     super method, choices, o, options
   end
-  # Super efficient mass method reassignment, go!
+  
   %i(text_field password_field text_area
      number_field check_box).each do |method_name|
 
@@ -51,8 +50,8 @@ class LancengFormBuilder < ActionView::Helpers::FormBuilder
   # or just used normally
   def label(*args)
     if args.empty? || (args.size == 1 && args.first.is_a?(String))
-      l = args.first.is_a?(String) ? args.first : nil
-      chain :label, l
+      display = args.first.is_a?(String) ? args.first : nil
+      chain :label, display
     else
       super
     end
