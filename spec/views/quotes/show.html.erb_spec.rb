@@ -1,8 +1,7 @@
 require 'spec_helper'
 
 describe 'quotes/show.html.erb', quote_spec: true do
-  let!(:quote) { create(:valid_quote) }
-  login_user
+  let!(:quote) { build_stubbed(:valid_quote) }
 
   before(:each) do
     assign(:quote, quote)

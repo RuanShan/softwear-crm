@@ -5,7 +5,6 @@ class QuotesController < InheritedResources::Base
   def new
     super do
       @quote.line_items.build
-      @current_user = current_user
       @current_action = 'quotes#new'
     end
   end
@@ -17,11 +16,10 @@ class QuotesController < InheritedResources::Base
   end
 
   def edit
-    super do |format|
+    super do
       @current_user = current_user
+      @current_action = 'quotes#edit'
       @activities = @quote.all_activities
-
-      format.html
     end
   end
 
@@ -30,7 +28,8 @@ class QuotesController < InheritedResources::Base
       format.json do
         render json: {
           result: 'success',
-          content: render_string(partial: 'line_items/standard_view', locals: { line_items: @quote.standard_line_items })
+          content: render_string(partial: 'line_items/standard_view',
+                                 locals: { line_items: @quote.standard_line_items })
         }
       end
       format.html { render 'quotes/show', layout: 'no_overlay' }
@@ -39,9 +38,7 @@ class QuotesController < InheritedResources::Base
 
   def create
     super do
-      # FIXME: not sure how to implement this well
-      # only want to create freshdesk tickets if we're not running the spec and we're not the admin (for development)
-      @quote.create_freshdesk_ticket(current_user) unless (current_user.full_name.downcase.include?('test') || current_user.full_name.downcase.include?('admin'))
+      @quote.create_freshdesk_ticket if Rails.env.production?
     end
   end
 

@@ -1,5 +1,5 @@
 jQuery ->
-  $('.datetimepicker').datetimepicker()
+  $('.js-datetimepicker').datetimepicker()
 
 @printPage = ->
   window.print()

@@ -1,11 +1,12 @@
 require 'spec_helper'
 
 describe 'quotes/_email_line_items.html.erb', quote_spec: true do
-  login_user
+  let!(:quote) { build_stubbed(:valid_quote) }
+  let!(:line_item) { build_stubbed(:non_imprintable_line_item) }
 
-  let!(:quote) { create(:valid_quote) }
   before(:each) do
     assign(:quote, quote)
+    allow(quote).to receive(:standard_line_items).and_return([line_item])
     render partial: 'quotes/email_line_items'
   end
 

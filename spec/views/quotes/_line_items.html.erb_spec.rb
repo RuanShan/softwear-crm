@@ -1,9 +1,8 @@
 require 'spec_helper'
 
 describe 'quotes/_line_items.html.erb', quote_spec: true do
-  login_user
+  let!(:quote) { build_stubbed(:valid_quote) }
 
-  let!(:quote) { create(:valid_quote) }
   before(:each) do
     assign(:quote, quote)
     render partial: 'quotes/line_items'

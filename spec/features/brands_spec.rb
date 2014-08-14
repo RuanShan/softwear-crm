@@ -2,11 +2,10 @@ require 'spec_helper'
 include ApplicationHelper
 
 feature 'Brands management', brand_spec: true do
-
-  given!(:valid_user) { create(:alternate_user) }
-  before(:each) { login_as(valid_user) }
-
   given!(:brand) { create(:valid_brand) }
+  given!(:valid_user) { create(:alternate_user) }
+
+  background(:each) { login_as(valid_user) }
 
   scenario 'A user can see a list of brands' do
     visit root_path

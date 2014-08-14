@@ -1,10 +1,8 @@
 require 'spec_helper'
 
 describe 'quotes/_line_item_fields.html.erb', quote_spec: true do
-  let!(:quote) { create(:valid_quote) }
-  let!(:line_item) { create(:non_imprintable_line_item) }
-
-  login_user
+  let!(:quote) { build_stubbed(:valid_quote) }
+  let!(:line_item) { build_stubbed(:non_imprintable_line_item) }
 
   before(:each) do
     assign(:quote, quote)

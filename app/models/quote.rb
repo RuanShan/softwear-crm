@@ -45,8 +45,8 @@ class Quote < ActiveRecord::Base
     new_hash
   end
 
-  def create_freshdesk_ticket(current_user)
-    freshdesk_info = fetch_data_to_h(current_user)
+  def create_freshdesk_ticket
+    freshdesk_info = fetch_data_to_h
 
     client = Freshdesk.new(Figaro.env['freshdesk_url'],
                            Figaro.env['freshdesk_email'],
@@ -59,12 +59,12 @@ class Quote < ActiveRecord::Base
       source: 2,
       group_id: freshdesk_info[:group_id],
       ticket_type: 'Lead',
-      subject: 'Ignore this ticket',
+      subject: 'Created by Softwear-CRM',
       custom_field: { department_7483: freshdesk_info[:department] }
     )
   end
 
-  def fetch_data_to_h(_current_user)
+  def fetch_data_to_h
     freshdesk_info = {}
     freshdesk_info = fetch_group_id_and_dept(freshdesk_info)
     fetch_requester_id_and_name(freshdesk_info)
@@ -144,8 +144,8 @@ class Quote < ActiveRecord::Base
     request['Content-Type'] = 'application/xml'
 
     connection = Net::HTTP.new(uri.host, uri.port)
-    post_data = Hash.new
 
+    post_data = {}
     post_data['user[name]']  = "#{first_name} #{last_name}"
     post_data['user[email]'] = email
 

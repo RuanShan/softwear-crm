@@ -5,8 +5,8 @@ describe QuoteMailer do
   include EmailSpec::Matchers
 
   before(:all) do
-    user = create(:alternate_user)
-    store = create(:valid_store)
+    user = build_stubbed(:alternate_user)
+    store = build_stubbed(:valid_store)
     quote = Quote.new(
         email: 'from@from_something.com',
         phone_number: '2489256080',

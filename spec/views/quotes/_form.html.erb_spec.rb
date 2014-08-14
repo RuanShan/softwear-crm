@@ -4,7 +4,7 @@ describe 'quotes/_form.html.erb', quote_spec: true do
   login_user
 
   before(:each) do
-    render partial: 'quotes/form', locals: { quote: Quote.new }
+    render partial: 'quotes/form', locals: { quote: build_stubbed(:valid_quote) }
   end
 
   it 'should have 3 sections' do
