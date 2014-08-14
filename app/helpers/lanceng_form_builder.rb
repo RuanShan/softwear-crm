@@ -1,13 +1,5 @@
 class LancengFormBuilder < ActionView::Helpers::FormBuilder
   include FormHelper
-  def self.dummy_for(object)
-    temp = Class.new do
-      include ActionView::Helpers::FormHelper
-      include ActionView::Helpers::FormOptionsHelper
-      attr_accessor :output_buffer
-    end.new
-    return self.new object.class.name.underscore.to_sym, object, temp, {}, nil
-  end
 
   def common_attr(attrs)
     @common_attrs ||= {}
@@ -22,6 +14,7 @@ class LancengFormBuilder < ActionView::Helpers::FormBuilder
   # Super efficient mass method reassignment, go!
   %i(text_field password_field text_area
      number_field check_box).each do |method_name|
+
     class_eval <<-RUBY, __FILE__, __LINE__ + 1
       def #{method_name}(field, options = {}, *args)
         add_class options, 'form-control'
@@ -78,13 +71,14 @@ class LancengFormBuilder < ActionView::Helpers::FormBuilder
 
   def error_for(method)
     if @object.errors.include? method
-      # TODO: refactor
-      c =
-        @object.errors.full_messages_for(method).collect do |message|
-          @template.content_tag(:p, message, class: 'text-danger', for: "#{@object_name}[#{method}]")
+      error_content =
+        @object.errors.full_messages_for(method).map do |message|
+          @template.content_tag(
+            :p, message, class: 'text-danger', for: "#{@object_name}[#{method}]"
+          )
         end.join
 
-      @template.content_tag(:div, c, { class: 'error' }, false)
+      @template.content_tag(:div, error_content, { class: 'error' }, false)
     end
   end
 
@@ -111,7 +105,6 @@ class LancengFormBuilder < ActionView::Helpers::FormBuilder
   end
 
   private
-
   def proxy(method_name, *extras)
     @proxy_stack ||= []
     @proxy_stack << { func: method_name, args: extras }
