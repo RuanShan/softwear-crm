@@ -14,13 +14,9 @@ class LineItem < ActiveRecord::Base
   scope :non_imprintable, -> { where imprintable_variant_id: nil }
   scope :imprintable, -> { where.not imprintable_variant_id: nil }
 
-
   belongs_to :imprintable_variant
   belongs_to :line_itemable, polymorphic: true
-  # has_one :order, through: :job
 
-  #TODO: ensure unless validations work after switching 
-  #      from validates_presence_of to sexiness
   validates :description, presence: true, unless: :imprintable?
   validates :imprintable_variant_id, 
             uniqueness: {
