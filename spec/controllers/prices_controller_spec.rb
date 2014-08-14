@@ -34,7 +34,7 @@ describe PricesController, js: true, prices_spec: true do
     it 'adds the imprintable hash to the pricing table in session' do
       expect(session[:prices]).to be_nil
       post :create, { decoration_price: 4, id: imprintable.id, format: 'js' }
-      expect(session[:prices][0]).to eq(imprintable.pricing_hash(4))
+      expect(session[:prices].first).to eq(imprintable.pricing_hash(4))
     end
   end
 
@@ -51,7 +51,7 @@ describe PricesController, js: true, prices_spec: true do
           expect(session[:prices].size).to eq(2)
           get :destroy, { id: 0, format: 'js' }
           expect(session[:prices].size).to eq(1)
-          expect(session[:prices][0]).to eq(imprintable.pricing_hash(1))
+          expect(session[:prices].first).to eq(imprintable.pricing_hash(1))
         end
       end
       context 'destroy_all exists' do

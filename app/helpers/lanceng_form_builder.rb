@@ -1,12 +1,21 @@
 class LancengFormBuilder < ActionView::Helpers::FormBuilder
   include FormHelper
-  def self.dummy_for(object)
-    temp = Class.new do
-      include ActionView::Helpers::FormHelper
-      include ActionView::Helpers::FormOptionsHelper
-      attr_accessor :output_buffer
-    end.new
-    return self.new object.class.name.underscore.to_sym, object, temp, {}, nil
+
+  class MethodChain
+    def initialize(builder)
+      @builder = builder
+    end
+
+    def respond_to?(name)
+      @builder.respond_to?(name)
+    end
+
+    def method_missing(name, *args, &block)
+      result = @builder.send(name, *args, &block)
+      return result if result.is_a?(MethodChain)
+      
+      @builder.reduce_chain(args.first) + result
+    end
   end
 
   def common_attr(attrs)
@@ -14,14 +23,14 @@ class LancengFormBuilder < ActionView::Helpers::FormBuilder
     @common_attrs.merge! attrs
   end
 
-  # Adding form-control class to standard field functions
   def select(method, choices, o = {}, options = {})
     add_class options, 'form-control'
     super method, choices, o, options
   end
-  # Super efficient mass method reassignment, go!
+  
   %i(text_field password_field text_area
      number_field check_box).each do |method_name|
+
     class_eval <<-RUBY, __FILE__, __LINE__ + 1
       def #{method_name}(field, options = {}, *args)
         add_class options, 'form-control'
@@ -30,6 +39,7 @@ class LancengFormBuilder < ActionView::Helpers::FormBuilder
         super(field, options, *args)
       end
     RUBY
+  
   end
 
   # Quick method for adding a label to a field. Can be called like
@@ -40,8 +50,8 @@ class LancengFormBuilder < ActionView::Helpers::FormBuilder
   # or just used normally
   def label(*args)
     if args.empty? || (args.size == 1 && args.first.is_a?(String))
-      l = args.first.is_a?(String) ? args.first : nil
-      proxy :label, l
+      display = args.first.is_a?(String) ? args.first : nil
+      chain :label, display
     else
       super
     end
@@ -51,7 +61,7 @@ class LancengFormBuilder < ActionView::Helpers::FormBuilder
   # Potential use:
   # f.label.error.text_area :name
   def error(*args)
-    args.empty? ? proxy(:error_for) : error_for(*args)
+    args.empty? ? chain(:error_for) : error_for(*args)
   end
 
   def inline_field(method, default_or_options = {}, options = {})
@@ -77,15 +87,15 @@ class LancengFormBuilder < ActionView::Helpers::FormBuilder
   end
 
   def error_for(method)
-    if @object.errors.include? method
-      # TODO: refactor
-      c =
-        @object.errors.full_messages_for(method).collect do |message|
-          @template.content_tag(:p, message, class: 'text-danger', for: "#{@object_name}[#{method}]")
-        end.join
+    return unless has_errors_on? method
+    error_content =
+      @object.errors.full_messages_for(method).map do |message|
+        @template.content_tag(
+          :p, message, class: 'text-danger', for: "#{@object_name}[#{method}]"
+        )
+      end.join
 
-      @template.content_tag(:div, c, { class: 'error' }, false)
-    end
+    @template.content_tag(:div, error_content, { class: 'error' }, false)
   end
 
   # TODO: refactor to single datetimepicker/datepicker usage
@@ -104,33 +114,30 @@ class LancengFormBuilder < ActionView::Helpers::FormBuilder
     super
   end
 
+  def reduce_chain(field)
+    return '' if @chain_stack.nil? || @chain_stack.empty?
+
+    result = @chain_stack.reduce('') do |total, proc|
+      total + (proc.call(field) || '')
+    end
+    @chain_stack.clear
+
+    result
+  end
+
+  def chain(method_name, *args)
+    @chain_stack ||= []
+    
+    @chain_stack << lambda do |field|
+      send(method_name, field, *args)
+    end
+
+    MethodChain.new(self)
+  end  
+
   protected
 
   def with_common_attrs(options)
     options.merge(@common_attrs || {})
-  end
-
-  private
-
-  def proxy(method_name, *extras)
-    @proxy_stack ||= []
-    @proxy_stack << { func: method_name, args: extras }
-    Class.new do
-      def initialize(f); @f = f; end
-      def is_proxy?; true; end
-      def method_missing(name, *args, &block)
-        result = @f.send(name, *args, &block)
-        if result.respond_to? :is_proxy?
-          result
-        else
-          r = ActiveSupport::SafeBuffer.new
-          @f.instance_variable_get('@proxy_stack')[0..-1].each do |e|
-             r.send :original_concat, @f.send(e[:func], *([args.first] + e[:args]).compact) || ''
-          end
-          @f.instance_variable_get('@proxy_stack').clear()
-          r.send :original_concat, result || ''
-        end
-      end
-    end.new(self)
   end
 end

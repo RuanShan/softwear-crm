@@ -25,7 +25,7 @@ feature 'Proof Features', js: true, proof_spec: true do
     expect(page).to have_css("div#proof-#{proof.id}")
   end
 
-  scenario 'A user can create a Proof', wip: true do
+  scenario 'A user can create a Proof' do
     visit edit_order_path(order.id)
     find("a[href='#proofs']").click
     find("a[href='/orders/#{order.id}/proofs/new']").click

@@ -159,9 +159,9 @@ create_records([
 # Imprintable Variant SEEDING
 # ---------------
 variants = []
-Imprintable.all.each do |imprintable|
-  Size.all.each do |size|
-    Color.all.each do |color|
+Imprintable.all.find_each do |imprintable|
+  Size.all.find_each do |size|
+    Color.all.find_each do |color|
       variants << {
         imprintable_id: imprintable.id,
         size_id: size.id,

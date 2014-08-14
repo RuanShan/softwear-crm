@@ -1,26 +1,37 @@
 shared_examples 'batch update' do
   describe '#batch_update', batch_update_spec: true do
-    let(:resource_name) { described_class.controller_name.singularize.to_sym }
-    let(:dummy_class) do
+    let!(:resource_name) { described_class.controller_name.singularize.to_sym }
+    let!(:dummy_class) do
       Struct.new(:test_attr, :id) do
-        def update_attributes(attrs)
-          attrs.each_pair { |k, v| send "#{k}=", v }
+        alias_method :serializable_hash, :to_h
+
+        def save
         end
       end
     end
-    let(:resource_class) { subject.send(:resource_class) }
+    let!(:resource_class) { subject.send(:resource_class) }
 
-    it 'should update resources from the params format resource[id[val]]' do
-      dummy_1 = dummy_class.new('unaltered', 1)
-      dummy_2 = dummy_class.new('unaltered', 2)
-      params = {
+    let!(:params) do
+      {
         resource_name => {
           '1' => { test_attr: 'test_1' },
           '2' => { test_attr: 'test_2' }
         }
       }
+    end
+
+    before do
       allow(params).to receive_message_chain(:permit, :permit!)
       allow(subject).to receive(:params) { params }
+    end
+
+    it 'should update resources from the params format resource[id[val]]' do
+      dummy_1 = dummy_class.new('unaltered', 1)
+      dummy_2 = dummy_class.new('unaltered', 2)
+
+      [dummy_1, dummy_2].each do |dummy|
+        allow(dummy).to receive(:changed?).and_return true
+      end
 
       allow(resource_class).to receive(:find).with('1') { dummy_1 }
       allow(resource_class).to receive(:find).with('2') { dummy_2 } 
@@ -29,6 +40,23 @@ shared_examples 'batch update' do
 
       expect(dummy_1.test_attr).to eq 'test_1'
       expect(dummy_2.test_attr).to eq 'test_2'
+    end
+
+    it 'should not update resources with attributes matching the params' do
+      dummy_1 = dummy_class.new('test_1', 1)
+      dummy_2 = dummy_class.new('test_2', 2)
+
+      [dummy_1, dummy_2].each do |dummy|
+        allow(dummy).to receive(:changed?).and_return false
+      end
+
+      allow(resource_class).to receive(:find).with('1') { dummy_1 }
+      allow(resource_class).to receive(:find).with('2') { dummy_2 }
+
+      expect(dummy_1).to_not receive(:save)
+      expect(dummy_2).to_not receive(:save)
+
+      subject.send(:batch_update)
     end
 
     describe 'options' do

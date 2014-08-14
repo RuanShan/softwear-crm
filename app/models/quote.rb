@@ -98,7 +98,7 @@ class Quote < ActiveRecord::Base
       new_hash = create_freshdesk_customer
     else
       # customer found, create ticket with his credentials
-      parsed_json = JSON.parse(response.body)[0]
+      parsed_json = JSON.parse(response.body).first
       new_hash[:requester_name] = parsed_json['user']['name']
       new_hash[:requester_id] = parsed_json['user']['id']
     end

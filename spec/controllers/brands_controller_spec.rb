@@ -24,7 +24,7 @@ describe BrandsController, brand_spec: true do
     end
 
     context 'with invalid parameters' do
-      let(:new_values) { attributes_for(:invalid_brand) }
+      let(:new_values) { attributes_for(:blank_brand) }
 
       it 'renders edit action' do
         expect(response.status).to eq(302)

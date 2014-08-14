@@ -16,12 +16,16 @@ describe Size, size_spec: true do
     it { is_expected.to validate_uniqueness_of(:sort_order) }
 
     context 'if retail' do
-      before { allow(subject).to receive_message_chain(:is_retail?).and_return(true) }
+      before do
+        allow(subject).to receive_message_chain(:is_retail?).and_return(true)
+      end
       it { is_expected.to ensure_length_of(:sku).is_equal_to(2) }
     end
 
     context 'if not retail' do
-      before { allow(subject).to receive_message_chain(:is_retail?).and_return(false) }
+      before do
+        allow(subject).to receive_message_chain(:is_retail?).and_return(false)
+      end
       it { is_expected.to_not ensure_length_of(:sku).is_equal_to(2) }
     end
   end

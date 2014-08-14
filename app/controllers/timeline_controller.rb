@@ -14,8 +14,11 @@ class TimelineController < ApplicationController
           end
 
         render json: { 
-          result: 'success', 
-          content: render_string(partial: 'shared/activity_list_items', locals: { activities: activities })
+          result:  'success', 
+          content: render_string(
+            partial:  'shared/activity_list_items',
+            locals:   { activities: activities }
+          )
         }
       end
     end

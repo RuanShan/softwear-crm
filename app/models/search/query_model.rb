@@ -2,6 +2,7 @@ module Search
   class QueryModel < ActiveRecord::Base
     belongs_to :query, class_name: 'Search::Query'
     has_many :query_fields, class_name: 'Search::QueryField', dependent: :destroy
+    # TODO perhaps have many filters instead of the one that's usually a group deal
     has_one :filter, as: :filter_holder, dependent: :destroy
     validate :model_is_searchable
 

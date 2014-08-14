@@ -22,7 +22,7 @@ describe 'artwork_requests/_artwork_request.html.erb', artwork_request_spec: tru
       expect(rendered).to have_css('dt', text: 'Print Location:')
       expect(rendered).to have_css('dd', text: "#{artwork_request.print_location.name}")
       expect(rendered).to have_css('dt', text: 'Ink Colors:')
-      expect(rendered).to have_css('dd', text: "#{artwork_request.ink_colors.collect { |x| [x.name] }.join(', ')}")
+      expect(rendered).to have_css('dd', text: "#{artwork_request.ink_colors.map(&:name).join(', ')}")
       expect(rendered).to have_css('dt', text: 'Imprintables Included:')
       expect(rendered).to have_css('dd', text: "#{artwork_request.imprintable_info}")
       expect(rendered).to have_css('dt', text: 'No. of Pieces:')

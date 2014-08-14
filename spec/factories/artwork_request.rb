@@ -8,7 +8,7 @@ FactoryGirl.define do
       priority 'Normal'
 
       before(:create) do |artwork_request|
-        imprint_method = create(:valid_imprint_method)
+        imprint_method = create(:valid_imprint_method_with_color_and_location)
         artwork_request.artist_id = create(:user).id
         artwork_request.imprint_method_id = imprint_method.id
         artwork_request.salesperson_id = create(:alternate_user).id
