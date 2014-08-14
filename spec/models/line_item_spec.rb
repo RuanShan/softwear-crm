@@ -17,7 +17,9 @@ describe LineItem, line_item_spec: true do
     it { is_expected.to validate_presence_of :unit_price }
 
     context 'when imprintable_variant_id is nil' do
-      before(:each) { allow(subject).to receive(:imprintable_variant_id).and_return nil }
+      before :each do
+        allow(subject).to receive(:imprintable_variant_id).and_return nil
+      end
 
       it { is_expected.to validate_presence_of :description }
       it { is_expected.to validate_presence_of :name }
@@ -33,22 +35,31 @@ describe LineItem, line_item_spec: true do
     end
 
     context 'when imprintable_variant_id is not nil' do
-      let!(:subject){ create(:imprintable_line_item, imprintable_variant: create(:associated_imprintable_variant)) }
+      let!(:subject){}
+      subject do
+        create(
+          :imprintable_line_item,
+          imprintable_variant: create(:associated_imprintable_variant)
+        )
+      end
 
       it 'validates the existance of imprintable_variant' do
         subject.imprintable_variant_id = 99
         subject.save
-        expect(subject.errors[:imprintable_variant]).to include('does not exist')
+        expect(subject.errors[:imprintable_variant])
+          .to include('does not exist')
       end
 
       it { is_expected.to_not validate_presence_of :description }
       it { is_expected.to_not validate_presence_of :name }
-      it { is_expected.to validate_uniqueness_of(:imprintable_variant_id).scoped_to([:line_itemable_id, :line_itemable_type]) }
+      it { is_expected.to validate_uniqueness_of(:imprintable_variant_id)
+             .scoped_to([:line_itemable_id, :line_itemable_type]) }
 
-      it 'description is_expected.to return the description of its imprintable_variant' do
-        expect(subject.description).to eq subject.imprintable_variant.imprintable.style_description
+      it 'description should return the imprintable_variant description' do
+        expect(subject.description)
+          .to eq subject.imprintable_variant.imprintable.style_description
       end
-      it 'name is_expected.to return the name of its imprintable_variant' do
+      it 'name should return the name of its imprintable_variant' do
         expect(subject.name).to eq subject.imprintable_variant.name
       end
     end
@@ -57,7 +68,9 @@ describe LineItem, line_item_spec: true do
   describe '#<=>' do
     context 'on standard line items' do
       ['c', 'a', 'b'].each do |v|
-        let!("line_item_#{v}".to_sym){ build_stubbed(:blank_line_item, name: "line_item_#{v}") }
+        let!("line_item_#{v}".to_sym) do
+          build_stubbed(:blank_line_item, name: "line_item_#{v}")
+        end
       end
 
       it 'sorts them alphabetically' do
@@ -67,39 +80,47 @@ describe LineItem, line_item_spec: true do
     end
 
     context 'on imprintable line items' do
-      let!(:job) { build_stubbed(:blank_job) }
+      let!(:job)   { build_stubbed(:blank_job) }
       let!(:white) { build_stubbed(:blank_color, name: 'white') }
       let!(:shirt) { build_stubbed(:blank_imprintable) }
-      make_variants :white, :shirt, [:M, :S, :L]
+      make_stubbed_variants :white, :shirt, [:M, :S, :L]
 
       before(:each) do
         size_s.sort_order = 1
         size_m.sort_order = 2
         size_l.sort_order = 3
-        [size_s, size_m, size_l].each do |s|
-          s.save
-        end
       end
 
       it 'sorts them by the size sort order' do
-        expect([white_shirt_m_item, white_shirt_l_item, white_shirt_s_item].sort)
-        .to eq [white_shirt_s_item, white_shirt_m_item, white_shirt_l_item]
+        expect(
+          [white_shirt_m_item, white_shirt_l_item, white_shirt_s_item].sort
+        )
+          .to eq [white_shirt_s_item, white_shirt_m_item, white_shirt_l_item]
       end
     end
   end
 
   describe '#imprintable' do
-    let(:line_item){ build_stubbed(:blank_line_item,
-                                     imprintable_variant: build_stubbed(:blank_imprintable_variant,
-                                                                          imprintable: build_stubbed(:blank_imprintable))) }
+    let(:line_item) do
+      build_stubbed(
+        :blank_line_item,
+        imprintable_variant: build_stubbed(
+          :blank_imprintable_variant,
+          imprintable: build_stubbed(:blank_imprintable)
+        )
+      )
+    end
 
     it 'returns the imprintable' do
-      expect(line_item.imprintable).to eq(line_item.imprintable_variant.imprintable)
+      expect(line_item.imprintable)
+        .to eq(line_item.imprintable_variant.imprintable)
     end
   end
 
   describe '#imprintable?' do
-    let(:line_item){ build_stubbed(:blank_line_item, imprintable_variant_id: nil) }
+    let(:line_item) do
+      build_stubbed(:blank_line_item, imprintable_variant_id: nil)
+    end
 
     it 'returns true if imprintable_variant_id is not nil, else false' do
       expect(line_item.imprintable?).to be_falsey
@@ -107,37 +128,60 @@ describe LineItem, line_item_spec: true do
   end
 
   describe '#size_display' do
-    let(:line_item){ build_stubbed(:blank_line_item,
-                                     imprintable_variant: build_stubbed(:blank_imprintable_variant,
-                                                                          size: build_stubbed(:blank_size, display_value: 1))) }
+    let(:line_item) do
+      build_stubbed(:blank_line_item,
+
+        imprintable_variant: build_stubbed(:blank_imprintable_variant,
+          size: build_stubbed(:blank_size, display_value: 1)
+        )
+      )
+      end
 
     it 'returns the size display_value' do
-      expect(line_item.size_display).to eq(line_item.imprintable_variant.size.display_value)
+      expect(line_item.size_display).to eq(1)
     end
   end
 
   describe '#style_catalog_no' do
-    let(:line_item){ build_stubbed(:blank_line_item,
-                                   imprintable_variant: build_stubbed(:blank_imprintable_variant,
-                                                                      imprintable: build_stubbed(:blank_imprintable, style_catalog_no: 5555))) }
+    let(:line_item) do
+      build_stubbed(:blank_line_item,
+
+        imprintable_variant: build_stubbed(:blank_imprintable_variant,
+
+          imprintable: build_stubbed(:blank_imprintable,
+            style_catalog_no: 5555
+          )
+        )
+      )
+    end
 
     it 'returns the imprintable style_catalog_no' do
-      expect(line_item.style_catalog_no).to eq(line_item.imprintable_variant.imprintable.style_catalog_no)
+      expect(line_item.style_catalog_no)
+        .to eq(line_item.imprintable_variant.imprintable.style_catalog_no)
     end
   end
 
   describe '#style_name' do
-    let(:line_item){ build_stubbed(:blank_line_item,
-                                   imprintable_variant: build_stubbed(:blank_imprintable_variant,
-                                                                      imprintable: build_stubbed(:blank_imprintable, style_name: 'Style'))) }
+    let(:line_item) do
+      build_stubbed(:blank_line_item,
+
+        imprintable_variant: build_stubbed(:blank_imprintable_variant,
+
+          imprintable: build_stubbed(:blank_imprintable, style_name: 'Style')
+        )
+      )
+    end
 
     it 'returns the imprintable style_name' do
-      expect(line_item.style_name).to eq(line_item.imprintable_variant.imprintable.style_name)
+      expect(line_item.style_name)
+        .to eq(line_item.imprintable_variant.imprintable.style_name)
     end
   end
 
   describe '#total_price' do
-    let(:line_item){ build_stubbed(:blank_line_item, unit_price: 1, quantity: 1) }
+    let(:line_item) do
+      build_stubbed(:blank_line_item, unit_price: 1, quantity: 1)
+    end
 
     it 'returns the total price of the line items' do
       expect(line_item.total_price).to eq(1)

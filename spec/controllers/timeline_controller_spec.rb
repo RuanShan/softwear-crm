@@ -28,7 +28,7 @@ describe TimelineController, timeline_spec: true do
     end
   end
 
-  describe 'XHR GET show' do
+  describe 'XHR GET #show' do
 
     context 'order_id is valid' do
       it 'assigns order, renders no layout' do

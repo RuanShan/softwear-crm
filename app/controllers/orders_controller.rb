@@ -10,7 +10,9 @@ class OrdersController < InheritedResources::Base
 
   def update
     super do |success, failure|
-      success.html { redirect_to edit_order_path(params[:id], anchor: 'details') }
+      success.html do
+        redirect_to edit_order_path(params[:id], anchor: 'details')
+      end
       failure.html do
         assign_activities
         render action: :edit, anchor: 'details'
