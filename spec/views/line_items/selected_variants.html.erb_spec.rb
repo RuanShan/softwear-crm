@@ -12,7 +12,8 @@ describe 'line_items/selected_variants.html.erb', line_item_spec: true do
   			objects: ImprintableVariant.where(
   				color_id: white.id,
   				imprintable_id: shirt.id
-  		)}
+  		  )
+      }
   	end
 
   	it 'displays the name and description' do

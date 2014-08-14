@@ -17,7 +17,7 @@ class LineItem < ActiveRecord::Base
 
   belongs_to :imprintable_variant
   belongs_to :line_itemable, polymorphic: true
-  has_one :order, through: :job
+  # has_one :order, through: :job
 
   validates :description, presence: true, unless: :imprintable?
   validates :imprintable_variant_id, 
@@ -70,6 +70,10 @@ class LineItem < ActiveRecord::Base
 
       name <=> other.name
     end
+  end
+
+  def order
+    line_itemable.try(:order)
   end
 
   def imprintable

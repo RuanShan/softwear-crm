@@ -32,8 +32,8 @@ class Job < ActiveRecord::Base
     unless sorted_line_items.empty?
       sorted_line_items.each do |_imprintable_name, by_color|
         by_color.each do |color_name, line_items|
-          colors << color_name
-          style_names << line_items.first.style_name
+          colors            << color_name
+          style_names       << line_items.first.style_name
           style_catalog_nos << line_items.first.style_catalog_no
         end
       end
@@ -93,7 +93,6 @@ class Job < ActiveRecord::Base
     # like this, I feel it reads much better with #(), or even #[].
   end
 
-  #TODO: Maybe still look at this
   def sort_line_items
     result = {}
     LineItem.includes(
@@ -110,7 +109,7 @@ class Job < ActiveRecord::Base
         result[imprintable_name][color_name] << line_item
       end
 
-    result.each { |_k, v| v.each { |_k, v| v.sort! } }
+    result.values.each { |by_color| by_color.values.each(&:sort!) }
     result
   end
 

@@ -31,14 +31,20 @@ module BatchUpdate
       .select { |k| k.to_i >= 0 }
       .map(&resource_class.method(:find))
 
-    instance_variable_set(
-      "@#{self.class.controller_name}",
-      updated_resources
-    )
+    assigned = []
 
     updated_resources.each do |resource|
-      resource.update_attributes(resource_attributes[resource.id.to_s])
+      attributes = resource_attributes[resource.id.to_s]
+
+      attributes.each { |key, value| resource.send "#{key}=", value }
+
+      if resource.changed?
+        resource.save
+        assigned << resource
+      end
     end
+
+    instance_variable_set("@#{self.class.controller_name}", assigned)
   end
 
   def create_from_negatives(resource_attributes, parent = nil)
@@ -66,6 +72,14 @@ module BatchUpdate
         attributes.merge!(record_id(parent) => parent.id)
       end
     end
+  end
+
+  def comparable(hash)
+    hash.to_a.map { |e| [e.first, e.last.to_s] }
+  end
+
+  def contained?(x, y)
+    (comparable(x) - comparable(y)).empty?
   end
 
   def record_id(record)

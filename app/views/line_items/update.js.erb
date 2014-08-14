@@ -49,4 +49,4 @@
   <% end %>
 <% end %>
 
-updateOrderTimeline();
+<%= update_order_timeline(@line_items.first.line_itemable.order) unless @line_items.empty? %>

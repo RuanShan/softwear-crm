@@ -15,10 +15,10 @@ describe Order, order_spec: true do
     it { is_expected.to accept_nested_attributes_for :payments }
   end
 
-
   describe 'Validations' do
     it { is_expected.to validate_presence_of :delivery_method }
-    it { is_expected.to ensure_inclusion_of(:delivery_method).in_array Order::VALID_DELIVERY_METHODS }
+    it { is_expected.to ensure_inclusion_of(:delivery_method)
+           .in_array Order::VALID_DELIVERY_METHODS }
     it { is_expected.to validate_presence_of :email }
     it { is_expected.to allow_value('test@example.com').for :email }
     it { is_expected.to_not allow_value('not_an-email').for :email }
@@ -26,7 +26,8 @@ describe Order, order_spec: true do
     it { is_expected.to validate_presence_of :lastname }
     it { is_expected.to validate_presence_of :name }
     it { is_expected.to allow_value('123-654-9871').for :phone_number }
-    it { is_expected.to_not allow_value('135184e6').for(:phone_number).with_message('is incorrectly formatted, use 000-000-0000') }
+    it { is_expected.to_not allow_value('135184e6').for(:phone_number)
+           .with_message('is incorrectly formatted, use 000-000-0000') }
     it { is_expected.to validate_presence_of :salesperson }
     it { is_expected.to validate_presence_of :store }
     it { is_expected.to validate_presence_of :terms }
@@ -86,114 +87,159 @@ describe Order, order_spec: true do
 
   describe '#payment_status' do
     context 'terms are empty' do
-      let!(:order) { (build_stubbed(:blank_order, terms: '')) }
+      subject { (build_stubbed(:blank_order, terms: '')) }
 
       before(:each) do
-        allow(order).to receive(:balance).and_return(10)
+        allow(subject).to receive(:balance).and_return(10)
       end
 
       it 'returns Payment Terms Pending' do
-        expect(order.payment_status).to eq('Payment Terms Pending')
+        expect(subject.payment_status).to eq('Payment Terms Pending')
       end
     end
 
     context 'balance <= 0' do
-      let!(:order) { (build_stubbed(:blank_order, terms: 'Terms dont matter when payment is complete')) }
+      subject do
+        build_stubbed(
+          :blank_order,
+          terms: 'Terms dont matter when payment is complete'
+        )
+      end 
 
       before(:each) do
-        allow(order).to receive(:balance).and_return(0)
+        allow(subject).to receive(:balance).and_return(0)
       end
 
       it 'returns Payment Complete' do
-        expect(order.payment_status).to eq('Payment Complete')
+        expect(subject.payment_status).to eq('Payment Complete')
       end
     end
 
     context 'balance > 0' do
       before(:each) do
-        allow(order).to receive(:balance).and_return(100)
+        allow(subject).to receive(:balance).and_return(100)
       end
 
       context 'Terms: Paid in full on purchase' do
-        let!(:order) { (build_stubbed(:blank_order, terms: 'Paid in full on purchase')) }
+        subject do
+          build_stubbed(:blank_order, terms: 'Paid in full on purchase')
+        end
 
         context 'balance > 0' do
           it 'returns Awaiting Payment' do
-            expect(order.payment_status).to eq('Awaiting Payment')
+            expect(subject.payment_status).to eq('Awaiting Payment')
           end
         end
       end
 
       context 'Terms: Half down on purchase' do
-        let!(:order) { (build_stubbed(:blank_order, terms: 'Half down on purchase')) }
+        subject do
+          build_stubbed(:blank_order, terms: 'Half down on purchase')
+        end
 
         context 'balance greater than 49% of the total' do
           before(:each) do
-            allow(order).to receive(:total).and_return(150)
+            allow(subject).to receive(:total).and_return(150)
           end
 
           it 'returns Awaiting Payment' do
-            expect(order.payment_status).to eq('Awaiting Payment')
+            expect(subject.payment_status).to eq('Awaiting Payment')
           end
         end
         context 'balance less than 49% of the total' do
           before(:each) do
-            allow(order).to receive(:total).and_return(250)
+            allow(subject).to receive(:total).and_return(250)
           end
 
           it 'returns Payment Terms Met' do
-            expect(order.payment_status).to eq('Payment Terms Met')
+            expect(subject.payment_status).to eq('Payment Terms Met')
           end
         end
       end
 
       context 'Terms: Paid in full on pick up' do
         context 'Time.now greater than or equal to in_hand_by' do
-          let!(:order) { (build_stubbed(:blank_order, terms: 'Paid in full on pick up', in_hand_by: Time.now - 1.day)) }
+          subject do
+            build_stubbed(
+              :blank_order,
+              terms:      'Paid in full on pick up',
+              in_hand_by: Time.now - 1.day
+            )
+          end
 
           it 'returns Awaiting Payment' do
-            expect(order.payment_status).to eq('Awaiting Payment')
+            expect(subject.payment_status).to eq('Awaiting Payment')
           end
         end
         context 'Time.now less than in_hand_by' do
-          let!(:order) { (build_stubbed(:blank_order, terms: 'Paid in full on pick up', in_hand_by: Time.now + 1.day)) }
+          subject do
+            build_stubbed(
+              :blank_order,
+              terms:      'Paid in full on pick up',
+              in_hand_by: Time.now + 1.day
+            )
+          end
 
           it 'returns Payment Terms Met' do
-            expect(order.payment_status).to eq('Payment Terms Met')
+            expect(subject.payment_status).to eq('Payment Terms Met')
           end
         end
       end
 
       context 'Terms: Net 30' do
         context 'Time.now greater than or equal to in_hand_by + 30 days' do
-          let!(:order) { (build_stubbed(:blank_order, terms: 'Paid in full on pick up', in_hand_by: Time.now - 55.day)) }
+          subject do
+            build_stubbed(
+              :blank_order,
+              terms:      'Paid in full on pick up',
+              in_hand_by: Time.now - 55.day
+            )
+          end
 
           it 'returns Awaiting Payment' do
-            expect(order.payment_status).to eq('Awaiting Payment')
+            expect(subject.payment_status).to eq('Awaiting Payment')
           end
         end
         context 'Time.now less than in_hand_by + 30 days' do
-          let!(:order) { (build_stubbed(:blank_order, terms: 'Paid in full on pick up', in_hand_by: Time.now + 55.day)) }
+          subject do
+            build_stubbed(
+              :blank_order,
+              terms:      'Paid in full on pick up',
+              in_hand_by: Time.now + 55.day
+            )
+          end
 
           it 'returns Payment Terms Met' do
-            expect(order.payment_status).to eq('Payment Terms Met')
+            expect(subject.payment_status).to eq('Payment Terms Met')
           end
         end
       end
 
       context 'Terms: Net 60' do
         context 'Time.now greater than or equal to in_hand_by + 60 days' do
-          let!(:order) { (build_stubbed(:blank_order, terms: 'Paid in full on pick up', in_hand_by: Time.now - 100.day)) }
+          subject do
+            build_stubbed(
+              :blank_order,
+              terms:      'Paid in full on pick up',
+              in_hand_by: Time.now - 100.days
+            )
+          end
 
           it 'returns Awaiting Payment' do
-            expect(order.payment_status).to eq('Awaiting Payment')
+            expect(subject.payment_status).to eq('Awaiting Payment')
           end
         end
         context 'Time.now less than in_hand_by + 60 days' do
-          let!(:order) { (build_stubbed(:blank_order, terms: 'Paid in full on pick up', in_hand_by: Time.now + 100.day)) }
+          subject do
+            build_stubbed(
+              :blank_order,
+              terms:      'Paid in full on pick up',
+              in_hand_by: Time.now + 100.day
+            )
+          end
 
           it 'returns Payment Terms Met' do
-            expect(order.payment_status).to eq('Payment Terms Met')
+            expect(subject.payment_status).to eq('Payment Terms Met')
           end
         end
       end
@@ -201,41 +247,57 @@ describe Order, order_spec: true do
   end
 
   describe '#payment_total' do
-    let(:order){ build_stubbed(:blank_order, payments: [build_stubbed(:blank_payment, amount: 5)]) }
+    subject do
+      build_stubbed(
+        :blank_order,
+        payments: [build_stubbed(:blank_payment, amount: 5)]
+      )
+    end
 
     it 'returns the total payment for the order' do
-      expect(order.total).to eq order.subtotal + order.subtotal * order.tax
+      expect(subject.total)
+        .to eq subject.subtotal + subject.subtotal * subject.tax
     end
   end
 
   describe '#percent_paid' do
-    let(:order){ build_stubbed(:blank_order) }
+    subject do
+      build_stubbed(:blank_order)
+    end
     before do
-      allow(order).to receive(:total).and_return(5)
-      allow(order).to receive(:payment_total).and_return(5)
+      allow(subject).to receive(:total).and_return(5)
+      allow(subject).to receive(:payment_total).and_return(5)
     end
 
     it 'returns the percentage of the payment total over the order total' do
-      expect(order.percent_paid).to eq((order.payment_total / order.total) * 100)
+      expect(subject.percent_paid)
+        .to eq((subject.payment_total / subject.total) * 100)
     end
   end
 
   describe '#subtotal' do
-    let(:order){ build_stubbed(:blank_order) }
+    subject do
+      build_stubbed(:blank_order)
+    end
     before do
-      allow(order).to receive(:line_items).and_return([build_stubbed(:blank_line_item, quantity: 5, unit_price: 5)])
+      allow(subject).to receive(:line_items)
+        .and_return(
+          [build_stubbed(:blank_line_item, quantity: 5, unit_price: 5)]
+        )
     end
 
     it 'returns the sum of all the orders line item prices' do
-      expect(order.subtotal.to_i).to eq(25)
+      expect(subject.subtotal.to_i).to eq(25)
     end
   end
 
   describe '#tax' do
-    let(:order){ build_stubbed(:blank_order) }
+    subject do
+      build_stubbed(:blank_order)
+    end
 
     it 'returns the value for tax' do
-      expect(order.tax).to eq(0.06)
+      expect(subject.tax).to eq(0.06)
     end
   end
 end

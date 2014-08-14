@@ -23,8 +23,14 @@ describe User, user_spec: true do
   describe '#full_name' do
     let!(:user){ build_stubbed(:blank_user, first_name: 'First', last_name: 'Last') }
 
-    it 'returns the users full name' do
-      expect(user.full_name).to eq('First Last')
+    subject do
+      build_stubbed(
+        :blank_user,
+        first_name: 'First', last_name: 'Last'
+      )
+        .full_name
     end
+
+    it { is_expected.to eq 'First Last' }
   end
 end

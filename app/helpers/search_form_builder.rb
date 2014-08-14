@@ -14,9 +14,11 @@ class SearchFormBuilder
       @value
     end
   end
+  # TODO see if this works instead of the dumb class up there:
+  # YesOrNo = Struct.new(:name, :to_s)
 
   # Just pass <metadata option>: true to the options of any field method, and it will be applied
-  # (boolean is automatically applied for yes/no and checkbox)
+  # (boolean is automatically applied for yes/no radios and checkbox)
   METADATA_OPTIONS = [:negate, :greater_than, :less_than]
 
   YES_OR_NO_CHOICES = [YesOrNo.new('Yes', 'true'), YesOrNo.new('No', 'false')]
