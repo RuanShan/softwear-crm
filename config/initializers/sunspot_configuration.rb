@@ -45,4 +45,3 @@ require Rails.root + 'app/models/search.rb'
 Dir[Rails.root + 'app/models/**/*.rb'].each do |file|
   require file
 end
-

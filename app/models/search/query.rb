@@ -31,6 +31,7 @@ module Search
 
     # You can pass either field_name, model_name 
     # or an instance of Search::Field.
+    # TODO too long
     def filter_for(*args)
       field = nil
       case args.count
@@ -84,6 +85,7 @@ module Search
 
       # SearchList allows us to combine multi-model searches
       # into one array, sorted by relevancy.
+      # TODO make this less confusing
       SearchList.new(models) do |model, i|
         text_fields = text_fields_at(i)
         query_model = query_models[i]
