@@ -3,7 +3,7 @@ require 'spec_helper'
 describe 'imprintables/_supplier_information_form', imprintable_spec: true do
   before(:each) do
     imprintable = build_stubbed(:valid_imprintable)
-    f = LancengFormBuilder.dummy_for imprintable
+    f = test_form_for imprintable, builder: LancengFormBuilder
     render partial: 'imprintables/supplier_information_form',
            locals: { imprintable: imprintable, f: f }
   end

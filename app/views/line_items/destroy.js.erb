@@ -1,8 +1,11 @@
 <% if success %>
+
   var $row = $("#<%= local_assigns[:selector] || %[line-item-#{@line_item.id}] -%>");
 
   $row.fadeOut(thenRemove($row));
   <%= update_order_timeline(@line_item.line_itemable.try(:order)) %>
 <% else %>
+
   errorModal("Failed to delete line items for some reason.");
+
 <% end %>

@@ -1,1 +1,3 @@
-$("#imprint_method_print_locations_and_ink_colors").html("<%= escape_javascript(render partial: 'artwork_requests/artwork_imprint_method_fields', locals: { artwork_request: nil, imprint_method: @imprint_method }).html_safe %>");
+$("#imprint_method_print_locations_and_ink_colors").html("<%= j(render partial: 'artwork_requests/artwork_imprint_method_fields',
+                                                                       locals: { artwork_request: nil,
+                                                                                 imprint_method: @imprint_method }).html_safe %>");

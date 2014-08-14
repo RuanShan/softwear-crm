@@ -15,13 +15,15 @@
 
       <%= @current_user.full_name %>
 
-      <%= link_to '(Change user)', destroy_user_session_path, class: 'md-trigger', method: :delete, 'data-model'=>'logout-modal-alt' %>
+      <%= link_to '(Change user)', destroy_user_session_path, class: 'md-trigger',
+                  method: :delete, 'data-model'=>'logout-modal-alt' %>
     </div>
 
     <div class="form-group">
       <%= f.label :store %>
 
-      <%= f.collection_select :store_id, Store.order(:name), :id, :name, { selected: @order.salesperson.store_id }, { class: 'form-control' } %>
+      <%= f.collection_select :store_id, Store.order(:name), :id, :name,
+                              { selected: @order.salesperson.store_id }, { class: 'form-control' } %>
     </div>
 
     <div class="form-group">

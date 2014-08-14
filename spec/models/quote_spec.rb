@@ -129,8 +129,7 @@ describe Quote, quote_spec: true do
       end
     end
 
-    #TODO implement this
-    describe '#fetch_request_id_and_name' do
+    describe '#fetch_request_id_and_name', new: true do
       before(:each) do
         expect(URI).to receive(:escape)
       end
@@ -143,7 +142,7 @@ describe Quote, quote_spec: true do
         end
 
         it 'sets new_hash using parsed JSON' do
-          expect(JSON).to receive_message_chain(:parse, :[]).and_return(
+          expect(JSON).to receive_message_chain(:parse, :first).and_return(
             {
               'user' => {
                 'name' => 'Test Name',

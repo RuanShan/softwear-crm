@@ -5,7 +5,7 @@ describe 'imprintables/_grid.html.erb', imprintable_variant_spec: true do
     before(:each) do
       imprintable = build_stubbed(:valid_imprintable)
 
-      f = LancengFormBuilder.dummy_for imprintable
+      f = test_form_for imprintable, builder: LancengFormBuilder
       assign(:model_collection_hash, { color_collection: [], size_collection: [] } )
       render partial: 'grid',
              locals: {
@@ -31,7 +31,7 @@ describe 'imprintables/_grid.html.erb', imprintable_variant_spec: true do
       imprintable_variant = build_stubbed(:valid_imprintable_variant)
       allow(imprintable_variant).to receive(:size).and_return(build_stubbed(:valid_size))
       allow(imprintable_variant).to receive(:color).and_return(build_stubbed(:valid_color))
-      f = LancengFormBuilder.dummy_for :imprintable
+      f = test_form_for :imprintable, builder: LancengFormBuilder
       assign(:model_collection_hash, { color_collection: [], size_collection: [] } )
       render partial: 'grid',
              locals: {

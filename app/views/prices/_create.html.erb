@@ -27,11 +27,16 @@
             <td><%= number_to_currency hash[:prices][:xxxxxxl_price] %></td>
             <td>
               <div class="btn-group btn-group-xs">
-                <%= link_to price_path(index), class: 'btn btn-default', data: { confirm: 'Are you sure you would like to delete the price?' }, method: :delete, remote: true, 'data-action' => 'destroy', 'data-toggle' => 'tooltip', 'title' => 'Destroy' do %>
+                <%= link_to price_path(index), class: 'btn btn-default',
+                            data: { confirm: 'Are you sure you would like to delete the price?' },
+                            method: :delete, remote: true,
+                            'data-action' => 'destroy', 'data-toggle' => 'tooltip', 'title' => 'Destroy' do %>
                   <i class="fa fa-times"></i>
                 <% end %>
 
-                <%= link_to quote_select_quotes_path(index: index), class: 'btn btn-default', remote: true , 'title' => 'Add to Quote' do %>
+                <%= link_to quote_select_quotes_path(index: index),
+                            class: 'btn btn-default', remote: true ,
+                            'title' => 'Add to Quote' do %>
                   Add to Quote
                 <% end %>
               </div>
@@ -40,8 +45,15 @@
         <% end %>
 
         <tr>
-          <td><%= link_to 'Delete all Prices', { destroy_all: true }, class: 'btn btn-default', data: { confirm: 'Are you sure you want to delete every price?' }, method: :delete, remote: true %></td>
-          <td class="col-sm-3 text-right"><%= link_to 'Create Quote from Table', new_quote_path(price_information: session[:prices]), class: 'btn btn-default' %></td>
+          <td><%= link_to 'Delete all Prices', { destroy_all: true },
+                          class: 'btn btn-default',
+                          data: { confirm: 'Are you sure you want to delete every price?' },
+                          method: :delete, remote: true %></td>
+          <td class="col-sm-3 text-right">
+            <%= link_to 'Create Quote from Table',
+                        new_quote_path(price_information: session[:prices]),
+                        class: 'btn btn-default' %>
+          </td>
         </tr>
       </tbody>
     </table>

@@ -10,7 +10,8 @@
       <dt>Created By:</dt>
       <dd><%= artwork.artist.full_name %></dd>
 
-      <%= link_to artwork_request_path(artwork_id: artwork.id, id: artwork_request.id, remove_artwork: true), class: 'btn btn-danger', method: :put, remote: true  do %>
+      <%= link_to artwork_request_path(artwork_id: artwork.id, id: artwork_request.id, remove_artwork: true),
+                  class: 'btn btn-danger', method: :put, remote: true  do %>
         Remove
       <% end %>
       <br>

@@ -7,7 +7,7 @@ describe 'imprintables/_variant_select.html.erb', imprintable_variant_spec: true
   let(:size) { build_stubbed(:valid_size) }
 
   before(:each) do
-    f = LancengFormBuilder.dummy_for imprintable
+    f = test_form_for imprintable, builder: LancengFormBuilder
     assign(:model_collection_hash, { all_colors: [color], all_sizes: [size] })
     render partial: 'variant_select',
            locals: { imprintable: imprintable, size: size, color: color, f: f }

@@ -14,11 +14,10 @@
   try {
     errorHandler.handleErrors(
       <%= (@line_item || @line_items.reject(&:valid?).first).errors.messages.to_json.html_safe %>,
-      "<%= escape_javascript render partial: 'shared/modal_errors', locals: { object: @line_item } %>"
+      "<%= j render partial: 'shared/modal_errors', locals: { object: @line_item } %>"
     );
   } catch(e) {
     alert(e.message);
   }
 
-  console.log("DONE");
 <% end %>

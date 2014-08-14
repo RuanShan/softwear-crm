@@ -180,7 +180,7 @@ feature 'Line Items management', line_item_spec: true, js: true do
 
       find('.line-item-button[title="Edit"]').click
       wait_for_ajax
-      
+
       fill_in "line_item[#{non_imprintable.id}[name]]", with: 'New name!'
 
       find('.update-line-items').click

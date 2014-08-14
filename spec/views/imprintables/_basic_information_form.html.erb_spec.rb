@@ -4,7 +4,7 @@ describe 'imprintables/_basic_information_form.html.erb', imprintable_spec: true
 
   before(:each) do
     imprintable = build_stubbed(:valid_imprintable)
-    f = LancengFormBuilder.dummy_for imprintable
+    f = test_form_for imprintable, builder: LancengFormBuilder
     assign(:model_collection_hash,
            {
              brand_collection: [],

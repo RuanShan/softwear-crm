@@ -2,7 +2,7 @@ disableFor('.js-new-job', 1000);
 
 <% if @job.valid? %>
 
-  $newJob = $("<%= escape_javascript(render partial: 'job', locals: { job: @job }).html_safe %>");
+  $newJob = $("<%= j(render partial: 'job', locals: { job: @job }).html_safe %>");
 
   $('#jobs').children().last().before($newJob);
 

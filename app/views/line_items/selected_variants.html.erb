@@ -1,12 +1,19 @@
 <% if objects.empty? %>
+
 	<p>Couldn't find imprintable variants with the given color. Sorry!</p>
+
 <% else %>
+
 	<h6><strong><%= objects.first.color.name %> <%= objects.first.imprintable.style_name %></strong>
 	<%= objects.first.imprintable.style_catalog_no %></h6>
 	<p><%= objects.first.description %></p>
 
-	<p>Price: $<%= number_field_tag 'base_unit_price', objects.first.imprintable.base_price || 0.00, class: 'form-control', style: 'width: 100px; display: inline;' %></p>
+  <% #TODO inline CSS %>
+	<p>Price: $<%= number_field_tag 'base_unit_price',
+                                  objects.first.imprintable.base_price || 0.00,
+                                  class: 'form-control', style: 'width: 100px; display: inline;' %></p>
 
 	<%= hidden_field_tag 'imprintable_id', objects.first.imprintable.id %>
 	<%= hidden_field_tag 'color_id', objects.first.color.id %>
+
 <% end %>

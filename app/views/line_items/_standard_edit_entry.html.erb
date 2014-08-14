@@ -1,6 +1,5 @@
-<div id="edit-line-item-<%= line_item.id %>" class="line_item editing-line-item" data-line-item-id="<%= line_item.id %>">
+<div id="edit-line-item-<%= line_item.id %>" class="line_item editing-line-item">
   <%= batch_fields_for line_item do |f| %>
-
     <div class="col-sm-2"><%= f.text_field :name %></div>
     <div class="col-sm-5"><%= f.text_area :description %></div>
     <div class="col-sm-1"><%= f.check_box :taxable, style: 'width: 24px; height: 24px;' %></div>
@@ -12,6 +11,5 @@
         <i class="fa fa-2x danger fa-times-circle"></i>
       <% end %>
     </div>
-
   <% end %>
 </div>

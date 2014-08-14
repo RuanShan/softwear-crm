@@ -6,14 +6,16 @@
   <div class="form-group clearfix">
     <%= f.label :color_ids, 'Colors', class: 'col-sm-2 control-label' %>
     <div class="col-sm-10">
-      <%= collection_select 'color', 'ids', @model_collection_hash[:all_colors], :id, :name, {}, { multiple: true, data: { placeholder: 'Select Colors' } } %>
+      <%= collection_select 'color', 'ids', @model_collection_hash[:all_colors],
+                            :id, :name, {}, { multiple: true, data: { placeholder: 'Select Colors' } } %>
     </div>
   </div>
 
   <div class="form-group clearfix">
     <%= f.label :size_ids, 'Sizes', class: 'col-sm-2 control-label' %>
     <div class="col-sm-10">
-      <%= collection_select 'size', 'ids', @model_collection_hash[:all_sizes], :id, :name, {}, { multiple: true, data: { placeholder: 'Select Sizes' } } %>
+      <%= collection_select 'size', 'ids', @model_collection_hash[:all_sizes],
+                            :id, :name, {}, { multiple: true, data: { placeholder: 'Select Sizes' } } %>
     </div>
   </div>
 </div>

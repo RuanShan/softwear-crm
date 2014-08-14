@@ -35,6 +35,7 @@ appendActivities = (content) ->
     ajaxOrderActivities orderId
 
 $(window).load ->
+  # TODO is there commenting style?
   # FIXME 'this is a hack, the whole thing is a hack' - Nigel
   # Edit can't redirect, meaning it can't supply an anchor, so
   # we use data from the error modal to know which tab to switch 

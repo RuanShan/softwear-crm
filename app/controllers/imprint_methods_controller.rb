@@ -4,7 +4,8 @@ class ImprintMethodsController < InheritedResources::Base
   def show
     super do |format|
       format.html { redirect_to edit_imprint_method_path params[:id] }
-      format.js { render layout: nil, locals: { imprint_method: ImprintMethod.find(params[:id]) } }
+      format.js { render layout: nil,
+                         locals: { imprint_method: ImprintMethod.find(params[:id]) } }
     end
   end
 
@@ -20,10 +21,7 @@ class ImprintMethodsController < InheritedResources::Base
     @print_locations = @imprint_method.print_locations
 
     render partial: 'print_locations_select',
-           locals: {
-             print_locations: @print_locations, 
-             name: params[:name]
-           }
+           locals: { print_locations: @print_locations, name: params[:name] }
   end
 
   protected

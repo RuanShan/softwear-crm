@@ -5,7 +5,7 @@ describe 'stores/_form.html.erb', store_spec: true do
 
   it 'has text_field for name and a submit button' do
     store = Store.new
-    f = LancengFormBuilder.dummy_for store
+    f = test_form_for store, builder: LancengFormBuilder
     render partial: 'stores/form', locals: {store: store, f: f}
     within_form_for Store, noscope: true do
       expect(rendered).to have_field_for :name

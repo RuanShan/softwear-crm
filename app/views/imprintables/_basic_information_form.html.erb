@@ -143,15 +143,10 @@
       <%= f.error_for :sample_location_ids %>
       <div class="col-sm-8">
         <%= f.collection_select :sample_location_ids,
-                                @model_collection_hash[:store_collection],
-                                :id,
-                                :name,
-                                {},
-                                {
-                                    class: 'chosen-select',
-                                    data: { placeholder: 'Select sample locations' },
-                                    multiple: true
-                                } %>
+                                @model_collection_hash[:store_collection], :id,
+                                :name, {}, { class: 'chosen-select',
+                                             data: { placeholder: 'Select sample locations' },
+                                             multiple: true } %>
 
         <p class="help-block">
           Stores at which there is a sample of the imprintable
@@ -165,14 +160,9 @@
       <div class="col-sm-8">
         <%= f.collection_select :coordinate_ids,
                                 @model_collection_hash[:imprintable_collection],
-                                :id,
-                                :name,
-                                {},
-                                {
-                                    class: 'chosen-select',
-                                    data: { placeholder: 'Select coordinates' },
-                                    multiple: true
-                                } %>
+                                :id, :name, {}, { class: 'chosen-select',
+                                                  data: { placeholder: 'Select coordinates' },
+                                                  multiple: true } %>
 
         <p class="help-block">
           Coordinate imprintables i.e. a ladies or youth version

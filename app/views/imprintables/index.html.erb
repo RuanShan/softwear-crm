@@ -17,7 +17,8 @@
 <%= paginate @imprintables %>
 
 <div class="box-info row clear">
-  <%= render partial: 'imprintables/table', locals: { imprintables: @imprintables } %>
+  <%= render partial: 'imprintables/table',
+             locals: { imprintables: @imprintables } %>
 </div>
 
 <%= paginate @imprintables %>

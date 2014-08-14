@@ -3,22 +3,42 @@
 </div>
 
 <div class="col-lg-3 text-right">
-  <%= link_to quote_path(@quote), class: 'btn btn-primary', 'data-action' => 'show', 'data-toggle' => 'tooltip', 'title' => 'Print' do %>Print Quote<% end %>
+  <%= link_to quote_path(@quote), class: 'btn btn-primary',
+              'data-action' => 'show', 'data-toggle' => 'tooltip', 'title' => 'Print' do %>
+    Print Quote
+  <% end %>
 </div>
 
 <div class="row">
   <div class="col-sm-12">
     <div class="box-info full">
       <ul class="nav nav-tabs nav-justified">
-        <li class="active"><a href="#timeline" data-toggle="tab"><i class="fa fa-clock-o"></i> Timeline</a></li>
-        <li><a href="#details" data-toggle="tab"><i class="fa fa-search"></i> Details</a></li>
-        <li><a href="#line_items" data-toggle="tab"><i class="fa fa-bars"></i> Line Items</a></li>
-        <li><a href="#actions" data-toggle="tab"><i class="fa fa-cogs"></i> Actions</a></li>
+        <li class="active">
+          <a href="#timeline" data-toggle="tab">
+            <i class="fa fa-clock-o"></i> Timeline
+          </a>
+        </li>
+        <li>
+          <a href="#details" data-toggle="tab">
+            <i class="fa fa-search"></i> Details
+          </a>
+        </li>
+        <li>
+          <a href="#line_items" data-toggle="tab">
+            <i class="fa fa-bars"></i> Line Items
+          </a>
+        </li>
+        <li>
+          <a href="#actions" data-toggle="tab">
+            <i class="fa fa-cogs"></i> Actions
+          </a>
+        </li>
       </ul>
 
       <div class="tab-content">
         <div class="tab-pane animated fadeInRight active" id="timeline">
-          <%= render partial: 'shared/timeline', locals: { activities: @activities } %>
+          <%= render partial: 'shared/timeline',
+                     locals: { activities: @activities } %>
         </div>
 
         <div class="tab-pane animated  fadeInRight" id="details">
@@ -26,7 +46,8 @@
         </div>
 
         <div class="tab-pane animated fadeInRight" id="line_items">
-          <%= render partial: 'line_items', locals: { line_items: @quote.standard_line_items } %>
+          <%= render partial: 'line_items',
+                     locals: { line_items: @quote.standard_line_items } %>
         </div>
 
         <div class="tab-pane animated fadeInRight" id="actions">
