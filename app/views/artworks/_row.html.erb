@@ -10,15 +10,20 @@
     <div class="btn-group btn-group-xs">
       <% if artwork_request.nil? %>
 
-        <%= link_to edit_artwork_path(artwork), class: 'btn btn-default', remote: true, 'data-toggle' => 'tooltip', 'title' => 'Edit' do %>
+        <%= link_to edit_artwork_path(artwork), class: 'btn btn-default',
+                    remote: true, 'data-toggle' => 'tooltip', 'title' => 'Edit' do %>
           <i class="fa fa-edit"></i>
         <% end %>
 
-        <%= link_to "#{artwork_path(artwork)}?disable_buttons=true", class: 'btn btn-default', remote: true, 'data-toggle' => 'tooltip', 'title' => 'Show' do %>
+        <%= link_to "#{artwork_path(artwork)}?disable_buttons=true",
+                    class: 'btn btn-default', remote: true,
+                    'data-toggle' => 'tooltip', 'title' => 'Show' do %>
           <i class="fa fa-eye"></i>
         <% end %>
 
-        <%= link_to artwork_path(artwork), class: 'btn btn-default', method: :delete, remote: true, 'data-action' => 'destroy', 'data-toggle' => 'tooltip', 'title' => 'Destroy' do %>
+        <%= link_to artwork_path(artwork), class: 'btn btn-default',
+                    method: :delete, remote: true,
+                    'data-action' => 'destroy', 'data-toggle' => 'tooltip', 'title' => 'Destroy' do %>
           <i class="fa fa-times"></i>
         <% end %>
 
@@ -26,7 +31,8 @@
 
         <% if artwork_request.artwork_ids.empty? or !artwork_request.artwork_ids.include?(artwork.id)  %>
 
-          <%= link_to artwork_request_path(artwork_id: artwork.id, id: artwork_request.id), class: 'btn btn-primary', method: :put, remote: true do %>
+          <%= link_to artwork_request_path(artwork_id: artwork.id, id: artwork_request.id),
+                      class: 'btn btn-primary', method: :put, remote: true do %>
             Add
           <% end %>
 

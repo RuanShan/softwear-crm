@@ -1,7 +1,8 @@
 <div id="artwork-request-<%= artwork_request.id %>" class="row">
   <div class="the-notes info artwork-request-notes">
     <% unless artwork_request.artwork_ids.empty? %>
-      <%= render partial: 'artwork_requests/artworks', locals: { artwork_request: artwork_request } %>
+      <%= render partial: 'artwork_requests/artworks',
+                 locals: { artwork_request: artwork_request } %>
     <% end %>
 
      <div class="col-sm-8">

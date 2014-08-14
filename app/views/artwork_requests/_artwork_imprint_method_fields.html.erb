@@ -11,7 +11,8 @@
                        { include_blank: true }
                      end
           %>
-          <%= f.select :print_locations, imprint_method.print_locations.map{ |x| ["#{x.name}", x.id] }, selected, { name: 'artwork_request[print_location_id]' } %>
+          <%= f.select :print_locations, imprint_method.print_locations.map{ |x| ["#{x.name}", x.id] },
+                       selected, { name: 'artwork_request[print_location_id]' } %>
       </div>
     </div>
   </div>

@@ -2,6 +2,7 @@
   <div class="li-standard-form">
     <fieldset class="js-removeable">
       <%= f.label :name %>
+
       <% if defined? name %>
         <%= f.text_field :name, value: name %>
       <% else %>
@@ -11,6 +12,7 @@
       <%= f.label :description %>
       <%= f.text_area :description %>
 
+      <% #TODO inline CSS %>
       <%= f.label :taxable, style: 'width: 34px; height: 34px;' %>
       <%= f.check_box :taxable, style: 'width: 34px; height: 34px;' %>
 

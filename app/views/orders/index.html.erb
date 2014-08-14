@@ -1,33 +1,36 @@
 <h1>Custom Print Orders</h1>
 
 <%= paginate @orders %>
+
 <br clear="all" />
+
 <div class="box-info full">
   <%= render partial: 'orders/search' %>
+
   <div class="table-responsive">
     <table class="table table-hover">
       <thead>
-      <tr>
-        <th style="width: 30px">ID</th>
-        <th style="width: 30px">Log</th>
-        <th>Order</th>
-        <th>Salesperson</th>
-        <th>Payment Status</th>
-        <th>Total</th>
-        <th>Balance</th>
-        <th>Imprintable</th>
-        <th>Artwork</th>
-        <th>Production</th>
-        <th>Delivery</th>
-        <th>Actions</th>
-      </tr>
+        <tr>
+          <% #TODO inline CSS %>
+          <th style="width: 30px">ID</th>
+          <th style="width: 30px">Log</th>
+          <th>Order</th>
+          <th>Salesperson</th>
+          <th>Payment Status</th>
+          <th>Total</th>
+          <th>Balance</th>
+          <th>Imprintable</th>
+          <th>Artwork</th>
+          <th>Production</th>
+          <th>Delivery</th>
+          <th>Actions</th>
+        </tr>
       </thead>
 
       <tbody>
-      <% @orders.each do |order| %>
-        <%= render partial: 'orders/table_entry', locals: { order: order } %>
-      <% end %>
-
+        <% @orders.each do |order| %>
+          <%= render partial: 'orders/table_entry', locals: { order: order } %>
+        <% end %>
       </tbody>
     </table>
   </div>

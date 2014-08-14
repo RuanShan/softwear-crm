@@ -16,7 +16,8 @@
       errorHandlerFrom($container, 'line_item', $container, <%= line_item.id %>)
         .handleErrors(
           <%= line_item.errors.messages.to_json.html_safe %>,
-          "<%= escape_javascript render partial: 'shared/modal_errors', locals: { object: line_item } %>"
+          "<%= j render partial: 'shared/modal_errors',
+          locals: { object: line_item } %>"
         );
     <% end %>
 
@@ -32,7 +33,8 @@
       });
 
       $row.append(
-        "<%= escape_javascript render partial: 'standard_view_entry', locals: { line_item: line_item } %>"
+        "<%= j render partial: 'standard_view_entry',
+        locals: { line_item: line_item } %>"
       );
 
       var $inputs = $row.find('input');

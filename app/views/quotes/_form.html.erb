@@ -8,6 +8,7 @@
           <%= render partial: 'customer_detail_fields', locals: { f: f } %>
         </div>
       </div>
+
       <div class="col-sm-6">
         <div class="notes">
           <h4>Customer Information Instructions</h4>
@@ -32,7 +33,8 @@
   <section class="step" data-step-title="Quote Details">
     <div class="row">
       <div class="col-sm-6">
-        <%= render partial: 'quote_detail_fields', locals: { current_user: current_user, f: f } %>
+        <%= render partial: 'quote_detail_fields',
+                   locals: { current_user: current_user, f: f } %>
       </div>
 
       <div class="col-sm-6">

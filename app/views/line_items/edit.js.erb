@@ -5,6 +5,6 @@ $oldChildren.each(function() {
   $(this).remove();
 });
 
-$row.append("<%= escape_javascript render partial: 'standard_edit_entry', locals: { line_item: @line_item } %>");
+$row.append("<%= j render partial: 'standard_edit_entry', locals: { line_item: @line_item } %>");
 
 updateOrderTimeline();

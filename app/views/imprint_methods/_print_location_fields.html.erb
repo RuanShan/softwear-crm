@@ -6,7 +6,8 @@
       <div class="input-group full">
         <%= f.label :location, class: 'input-group-addon' %>
 
-        <%= f.text_field :name, class: 'form-control', placeholder: "What you call the imprint location. 'Full chest', for example." %>
+        <%= f.text_field :name, class: 'form-control',
+                         placeholder: "What you call the imprint location. 'Full chest', for example." %>
       </div>
 
       <% if f.object.errors.include?(:name) %>
@@ -20,7 +21,8 @@
         <div class="input-group clear">
           <%= f.label :max_width, class: 'input-group-addon' %>
 
-          <%= f.text_field :max_width, class: 'form-control', placeholder: 'Width (0.00) in inches' %>
+          <%= f.text_field :max_width, class: 'form-control',
+                           placeholder: 'Width (0.00) in inches' %>
 
           <span class='input-group-addon'>inches</span>
         </div>
@@ -36,7 +38,8 @@
         <div class="input-group">
           <%= f.label :max_height, class: 'input-group-addon' %>
 
-          <%= f.text_field :max_height, class: 'form-control', placeholder: 'Height (0.00) in inches' %>
+          <%= f.text_field :max_height, class: 'form-control',
+                           placeholder: 'Height (0.00) in inches' %>
 
           <span class='input-group-addon'>inches</span>
         </div>
@@ -52,7 +55,7 @@
   <div class="col-xs-1">
     <%= f.hidden_field :_destroy %>
 
-    <%= link_to "x", '#', class: "btn btn-danger js-remove-fields pull-right" %>
+    <%= link_to 'x', '#', class: 'btn btn-danger js-remove-fields pull-right' %>
   </div>
 
   <br clear="all">

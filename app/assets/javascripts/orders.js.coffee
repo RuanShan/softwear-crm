@@ -11,7 +11,7 @@
   ajax.done (response) ->
     if response.result is 'success'
       $('#timeline .the-timeline ul').prepend response.content
-      console.log 'updated timeline'
+      #console.log 'updated timeline'
     else
       errorModal "Couldn't update the order timeline view. Refreshing should do it if you actually want to see the updated timeline.", force: false
 

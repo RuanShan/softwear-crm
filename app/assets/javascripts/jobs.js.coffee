@@ -1,7 +1,7 @@
 @refreshJob = (jobId) ->
   $job = $("#job-#{jobId}")
   if $job.length == 0
-    console.log "Error! Couldn't find panel for job #{jobId}"
+    #console.log "Error! Couldn't find panel for job #{jobId}"
     return
   
   ajax = $.ajax
@@ -13,7 +13,7 @@
     $job.replaceWith response.content
     refresh_inlines()
     registerJobEvents $("#job-#{jobId}")
-    console.log "Updated job #{jobId}"
+    #console.log "Updated job #{jobId}"
     updateOrderTimeline()
 
   ajax.fail (jqXHR, textStatus) ->

@@ -1,6 +1,8 @@
 <% select_field_name_for = method(:imprint_select_field_name_for).to_proc.curry.(local_assigns[:imprint]) %>
+
 <div class="col-sm-4 imprint-entry" data-id="<%= local_assigns[:imprint].try(:id) || increment_new_imprint_counter %>">
   <div class="box-info imprint-container">
+
   <% if ImprintMethod.all.empty? %>
     <p>
       Looks like there aren't any Imprint Methods registered. 
@@ -8,23 +10,23 @@
     </p>
   <% else %>
       <div class="print-location-container">
-        <%= render partial: 'imprint_methods/print_locations_select', locals: {
-          print_locations: if local_assigns[:imprint_method]
-              imprint_method.print_locations
-            else
-              ImprintMethod.first.print_locations
-            end,
+        <%= render partial: 'imprint_methods/print_locations_select',
+                   locals: { print_locations: if local_assigns[:imprint_method]
+                                                imprint_method.print_locations
+                                              else
+                                                ImprintMethod.first.print_locations
+                                              end,
 
-          name: select_field_name_for.(:print_location_id),
-          default: local_assigns[:imprint].try(:print_location).try(:id)
-        } %>
+                             name: select_field_name_for.(:print_location_id),
+                             default: local_assigns[:imprint].try(:print_location).try(:id) } %>
       </div>
 
       <div class="form-group">
         <%= label_tag :imprint_method %>
-        <%= select_tag :imprint_method, options_from_collection_for_select(
-          ImprintMethod.all, :id, :name, local_assigns[:imprint_method].try(:id)
-        ), class: 'form-control js-imprint-method-select' %>
+        <%= select_tag :imprint_method,
+                       options_from_collection_for_select(ImprintMethod.all, :id,
+                                                          :name, local_assigns[:imprint_method].try(:id)),
+                       class: 'form-control js-imprint-method-select' %>
       </div>
 
       <div class="full text-right">

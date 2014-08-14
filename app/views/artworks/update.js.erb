@@ -1,6 +1,8 @@
 <% if @artwork.valid? %>
 
-  $('#artwork-row-<%= @artwork.id %>').replaceWith("<%= escape_javascript(render partial: 'row', locals: { artwork: @artwork, artwork_request: nil }).html_safe %>");
+  $('#artwork-row-<%= @artwork.id %>').replaceWith("<%= j(render partial: 'row',
+                                                                 locals: { artwork: @artwork,
+                                                                           artwork_request: nil }).html_safe %>");
 
   setupContentModal(function($contentModal){
     $contentModal.find('.modal-content').addClass('modal-content-success')
@@ -19,6 +21,8 @@
   }
 
   var handler = form.data('errorHandler');
-  handler.handleErrors(JSON.parse("<%= escape_javascript(@artwork.errors.messages.to_json.html_safe) %>"), $("<%= escape_javascript(render partial: 'shared/modal_errors', locals: { object: @artwork }).html_safe %>"));
+  handler.handleErrors(JSON.parse("<%= j(@artwork.errors.messages.to_json.html_safe) %>"),
+    $("<%= j(render partial: 'shared/modal_errors',
+                    locals: { object: @artwork }).html_safe %>"));
 
 <% end %>

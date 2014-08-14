@@ -1,3 +1,4 @@
 <% if refund %>
-  <%= render partial: 'refund_form', locals: { order: @order, payment: @payment } %>
+  <%= render partial: 'refund_form',
+             locals: { order: @order, payment: @payment } %>
 <% end %>

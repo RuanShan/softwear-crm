@@ -1,6 +1,8 @@
 <% if @artwork_request.valid? %>
 
-  $('.artwork-request-list').append("<%= escape_javascript(render partial: 'artwork_request', locals: { artwork_request: @artwork_request, order: @order }).html_safe %>");
+  $('.artwork-request-list').append("<%= j(render partial: 'artwork_request',
+                                                  locals: { artwork_request: @artwork_request,
+                                                            order: @order }).html_safe %>");
 
   setupContentModal(function($contentModal){
     $contentModal.find('.modal-content').addClass('modal-content-success')
@@ -20,6 +22,8 @@
     }
 
     var handler = form.data('errorHandler');
-    handler.handleErrors(JSON.parse("<%= escape_javascript(@artwork_request.errors.messages.to_json.html_safe) %>"), $("<%= escape_javascript(render partial: 'shared/modal_errors', locals: { object: @artwork_request }).html_safe %>"));
+    handler.handleErrors(JSON.parse("<%= j @artwork_request.errors.messages.to_json.html_safe %>"),
+      $("<%= j(render partial: 'shared/modal_errors',
+                      locals: { object: @artwork_request }).html_safe %>"));
 
 <% end %>

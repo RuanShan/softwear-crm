@@ -2,11 +2,10 @@
   <div class="col-sm-6">
     <div class="box-info">
       <div class="icon-box">
-            <span class="fa-stack">
-              <i class="fa fa-circle fa-stack-2x success"></i>
-
-              <i class="fa fa-dollar fa-stack-1x fa-inverse"></i>
-            </span>
+        <span class="fa-stack">
+          <i class="fa fa-circle fa-stack-2x success"></i>
+          <i class="fa fa-dollar fa-stack-1x fa-inverse"></i>
+        </span>
       </div>
 
       <div class="text-box">
@@ -23,30 +22,41 @@
           <span class="sr-only"><%= order.percent_paid %>&#37; Paid</span>
         </div>
       </div>
-
     </div>
   </div>
 
   <div class="col-sm-6">
     <h3><strong>Apply</strong> Payment</h3>
+
     <div class="btn-group btn-group-sm max-width">
-      <%= button_to new_order_payment_path(params[:id])+"?payment_method=1", { class: 'additional-icon btn btn-default payment-button', method: :get, remote: true, 'data-target' => '#payment-form', id: 'cash-button' } do %>
+      <%= button_to new_order_payment_path(params[:id])+"?payment_method=1",
+                    { class: 'additional-icon btn btn-default payment-button',
+                      method: :get, remote: true, 'data-target' => '#payment-form',
+                      id: 'cash-button' } do %>
         <i class="fa fa-money"></i> Cash
       <% end %>
 
-      <%= button_to new_order_payment_path(params[:id])+"?payment_method=2", { class: 'additional-icon btn btn-default payment-button', method: :get, remote: true, 'data-target' => '#payment-form', id: 'cc-button' } do %>
+      <%= button_to new_order_payment_path(params[:id])+"?payment_method=2", {
+              class: 'additional-icon btn btn-default payment-button', method: :get,
+              remote: true, 'data-target' => '#payment-form', id: 'cc-button' } do %>
         <i class="fa fa-credit-card"></i> Swiped Credit Card
       <% end %>
 
-      <%= button_to new_order_payment_path(params[:id])+"?payment_method=3", { class: 'additional-icon btn btn-default payment-button', method: :get, remote: true, 'data-target' => '#payment-form', id: 'check-button' } do %>
+      <%= button_to new_order_payment_path(params[:id])+"?payment_method=3", {
+              class: 'additional-icon btn btn-default payment-button', method: :get,
+              remote: true, 'data-target' => '#payment-form', id: 'check-button' } do %>
         <i class="fa fa-edit"></i> Check
       <% end %>
 
-      <%= button_to new_order_payment_path(params[:id])+"?payment_method=4", { class: 'additional-icon btn btn-default payment-button', method: :get, remote: true, 'data-target' => '#payment-form', id: 'paypal-button' } do %>
+      <%= button_to new_order_payment_path(params[:id])+"?payment_method=4", {
+              class: 'additional-icon btn btn-default payment-button', method: :get,
+              remote: true, 'data-target' => '#payment-form', id: 'paypal-button' } do %>
         <i class="fa fa-rub"></i> PayPal
       <% end %>
 
-      <%= button_to new_order_payment_path(params[:id])+"?payment_method=1", { class: 'additional-icon btn btn-default payment-button', method: :get, remote: true, 'data-target' => '#payment-form', id: 'wire-button' } do %>
+      <%= button_to new_order_payment_path(params[:id])+"?payment_method=1", {
+              class: 'additional-icon btn btn-default payment-button', method: :get,
+              remote: true, 'data-target' => '#payment-form', id: 'wire-button' } do %>
         <i class="fa fa-code-fork"></i> Wire Transfer
       <% end %>
     </div>
@@ -74,7 +84,8 @@
         <% unless payment.is_refunded? %>
           <dt>Payment <%= index + 1 %></dt>
           <dd>Amount: $<%= payment.amount %></dd>
-          <dd><%= link_to 'Refund Payment', edit_payment_path(payment, 'refund' => true, 'order_id' => order.id), class: 'order_payment_refund_link', remote: true %></dd>
+          <dd><%= link_to 'Refund Payment', edit_payment_path(payment, 'refund' => true, 'order_id' => order.id),
+                          class: 'order_payment_refund_link', remote: true %></dd>
           <br>
         <% end %>
        <% end %>

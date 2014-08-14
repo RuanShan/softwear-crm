@@ -58,7 +58,7 @@ updateDelay = 1000
           inter = null
 
         if isWhitespace(self.content.charAt(0))
-          console.log 'it is'
+          #console.log 'it is'
         # If there is a single space in the beginning, or any trailing whitespace, kill them!
         dirty = false
         if singleLeadingSpace(self.content)
@@ -101,10 +101,10 @@ updateDelay = 1000
             $this.focus()
 
           if response.result is 'success'
-            console.log "Successfully updated #{self.resourceName}[#{self.field}]"
+            #console.log "Successfully updated #{self.resourceName}[#{self.field}]"
             callback(true) for callback in inlineEditableCallbacks
           else if response.result is 'failure'
-            console.log "Error updating #{self.resourceName}[#{self.field}]"
+            #console.log "Error updating #{self.resourceName}[#{self.field}]"
             # Add error stuff
             $this.before $('<div/>',
               class: 'error', 

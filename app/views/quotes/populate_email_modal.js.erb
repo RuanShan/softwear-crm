@@ -1,5 +1,5 @@
 $('#contentModal .modal-content').width(900);
 $('#contentTitle').html("Send Quote");
-$('#contentBody').html("<%= escape_javascript(render partial: 'quotes/email_customer').html_safe %>");
+$('#contentBody').html("<%= j(render partial: 'quotes/email_customer').html_safe %>");
 
 initializeSummernote();
