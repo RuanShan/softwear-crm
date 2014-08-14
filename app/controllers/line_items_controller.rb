@@ -171,7 +171,7 @@ private
       partial: 'shared/modal_errors',
       locals: { object: @line_items.reject(&:valid?).first }
     )
-    errors = @line_items.map{ |l| l.errors.full_messages }.flatten.uniq
+    errors = @line_items.flat_map{ |l| l.errors.full_messages }.uniq
 
     respond_to do |format|
       format.json do
@@ -248,7 +248,7 @@ private
   end
 
   def destroy_multiple(ids, &respond)
-    ids = ids.split('/').flatten.map(&:to_i)
+    ids = ids.split('/').flat_map(&:to_i)
     @line_item = LineItem.find(ids.first)
     fire_activity @line_item, :destroy unless ids.empty?
 

@@ -10,7 +10,7 @@ describe 'line_items/select_options.html.erb', line_item_spec: true do
 
 		  	expect(rendered).to have_css "select[name='#{type.name.underscore}_id']"
 		  	expect(rendered).to have_css "label[for='#{type.name.underscore}_id']", text: type.name
-		  	type.all.each do |object|
+		  	type.all.find_each do |object|
 		  		expect(rendered).to have_css "option[value='#{object.id}']"
 		  	end
 		  end

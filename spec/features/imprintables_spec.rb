@@ -261,11 +261,11 @@ feature 'Imprintables management', imprintable_spec: true, slow: true do
     scenario 'A user can display the modal show without having multiple shows being rendered at once (card #136)' do
       visit imprintables_path
 
-      expect(find('#contentModal div.modal-body', visible: false).all('*').length).to eq(0)
+      expect(find('#contentModal div.modal-body', visible: false).all('*').size).to eq(0)
       expect(find('#contentModal div.modal-body', visible: false).text).to eq('')
 
       find(:css, "#imprintable_#{imprintable_two.id} td a.imprintable_modal_link").click
-      expect(find('#contentModal div.modal-body').all('*').length).to_not eq(0)
+      expect(find('#contentModal div.modal-body').all('*').size).to_not eq(0)
       expect(find('#contentModal div.modal-body').text).to_not eq ('')
     end
   end

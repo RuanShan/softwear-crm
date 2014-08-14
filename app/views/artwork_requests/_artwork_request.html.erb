@@ -8,7 +8,7 @@
       <div class="row">
         <div class="col-sm-6">
           <h4 class="artwork-request-title">Artwork Request
-            for <%= artwork_request.jobs.collect { |x| [x.name] }.join(', ') %>
+            for <%= artwork_request.jobs.map(&:name).join(', ') %>
           </h4>
 
           <dl>

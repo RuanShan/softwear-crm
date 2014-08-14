@@ -20,7 +20,7 @@ describe User, user_spec: true do
     it { is_expected.to_not allow_value('invalidemail').for :email }
   end
 
-  describe '#full_name', wip: true do
+  describe '#full_name' do
     let!(:user){ build_stubbed(:blank_user, first_name: 'First', last_name: 'Last') }
 
     it 'returns the users full name' do

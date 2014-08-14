@@ -123,7 +123,7 @@
 
       <div class="col-sm-10">
         <% #TODO: Model call %>
-        <%= f.select :artist_id, User.all.collect { |u| [u.full_name, u.id] }, include_blank: true %>
+        <%= f.select :artist_id, User.all.map{ |u| [u.full_name, u.id] }, include_blank: true %>
 
         <% if artwork_request.errors.include?(:artist_id) %>
           <% artwork_request.errors.full_messages_for(:artist_id).each do |message| %>

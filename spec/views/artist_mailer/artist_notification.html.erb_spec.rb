@@ -16,7 +16,7 @@ describe 'artist_mailer/artist_notification.html.erb', artist_mailer_spec: true 
     assign(:action_name, action_name)
     render
     expect(rendered).to have_text("Imprint Method: #{artwork_request.imprint_method.name}, #{artwork_request.print_location.name}")
-    expect(rendered).to have_text("Jobs: #{artwork_request.jobs.collect { |x| [x.name] }.join(', ')}")
+    expect(rendered).to have_text("Jobs: #{artwork_request.jobs.map(&:name).join(', ')}")
     expect(rendered).to have_text("Order: #{artwork_request.jobs.first.order.name}")
     expect(rendered).to have_text("Proof Deadline: #{display_time(artwork_request.deadline)}")
     expect(rendered).to have_text("Priority: #{ArtworkRequest::PRIORITIES[artwork_request.priority.to_i]}")

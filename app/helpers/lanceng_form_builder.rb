@@ -80,7 +80,7 @@ class LancengFormBuilder < ActionView::Helpers::FormBuilder
     if @object.errors.include? method
       # TODO: refactor
       c =
-        @object.errors.full_messages_for(method).collect do |message|
+        @object.errors.full_messages_for(method).map do |message|
           @template.content_tag(:p, message, class: 'text-danger', for: "#{@object_name}[#{method}]")
         end.join
 

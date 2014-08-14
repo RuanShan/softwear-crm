@@ -75,7 +75,7 @@ describe Job, job_spec: true do
     end
   end
 
-  describe '#max_print_area', artwork_request_spec: true, wip: true do
+  describe '#max_print_area', artwork_request_spec: true do
     let!(:job){ build_stubbed(:blank_job) }
 
     before do
@@ -154,7 +154,7 @@ describe Job, job_spec: true do
 
     it 'sorts the resulting arrays by size', retry: 3 do
       sizes = [size_xl, size_m, size_s]
-      sizes[0].sort_order = 3
+      sizes.first.sort_order = 3
       sizes[1].sort_order = 2
       sizes[2].sort_order = 1
       sizes.each { |s| s.save! }

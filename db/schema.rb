@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140813161117) do
+ActiveRecord::Schema.define(version: 20140813184731) do
 
   create_table "activities", force: true do |t|
     t.integer  "trackable_id"
@@ -35,6 +35,7 @@ ActiveRecord::Schema.define(version: 20140813161117) do
     t.integer  "proof_id"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.datetime "deleted_at"
   end
 
   create_table "artwork_request_artworks", force: true do |t|
@@ -42,6 +43,7 @@ ActiveRecord::Schema.define(version: 20140813161117) do
     t.integer  "artwork_id"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.datetime "deleted_at"
   end
 
   create_table "artwork_request_ink_colors", force: true do |t|
@@ -49,6 +51,7 @@ ActiveRecord::Schema.define(version: 20140813161117) do
     t.integer  "ink_color_id"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.datetime "deleted_at"
   end
 
   create_table "artwork_request_jobs", force: true do |t|
@@ -56,6 +59,7 @@ ActiveRecord::Schema.define(version: 20140813161117) do
     t.integer  "job_id"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.datetime "deleted_at"
   end
 
   create_table "artwork_requests", force: true do |t|
@@ -134,6 +138,7 @@ ActiveRecord::Schema.define(version: 20140813161117) do
     t.integer  "imprintable_id"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.datetime "deleted_at"
   end
 
   add_index "imprint_method_imprintables", ["imprintable_id", "imprint_method_id"], name: "imprint_method_imprintables_index", using: :btree
@@ -160,6 +165,7 @@ ActiveRecord::Schema.define(version: 20140813161117) do
     t.integer  "store_id"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.datetime "deleted_at"
   end
 
   add_index "imprintable_stores", ["imprintable_id", "store_id"], name: "index_imprintable_stores_on_imprintable_id_and_store_id", using: :btree

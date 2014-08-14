@@ -172,7 +172,7 @@ namespace :imprintables do
 
   desc 'Initialize Size Display Values with Size Name'
   task initialize_size_display_values: :environment do
-    Size.all.each do |size|
+    Size.all.find_each do |size|
       if size.display_value.blank?
         size.display_value = size.name
         size.save

@@ -7,7 +7,7 @@ describe ImprintMethodsController, imprint_method_spec: true do
   let!(:valid_user) { create :alternate_user }
   before(:each) { sign_in valid_user }
 
-  describe 'GET print_locations', wip: true do
+  describe 'GET print_locations' do
     it 'assigns @imprint_method, @print_locations, and renders _print_locations_select.html.erb' do
       print_location
       get :print_locations, imprint_method_id: imprint_method.id

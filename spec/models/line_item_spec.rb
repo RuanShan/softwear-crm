@@ -24,11 +24,11 @@ describe LineItem, line_item_spec: true do
       it { is_expected.to_not validate_presence_of :imprintable_variant }
 
       it 'description returns the description stored in the database' do
-        expect(subject.description).to eq subject.read_attribute :description
+        expect(subject.description).to eq subject[:description]
       end
 
       it 'name returns the name stored in the database' do
-        expect(subject.name).to eq subject.read_attribute :name
+        expect(subject.name).to eq subject[:name]
       end
     end
 

@@ -15,7 +15,7 @@ feature 'Imprints Management', imprint_spec: true, js: true, imprint_features: t
         ['Front',   'Lower',  'Wherever']]) do |name|
     3.times do |n|
       let!("imprint_method#{n+1}") { create(:valid_imprint_method, 
-                                               name: name[0][n]) }
+                                               name: name.first[n]) }
       let!("print_location#{n+1}") { create(:valid_print_location, name: name[1][n],
                                                imprint_method_id: send("imprint_method#{n+1}").id) }
     end
