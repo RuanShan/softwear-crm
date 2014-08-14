@@ -4,7 +4,7 @@ describe 'brands/_form.html.erb', brand_spec: true do
 
   before(:each) do
     brand = build_stubbed(:valid_brand)
-    f = LancengFormBuilder.dummy_for brand
+    f = test_form_for brand, builder: LancengFormBuilder
     render partial: 'brands/form', locals: { brand: brand, f: f }
   end
 

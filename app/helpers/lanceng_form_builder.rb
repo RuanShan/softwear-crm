@@ -14,7 +14,7 @@ class LancengFormBuilder < ActionView::Helpers::FormBuilder
       result = @builder.send(name, *args, &block)
       return result if result.is_a?(MethodChain)
       
-      @builder.reduce_chain(args.first) + result
+      @builder.reduce_chain(args.first) + (result || '')
     end
   end
 
@@ -118,7 +118,7 @@ class LancengFormBuilder < ActionView::Helpers::FormBuilder
     return '' if @chain_stack.nil? || @chain_stack.empty?
 
     result = @chain_stack.reduce('') do |total, proc|
-      total + (proc.call(field) || '')
+      total.html_safe + (proc.call(field) || '')
     end
     @chain_stack.clear
 

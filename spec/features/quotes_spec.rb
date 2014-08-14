@@ -73,7 +73,7 @@ feature 'Quotes management', quote_spec: true, js: true do
     expect(current_path).to eq(edit_quote_path quote.id)
   end
 
-  scenario 'A user can generate a quote from an imprintable pricing dialog', wip: true do
+  scenario 'A user can generate a quote from an imprintable pricing dialog', retry: 3 do
     visit imprintables_path
     decoration_price = 3.75
     find('i.fa.fa-dollar').click

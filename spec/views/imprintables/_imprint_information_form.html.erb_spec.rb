@@ -3,7 +3,7 @@ require 'spec_helper'
 describe 'imprintables/_imprint_information_form', imprintable_spec: true do
   before(:each) do
     imprintable = build_stubbed(:valid_imprintable)
-    f = LancengFormBuilder.dummy_for imprintable
+    f = test_form_for imprintable, builder: LancengFormBuilder
     assign(:model_collection_hash,
            {
              sizing_categories_collection: [],

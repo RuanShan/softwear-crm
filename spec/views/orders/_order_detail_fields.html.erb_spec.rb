@@ -5,7 +5,7 @@ describe 'orders/_order_detail_fields.html.erb', order_spec: true do
 
   it 'should display the correct fields' do
     order = create(:order)
-    f = LancengFormBuilder.dummy_for order
+    f = test_form_for order, builder: LancengFormBuilder
     render partial: 'orders/order_detail_fields', locals: { order: order, f: f, current_user: create(:user) }
     within_form_for Order, noscope: true do
       expect(rendered).to have_field_for :name
