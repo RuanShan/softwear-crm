@@ -49,6 +49,8 @@ RSpec.configure do |config|
   # Remove this line if you're not using ActiveRecord or ActiveRecord fixtures
   config.fixture_path = "#{::Rails.root}/spec/fixtures"
 
+  config.alias_it_should_behave_like_to :it_can, 'can'
+
   Capybara.register_driver :selenium do |app|
     Capybara::Selenium::Driver.new(app, :browser => :chrome)
   end
@@ -66,34 +68,9 @@ RSpec.configure do |config|
   config.order = 'random'
 
   config.before(:each) do |example|
-    if example.metadata[:solr]
-      # Recover Sunspot session (if needed) and start solr.
-      if Sunspot.session.respond_to? :original_session
-        Sunspot.session = Sunspot.session.original_session
-        if Sunspot.session.respond_to? :original_session
-          raise 'Sunspot session somehow got buried in spies!'
-        end
-      end
-      # Solr process is lazy loaded, essentially.
-      unless solr_running?
-        if !start_solr
-          raise 'Unable to start Solr.'
-        end
-        wait_for_solr
-      end
-    else
-      # If we just keep making session spies out of the current session
-      # (as suggested on the SunspotMatchers github page), it will just
-      # keep piling up and further burrying the original session!
-      if Sunspot.session.respond_to? :original_session
-        Sunspot.session = SunspotMatchers::SunspotSessionSpy.new(Sunspot.session.original_session)
-      else
-        Sunspot.session = SunspotMatchers::SunspotSessionSpy.new(Sunspot.session)
-      end
-    end
+    example.metadata[:solr] ? lazy_load_solr : refresh_sunspot_session_spy
   end
 
-  # Stop solr if we were using it in any earlier tests.
   config.after(:suite) do
     stop_solr if solr_running?
   end

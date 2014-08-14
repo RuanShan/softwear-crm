@@ -1,15 +1,10 @@
 FactoryGirl.define do
-  factory :valid_payment, class: Payment do
-    order { |o| o.association(:order) }
-    store { |s| s.association(:valid_store) }
-    amount '10.00'
-  end
+  factory :blank_payment, class: Payment do
 
-  factory :refunded_payment, class: Payment do
-    order { |o| o.association(:order) }
-    store { |s| s.association(:valid_store) }
-    amount '10.00'
-    refunded true
-    refund_reason 'for testing purposes'
+    factory :valid_payment do
+      order { |o| o.association(:order) }
+      store { |s| s.association(:valid_store) }
+      amount '10.00'
+    end
   end
 end

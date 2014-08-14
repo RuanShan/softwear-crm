@@ -1,9 +1,9 @@
 <h2>
   <%= "#{@salesperson.full_name}" %> has <%= @action_name %>d an Artwork Request for
-    Imprint Method: <%= @artwork_request.imprint_method.name + ', ' + @artwork_request.print_location.name %>
-    Jobs: <%= @artwork_request.jobs.collect { |x| [x.name] }.join(', ') %>
+    Imprint Method: <%= "#{@artwork_request.imprint_method.name}, #{@artwork_request.print_location.name}" %>
+    Jobs: <%= @artwork_request.jobs.map { |x| [x.name] }.join(', ') %>
     Order: <%= @artwork_request.jobs.first.order.name %>
-    Proof Deadline: <%= display_time(@artwork_request.deadline) %>
+    Proof Deadline: <%= @artwork_request.deadline.strftime('%b %d, %Y, %I:%M %p') %>
     Priority: <%= ArtworkRequest::PRIORITIES[@artwork_request.priority.to_i] %>
 </h2>
 <p>

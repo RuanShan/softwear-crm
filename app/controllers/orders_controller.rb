@@ -3,13 +3,16 @@ class OrdersController < InheritedResources::Base
 
   def index
     super do
+      @current_action = 'orders#index'
       @orders = Order.all.page(params[:page])
     end
   end
 
   def update
     super do |success, failure|
-      success.html { redirect_to edit_order_path(params[:id], anchor: 'details') }
+      success.html do
+        redirect_to edit_order_path(params[:id], anchor: 'details')
+      end
       failure.html do
         assign_activities
         render action: :edit, anchor: 'details'
@@ -23,6 +26,7 @@ class OrdersController < InheritedResources::Base
 
   def new
     super do
+      @current_action = 'orders#new'
       @current_user = current_user
       stores = Store.all
       @empty = stores.empty?

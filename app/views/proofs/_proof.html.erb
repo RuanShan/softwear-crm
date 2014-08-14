@@ -46,29 +46,34 @@
             <i class="fa fa-2x fa-edit"></i> Edit &nbsp
           <% end %>
 
-          <%= link_to order_proof_path(order, proof), method: :delete, remote: true do %>
+          <%= link_to order_proof_path(order, proof), method: :delete,
+                      remote: true do %>
             <i class="fa fa-2x danger fa-times-circle"></i> Delete &nbsp
           <% end %>
 
           <% if proof.approved_at.nil? and proof.status != 'Rejected' %>
-            <%= link_to email_customer_order_proofs_path(order_id: order.id, id: proof.id, reminder: 'false'), remote: true do %>
+            <%= link_to email_customer_order_proofs_path(order_id: order.id, id: proof.id, reminder: 'false'),
+                        remote: true do %>
               <i class="fa fa-2x fa-envelope"></i> Email Customer Proof Approval Request &nbsp
             <% end %>
 
             <% if proof.status == 'Emailed Customer' %>
-              <%= link_to email_customer_order_proofs_path(order_id: order.id, id: proof.id, reminder: 'true'), remote: true, method: :post,
-                          data: { confirm: 'This will send a proof approval reminder for this proof to the customer, are you sure?' } do %>
+              <%= link_to email_customer_order_proofs_path(order_id: order.id, id: proof.id, reminder: 'true'),
+                          data: { confirm: 'This will send a proof approval reminder for this proof to the customer, are you sure?' },
+                          method: :post, remote: true do %>
                 <i class="fa fa-2x warning fa-envelope"></i> Email Customer Proof Approval Reminder &nbsp
               <% end %>
             <% end %>
 
-            <%= link_to order_proof_path(order_id: order.id, id: proof.id, status: 'Approved', ), remote: true, method: :put,
-                        data: { confirm: 'Approving this proof will queue up production processes, are you sure you want to proceed?' } do %>
+            <%= link_to order_proof_path(order_id: order.id, id: proof.id, status: 'Approved', ),
+                        data: { confirm: 'Approving this proof will queue up production processes, are you sure you want to proceed?' },
+                        method: :put, remote: true do %>
               <i class="fa fa-2x success fa-thumbs-up"></i> Accept Proof &nbsp
             <% end %>
 
-            <%= link_to order_proof_path(order_id: order.id, id: proof.id, status: 'Rejected', ), remote: true, method: :put,
-                        data: { confirm: 'Are you sure you want to reject this proof? Remember to create a new artwork request for revisions if you do reject this proof' } do %>
+            <%= link_to order_proof_path(order_id: order.id, id: proof.id, status: 'Rejected', ),
+                        data: { confirm: 'Are you sure you want to reject this proof? Remember to create a new artwork request for revisions if you do reject this proof' },
+                        method: :put, remote: true do %>
               <i class="fa fa-2x danger fa-thumbs-down"></i> Reject Proof &nbsp
             <% end %>
           <% end %>

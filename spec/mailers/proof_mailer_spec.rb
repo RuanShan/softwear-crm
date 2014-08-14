@@ -4,7 +4,7 @@ describe ArtistMailer do
 
   describe 'proof_approval_email' do
     let!(:proof) { create(:valid_proof) }
-    let!(:order) { Order.find(proof.order_id) }
+    let!(:order) { build_stubbed(:blank_order, email: 'blah@blah.com') }
     subject = 'Subject'
     body = 'Body'
     let!(:mailer) { ProofMailer.proof_approval_email({ body: body,
@@ -37,7 +37,7 @@ describe ArtistMailer do
 
   describe 'proof_reminder_email' do
     let!(:proof) { create(:valid_proof) }
-    let!(:order) { Order.find(proof.order_id) }
+    let!(:order) { build_stubbed(:blank_order, email: 'blah@blah.com') }
     subject = 'Subject'
     body = 'Body'
     let!(:mailer) { ProofMailer.proof_reminder_email({ body: body,

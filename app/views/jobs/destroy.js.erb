@@ -6,6 +6,6 @@ disableFor('#delete-job-<%= @job.id %>', 1000);
 
 <% else %>
   
-  errorModal("<%= escape_javascript @job.errors.messages[:deletion_status].join(', ') %>");
+  errorModal("<%= j @job.errors.messages[:deletion_status].join(', ') %>");
 
 <% end %>

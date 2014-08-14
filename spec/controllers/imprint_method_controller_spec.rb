@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe ImprintMethodsController, imprint_methods_spec: true do
+describe ImprintMethodsController, imprint_method_spec: true do
 
   let!(:imprint_method) { create :valid_imprint_method }
   let(:print_location) { create :print_location, imprint_method_id: imprint_method.id }

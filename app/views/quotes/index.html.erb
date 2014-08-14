@@ -38,15 +38,22 @@
             <td><%= quote.store.name %></td>
             <td>
               <div class="btn-group btn-group-xs">
-                <%= link_to edit_quote_path(quote), class: 'btn btn-default', 'data-action' => 'edit', 'data-toggle' => 'tooltip', 'title' => 'Edit' do %>
+                <%= link_to edit_quote_path(quote),
+                            class: 'btn btn-default', 'data-action' => 'edit',
+                            'data-toggle' => 'tooltip', 'title' => 'Edit' do %>
                   <i class="fa fa-edit"></i>
                 <% end %>
 
-                <%= link_to quote_path(quote), class: 'btn btn-default', 'data-action' => 'show', 'data-toggle' => 'tooltip', 'title' => 'Print' do %>
+                <%= link_to quote_path(quote),
+                            class: 'btn btn-default', 'data-action' => 'show',
+                            'data-toggle' => 'tooltip', 'title' => 'Print' do %>
                   <i class="fa fa-print"></i>
                 <% end %>
 
-                <%= link_to quote_path(quote),  class: 'btn btn-default', data: { confirm: 'Are you sure you would like to delete the quote?' }, method: :delete, 'data-action' => 'destroy', 'data-toggle' => 'tooltip', 'title' => 'Destroy' do %>
+                <%= link_to quote_path(quote), class: 'btn btn-default',
+                            data: { confirm: 'Are you sure you would like to delete the quote?' },
+                            method: :delete, 'data-action' => 'destroy',
+                            'data-toggle' => 'tooltip', 'title' => 'Destroy' do %>
                   <i class="fa fa-times"></i>
                 <% end %>
               </div>

@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140729165326) do
+ActiveRecord::Schema.define(version: 20140813184731) do
 
   create_table "activities", force: true do |t|
     t.integer  "trackable_id"
@@ -30,6 +30,38 @@ ActiveRecord::Schema.define(version: 20140729165326) do
   add_index "activities", ["recipient_id", "recipient_type"], name: "index_activities_on_recipient_id_and_recipient_type", using: :btree
   add_index "activities", ["trackable_id", "trackable_type"], name: "index_activities_on_trackable_id_and_trackable_type", using: :btree
 
+  create_table "artwork_proofs", force: true do |t|
+    t.integer  "artwork_id"
+    t.integer  "proof_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.datetime "deleted_at"
+  end
+
+  create_table "artwork_request_artworks", force: true do |t|
+    t.integer  "artwork_request_id"
+    t.integer  "artwork_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.datetime "deleted_at"
+  end
+
+  create_table "artwork_request_ink_colors", force: true do |t|
+    t.integer  "artwork_request_id"
+    t.integer  "ink_color_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.datetime "deleted_at"
+  end
+
+  create_table "artwork_request_jobs", force: true do |t|
+    t.integer  "artwork_request_id"
+    t.integer  "job_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.datetime "deleted_at"
+  end
+
   create_table "artwork_requests", force: true do |t|
     t.text     "description"
     t.integer  "artist_id"
@@ -44,21 +76,6 @@ ActiveRecord::Schema.define(version: 20140729165326) do
     t.string   "priority"
   end
 
-  create_table "artwork_requests_artworks", id: false, force: true do |t|
-    t.integer "artwork_request_id"
-    t.integer "artwork_id"
-  end
-
-  create_table "artwork_requests_ink_colors", id: false, force: true do |t|
-    t.integer "artwork_request_id"
-    t.integer "ink_color_id"
-  end
-
-  create_table "artwork_requests_jobs", id: false, force: true do |t|
-    t.integer "artwork_request_id"
-    t.integer "job_id"
-  end
-
   create_table "artworks", force: true do |t|
     t.string   "name"
     t.string   "description"
@@ -66,11 +83,6 @@ ActiveRecord::Schema.define(version: 20140729165326) do
     t.datetime "deleted_at"
     t.datetime "created_at"
     t.datetime "updated_at"
-  end
-
-  create_table "artworks_proofs", id: false, force: true do |t|
-    t.integer "artwork_id"
-    t.integer "proof_id"
   end
 
   create_table "assets", force: true do |t|
@@ -121,6 +133,16 @@ ActiveRecord::Schema.define(version: 20140729165326) do
 
   add_index "coordinate_imprintables", ["coordinate_id", "imprintable_id"], name: "coordinate_imprintable_index", using: :btree
 
+  create_table "imprint_method_imprintables", force: true do |t|
+    t.integer  "imprint_method_id"
+    t.integer  "imprintable_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.datetime "deleted_at"
+  end
+
+  add_index "imprint_method_imprintables", ["imprintable_id", "imprint_method_id"], name: "imprint_method_imprintables_index", using: :btree
+
   create_table "imprint_methods", force: true do |t|
     t.string   "name"
     t.datetime "deleted_at"
@@ -130,13 +152,6 @@ ActiveRecord::Schema.define(version: 20140729165326) do
 
   add_index "imprint_methods", ["deleted_at"], name: "index_imprint_methods_on_deleted_at", using: :btree
 
-  create_table "imprint_methods_imprintables", id: false, force: true do |t|
-    t.integer "imprint_method_id"
-    t.integer "imprintable_id"
-  end
-
-  add_index "imprint_methods_imprintables", ["imprintable_id", "imprint_method_id"], name: "imprint_method_imprintables_index", using: :btree
-
   create_table "imprintable_categories", force: true do |t|
     t.string   "name"
     t.integer  "imprintable_id"
@@ -144,6 +159,16 @@ ActiveRecord::Schema.define(version: 20140729165326) do
     t.datetime "created_at"
     t.datetime "updated_at"
   end
+
+  create_table "imprintable_stores", force: true do |t|
+    t.integer  "imprintable_id"
+    t.integer  "store_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.datetime "deleted_at"
+  end
+
+  add_index "imprintable_stores", ["imprintable_id", "store_id"], name: "index_imprintable_stores_on_imprintable_id_and_store_id", using: :btree
 
   create_table "imprintable_variants", force: true do |t|
     t.integer  "imprintable_id"
@@ -188,13 +213,6 @@ ActiveRecord::Schema.define(version: 20140729165326) do
 
   add_index "imprintables", ["deleted_at"], name: "index_imprintables_on_deleted_at", using: :btree
   add_index "imprintables", ["main_supplier"], name: "index_imprintables_on_main_supplier", using: :btree
-
-  create_table "imprintables_stores", id: false, force: true do |t|
-    t.integer "imprintable_id"
-    t.integer "store_id"
-  end
-
-  add_index "imprintables_stores", ["imprintable_id", "store_id"], name: "index_imprintables_stores_on_imprintable_id_and_store_id", using: :btree
 
   create_table "imprints", force: true do |t|
     t.integer  "print_location_id"

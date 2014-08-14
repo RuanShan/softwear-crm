@@ -1,7 +1,7 @@
 require 'spec_helper'
 include ApplicationHelper
 
-describe ArtworkRequest, artwork_requests_spec: true do
+describe ArtworkRequest, artwork_request_spec: true do
 
   it { is_expected.to be_paranoid }
 
@@ -33,7 +33,7 @@ describe ArtworkRequest, artwork_requests_spec: true do
   context '#imprintable_variant_count' do
      before do
        jobs = [build_stubbed(:blank_job), build_stubbed(:blank_job), build_stubbed(:blank_job)]
-       allow(jobs[0]).to receive(:imprintable_variant_count).and_return(10)
+       allow(jobs.first).to receive(:imprintable_variant_count).and_return(10)
        allow(jobs[1]).to receive(:imprintable_variant_count).and_return(0)
        allow(jobs[2]).to receive(:imprintable_variant_count).and_return(20)
        allow(subject).to receive(:jobs).and_return(jobs)
@@ -47,7 +47,7 @@ describe ArtworkRequest, artwork_requests_spec: true do
   context '#imprintable_variant_count with job having no line items (bug #176)' do
       before do
         job = [build_stubbed(:blank_job)]
-        allow(job[0]).to receive(:imprintable_variant_count).and_return(0)
+        allow(job.first).to receive(:imprintable_variant_count).and_return(0)
         allow(subject).to receive(:jobs).and_return(job)
       end
 
@@ -59,7 +59,7 @@ describe ArtworkRequest, artwork_requests_spec: true do
   context '#imprintable_info' do
     before do
       jobs = [build_stubbed(:blank_job), build_stubbed(:blank_job), build_stubbed(:blank_job)]
-      allow(jobs[0]).to receive(:imprintable_info).and_return('Imprintable Info 2001, More Imprintable Info 1998')
+      allow(jobs.first).to receive(:imprintable_info).and_return('Imprintable Info 2001, More Imprintable Info 1998')
       allow(jobs[1]).to receive(:imprintable_info).and_return('Imprintable Info 2005')
       allow(jobs[2]).to receive(:imprintable_info).and_return('Imprintable Info 2009')
       allow(subject).to receive(:jobs).and_return(jobs)
@@ -74,7 +74,7 @@ describe ArtworkRequest, artwork_requests_spec: true do
     let!(:print_location) { create(:blank_print_location, name: 'Chest', max_width: 9.1, max_height: 2.6) }
     before do
       jobs = [build_stubbed(:blank_job), build_stubbed(:blank_job), build_stubbed(:blank_job), build_stubbed(:blank_job)]
-      allow(jobs[0]).to receive(:max_print_area).and_return([3.1, 2.6])
+      allow(jobs.first).to receive(:max_print_area).and_return([3.1, 2.6])
       allow(jobs[1]).to receive(:max_print_area).and_return([3.1, 5.5])
       allow(jobs[2]).to receive(:max_print_area).and_return([5.5, 2.6])
       allow(jobs[3]).to receive(:max_print_area).and_return([5.5, 5.5])
@@ -89,7 +89,7 @@ describe ArtworkRequest, artwork_requests_spec: true do
   context '#total_quantity' do
     before do
       jobs = [build_stubbed(:blank_job), build_stubbed(:blank_job), build_stubbed(:blank_job)]
-      allow(jobs[0]).to receive(:total_quantity).and_return(10)
+      allow(jobs.first).to receive(:total_quantity).and_return(10)
       allow(jobs[1]).to receive(:total_quantity).and_return(0)
       allow(jobs[2]).to receive(:total_quantity).and_return(20)
       allow(subject).to receive(:jobs).and_return(jobs)

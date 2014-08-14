@@ -7,8 +7,11 @@ describe 'colors/index.html.erb', color_spec: true do
     render
   end
 
-  it 'has a table of brands and paginates' do
-    expect(rendered).to have_selector("table#colors_list")
-    expect(rendered).to have_selector("div.pagination")
+  it 'has a table of brands' do
+    expect(rendered).to have_selector('table#colors_list')
+  end
+
+  it 'paginates' do
+    expect(rendered).to have_selector('div.pagination')
   end
 end

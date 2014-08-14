@@ -2,5 +2,6 @@ showContentModal({
   backdrop: "static",
   keyboard: false,
   title: 'Artwork - <%= @artwork.name %>',
-  body: $("<%= escape_javascript(render partial: 'show', locals: { artwork: @artwork }).html_safe %>")
+  body: $("<%= j(render partial: 'show',
+                        locals: { artwork: @artwork }).html_safe %>")
 });

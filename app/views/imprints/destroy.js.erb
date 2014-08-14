@@ -1,0 +1,4 @@
+$imprintContainer = $(".imprint-entry[data-id='<%= @imprint.id %>']");
+
+$imprintContainer.fadeOut(thenRemove($imprintContainer));
+<%= update_order_timeline(@imprint.job.order) %>

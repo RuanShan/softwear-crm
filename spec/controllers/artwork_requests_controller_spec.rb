@@ -1,20 +1,21 @@
 require 'spec_helper'
 include ApplicationHelper
 
-describe ArtworkRequestsController, js: true, artwork_requests_spec: true do
+describe ArtworkRequestsController, js: true, artwork_request_spec: true do
   let!(:order){ create(:order_with_job) }
-  let!(:imprint_method) { create(:valid_imprint_method_with_color_and_location) }
-  let!(:artwork_request) { attributes_for(:valid_artwork_request)
-                            .merge(artist_id: create(:user).id,
-                            imprint_method_id: imprint_method.id,
-                            salesperson_id: create(:alternate_user).id,
-                            print_location_id: imprint_method.print_locations.first.id,
-                            job_ids: order.job_ids,
-                            ink_color_ids: imprint_method.ink_color_ids) }
   let!(:valid_user) { create :alternate_user }
   before(:each) { sign_in valid_user }
 
   describe 'POST create' do
+    let(:imprint_method) { create(:valid_imprint_method_with_color_and_location) }
+    let(:artwork_request) { attributes_for(:valid_artwork_request)
+      .merge(artist_id: create(:user).id,
+             imprint_method_id: imprint_method.id,
+             salesperson_id: create(:alternate_user).id,
+             print_location_id: imprint_method.print_locations.first.id,
+             job_ids: order.job_ids,
+             ink_color_ids: imprint_method.ink_color_ids) }
+
     it 'renders create.js.erb' do
       post :create, order_id: order.id, artwork_request: artwork_request, format: 'js'
       expect(response).to render_template('create')
@@ -27,8 +28,8 @@ describe ArtworkRequestsController, js: true, artwork_requests_spec: true do
   end
 
   describe 'PUT update' do
-    let!(:artwork){ create(:valid_artwork) }
-    let!(:artwork_request){ create(:valid_artwork_request) }
+    let(:artwork){ create(:valid_artwork) }
+    let(:artwork_request){ create(:valid_artwork_request) }
 
     context 'params[:artwork_id] is nil' do
       it 'renders update.js.erb' do

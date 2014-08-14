@@ -1,70 +1,64 @@
 <%= render_error_modal_for order %>
-<!-- Form selector #myWizard -->
 <%= form_for order, builder: LancengFormBuilder, html: { id: 'easyWizard'} do |f| %>
-  <!-- First step -->
   <section class="step" data-step-title="Customer Information">
     <div class="row">
       <div class="col-sm-6">
         <div class="form-group">
-          <%= render partial: 'customer_detail_fields', locals: { f:f } %>
+          <%= render partial: 'customer_detail_fields', locals: { f: f } %>
         </div>
-      </div><!-- End div. col-sm-6 -->
+      </div>
       <div class="col-sm-6">
-        <!-- Wizard notes -->
         <div class="notes">
           <h4>Customer Information Instructions</h4>
+          <% #TODO inline CSS and lots of text %>
           <p style="text-align: justify">
               If the customers e-mail address exists in the system, <strong>be sure to still confirm their name and company</strong>
           </p>
+
           <p style="text-align: justify">
               When asking the customer for their information, be sure to inform them of the following:
           </p>
+
           <ol>
             <li><strong>Always ask for a phone number</strong>. Their phone number will only be used to contact them in the event of an emergency, and never for soliciting purposes.</li>
             <li>If they provide a twitter alias, we will tweet at them upon completion of their order</li>
           </ol>
-        </div><!-- End div .notes -->
-      </div><!-- End div .col-sm-6 -->
-    </div><!-- End div .row -->
+        </div>
+      </div>
+    </div>
   </section>
-  <!-- End first step -->
 
-
-  <!-- Second step -->
   <section class="step" data-step-title="Order Details">
     <div class="row">
       <div class="col-sm-6">
-        <%= render partial: 'order_detail_fields', locals: { f:f, current_user:current_user} %>
-      </div><!-- End div .col-sm-6 -->
+        <%= render partial: 'order_detail_fields',
+                   locals: { current_user: current_user, f: f } %>
+      </div>
+
       <div class="col-sm-6">
-        <!-- Wizard notes -->
         <div class="notes">
           <h4>Order Information Instructions</h4>
-        </div><!-- End div .notes -->
-      </div><!-- End div .col-sm-6 -->
-    </div><!-- End div .row -->
+        </div>
+      </div>
+    </div>
   </section>
-  <!-- End second step -->
 
-
-  <!-- Third step -->
   <section class="step" data-step-title="Delivery Information">
     <div class="row">
       <div class="col-sm-6">
         <div class="form-group">
           <%= f.label :delivery_method %>
           <%= f.error_for :delivery_method %>
-          <%= f.select :delivery_method, Order::VALID_DELIVERY_METHODS, include_blank: true %>
+          <%= f.select :delivery_method, Order::VALID_DELIVERY_METHODS,
+                       include_blank: true %>
         </div>
+      </div>
 
-      </div><!-- End div .col-sm-6 -->
       <div class="col-sm-6">
-        <!-- Wizard notes -->
         <div class="notes">
           <h4>Shipping Information Instructions</h4>
-        </div><!-- End div .notes -->
-      </div><!-- End div .col-sm-6 -->
-    </div><!-- End div .row -->
+        </div>
+      </div>
+    </div>
   </section>
-  <!-- End third step -->
 <% end %>

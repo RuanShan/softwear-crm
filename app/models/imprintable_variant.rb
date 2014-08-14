@@ -7,11 +7,12 @@ class ImprintableVariant < ActiveRecord::Base
   belongs_to :imprintable
   belongs_to :size
 
-  validates :imprintable, presence: true
-  validates :size, presence: true
   validates :color, presence: true
   validates :color_id, uniqueness: { scope: [:size, :imprintable] }
+  validates :imprintable, presence: true
+  validates :size, presence: true
 
+  #TODO this scope isn't tested in model spec
   scope :size_variants_for, ->(imprintable, color) do
     where(
       imprintable_id: param_record_id(imprintable),

@@ -3,16 +3,19 @@
   <%= form_for imprintable, builder: LancengFormBuilder do |f| %>
     <div class="box-info full">
       <div class="col-sm-6 clearfix">
-        <%= render partial: 'basic_information_form', locals: { object: imprintable, f: f } %>
+        <%= render partial: 'basic_information_form',
+                   locals: { object: imprintable, f: f } %>
       </div>
 
       <div class="col-sm-6 clearfix">
-        <%= render partial: 'imprint_information_form', locals: { object: imprintable, f: f } %>
+        <%= render partial: 'imprint_information_form',
+                   locals: { object: imprintable, f: f } %>
       </div>
     </div>
 
     <div class="box-info full">
-      <%= render partial: 'supplier_information_form', locals: { object: imprintable, f: f } %>
+      <%= render partial: 'supplier_information_form',
+                 locals: { object: imprintable, f: f } %>
     </div>
 
     <div class="box-info full">
@@ -39,7 +42,9 @@
 
     <div class="form-group clearfix">
       <div class="col-sm-offset-2 col-sm-8">
-        <button type="submit" id="submit_button" class="btn btn-info"><%= create_or_edit_text(imprintable) %> Imprintable</button>
+        <button type="submit" id="submit_button" class="btn btn-info">
+          <%= create_or_edit_text(imprintable) %> Imprintable
+        </button>
       </div>
     </div>
   <% end %>

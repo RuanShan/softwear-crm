@@ -1,0 +1,8 @@
+var $imprint = $("<%= j(render partial: 'imprints/imprint',
+                               locals: { job: @job }).html_safe %>");
+
+$("#job-<%= @job.id %>").find(".imprints-container").append($imprint);
+
+$imprint.find("select").addClass("editing-imprint");
+$imprint.find(".js-delete-imprint-button").click(deleteImprint);
+registerImprintEvents($imprint);

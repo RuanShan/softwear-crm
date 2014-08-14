@@ -1,4 +1,6 @@
 class ImprintablesController < InheritedResources::Base
+  before_action :set_current_action
+
   def index
     super do
       # TODO: ternary with parenthesis
@@ -52,7 +54,6 @@ class ImprintablesController < InheritedResources::Base
   end
 
   def update_imprintable_variants
-
     if params.fetch(:update).is_a? Hash
       variants_to_add = params[:update][:variants_to_add]
       variants_to_remove = params[:update][:variants_to_remove]
@@ -76,6 +77,12 @@ class ImprintablesController < InheritedResources::Base
     end
 
     render json: {}
+  end
+
+  protected
+
+  def set_current_action
+    @current_action = 'imprintables'
   end
 
   private

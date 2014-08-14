@@ -1,5 +1,5 @@
 $('#contentBody').fadeOut();
 
-$('#contentBody').html("<%= escape_javascript(render partial: 'quotes/quote_select').html_safe %>");
+$('#contentBody').html("<%= j(render partial: 'quotes/quote_select').html_safe %>");
 
 $('#contentBody').fadeIn();

@@ -19,5 +19,6 @@
 <div class='form-group'>
   <%= f.label :store_id, 'Store' %>
   <%= f.error_for :store_id %>
-  <%= f.select :store_id, Store.order(:name).map{ |s| [s.name, s.id] }, { prompt: 'Please select a store' } %>
+  <%= f.select :store_id, Store.order(:name).map{ |s| [s.name, s.id] },
+               { prompt: 'Please select a store' } %>
 </div>

@@ -1,7 +1,7 @@
 require 'spec_helper'
 include ApplicationHelper
 
-describe Artwork, artworks_spec: true do
+describe Artwork, artwork_spec: true do
 
   it { is_expected.to be_paranoid }
 

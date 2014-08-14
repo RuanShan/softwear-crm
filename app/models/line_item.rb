@@ -9,23 +9,22 @@ class LineItem < ActiveRecord::Base
     boolean(:is_imprintable) { imprintable? }
   end
 
+  tracked skip_defaults: true
+
   scope :non_imprintable, -> { where imprintable_variant_id: nil }
   scope :imprintable, -> { where.not imprintable_variant_id: nil }
 
-  tracked skip_defaults: true
 
   belongs_to :imprintable_variant
   belongs_to :line_itemable, polymorphic: true
-  has_one :order, through: :job
+  # has_one :order, through: :job
 
   #TODO: ensure unless validations work after switching 
   #      from validates_presence_of to sexiness
   validates :description, presence: true, unless: :imprintable?
   validates :imprintable_variant_id, 
             uniqueness: {
-              scope: [
-                :line_itemable_id, :line_itemable_type
-              ]
+              scope: [:line_itemable_id, :line_itemable_type]
             }, if: :imprintable?
   validate :imprintable_variant_exists, if: :imprintable?
   validates :name, presence: true, unless: :imprintable?
@@ -54,6 +53,12 @@ class LineItem < ActiveRecord::Base
     end
   end
 
+  %i(description name).each do |method|
+    define_method(method) do
+      imprintable? ? imprintable_variant.send(method) : self[method]
+    end
+  end
+
   def <=>(other)
     return 0 if other == self
 
@@ -69,10 +74,8 @@ class LineItem < ActiveRecord::Base
     end
   end
 
-  %i(name description).each do |method|
-    define_method(method) do
-      imprintable? ? imprintable_variant.send(method) : self[method]
-    end
+  def order
+    line_itemable.try(:order)
   end
 
   def imprintable

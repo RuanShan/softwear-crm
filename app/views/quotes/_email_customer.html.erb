@@ -3,14 +3,17 @@
   <div class="form-group">
     <%= label_tag :email_subject, 'Subject' %>
 
-    <%= text_field_tag :email_subject, "Your quote ##{@quote.id} from the Ann Arbor T-shirt Company", { class: 'form-control' } %>
+    <%= text_field_tag :email_subject,
+                       "Your quote ##{@quote.id} from the Ann Arbor T-shirt Company",
+                       { class: 'form-control' } %>
   </div>
 
   <br>
 
   <div class="form-group">
     <%= label_tag :email_body, 'Body of Email' %>
-    <%= text_area_tag :email_body, render('email_line_items'), { class: 'form-control summernote', id: 'email-textarea' } %>
+    <%= text_area_tag :email_body, render('email_line_items'),
+                      { class: 'form-control summernote', id: 'email-textarea' } %>
   </div>
 
   <%= submit_tag 'Submit', id: 'email-form-submit-button' %>

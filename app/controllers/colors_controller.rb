@@ -1,4 +1,6 @@
 class ColorsController < InheritedResources::Base
+  before_action :set_current_action
+
   def index
     super do
       @colors = Color.all.page(params[:page])
@@ -16,6 +18,12 @@ class ColorsController < InheritedResources::Base
     super do |format|
       format.html { redirect_to edit_color_path params[:id] }
     end
+  end
+
+  protected
+
+  def set_current_action
+    @current_action = 'colors'
   end
 
   private

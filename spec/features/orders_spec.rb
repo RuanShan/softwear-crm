@@ -37,7 +37,7 @@ feature 'Order management', order_spec: true,  js: true do
 
     fill_in 'Name', with: 'Whatever this should be'
     dateArray = DateTime.current.to_s.split(/\W|T/)
-    fill_in 'In Hand By Date', with: "#{ (dateArray[1].to_i + 1).to_s }/#{ dateArray[2] }/#{ dateArray[0] } 4:00 PM"
+    fill_in 'In Hand By Date', with: "#{ (dateArray[1].to_i + 1).to_s }/#{ dateArray[2] }/#{ dateArray.first } 4:00 PM"
     select User.find(order.salesperson_id).full_name, from: 'Salesperson'
     select order.store.name, from: 'Store'
     select 'Half down on purchase', from: 'Payment terms'

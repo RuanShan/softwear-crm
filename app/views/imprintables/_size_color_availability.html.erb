@@ -3,12 +3,12 @@
     <div class="table-responsive">
       <table class="table table-hover">
         <thead>
-        <tr>
-          <th></th>
-          <% size_variants.each do |s| %>
-            <th><%= s.size.display_value %></th>
-          <% end %>
-        </tr>
+          <tr>
+            <th></th>
+            <% size_variants.each do |s| %>
+              <th><%= s.size.display_value %></th>
+            <% end %>
+          </tr>
         </thead>
         <tbody>
         <% color_variants.sort!{ |x,y| x.name <=> y.name }.each do |c| %>

@@ -1,30 +1,39 @@
 <%= search_form_for Imprintable do |s| %>
   <div class="row">
     <div class="col-sm-3">
-      <%= s.select :all_categories, ImprintableCategory::VALID_CATEGORIES, nil: 'Category...' %>
+      <%= s.select :all_categories, ImprintableCategory::VALID_CATEGORIES,
+                   nil: 'Category...' %>
     </div>
+
     <div class="col-sm-3">
-      <%= s.select :sizing_category, Imprintable::SIZING_CATEGORIES, id: 'filter_sizing_category' %>
+      <%= s.select :sizing_category, Imprintable::SIZING_CATEGORIES,
+                   id: 'filter_sizing_category' %>
     </div>
+
     <div class="col-sm-2">
       <%= s.yes_or_no_select :standard_offering %>
     </div>
+
     <div class="col-sm-3">
       <%= s.fulltext id: 'imprintables_search' %>
     </div>
+
     <div class="col-sm-1">
       <%= s.submit %>
     </div>
+
     <div class="col-sm-1">
       <%= s.save %>
     </div>
   </div>
 <% end %>
+
 <div class="row margin-top-10">
   <div class="col-sm-3">
     <label>Saved Searches:</label>
     <%= select_search_queries Imprintable, 'data-go' => 'query-go-spot' %>
   </div>
+
   <div id="query-go-spot" class="col-sm-2 margin-top-20">
 
   </div>

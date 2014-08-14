@@ -1,7 +1,10 @@
 <div class='box-info'>
-  <%= render partial: 'shared/modal_errors', locals: {object: artwork} %>
+  <%= render partial: 'shared/modal_errors', locals: { object: artwork } %>
 
-  <%= form_for artwork, url: artwork_path(artwork), builder: LancengFormBuilder, multipart: true, remote: true do |f| %>
+  <%= form_for artwork, url: artwork_path(artwork),
+                        builder: LancengFormBuilder,
+                        multipart: true,
+                        remote: true do |f| %>
     <%= render partial: 'form', locals: { artwork: artwork, f: f } %>
   <% end %>
 </div>

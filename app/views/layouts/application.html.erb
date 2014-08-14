@@ -38,7 +38,7 @@
 
 <div class="container">
 
-    <%= render partial: 'shared/sidebar' %>
+    <%= render partial: 'shared/sidebar', locals: { current_url: @current_url, current_action: @current_action } %>
 
     <div class="right content-page">
 

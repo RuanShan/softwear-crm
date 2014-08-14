@@ -6,7 +6,7 @@
 
   errorHandler = null
 
-  console.log 'SETTING THAT SHIT'
+  #console.log 'SETTING THAT SHIT'
   $('input:radio[name="is_imprintable"]').change ->
     $radio = $(this)
     $radio.attr 'disabled', 'disabled'
@@ -29,7 +29,7 @@
       $in.fadeIn 400
 
   $('#line-item-submit').click ->
-    console.log 'I am submitting it.'
+    #console.log 'I am submitting it.'
     $('#lineItemModal').data('current-form-div').find('form').submit();
     return
 

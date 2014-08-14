@@ -14,12 +14,13 @@ class Job < ActiveRecord::Base
   before_destroy :check_for_line_items
 
   belongs_to :order
+  has_many :artwork_request_jobs
+  has_many :artwork_requests, through: :artwork_request_jobs
   has_many :colors, -> {readonly}, through: :imprintable_variants
   has_many :imprints
   has_many :imprintables, -> {readonly}, through: :imprintable_variants
   has_many :imprintable_variants, -> {readonly}, through: :line_items
   has_many :line_items, as: :line_itemable
-  has_and_belongs_to_many :artwork_requests
 
   validate :assure_name_and_description, on: :create
   validates :name, uniqueness: { scope: :order_id }
@@ -31,8 +32,8 @@ class Job < ActiveRecord::Base
     unless sorted_line_items.empty?
       sorted_line_items.each do |_imprintable_name, by_color|
         by_color.each do |color_name, line_items|
-          colors << color_name
-          style_names << line_items.first.style_name
+          colors            << color_name
+          style_names       << line_items.first.style_name
           style_catalog_nos << line_items.first.style_catalog_no
         end
       end
@@ -50,8 +51,7 @@ class Job < ActiveRecord::Base
   end
 
   def max_print_area(print_location)
-    ## TODO
-    # 
+    #
     # Okay, here are 3 possibilities for implementation. First, my (Nigel's)
     # initial refactoring (which will remain uncommented for now):
     # ----------------------------------
@@ -93,7 +93,6 @@ class Job < ActiveRecord::Base
     # like this, I feel it reads much better with #(), or even #[].
   end
 
-  #TODO: Maybe still look at this
   def sort_line_items
     result = {}
     LineItem.includes(
@@ -110,7 +109,7 @@ class Job < ActiveRecord::Base
         result[imprintable_name][color_name] << line_item
       end
 
-    result.each { |_k, v| v.each { |_k, v| v.sort! } }
+    result.values.each { |by_color| by_color.values.each(&:sort!) }
     result
   end
 
@@ -124,14 +123,6 @@ class Job < ActiveRecord::Base
   end
 
   private
-
-  def max_print(print_location, width_or_height)
-    (
-      imprintables.map(&"max_imprint_#{width_or_height}".to_sym) +
-      [print_location.send("max_#{width_or_height}")]
-    )
-      .map(&:to_f).min
-  end
 
   def assure_name_and_description
     # TODO: remove self?
@@ -153,11 +144,19 @@ class Job < ActiveRecord::Base
 
   def check_for_line_items
     if LineItem.where(line_itemable_id: id, line_itemable_type: 'Job').exists?
-      self.errors[:deletion_status] = 
-        'All line items must be manually removed before a job can be deleted'
+      self.errors[:deletion_status] =
+          'All line items must be manually removed before a job can be deleted'
       false
     else
       true
     end
+  end
+
+  def max_print(print_location, width_or_height)
+    (
+      imprintables.map(&"max_imprint_#{width_or_height}".to_sym) +
+      [print_location.send("max_#{width_or_height}")]
+    )
+      .map(&:to_f).min
   end
 end

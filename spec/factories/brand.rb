@@ -1,14 +1,9 @@
 FactoryGirl.define do
-  factory :valid_brand, class: Brand do
-    sequence(:name) { |n| "brand_#{n}" }
-    sequence(:sku) { |n|
-      n = n % 100
-      if n < 10
-        x = "0#{n}"
-        x
-      else
-        n
-      end
-    }
+  factory :blank_brand, class: Brand do
+
+    factory :valid_brand do
+      sequence(:name) { |n| "brand_#{n}" }
+      sequence(:sku) { |n| (n %= 100) < 10 ? "0#{n}" : n }
+    end
   end
 end

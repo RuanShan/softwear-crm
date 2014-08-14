@@ -22,10 +22,9 @@ feature 'Line Items management', line_item_spec: true, js: true do
 
   given(:non_imprintable) { create(:non_imprintable_line_item, line_itemable_id: job.id, line_itemable_type: 'Job') }
 
-  scenario 'user can add a new non-imprintable line item' do
+  scenario 'user can add a new non-imprintable line item', retry: 3 do
     visit edit_order_path(1, anchor: 'jobs')
     wait_for_ajax
-
     first('.add-line-item').click
     wait_for_ajax
     expect(page).to have_content 'Add'

@@ -1,4 +1,6 @@
 class ShippingMethodsController < InheritedResources::Base
+  before_action :set_current_action
+
   def show
     super do |format|
       format.html { redirect_to edit_shipping_method_path params[:id] }
@@ -10,6 +12,12 @@ class ShippingMethodsController < InheritedResources::Base
       success.html { redirect_to shipping_methods_path }
       failure.html { render action: :edit }
     end
+  end
+
+  protected
+
+  def set_current_action
+    @current_action = 'shipping_methods'
   end
 
   private

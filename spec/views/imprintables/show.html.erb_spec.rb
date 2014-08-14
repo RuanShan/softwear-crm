@@ -1,18 +1,18 @@
 require 'spec_helper'
 
 describe 'imprintables/show.html.erb', imprintable_spec: true do
-  let!(:imprintable) { create(:valid_imprintable) }
-  login_user
+  let!(:imprintable) { build_stubbed(:valid_imprintable) }
 
   before(:each) do
+    assign(:imprintable, imprintable)
+    allow(imprintable).to receive_message_chain(:brand, :name).and_return('brand name')
     assign(:variants_hash, { size_variants: [], color_variants: [], variants_array: [] })
+    render file: 'imprintables/show', id: imprintable.to_param
   end
 
   context 'The imprintable is not part of the standard product set' do
-    it 'has a tabbed display with basic info, size/color availability, imprint details, and supplier information listed' do
-      assign(:imprintable, imprintable)
-
-      render file: 'imprintables/show', id: imprintable.to_param
+    it 'has a tabbed display with basic info, size/color availability,
+        imprint details, and supplier information listed' do
       expect(rendered).to have_selector("#basic_info_#{imprintable.id}")
       expect(rendered).to have_selector("#size_color_availability_#{imprintable.id}")
       expect(rendered).to have_selector("#imprint_details_#{imprintable.id}")
@@ -22,11 +22,13 @@ describe 'imprintables/show.html.erb', imprintable_spec: true do
   end
 
   context 'The imprintable is part of the standard product set' do
-    let!(:imprintable) { create(:valid_imprintable, standard_offering: true) }
+    let!(:imprintable) { build_stubbed(:valid_imprintable, standard_offering: true) }
+
+    before(:each) do
+      render file: 'imprintables/show', id: imprintable.to_param
+    end
 
     it 'displays the standard product notice' do
-      assign(:imprintable, imprintable)
-      render file: 'imprintables/show', id: imprintable.to_param, locals: { variants_hash: { size_variants: [], color_variants: [], variants_array: [] } }
       expect(rendered).to have_content 'This Imprintable is part of the Standard Product Set'
     end
   end

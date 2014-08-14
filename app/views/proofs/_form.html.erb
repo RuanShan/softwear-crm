@@ -25,7 +25,13 @@
       <%= f.label :status, class: 'col-sm-2 control-label' %>
 
       <div class="col-sm-10">
-        <% selected = proof && !proof.status.nil? ? { selected: proof.status } : { selected: Proof::VALID_PROOF_STATUSES.first } %>
+        <% selected =
+                   if proof && !proof.status.nil?
+                      { selected: proof.status }
+                    else
+                      { selected: Proof::VALID_PROOF_STATUSES.first }
+                    end %>
+
 
         <%= f.select :status, Proof::VALID_PROOF_STATUSES, selected %>
 
@@ -48,7 +54,12 @@
             <%= image_tag artwork.preview.file.url(:medium) %>
           </div>
           <div class="col-sm-4">
-            <% checked = proof && proof.artwork_ids.include?(artwork.id) ? { checked: true } : false %>
+            <% checked =
+                       if proof && proof.artwork_ids.include?(artwork.id)
+                         { checked: true }
+                       else
+                         false
+                       end %>
 
             <%= check_box_tag 'proof[artwork_ids][]', artwork.id, checked %>
           </div>

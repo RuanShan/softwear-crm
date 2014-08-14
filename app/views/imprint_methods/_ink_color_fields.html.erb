@@ -1,6 +1,7 @@
 <div class="form-group js-removeable">
   <div class="input-group">
-    <%= f.text_field :name, class: 'form-control', placeholder: 'The ink color name (wavelengths from about 400 to 700nm, for example)' %>
+    <%= f.text_field :name, class: 'form-control',
+                     placeholder: 'The ink color name (wavelengths from about 400 to 700nm, for example)' %>
 
     <% if f.object.errors.include?(:name) %>
       <% f.object.errors.full_messages_for(:name).each do |message| %>

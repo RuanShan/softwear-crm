@@ -16,7 +16,9 @@ class Artwork < ActiveRecord::Base
   belongs_to :artist, class_name: User
   has_one :artwork, as: :assetable, class_name: Asset, dependent: :destroy
   has_one :preview, as: :assetable, class_name: Asset, dependent: :destroy
-  has_and_belongs_to_many :artwork_requests
+  has_many :artwork_requests, through: :artwork_request_artworks
+  has_many :artwork_request_artworks
+
 
   accepts_nested_attributes_for :artwork, allow_destroy: true
   accepts_nested_attributes_for :preview, allow_destroy: true

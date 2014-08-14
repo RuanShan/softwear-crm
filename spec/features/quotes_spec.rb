@@ -99,14 +99,14 @@ feature 'Quotes management', quote_spec: true, js: true do
     expect(current_path).to eq(quote_path(quote.id + 1))
   end
 
-  scenario 'A user can add a single price from the pricing table to an existing quote', retry: 2, wip: true  do
+  scenario 'A user can add a single price from the pricing table to an existing quote', retry: 2 do
     visit imprintables_path
     find("#pricing_button_#{imprintable.id}").click
     find(:css, "input#decoration_price").set(3.95)
     click_button 'Fetch Prices!'
     click_link 'Add to Quote'
     page.select quote.name, from: 'quote_id'
-    sleep 0.5
+    sleep 1
     click_button 'Submit'
     sleep 1
     expect(current_path).to eq(edit_quote_path quote.id)

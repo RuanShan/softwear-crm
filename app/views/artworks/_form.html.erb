@@ -67,7 +67,11 @@
 
   <div class="form-group">
     <%= f.fields_for :artwork, multipart: true do |ff| %>
-      <%= render partial: 'asset_fields', locals: { f: ff, file_constraints: 'Must be .jpg, .png, or .gif', text: 'Describe the artwork file', title: 'Artwork' } %>
+      <%= render partial: 'asset_fields',
+                 locals: { f: ff,
+                           file_constraints: 'Must be .jpg, .png, or .gif',
+                           text: 'Describe the artwork file',
+                           title: 'Artwork' } %>
     <% end %>
 
     <% if artwork.errors.include?(:artwork) %>
@@ -79,7 +83,11 @@
 
   <div class="form-group">
     <%= f.fields_for :preview, multipart: true do |ff| %>
-      <%= render partial: 'asset_fields', locals: { f: ff, file_constraints: 'Must be .ai or .psd', text: 'Describe the preview file', title: 'Preview' } %>
+      <%= render partial: 'asset_fields',
+                 locals: { f: ff,
+                           file_constraints: 'Must be .ai or .psd',
+                           text: 'Describe the preview file',
+                           title: 'Preview' } %>
     <% end %>
 
     <% if artwork.errors.include?(:preview) %>

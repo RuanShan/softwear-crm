@@ -1,22 +1,28 @@
 require 'spec_helper'
 
 describe Color, color_spec: true do
+  it_behaves_like 'retailable'
+
+  it { is_expected.to be_paranoid }
+
   describe 'Relationships' do
-    it { should have_many(:imprintable_variants).dependent(:destroy) }
+    it { is_expected.to have_many(:imprintable_variants).dependent(:destroy) }
   end
 
   describe 'Validations' do
-    it { should validate_presence_of(:name) }
-    it { should validate_uniqueness_of(:name) }
+    it { is_expected.to validate_presence_of(:name) }
+    it { is_expected.to validate_uniqueness_of(:name) }
 
-    context "if retail" do
-      before { allow(subject).to receive_message_chain(:is_retail?).and_return(true)}
-      it { should ensure_length_of(:sku).is_equal_to(3) }
+    context 'if retail' do
+      before { allow(subject).to receive_message_chain(:is_retail?).and_return(true) }
+
+      it { is_expected.to ensure_length_of(:sku).is_equal_to(3) }
     end
 
-    context "if not retail" do
-      before { allow(subject).to receive_message_chain(:is_retail?).and_return(false)}
-      it { should_not ensure_length_of(:sku).is_equal_to(3) }
+    context 'if not retail' do
+      before { allow(subject).to receive_message_chain(:is_retail?).and_return(false) }
+
+      it { is_expected.to_not ensure_length_of(:sku).is_equal_to(3) }
     end
   end
 
@@ -25,13 +31,13 @@ describe Color, color_spec: true do
       let!(:color_one) { create(:valid_color, name: 'Red') }
       let!(:color_two) { create(:valid_color, name: 'Blue') }
 
-      it 'should order the colors by name' do
+      it 'orders so the first color is color_two' do
         expect(Color.first).to eq(color_two)
+      end
+
+      it 'orders so the last color is color_one' do
         expect(Color.last).to eq(color_one)
       end
     end
   end
-
-  it_behaves_like 'retailable'
-
 end

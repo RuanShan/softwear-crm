@@ -1,9 +1,12 @@
 <div class="box-info">
   <h2><strong>Supplier</strong> Information</h2>
+
   <div>
     <div class="form-group clearfix">
       <%= f.label :main_supplier, class: 'col-sm-4 control-label' %>
+
       <%= f.error_for :main_supplier %>
+
       <div class="col-sm-8">
         <%= f.text_field :main_supplier, class: 'form-control' %>
         <p class="help-block">The primary supplier of purchase</p>
@@ -12,7 +15,9 @@
 
     <div class="form-group clearfix">
       <%= f.label :supplier_link, class: 'col-sm-4 control-label' %>
+
       <%= f.error_for :supplier_link %>
+
       <div class="col-sm-8">
         <%= f.text_field :supplier_link, class: 'form-control' %>
         <p class="help-block">URL to imprintable on suppliers website</p>
@@ -24,72 +29,66 @@
       <div class="col-sm-8">
         <table>
           <thead>
-          <tr>
-            <th>Base</th>
-            <th>2XL</th>
-            <th>3XL</th>
-            <th>4XL</th>
-            <th>5XL</th>
-            <th>6XL</th>
-          </tr>
+            <tr>
+              <th>Base</th>
+              <th>2XL</th>
+              <th>3XL</th>
+              <th>4XL</th>
+              <th>5XL</th>
+              <th>6XL</th>
+            </tr>
           </thead>
 
           <tbody>
-          <tr>
-            <td>
-              <div class="input-group">
-                <span class="input-group-addon">$</span>
-                <%= f.text_field :base_price,
-                                 class: 'form-control',
-                                 value: (number_with_precision(f.object.base_price, precision: 2) || 0) %>
-              </div>
-            </td>
+            <tr>
+              <td>
+                <div class="input-group">
+                  <span class="input-group-addon">$</span>
+                  <%= f.text_field :base_price, class: 'form-control',
+                                   value: (number_with_precision(f.object.base_price, precision: 2) || 0) %>
+                </div>
+              </td>
 
-            <td>
-              <div class="input-group">
-                <span class="input-group-addon">$</span>
-                <%= f.text_field :xxl_price,
-                                 class: 'form-control',
-                                 value: (number_with_precision(f.object.xxl_price, :precision => 2) || 0) %>
-              </div>
-            </td>
+              <td>
+                <div class="input-group">
+                  <span class="input-group-addon">$</span>
+                  <%= f.text_field :xxl_price, class: 'form-control',
+                                   value: (number_with_precision(f.object.xxl_price, :precision => 2) || 0) %>
+                </div>
+              </td>
 
-            <td>
-              <div class="input-group">
-                <span class="input-group-addon">$</span>
-                <%= f.text_field :xxxl_price,
-                                 class: 'form-control',
-                                 value: (number_with_precision(f.object.xxxl_price, :precision => 2) || 0) %>
-              </div>
-            </td>
+              <td>
+                <div class="input-group">
+                  <span class="input-group-addon">$</span>
+                  <%= f.text_field :xxxl_price, class: 'form-control',
+                                   value: (number_with_precision(f.object.xxxl_price, :precision => 2) || 0) %>
+                </div>
+              </td>
 
-            <td>
-              <div class="input-group">
-                <span class="input-group-addon">$</span>
-                <%= f.text_field :xxxxl_price,
-                                 class: 'form-control',
-                                 value: (number_with_precision(f.object.xxxxl_price, :precision => 2) || 0) %>
-              </div>
-            </td>
+              <td>
+                <div class="input-group">
+                  <span class="input-group-addon">$</span>
+                  <%= f.text_field :xxxxl_price, class: 'form-control',
+                                   value: (number_with_precision(f.object.xxxxl_price, :precision => 2) || 0) %>
+                </div>
+              </td>
 
-            <td>
-              <div class="input-group">
-                <span class="input-group-addon">$</span>
-                <%= f.text_field :xxxxxl_price,
-                                 class: 'form-control',
-                                 value: (number_with_precision(f.object.xxxxxl_price, :precision => 2) || 0) %>
-              </div>
-            </td>
+              <td>
+                <div class="input-group">
+                  <span class="input-group-addon">$</span>
+                  <%= f.text_field :xxxxxl_price, class: 'form-control',
+                                   value: (number_with_precision(f.object.xxxxxl_price, precision: 2) || 0) %>
+                </div>
+              </td>
 
-            <td>
-              <div class="input-group">
-                <span class="input-group-addon">$</span>
-                <%= f.text_field :xxxxxxl_price,
-                                 class: 'form-control',
-                                 value: (number_with_precision(f.object.xxxxxxl_price, :precision => 2) || 0) %>
-              </div>
-            </td>
-          </tr>
+              <td>
+                <div class="input-group">
+                  <span class="input-group-addon">$</span>
+                  <%= f.text_field :xxxxxxl_price, class: 'form-control',
+                                   value: (number_with_precision(f.object.xxxxxxl_price, precision: 2) || 0) %>
+                </div>
+              </td>
+            </tr>
           </tbody>
         </table>
       </div>

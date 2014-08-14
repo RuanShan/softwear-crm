@@ -15,8 +15,8 @@ feature 'Imprints Management', imprint_spec: true, js: true, imprint_features: t
         ['Front',   'Lower',  'Wherever']]) do |name|
     3.times do |n|
       let!("imprint_method#{n+1}") { create(:valid_imprint_method, 
-                                               name: name[0][n]) }
-      let!("print_location#{n+1}") { create(:print_location, name: name[1][n], 
+                                               name: name.first[n]) }
+      let!("print_location#{n+1}") { create(:valid_print_location, name: name[1][n],
                                                imprint_method_id: send("imprint_method#{n+1}").id) }
     end
   end
@@ -29,9 +29,9 @@ feature 'Imprints Management', imprint_spec: true, js: true, imprint_features: t
 
     first('.add-imprint').click
     sleep 1
-    select imprint_method2.name, from: 'Imprint method'
+    find('.js-imprint-method-select').select imprint_method2.name
     sleep 1.5
-    select print_location2.name, from: 'Print location'
+    find('.js-print-location-select').select print_location2.name
     expect(all('.editing-imprint').count).to be > 1
     find('.update-imprints').click
     expect(Imprint.where(job_id: job.id, print_location_id: print_location2.id)).to exist
@@ -42,9 +42,9 @@ feature 'Imprints Management', imprint_spec: true, js: true, imprint_features: t
     visit edit_order_path(order.id, anchor: 'jobs')
     wait_for_ajax
 
-    select imprint_method2.name, from: 'Imprint method'
+    find('.js-imprint-method-select').select imprint_method2.name
     sleep 1.5
-    select print_location2.name, from: 'Print location'
+    find('.js-print-location-select').select print_location2.name
 
     expect(all('.editing-imprint').count).to be > 1
 
@@ -69,14 +69,14 @@ feature 'Imprints Management', imprint_spec: true, js: true, imprint_features: t
     sleep 1.5
 
     within('.imprint-entry[data-id="-1"]') do
-      select imprint_method2.name, from: 'Imprint method'
-      select print_location2.name, from: 'Print location'
+      find('.js-imprint-method-select').select imprint_method2.name
+      find('.js-print-location-select').select print_location2.name
     end
     sleep 1.5
 
     within(".imprint-entry[data-id='#{job.imprints.first.id}']") do
-      select imprint_method3.name, from: 'Imprint method'
-      select print_location3.name, from: 'Print location'
+      find('.js-imprint-method-select').select imprint_method3.name
+      find('.js-print-location-select').select print_location3.name
     end
     sleep 1.5
 
@@ -107,7 +107,7 @@ feature 'Imprints Management', imprint_spec: true, js: true, imprint_features: t
     visit edit_order_path(order.id, anchor: 'jobs')
     wait_for_ajax
 
-    find('span[onclick*="deleteImprint"]').click
+    find('.js-delete-imprint-button').click
     sleep 1.5
     expect(page).to_not have_content 'Print location'
 

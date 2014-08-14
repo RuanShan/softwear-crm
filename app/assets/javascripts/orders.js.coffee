@@ -1,22 +1,38 @@
 # Calling this when asynchronously changing order related data would be nice.
-@updateOrderTimeline = ->
-  return if $('#order-page').length is 0
-  orderId = $('#order-page').data('order-id')
+ajaxOrderActivities = (orderId) ->
   ajax = $.ajax
     type: 'GET'
     url: Routes.order_timeline_path(orderId)
-    data: { after: $('#timeline .the-timeline ul').children().first().find('.the-date').data('date') }
+    data: {after: $('#timeline .the-timeline ul').children()
+                                                 .first()
+                                                 .find('.the-date')
+                                                 .data('date')}
     dataType: 'json'
 
   ajax.done (response) ->
     if response.result is 'success'
-      $('#timeline .the-timeline ul').prepend response.content
-      console.log 'updated timeline'
+      appendActivities response.content
     else
-      errorModal "Couldn't update the order timeline view. Refreshing should do it if you actually want to see the updated timeline.", force: false
+      errorModal "Couldn't update the order timeline view. Refreshing should do 
+                  it if you actually want to see the updated timeline.",
+                  force: false
 
   ajax.fail (jqXHR, textStatus) ->
-    errorModal "Internal server error. If this is the only error you see, it's probably no big deal.", force: false
+    errorModal "Internal server error. If this is the only error you see, 
+                it's probably no big deal.", force: false
+
+appendActivities = (content) ->
+  $('#timeline .the-timeline ul').prepend content
+  console.log 'updated timeline'
+
+@updateOrderTimeline = (activities) ->
+  return if $('#order-page').length is 0
+  orderId = $('#order-page').data('order-id')
+
+  if activities
+    appendActivities activities
+  else
+    ajaxOrderActivities orderId
 
 $(window).load ->
   # TODO is there commenting style?
@@ -36,7 +52,8 @@ $(window).load ->
     if window.location.hash.indexOf($(this).attr 'href') == -1
       window.location.hash = $(this).attr 'href'
 
-  #TODO instead of Nigel's 'hack' possibly create a show for Job that would present relevant info
+  # TODO instead of Nigel's 'hack' 
+  # possibly create a show for Job that would present relevant info
   if window.location.hash != ''
     dashIndex = window.location.hash.indexOf '-'
     target = window.location.hash
@@ -58,7 +75,8 @@ $(window).load ->
           $('.scroll-y').scrollTo $("#job-#{data[1]}").find('.job-title'),{
             duration: 1000,
             offsetTop: 100}, ->
-              # If data.length > 3, the url might look like: /orders/3/edit#jobs-4-line_item-10
+              # If data.length > 3,
+              # the url might look like: /orders/3/edit#jobs-4-line_item-10
               # In which case, we want to shine the line item with id 10.
               if data.length > 3 and not shined
                 if data[2] is 'line_item'
@@ -69,7 +87,8 @@ $(window).load ->
                       shine $lineItem, null, 2000; true
 
                   tryShineLineItem($ "#line-item-#{data[3]}") or 
-                    tryShineLineItem($("#edit-line-item-#{data[3]}").parentsUntil('.row').parent())
+                    tryShineLineItem($("#edit-line-item-#{data[3]}")
+                                     .parentsUntil('.row').parent())
                   shined = true
 
                 else if data[2] is 'imprint'

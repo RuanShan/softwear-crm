@@ -5,11 +5,13 @@
 
       <div class="artwork-request-list">
         <% order.artwork_requests.uniq.each do |artwork_request| %>
-          <%= render partial: 'artwork_requests/artwork_request', locals: { artwork_request: artwork_request, order: order } %>
+          <%= render partial: 'artwork_requests/artwork_request',
+                     locals: { artwork_request: artwork_request, order: order } %>
         <% end %>
       </div>
 
-      <%= link_to new_order_artwork_request_path(order), class: 'btn btn-info btn-lg btn-block', id: 'new_artwork_request', remote: true do %>
+      <%= link_to new_order_artwork_request_path(order),
+                  class: 'btn btn-info btn-lg btn-block', remote: true do %>
         <i class="fa fa-list-alt"> </i>Add Artwork Request
       <% end %>
     </div>

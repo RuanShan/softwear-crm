@@ -1,37 +1,36 @@
 require 'spec_helper'
 
 describe User, user_spec: true do
+
+  it { is_expected.to be_paranoid }
+
   describe 'Relationships' do
-    it { should belong_to :store }
+    it { is_expected.to belong_to(:store) }
+    #FIXME this doesn't work
+    # it { is_expected.to have_many(:orders) }
+    it { is_expected.to have_many(:search_queries).class_name('Search::Query') }
   end
 
-  context 'when validating' do
-    it { should validate_presence_of :first_name }
-    it { should validate_presence_of :last_name }
-    it { should validate_presence_of :email }
+  describe 'Validations' do
+    it { is_expected.to validate_presence_of :email }
+    it { is_expected.to validate_presence_of :first_name }
+    it { is_expected.to validate_presence_of :last_name }
 
-    it { should allow_value('test@annarbortees.com').for :email }
-    it { should_not allow_value('invalidemail').for :email }
+    it { is_expected.to allow_value('test@annarbortees.com').for :email }
+    it { is_expected.to_not allow_value('invalidemail').for :email }
   end
 
-  context 'is non-deletable, and' do
-    let!(:user) {create(:user)}
+  describe '#full_name' do
+    let!(:user){ build_stubbed(:blank_user, first_name: 'First', last_name: 'Last') }
 
-    it 'destroyed? returns false when not deleted' do
-      expect(user.destroyed?).to eq false
-    end
-    it 'destroyed? returns true when deleted' do
-      user.destroy
-      expect(user.destroyed?).to eq true
+    subject do
+      build_stubbed(
+        :blank_user,
+        first_name: 'First', last_name: 'Last'
+      )
+        .full_name
     end
 
-    it 'still exists after destroy is called' do
-      user.destroy
-      expect(User.deleted).to include user
-    end
-    it 'is not accessible through the default scope once destroyed' do
-      user.destroy
-      expect(User.all).to_not include user
-    end
+    it { is_expected.to eq 'First Last' }
   end
 end

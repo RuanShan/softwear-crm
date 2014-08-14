@@ -1,19 +1,19 @@
 <div id="artwork-request-<%= artwork_request.id %>" class="row">
   <div class="the-notes info artwork-request-notes">
     <% unless artwork_request.artwork_ids.empty? %>
-      <%= render partial: 'artwork_requests/artworks', locals: { artwork_request: artwork_request } %>
+      <%= render partial: 'artwork_requests/artworks',
+                 locals: { artwork_request: artwork_request } %>
     <% end %>
 
      <div class="col-sm-8">
       <div class="row">
         <div class="col-sm-6">
           <h4 class="artwork-request-title">Artwork Request
-            for <%= artwork_request.jobs.collect { |x| [x.name] }.join(', ') %>
+            for <%= artwork_request.jobs.map(&:name).join(', ') %>
           </h4>
 
           <dl>
             <dt>Priority:</dt>
-            <% #TODO: Model call %>
             <dd><%= ArtworkRequest::PRIORITIES[artwork_request.priority.to_i] %></dd>
             <dt>Imprint Method:</dt>
             <dd><%= artwork_request.imprint_method.name %></dd>

@@ -1,2 +1,3 @@
-$('#payment-form').html("<br/><%= escape_javascript(render partial: 'payments/payment_form', locals: { payment_method: params[:payment_method] }).html_safe %>");
+$('#payment-form').html("<br/><%= j(render partial: 'payments/payment_form',
+                                           locals: { payment_method: params[:payment_method] }).html_safe %>");
 $('#payment-form').collapse('toggle');

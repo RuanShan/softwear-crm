@@ -1,8 +1,11 @@
 class ImprintMethodsController < InheritedResources::Base
+  before_action :set_current_action
+
   def show
     super do |format|
       format.html { redirect_to edit_imprint_method_path params[:id] }
-      format.js { render layout: nil, locals: { imprint_method: ImprintMethod.find(params[:id]) } }
+      format.js { render layout: nil,
+                         locals: { imprint_method: ImprintMethod.find(params[:id]) } }
     end
   end
 
@@ -17,13 +20,20 @@ class ImprintMethodsController < InheritedResources::Base
     @imprint_method = ImprintMethod.find params[:imprint_method_id]
     @print_locations = @imprint_method.print_locations
 
-    render partial: 'print_locations_select', locals: { print_locations: @print_locations }
+    render partial: 'print_locations_select',
+           locals: { print_locations: @print_locations, name: params[:name] }
+  end
+
+  protected
+
+  def set_current_action
+    @current_action = 'imprint_methods'
   end
 
   private
 
   def permitted_params
-    params.permit(imprint_method: [
+    params.permit(:name, imprint_method: [
                     :name,
                     ink_colors_attributes: [
                       :name, :imprint_method_id, :id, :_destroy

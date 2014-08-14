@@ -3,8 +3,8 @@ require 'spec_helper'
 describe Search::FilterGroup, search_spec: true do
   it { expect(subject.class.ancestors).to include Search::FilterType }
 
-  it { should have_many :filters }
-  it { should have_db_column :all }
+  it { is_expected.to have_many :filters }
+  it { is_expected.to have_db_column :all }
 
   let!(:group) { create :filter_type_group }
 
@@ -31,12 +31,12 @@ describe Search::FilterGroup, search_spec: true do
         field: 'firstname', negate: true)
     end
 
-    it 'should destroy the filters when destroyed', :donow do
+    it 'destroys the filters when destroyed' do
       group.destroy
       expect(Search::Filter.count).to eq 0
     end
 
-    it 'should apply all contained filters' do
+    it 'applies all contained filters' do
       # Must be local variable; search blocks are called in 
       # a different context.
       group_type = group

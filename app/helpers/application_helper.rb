@@ -38,39 +38,6 @@ module ApplicationHelper
     render partial: 'shared/modal_errors', locals: { object: object }
   end
 
-  # This function creates an open "tag" element in your view, with appropriate classes
-  # Pass along the name of the tag you wish to use, whether you want 'active'
-  # or 'visible' used for the class (with a bool), and either an array of controllers or a single controller
-  # and this bad boy takes care of the rest, adding the active or visible class
-  # to the element if necessary
-  # TODO: This is fucking awful
-  def nav_helper(tag, active, controllers)
-    if controllers.respond_to? 'each'
-      controllers.each do |controller_item|
-        if controller.controller_name == controller_item
-          if active
-            result = tag(tag, { class: 'active' }, true)
-          else
-            result = tag(tag, { class: 'visible' }, true)
-          end
-          result.html_safe
-          return result
-        end
-      end
-      result = tag(tag, nil, true)
-      result.html_safe
-      result
-    else
-      if controller.controller_name == controllers
-        result = tag(tag, { class: 'active' }, true)
-      else
-        result = tag(tag, nil, true)
-      end
-      result.html_safe
-      result
-    end
-  end
-
   def human_boolean(bool)
     bool ? 'Yes' : 'No'
   end
@@ -81,6 +48,6 @@ module ApplicationHelper
 
   def imprintable_modal(imprintable)
     link_to imprintable.name, imprintable_path(imprintable),
-            class: 'imprintable_modal_link',remote: true
+            class: 'imprintable_modal_link', remote: true
   end
 end

@@ -1,4 +1,6 @@
 class SizesController < InheritedResources::Base
+  before_action :set_current_action
+
   def update
     super do |success, failure|
       success.html { redirect_to sizes_path }
@@ -25,6 +27,12 @@ class SizesController < InheritedResources::Base
     end
 
     render json: {}
+  end
+
+  protected
+
+  def set_current_action
+    @current_action = 'sizes'
   end
 
   private

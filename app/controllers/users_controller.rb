@@ -1,4 +1,6 @@
 class UsersController < InheritedResources::Base
+  before_action :set_current_action
+
   def create
     password = Devise.friendly_token.first 8
     user = User.new(sign_up_params.merge(password: password,
@@ -52,6 +54,12 @@ class UsersController < InheritedResources::Base
 
   def show
     redirect_to users_path
+  end
+
+  protected
+
+  def set_current_action
+    @current_action = 'users'
   end
 
   private

@@ -1,40 +1,50 @@
 require 'spec_helper'
 
 describe 'imprintables/_basic_info.html.erb', imprintable_spec: true do
-  let!(:imprintable) { create(:valid_imprintable) }
   login_user
 
-  it 'should display all of the basic information regarding the imprintable' do
+  let!(:imprintable) { build_stubbed(:valid_imprintable) }
+  let!(:color) { build_stubbed(:valid_color) }
+  let!(:size) { build_stubbed(:valid_size) }
+
+  before(:each) do
+    allow(imprintable).to receive(:colors).and_return([color])
+    allow(imprintable).to receive(:sizes).and_return([size])
+
+    allow(imprintable).to receive_message_chain(:sample_locations, :map, :join).and_return('Front, Back')
+    allow(imprintable).to receive_message_chain(:tag_list, :join).and_return('Soft, Comfy')
+    allow(imprintable).to receive_message_chain(:coordinates, :map, :join).and_return('cord1, cord2')
+    allow(imprintable).to receive_message_chain(:imprintable_categories, :map, :join).and_return('cat1, cat2')
+
     render partial: 'imprintables/basic_info', locals: { imprintable: imprintable }
+  end
+
+
+  it 'displays all the list headers' do
     expect(rendered).to have_css('dt', text: 'Material')
     expect(rendered).to have_css('dt', text: 'Weight')
+    expect(rendered).to have_css('dt', text: 'Max Imprint Width')
+    expect(rendered).to have_css('dt', text: 'Max Imprint Height')
     expect(rendered).to have_css('dt', text: /Colors Offered/)
     expect(rendered).to have_css('dt', text: /Sizes Offered/)
     expect(rendered).to have_css('dt', text: 'Sample Locations')
-    expect(rendered).to have_css('dt', text: 'Weight')
-    expect(rendered).to have_css('dt', text: 'Max Imprint Height')
-    expect(rendered).to have_css('dt', text: 'Max Imprint Width')
     expect(rendered).to have_css('dt', text: 'Tags')
     expect(rendered).to have_css('dt', text: 'Description')
     expect(rendered).to have_css('dt', text: 'Coordinates')
+    expect(rendered).to have_css('dt', text: 'Categories')
   end
 
-  context 'there are more colors and sizes than there are associated with the imprintable' do
-    let!(:color_one) { create(:valid_color) }
-    let!(:color_two) { create(:valid_color) }
-    let!(:size_one) { create(:valid_size) }
-    let!(:size_two) { create(:valid_size) }
-    let!(:imprintable_variant) { create(:valid_imprintable_variant) }
-    it 'should display the correct number of colors and sizes' do
-      imprintable_variant.imprintable_id = imprintable.id
-      imprintable_variant.color_id = color_one.id
-      imprintable_variant.size_id = size_one.id
-      imprintable_variant.save
-      render partial: 'imprintables/basic_info', locals: { imprintable: imprintable }
-      expect(rendered).to have_content(color_one.name)
-      expect(rendered).to_not have_content(color_two.name)
-      expect(rendered).to have_content(size_one.name)
-      expect(rendered).to_not have_content(size_two.name)
-    end
+  it 'displays all the imprintable\'s information' do
+    expect(rendered).to have_css('dd', text: imprintable.material)
+    expect(rendered).to have_css('dd', text: imprintable.weight)
+    expect(rendered).to have_css('dd', text: imprintable.max_imprint_width)
+    expect(rendered).to have_css('dd', text: imprintable.max_imprint_height)
+    expect(rendered).to have_css('dd', text: color.name)
+    expect(rendered).to have_css('dd', text: size.name)
+    expect(rendered).to have_css('dd', text: 'Front, Back')
+    expect(rendered).to have_css('dd', text: 'Soft, Comfy')
+    expect(rendered).to have_css('dd', text: imprintable.description)
+    expect(rendered).to have_css('dd', text: 'cord1, cord2')
+    expect(rendered).to have_css('dd', text: 'cat1, cat2')
   end
 end

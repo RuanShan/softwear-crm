@@ -6,7 +6,7 @@ module ImprintableHelper
   def display_sizes(imprintable)
     if imprintable.sizes.first.nil?
       'There are no sizes available'.html_safe
-    elsif imprintable.sizes.first == imprintable.sizes.last
+    elsif imprintable.sizes.size == 1
       return imprintable.sizes.first.display_value
     else
       "#{imprintable.sizes.first.display_value} - #{imprintable.sizes.last.display_value}"

@@ -2,15 +2,18 @@
   <td><%= order.id %></td>
   <td>
     <div class="btn-group btn-group-xs">
-      <%= link_to order_timeline_path(order), remote: true, 'data-toggle'=> 'tooltip', title: 'Show Order Timeline', class: 'btn btn-default modalLink' do  %><i class="fa fa-list-alt"></i><% end %>
+      <%= link_to order_timeline_path(order), class: 'btn btn-default modalLink',
+                  remote: true, 'data-toggle'=> 'tooltip', title: 'Show Order Timeline' do  %>
+        <i class="fa fa-list-alt"></i>
+      <% end %>
     </div>
   </td>
   <td>
-    <%= order.name %><br />
-    <%= order.firstname %> <%= order.lastname %><br />
+    <%= order.name %><br>
+    <%= order.firstname %> <%= order.lastname %><br>
     <%= order.email %>
   </td>
-  <td><%= order.salesperson_name %></td>
+  <td><%= order.salesperson.full_name %></td>
   <td>
     <span class="label <%= get_style_from_status(order.payment_status)%>"><%= order.payment_status %></span>
     <!--<div class="btn-group btn-group-xs"><a data-toggle="tooltip" title="Email Payment Request to Customer" class="btn btn-default"><i class="fa fa-envelope"></i></a></div>-->
@@ -23,7 +26,10 @@
   <td><span class="label label-warning">Pending</span></td>
   <td>
     <div class="btn-group btn-group-xs">
-      <%= link_to edit_order_path(order), 'data-action' => 'edit', 'data-toggle' => 'tooltip', 'title' => 'Edit', class: 'btn btn-default' do %><i class="fa fa-edit"></i><% end %>
+      <%= link_to edit_order_path(order), class: 'btn btn-default',
+                  'data-action' => 'edit', 'data-toggle' => 'tooltip', 'title' => 'Edit' do %>
+        <i class="fa fa-edit"></i>
+      <% end %>
       <a data-toggle="tooltip" title="Quick View" class="btn btn-default"><i class="fa fa-eye"></i></a>
       <a data-toggle="tooltip" title="Printable Invoice" class="btn btn-default"><i class="fa fa-print"></i></a>
     </div>
