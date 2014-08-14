@@ -17,7 +17,7 @@
         .handleErrors(
           <%= line_item.errors.messages.to_json.html_safe %>,
           "<%= j render partial: 'shared/modal_errors',
-          locals: { object: line_item } %>"
+                        locals: { object: line_item } %>"
         );
     <% end %>
 
@@ -34,7 +34,7 @@
 
       $row.append(
         "<%= j render partial: 'standard_view_entry',
-        locals: { line_item: line_item } %>"
+                      locals: { line_item: line_item } %>"
       );
 
       var $inputs = $row.find('input');

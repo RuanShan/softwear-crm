@@ -59,6 +59,7 @@ updateDelay = 1000
 
         if isWhitespace(self.content.charAt(0))
           #console.log 'it is'
+          continue
         # If there is a single space in the beginning, or any trailing whitespace, kill them!
         dirty = false
         if singleLeadingSpace(self.content)
