@@ -13,6 +13,7 @@ describe Size, size_spec: true do
   describe 'Validations' do
     it { is_expected.to validate_presence_of(:name) }
     it { is_expected.to validate_uniqueness_of(:name) }
+    it { is_expected.to validate_uniqueness_of(:sort_order) }
 
     context 'if retail' do
       before { allow(subject).to receive_message_chain(:is_retail?).and_return(true) }
@@ -23,8 +24,5 @@ describe Size, size_spec: true do
       before { allow(subject).to receive_message_chain(:is_retail?).and_return(false) }
       it { is_expected.to_not ensure_length_of(:sku).is_equal_to(2) }
     end
-
-    it { is_expected.to validate_uniqueness_of(:sort_order) }
   end
-
 end

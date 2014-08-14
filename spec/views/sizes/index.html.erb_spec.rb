@@ -1,9 +1,12 @@
 require 'spec_helper'
 
 describe 'sizes/index.html.erb', size_spec: true do
-  it 'has a table of sizes' do
-    assign(:sizes, Size.all)
+  before(:each) do
+    assign(:sizes, [build_stubbed(:valid_size)])
     render
-    expect(rendered).to have_selector("table#js-sizes-list")
+  end
+
+  it 'has a table of sizes' do
+    expect(rendered).to have_selector('table#js-sizes-list')
   end
 end
