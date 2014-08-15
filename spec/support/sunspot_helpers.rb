@@ -21,7 +21,7 @@ module SunspotHelpers
   end
 
   def wait_for_solr(timeout_seconds = nil)
-    Timeout::timeout(timeout_seconds || 5) do
+    Timeout::timeout(timeout_seconds || 30) do
       loop do
         begin
           ping_solr

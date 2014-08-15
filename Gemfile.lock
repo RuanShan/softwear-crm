@@ -156,6 +156,7 @@ GEM
       nokogiri
       rest-client
     fssm (0.2.10)
+    funkify (0.0.4)
     google_drive (0.3.9)
       nokogiri (>= 1.4.4, != 1.5.2, != 1.5.1)
       oauth (>= 0.3.6)
@@ -402,6 +403,7 @@ DEPENDENCIES
   figaro
   font-awesome-sass
   freshdesk (~> 0.2)
+  funkify
   google_drive
   hirb (~> 0.7.1)
   inherited_resources

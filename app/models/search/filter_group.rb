@@ -30,7 +30,6 @@ module Search
           return f if f.field.to_sym == field.name.to_sym
         end
       end
-
       nil
     end
   end

@@ -11,13 +11,16 @@ module Search
 
       def register(searchable_model)
         @all_models ||= {}
-        # raise "Model #{searchable_model.name} is not searchable!" unless searchable_model.searchable?
+        # unless searchable_model.searchable?
+        #   raise "Model #{searchable_model.name} is not searchable!"
+        # end
         @all_models[searchable_model.name] = searchable_model
       end
 
       def respond_to?(name)
         super(name) || @all_models.respond_to?(name)
       end
+
       def method_missing(name, *args, &block)
         if @all_models.respond_to?(name)
           @all_models.send(name, *args, &block)
@@ -27,13 +30,12 @@ module Search
       end
     end
   end
+
   def Model(name)
-    if name.is_a? Class
-      Models[name.name]
-    else
-      Models[name]
-    end
+    name.is_a?(Class) ? Models[name.name] : Models[name]
   end
+
+  # Contains type info about a field within a model.
   class Field
     attr_reader :name
     attr_reader :type_names
@@ -49,22 +51,21 @@ module Search
       end
     end
 
+    # Fancy access, such as Search::Field[:Order, :name]
     def self.[](model, field_name)
       if model.is_a? Class
         model
       else
-        Kernel.const_get(model)
-      end.searchable_fields[field_name.to_sym]
+        Kernel.const_get(model.to_s.camelize)
+      end
+        .searchable_fields[field_name.to_sym]
     end
 
     def initialize(model_name, name, type_name)
-      @name = name.to_sym
+      @name       = name.to_sym
       @type_names = [type_name.to_sym]
-      @model_name = if model_name.is_a?(Class)
-        model_name.name
-      else
-        model_name
-      end.to_sym
+      @model_name = 
+        (model_name.is_a?(Class) ? model_name.name : model_name).to_sym
     end
 
     def model

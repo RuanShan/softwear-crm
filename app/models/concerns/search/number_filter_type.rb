@@ -29,7 +29,8 @@ module Search
       elsif comparator == '<'
         :less_than
       else
-        raise "#{self.class.name} comparator must be > or < to use comparator_func"
+        raise "#{self.class.name}
+                comparator must be > or < to use comparator_func"
       end
     end
   end

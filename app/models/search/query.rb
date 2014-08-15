@@ -80,7 +80,8 @@ module Search
     # str = "hey there ".concat(something)
     # 
     # Kind of stupid, but it would assign str to "hey there man".
-    # Now, let's try using instance_eval like in the last example:
+    # Now, let's try using instance_eval like in the last example
+    # to make it even more stupid:
     #
     # str = "hey there ".instance_eval { concat(something) }
     # 
@@ -102,6 +103,9 @@ module Search
     # makes it difficult to split up our functionality into functions
     # after a certain point.
     # 
+    # QueriesController contains an interesting workaround that may
+    # be hard to grasp at first, but is much easier to work with
+    # once you do.
     def search(*args, &block)
       options = args.last.is_a?(Hash) ? args.last : {}
 
@@ -114,8 +118,8 @@ module Search
 
         # It begins!
         model.search do
-          # Phrase filter requires the base scope so it can
-          # add fulltext calls to the search.
+          # Phrase filter requires the base scope so it can add
+          # fulltext calls to the search, so we pass it around.
           base_scope = self
           
           if text && !text.empty?
@@ -132,7 +136,7 @@ module Search
             query_model.filter.apply(self, base_scope)
           end
 
-          block.call if block_given?
+          instance_eval(&block) if block_given?
           paginate page: options[:page] || 1, per_page: model.default_per_page
         end
       end
@@ -159,10 +163,8 @@ module Search
     end
 
     def text_fields_at(index)
-      if query_models[index] && query_models[index].query_fields.count > 0
-        query_models[index].query_fields.map do |qf|
-          qf.to_h
-        end.reduce({}, :merge)
+      if query_models[index] && query_models[index].query_fields.size > 0
+        query_models[index].query_fields.map(&:to_h).reduce({}, :merge)
       end
     end
 
