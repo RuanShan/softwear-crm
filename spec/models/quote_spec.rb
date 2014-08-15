@@ -129,7 +129,7 @@ describe Quote, quote_spec: true do
       end
     end
 
-    describe '#fetch_request_id_and_name', new: true do
+    describe '#fetch_request_id_and_name' do
       before(:each) do
         expect(URI).to receive(:escape)
       end
