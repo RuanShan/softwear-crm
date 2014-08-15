@@ -3,11 +3,10 @@ include ApplicationHelper
 
 feature 'Stores management', store_spec: true do
   given!(:valid_user) { create(:user) }
-  before(:each) do
-    login_as(valid_user)
-  end
+  given!(:store) { create(:valid_store)}
 
-  let!(:store) { create(:valid_store)}
+  background(:each) { login_as(valid_user) }
+
 
   scenario 'User views list of existing stores' do
     visit root_path
@@ -40,5 +39,4 @@ feature 'Stores management', store_spec: true do
     expect(store.reload.name).to eq('Edited Store Name')
     expect(page).to have_selector('#flash_notice', text: 'Store was successfully updated.')
   end
-
 end

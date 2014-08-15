@@ -1,8 +1,9 @@
 require 'spec_helper'
 
 describe StoresController, store_spec: true do
-  let(:store) { create(:valid_store) }
+  let!(:store) { create(:valid_store) }
   let!(:valid_user) { create :alternate_user }
+
   before(:each) { sign_in valid_user }
 
   describe 'GET index' do
