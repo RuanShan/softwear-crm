@@ -14,7 +14,7 @@ class LancengFormBuilder < ActionView::Helpers::FormBuilder
       result = @builder.send(name, *args, &block)
       return result if result.is_a?(MethodChain)
       
-      @builder.reduce_chain(args.first) + result
+      @builder.reduce_chain(args.first) + (result || '')
     end
   end
 

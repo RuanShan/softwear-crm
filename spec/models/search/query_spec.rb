@@ -38,7 +38,7 @@ describe Search::Query, search_spec: true do
       end
     end
 
-    describe '.combine' do
+    describe '.combine', combine: true do
       let!(:order1) { create :order_with_job, 
         name: 'keyone', 
         firstname: 'keyone' }

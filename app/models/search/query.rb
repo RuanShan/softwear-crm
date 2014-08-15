@@ -1,102 +1,123 @@
 module Search
   class Query < ActiveRecord::Base
     belongs_to :user
-    has_many :query_models, class_name: 'Search::QueryModel', dependent: :destroy
+    has_many :query_models, class_name: 'Search::QueryModel',
+                            dependent: :destroy
     validates :name, uniqueness: { scope: :user_id }
     validate :name_is_not_empty_if_owned_by_a_user
 
+    # This guy is returned from #search.
+    # It's clearly just an array, but the combine function lets you combine
+    # the search results so that they're sorted purely by rank, rather than
+    # by model then rank.
     class SearchList < Array
-      def initialize(models, &block)
-        super(models.map.with_index(&block))
-      end
-
       def combine
-        map do |search|
-          search.results.map.with_index do |result, i|
-            { search.hits[i].score => result }
+        lazy
+          .flat_map do |search|
+            search.results.map.with_index do |result, i|
+              { search.hits[i].score => result }
+            end
           end
-        end.flatten.sort do |a,b|
-          a.keys.first <=> b.keys.first 
-        end.map { |e| e.values.first }
+          .sort_by { |x| x.keys.first }
+          .map { |x| x.values.first }
       end
     end
 
     def models
-      if query_models.empty?
-        Models.all
-      else
-        query_models.map(&:model)
-      end
+      query_models.empty? ? Models.all : query_models.map(&:model)
     end
 
     # You can pass either field_name, model_name 
     # or an instance of Search::Field.
-    # TODO too long
     def filter_for(*args)
-      field = nil
-      case args.count
-      when 1
-        field = args.first
-      when 2
-        order_name = if args.first.is_a? Class
-          args.first.name.to_sym
-        else
-          args.first.to_sym
-        end
-        field_name = args.last.to_sym
-        field = Field[order_name, field_name]
-      end
+      field = field_from_args(args)
 
       return nil if field.nil?
 
-      query_model = query_models.reject do |m|
-        m.name.to_sym != field.model_name
-      end.first
+      query_model = query_models.find do |m|
+        m.name.to_sym == field.model_name
+      end
 
       return nil if query_model.nil?
 
       filter = query_model.filter
+      
       case filter.type
       when FilterGroup
-
-        # Recursively search for the filter that matches the given field
-        find_field = Proc.new do |group|
-          group.filters.each do |f|
-            case f.type
-            when FilterGroup
-              find_field.call f.type
-            else
-              return f if f.field.to_sym == field.name.to_sym
-            end
-          end
-        end
-        find_field.call(filter.type)
-
+        return filter.type.find_field(field)
       else
         return filter if filter.field.to_sym == field.name.to_sym
       end
       nil
     end
 
+    # Here it is. The almighty search function. Stuff like this gets a little
+    # hairy, due to the nature of Sunspot's DSL. If you're unfamiliar with
+    # how Sunspot looks in action, check out https://github.com/sunspot/sunspot.
+    # 
+    # You may notice that Sunspot works similar to RSpec, in that is looks
+    # very english and reads well. Technically speaking, however, it's a bit
+    # odd, since somehow the 'with' and 'all_of' etc. methods are all of a 
+    # sudden available even though you never defined them or included them.
+    # This is because it uses instance_eval(&block), which actually sets the
+    # context (self) for the block body.
+    # Here's an example of what this can do:
+    # 
+    # a = [1, 2, 3].join(', ')
+    # # is equivalent to:
+    # a = [1, 2, 3].instance_eval { join(', ') }
+    # 
+    # In the second part, the context of the { join(', ') } block is set 
+    # to the array. Here's another interesting example.
+    # Consider this method definition:
+    # 
+    # def something
+    #   'man'
+    # end
+    # 
+    # Now, let's do this:
+    # 
+    # str = "hey there ".concat(something)
+    # 
+    # Kind of stupid, but it would assign str to "hey there man".
+    # Now, let's try using instance_eval like in the last example:
+    #
+    # str = "hey there ".instance_eval { concat(something) }
+    # 
+    # This would actually raise a NoMethodError, because 'something' is
+    # not defined within String. This is largely why it's inevidably
+    # messy to interact with these DSL procs required for Sunspot.
+    # It seems impossible to do anything dynamic since you can't access
+    # your methods, but oddly enough, local variables actually do carry
+    # over.
+    #
+    # Consider the 'something' method definition above:
+    # 
+    # local_thing = something
+    # str = "hey there ".instance_eval { concat(local_thing) }
+    # 
+    # That will actually have the desired effect, dang!
+    # 
+    # As much as it is pretty cool that we can carry over our data, it
+    # makes it difficult to split up our functionality into functions
+    # after a certain point.
+    # 
     def search(*args, &block)
-      options = if args.last.is_a? Hash
-        args.last
-      else {} end
+      options = args.last.is_a?(Hash) ? args.last : {}
 
-      # SearchList allows us to combine multi-model searches
-      # into one array, sorted by relevancy.
-      # TODO make this less confusing
-      SearchList.new(models) do |model, i|
+      models = self.models.map.with_index do |model, i|
+        # Locals to be used inside search DSL block.
         text_fields = text_fields_at(i)
         query_model = query_models[i]
-        base_scope = nil
+        base_scope  = nil
+        text        = fulltext_from_args(args, query_model)
 
-        text = if args.first.is_a? String
-          args.first
-        else query_model.default_fulltext end
-
+        # It begins!
         model.search do
+          # Phrase filter requires the base scope so it can
+          # add fulltext calls to the search.
           base_scope = self
+          
           if text && !text.empty?
             if text_fields && !text_fields.empty?
               fulltext(text) do
@@ -106,16 +127,37 @@ module Search
               fulltext(text)
             end
           end
+
           if query_model && query_model.filter
             query_model.filter.apply(self, base_scope)
           end
+
           block.call if block_given?
           paginate page: options[:page] || 1, per_page: model.default_per_page
         end
       end
+
+      SearchList.new(models)
     end
 
-  private
+    private
+
+    def fulltext_from_args(args, query_model)
+      args.first.is_a?(String) ? args.first : query_model.default_fulltext
+    end 
+
+    def field_from_args(args)
+      return args.first if args.size == 1
+
+      model_name = if args.first.is_a? Class
+          args.first.name.to_sym
+        else
+          args.first.to_sym
+        end
+      field_name = args[1].to_sym
+      Field[model_name, field_name]
+    end
+
     def text_fields_at(index)
       if query_models[index] && query_models[index].query_fields.count > 0
         query_models[index].query_fields.map do |qf|

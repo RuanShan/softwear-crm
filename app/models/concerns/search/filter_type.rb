@@ -29,6 +29,7 @@ module Search
           value
         end
 
+        # If you don't know what the comparator is, see number_filter_type.rb.
         def uses_comparator?
           column_names.include? 'comparator'
         end
@@ -36,34 +37,48 @@ module Search
     end
 
     def method_missing(name, *args, &block)
-      super or filter.send name, *args, &block
+      super || filter.send(name, *args, &block)
     end
 
     # Default apply function. Works for simple stuff
     # like boolean and string. Override for more 
-    # complex behavior, like number.
+    # complex behavior, like number or phrase.
     def apply(s, base=nil)
       s.send(with_func, field, value)
     end
 
+    # Returns the name of the proper DSL function to call
+    # inside a Sunspot search block.
     def with_func
       negate? ? :without : :with
     end
 
+    # Search::FilterType.of(Field[:order, :name])
+    # would evaluate to Search::StringFilter
+    # 
+    # assuming Order#name is defined as a string field in 
+    # Order's 'searchable' block.
     def self.of(field, low_priority=false)
-      raise "Field must be a Search::Field. Got #{field.class.name}." unless field.is_a? Field
+      unless field.is_a? Field
+        raise "Field must be a Search::Field. Got #{field.class.name}."
+      end
+
       FilterTypes.each do |type|
         return type unless (field.type_names & type.search_types).empty? || 
                            (!low_priority && type.low_priority?)
       end
+
       return self.of(field, true) if low_priority == false
 
-      raise "#{field.model_name}##{field.name} has no filter type associated with its type(s) #{field.type_names.inspect}.
-             Check the 'searchable' block in #{field.model_name.to_s.underscore}.rb or filter on a different field."
+      raise "#{field.model_name}##{field.name} has no filter type associated
+             with its type(s) #{field.type_names.inspect}.
+             Check the 'searchable' block in
+             #{field.model_name.to_s.underscore}.rb or filter on a different
+             field."
     end
   end
 
-  # Collection of all filter types
+  # Internal collection of all filter types
   class FilterTypes
     class << self
       attr_reader :all
