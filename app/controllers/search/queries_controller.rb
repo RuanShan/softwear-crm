@@ -1,7 +1,7 @@
 module Search
   class QueriesController < ApplicationController
     # Funkify gives us auto_currying, which is used to keep our context
-    # when dealing with Sunspot DSL procs.
+    # in a clean manner when dealing with Sunspot DSL procs.
     include Funkify
 
     before_action :permit_params
@@ -196,7 +196,7 @@ module Search
 
       fields.each do |num, field|
         if num == 'fulltext'
-          context.fulltext field
+          base_scope.fulltext field
           applied_fulltext = true
           next
         end
@@ -246,13 +246,13 @@ module Search
       (field_value.respond_to?(:empty?) && field_value.empty?)
     end
 
-    # Using this and Funkify's auto currying, we never have to perform logic
+    # Using this with currying, we never have to perform logic
     # inside of another context (i.e. Sunspot's DSL blocks).
     # 
     # The tiny proc returned by this method is the only thing that actually
     # happens inside the augmented context.
-    def pass_self_to(_proc = nil, &block)
-      proc { (_proc || block).call(self) }
+    def pass_self_to(passed = nil, &block)
+      proc { (passed || block).call(self) }
     end
 
     def actual_model_of(model)

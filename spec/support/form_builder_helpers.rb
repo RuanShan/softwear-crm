@@ -9,7 +9,7 @@ module FormBuilderHelpers
     end
   end
 
-  def test_form_for(object, options = {})
+  def test_form_for(object, options = {}, &block)
     builder_class = options[:builder] || ActionView::Base.default_form_builder
 
     object_name = case object
@@ -18,8 +18,12 @@ module FormBuilderHelpers
       end
 
     buffer  = DummyOutputBuffer.new
-    builder = builder_class.new(object_name, object, buffer, {}, nil)
-
-    builder
+    args = if block_given?
+        yield object_name, object, buffer
+      else
+        [object_name, object, buffer, {}, nil]
+      end
+    
+    builder = builder_class.new(*args)
   end
 end

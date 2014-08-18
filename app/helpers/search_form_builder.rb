@@ -37,10 +37,13 @@ class SearchFormBuilder
 
   # Remember to define self.permitted_search_locals in your controller
   def pass_locals_to_controller(locals)
-    raise "Locals should be a hash" unless locals.is_a? Hash
+    raise SearchException, "Locals should be a hash" unless locals.is_a? Hash
     content = "".html_safe
     locals.each do |k,v|
-      content.send :original_concat, @template.hidden_field_tag("locals[#{k}]", v.to_s)
+      content.send(
+        :original_concat,
+        @template.hidden_field_tag("locals[#{k}]", v.to_s)
+      )
     end
     content
   end
@@ -48,7 +51,7 @@ class SearchFormBuilder
   # These methods are not actually useful right now.
   [:filter_all, :filter_any].each do |method_name|
     define_method(method_name) do |&block|
-      raise "Filter groups in search forms aren't quite implemented yet."
+      raise SearchException, "Filter groups in search forms aren't quite implemented yet."
       @filter_group_stack.push method_name.to_s.last(3).to_sym
       block.call(self)
       @filter_group_stack.pop
@@ -63,7 +66,9 @@ class SearchFormBuilder
     else
       content = content_or_options.to_s
     end
-    @template.label_tag(input_name_for(field_name, @field_count + 1), content, options, &block)
+    @template.label_tag(
+      input_name_for(field_name, @field_count + 1), content, options, &block
+    )
   end
 
   def fulltext(options={})
@@ -103,7 +108,7 @@ class SearchFormBuilder
   end
 
   def select(field_name, choices, options={})
-    raise "Cannot call select unless a model is specified" if @model.nil?
+    raise SearchException, "Cannot call select unless a model is specified" if @model.nil?
     preprocess_options options, field_name
 
     initial_value = initial_value_for field_name
@@ -139,7 +144,7 @@ class SearchFormBuilder
 
   [:text_field, :text_area, :number_field].each do |method_name|
     define_method method_name do |field_name, options={}|
-      raise "Cannot call #{model_name} unless a model is specified" if @model.nil?
+      raise SearchException, "Cannot call #{model_name} unless a model is specified" if @model.nil?
       preprocess_options options, field_name
       add_class(options, 'number_field') if method_name == :number_field
 
@@ -153,8 +158,9 @@ class SearchFormBuilder
     preprocess_options options, field_name
     options[:boolean] = true
 
-    yes = options.delete(:yes) || 'Yes'
-    no  = options.delete(:no)  || 'No'
+    yes    = options.delete(:yes)    || 'Yes'
+    no     = options.delete(:no)     || 'No'
+    either = options.delete(:either) || 'Either'
 
     initial = initial_value_for field_name
 
@@ -167,7 +173,7 @@ class SearchFormBuilder
               @template.radio_button_tag(input_name_for(field_name), 'false', initial == 'false', options) +
               @template.content_tag(:span, no) +
               @template.radio_button_tag(input_name_for(field_name), 'nil', !initial, options) +
-              @template.content_tag(:span, "Either")
+              @template.content_tag(:span, either)
         end
   end
 

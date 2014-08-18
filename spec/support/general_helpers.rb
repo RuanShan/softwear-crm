@@ -37,3 +37,13 @@ module GeneralHelpers
     end
   end
 end
+
+class ReasonableHash < Hash
+  def initialize(h)
+    merge!(h)
+  end
+
+  def [](key)
+    super(key.to_s) || super(key.to_sym)
+  end
+end
