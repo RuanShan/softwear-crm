@@ -12,7 +12,9 @@ module GeneralHelpers
   		# puts "#{payload[:name]}:\t#{payload[:sql]}\n\n"
   		count += 1 unless payload[:name].in? %w[ CACHE SCHEMA ]
   	}
-  	ActiveSupport::Notifications.subscribed counter_func, "sql.active_record", &block
+  	ActiveSupport::Notifications.subscribed(
+      counter_func, "sql.active_record", &block
+    )
   	count
   end
 
