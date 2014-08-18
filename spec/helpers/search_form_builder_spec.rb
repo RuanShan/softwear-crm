@@ -37,6 +37,19 @@ describe 'SearchFormBuilder', search_spec: true do
     allow(object.class).to receive(:searchable?).and_return true
   end
 
+  describe '#pass_locals_to_controller' do
+    it 'should render a hidden field for each hash element' do
+      expect(template).to receive(:hidden_field_tag)
+        .with('locals[test_1]', 'first')
+        .and_call_original
+      expect(template).to receive(:hidden_field_tag)
+        .with('locals[test_2]', 'second')
+        .and_call_original
+
+      f.pass_locals_to_controller(test_1: 'first', test_2: 'second')
+    end
+  end
+
   [:filter_all, :filter_any].each do |method_name|
     describe "##{method_name}" do
       it "isn't implemented yet and raises an error" do
@@ -132,7 +145,7 @@ describe 'SearchFormBuilder', search_spec: true do
     end
   end
 
-  describe '#select' do
+  describe '#select', select: true do
     let(:options) { ['this', 'that', 'the other thing'] }
 
     it 'renders option tags for each given select option' do
@@ -182,7 +195,7 @@ describe 'SearchFormBuilder', search_spec: true do
     end
   end
 
-  describe '#yes_or_no' do
+  describe '#yes_or_no', yes_or_no: true do
     it 'should render 3 radio buttons with values "Yes", "No", and "Either"' do
       result = f.yes_or_no(:do_it)
 
@@ -208,7 +221,7 @@ describe 'SearchFormBuilder', search_spec: true do
     end
   end
 
-  describe '#check_box', wip: true do
+  describe '#check_box' do
     it 'renders a hidden field and a check box' do
       expect(template).to receive(:hidden_field_tag)
       expect(template).to receive(:check_box_tag)
@@ -217,7 +230,7 @@ describe 'SearchFormBuilder', search_spec: true do
     end
   end
 
-  describe '#submit', wip: true do
+  describe '#submit' do
     context 'with a query' do
       before :each do
         f.instance_variable_set(:@query, query)
@@ -243,7 +256,7 @@ describe 'SearchFormBuilder', search_spec: true do
     end
   end
 
-  describe '#save', wip: true do
+  describe '#save' do
     it 'adds the fields and required for saving a query' do
       expect(template).to receive(:hidden_field_tag)
         .with('query[name]', '', anything)
@@ -263,6 +276,24 @@ describe 'SearchFormBuilder', search_spec: true do
 
     it 'assigns the btn-search-save class to the save button' do
       expect(f.save).to match(/\<button.+class\=\".*btn\-search\-save.*\"/)
+    end
+  end
+
+  describe '@field_count' do
+    %i(text_field text_area number_field 
+       select yes_or_no check_box).each do |method_name|
+      
+      it "should be incremented by ##{method_name}" do
+        before = f.instance_variable_get(:@field_count)
+        if method_name == :select
+          f.send(method_name, :name, [])
+        else
+          f.send(method_name, :name)
+        end
+        after  = f.instance_variable_get(:@field_count)
+
+        expect(after - before).to eq 1
+      end
     end
   end
 end
