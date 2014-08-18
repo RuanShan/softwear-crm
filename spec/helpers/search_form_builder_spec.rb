@@ -223,8 +223,8 @@ describe 'SearchFormBuilder', search_spec: true do
 
   describe '#check_box' do
     it 'renders a hidden field and a check box' do
-      expect(template).to receive(:hidden_field_tag)
-      expect(template).to receive(:check_box_tag)
+      expect(template).to receive(:hidden_field_tag).and_call_original
+      expect(template).to receive(:check_box_tag).and_call_original
 
       f.check_box(:do_it)
     end

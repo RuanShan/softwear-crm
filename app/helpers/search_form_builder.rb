@@ -1,4 +1,5 @@
-# This currently does not support filter groups, although QueriesController is ready to handle them for the occasion.
+# This currently does not support filter groups, although QueriesController
+# is ready to handle them for the occasion.
 class SearchFormBuilder
   include FormHelper
 
@@ -11,7 +12,8 @@ class SearchFormBuilder
 
   YES_OR_NO_CHOICES = [YesOrNo.new('Yes', 'true'), YesOrNo.new('No', 'false')]
 
-  def initialize(model, query, template, current_user=nil, last_search=nil, locals={})
+  def initialize(model, query, template, current_user=nil, 
+                 last_search=nil, locals={})
     @model        = model
     @query        = query
     @template     = template
@@ -19,7 +21,10 @@ class SearchFormBuilder
     @current_user = current_user
     @locals       = locals
 
-    @filter_group_stack = [:all] # Not currently actually using this.
+    # FIXME
+    # there has been no need for groups, so the form builder
+    # doesn't support them.
+    @filter_group_stack = [:all]
     @field_count        = 0
   end
 
@@ -89,7 +94,7 @@ class SearchFormBuilder
 
     @field_count += 1
     process_options(field_name, options) +
-        @template.select_tag(input_name_for(field_name), select_options, options)
+      @template.select_tag(input_name_for(field_name), select_options, options)
   end
 
   def yes_or_no_select(field_name, options={})
@@ -106,11 +111,11 @@ class SearchFormBuilder
       preprocess_options options, field_name
       add_class(options, 'number_field') if method_name == :number_field
 
+      @field_count += 1
       tag = @template.send("#{method_name}_tag",
           input_name_for(field_name), initial_value_for(field_name), options
         )
 
-      @field_count += 1
       process_options(field_name, options) + tag
     end
 
@@ -135,7 +140,7 @@ class SearchFormBuilder
     @template.content_tag(:div, class: 'form-group') do
       process_options(field_name, options) + 
       radio['true',  initial == 'true',  options] + span[yes] +
-      radio['false', initial == 'false', options] + span[no] +
+      radio['false', initial == 'false', options] + span[no]  +
       radio['nil',   !initial,           options] + span[either]
     end
   end
@@ -146,36 +151,51 @@ class SearchFormBuilder
     options[:boolean] = true
 
     initial_value = initial_value_for field_name
+    input_name    = input_name_for field_name
 
     @field_count += 1
     @template.content_tag(:div) do
       process_options(field_name, options) +
-          @template.hidden_field_tag(input_name_for(field_name), 'false') +
-          @template.check_box_tag(input_name_for(field_name), 'true', initial_value == 'true', options)
+
+      @template.hidden_field_tag(input_name, 'false') +
+
+      @template.check_box_tag(
+        input_name, 'true', initial_value == 'true', options
+      )
     end
   end
 
   def submit(options={})
     add_class options, 'submit', 'btn', 'btn-primary'
-    @template.submit_tag(options[:value] || (@query ? 'Save' : 'Search'), options)
+    value = options[:value] || (@query ? 'Save' : 'Search')
+
+    @template.submit_tag(value, options)
   end
+
   alias_method :search, :submit
 
   # This outputs a button that will save the query instead of searching it
   def save(options={})
     add_class options, 'submit', 'btn', 'btn-primary', 'btn-search-save'
 
-    @template.hidden_field_tag('query[name]', '', disabled: true, class: 'query_name') +
-        @template.hidden_field_tag('query[user_id]', @current_user ? @current_user.id : -1, disabled: true, class: 'user_id') +
-        @template.hidden_field_tag('target_path', '', disabled: true, class: 'target_path') +
-        @template.button_tag(options[:value] || 'Save', options.merge(type: 'button'))
+    user_id = @current_user ? @current_user.id : -1
+
+    html = lambda do |clazz|
+      { disabled: true, class: clazz }
+    end
+    hidden = @template.method(:hidden_field_tag)
+    value = options[:value] || 'Save'
+
+    hidden.('query[name]', '', html['query_name']) +
+    hidden.('query[user_id]', user_id, html['user_id']) +
+    hidden.('target_path', '', html['target_path']) +
+    @template.button_tag(value, options.merge(type: 'button'))
   end
 
   private
 
   def preprocess_options(options, field_name)
     add_class options, 'form-control'
-    # options[:id] ||= id_for field_name
   end
 
   def traverse(h,&b)
@@ -228,31 +248,33 @@ class SearchFormBuilder
     end
   end
 
-  def initial_value_for(field_name)
-    if @query.nil?
-      if @last_search
-        # If it's a number, it was a query
-        if (@last_search.is_a?(String) && @last_search =~ /\d+/) || @last_search.is_a?(Fixnum)
-          begin
-            last_query = Search::Query.find(@last_search.to_i)
-            existing_filter = last_query.filter_for @model, field_name
-            return existing_filter.value unless existing_filter.nil?
-          rescue ActiveRecord::RecordNotFound
-          end
-          # Otherwise it must be a hash of search params
-        elsif @last_search[model_name]
-          traverse @last_search[model_name] do |k,v|
-            if k.to_s == field_name.to_s
-              return v == 'nil' ? nil : v
-            end
-          end
-        end
-      end
-    else
-      existing_filter = @query.filter_for @model, field_name
-      return existing_filter.value unless existing_filter.nil?
+  def query_initial_value(field_name)
+    return nil unless @last_search.is_a?(String) || @last_search.is_a?(Fixnum)
+    return nil if @last_search.is_a?(String) && !(@last_search =~ /\d+/)
+
+    begin
+      last_query = Search::Query.find(@last_search)
+      existing_filter = last_query.filter_for @model, field_name
+      return existing_filter.try(:value)
+    rescue ActiveRecord::RecordNotFound
     end
-    nil
+  end
+
+  def hash_initial_value(field_name)
+    return nil unless field_name.is_a?(Hash)
+
+    traverse @last_search[model_name] do |k,v|
+      return v == 'nil' ? nil : v if k.to_s == field_name.to_s
+    end
+  end
+
+  def initial_value_for(field_name)
+    unless @query.nil?
+      existing_filter = @query.filter_for(@model, field_name)
+      return existing_filter.try(:value)
+    end
+
+    query_initial_value(field_name) || hash_initial_value(field_name)
   end
 
   def current_depth
@@ -272,13 +294,10 @@ class SearchFormBuilder
   end
 
   def process_options(field_name, options)
-    buf = "".html_safe
-    METADATA_OPTIONS.each do |meta|
-      if options.delete meta
-        buf += @template.hidden_field_tag metadata_name_for(field_name), meta.to_s
-      end
+    METADATA_OPTIONS.reduce(''.html_safe) do |buf, meta|
+      next buf unless options.delete(meta)
+      buf + @template.hidden_field_tag(metadata_name_for(field_name), meta.to_s)
     end
-    buf
   end
 
   # TODO When groups are implemented, these will have to be different
