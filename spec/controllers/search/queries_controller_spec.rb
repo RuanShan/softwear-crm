@@ -69,7 +69,8 @@ describe Search::QueriesController, search_spec: true do
         order: {
             '1' => { firstname: 'Nigel', _metadata: ['negate'] },
             '2' => { lastname: 'Baillie' },
-            '3' => { commission_amount: 15.00, _metadata: ['negate', 'greater_than'] },
+            '3' => { commission_amount: 15.00,
+                     _metadata: ['negate', 'greater_than'] },
             fulltext: 'ftestasdlfkj'
         }}}
   end
@@ -78,7 +79,8 @@ describe Search::QueriesController, search_spec: true do
     {search: {
         order: {
             '1' => { lastname: 'Baillie' },
-            '2' => { commission_amount: 15.00, _metadata: ['less_than'] },
+            '2' => { commission_amount: 15.00,
+                     _metadata: ['less_than'] },
             fulltext: 'ftestasdlfkj'
         }}}
   end
@@ -96,8 +98,12 @@ describe Search::QueriesController, search_spec: true do
   end
 
   let(:query) { create(:search_query) }
-  let(:order_model) { create(:query_order_model, query: query, default_fulltext: 'success') }
-  let(:job_model) { create(:query_job_model, query: query, default_fulltext: 'testing') }
+  let(:order_model) do
+    create(:query_order_model, query: query, default_fulltext: 'success')
+  end
+  let(:job_model) do
+    create(:query_job_model, query: query, default_fulltext: 'testing')
+  end
 
   context 'GET' do
     describe '#search' do
@@ -116,7 +122,8 @@ describe Search::QueriesController, search_spec: true do
 
           expect(Sunspot.session).to be_a_search_for Order
           expect(Sunspot.session).to have_search_params(:fulltext, 'success')
-          expect(Sunspot.session).to have_search_params(:with, :firstname, 'Test')
+          expect(Sunspot.session)
+            .to have_search_params(:with, :firstname, 'Test')
         end
       end
 
@@ -128,7 +135,8 @@ describe Search::QueriesController, search_spec: true do
 
         expect(Sunspot.session).to be_a_search_for Order
         expect(Sunspot.session).to have_search_params(:fulltext, 'test')
-        expect(Sunspot.session).to_not have_search_params(:with, :lastname, 'nil')
+        expect(Sunspot.session)
+          .to_not have_search_params(:with, :lastname, 'nil')
       end
 
       context 'when params contains search info' do
@@ -140,8 +148,10 @@ describe Search::QueriesController, search_spec: true do
 
           expect(Sunspot.session).to be_a_search_for Order
           expect(Sunspot.session).to have_search_params(:fulltext, 'test')
-          expect(Sunspot.session).to have_search_params(:with, :lastname, 'Johnson')
-          expect(Sunspot.session).to have_search_params(:with, :commission_amount, 200)
+          expect(Sunspot.session)
+            .to have_search_params(:with, :lastname, 'Johnson')
+          expect(Sunspot.session)
+            .to have_search_params(:with, :commission_amount, 200)
         end
 
         it 'should apply fulltext if defined on the model-level' do
@@ -166,7 +176,8 @@ describe Search::QueriesController, search_spec: true do
           expect(assigns[:search].first).to be_a Sunspot::Search::StandardSearch
 
           expect(Sunspot.session).to be_a_search_for Imprintable
-          expect(Sunspot.session).to have_search_params(:with, :standard_offering, false)
+          expect(Sunspot.session)
+            .to have_search_params(:with, :standard_offering, false)
         end
 
         it 'applies references properly' do
@@ -176,7 +187,8 @@ describe Search::QueriesController, search_spec: true do
           expect(assigns[:search].first).to be_a Sunspot::Search::StandardSearch
 
           expect(Sunspot.session).to be_a_search_for Order
-          expect(Sunspot.session).to have_search_params(:with, :salesperson, valid_user)
+          expect(Sunspot.session)
+            .to have_search_params(:with, :salesperson, valid_user)
         end
 
         context 'and metadata', metadata: true do
@@ -184,18 +196,22 @@ describe Search::QueriesController, search_spec: true do
             get :search, test_params_with_metadata
             expect(response).to be_ok
 
-            expect(assigns[:search].first).to be_a Sunspot::Search::StandardSearch
+            expect(assigns[:search].first)
+              .to be_a Sunspot::Search::StandardSearch
 
             expect(Sunspot.session).to be_a_search_for Order
-            expect(Sunspot.session).to have_search_params(:fulltext, 'ftestasdlfkj')
-            expect(Sunspot.session).to have_search_params(:without, :firstname, 'Nigel')
+            expect(Sunspot.session)
+              .to have_search_params(:fulltext, 'ftestasdlfkj')
+            expect(Sunspot.session)
+              .to have_search_params(:without, :firstname, 'Nigel')
           end
 
           it 'applies the "less_than" metadata properly' do
             get :search, test_params_with_lessthan_metadata
             expect(response).to be_ok
 
-            expect(assigns[:search].first).to be_a Sunspot::Search::StandardSearch
+            expect(assigns[:search].first)
+              .to be_a Sunspot::Search::StandardSearch
 
             expect(Sunspot.session).to be_a_search_for Order
             expect(Sunspot.session).to have_search_params(:with) {
@@ -207,10 +223,12 @@ describe Search::QueriesController, search_spec: true do
             get :search, test_params_with_metadata
             expect(response).to be_ok
 
-            expect(assigns[:search].first).to be_a Sunspot::Search::StandardSearch
+            expect(assigns[:search].first)
+              .to be_a Sunspot::Search::StandardSearch
 
             expect(Sunspot.session).to be_a_search_for Order
-            expect(Sunspot.session).to have_search_params(:fulltext, 'ftestasdlfkj')
+            expect(Sunspot.session)
+              .to have_search_params(:fulltext, 'ftestasdlfkj')
             expect(Sunspot.session).to have_search_params(:with) {
               without(:commission_amount).greater_than(15.00)
             }
@@ -222,11 +240,14 @@ describe Search::QueriesController, search_spec: true do
             get :search, test_params_with_group
             expect(response).to be_ok
 
-            expect(assigns[:search].first).to be_a Sunspot::Search::StandardSearch
+            expect(assigns[:search].first)
+              .to be_a Sunspot::Search::StandardSearch
 
             expect(Sunspot.session).to be_a_search_for Order
-            expect(Sunspot.session).to have_search_params(:fulltext, 'cool stuff')
-            expect(Sunspot.session).to have_search_params(:with, :company, 'Some Stuff')
+            expect(Sunspot.session)
+              .to have_search_params(:fulltext, 'cool stuff')
+            expect(Sunspot.session)
+              .to have_search_params(:with, :company, 'Some Stuff')
             expect(Sunspot.session).to have_search_params(:with) {
               any_of do
                 with :lastname, 'Whatever'
@@ -237,26 +258,35 @@ describe Search::QueriesController, search_spec: true do
         end
 
         context 'passing locals', locals: true do
-          it 'should allow the passing of locals, if permitted by the model\'s controller' do
-            allow(OrdersController).to receive(:permitted_search_locals).and_return [:test_val]
+          it 'should allow the passing of locals, if permitted' do
+            allow(OrdersController).to receive(:permitted_search_locals)
+              .and_return [:test_val]
+
             get :search, test_params_with_locals
             expect(OrdersController).to have_received(:permitted_search_locals)
           end
 
           it 'should error out if there is an invalid local' do
-            allow(OrdersController).to receive(:permitted_search_locals).and_return []
+            allow(OrdersController).to receive(:permitted_search_locals)
+              .and_return []
+
             expect{get :search, test_params_with_locals}.to raise_error
           end
 
           it 'should not error out if there are no invalid locals' do
-            allow(OrdersController).to receive(:permitted_search_locals).and_return [:test_val]
+            allow(OrdersController).to receive(:permitted_search_locals)
+              .and_return [:test_val]
+
             expect{get :search, test_params_with_locals}.to_not raise_error
           end
 
           context 'with custom logic' do
-            it "Should call the transform_search_locals method on the model's controller" do
-              allow(OrdersController).to receive(:permitted_search_locals).and_return [:test_val]
-              allow(OrdersController).to receive(:transform_search_locals).and_return(new_test_val: "transformed!")
+            it "calls #{}transform_search_locals on the model's controller" do
+              allow(OrdersController).to receive(:permitted_search_locals)
+                .and_return [:test_val]
+              allow(OrdersController).to receive(:transform_search_locals)
+                .and_return(new_test_val: "transformed!")
+
               get :search, test_params_with_locals
               expect(OrdersController).to have_received :transform_search_locals
             end
@@ -289,12 +319,14 @@ describe Search::QueriesController, search_spec: true do
   context 'POST' do
     describe '#create', :create do
       it 'creates a new query with the given filter info for the given user' do
-        post :create, test_params.merge(query: {user_id: valid_user.id, name: 'test q'})
+        post :create, 
+             test_params.merge(query: {user_id: valid_user.id, name: 'test q'})
         expect(response).to be_ok
 
         expect(assigns[:query]).to be_a Search::Query
         expect(assigns[:query].query_models.first.name).to eq 'Order'
-        expect(assigns[:query].query_models.first.filter.filters.first.field).to eq 'lastname'
+        expect(assigns[:query].query_models.first.filter.filters.first.field)
+          .to eq 'lastname'
         expect(assigns[:query].name).to eq 'test q'
 
         expect(valid_user.search_queries).to include assigns[:query]
