@@ -1,7 +1,7 @@
 require 'spec_helper'
 include GeneralHelpers
 
-feature 'Imprints Management', imprint_spec: true, js: true, imprint_features: true do
+feature 'Imprints Management', imprint_spec: true, js: true do
   given!(:valid_user) { create(:user) }
   before(:each) do
     login_as valid_user
@@ -15,9 +15,9 @@ feature 'Imprints Management', imprint_spec: true, js: true, imprint_features: t
         ['Front',   'Lower',  'Wherever']]) do |name|
     3.times do |n|
       let!("imprint_method#{n+1}") { create(:valid_imprint_method, 
-                                               name: name.first[n]) }
+                          name: name.first[n]) }
       let!("print_location#{n+1}") { create(:valid_print_location, name: name[1][n],
-                                               imprint_method_id: send("imprint_method#{n+1}").id) }
+                          imprint_method_id: send("imprint_method#{n+1}").id) }
     end
   end
 
@@ -102,7 +102,7 @@ feature 'Imprints Management', imprint_spec: true, js: true, imprint_features: t
     expect(page).to have_content 'already been taken'
   end
 
-  scenario 'user can delete imprints' do
+  scenario 'user can delete imprints', wtf: true do
     imprint
     visit edit_order_path(order.id, anchor: 'jobs')
     wait_for_ajax
@@ -115,4 +115,3 @@ feature 'Imprints Management', imprint_spec: true, js: true, imprint_features: t
   end
 
 end
-private
