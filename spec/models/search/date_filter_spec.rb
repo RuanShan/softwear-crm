@@ -5,7 +5,8 @@ describe Search::DateFilter, search_spec: true do
 
   it { is_expected.to have_db_column :field }
   it { is_expected.to have_db_column :comparator }
-  it { is_expected.to ensure_inclusion_of(:comparator).in_array ['>', '<', '='] }
+  it { is_expected.to ensure_inclusion_of(:comparator)
+      .in_array ['>', '<', '='] }
   it { is_expected.to have_db_column :negate }
   it { is_expected.to have_db_column :value }
 
@@ -23,26 +24,34 @@ describe Search::DateFilter, search_spec: true do
     expect(Search::DateFilter.search_types).to eq [:date]
   end
 
-  it 'applies properly with negate set to false' do
-    filter.negate = false
-    filter.comparator = '='
-    filter.save
+  describe '#apply' do
+    context 'when not negated' do
+      before { filter.negate = false }
 
-    Order.search do
-      filter.apply(self)
+      it 'applies a sunspot :without filter on its field' do
+        filter.comparator = '='
+        filter.save
+
+        Order.search do
+          filter.apply(self)
+        end
+        expect(Sunspot.session).to have_search_params(:with, :in_hand_by, date)
+      end
     end
-    expect(Sunspot.session).to have_search_params(:with, :in_hand_by, date)
-  end
 
-  it 'applies properly with negate set to true' do
-    filter.negate = true
-    filter.save
+    context 'when negated' do
+      before { filter.negate = true }
 
-    Order.search do
-      filter.apply(self)
+      it 'applies a sunspot :with filter on its field' do
+        filter.comparator = '>'
+
+        Order.search do
+          filter.apply(self)
+        end
+        expect(Sunspot.session).to have_search_params(:without) {
+          without(:in_hand_by).greater_than(date)
+        }
+      end
     end
-    expect(Sunspot.session).to have_search_params(:without) {
-      without(:in_hand_by).greater_than(date)
-    }
   end
 end

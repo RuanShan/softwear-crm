@@ -13,24 +13,33 @@ describe Search::BooleanFilter, search_spec: true do
     expect(Search::BooleanFilter.search_types).to eq [:boolean]
   end
 
-  it 'applies properly when not negated' do
-    filter.negate = false
-    filter.value = true
-    filter.save
+  describe '#apply' do
+    context 'when not negated' do
+      before { filter.negate = false }
 
-    LineItem.search do
-      filter.apply(self)
-    end
-    expect(Sunspot.session).to have_search_params(:with, filter.field, true)
-  end
-  it 'applies properly when negated' do
-    filter.negate = true
-    filter.value = true
-    filter.save
+      it 'applies a sunspot :without filter on its field' do
+        filter.value = true
 
-    LineItem.search do
-      filter.apply(self)
+        LineItem.search do
+          filter.apply(self)
+        end
+        expect(Sunspot.session)
+          .to have_search_params(:with, filter.field, true)
+      end
     end
-    expect(Sunspot.session).to have_search_params(:without, filter.field, true)
+
+    context 'when negated' do
+      before { filter.negate = true }
+
+      it 'applies a sunspot :with filter on its field' do
+        filter.value = true
+
+        LineItem.search do
+          filter.apply(self)
+        end
+        expect(Sunspot.session)
+          .to have_search_params(:without, filter.field, true)
+      end
+    end
   end
 end

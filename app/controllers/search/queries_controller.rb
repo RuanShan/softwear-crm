@@ -127,6 +127,32 @@ module Search
 
     # This is step 1 to transforming hash filter data to valid
     # Sunspot DSL procs.
+    # 
+    # Instead of transfering everything into local variables, 
+    # the strategy used here is to pass the augmented context
+    # around as a parameter to our methods. Like so:
+    # 
+    # def search_stuff(num, context)
+    #   context.with(:field).greater_than(num)
+    # end
+    # auto_curry :search_stuff
+    # Model.search(&pass_self_to(search_stuff(100)))
+    # 
+    # The reason this works is because of the Funkify gem's auto_curry.
+    # Because we called search_stuff with 1 parameter, it returned a 
+    # proc that's ready to call it again with that parameter + another.
+    # 
+    # pass_self_to is very simple. It takes a proc as a parameter
+    # and returns a proc. The returned proc is pretty much this:
+    # 
+    # proc { arg.call(self) }
+    # 
+    # So pass_self_to(search_stuff(100)) will call search_stuff(100, self)
+    # inside the context of the search proc if passed as a block parameter.
+    # 
+    # Hopefully that makes sense!
+    # If it doesn't, I suggest checking online and hopping into an irb
+    # session to play around with procs and instance_eval/currying.
     def compose_search_proc(search)
       default_fulltext = search['fulltext']
 

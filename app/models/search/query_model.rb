@@ -7,7 +7,7 @@ module Search
                             dependent: :destroy
     
     # Generally, the one filter owned by any query_model is either nil or 
-    # a filter_group.
+    # a filter_group. Although an actual filter works as expected.
     has_one :filter, as: :filter_holder, dependent: :destroy
     validate :model_is_searchable
 

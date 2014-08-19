@@ -15,23 +15,30 @@ describe Search::ReferenceFilter, search_spec: true do
     expect(Search::ReferenceFilter.search_types).to eq [:reference]
   end
 
-  it 'applies properly when not negated' do
-    filter.negate = false
-    filter.save
+  describe '#apply' do
+    context 'when negated' do
+      before { filter.negate = true }
 
-    Order.search do
-      filter.apply(self)
+      it 'applies a sunspot :without filter on its field' do
+        Order.search do
+          filter.apply(self)
+        end
+        expect(Sunspot.session)
+          .to have_search_params(:without, 'salesperson', user)
+      end
     end
-    expect(Sunspot.session).to have_search_params(:with, 'salesperson', user)
-  end
-  it 'applies apply properly when negated' do
-    filter.negate = true
-    filter.save
 
-    Order.search do
-      filter.apply(self)
+    context 'when not negated' do
+      before { filter.negate = false }
+
+      it 'applies a sunspot :with filter on its field' do
+        Order.search do
+          filter.apply(self)
+        end
+        expect(Sunspot.session)
+          .to have_search_params(:with, 'salesperson', user)
+      end
     end
-    expect(Sunspot.session).to have_search_params(:without, 'salesperson', user)
   end
 
   describe '.assure_value' do

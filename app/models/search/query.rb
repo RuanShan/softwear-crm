@@ -90,9 +90,7 @@ module Search
     # messy to interact with these DSL procs required for Sunspot.
     # It seems impossible to do anything dynamic since you can't access
     # your methods, but oddly enough, local variables actually do carry
-    # over.
-    #
-    # Consider the 'something' method definition above:
+    # over:
     # 
     # local_thing = something
     # str = "hey there ".instance_eval { concat(local_thing) }
