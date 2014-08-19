@@ -10,14 +10,12 @@ module Search
     alias_method :type=, :filter_type=
 
     def self.new(*args)
-      if args.count >= 1 && args.first.is_a?(Class)
-        filter = Filter.new
-        type = args.first.new(*args[1..-1])
-        filter.filter_type = type
-        filter
-      else
-        super
-      end
+      return super unless args.count >= 1 && args.first.is_a?(Class)
+
+      filter = Filter.new
+      type = args.first.new(*args[1..-1])
+      filter.filter_type = type
+      filter
     end
 
     def respond_to?(*args)

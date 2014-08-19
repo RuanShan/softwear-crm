@@ -7,29 +7,36 @@ describe Search::StringFilter, search_spec: true do
   it { is_expected.to have_db_column :value }
   it { is_expected.to have_db_column :negate }
 
-  let!(:filter) { create :filter_type_string, 
+  let!(:filter) { build_stubbed :filter_type_string, 
     field: 'terms', value: 'Paid in full on pick up' }
 
   it 'belongs to search type string' do
     expect(Search::StringFilter.search_types).to eq [:string]
   end
 
-  it 'applies properly when not negated' do
-    filter.negate = false
-    filter.save
+  describe '#apply' do
+    context 'when negated' do
+      before { filter.negate = true }
 
-    Order.search do
-      filter.apply(self)
+      it 'adds a sunspot :without filter on its field' do
+        Order.search do
+          filter.apply(self)
+        end
+        expect(Sunspot.session)
+          .to have_search_params(:without, 'terms', 'Paid in full on pick up')
+      end
     end
-    expect(Sunspot.session).to have_search_params(:with, 'terms', 'Paid in full on pick up')
-  end
-  it 'applies properly when negated' do
-    filter.negate = true
-    filter.save
 
-    Order.search do
-      filter.apply(self)
+    context 'when not negated' do
+      before { filter.negate = false }
+
+      it 'adds a sunspot :with filter on its field' do
+        Order.search do
+          filter.apply(self)
+        end
+        expect(Sunspot.session)
+          .to have_search_params(:with, 'terms', 'Paid in full on pick up')
+      end
     end
-    expect(Sunspot.session).to have_search_params(:without, 'terms', 'Paid in full on pick up')
   end
 end

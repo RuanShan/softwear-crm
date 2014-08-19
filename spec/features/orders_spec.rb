@@ -36,8 +36,10 @@ feature 'Order management', order_spec: true,  js: true do
     wait_for_ajax
 
     fill_in 'Name', with: 'Whatever this should be'
-    dateArray = DateTime.current.to_s.split(/\W|T/)
-    fill_in 'In Hand By Date', with: "#{ (dateArray[1].to_i + 1).to_s }/#{ dateArray[2] }/#{ dateArray.first } 4:00 PM"
+    date_array = DateTime.current.to_s.split(/\W|T/)
+    in_hand_by = "#{ (date_array[1].to_i + 1).to_s }/#{ date_array[2] }"\
+                 "/#{ date_array.first } 4:00 PM"
+    fill_in 'In Hand By Date', with: in_hand_by
     select User.find(order.salesperson_id).full_name, from: 'Salesperson'
     select order.store.name, from: 'Store'
     select 'Half down on purchase', from: 'Payment terms'
@@ -121,18 +123,20 @@ feature 'Order management', order_spec: true,  js: true do
     expect(page).to have_content "Updated order #{order.name}"
   end
 
-  describe 'search', search_spec: true, solr: true, pending: 'Nigel, these arent working' do
-    let!(:order2) { create(:order_with_job, name: 'Keyword order') }
+  describe 'search', search_spec: true, solr: true do
+    let!(:order2) { create(:order_with_job, name: 'Keyword order',
+      terms: 'Net 60') }
     let!(:order3) { create(:order_with_job, name: 'Nonkeyword order',
       terms: 'Paid in full on purchase') }
     let!(:order4) { create(:order_with_job, name: 'Some Order', 
       company: 'Order with the keyword keyword!') }
-    let!(:order5) { create(:order_with_job, name: 'Dumb order') }
+    let!(:order5) { create(:order_with_job, name: 'Dumb order',
+      terms: 'Net 60') }
 
     scenario 'user can search orders', retry: 3 do
       visit orders_path
 
-      fill_in 'search_fulltext', with: 'Keyword'
+      fill_in 'search_order_fulltext', with: 'Keyword'
       click_button 'Search'
       expect(page).to have_content 'Keyword order'
       expect(page).to have_content 'Some Order'
@@ -154,17 +158,21 @@ feature 'Order management', order_spec: true,  js: true do
       expect(Search::Query.where(name: 'Test Query')).to exist
     end
 
-    scenario 'user can use saved searches' do
+    scenario 'user can use saved searches', retry: 3 do
       query = Search::QueryBuilder.build('Test Query') do
         on Order do
           with :terms, 'Net 60'
           fulltext 'order'
         end
-      end.query
+      end
+        .query
+      
       query.user = valid_user
       expect(query.save).to be_truthy
 
       visit orders_path
+
+
 
       select 'Test Query', from: 'select_query_for_order'
       wait_for_ajax

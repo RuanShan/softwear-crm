@@ -3,37 +3,36 @@ require 'spec_helper'
 describe Search::FilterGroup, search_spec: true do
   it { expect(subject.class.ancestors).to include Search::FilterType }
 
-  it { is_expected.to have_many :filters }
+  it { is_expected.to have_many(:filters).dependent(:destroy) }
   it { is_expected.to have_db_column :all }
 
-  let!(:group) { create :filter_type_group }
+  let!(:group) { build_stubbed :filter_type_group }
 
-  let!(:order1) { create :order_with_job,
+  let!(:order1) { build_stubbed :order_with_job,
     name: 'keywordone keywordtwo',
     firstname: 'keywordtwo',
     commission_amount: 50.25 }
-  let!(:order2) { create :order_with_job,
+  let!(:order2) { build_stubbed :order_with_job,
     name: 'keywordtwo keywordthree',
     firstname: 'keywordone',
     commission_amount: 30.15 }
-  let!(:order3) { create :order_with_job,
+  let!(:order3) { build_stubbed :order_with_job,
     name: 'keywordfour',
     firstname: 'keywordfour',
     commission_amount: 10.30 }
 
   context 'when the group has filters in it' do
     before(:each) do
-      group.filters << create(:number_filter,
+      filters = []
+
+      filters << build_stubbed(:number_filter,
         field: 'commission_amount',
         value: 30, comparator: '<')
 
-      group.filters << create(:string_filter,
+      filters << build_stubbed(:string_filter,
         field: 'firstname', negate: true)
-    end
 
-    it 'destroys the filters when destroyed' do
-      group.destroy
-      expect(Search::Filter.count).to eq 0
+      allow(group).to receive(:filters).and_return filters
     end
 
     it 'applies all contained filters' do
@@ -50,11 +49,13 @@ describe Search::FilterGroup, search_spec: true do
       end
     end
 
-    it 'applies them inside the correct function' do
-      group.all = true; group.save
-      expect(group.of_func).to eq :all_of
-      group.all = false; group.save
-      expect(group.of_func).to eq :any_of
+    describe '#of_func' do
+      it 'evaluated to all_of or any_of based on the "all" attribute' do
+        group.all = true
+        expect(group.of_func).to eq :all_of
+        group.all = false
+        expect(group.of_func).to eq :any_of
+      end
     end
   end
 
