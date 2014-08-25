@@ -1,8 +1,13 @@
 module Search
   class QueryModel < ActiveRecord::Base
     belongs_to :query, class_name: 'Search::Query'
-    has_many :query_fields, class_name: 'Search::QueryField', dependent: :destroy
-    # TODO perhaps have many filters instead of the one that's usually a group deal
+    # Query fields represent the fields on which a fulltext will be applied
+    # by a Query.
+    has_many :query_fields, class_name: 'Search::QueryField',
+                            dependent: :destroy
+    
+    # Generally, the one filter owned by any query_model is either nil or 
+    # a filter_group. Although an actual filter works as expected.
     has_one :filter, as: :filter_holder, dependent: :destroy
     validate :model_is_searchable
 
@@ -11,15 +16,14 @@ module Search
     end
 
     def fields
-      if query_fields.empty?
-        model.searchable_fields
-      else
-        query_fields.map { |f| Search::Field[name, f.name] }
-      end
+      return model.searchable_fields if query_fields.empty?
+      
+      query_fields.map { |f| Search::Field[name, f.name] }
     end
 
     def add_field(field_name, *boost)
       names = query_fields.map(&:name)
+
       if names.include? field_name
         raise "#{name} query model already has field #{field_name}"
       elsif Field[name, field_name].nil?

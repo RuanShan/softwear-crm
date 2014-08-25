@@ -53,5 +53,7 @@ jobCollapse = (id, collapsed) ->
   $jobCollapse.on 'show.bs.collapse', onJobCollapseShow
   $jobCollapse.on 'hide.bs.collapse', onJobCollapseHide
 
+  registerImprintEvents $c
+
 $(window).load ->
   registerJobEvents($('body'))

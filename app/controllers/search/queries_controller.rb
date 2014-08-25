@@ -1,17 +1,29 @@
 module Search
   class QueriesController < ApplicationController
+    # Funkify gives us auto_currying, which is used to keep our context
+    # in a clean manner when dealing with Sunspot DSL procs.
+    include Funkify
+
     before_action :permit_params
     skip_before_filter :verify_authenticity_token
 
     def create
       begin
-        @query = QueryBuilder.build(query_params[:name], &build_search_proc(params[:search])).query
+        @query = QueryBuilder.build(
+          query_params[:name],
+          &compose_search_proc(params[:search])
+        )
+          .query
+        
         @query.update_attributes query_params
-        raise "Failed to create search query" unless @query.save
+
+        raise "Failed to create search query" unless @query.valid?
         flash[:success] = "Successfully saved search query!"
-      rescue Exception => e
-        flash[:error] = "#{e.message}. #{@query.errors.full_messages.join(', ') if @query}"
+      rescue StandardError => e
+        flash[:error] = 
+          "#{e.message}. #{@query.errors.full_messages.join(', ') if @query}"
       end
+
       if params[:target_path]
         redirect_to params[:target_path]
       else
@@ -22,8 +34,10 @@ module Search
     def update
       @query = Query.find query_id
       @query.update_attributes query_params
-      QueryBuilder.build(@query, &build_search_proc(params[:search]))
-      if @query.save
+      QueryBuilder.build(@query, &compose_search_proc(params[:search]))
+
+      # #update is currently not actually used
+      if @query.valid?
         render text: 'ok'
       else
         render text: 'not ok'
@@ -33,8 +47,11 @@ module Search
     def destroy
       @query = Query.find query_id
       @query.destroy
+
       respond_to do |format|
-        format.json { render json: {result: @query.destroyed? ? 'success' : 'failure'} }
+        format.json do
+          render json: { result: @query.destroyed? ? 'success' : 'failure' }
+        end
         format.html { render text: 'hi' }
       end
     end
@@ -42,20 +59,14 @@ module Search
     def search
       if query_id
         begin
-          @query = Query.includes(query_models: [:filter, :query_fields]).find(query_id)
-          session[:last_search] = query_id
-          @search = @query.search page: params[:page]
+          assign_search_from_query
         rescue ActiveRecord::RecordNotFound
           return render text: '404!'
         end
       elsif params[:search]
-        session[:last_search] = params[:search]
-        @search = QueryBuilder.search({page: params[:page]}, &build_search_proc(params[:search]))
+        assign_search_from_data
       elsif params[:q]
-        text = params[:q]
-        @search = QueryBuilder.search page: params[:page] do
-          on(:all) { fulltext text }
-        end
+        assign_search_from_fulltext
       else
         return render text: "Can't search without a query of some sort!"
       end
@@ -64,130 +75,218 @@ module Search
 
       respond_to do |format|
         [:html, :js, :json].each do |ext|
-          format.send(ext) { render_for ext, models }
+          format.send(ext) { render_for(models, ext) }
         end
       end
     end
 
     private
-    def render_for(format, models)
-      case models.count
-        when 1
-          plural = models.first.underscore.pluralize
 
-          locals = if params[:locals]
-                     permitted_locals_for(models.first)
-                   else
-                     {}
-                   end
+    def assign_search_from_query
+      @query = Query.includes(
+        query_models: [:filter, :query_fields]
+      )
+        .find(query_id)
 
-          instance_variable_set "@#{plural}", @search.first.results
-          destination = Rails.root.join('app', 'views', plural, "index.#{format}.erb").to_s
-          render destination, locals: locals
-        else
-          render text: "Implement multi-model search results view plz!"
+      session[:last_search] = query_id
+      @search = @query.search page: params[:page]
+    end
+
+    def assign_search_from_data
+      session[:last_search] = params[:search]
+      @search = QueryBuilder.search(
+        { page: params[:page] },
+        &compose_search_proc(params[:search])
+      )
+    end
+
+    def assign_search_from_fulltext
+      text = params[:q]
+
+      @search = QueryBuilder.search page: params[:page] do
+        on(:all) { fulltext text }
       end
     end
 
-    def build_search_proc(search)
-      ### Helper functions are defined in here as lambdas, since the context
-      ### within the returned proc will not be this controller.
+    def render_for(models, format)
+      if models.size == 1
+        plural = models.first.underscore.pluralize
+        locals = permitted_locals_for(models.first)
 
-      # Get any_of/all_of depending on metadata
-      any_or_all_of = -> (metadata) { metadata.include?('any_of') ? :any_of : :all_of }
-      # Get comparator for number filters
-      comparator_for = -> (metadata) do
-        metadata.each do |m|
-          case m
-            when 'greater_than'; return '>'
-            when 'less_than'; return '<'
-          end
-        end
-        '='
+        instance_variable_set "@#{plural}", @search.first.results
+        destination = 
+          Rails
+          .root
+          .join('app', 'views', plural, "index.#{format}.erb").to_s
+        
+        render destination, locals: locals
+      else
+        render text: "Implement multi-model search results view plz!"
       end
+    end
 
+    # This is step 1 to transforming hash filter data to valid
+    # Sunspot DSL procs.
+    # 
+    # Instead of transfering everything into local variables, 
+    # the strategy used here is to pass the augmented context
+    # around as a parameter to our methods. Like so:
+    # 
+    # def search_stuff(num, context)
+    #   context.with(:field).greater_than(num)
+    # end
+    # auto_curry :search_stuff
+    # Model.search(&pass_self_to(search_stuff(100)))
+    # 
+    # The reason this works is because of the Funkify gem's auto_curry.
+    # Because we called search_stuff with 1 parameter, it returned a 
+    # proc that's ready to call it again with that parameter + another.
+    # 
+    # pass_self_to is very simple. It takes a proc as a parameter
+    # and returns a proc. The returned proc is pretty much this:
+    # 
+    # proc { arg.call(self) }
+    # 
+    # So pass_self_to(search_stuff(100)) will call search_stuff(100, self)
+    # inside the context of the search proc if passed as a block parameter.
+    # 
+    # Hopefully that makes sense!
+    # If it doesn't, I suggest checking online and hopping into an irb
+    # session to play around with procs and instance_eval/currying.
+    def compose_search_proc(search)
       default_fulltext = search['fulltext']
 
-      # Turn hash search data into function calls
-      process_attrs = -> (attrs, model, base_scope) do
-        Proc.new do
-          applied_fulltext = false
-          attrs.each do |num, attr|
-            # num will either be 'fulltext' or a number.
-            # If it's a number, attr is a hash with { fieldname=>fieldvalue, posssiblemetadata=>array }
-            # TODO boost fields, dang.
-            if num == 'fulltext'
-              fulltext attr
-              applied_fulltext = true
-            else
-              # puts attr.inspect
+      pass_self_to do |context|
+        search.each do |model, fields|
+          next if model == 'fulltext'
 
-              # Grab a field name and possible metadata
-              field_name = nil; field_value = nil
-              metadata = []
-              group_attrs = nil
-              attr.each do |key, value|
-                case key
-                  when '_metadata'
-                    metadata = value
-                  when '_group'
-                    group_attrs = value
-                  else
-                    field_name = key
-                    field_value = value
-                end
-              end
+          actual_model = actual_model_of model
 
-              # If the value is nil or empty, it means we don't even want to filter on it.
-              next if field_value == 'nil' || (!group_attrs && field_value.nil?) || (field_value.respond_to?(:empty?) && field_value.empty?)
-
-              # If we're in a group, recurse!
-              if group_attrs
-                send(any_or_all_of.call(metadata), &process_attrs.call(group_attrs, model, base_scope))
-              else
-                # Get the search field we're working with, and its associated filter type.
-                field = Field[model, field_name]
-                filter_type = FilterType.of field
-
-                # The field value will be a string; this will convert it into the proper
-                # Ruby type if possible.
-                field_value = filter_type.assure_value(field_value)
-
-                args = { field: field_name, value: field_value, negate: metadata.include?('negate') }
-                args.merge!(comparator: comparator_for.call(metadata)) if filter_type.uses_comparator?
-
-                filter_type.new(args).apply(self, base_scope)
-              end
-            end
-          end
-          # Apply default fulltext if we didn't run into a model-specific fulltext (and if there is a default set)
-          fulltext(default_fulltext) unless applied_fulltext || !default_fulltext
+          process_fields(model, fields, context, context)
+          context.on(
+            actual_model,
+            # Here we are calling initial_process with one less parameter
+            # than it's defined to take. Because it is auto curried, 
+            # rather than raising an error, it returns a proc that will
+            # take one parameter, and use it as the remaining argument.
+            &pass_self_to(initial_process(default_fulltext, model, fields))
+            # And of course, pass_self_to returns a proc that will complete
+            # the argument requirement for initial_process when executed.
+          )
         end
       end
+    end
 
-      # The actual returned proc
-      Proc.new do
-        search.each do |model, attrs|
-          next if model == 'fulltext'
-          actual_model = case model
-                           when Symbol, String
-                             Kernel.const_get(model.camelize)
-                           when Class
-                             model
-                         end
+    # This adds the proper group block to the context, and bounces
+    # execution back to process_fields to apply the contents of the
+    # group.
+    def process_group(model, base_scope, field_hash, context)
+      group_func = metadata?(field_hash, 'any_of') ? :any_of : :all_of
 
-          unless actual_model < ActiveRecord::Base
-            raise SearchException.new "#{actual_model} is not a model."
-          end
+      context.send(
+        group_func,
+        &pass_self_to(
+          process_fields(nil, model, base_scope, field_hash['_group'])
+        )
+      )
+    end
 
-          unless actual_model.respond_to? :searchable
-            raise SearchException.new "#{actual_model.inspect} is not searchable."
-          end
+    # This is the star of the show. It parses the hash, constructs the
+    # filter, and applies it with the given contexts.
+    def apply_filter(model, base_scope, field_hash, context)
+      field_name, string_value = extract_field(field_hash)
+      metadata = field_hash['_metadata']
 
-          on actual_model do
-            instance_eval(&process_attrs.call(attrs, actual_model, self))
-          end
+      return if field_is_nil? string_value
+
+      field       = Field[model, field_name]
+      filter_type = FilterType.of field
+      field_value = filter_type.assure_value(string_value)
+
+      filter = {
+        field:      field_name,
+        value:      field_value,
+        negate:     metadata.try(:include?, 'negate'),
+      }
+      if filter_type.uses_comparator?
+        filter[:comparator] = comparator_for(metadata)
+      end
+
+      filter_type.new(filter).apply(context, base_scope)
+    end
+
+    # This decides whether the hash is asking for a filter, a group, or
+    # a specific fulltext.
+    def process_fields(default_fulltext, model, base_scope, fields, context)
+      applied_fulltext = false
+
+      fields.each do |num, field|
+        if num == 'fulltext'
+          base_scope.fulltext field
+          applied_fulltext = true
+          next
         end
+
+        args = [model, base_scope, field, context]
+        field['_group'] ? process_group(*args) : apply_filter(*args)
+      end
+
+      if !applied_fulltext && default_fulltext
+        context.fulltext default_fulltext
+      end
+    end
+
+    # At first we only have one context, which is both the base and the current
+    def initial_process(default_fulltext, model, fields, context)
+      process_fields(default_fulltext, model, context, fields, context)
+    end
+
+    auto_curry :process_fields, :initial_process
+
+    def comparator_for(metadata)
+      return if metadata.nil?
+
+      metadata.each do |m|
+        case m
+          when 'greater_than' then return '>'
+          when 'less_than'    then return '<'
+        end
+      end
+      '='
+    end
+
+    def extract_field(field)
+      field.each do |name, value|
+        return name, value unless name.starts_with?('_')
+      end
+      nil
+    end
+
+    def metadata?(fields, key)
+      fields['_metadata'].try(:include?, key)
+    end
+
+    def field_is_nil?(field_value)
+      field_value.nil?     ||
+      field_value == 'nil' || 
+      (field_value.respond_to?(:empty?) && field_value.empty?)
+    end
+
+    # Using this with currying, we never have to perform logic
+    # inside of another context (i.e. Sunspot's DSL blocks).
+    # 
+    # The tiny proc returned by this method is the only thing that actually
+    # happens inside the augmented context.
+    def pass_self_to(passed = nil, &block)
+      proc { (passed || block).call(self) }
+    end
+
+    def actual_model_of(model)
+      case model
+      when Symbol, String
+        Kernel.const_get(model.camelize)
+      when Class
+        model
       end
     end
 
@@ -208,6 +307,8 @@ module Search
     end
 
     def permitted_locals_for(model)
+      return {} unless params[:locals]
+
       controller_name = "#{model.pluralize.camelize}Controller"
       controller = Kernel.const_get controller_name
 
@@ -238,7 +339,8 @@ module Search
           Unpermitted local variable passed through search: #{name}.
           If you actually want to pass it, please include :#{name} in 
           the array returned by #{controller_name}.permitted_search_locals
-          (Currently #{Kernel.const_get(controller_name).permitted_search_locals.inspect})
+          (Currently #{Kernel.const_get(controller_name)
+            .permitted_search_locals.inspect})
         }
       end
     end

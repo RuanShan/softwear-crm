@@ -12,7 +12,9 @@ module GeneralHelpers
   		# puts "#{payload[:name]}:\t#{payload[:sql]}\n\n"
   		count += 1 unless payload[:name].in? %w[ CACHE SCHEMA ]
   	}
-  	ActiveSupport::Notifications.subscribed counter_func, "sql.active_record", &block
+  	ActiveSupport::Notifications.subscribed(
+      counter_func, "sql.active_record", &block
+    )
   	count
   end
 
@@ -35,5 +37,15 @@ module GeneralHelpers
     failure_message do |subject|
       "The ancestors of #{subject} do not include #{inherited.inspect}"
     end
+  end
+end
+
+class ReasonableHash < Hash
+  def initialize(h)
+    merge!(h)
+  end
+
+  def [](key)
+    super(key.to_s) || super(key.to_sym)
   end
 end

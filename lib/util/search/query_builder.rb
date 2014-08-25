@@ -170,7 +170,7 @@ module Search
         negate = name == :without
         field = field_of field_name
         if field.nil?
-          raise SearchException.new "#{@model.name} has no field called #{field_name}."
+          raise SearchException, "#{@model.name} has no field called #{field_name}."
         end
 
         case args.count
@@ -207,27 +207,32 @@ module Search
     # phrase filters.
     def keywords(text, &block)
       phrase = PendingPhrase.new(&block)
-      case phrase.grab_fields.count
+      fields = phrase.grab_fields
+      
+      case fields.size
       when 0
-        raise SearchException.new "Phrase filters must specify a field"
+        raise SearchException, "Phrase filters must specify a field"
       when 1
-        filter = Filter.new(PhraseFilter, field: phrase.grab_fields.first, value: PhraseFilter.assure_value(text))
+        filter = Filter.new(
+          PhraseFilter,
+          field: fields.first,
+          value: PhraseFilter.assure_value(text)
+        )
         @group.filters << filter
       else
-        raise SearchException.new "Phrase filters can currently only handle 1 field"
+        raise SearchException, "Phrase filters can currently only handle 1 field"
       end
     end
 
     def method_missing(name, *args, &block)
-      raise SearchException.new "`#{name}' is unsupported by QueryBuilder"
+      raise SearchException, "`#{name}' is unsupported by QueryBuilder"
     end
 
     private
     def type_of(field)
-      field_of(field).type_names.reject do |e|
-        e == :text
-      end.first
+      field_of(field).type_names.reject { |e| e == :text }.first
     end
+
     def field_of(field)
       Field[@model.name, field]
     end

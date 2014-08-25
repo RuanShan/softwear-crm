@@ -5,14 +5,15 @@ describe Search::NumberFilter, search_spec: true do
 
   it { is_expected.to have_db_column :field }
   it { is_expected.to have_db_column :comparator }
-  it { is_expected.to ensure_inclusion_of(:comparator).in_array ['>', '<', '='] }
+  it { is_expected.to ensure_inclusion_of(:comparator)
+                      .in_array ['>', '<', '='] }
   it { is_expected.to have_db_column :negate }
   it { is_expected.to have_db_column :value }
 
-  let(:query) { create :query }
-  let(:order_model) { create :search_order_model, query_id: query.id }
+  let(:query) { build_stubbed :query }
+  let(:order_model) { build_stubbed :search_order_model, query_id: query.id }
 
-  let!(:filter) { create :filter_type_number,
+  let!(:filter) { build_stubbed :filter_type_number,
     value: 10,
     comparator: '>',
     field: 'commission_amount' }
@@ -23,27 +24,33 @@ describe Search::NumberFilter, search_spec: true do
     expect(Search::NumberFilter.search_types).to include :integer
   end
 
-  it 'applies properly with negate set to false' do
-    filter.negate = false
-    filter.comparator = '='
-    filter.save
+  describe '#apply' do
+    context 'when negated' do
+      before { filter.negate = true }
 
-    Order.search do
-      filter.apply(self)
+      it 'applies a sunspot :without filter on its field' do
+        Order.search do
+          filter.apply(self)
+        end
+        expect(Sunspot.session).to have_search_params(:without) {
+          without(:commission_amount).greater_than(10)
+        }
+      end
     end
-    expect(Sunspot.session).to have_search_params(:with, :commission_amount, 10)
-  end
 
-  it 'iapplies properly with negate set to true' do
-    filter.negate = true
-    filter.save
+    context 'when not negated' do
+      before { filter.negate = false }
 
-    Order.search do
-      filter.apply(self)
+      it 'applies a sunspot :with filter on its field' do
+        filter.comparator = '='
+
+        Order.search do
+          filter.apply(self)
+        end
+        expect(Sunspot.session)
+          .to have_search_params(:with, :commission_amount, 10)
+      end
     end
-    expect(Sunspot.session).to have_search_params(:without) {
-      without(:commission_amount).greater_than(10)
-    }
   end
 
   it 'defaults the comparator to "="' do
@@ -51,15 +58,14 @@ describe Search::NumberFilter, search_spec: true do
     expect(filter.comparator).to eq '='
   end
 
-  context 'with orders' do
+  context 'searching', solr: true do
     let!(:order1) { create :order_with_job, commission_amount: 10 }
     let!(:order2) { create :order_with_job, commission_amount: 5 }
     let!(:order3) { create :order_with_job, commission_amount: 1 }
 
-    it 'retrieves the correct ones', solr: true do
+    it 'retrieves the correct records' do
       filter.value = 10
       filter.comparator = '<'
-      filter.save
       results = assure_solr_search do
         Order.search do
           filter.apply(self)
