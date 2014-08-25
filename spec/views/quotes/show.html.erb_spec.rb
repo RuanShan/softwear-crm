@@ -28,19 +28,23 @@ describe 'quotes/show.html.erb', quote_spec: true do
   it 'should display a div containing the Quote Details' do
     expect(rendered).to have_css('h2', text: 'Quote Details')
     expect(rendered).to have_css('label', text: 'Name:')
-    expect(rendered).to have_css('label', text: 'Valid Until Date:')
-    expect(rendered).to have_css('label', text: 'Estimated Delivery Date:')
+    expect(rendered).to have_css('label', text: 'Valid Until:')
+    expect(rendered).to have_css('label', text: 'Estimated Delivery:')
     expect(rendered).to have_css('label', text: 'Salesperson:')
     expect(rendered).to have_css('label', text: 'Store:')
 
     expect(rendered).to have_content(quote.name)
-    expect(rendered).to have_content(quote.valid_until_date)
-    expect(rendered).to have_content(quote.estimated_delivery_date)
+    expect(rendered).to have_content(display_time(quote.valid_until_date))
+    expect(rendered).to have_content(display_time(quote.estimated_delivery_date))
     expect(rendered).to have_content(quote.salesperson.full_name)
     expect(rendered).to have_content(quote.store.name)
   end
 
   it 'should contain a link to initiate a print' do
     expect(rendered).to have_css('a', text: 'Print')
+  end
+
+  it 'should contain a button to email a customer' do
+    expect(rendered).to have_link('Email Quote')
   end
 end

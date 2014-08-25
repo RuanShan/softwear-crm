@@ -13,7 +13,7 @@
       </thead>
 
       <tbody>
-        <% @quote.standard_line_items.each do |li| %>
+        <% quote.standard_line_items.each do |li| %>
           <tr>
             <td class="col-sm-4"><%= li.name %></td>
             <td class="col-sm-4"><%= li.description %></td>
@@ -26,26 +26,26 @@
         <tr id="subtotal">
           <td></td><td></td><td></td>
           <td><strong>Subtotal:</strong></td>
-          <td><%= number_to_currency(@quote.line_items_subtotal) %></td>
+          <td><%= number_to_currency(quote.line_items_subtotal) %></td>
         </tr>
 
         <tr id="tax">
           <td></td><td></td><td></td>
           <td><strong>Tax:</strong></td>
-          <td><%= number_to_currency(@quote.line_items_total_tax) %></td>
+          <td><%= number_to_currency(quote.line_items_total_tax) %></td>
         </tr>
 
         <tr id="total">
           <td></td><td></td><td></td>
           <td><strong>Total:</strong></td>
-          <td><%= number_to_currency(@quote.line_items_total_with_tax) %></td>
+          <td><%= number_to_currency(quote.line_items_total_with_tax) %></td>
         </tr>
       </tbody>
     </table>
   </div>
 </div>
-<% #TODO remove inline CSS %>
-<div class="visible-print" style="page-break-inside: avoid;">
+
+<div class="visible-print">
   <h2><strong>Line Item</strong> Information</h2>
 
   <div class="table">
@@ -61,8 +61,8 @@
       </thead>
 
       <tbody>
-        <% @quote.standard_line_items.each do |li| %>
-          <tr>
+        <% quote.standard_line_items.each do |li| %>
+          <tr class="no-break">
             <td class="col-sm-4"><%= li.name %></td>
             <td class="col-sm-4"><%= li.description %></td>
             <td class="col-sm-1"><%= number_to_currency(li.unit_price) %></td>
@@ -71,23 +71,31 @@
           </tr>
         <% end %>
 
-        <tr id="subtotal">
-          <td></td><td></td><td></td>
-          <td><strong>Subtotal:</strong></td>
-          <td><%= number_to_currency(@quote.line_items_subtotal) %></td>
-        </tr>
+        <span class="no-break">
+          <tr id="subtotal">
+            <td></td><td></td><td></td>
+            <td><strong>Subtotal:</strong></td>
+            <td><%= number_to_currency(quote.line_items_subtotal) %></td>
+          </tr>
 
-        <tr id="tax">
-          <td></td><td></td><td></td>
-          <td><strong>Tax:</strong></td>
-          <td><%= number_to_currency(@quote.line_items_total_tax) %></td>
-        </tr>
+          <tr id="tax">
+            <td></td><td></td><td></td>
+            <td><strong>Tax:</strong></td>
+            <td><%= number_to_currency(quote.line_items_total_tax) %></td>
+          </tr>
 
-        <tr id="total">
-          <td></td><td></td><td></td>
-          <td><strong>Total:</strong></td>
-          <td><%= number_to_currency(@quote.line_items_total_with_tax) %></td>
-        </tr>
+          <tr id="shipping">
+            <td></td><td></td><td></td>
+            <td><strong>Tax:</strong></td>
+            <td><%= number_to_currency(quote.line_items_total_tax) %></td>
+          </tr>
+
+          <tr id="total">
+            <td></td><td></td><td></td>
+            <td><strong>Total:</strong></td>
+            <td><%= number_to_currency(quote.line_items_total_with_tax) %></td>
+          </tr>
+         </span>
       </tbody>
     </table>
   </div>

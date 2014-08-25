@@ -25,7 +25,7 @@ class LineItem < ActiveRecord::Base
   validate :imprintable_variant_exists, if: :imprintable?
   validates :name, presence: true, unless: :imprintable?
   validates :quantity, presence: true
-  validates :unit_price, presence: true
+  validates :unit_price, presence: true, price: true
 
   def self.create_imprintables(line_itemable, imprintable, color, options = {})
     new_imprintables.each(&:save)

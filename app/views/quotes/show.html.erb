@@ -1,11 +1,16 @@
 <div class="box-info full" id="printable">
-  <div class="page-heading animated fadeInDownBig col-lg-9">
+  <div class="page-heading col-lg-10">
     <h1><strong>Ann Arbor T-Shirt Company</strong> Quote</h1>
   </div>
 
-  <div class="col-sm-3 text-right hidden-print">
-    <% #TODO remove inline javascript %>
-    <%= link_to 'Print', '#', onclick: 'window.print();return false;', class: 'btn btn-default' %>
+  <div class="col-sm-1 text-right hidden-print">
+    <%= link_to 'Print', '#', class: 'btn btn-default', id: 'print-button' %>
+  </div>
+
+  <div class="col-sm-1 text-right hidden-print">
+    <%= link_to 'Email Quote', quote_populate_email_modal_path(@quote.id),
+                 class: 'btn btn-default', remote: true,
+                'data-toggle' => 'modal', 'data-target' => '#contentModal' %>
   </div>
 </div>
 
@@ -31,8 +36,9 @@
 
       <div>
         <p><label>Name:</label> <%= @quote.name %></p>
-        <p><label>Valid Until Date:</label> <%= @quote.valid_until_date %></p>
-        <p><label>Estimated Delivery Date:</label> <%= @quote.estimated_delivery_date %></p>
+        <p><label>Valid Until:</label> <%= display_time(@quote.valid_until_date) %></p>
+        <p><label>Estimated Delivery:</label> <%= display_time(@quote.estimated_delivery_date) %></p>
+        <p><label>Shipping: </label> <%= number_to_currency(@quote.shipping) %></p>
         <p><label>Salesperson:</label> <%= @quote.salesperson.full_name %></p>
         <p><label>Store:</label> <%= @quote.store.name %></p>
       </div>
@@ -42,6 +48,6 @@
 
 <div class="box-info">
   <div class="box-info">
-    <%= render partial: 'quotes/line_item_information' %>
+    <%= render partial: 'quotes/line_item_information', locals: { quote: @quote } %>
   </div>
 </div>

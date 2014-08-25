@@ -41,7 +41,7 @@ end
 # Load seeds from a file in the ./seeds/ folder
 # load_seeds_for User will load a file in ./seeds/users.rb
 def load_seeds_for(seeds)
-  filename = ""
+  filename = ''
   if seeds.respond_to? :name
     filename = seeds.name.underscore.pluralize
   else
@@ -50,7 +50,7 @@ def load_seeds_for(seeds)
   path = Rails.root.join('db', 'seeds', "#{filename}.rb").to_s
   puts "====From #{path}===="
   load path
-  puts "===================="
+  puts '===================='
 end
 
 # USER SEEDING
@@ -82,10 +82,30 @@ else
 	puts "Default user already exists! Email is admin@softwearcrm.com and password is #{pw}"
 end
 create_records([
-  { first_name: 'Ricky', last_name: 'Winowiecki', email: 'something@somethingelse.com', password: 'something' },
-  { first_name: 'Nigel', last_name: 'Baillie', email: 'somethingelse@something.com', password: 'something' },
-  { first_name: 'Nicholas', last_name: 'Catoni', email: 'some@thing.com', password: 'something' },
-  { first_name: 'David', last_name: 'Suckstorff', email: 'something@else.com', password: 'something' }
+  {
+    first_name: 'Ricky',
+    last_name: 'Winowiecki',
+    email: 'something@somethingelse.com',
+    password: 'something'
+  },
+  {
+    first_name: 'Nigel',
+    last_name: 'Baillie',
+    email: 'somethingelse@something.com',
+    password: 'something'
+  },
+  {
+    first_name: 'Nicholas',
+    last_name: 'Catoni',
+    email: 'some@thing.com',
+    password: 'something'
+  },
+  {
+    first_name: 'David',
+    last_name: 'Suckstorff',
+    email: 'something@else.com',
+    password: 'something'
+  }
 ], User)
 
 
@@ -102,8 +122,14 @@ create_records([
 # ----------------
 
 create_records([
-    { name: 'USPS First Class', tracking_url: 'https://tools.usps.com/go/TrackConfirmAction!input.action'},
-    { name: 'UPS Ground', tracking_url: 'http://www.ups.com/tracking/tracking.html'}
+    {
+      name: 'USPS First Class',
+      tracking_url: 'https://tools.usps.com/go/TrackConfirmAction!input.action'
+    },
+    {
+      name: 'UPS Ground',
+      tracking_url: 'http://www.ups.com/tracking/tracking.html'
+    }
 ], ShippingMethod)
 
 # ImprintMethod SEEDING

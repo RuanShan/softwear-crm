@@ -1,0 +1,36 @@
+@media print {
+    .print {
+        display: block;
+    }
+
+    .shrink-me {
+        max-width: 300px;
+        display: inline-block;
+    }
+
+    .box-info {
+        margin: 0;
+    }
+
+    p {
+        margin: 0;
+    }
+
+    @page {
+        margin: 0.5cm;
+    }
+
+    .no-print, .no-print * {
+       display: none !important;
+    }
+}
+
+@media screen {
+    .print, .print * {
+        display: none !important;
+    }
+}
+
+.no-break {
+    page-break-inside: avoid;
+}

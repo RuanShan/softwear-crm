@@ -8,19 +8,12 @@ describe 'colors/_form.html.erb', color_spec: true do
     render partial: 'colors/form', locals: { color: Color.new, f: @f }
   end
 
-  it 'has text_field for name' do
-    expect_field_within_form(Color, :name)
-  end
-
-  it 'has field for sku' do
-    expect_field_within_form(Color, :sku)
-  end
-
-  it 'has field for retail' do
-    expect_field_within_form(Color, :sku)
-  end
-
-  it 'has a submit button' do
-    expect(rendered).to have_selector('button')
+  it 'has fields for name, sku, retail and a submit button' do
+    within_form_for Color, noscope: true do
+      expect(rendered).to have_field_for :name
+      expect(rendered).to have_field_for :sku
+      expect(rendered).to have_field_for :retail
+      expect(rendered).to have_selector('button')
+    end
   end
 end

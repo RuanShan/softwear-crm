@@ -21,6 +21,7 @@ class Quote < ActiveRecord::Base
   validates :salesperson, presence: true
   validates :store, presence: true
   validates :valid_until_date, presence: true
+  validates :shipping, price: true
 
   def all_activities
     # TODO: use string literal? also general style

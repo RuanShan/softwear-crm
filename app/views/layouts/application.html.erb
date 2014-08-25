@@ -1,12 +1,12 @@
 <!DOCTYPE html>
 <html>
-<head>
+<head class="no-print">
     <%= render partial: 'shared/head' %>
 </head>
 
 <body class="tooltips">
 
-<div id="loading">
+<div class="no-print" id="loading">
   <div class="loading-inner">
     <div class="spinner">
       <div class="cube1"></div>
@@ -15,7 +15,7 @@
   </div>
 </div>
 
-<div class="modal fade" id="js-ajax-loading" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+<div class="modal fade no-print" id="js-ajax-loading" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
   <div class="modal-dialog">
     <div class="modal-content">
       <div class="modal-body">
@@ -32,17 +32,16 @@
   </div>
 </div>
 
-
-
-
-
 <div class="container">
 
-    <%= render partial: 'shared/sidebar', locals: { current_url: @current_url, current_action: @current_action } %>
+    <%= render partial: 'shared/sidebar',
+               locals: { current_url: @current_url, current_action: @current_action },
+               html: { class: 'no-print' } %>
 
     <div class="right content-page">
 
-        <%= render partial: 'shared/content_header' %>
+        <%= render partial: 'shared/content_header',
+                   html: { class: 'no-print' } %>
 
         <div class="body content rows scroll-y">
             <%= yield %>
@@ -55,7 +54,6 @@
     <%= render partial: 'shared/modal_timeout' %>
 
 </div>
-
 
 </body>
 <% if Rails.env.development? %>
@@ -74,4 +72,3 @@
     </script>
 <% end %>
 </html>
-

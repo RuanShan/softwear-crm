@@ -5,9 +5,8 @@ describe 'quotes/_line_item_information.html.erb', quote_spec: true do
   let!(:line_item) { build_stubbed(:non_imprintable_line_item) }
 
   before(:each) do
-    assign(:quote, quote)
     allow(quote).to receive(:standard_line_items).and_return([line_item])
-    render partial: 'quotes/line_item_information'
+    render partial: 'quotes/line_item_information', locals: { quote: quote }
   end
 
   it 'should have a table header with line item attributes' do
@@ -18,7 +17,7 @@ describe 'quotes/_line_item_information.html.erb', quote_spec: true do
     expect(rendered).to have_css('th', text: 'Totals')
   end
 
-  it 'should have appropriate td\'ss for line item attributes' do
+  it 'should have appropriate td\'s for line item attributes' do
     expect(rendered).to have_css('td', text: quote.standard_line_items.first.name)
     expect(rendered).to have_css('td', text: quote.standard_line_items.first.description)
     expect(rendered).to have_css('td', text: number_to_currency(quote.standard_line_items.first.unit_price))

@@ -22,6 +22,14 @@ describe Quote, quote_spec: true do
     it { is_expected.to validate_presence_of(:salesperson) }
     it { is_expected.to validate_presence_of(:store) }
     it { is_expected.to validate_presence_of(:valid_until_date) }
+
+    describe 'shipping' do
+      it { is_expected.to allow_value('123.32').for :shipping }
+      it { is_expected.to allow_value('0').for :shipping }
+      it { is_expected.to allow_value('9').for :shipping }
+      it { is_expected.to allow_value('2.4').for :shipping }
+      it { is_expected.to_not allow_value('21.321').for :shipping }
+    end
   end
 
   describe 'instance methods' do

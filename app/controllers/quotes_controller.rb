@@ -1,5 +1,6 @@
 class QuotesController < InheritedResources::Base
   before_filter :format_dates, only: [:create, :update]
+  before_action :set_current_action
   require 'mail'
 
   def new
@@ -32,7 +33,7 @@ class QuotesController < InheritedResources::Base
                                  locals: { line_items: @quote.standard_line_items })
         }
       end
-      format.html { render 'quotes/show', layout: 'no_overlay' }
+      format.html
     end
   end
 
@@ -94,6 +95,10 @@ class QuotesController < InheritedResources::Base
 
   private
 
+  def set_current_action
+    @current_action = 'quotes'
+  end
+
   def format_dates
     unless params[:quote].nil? or params[:quote][:valid_until_date].nil?
       valid_until_date = params[:quote][:valid_until_date]
@@ -115,7 +120,7 @@ class QuotesController < InheritedResources::Base
            Net::SMTPServerBusy,
            Net::SMTPSyntaxError,
            Net::SMTPFatalError,
-           Net::SMTPUnknownError => e
+           Net::SMTPUnknownError => _e
       flash[:notice] = 'Your email was unable to be sent'
       flash[:success] = nil
       @activity = PublicActivity::Activity.find_by_trackable_id(params[:quote_id])
@@ -127,7 +132,7 @@ class QuotesController < InheritedResources::Base
     params.permit(quote: [
                    :email, :phone_number, :first_name, :last_name, :company,
                    :twitter, :name, :valid_until_date, :estimated_delivery_date,
-                   :salesperson_id, :store_id,
+                   :salesperson_id, :store_id, :shipping,
                     line_items_attributes: [
                      :name, :quantity, :taxable, :description, :id,
                      :imprintable_variant_id, :unit_price, :_destroy
