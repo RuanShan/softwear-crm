@@ -9,7 +9,7 @@
     <div class="col-sm-1"></div>
   </div>
   <% line_items.each do |l| %>
-    <% #TODO inline CSS %>
+    <% # TODO inline CSS %>
     <div id="line-item-<%=l.id%>" class="row" style="margin-top: 10px; border-bottom: solid 1px #dddddd;">
       <%= render partial: 'line_items/standard_view_entry', locals: { line_item: l } %>
     </div>

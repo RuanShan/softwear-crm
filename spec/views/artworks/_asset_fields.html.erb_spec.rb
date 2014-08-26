@@ -18,7 +18,7 @@ describe 'artworks/_asset_fields.html.erb', artwork_spec: true do
     let!(:assets) { create(:valid_asset) }
 
     it 'displays the name of the file and an editable description field' do
-      form_for(artwork, url: artworks_path(artwork)) {|f| f.fields_for(assets, multipart: true) {|ff| @f = ff } }
+      form_for(artwork, url: artworks_path(artwork)) { |f| f.fields_for(assets, multipart: true) { |ff| @f = ff } }
       render partial: 'artworks/asset_fields', locals: { f: @f, file_constraints: 'File constraints', object: assets, text: 'Text', title: 'Title' }
       within_form_for Asset do
         expect(rendered).to have_css('div', text: "#{assets.file_file_name}")

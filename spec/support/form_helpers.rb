@@ -77,8 +77,8 @@ module FormHelpers
         end
         !result.empty?
       end
-      failure_message do |page|
-        "Found no errors for #{@@model_form_context}[#{field_name}] in page: #{page}"
+      failure_message do |page_info|
+        "Found no errors for #{@@model_form_context}[#{field_name}] in page: #{page_info}"
       end
     end
   end

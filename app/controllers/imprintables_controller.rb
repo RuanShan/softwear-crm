@@ -4,7 +4,7 @@ class ImprintablesController < InheritedResources::Base
   def index
     super do
       # TODO: ternary with parenthesis
-      @imprintables = (params[:tag]) ? (Imprintable.tagged_with(params[:tag])) : (Imprintable.all.page(params[:page]))
+      @imprintables = params[:tag] ? (Imprintable.tagged_with(params[:tag])) : (Imprintable.all.page(params[:page]))
     end
   end
 

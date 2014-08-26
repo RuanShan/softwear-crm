@@ -226,7 +226,7 @@ describe Quote, quote_spec: true do
       end
     end
 
-    #TODO isn't that slow as is, but could possibly refactor to not use create
+    # TODO isn't that slow as is, but could possibly refactor to not use create
     context 'has 2 taxable and 2 non-taxable line items', wip: true do
       let!(:line_item) { create(:non_imprintable_line_item) }
       let!(:quote) { create(:valid_quote) }

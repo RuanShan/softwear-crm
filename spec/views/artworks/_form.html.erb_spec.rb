@@ -4,7 +4,7 @@ describe 'artworks/_form.html.erb', artwork_spec: true do
   let!(:artwork) { build_stubbed(:blank_artwork) }
 
   it 'displays the correct form fields for artworks' do
-    form_for(artwork, url: artworks_path(artwork)) {|f| @f = f }
+    form_for(artwork, url: artworks_path(artwork)) { |f| @f = f }
     render partial: 'artworks/form', locals: { artwork: Artwork.new, current_user: build_stubbed(:blank_user), f: @f }
     within_form_for Artwork do
       expect(rendered).to have_selector('input#artwork_name')

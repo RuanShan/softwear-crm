@@ -90,6 +90,5 @@ class ProofsController < InheritedResources::Base
                     :id, :order_id, :status, :approve_by, :approved_at, artwork_ids: [],
                     mockups_attributes: [:file, :description, :id, :_destroy]
                   ])
-
   end
 end

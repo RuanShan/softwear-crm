@@ -131,7 +131,7 @@ describe Imprintable, imprintable_spec: true do
     end
   end
 
-  #TODO implement this
+  # TODO implement this
   describe '#determine_sizes'
 
   describe '#name' do

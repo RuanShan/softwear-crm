@@ -6,7 +6,7 @@ class Order < ActiveRecord::Base
   is_activity_recipient
 
   searchable do
-    text :name, :email, :firstname, :lastname, 
+    text :name, :email, :firstname, :lastname,
          :company, :twitter, :terms, :delivery_method
 
     text :jobs do
@@ -14,7 +14,7 @@ class Order < ActiveRecord::Base
     end
 
     [
-      :firstname, :lastname, :email, :terms, 
+      :firstname, :lastname, :email, :terms,
       :delivery_method, :company, :phone_number
     ]
       .each { |f| string f }
@@ -54,23 +54,23 @@ class Order < ActiveRecord::Base
 
   accepts_nested_attributes_for :payments
 
-  #TODO: custom validator for phone?
+  # TODO: custom validator for phone?
   validates :delivery_method,
             presence: true,
             inclusion: {
                 in: VALID_DELIVERY_METHODS,
                 message: 'Invalid delivery method'
             }
-  validates :email, 
-            presence: true, 
+  validates :email,
+            presence: true,
             format: { with: /\A([^@\s]+)@((?:[-a-z0-9]+\.)+[a-z]{2,})\Z/i }
   validates :firstname, presence: true
   validates :lastname, presence: true
   validates :name, presence: true
-  validates :phone_number, 
-            format: { 
-              with: /\d{3}-\d{3}-\d{4}/, 
-              message: 'is incorrectly formatted, use 000-000-0000' 
+  validates :phone_number,
+            format: {
+              with: /\d{3}-\d{3}-\d{4}/,
+              message: 'is incorrectly formatted, use 000-000-0000'
             }
   validates :salesperson, presence: true
   validates :store, presence: true

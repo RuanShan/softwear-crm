@@ -15,7 +15,7 @@ describe PrintLocation do
     it { is_expected.to validate_numericality_of (:max_height) }
     it { is_expected.to validate_numericality_of(:max_width) }
     it { is_expected.to validate_presence_of(:name) }
-    #TODO Nigel thinks the rspec shoulda matchers just aren't working with his uniqueness/scoped/deleted_at patch, "Shoulda matchers is busted"
+    # TODO Nigel thinks the rspec shoulda matchers just aren't working with his uniqueness/scoped/deleted_at patch, "Shoulda matchers is busted"
     # it { is_expected.to validate_uniqueness_of(:name).scoped_to(:imprint_method) }
   end
 end

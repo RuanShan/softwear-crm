@@ -11,7 +11,7 @@ class ArtworkRequestsController < InheritedResources::Base
     end
   end
 
-  #TODO couldn't figure out a way to refactor this, but could possibly be too much for a controller?
+  # TODO couldn't figure out a way to refactor this, but could possibly be too much for a controller?
   def update
     unless params[:artwork_id].nil?
       @artwork_request = ArtworkRequest.find(params[:id])

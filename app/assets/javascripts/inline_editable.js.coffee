@@ -1,7 +1,7 @@
-#TODO comment format, review for possible refactor
+# TODO comment format, review for possible refactor
 
 # Any span with the inline-field class will be editable without
-# the text field background, and updated automatically via AJAX. 
+# the text field background, and updated automatically via AJAX.
 # There is a helper method for inline fields in the LancengFormBuilder.
 
 @registeredInlines = []
@@ -45,13 +45,13 @@ updateDelay = 1000
       changedSinceAjax = false
 
       # Create a timer associated with this particular field
-      timer = $.timer -> 
+      timer = $.timer ->
         timer.stop()
 
         # We want to remove certain whitespaces from the field.
         # Unfortunately, the caret is reset if we do this while
         # the user might be editing so we make sure we only
-        # clear the whitespace once the field is no longer in 
+        # clear the whitespace once the field is no longer in
         # focus.
         if inter != null
           clearInterval inter
@@ -82,7 +82,7 @@ updateDelay = 1000
 
         ajax = $.ajax
           type: 'PUT',
-          url: "/#{self.resourcePlural}/#{self.resourceId}", 
+          url: "/#{self.resourcePlural}/#{self.resourceId}",
           data: params,
           dataType: 'json'
         changedSinceAjax = false
@@ -105,13 +105,13 @@ updateDelay = 1000
             console.log "Error updating #{self.resourceName}[#{self.field}]"
             # Add error stuff
             $this.before $('<div/>',
-              class: 'error', 
+              class: 'error',
               for:   self.getErrorFor()
             )
             container = $(".error[for='#{self.getErrorFor()}']")
             $this.wrap $("<div/>", class: 'field_with_errors')
-            $('body').children().last().after $("<div/>", 
-              class: 'error-modal', 
+            $('body').children().last().after $("<div/>",
+              class: 'error-modal',
               for: self.getErrorFor())
             $(".error-modal[for='#{self.getErrorFor()}']").append $(response.modal)
             $('#errorsModal').modal 'show'
@@ -122,11 +122,11 @@ updateDelay = 1000
                   class: 'text-danger'
                   text:  "#{capitalize field} #{error}"
                 )
-            
+
             callback(false) for callback in inlineEditableCallbacks
 
         ajax.fail (jqXHR, textStatus) ->
-          alert "Something went wrong with the server and 
+          alert "Something went wrong with the server and
                your changes couldn't be saved."
 
       $(this).keyup ->
@@ -144,4 +144,3 @@ updateDelay = 1000
 
 
 $(window).load refresh_inlines
-  
