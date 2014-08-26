@@ -89,7 +89,7 @@ describe Imprintable, imprintable_spec: true do
   end
 
   describe '#all_categories' do
-    let(:imprintable){ build_stubbed(:blank_imprintable,
+    let(:imprintable) { build_stubbed(:blank_imprintable,
                                        imprintable_categories: [build_stubbed(:blank_imprintable_category, name: 'Category')])}
 
     it 'returns all of the categories for the imprintable' do

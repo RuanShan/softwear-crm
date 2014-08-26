@@ -1,12 +1,12 @@
 require 'spec_helper'
 
 describe 'artwork_requests/_asset_fields.html.erb', artwork_request_spec: true do
-  let!(:artwork_request){ build_stubbed(:blank_artwork_request) }
-  let!(:order){ build_stubbed(:blank_order) }
+  let!(:artwork_request) { build_stubbed(:blank_artwork_request) }
+  let!(:order) { build_stubbed(:blank_order) }
 
   context 'no asset exists yet' do
     it 'displays the correct form fields for assets' do
-      form_for(artwork_request, url: order_artwork_requests_path(order, artwork_request)){ |f| f.fields_for(Asset.new, multipart: true){ |ff| @f = ff } }
+      form_for(artwork_request, url: order_artwork_requests_path(order, artwork_request)) { |f| f.fields_for(Asset.new, multipart: true) { |ff| @f = ff } }
       render partial: 'artwork_requests/asset_fields', locals: { f: @f, object: Asset.new }
       within_form_for Asset do
         expect(rendered).to have_selector('input#artwork_request_asset_file')
@@ -18,10 +18,10 @@ describe 'artwork_requests/_asset_fields.html.erb', artwork_request_spec: true d
   end
 
   context 'asset exists already' do
-    let!(:assets){ create(:valid_asset) }
+    let!(:assets) { create(:valid_asset) }
 
     it 'displays the name of the file and an editable description field' do
-      form_for(artwork_request, url: order_artwork_requests_path(order, artwork_request)){ |f| f.fields_for(assets, multipart: true){ |ff| @f = ff } }
+      form_for(artwork_request, url: order_artwork_requests_path(order, artwork_request)) { |f| f.fields_for(assets, multipart: true) { |ff| @f = ff } }
       render partial: 'artwork_requests/asset_fields', locals: { f: @f, object: assets }
       within_form_for Asset do
         expect(rendered).to have_css('div', text: "#{assets.file_file_name}")

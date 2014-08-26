@@ -2,7 +2,7 @@ require 'spec_helper'
 
 describe 'imprint_methods/_table.html.erb', imprint_method_spec: true do
 
-  let(:imprint_methods){ [build_stubbed(:blank_imprint_method,
+  let(:imprint_methods) { [build_stubbed(:blank_imprint_method,
                                           ink_colors: [build_stubbed(:blank_ink_color)],
                                           print_locations: [build_stubbed(:blank_print_location)])] }
 

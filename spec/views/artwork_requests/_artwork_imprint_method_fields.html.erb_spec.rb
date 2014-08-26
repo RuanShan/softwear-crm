@@ -14,7 +14,7 @@ describe 'artwork_requests/_artwork_imprint_method_fields.html.erb', artwork_req
     ]}
   end
 
-  before(:each){ render partial: 'artwork_imprint_method_fields', locals: { artwork_request: nil, imprint_method: @imprint_method } }
+  before(:each) { render partial: 'artwork_imprint_method_fields', locals: { artwork_request: nil, imprint_method: @imprint_method } }
 
   it 'displays the correct form fields for print locations and ink colors' do
     expect(rendered).to have_selector('select#imprint_method_print_locations')

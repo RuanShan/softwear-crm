@@ -1,8 +1,8 @@
 require 'spec_helper'
 
 describe 'artwork_requests/_list.html.erb', artwork_request_spec: true do
-  let!(:artwork_request){ build_stubbed(:blank_artwork_request) }
-  let!(:order){ build_stubbed(:blank_order) }
+  let!(:artwork_request) { build_stubbed(:blank_artwork_request) }
+  let!(:order) { build_stubbed(:blank_order) }
 
   before(:each) do
     current_user = build_stubbed(:blank_user)

@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 describe 'imprint_methods/edit.html.erb', imprint_method_spec: true do
-  let(:imprint_method){ build_stubbed(:blank_imprint_method) }
+  let(:imprint_method) { build_stubbed(:blank_imprint_method) }
 
   it 'has a form to edit the imprint method' do
     assign(:imprint_method, imprint_method)

@@ -44,7 +44,7 @@ describe Order, order_spec: true do
   end
 
   describe '#balance' do
-    let(:order){ build_stubbed(:blank_order) }
+    let(:order) { build_stubbed(:blank_order) }
 
     before do
       allow(order).to receive(:total).and_return(5)

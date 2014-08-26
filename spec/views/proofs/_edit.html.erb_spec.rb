@@ -1,8 +1,8 @@
 require 'spec_helper'
 
 describe 'proofs/_edit.html.erb', proof_spec: true do
-  let!(:proof){ build_stubbed(:blank_proof) }
-  let!(:order){ build_stubbed(:blank_order) }
+  let!(:proof) { build_stubbed(:blank_proof) }
+  let!(:order) { build_stubbed(:blank_order) }
 
   before(:each) do
     render partial: 'proofs/edit', locals: { order: order, proof: proof }

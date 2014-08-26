@@ -2,7 +2,7 @@ require 'spec_helper'
 include ApplicationHelper
 
 describe ArtworkRequestsController, js: true, artwork_request_spec: true do
-  let!(:order){ create(:order_with_job) }
+  let!(:order) { create(:order_with_job) }
   let!(:valid_user) { create :alternate_user }
   before(:each) { sign_in valid_user }
 
@@ -28,8 +28,8 @@ describe ArtworkRequestsController, js: true, artwork_request_spec: true do
   end
 
   describe 'PUT update' do
-    let(:artwork){ create(:valid_artwork) }
-    let(:artwork_request){ create(:valid_artwork_request) }
+    let(:artwork) { create(:valid_artwork) }
+    let(:artwork_request) { create(:valid_artwork_request) }
 
     context 'params[:artwork_id] is nil' do
       it 'renders update.js.erb' do

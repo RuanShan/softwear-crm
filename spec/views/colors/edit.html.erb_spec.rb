@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 describe 'colors/edit.html.erb', color_spec: true do
-  let(:color){ build_stubbed(:valid_color) }
+  let(:color) { build_stubbed(:valid_color) }
 
   before(:each) do
     assign(:color, color)

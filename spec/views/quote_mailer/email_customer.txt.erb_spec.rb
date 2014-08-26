@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 describe 'quote_mailer/email_customer.text.erb', quote_spec: true do
-  let!(:quote){ build_stubbed(:valid_quote) }
+  let!(:quote) { build_stubbed(:valid_quote) }
 
   before(:each) do
     assign(:body, "#{quote.name} #{quote.first_name} #{quote.last_name}")

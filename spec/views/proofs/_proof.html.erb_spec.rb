@@ -1,14 +1,14 @@
 require 'spec_helper'
 
 describe 'proofs/_proof.html.erb', proof_spec: true do
-  let!(:order){ build_stubbed(:blank_order) }
+  let!(:order) { build_stubbed(:blank_order) }
 
   before(:each) do
     render partial: 'proofs/proof', locals: { order: order, proof: proof }
   end
 
   context 'given a single proof' do
-    let(:proof){ build_stubbed(:blank_proof, artworks: [build_stubbed(:blank_artwork)]) }
+    let(:proof) { build_stubbed(:blank_proof, artworks: [build_stubbed(:blank_artwork)]) }
 
     it 'displays all of the info for a proof, edit, destroy, email customer, approve, and reject buttons, all in a unique div' do
       expect(rendered).to have_selector("div#proof-#{proof.id}")
@@ -31,7 +31,7 @@ describe 'proofs/_proof.html.erb', proof_spec: true do
     end
 
     context 'proof status is Emailed Customer' do
-      let(:proof){ build_stubbed(:blank_proof, status: 'Emailed Customer') }
+      let(:proof) { build_stubbed(:blank_proof, status: 'Emailed Customer') }
 
       it 'adds a remind customer button' do
         expect(rendered).to have_selector("a[href='#{email_customer_order_proofs_path(id: proof.id, order_id: order.id, reminder: 'true')}']")
@@ -39,7 +39,7 @@ describe 'proofs/_proof.html.erb', proof_spec: true do
     end
 
     context 'proof status is Approved' do
-      let(:proof){ build_stubbed(:blank_proof, status: 'Approved', approved_at: Time.now) }
+      let(:proof) { build_stubbed(:blank_proof, status: 'Approved', approved_at: Time.now) }
 
       it 'removes the email buttons and approve/reject buttons' do
         expect(rendered).to_not have_selector("a[href='#{email_customer_order_proofs_path(id: proof.id, order_id: order.id, reminder: 'false')}']")
@@ -50,7 +50,7 @@ describe 'proofs/_proof.html.erb', proof_spec: true do
     end
 
     context 'proof status is Rejected' do
-      let(:proof){ build_stubbed(:blank_proof, status: 'Rejected') }
+      let(:proof) { build_stubbed(:blank_proof, status: 'Rejected') }
 
       it 'removes the email buttons and approve/reject buttons' do
         expect(rendered).to_not have_selector("a[href='#{email_customer_order_proofs_path(id: proof.id, order_id: order.id, reminder: 'false')}']")

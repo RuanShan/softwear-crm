@@ -2,9 +2,9 @@ require 'spec_helper'
 
 describe 'colors/_table.html.erb', color_spec: true do
 
-  let!(:colors){ [build_stubbed(:valid_color)] }
+  let!(:colors) { [build_stubbed(:valid_color)] }
 
-  before(:each){ render partial: 'colors/table', locals: { colors: colors } }
+  before(:each) { render partial: 'colors/table', locals: { colors: colors } }
 
   it 'has table with header for name and sku' do
     expect(rendered).to have_selector('th', text: 'Name')

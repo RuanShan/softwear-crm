@@ -1,9 +1,9 @@
 require 'spec_helper'
 
 describe 'artwork_requests/_artworks.html.erb', artwork_request_spec: true do
-  let!(:artwork_request){ build_stubbed(:blank_artwork_request, artworks: [build_stubbed(:blank_artwork, artist: build_stubbed(:blank_user))]) }
+  let!(:artwork_request) { build_stubbed(:blank_artwork_request, artworks: [build_stubbed(:blank_artwork, artist: build_stubbed(:blank_user))]) }
 
-  before(:each){ render partial: 'artwork_requests/artworks', locals: { artwork_request: artwork_request } }
+  before(:each) { render partial: 'artwork_requests/artworks', locals: { artwork_request: artwork_request } }
 
   it 'displays the fields for an artwork attached to an artwork request', slow: true do
     expect(rendered).to have_selector('h4.artwork-title')

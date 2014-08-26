@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 describe 'artworks/_row.html.erb', artwork_spec: true do
-  let!(:artwork){ build_stubbed(:blank_artwork, artist: build_stubbed(:blank_user)) }
+  let!(:artwork) { build_stubbed(:blank_artwork, artist: build_stubbed(:blank_user)) }
 
   context 'given a single artwork and artwork_request is nil' do
     before(:each) do
@@ -25,7 +25,7 @@ describe 'artworks/_row.html.erb', artwork_spec: true do
   end
 
   context 'artwork_request is not nil but not associated with artwork' do
-    let!(:artwork_request){ build_stubbed(:blank_artwork_request) }
+    let!(:artwork_request) { build_stubbed(:blank_artwork_request) }
 
     before(:each) do
       render partial: 'artworks/row', locals: { artwork: artwork, artwork_request: artwork_request }
@@ -37,8 +37,8 @@ describe 'artworks/_row.html.erb', artwork_spec: true do
   end
 
   context 'artwork_request is not nil and associated with artwork' do
-    let!(:artwork_request){ build_stubbed(:blank_artwork_request, artworks: [build_stubbed(:blank_artwork, artist: build_stubbed(:blank_user))]) }
-    let!(:artwork){ artwork_request.artworks.first }
+    let!(:artwork_request) { build_stubbed(:blank_artwork_request, artworks: [build_stubbed(:blank_artwork, artist: build_stubbed(:blank_user))]) }
+    let!(:artwork) { artwork_request.artworks.first }
 
     before(:each) do
       render partial: 'artworks/row', locals: { artwork: artwork, artwork_request: artwork_request }

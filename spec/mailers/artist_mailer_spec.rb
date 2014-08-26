@@ -4,7 +4,7 @@ describe ArtistMailer do
 
   describe 'artist_notification' do
     let!(:artwork_request) { create(:valid_artwork_request) }
-    let!(:action_name){ 'create' }
+    let!(:action_name) { 'create' }
     let!(:mailer) { ArtistMailer.artist_notification(artwork_request, action_name) }
 
     it 'renders the subject' do

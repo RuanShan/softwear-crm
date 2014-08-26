@@ -21,7 +21,7 @@ describe User, user_spec: true do
   end
 
   describe '#full_name' do
-    let!(:user){ build_stubbed(:blank_user, first_name: 'First', last_name: 'Last') }
+    let!(:user) { build_stubbed(:blank_user, first_name: 'First', last_name: 'Last') }
 
     subject do
       build_stubbed(

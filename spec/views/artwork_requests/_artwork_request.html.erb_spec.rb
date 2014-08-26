@@ -1,8 +1,8 @@
 require 'spec_helper'
 
 describe 'artwork_requests/_artwork_request.html.erb', artwork_request_spec: true do
-  let!(:artwork_request){ create(:valid_artwork_request) }
-  let!(:order){ build_stubbed(:blank_order) }
+  let!(:artwork_request) { create(:valid_artwork_request) }
+  let!(:order) { build_stubbed(:blank_order) }
 
   before(:each) do
     current_user = build_stubbed(:blank_user)
@@ -47,7 +47,7 @@ describe 'artwork_requests/_artwork_request.html.erb', artwork_request_spec: tru
     end
 
     context 'when an asset is attached' do
-      let!(:artwork_request){ create(:valid_artwork_request_with_asset) }
+      let!(:artwork_request) { create(:valid_artwork_request_with_asset) }
 
       it 'displays the fields for the asset' do
         expect(rendered).to have_css('dt', text: 'Attachments:')
@@ -60,7 +60,7 @@ describe 'artwork_requests/_artwork_request.html.erb', artwork_request_spec: tru
     end
 
     context 'when an artwork is attached' do
-      let!(:artwork_request){ create(:valid_artwork_request_with_artwork) }
+      let!(:artwork_request) { create(:valid_artwork_request_with_artwork) }
 
       it 'displays the fields for the artwork', slow: true do
         expect(rendered).to have_selector('h4.artwork-title')

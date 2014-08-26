@@ -2,7 +2,7 @@ require 'spec_helper'
 
 describe 'shipping_methods/_table.html.erb' do
 
-  let(:shipping_methods){ [create(:valid_shipping_method)] }
+  let(:shipping_methods) { [create(:valid_shipping_method)] }
 
   it 'has a table with the name, tracking url, and actions' do
     render partial: 'shipping_methods/table', locals: {shipping_methods: shipping_methods}

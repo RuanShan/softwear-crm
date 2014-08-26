@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 describe 'shipping_methods/edit.html.erb' do
-  let(:shipping_method){ create(:valid_shipping_method) }
+  let(:shipping_method) { create(:valid_shipping_method) }
 
   it 'has a form to create a new mockup group' do
     assign(:shipping_method, shipping_method)

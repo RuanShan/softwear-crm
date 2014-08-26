@@ -107,7 +107,7 @@ describe Quote, quote_spec: true do
 
     describe '#fetch_group_id_and_dept' do
       context 'the quote is from the ann arbor store' do
-        let(:quote){ build_stubbed(:blank_quote, store: build_stubbed(:blank_store, name: 'Ann Arbor Store')) }
+        let(:quote) { build_stubbed(:blank_quote, store: build_stubbed(:blank_store, name: 'Ann Arbor Store')) }
 
         it 'sets the group id to "86316" and department to "Sales - Ann Arbor"' do
           return_hash = quote.fetch_group_id_and_dept({})
@@ -117,7 +117,7 @@ describe Quote, quote_spec: true do
       end
 
       context 'the quote is from the ypsi store' do
-        let(:quote){ build_stubbed(:blank_quote, store: build_stubbed(:blank_store, name: 'Ypsilanti Store')) }
+        let(:quote) { build_stubbed(:blank_quote, store: build_stubbed(:blank_store, name: 'Ypsilanti Store')) }
 
         it 'sets the group_id to "86317" and department to "Sales - Ypsilanti"' do
           return_hash = quote.fetch_group_id_and_dept({})
@@ -127,7 +127,7 @@ describe Quote, quote_spec: true do
       end
 
       context 'the quote isn\'t from either store' do
-        let(:quote){ build_stubbed(:blank_quote, store: build_stubbed(:blank_store, name: 'Bogus Store')) }
+        let(:quote) { build_stubbed(:blank_quote, store: build_stubbed(:blank_store, name: 'Bogus Store')) }
 
         it 'sets the group_id and department to nil' do
           return_hash = quote.fetch_group_id_and_dept({})
@@ -187,7 +187,7 @@ describe Quote, quote_spec: true do
     end
 
     describe '#formatted_phone_number' do
-      let(:quote){ build_stubbed(:blank_quote, phone_number: '7342742659') }
+      let(:quote) { build_stubbed(:blank_quote, phone_number: '7342742659') }
 
       it 'returns the phone number formatted as (xxx) xxx-xxxx' do
         expect(quote.formatted_phone_number).to eq('(734) 274-2659')
@@ -195,7 +195,7 @@ describe Quote, quote_spec: true do
     end
 
     describe 'full_name' do
-      let(:quote){ build_stubbed(:blank_quote, first_name: 'First', last_name: 'Last') }
+      let(:quote) { build_stubbed(:blank_quote, first_name: 'First', last_name: 'Last') }
 
       it 'returns the first name and last name separated by a whitespace' do
         expect(quote.full_name).to eq("#{quote.first_name} #{quote.last_name}")
@@ -277,7 +277,7 @@ describe Quote, quote_spec: true do
 
     describe '#standard_line_items' do
       context 'the quote has no line items' do
-        let(:quote){ build_stubbed(:blank_quote)}
+        let(:quote) { build_stubbed(:blank_quote)}
 
         it 'returns zero' do
         expect(quote.standard_line_items.size).to eq(0)
@@ -285,7 +285,7 @@ describe Quote, quote_spec: true do
       end
 
       context 'the quote has line items' do
-        let(:quote){ create(:valid_quote) }
+        let(:quote) { create(:valid_quote) }
 
         it 'returns the number of non-imprintable line items (in this case, two)' do
           expect(quote.standard_line_items.size).to eq(2)
@@ -294,7 +294,7 @@ describe Quote, quote_spec: true do
     end
 
     describe '#tax' do
-      let(:quote){ build_stubbed(:blank_quote) }
+      let(:quote) { build_stubbed(:blank_quote) }
 
       it 'returns the value for tax' do
         expect(quote.tax).to eq(0.06)
