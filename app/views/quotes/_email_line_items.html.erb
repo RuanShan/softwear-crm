@@ -1,4 +1,7 @@
-<h2><strong>Line Item</strong> Information</h2>
+<%=t('quote_greet_customer',
+      first_name: quote.first_name,
+      valid_until: display_time(quote.valid_until_date)) %>
+<h2><%=t('quote_header', name: quote.name) %></h2>
 <div class="table-responsive container-fluid">
   <table class="table table-hover">
     <thead>
@@ -12,7 +15,7 @@
     </thead>
 
     <tbody>
-      <% @quote.standard_line_items.each do |li| %>
+      <% quote.standard_line_items.each do |li| %>
         <tr>
           <td class="col-sm-4"><%= li.name %></td>
           <td class="col-sm-4"><%= li.description %></td>
@@ -25,20 +28,29 @@
       <tr id="subtotal">
         <td></td><td></td><td></td>
         <td><strong>Subtotal:</strong></td>
-        <td><%= number_to_currency(@quote.line_items_subtotal) %></td>
+        <td><%= number_to_currency(quote.line_items_subtotal) %></td>
       </tr>
 
       <tr id="tax">
         <td></td><td></td><td></td>
         <td><strong>Tax:</strong></td>
-        <td><%= number_to_currency(@quote.line_items_total_tax) %></td>
+        <td><%= number_to_currency(quote.line_items_total_tax) %></td>
+      </tr>
+
+      <tr id="shipping">
+        <td></td><td></td><td></td>
+        <td><strong>Shipping:</strong></td>
+        <td><%= number_to_currency(quote.shipping) %></td>
       </tr>
 
       <tr id="total">
         <td></td><td></td><td></td>
         <td><strong>Total:</strong></td>
-        <td><%= number_to_currency(@quote.line_items_total_with_tax) %></td>
+        <td><%= number_to_currency(quote.line_items_total_with_tax) %></td>
       </tr>
     </tbody>
   </table>
 </div>
+
+<%=t('quote_email_closer', phone_number: (t :phone_number)) %>
+<%=t('quote_the_fine_print', valid_until_date: display_time(quote.valid_until_date)) %>

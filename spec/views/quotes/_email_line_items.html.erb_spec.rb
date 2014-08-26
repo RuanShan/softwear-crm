@@ -5,9 +5,8 @@ describe 'quotes/_email_line_items.html.erb', quote_spec: true do
   let!(:line_item) { build_stubbed(:non_imprintable_line_item) }
 
   before(:each) do
-    assign(:quote, quote)
     allow(quote).to receive(:standard_line_items).and_return([line_item])
-    render partial: 'quotes/email_line_items'
+    render partial: 'quotes/email_line_items', locals: { quote: quote }
   end
 
   it 'should have a table header with line item attributes' do

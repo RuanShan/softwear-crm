@@ -1,18 +1,22 @@
-<%= form_tag quote_email_customer_path(@quote.id), id: 'email-form' do %>
+<%= form_tag quote_email_customer_path(quote.id), id: 'email-form' do %>
 
   <div class="form-group">
     <%= label_tag :email_subject, 'Subject' %>
-
     <%= text_field_tag :email_subject,
-                       "Your quote ##{@quote.id} from the Ann Arbor T-shirt Company",
+                       "Your Quote \"#{quote.name}\", from Ann Arbor Tees",
                        { class: 'form-control' } %>
+  </div>
+
+  <div class="form-group">
+    <%= label_tag :email_recipients, 'Email Recipients (separated by commas)' %>
+    <%= text_field_tag :email_recipients, quote.email, class: 'form-control' %>
   </div>
 
   <br>
 
   <div class="form-group">
     <%= label_tag :email_body, 'Body of Email' %>
-    <%= text_area_tag :email_body, render('email_line_items'),
+    <%= text_area_tag :email_body, render('email_line_items', quote: quote ),
                       { class: 'form-control summernote', id: 'email-textarea' } %>
   </div>
 

@@ -108,7 +108,7 @@ feature 'Quotes management', quote_spec: true, js: true do
     expect(current_path).to eq(quote_path(quote.id + 1))
   end
 
-  scenario 'A user can add a single price from the pricing table to an existing quote', retry: 2 do
+  scenario 'A user can add a single price from the pricing table to an existing quote', retry: 3, solr: true do
     visit imprintables_path
     find("#pricing_button_#{imprintable.id}").click
     find(:css, "input#decoration_price").set(3.95)

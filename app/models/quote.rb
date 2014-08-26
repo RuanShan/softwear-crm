@@ -133,7 +133,7 @@ class Quote < ActiveRecord::Base
   end
 
   def line_items_total_with_tax
-    line_items.map { |l| l.taxable? ? l.total_price * (1 + tax) : l.total_price }.reduce(0, :+)
+    line_items.map { |l| l.taxable? ? l.total_price * (1 + tax) : l.total_price }.reduce(0, :+) + shipping
   end
 
   def post_request_for_new_customer

@@ -65,4 +65,36 @@ en:
                                      <p>Sticking to these guidelines will help all of us here at the Ann Arbor T-Shirt Company ensure that we can give you our best work, which is what we all want!</p>
                                      <p>Thank you, %{firstname} %{lastname}!</p>"
 
+  quote_greet_customer: "<p>%{first_name},</p>
+                         <p>Thanks your interest in Ann Arbor Tees! We appreciate the opportunity to work with you!</p>
+                         <p>I went ahead and put together a qutoe for you and it's included below.
+                            There should also be a printable sharable version attached to this email.
+                            Note that we can only guarantee this pricing until %{valid_until}.</p>"
 
+  quote_header: "Your Quote %{name} from Ann Arbor Tees"
+
+  phone_number: '734-274-2659'
+
+  quote_email_closer: "<p>Let me know if you have any questions whatsoever or would like some clarification.
+                          Feel free to e-mail me OR call at %{phone_number}.</p>
+                       <p>And finally, please take the time to read the fine print below.</p>
+                       <p>Thanks,</p>
+                       <p>Jack Koch</p>"
+
+  quote_the_fine_print: "<h3 class='red'>The Fine Print</h3>
+                         <p class='red'>Quote Expiration</p>
+                         <p>Your quote is valid until %{valid_until_date}. After this time, prices are subject to change.</p>
+                         <p class='red'>Regarding Payment</p>
+                         <p>Once a down payment has been received or alternative terms of payment have been finalized,
+                            the garments and size breakdowns on your invoice are final.
+                            In the interest of ensuring fast turnaround,
+                            custom order garments are ordered into our warehouse immediately following receipt of your payment.
+                            If a new garment or size breakdown is needed after the original garments have been ordered,
+                            garment replacement fees may apply.
+                            We are flexible to make a special arrangement if circumstances necessitate submission of
+                            payment prior to garment decisions being finalized, whether it be color, style, or size breakdowns.</p>
+                         <p class='red'>Regarding Garment Availability</p>
+                         <p>Unexpected changes in garment availability, although rare, may occur.
+                            If you've finalized your garment selection and this occurs,
+                            and it is determined we will not be able to provide you with the garment of your choosing,
+                            you will be contacted by a salesperson so that alternate options may be discussed.</p>"

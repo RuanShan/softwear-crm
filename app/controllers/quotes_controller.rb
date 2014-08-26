@@ -78,7 +78,7 @@ class QuotesController < InheritedResources::Base
       body: params[:email_body],
       subject: params[:email_subject],
       from: current_user.email,
-      to: @quote.email
+      to: params[:email_recipients]
     }
 
     deliver_email(hash)

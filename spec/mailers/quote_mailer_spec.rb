@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe QuoteMailer do
+describe QuoteMailer, quote_spec: true do
   include EmailSpec::Helpers
   include EmailSpec::Matchers
 
@@ -18,21 +18,23 @@ describe QuoteMailer do
         valid_until_date: Time.now + 1.day,
         estimated_delivery_date: Time.now + 1.day,
         salesperson_id: user.id,
-        store_id: store.id
+        store_id: store.id,
+        shipping: 14.50,
+        line_items: [build_stubbed(:non_imprintable_line_item)]
     )
     hash = {
         quote: quote,
         body: 'Sample email body',
         subject: 'Amazing Test Subject',
         from: 'from@test.com',
-        to: 'to@test.com'
+        to: 'to@test.com, to_two@test.com'
     }
     @email = QuoteMailer.email_customer(hash)
   end
 
   describe '#email_customer' do
     it 'sets email to be delivered to address passed in via hash[:to]' do
-      expect(@email).to deliver_to('to@test.com')
+      expect(@email).to deliver_to('to@test.com, to_two@test.com')
     end
 
     it 'is sent from the email passed in via hash[:from]' do
