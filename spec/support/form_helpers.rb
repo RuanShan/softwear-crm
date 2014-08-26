@@ -1,7 +1,7 @@
 require 'rspec/expectations'
 
 module FormHelpers
-  def within_form_for(model, options={})
+  def within_form_for(model, options = {})
     if model.is_a? ActiveRecord::Base
       @@model_id = model.id
       @@model_form_context = model.class.name.underscore
@@ -38,7 +38,7 @@ module FormHelpers
     end
   end
 
-  RSpec::Matchers.define :have_field_for do |field_name, options={}|
+  RSpec::Matchers.define :have_field_for do |field_name, options = {}|
     match do |page|
       doc = Nokogiri::HTML page
 
@@ -58,7 +58,7 @@ module FormHelpers
         doc.css("#{pre}*#{inl_css_attr}").empty?)
     end
     failure_message do |page|
-      css_attr = (@@model_form_context ? 
+      css_attr = (@@model_form_context ?
                   "name='#{@@model_form_context}[#{field_name}]'" :
                   "name='#{field_name}'")
       "Couldn't find field for #{css_pre}*#{css_attr} in page: #{page}"
@@ -84,7 +84,7 @@ module FormHelpers
   end
 
   def css_pre
-    (defined?(@@model_form_context) && @@model_form_context && @@scope_to_form ? 
+    (defined?(@@model_form_context) && @@model_form_context && @@scope_to_form ?
       "form[class*='#{@@model_form_context}'] " :
       "")
   end

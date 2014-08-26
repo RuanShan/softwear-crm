@@ -7,9 +7,9 @@ describe 'BatchFormBuilder', helper_spec: true do
 
   let(:template) { f.instance_variable_get(:@template) }
 
-  %i(text_field password_field 
+  %i(text_field password_field
     text_area number_field check_box).each do |input_type|
-    
+
     describe "##{input_type}" do
       it "should call #{input_type}_tag on the template" do
         expect(template).to receive("#{input_type}_tag")
@@ -25,7 +25,7 @@ describe 'BatchFormBuilder', helper_spec: true do
 
   describe '#select' do
     it 'should not be implemented' do
-      expect{f.select(:name)}.to raise_error
+      expect { f.select(:name) }.to raise_error
     end
   end
 end

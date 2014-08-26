@@ -35,7 +35,7 @@ describe ImprintMethodsController, imprint_method_spec: true do
   describe 'PUT update' do
     context 'with valid input' do
       it 'updates an imprint method' do
-        expect{put :update, id: imprint_method.to_param, imprint_method: attributes_for(:valid_imprint_method)}.to_not change(ImprintMethod, :count)
+        expect { put :update, id: imprint_method.to_param, imprint_method: attributes_for(:valid_imprint_method) }.to_not change(ImprintMethod, :count)
       end
     end
 

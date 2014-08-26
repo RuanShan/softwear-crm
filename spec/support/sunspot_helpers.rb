@@ -8,9 +8,11 @@ module SunspotHelpers
   def start_solr(do_output = true)
     solr_cmd 'start', !do_output
   end
+
   def stop_solr(do_output = true)
     solr_cmd 'stop', !do_output
   end
+
   def reindex_solr(do_output = true)
     solr_cmd 'reindex', !do_output
   end
@@ -40,7 +42,7 @@ module SunspotHelpers
         raise 'Sunspot session somehow got buried in spies!'
       end
     end
-    
+
     unless solr_running?
       raise 'Unable to start Solr.' unless start_solr
       wait_for_solr
@@ -49,10 +51,10 @@ module SunspotHelpers
 
   def refresh_sunspot_session_spy
     # If we just keep making session spies out of the current session
-    # (as suggested on the SunspotMatchers github page), it will 
+    # (as suggested on the SunspotMatchers github page), it will
     # actually make a spy ontop of the last spy, and keep piling up.
     if Sunspot.session.respond_to? :original_session
-      Sunspot.session = 
+      Sunspot.session =
         SunspotMatchers::SunspotSessionSpy.new(Sunspot.session.original_session)
     else
       Sunspot.session = SunspotMatchers::SunspotSessionSpy.new(Sunspot.session)
@@ -63,7 +65,7 @@ module SunspotHelpers
     Net::HTTP.get URI "#{Sunspot.config.solr.url}/admin/ping"
   end
 
-  # For some reason, Solr likes to occasionally return 
+  # For some reason, Solr likes to occasionally return
   # empty arrays when testing. You can either use the
   # RSpec retry gem, or do your search inside this block
   # and the method will return the result.

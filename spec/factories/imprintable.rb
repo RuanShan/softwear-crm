@@ -35,7 +35,7 @@ FactoryGirl.define do
     max_imprint_width 5.5
     sequence(:style_name) { |n| "style_#{n}" }
     sequence(:sku) { |n| (n %= 100) < 10 ? "0#{n}" : n }
-    sequence(:style_catalog_no) { |n| (1234+n).to_s }
+    sequence(:style_catalog_no) { |n| (1234 + n).to_s }
     style_description 'description'
   end
 end
