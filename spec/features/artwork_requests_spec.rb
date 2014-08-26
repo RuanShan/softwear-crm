@@ -65,6 +65,6 @@ feature 'Artwork Request Features', js: true, artwork_request_spec: true do
     find(:css, 'button.close').click
     expect(ArtworkRequest.where(id: artwork_request.id)).to_not exist
     expect(page).to_not have_css("div#artwork-request-#{artwork_request.id}")
-    expect(artwork_request.reload.destroyed? ).to be_truthy
+    expect(artwork_request.reload.destroyed?).to be_truthy
   end
 end
