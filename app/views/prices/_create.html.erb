@@ -26,7 +26,7 @@
             <td><%= number_to_currency hash[:prices][:xxxxxl_price] %></td>
             <td><%= number_to_currency hash[:prices][:xxxxxxl_price] %></td>
             <td>
-              <div class="btn-group btn-group-xs">
+              <div class="btn-group btn-group-xs" id="price_actions_<%= index %>">
                 <%= link_to price_path(index), class: 'btn btn-default',
                             data: { confirm: 'Are you sure you would like to delete the price?' },
                             method: :delete, remote: true,
@@ -45,10 +45,13 @@
         <% end %>
 
         <tr>
-          <td><%= link_to 'Delete all Prices', { destroy_all: true },
-                          class: 'btn btn-default',
+          <td><%= link_to destroy_all_prices_path, class: 'btn btn-default',
                           data: { confirm: 'Are you sure you want to delete every price?' },
-                          method: :delete, remote: true %></td>
+                          remote: true, 'data-action' => 'destroy_all',
+                          'data-toggle' => 'tooltip', 'title' => 'Destroy All' do %>
+                Delete all Prices
+              <% end %>
+          </td>
           <td class="col-sm-3 text-right">
             <%= link_to 'Create Quote from Table',
                         new_quote_path(price_information: session[:prices]),

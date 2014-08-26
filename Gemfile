@@ -87,6 +87,8 @@ group :test do
   gem 'sunspot_matchers'
   gem 'rspec-retry'
   gem 'email_spec'
+  # for accessing session object in integration tests
+  gem 'rack_session_access'
 end
 
 gem 'inherited_resources'

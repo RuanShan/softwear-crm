@@ -21,12 +21,14 @@ class PricesController < ApplicationController
 
   def destroy
     respond_to do |format|
-      if params[:destroy_all].nil?
-        session[:prices].delete_at(params[:id].to_i)
-      else
-        session[:prices] = []
-      end
+      session[:prices].delete_at(params[:id].to_i)
+      format.js { render 'create' }
+    end
+  end
 
+  def destroy_all
+    respond_to do |format|
+      session[:prices] = []
       format.js { render 'create' }
     end
   end

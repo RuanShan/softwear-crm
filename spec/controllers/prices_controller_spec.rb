@@ -38,28 +38,27 @@ describe PricesController, js: true, prices_spec: true do
     end
   end
 
-  describe 'GET destroy' do
-    context 'session[:pricing_hash] contains 2 different prices' do
-      before(:each) do
-        session[:prices] = []
-        session[:prices] << imprintable.pricing_hash(3)
-        session[:prices] << imprintable.pricing_hash(1)
-      end
+  context 'session[:pricing_hash] contains 2 different prices' do
+    before(:each) do
+      session[:prices] = []
+      session[:prices] << imprintable.pricing_hash(3)
+      session[:prices] << imprintable.pricing_hash(1)
+    end
 
-      context 'destroy_all is nil' do
-        it 'removes only one element from session[:prices]' do
-          expect(session[:prices].size).to eq(2)
-          get :destroy, { id: 0, format: 'js' }
-          expect(session[:prices].size).to eq(1)
-          expect(session[:prices].first).to eq(imprintable.pricing_hash(1))
-        end
+    describe 'GET destroy' do
+      it 'removes only one element from session[:prices]' do
+        expect(session[:prices].size).to eq(2)
+        get :destroy, { id: 0, format: 'js' }
+        expect(session[:prices].size).to eq(1)
+        expect(session[:prices].first).to eq(imprintable.pricing_hash(1))
       end
-      context 'destroy_all exists' do
-        it 'removes all the elements from session[:prices]' do
-          expect(session[:prices].size).to eq(2)
-          get :destroy, { destroy_all: true, id: 0, format: 'js' }
-          expect(session[:prices].size).to eq(0)
-        end
+    end
+
+    describe 'GET destroy_all' do
+      it 'removes all the elements from session[:prices]' do
+        expect(session[:prices].size).to eq(2)
+        get :destroy_all, { format: 'js' }
+        expect(session[:prices].size).to eq(0)
       end
     end
   end

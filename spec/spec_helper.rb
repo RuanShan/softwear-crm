@@ -68,6 +68,8 @@ RSpec.configure do |config|
 
   config.order = 'random'
 
+  require 'rack_session_access/capybara'
+
   config.before(:each) do |example|
     example.metadata[:solr] ? lazy_load_solr : refresh_sunspot_session_spy
   end
