@@ -113,7 +113,6 @@ feature 'Imprintables management', imprintable_spec: true, slow: true do
     end
   end
 
-
   context 'There is a store available', js: true do
     given!(:store) { create(:valid_store) }
     
@@ -195,7 +194,6 @@ feature 'Imprintables management', imprintable_spec: true, slow: true do
       expect(imprintable.reload.compatible_imprint_method_ids.include? imprint_method.id).to be_truthy
     end
   end
-
 
   scenario 'A user can edit an existing imprintable', js: true  do
     visit edit_imprintable_path imprintable.id

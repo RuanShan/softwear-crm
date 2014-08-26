@@ -62,7 +62,6 @@ describe Order, order_spec: true do
   #TODO implement this
   describe 'get_store_id'
 
-
   describe '#line_items' do
     let!(:order) { create :order }
 

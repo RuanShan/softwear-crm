@@ -11,7 +11,6 @@ feature 'sizes management', size_spec: true do
     create(:valid_size)
   end
 
-
   scenario 'A user can see a list of sizes' do
     visit root_path
     click_link 'sizes_list_link'

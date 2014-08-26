@@ -7,7 +7,6 @@ feature 'Stores management', store_spec: true do
 
   background(:each) { login_as(valid_user) }
 
-
   scenario 'User views list of existing stores' do
     visit root_path
     click_link 'Stores'
