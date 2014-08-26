@@ -1,4 +1,6 @@
 class QuoteMailer < ActionMailer::Base
+  add_template_helper(ApplicationHelper)
+
   def email_customer(hash)
     @body = hash[:body]
     quote = hash[:quote]
@@ -6,7 +8,7 @@ class QuoteMailer < ActionMailer::Base
     attachments["YourQuote#{quote.id}.pdf"] =
       WickedPdf.new.pdf_from_string(
         render_to_string(pdf: 'quote',
-                         partial: 'quotes/email_line_items.html.erb',
+                         partial: 'quotes/line_items_pdf',
                          locals: { quote: quote })
       )
 

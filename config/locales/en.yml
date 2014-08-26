@@ -66,9 +66,9 @@ en:
                                      <p>Thank you, %{firstname} %{lastname}!</p>"
 
   quote_greet_customer: "<p>%{first_name},</p>
-                         <p>Thanks your interest in Ann Arbor Tees! We appreciate the opportunity to work with you!</p>
-                         <p>I went ahead and put together a qutoe for you and it's included below.
-                            There should also be a printable sharable version attached to this email.
+                         <p>Thank you for your interest in Ann Arbor Tees! We appreciate the opportunity to work with you!</p>
+                         <p>I went ahead and put together a quote for you and it's included below.
+                            There should also be a printable, sharable version attached to this email.
                             Note that we can only guarantee this pricing until %{valid_until}.</p>"
 
   quote_header: "Your Quote %{name} from Ann Arbor Tees"
@@ -76,7 +76,7 @@ en:
   phone_number: '734-274-2659'
 
   quote_email_closer: "<p>Let me know if you have any questions whatsoever or would like some clarification.
-                          Feel free to e-mail me OR call at %{phone_number}.</p>
+                          Feel free to e-mail OR call me at %{phone_number}.</p>
                        <p>And finally, please take the time to read the fine print below.</p>
                        <p>Thanks,</p>
                        <p>Jack Koch</p>"
