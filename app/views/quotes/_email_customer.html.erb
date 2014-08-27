@@ -3,13 +3,18 @@
   <div class="form-group">
     <%= label_tag :email_subject, 'Subject' %>
     <%= text_field_tag :email_subject,
-                       "Your Quote \"#{quote.name}\", from Ann Arbor Tees",
+                       "Your Quote \"#{ quote.name }\", from Ann Arbor Tees",
                        { class: 'form-control' } %>
   </div>
 
   <div class="form-group">
     <%= label_tag :email_recipients, 'Email Recipients (separated by commas)' %>
-    <%= text_field_tag :email_recipients, quote.email, class: 'form-control' %>
+    <%= text_field_tag :email_recipients,
+                        "#{ quote.first_name } #{ quote.last_name } <#{ quote.email }>",
+                        class: 'form-control',
+                        pattern: '[\w\s]+<[^@]+@[^@]+\.[a-zA-Z]{2,6}>(,\s[\w\s]+<[^@]+@[^@]+\.[a-zA-Z]{2,6}.>)*',
+                        oninvalid: 'invalidMsg(this);',
+                        oninput: 'invalidMsg(this);' %>
   </div>
 
   <br>
