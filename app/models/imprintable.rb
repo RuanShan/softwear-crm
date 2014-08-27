@@ -66,6 +66,7 @@ class Imprintable < ActiveRecord::Base
   validates :sku, length: { is: 4 }, if: :is_retail?
   validates :style_catalog_no, uniqueness: { scope: :brand_id }, presence: true
   validates :style_name, uniqueness: { scope: :brand_id }, presence: true
+  validates :common_name, uniqueness: true
   validates :supplier_link,
              format: {
                         with: URI::regexp(%w(http https)),

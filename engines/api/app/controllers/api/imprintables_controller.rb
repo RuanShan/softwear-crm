@@ -1,12 +1,10 @@
 require_dependency "api/application_controller"
 
 module Api
-  class ImprintablesController < ApplicationController
+  class ImprintablesController < ApiController
     def index
       @imprintables = Imprintable.where(standard_offering: true)
-      respond_to do |format|
-        format.json { render json: @imprintables }
-      end
+      super
     end
 
     def show
@@ -14,6 +12,12 @@ module Api
       respond_to do |format|
         format.json { render json: @imprintable, include: [:colors, :sizes, :style, :brand, :imprintable_variants] }
       end
+    end
+
+    private
+
+    def permitted_attributes
+      [:common_name]
     end
   end
 end

@@ -35,6 +35,7 @@ describe Imprintable, imprintable_spec: true do
     it { is_expected.to validate_uniqueness_of(:style_catalog_no).scoped_to(:brand_id) }
     it { is_expected.to validate_presence_of(:style_name) }
     it { is_expected.to validate_uniqueness_of(:style_name).scoped_to(:brand_id) }
+    it { is_expected.to validate_presence_of(:common_name) }
 
     context 'if retail' do
       before { allow(subject).to receive_message_chain(:is_retail?).and_return(true) }
