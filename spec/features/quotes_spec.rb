@@ -66,16 +66,33 @@ feature 'Quotes management', quote_spec: true, js: true do
     expect(quote.reload.name).to eq('New Quote Name')
   end
 
-  scenario 'A user can email a quote to the customer' do
-    visit edit_quote_path quote.id
-    find('a[href="#actions"]').click
-    click_link 'Email Quote'
-    sleep 0.5
-    find('input[value="Submit"]').click
-    sleep 0.5
+  feature 'Quote emailing' do
+    scenario 'A user can email a quote to the customer' do
+      visit edit_quote_path quote.id
+      find('a[href="#actions"]').click
+      click_link 'Email Quote'
+      sleep 0.5
+      find('input[value="Submit"]').click
+      sleep 0.5
 
-    expect(page).to have_selector '.modal-content-success'
-    expect(current_path).to eq(edit_quote_path quote.id)
+      expect(page).to have_selector '.modal-content-success'
+      expect(current_path).to eq(edit_quote_path quote.id)
+    end
+
+    feature 'email recipients enforces proper formatting' do
+      scenario 'no email is sent with improper formatting' do
+        visit edit_quote_path quote.id
+        find('a[href="#actions"]').click
+        click_link 'Email Quote'
+        sleep 0.5
+        fill_in 'email_recipients', with: 'this.is.not@formatted.properly.com'
+        find('input[value="Submit"]').click
+        sleep 0.5
+
+        expect(page).to_not have_selector '.modal-content-success'
+        expect(page).to have_content 'Send Quote'
+      end
+    end
   end
 
   scenario 'A user can generate a quote from an imprintable pricing dialog', retry: 3 do
@@ -108,7 +125,7 @@ feature 'Quotes management', quote_spec: true, js: true do
     expect(current_path).to eq(quote_path(quote.id + 1))
   end
 
-  scenario 'A user can add a single price from the pricing table to an existing quote', retry: 2, new: true do
+  scenario 'A user can add a single price from the pricing table to an existing quote', retry: 2 do
     visit imprintables_path
     find("#pricing_button_#{imprintable.id}").click
     find(:css, 'input#decoration_price').set(3.95)

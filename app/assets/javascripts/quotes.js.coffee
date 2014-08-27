@@ -5,6 +5,13 @@ jQuery ->
     return false
   )
 
+@invalidMsg = (textbox) ->
+  if textbox.validity.patternMismatch
+    textbox.setCustomValidity('Please format like so "Example Email <example@email.com>, Example Two <example@two.com>"')
+  else
+    textbox.setCustomValidity('')
+  true
+
 @printPage = ->
   window.print()
 
