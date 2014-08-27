@@ -3,7 +3,7 @@ include ApplicationHelper
 
 feature 'Stores management', store_spec: true do
   given!(:valid_user) { create(:user) }
-  given!(:store) { create(:valid_store)}
+  given!(:store) { create(:valid_store) }
 
   background(:each) { login_as(valid_user) }
 

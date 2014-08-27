@@ -38,7 +38,7 @@ class Job < ActiveRecord::Base
         end
       end
     end
-    
+
     colors.zip(style_names, style_catalog_nos)
       .map { |array| array.join(' ') }.join(', ')
   end
@@ -57,29 +57,29 @@ class Job < ActiveRecord::Base
     # ----------------------------------
     max_print = method(:max_print).to_proc.curry.(print_location)
     return max_print.(:width), max_print.(:height)
-    
+
     # Currying is a little weird/inelegant in Ruby, so it looks kinda
     # funky, but it is DRY and fairly concise.
 
     # Here's the original implementation:
     # ----------------------------------
-    #width = (imprintables.map(&:max_imprint_width) << print_location.max_width).map(&:to_f).min
-    #height = (imprintables.map(&:max_imprint_height) << print_location.max_height).map(&:to_f).min
-    #return width, height
+    # width = (imprintables.map(&:max_imprint_width) << print_location.max_width).map(&:to_f).min
+    # height = (imprintables.map(&:max_imprint_height) << print_location.max_height).map(&:to_f).min
+    # return width, height
 
     # Seems redundant and hard to indent cleanly, but easier to understand
     # if you aren't familiar with functional programming.
     # Here's another potential solution I came up with:
     # (Assuming no actual max_print method exists)
     # ----------------------------------
-    #max_print = lambda do |width_or_height|
+    # max_print = lambda do |width_or_height|
     #  (
     #    imprintables.map(&"max_imprint_#{width_or_height}".to_sym) +
     #    [print_location.send("max_#{width_or_height}")]
     #  )
     #    .map(&:to_f).min
-    #end
-    #return max_print.(:width), max_print.(:height)
+    # end
+    # return max_print.(:width), max_print.(:height)
 
     # This defines max_print inside this method, allowing direct access to
     # the print_location argument, meaning no need to curry or repeat
