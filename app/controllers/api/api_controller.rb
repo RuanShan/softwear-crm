@@ -1,7 +1,7 @@
 module Api
   class ApiController < ApplicationController
     def index
-      records = (record or model).where(params.permit(permitted_attributes))
+      records = (records || model).where(params.permit(permitted_attributes))
 
       respond_to do |format|
         format.json do
