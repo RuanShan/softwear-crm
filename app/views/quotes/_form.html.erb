@@ -51,7 +51,11 @@
         <div class="form-group">
           <% if params[:price_information] %>
             <% params[:price_information].each_with_index do |hash| %>
-              <%= add_prepopulated_fields(f, :line_items, hash) %>
+              <%= add_lis_from_pricing_hash(f, :line_items, hash) %>
+            <% end %>
+          <% elsif defined? params[:quote][:line_items_attributes] %>
+            <% params[:quote][:line_items_attributes].each do |_key, hash| %>
+              <%= add_line_items_from_params(f, :line_items, hash) if (hash[:_destroy] == 'false') %>
             <% end %>
           <% end %>
 

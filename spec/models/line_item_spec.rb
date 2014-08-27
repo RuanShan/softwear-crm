@@ -13,7 +13,12 @@ describe LineItem, line_item_spec: true do
   end
 
   describe 'Validations' do
-    it { is_expected.to validate_presence_of :quantity }
+    describe 'quantity' do
+      it { is_expected.to validate_presence_of :quantity }
+      it { is_expected.to allow_value(5).for :quantity }
+      it { is_expected.to_not allow_value(0).for :quantity }
+      it { is_expected.to_not allow_value(-4).for :quantity }
+    end
     it { is_expected.to validate_presence_of :unit_price }
 
     context 'when imprintable_variant_id is nil' do

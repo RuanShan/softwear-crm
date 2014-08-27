@@ -1,4 +1,8 @@
 module GeneralHelpers
+  def close_error_modal
+    find('#errorsModal .close').click
+  end
+
   def unhide_dashboard
     selector = 'button.button-menu-mobile.show-sidebar'
     return if all(selector).empty?

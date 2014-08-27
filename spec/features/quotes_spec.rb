@@ -108,20 +108,50 @@ feature 'Quotes management', quote_spec: true, js: true do
     expect(current_path).to eq(quote_path(quote.id + 1))
   end
 
-  scenario 'A user can add a single price from the pricing table to an existing quote', retry: 3, solr: true do
+  scenario 'A user can add a single price from the pricing table to an existing quote', retry: 2, new: true do
     visit imprintables_path
     find("#pricing_button_#{imprintable.id}").click
-    find(:css, "input#decoration_price").set(3.95)
+    find(:css, 'input#decoration_price').set(3.95)
     click_button 'Fetch Prices!'
+    sleep 0.5
     click_link 'Add to Quote'
-    page.select quote.name, from: 'quote_id'
-    sleep 1
+    sleep 0.5
+    page.select(quote.name, from: 'quote_id')
+    sleep 0.5
     click_button 'Submit'
 
     sleep 1
     expect(current_path).to eq(edit_quote_path quote.id)
     find('a[href="#line_items"]').click
     expect(page).to have_content(imprintable.name)
+  end
+
+  scenario 'Inputting bad data for a line item doesn\'t remove all line items' do
+    visit new_quote_path
+    fill_in 'Email', with: 'test@testing.com'
+    fill_in 'First Name', with: 'Capy'
+    fill_in 'Last Name', with: 'Bara'
+    click_button 'Next'
+    sleep 0.5
+
+    fill_in 'Quote Name', with: 'Quote Name'
+    fill_in 'Valid Until Date', with: Time.now + 1.day
+    fill_in 'Estimated Delivery Date', with: Time.now + 1.day
+    click_button 'Next'
+    sleep 0.5
+
+    click_link 'Add Line Item'
+    fill_in 'Name', with: 'This Should Still be here!'
+    fill_in 'Description', with: 'Line Item Description'
+    fill_in 'Quantity', with: 2
+    fill_in 'Unit Price', with: 15
+
+    click_link 'Add Line Item'
+    click_button 'Submit'
+    close_error_modal
+    click_button 'Next'
+    click_button 'Next'
+    expect(page).to have_selector('div.line-item-form', count: 2)
   end
 
   feature 'the following actions are tracked:' do

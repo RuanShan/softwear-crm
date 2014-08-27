@@ -64,7 +64,7 @@ class QuotesController < InheritedResources::Base
     @quote.line_items.new(name: params[:name],
                           unit_price: params[:total_price],
                           description: 'Canned Description',
-                          quantity: 0).save
+                          quantity: 1).save
     fire_activity(@quote, :added_line_item)
 
     redirect_to edit_quote_path params[:quote_id]
