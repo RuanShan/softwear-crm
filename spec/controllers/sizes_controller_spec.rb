@@ -3,7 +3,7 @@ include ApplicationHelper
 
 describe SizesController, js: true, size_spec: true do
   let!(:valid_user) { create(:alternate_user) }
-  let!(:size) { [create(:valid_size),create(:valid_size),create(:valid_size),create(:valid_size),create(:valid_size),create(:valid_size),create(:valid_size)].first }
+  let!(:size) { create(:valid_size) }
   before(:each) { sign_in valid_user }
 
   describe 'PATCH update' do
@@ -41,27 +41,6 @@ describe SizesController, js: true, size_spec: true do
 
     it 'updates the proper size' do
       post :update_size_order, categories: ['size_2']
-    end
-  end
-
-  describe 'testttt', ok_test: true do
-    it 'queries on fields in params' do
-      # expect(Size).to receive(:where).with('name' => 'ding')
-      expect_any_instance_of(ActiveRecord::Relation)
-        .to receive(:where).and_call_original
-        expect_any_instance_of(ActiveRecord::Relation)
-        .to receive(:where).with('id' => 1).and_call_original
-        expect_any_instance_of(ActiveRecord::Relation)
-        .to receive(:where).with('id' => 1).and_call_original
-        expect_any_instance_of(ActiveRecord::Relation)
-        .to receive(:where).with('id' => 1).and_call_original
-        expect_any_instance_of(ActiveRecord::Relation)
-        .to receive(:where).with('id' => 1).and_call_original
-      expect_any_instance_of(ActiveRecord::Relation)
-        .to receive(:where).with('id' => 1).and_call_original
-      expect_any_instance_of(ActiveRecord::Relation)
-        .to receive(:where).with('name' => 'ding').and_call_original
-      get :index
     end
   end
 end
