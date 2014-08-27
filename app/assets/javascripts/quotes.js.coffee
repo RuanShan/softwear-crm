@@ -1,9 +1,11 @@
 jQuery ->
   $('.js-datetimepicker').datetimepicker()
   $(document).on('click', '#print-button', ->
+    printPage()
+  )
+  if document.URL.match(/print=true/)
     window.print()
     return false
-  )
 
 @invalidMsg = (textbox) ->
   if textbox.validity.patternMismatch
@@ -14,6 +16,7 @@ jQuery ->
 
 @printPage = ->
   window.print()
+  return false
 
   # TODO if using js responses, this can be refactored
 @refreshQuote = (quoteId) ->

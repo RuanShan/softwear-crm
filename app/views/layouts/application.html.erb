@@ -5,8 +5,9 @@
 </head>
 
 <body class="tooltips">
-
-<div class="no-print" id="loading">
+<br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/>
+<br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/>
+<div class="hidden-print" id="loading">
   <div class="loading-inner">
     <div class="spinner">
       <div class="cube1"></div>
@@ -15,7 +16,7 @@
   </div>
 </div>
 
-<div class="modal fade no-print" id="js-ajax-loading" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+<div class="modal fade hidden-print" id="js-ajax-loading" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
   <div class="modal-dialog">
     <div class="modal-content">
       <div class="modal-body">
@@ -27,7 +28,7 @@
           </div>
       </div>
       <div class="modal-footer">
-        </div>
+      </div>
     </div>
   </div>
 </div>
@@ -36,12 +37,12 @@
 
     <%= render partial: 'shared/sidebar',
                locals: { current_url: @current_url, current_action: @current_action },
-               html: { class: 'no-print' } %>
+               html: { class: 'hidden-print' } %>
 
     <div class="right content-page">
 
         <%= render partial: 'shared/content_header',
-                   html: { class: 'no-print' } %>
+                   html: { class: 'hidden-print' } %>
 
         <div class="body content rows scroll-y">
             <%= yield %>

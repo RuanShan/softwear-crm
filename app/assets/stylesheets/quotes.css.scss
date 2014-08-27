@@ -1,11 +1,16 @@
 @media print {
     .print {
-        display: block;
+        display: inline;
+        overflow: visible;
     }
 
     .shrink-me {
         max-width: 300px;
         display: inline-block;
+    }
+
+    .table-responsive {
+
     }
 
     .box-info {

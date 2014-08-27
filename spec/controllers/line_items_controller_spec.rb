@@ -13,7 +13,7 @@ describe LineItemsController, line_item_spec: true do
       let!(:shirt) { create(:valid_imprintable) }
       make_variants :white, :shirt, [:S, :M, :L, :XL], not: [:job, :line_items]
 
-      it 'creates line items for each relevant size' do
+      it 'creates line items for each relevant size', new: true do
         post :create, format: :json, 
                       job_id:         job.id,
                       imprintable_id: shirt.id,
@@ -37,7 +37,7 @@ describe LineItemsController, line_item_spec: true do
         ).to exist
       end
 
-      it 'only fires one public activity activity', activity_spec: true do
+      it 'only fires one public activity activity', activity_spec: true, new: true do
         PublicActivity.with_tracking do
           expect(PublicActivity::Activity.all.size).to eq 0
           post :create, format: :json,
