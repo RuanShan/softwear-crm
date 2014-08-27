@@ -1,5 +1,3 @@
-require_dependency "api/application_controller"
-
 module Api
   class ImprintablesController < ApiController
     def index

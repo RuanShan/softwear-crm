@@ -77,6 +77,8 @@ CrmSoftwearcrmCom::Application.routes.draw do
   end
   get '/search', to: 'search/queries#search', as: :search
 
-  mount Api::Engine => "/api"
-
+  namespace 'api' do
+    resources 'imprintables'
+    resources 'colors'
+  end
 end

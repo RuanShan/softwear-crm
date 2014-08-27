@@ -17,12 +17,6 @@ GIT
       cocaine (~> 0.5.3)
       mime-types
 
-PATH
-  remote: engines/api
-  specs:
-    api (0.0.1)
-      rails (~> 4.0.4)
-
 GEM
   remote: https://rubygems.org/
   specs:
@@ -381,7 +375,6 @@ PLATFORMS
 DEPENDENCIES
   activerecord-session_store!
   acts-as-taggable-on
-  api!
   aws-sdk
   better_errors (>= 0.3.2)
   binding_of_caller
