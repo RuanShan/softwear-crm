@@ -171,6 +171,24 @@ describe Imprintable, imprintable_spec: true do
     end
   end
 
+  describe '#sizes_by_color', wwip: true do
+    let!(:shirt) { create :valid_imprintable }
+
+    let!(:red)   { create :valid_color, name: 'Red' }
+    let!(:green) { create :valid_color, name: 'Green' }
+    let!(:blue)  { create :valid_color, name: 'Blue' }
+
+    make_variants :red, :shirt, [:s, :m, :l], not: [:imprintable_variant, :job]
+    make_variants :green, :shirt, [:m, :l, :xl], not: [:imprintable_variant, :job]
+
+    it 'returns the sizes for each imprintable variant matching the given color' do
+      sizes = shirt.sizes_by_color red
+
+      expect(sizes).to be_a ActiveRecord::Relation
+      expect(sizes.map(&:display_value) & %i(s m l)).to be_empty
+    end
+  end
+
   describe '#style_name_and_catalog_no' do
       let!(:imprintable) { build_stubbed(:blank_imprintable,
                                          style_catalog_no: 5555,
@@ -182,3 +200,4 @@ describe Imprintable, imprintable_spec: true do
   end
 
 end
+

@@ -80,5 +80,6 @@ CrmSoftwearcrmCom::Application.routes.draw do
   namespace 'api' do
     resources 'imprintables'
     resources 'colors'
+    resources 'sizes'
   end
 end

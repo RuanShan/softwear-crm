@@ -27,23 +27,30 @@ module Api
 
     def show
       super do |format|
-        format.json do
-          render json: record, include: includes
-        end
+        format.json(&render_json)
       end
     end
 
     def create
-
+      super do |format|
+        response.headers['Location'] = collection_url(record)
+        format.json(&render_json)
+      end
     end
 
     def update
       super do |format|
-        render json: record, include: includes
+        format.json(&render_json)
       end
     end
 
     protected
+
+    def render_json
+      proc do
+        render json: record, include: includes
+      end
+    end
 
     def self.model_name
       name.gsub('Api::', '').gsub('Controller', '').singularize
