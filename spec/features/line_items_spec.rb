@@ -61,7 +61,7 @@ feature 'Line Items management', line_item_spec: true, js: true do
     expect(page).to have_content "Quantity can't be blank"
   end
 
-  scenario 'user can add a new imprintable line item', new: true do
+  scenario 'user can add a new imprintable line item' do
     visit edit_order_path(1, anchor: 'jobs')
     wait_for_ajax
 
@@ -98,7 +98,7 @@ feature 'Line Items management', line_item_spec: true, js: true do
     expect(page).to have_css 'input[value="2.30"]'
   end
 
-  scenario 'user cannot add duplicate imprintable line items', new: true do
+  scenario 'user cannot add duplicate imprintable line items' do
     2.times do
       visit edit_order_path(1, anchor: 'jobs')
       wait_for_ajax
