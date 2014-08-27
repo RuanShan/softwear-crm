@@ -184,8 +184,11 @@ describe Imprintable, imprintable_spec: true do
     it 'returns the sizes for each imprintable variant matching the given color' do
       sizes = shirt.sizes_by_color red
 
-      expect(sizes).to be_a ActiveRecord::Relation
       expect(sizes.map(&:display_value) & %i(s m l)).to be_empty
+    end
+
+    it 'takes 1 sql query' do
+      expect(queries_after { shirt.sizes_by_color red }).to eq 1
     end
   end
 
