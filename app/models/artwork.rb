@@ -19,7 +19,6 @@ class Artwork < ActiveRecord::Base
   has_many :artwork_requests, through: :artwork_request_artworks
   has_many :artwork_request_artworks
 
-
   accepts_nested_attributes_for :artwork, allow_destroy: true
   accepts_nested_attributes_for :preview, allow_destroy: true
 

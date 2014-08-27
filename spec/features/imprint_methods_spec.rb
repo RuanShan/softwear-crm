@@ -43,6 +43,6 @@ feature 'Imprint Method Features', imprint_method_spec: true do
     find("tr#imprint_method_#{imprint_method.id} a[data-action='destroy']").click
     page.driver.browser.switch_to.alert.accept
     wait_for_ajax
-    expect( imprint_method.reload.destroyed? ).to be_truthy
+    expect(imprint_method.reload.destroyed?).to be_truthy
   end
 end

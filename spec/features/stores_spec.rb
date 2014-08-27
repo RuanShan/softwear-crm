@@ -7,7 +7,6 @@ feature 'Stores management', store_spec: true do
 
   background(:each) { login_as(valid_user) }
 
-
   scenario 'User views list of existing stores' do
     visit root_path
     click_link 'Stores'
@@ -28,7 +27,7 @@ feature 'Stores management', store_spec: true do
     find("tr#store_#{store.id} a[data-action='destroy']").click
     page.driver.browser.switch_to.alert.accept
     wait_for_ajax
-    expect( store.reload.destroyed? ).to be_truthy
+    expect(store.reload.destroyed?).to be_truthy
   end
 
   scenario 'User edits an existing store' do

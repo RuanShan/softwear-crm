@@ -12,7 +12,7 @@ class ImprintableVariant < ActiveRecord::Base
   validates :imprintable, presence: true
   validates :size, presence: true
 
-  #TODO this scope isn't tested in model spec
+  # TODO this scope isn't tested in model spec
   scope :size_variants_for, ->(imprintable, color) do
     where(
       imprintable_id: param_record_id(imprintable),
@@ -32,7 +32,7 @@ class ImprintableVariant < ActiveRecord::Base
     "#{brand.name} #{imprintable.style_catalog_no} #{color.name} #{size.name}"
   end
 
-  def name 
+  def name
     "#{color.name} #{imprintable.name}"
   end
 

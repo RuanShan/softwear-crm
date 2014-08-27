@@ -19,7 +19,6 @@ describe 'imprintables/_basic_info.html.erb', imprintable_spec: true do
     render partial: 'imprintables/basic_info', locals: { imprintable: imprintable }
   end
 
-
   it 'displays all the list headers' do
     expect(rendered).to have_css('dt', text: 'Material')
     expect(rendered).to have_css('dt', text: 'Weight')

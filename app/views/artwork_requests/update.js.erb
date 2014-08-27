@@ -6,7 +6,7 @@
   $('#artwork-request-row-<%= @artwork_request.id %>').html("<%= j(render partial: 'row',
                                                                           locals: { artwork_request: @artwork_request }).html_safe %>");
 
-  setupContentModal(function($contentModal){
+  setupContentModal(function($contentModal) {
     $contentModal.find('.modal-content').addClass('modal-content-success')
   });
 

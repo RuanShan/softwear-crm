@@ -1,8 +1,8 @@
 require 'spec_helper'
 
 describe 'artwork_requests/_table.html.erb', artwork_request_spec: true do
-  let!(:artwork_request){ create(:valid_artwork_request) }
-  let!(:current_user){ User.where(id: artwork_request.artist_id).first }
+  let!(:artwork_request) { create(:valid_artwork_request) }
+  let!(:current_user) { User.where(id: artwork_request.artist_id).first }
 
   before(:each) do
     render partial: 'artwork_requests/table', locals: { artwork_requests: ArtworkRequest.all, current_user: current_user }

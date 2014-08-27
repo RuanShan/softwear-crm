@@ -40,6 +40,6 @@ feature 'Brands management', brand_spec: true do
     wait_for_ajax
     expect(current_path).to eq(brands_path)
     expect(page).to have_selector '.modal-content-success', text: 'Brand was successfully destroyed.'
-    expect(brand.reload.destroyed? ).to be_truthy
+    expect(brand.reload.destroyed?).to be_truthy
   end
 end

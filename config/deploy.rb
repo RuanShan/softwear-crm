@@ -57,7 +57,6 @@ namespace :deploy do
     end
   end
 
-
   before :updated, :setup_solr_data_dir do
     on roles(:app) do
       unless test "[ -d #{shared_path}/solr/data ]"
@@ -86,7 +85,7 @@ namespace :solr do
     end
   end
 
-  desc "restart solr"
+  desc 'restart solr'
   task :restart do
     invoke 'solr:stop'
     invoke 'solr:start'
@@ -94,7 +93,7 @@ namespace :solr do
 
   after 'deploy:finished', 'solr:restart'
 
-  desc "reindex the whole solr database"
+  desc 'reindex the whole solr database'
   task :reindex do
     invoke 'solr:stop'
     on roles(:app) do
@@ -104,11 +103,10 @@ namespace :solr do
     on roles(:app) do
       within current_path do
         with rails_env: fetch(:rails_env, 'production') do
-          info "Reindexing Solr database"
+          info 'Reindexing Solr database'
           execute :bundle, 'exec', :rake, 'sunspot:solr:reindex[,,true]'
         end
       end
     end
   end
-
 end

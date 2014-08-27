@@ -8,7 +8,7 @@ describe LineItem, line_item_spec: true do
   describe 'Relationships' do
     it { is_expected.to belong_to(:imprintable_variant) }
     it { is_expected.to belong_to(:line_itemable) }
-    #FIXME this doesn't work
+    # FIXME this doesn't work
     # it { is_expected.to have_one(:order).through(:job) }
   end
 
@@ -40,7 +40,7 @@ describe LineItem, line_item_spec: true do
     end
 
     context 'when imprintable_variant_id is not nil' do
-      let!(:subject){}
+      let!(:subject) {}
       subject do
         create(
           :imprintable_line_item,

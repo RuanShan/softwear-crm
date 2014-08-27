@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 describe 'artworks/_edit.html.erb', artwork_spec: true do
-  let!(:artwork){ build_stubbed(:blank_artwork) }
+  let!(:artwork) { build_stubbed(:blank_artwork) }
 
   before(:each) do
     current_user = build_stubbed(:blank_user)

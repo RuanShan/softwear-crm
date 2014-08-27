@@ -86,7 +86,7 @@ describe Job, job_spec: true do
   end
 
   describe '#max_print_area', artwork_request_spec: true do
-    let!(:job){ build_stubbed(:blank_job) }
+    let!(:job) { build_stubbed(:blank_job) }
     let!(:stub_imprintables) do
       [
         build_stubbed(

@@ -34,7 +34,7 @@ describe Order, order_spec: true do
 
     let!(:store) { create(:valid_store) }
     let!(:user) { create(:user) }
-    #TODO struggled and failed to find a way to use build_stubbed here
+    # TODO struggled and failed to find a way to use build_stubbed here
     it 'requires a tax id number if tax_exempt? is true' do
       expect(build(:order, store_id: store.id, store: store, salesperson_id: user.id, tax_exempt: true)).to_not be_valid
     end
@@ -44,7 +44,7 @@ describe Order, order_spec: true do
   end
 
   describe '#balance' do
-    let(:order){ build_stubbed(:blank_order) }
+    let(:order) { build_stubbed(:blank_order) }
 
     before do
       allow(order).to receive(:total).and_return(5)
@@ -56,12 +56,11 @@ describe Order, order_spec: true do
     end
   end
 
-  #TODO implement this
+  # TODO implement this
   describe 'get_salesperson_id'
 
-  #TODO implement this
+  # TODO implement this
   describe 'get_store_id'
-
 
   describe '#line_items' do
     let!(:order) { create :order }
@@ -104,7 +103,7 @@ describe Order, order_spec: true do
           :blank_order,
           terms: 'Terms dont matter when payment is complete'
         )
-      end 
+      end
 
       before(:each) do
         allow(subject).to receive(:balance).and_return(0)

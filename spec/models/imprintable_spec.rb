@@ -89,7 +89,7 @@ describe Imprintable, imprintable_spec: true do
   end
 
   describe '#all_categories' do
-    let(:imprintable){ build_stubbed(:blank_imprintable,
+    let(:imprintable) { build_stubbed(:blank_imprintable,
                                        imprintable_categories: [build_stubbed(:blank_imprintable_category, name: 'Category')])}
 
     it 'returns all of the categories for the imprintable' do
@@ -98,8 +98,8 @@ describe Imprintable, imprintable_spec: true do
   end
 
   describe '#create_imprintable_variants' do
-    let(:sizes) {[ create(:valid_size), create(:valid_size), create(:valid_size) ]}
-    let(:colors) {[ create(:valid_color), create(:valid_color)]}
+    let(:sizes) { [create(:valid_size), create(:valid_size), create(:valid_size)] }
+    let(:colors) { [create(:valid_color), create(:valid_color)] }
     let(:valid_imprintable) { create(:valid_imprintable) }
 
     it 'generates an imprintable variant from arrays of sizes and colors' do
@@ -131,7 +131,7 @@ describe Imprintable, imprintable_spec: true do
     end
   end
 
-  #TODO implement this
+  # TODO implement this
   describe '#determine_sizes'
 
   describe '#name' do

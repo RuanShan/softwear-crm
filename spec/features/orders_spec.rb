@@ -172,8 +172,6 @@ feature 'Order management', order_spec: true,  js: true do
 
       visit orders_path
 
-
-
       select 'Test Query', from: 'select_query_for_order'
       wait_for_ajax
       click_button 'GO'

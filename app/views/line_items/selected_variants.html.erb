@@ -8,7 +8,7 @@
 	<%= objects.first.imprintable.style_catalog_no %></h6>
 	<p><%= objects.first.description %></p>
 
-  <% #TODO inline CSS %>
+  <% # TODO inline CSS %>
 	<p>Price: $<%= number_field_tag 'base_unit_price',
                                   objects.first.imprintable.base_price || 0.00,
                                   class: 'form-control', style: 'width: 100px; display: inline;' %></p>

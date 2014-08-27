@@ -3,7 +3,7 @@ include ApplicationHelper
 
 describe ArtworksController, js: true, artwork_spec: true do
 
-  let!(:artwork){ create(:valid_artwork) }
+  let!(:artwork) { create(:valid_artwork) }
   let!(:valid_user) { create :alternate_user }
   before(:each) { sign_in valid_user }
 

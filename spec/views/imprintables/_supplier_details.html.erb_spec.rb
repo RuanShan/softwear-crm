@@ -2,7 +2,7 @@ require 'spec_helper'
 
 describe 'imprintables/_supplier_details.html.erb', imprintable_spec: true do
 
-  let(:imprintable){ build_stubbed(:valid_imprintable) }
+  let(:imprintable) { build_stubbed(:valid_imprintable) }
 
   before(:each) do
     allow(imprintable).to receive(:name).and_return('name')

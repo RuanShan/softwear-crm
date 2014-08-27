@@ -6,7 +6,7 @@ describe User, user_spec: true do
 
   describe 'Relationships' do
     it { is_expected.to belong_to(:store) }
-    #FIXME this doesn't work
+    # FIXME this doesn't work
     # it { is_expected.to have_many(:orders) }
     it { is_expected.to have_many(:search_queries).class_name('Search::Query') }
   end
@@ -21,7 +21,7 @@ describe User, user_spec: true do
   end
 
   describe '#full_name' do
-    let!(:user){ build_stubbed(:blank_user, first_name: 'First', last_name: 'Last') }
+    let!(:user) { build_stubbed(:blank_user, first_name: 'First', last_name: 'Last') }
 
     subject do
       build_stubbed(

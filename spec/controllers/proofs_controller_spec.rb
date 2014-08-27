@@ -2,7 +2,7 @@ require 'spec_helper'
 include ApplicationHelper
 
 describe ProofsController, js: true, proofs_spec: true do
-  let!(:proof){ create(:valid_proof) }
+  let!(:proof) { create(:valid_proof) }
   let!(:valid_user) { create :alternate_user }
   before(:each) { sign_in valid_user }
 
@@ -31,7 +31,7 @@ describe ProofsController, js: true, proofs_spec: true do
       end
 
       context 'reminder is true' do
-        let!(:order){ Order.find(proof.order_id) }
+        let!(:order) { Order.find(proof.order_id) }
         it 'sends reminder email and does not change the proof status' do
           expect(ProofMailer).to receive(:proof_reminder_email).with(an_instance_of(Hash)).and_return(double('ProofMailer', deliver: true))
           post :email_customer, id: proof.id, order_id: proof.order_id,

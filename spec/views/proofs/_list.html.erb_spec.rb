@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 describe 'proofs/_list.html.erb', proof_spec: true do
-  let!(:order){ build_stubbed(:blank_order) }
+  let!(:order) { build_stubbed(:blank_order) }
 
   before(:each) do
     render partial: 'proofs/list', locals: { order: order }

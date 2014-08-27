@@ -10,7 +10,7 @@ feature 'Imprints Management', imprint_spec: true, js: true do
   given!(:order) { create :order_with_job }
   given(:job) { order.jobs.first }
   
-  -> (t,&b){b.call(t)}.call(
+  -> (t,&b) {b.call(t)}.call(
        [['Digital', 'Screen', 'Embroidery'], 
         ['Front',   'Lower',  'Wherever']]) do |name|
     3.times do |n|

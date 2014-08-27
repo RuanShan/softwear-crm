@@ -36,7 +36,7 @@ describe ImprintablesController, imprintable_spec: true do
   describe 'PUT update' do
     context 'with valid input' do
       it 'updates the imprintable' do
-        expect{ put :update, id: imprintable.to_param, color: { ids: [1] }, size: { ids: [1] }, imprintable: attributes_for(:valid_imprintable) }.to_not change(Imprintable, :count)
+        expect { put :update, id: imprintable.to_param, color: { ids: [1] }, size: { ids: [1] }, imprintable: attributes_for(:valid_imprintable) }.to_not change(Imprintable, :count)
         expect(imprintable.special_considerations).to eq('Special Consideration')
       end
     end
@@ -96,15 +96,15 @@ describe ImprintablesController, imprintable_spec: true do
   describe 'protected methods' do
     describe '#set_current_action' do
       it 'sets the brand_collection' do
-        expect(Brand).to receive_message_chain(:order, :map).and_return( [['brand', 1]] )
+        expect(Brand).to receive_message_chain(:order, :map).and_return([['brand', 1]])
         expect(Store).to receive(:order).with(:name).and_return(['store'])
         expect(Imprintable).to receive(:all).and_return(['imprintable'])
 
         expect(Size).to receive(:order).with(:sort_order).and_return(['size'])
         expect(Color).to receive(:order).with(:name).and_return(['color'])
-        expect(ImprintMethod).to receive(:all).and_return( ['imprint_method'] )
+        expect(ImprintMethod).to receive(:all).and_return(['imprint_method'])
 
-        expect(Color).to receive(:all).and_return( ['another_color'] )
+        expect(Color).to receive(:all).and_return(['another_color'])
         expect(Size).to receive(:all).and_return(['another_size'])
 
         controller.send(:set_model_collection_hash)

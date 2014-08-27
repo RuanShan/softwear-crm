@@ -44,7 +44,7 @@ quoteCollapse = (id, collapsed) ->
 @onQuoteCollapseHide = ->
   quoteCollapse $(this).data('quote-id'), false
 
-  #TODO descriptive variable?
+  # TODO descriptive variable?
 @registerQuoteEvents = ($c) ->
   refresh_inlines()
   $quoteCollapse = $c.find('.quote-collapse')

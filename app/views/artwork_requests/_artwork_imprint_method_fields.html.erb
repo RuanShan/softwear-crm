@@ -3,7 +3,7 @@
     <div class="row">
       <%= f.label :print_locations, class: 'col-sm-2 control-label' %>
       <div class="col-sm-10">
-          <% #TODO: tried to extract selected/checked to Model and failed. Any ideas? %>
+          <% # TODO: tried to extract selected/checked to Model and failed. Any ideas? %>
           <% selected =
                      if artwork_request && !artwork_request.print_location_id.nil?
                        { selected: artwork_request.print_location_id }

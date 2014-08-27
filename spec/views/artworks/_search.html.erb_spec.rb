@@ -14,8 +14,8 @@ describe 'artworks/_search.html.erb', artwork_spec: true do
   end
 
   context 'artwork_request exists and remote is true' do
-    let!(:artwork_request){ build_stubbed(:valid_artwork_request) }
-    let!(:artworks){ [build_stubbed(:valid_artwork)] }
+    let!(:artwork_request) { build_stubbed(:valid_artwork_request) }
+    let!(:artworks) { [build_stubbed(:valid_artwork)] }
 
     before(:each) do
       render partial: 'artworks/search', locals: { artwork_request: artwork_request, artworks: artworks, remote: true }
