@@ -14,7 +14,7 @@ describe ArtworkRequest, artwork_request_spec: true do
     it { is_expected.to have_and_belong_to_many(:artworks) }
     it { is_expected.to have_and_belong_to_many(:ink_colors) }
     it { is_expected.to have_and_belong_to_many(:jobs) }
-    it { is_expected.to accept_nested_attributes_for(:assets)}
+    it { is_expected.to accept_nested_attributes_for(:assets) }
   end
 
   describe 'Validations' do
