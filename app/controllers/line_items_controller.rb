@@ -305,7 +305,7 @@ private
     return unless @line_item && @line_item.line_itemable.nil?
 
     @line_item.line_itemable = @line_itemable
-    @line_item.save
+    flash[:error] = 'The line item was unable to be saved.' unless @line_item.save
   end
 
   def permitted_params
