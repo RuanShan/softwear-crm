@@ -84,7 +84,7 @@ class Imprintable < ActiveRecord::Base
                                                               color_id: color.id,
                                                               imprintable_id: id)
         i.deleted_at = nil
-        i.save
+        return false unless i.save
       end
     end
   end

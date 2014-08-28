@@ -248,8 +248,8 @@ namespace :imprintables do
         color_names.each do |color_name|
           from_hash[:colors] << Color.find_or_create_by(name: color_name)
         end
-        # imprintable.create_imprintable_variants_from_sizes_and_colors(sizes, colors)
-        imprintable.create_imprintable_variants(from_hash)
+
+        puts 'Cannot create variants' unless imprintable.create_imprintable_variants(from_hash)
       else
         puts "Cannot find imprintable #{row['id']} '#{row['style']}'"
       end

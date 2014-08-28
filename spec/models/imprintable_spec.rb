@@ -102,13 +102,27 @@ describe Imprintable, imprintable_spec: true do
     let(:colors) { [create(:valid_color), create(:valid_color)] }
     let(:valid_imprintable) { create(:valid_imprintable) }
 
-    it 'generates an imprintable variant from arrays of sizes and colors' do
-      expect(valid_imprintable.imprintable_variants.count).to eq(0)
-      from_hash = {}
-      from_hash[:sizes] = sizes
-      from_hash[:colors] = colors
-      valid_imprintable.create_imprintable_variants(from_hash)
-      expect(valid_imprintable.imprintable_variants.count).to eq(6)
+    context 'with valid input' do
+      it 'generates an imprintable variant from arrays of sizes and colors' do
+        expect(valid_imprintable.imprintable_variants.count).to eq(0)
+        from_hash = {}
+        from_hash[:sizes] = sizes
+        from_hash[:colors] = colors
+        valid_imprintable.create_imprintable_variants(from_hash)
+        expect(valid_imprintable.imprintable_variants.count).to eq(6)
+      end
+    end
+
+    context 'with invalid input' do
+      it 'returns false' do
+        from_hash = {}
+        sizes = [create(:valid_size)]
+        colors = [create(:valid_color)]
+        sizes[0].id = 10
+        from_hash[:sizes] = sizes
+        from_hash[:colors] = colors
+        expect(valid_imprintable.create_imprintable_variants(from_hash)).to be_falsey
+      end
     end
   end
 
