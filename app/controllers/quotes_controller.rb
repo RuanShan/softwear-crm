@@ -61,11 +61,14 @@ class QuotesController < InheritedResources::Base
 
   def stage_quote
     @quote = Quote.find(params[:quote_id])
-    @quote.line_items.new(name: params[:name],
+    if @quote.line_items.new(name: params[:name],
                           unit_price: params[:total_price],
                           description: 'Canned Description',
                           quantity: 1).save
-    fire_activity(@quote, :added_line_item)
+      fire_activity(@quote, :added_line_item)
+    else
+      flash[:error] = 'The line item could not be added to the quote.'
+    end
 
     redirect_to edit_quote_path params[:quote_id]
   end

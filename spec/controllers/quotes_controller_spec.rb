@@ -97,13 +97,29 @@ describe QuotesController, js: true, quote_spec: true do
   end
 
   describe 'POST stage_quote' do
-    it 'creates a new line_item, fires activity, and redirects' do
+    before(:each) do
       expect(Quote).to receive(:find).with(an_instance_of(String)).once
                        .and_return(build_stubbed(:valid_quote))
-      expect_any_instance_of(Quote).to receive_message_chain(:line_items, :new, :save)
-      expect(controller).to receive(:fire_activity).once
-      get :stage_quote, quote_id: quote.to_param, name: 'name', total_price: 4
-      expect(response.status).to eq(302)
+    end
+
+    context 'with valid input' do
+      it 'creates a new line_item, fires activity, and redirects' do
+        expect_any_instance_of(Quote).to receive_message_chain(:line_items, :new, :save)
+                                         .and_return true
+        expect(controller).to receive(:fire_activity).once
+        get :stage_quote, quote_id: quote.to_param, name: 'name', total_price: 4
+        expect(response.status).to eq(302)
+      end
+    end
+
+    context 'with invalid input' do
+      it 'flashes an error to the user and redirects' do
+        expect_any_instance_of(Quote).to receive_message_chain(:line_items, :new, :save)
+                                         .and_return(false)
+        get :stage_quote, quote_id: quote.to_param, name: 'name', total_price: -50
+        expect(flash[:error]).to eq 'The line item could not be added to the quote.'
+        expect(response.status).to eq(302)
+      end
     end
   end
 
