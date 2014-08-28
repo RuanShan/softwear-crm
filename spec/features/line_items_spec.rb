@@ -129,7 +129,7 @@ feature 'Line Items management', line_item_spec: true, js: true do
     end
   end
 
-  it 'user cannot submit an imprintable line item without completing the form' do
+  scenario 'user cannot submit an imprintable line item without completing the form' do
     visit edit_order_path(1, anchor: 'jobs')
     wait_for_ajax
 
@@ -173,7 +173,7 @@ feature 'Line Items management', line_item_spec: true, js: true do
   end
 
   context 'editing a non-imprintable line item' do
-    before(:each) do
+    background(:each) do
       non_imprintable
       visit edit_order_path(1, anchor: 'jobs')
       wait_for_ajax
@@ -187,11 +187,11 @@ feature 'Line Items management', line_item_spec: true, js: true do
       wait_for_ajax
     end
 
-    it 'is possible' do
+    scenario 'is possible' do
       expect(LineItem.where name: 'New name!').to exist
     end
 
-    scenario 'user can see the result' do
+    scenario 'user can see the result', new: true do
       expect(page).to have_content 'New name!'
     end
 

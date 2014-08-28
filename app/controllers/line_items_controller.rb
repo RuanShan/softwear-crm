@@ -291,14 +291,7 @@ private
   end
 
   def load_line_itemable
-    if params[:id]
-      line_item = LineItem.find(params[:id])
-      klass = line_item.line_itemable_type.constantize
-      @line_itemable = klass.find(line_item.line_itemable_id)
-    else
-      klass = [Job, Quote].detect { |li| params["#{li.name.underscore}_id"] }
-      @line_itemable = klass.find(params["#{klass.name.underscore}_id"])
-    end
+    @line_itemable = LineItem.load_line_itemable(params)
   end
 
   def assign_line_itemable

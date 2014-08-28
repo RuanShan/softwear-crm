@@ -99,6 +99,18 @@ class LineItem < ActiveRecord::Base
     unit_price && quantity ? unit_price * quantity : 'NAN'
   end
 
+  def self.load_line_itemable(params)
+    if params[:id]
+      line_item = LineItem.find(params[:id])
+      return line_item.line_itemable_type
+                      .safely_constantize([Job, Quote])
+                      .find(line_item.line_itemable_id)
+    else
+      klass = [Job, Quote].detect { |li| params["#{li.name.underscore}_id"] }
+      return klass.find(params["#{klass.name.underscore}_id"])
+    end
+  end
+
   private
 
   def imprintable_variant_exists
