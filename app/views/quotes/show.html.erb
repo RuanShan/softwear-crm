@@ -37,7 +37,6 @@
         <p><label>Name:</label> <%= @quote.name %></p>
         <p><label>Valid Until:</label> <%= display_time(@quote.valid_until_date) %></p>
         <p><label>Estimated Delivery:</label> <%= display_time(@quote.estimated_delivery_date) %></p>
-        <p><label>Shipping: </label> <%= number_to_currency(@quote.shipping) %></p>
         <p><label>Salesperson:</label> <%= @quote.salesperson.full_name %></p>
         <p><label>Store:</label> <%= @quote.store.name %></p>
       </div>
