@@ -1,11 +1,8 @@
 require 'spec_helper'
 
 describe 'quotes/_actions.html.erb', quote_spec: true do
-  let!(:quote) { build_stubbed(:valid_quote) }
-
   before(:each) do
-    assign(:quote, quote)
-    render partial: 'quotes/actions'
+    render partial: 'quotes/actions', locals: { quote: build_stubbed(:valid_quote) }
   end
 
   it 'should display a button to Email a Quote' do

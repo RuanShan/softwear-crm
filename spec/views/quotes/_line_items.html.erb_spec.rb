@@ -1,11 +1,8 @@
 require 'spec_helper'
 
 describe 'quotes/_line_items.html.erb', quote_spec: true do
-  let!(:quote) { build_stubbed(:valid_quote) }
-
   before(:each) do
-    assign(:quote, quote)
-    render partial: 'quotes/line_items'
+    render partial: 'quotes/line_items', locals: { quote: build_stubbed(:valid_quote) }
   end
 
   it 'should have a heading and two buttons to add and update line_items' do

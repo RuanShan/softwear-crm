@@ -47,11 +47,11 @@
 
         <div class="tab-pane animated fadeInRight" id="line_items">
           <%= render partial: 'line_items',
-                     locals: { line_items: @quote.standard_line_items } %>
+                     locals: { quote: @quote } %>
         </div>
 
         <div class="tab-pane animated fadeInRight" id="actions">
-          <%= render partial: 'actions' %>
+          <%= render partial: 'actions', locals: { quote: @quote } %>
         </div>
       </div>
     </div>
