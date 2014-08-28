@@ -34,7 +34,7 @@
     <div class="row">
       <div class="col-sm-6">
         <%= render partial: 'quote_detail_fields',
-                   locals: { current_user: current_user, f: f } %>
+                   locals: { current_user: current_user, f: f, quote: quote } %>
       </div>
 
       <div class="col-sm-6">
@@ -49,12 +49,12 @@
     <div class="col-sm-6">
       <div class="row">
         <div class="form-group">
-          <% if params[:price_information] %>
-            <% params[:price_information].each_with_index do |hash| %>
+          <% if new_quote_hash[:price_information] %>
+            <% new_quote_hash[:price_information].each_with_index do |hash| %>
               <%= add_lis_from_pricing_hash(f, :line_items, hash) %>
             <% end %>
-          <% elsif defined? params[:quote][:line_items_attributes] %>
-            <% params[:quote][:line_items_attributes].each do |_key, hash| %>
+          <% elsif new_quote_hash[:quote_li_attributes] %>
+            <% new_quote_hash[:quote_li_attributes].each do |_key, hash| %>
               <%= add_line_items_from_params(f, :line_items, hash) if (hash[:_destroy] == 'false') %>
             <% end %>
           <% end %>

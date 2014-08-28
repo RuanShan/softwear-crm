@@ -6,11 +6,10 @@ describe 'quotes/_quote_detail_fields.html.erb', quote_spec: true do
   let!(:quote) { build_stubbed(:valid_quote) }
 
   before(:each) do
-    assign(:quote, quote)
     form_for(quote, url: quote_path(quote), builder: LancengFormBuilder) do |f|
       @f = f
     end
-    render partial: 'quotes/quote_detail_fields', locals: { f: @f }
+    render partial: 'quotes/quote_detail_fields', locals: { f: @f, quote: quote }
   end
 
   it 'should contain all the necessary fields and labels' do

@@ -4,6 +4,7 @@ class QuotesController < InheritedResources::Base
   require 'mail'
 
   def new
+    assign_new_quote_hash
     super do
       @quote.line_items.build
       @current_action = 'quotes#new'
@@ -38,6 +39,7 @@ class QuotesController < InheritedResources::Base
   end
 
   def create
+    assign_new_quote_hash
     super do
       @quote.create_freshdesk_ticket if Rails.env.production?
     end
@@ -97,6 +99,14 @@ class QuotesController < InheritedResources::Base
   end
 
   private
+
+  def assign_new_quote_hash
+    @new_quote_hash = {}
+    @new_quote_hash[:price_information] = params[:price_information] if params[:price_information]
+    if defined? params[:quote][:line_items_attributes]
+      @new_quote_hash[:quote_li_attributes] = params[:quote][:line_items_attributes]
+    end
+  end
 
   def set_current_action
     @current_action = 'quotes'

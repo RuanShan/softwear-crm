@@ -5,6 +5,7 @@ describe 'quotes/new.html.erb', quote_spec: true do
 
   before(:each) do
     assign(:quote, Quote.new)
+    assign(:new_quote_hash, {})
     render file: 'quotes/new'
   end
 
