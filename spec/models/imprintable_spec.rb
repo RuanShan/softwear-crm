@@ -126,6 +126,33 @@ describe Imprintable, imprintable_spec: true do
     end
   end
 
+  describe '.set_model_collection_hash' do
+    it 'instantiates a hash with brand, store, imprintable, size, color, imprint
+        method collections as well as all colors and all sizes' do
+      expect(Brand).to receive_message_chain(:order, :map).and_return 1
+      expect(Store).to receive(:order).and_return 2
+      expect(Imprintable).to receive(:all).and_return 3
+      expect(Size).to receive(:order).and_return 4
+      expect(Color).to receive(:order).and_return 5
+      expect(ImprintMethod).to receive(:all).and_return 6
+      expect(Color).to receive(:all).and_return 7
+      expect(Size).to receive(:all).and_return 8
+
+      expected_hash = {
+        brand_collection: 1,
+        store_collection: 2,
+        imprintable_collection: 3,
+        size_collection: 4,
+        color_collection: 5,
+        imprint_method_collection: 6,
+        all_colors: 7,
+        all_sizes: 8
+      }
+      test_hash = Imprintable.set_model_collection_hash
+      expect(test_hash).to eq expected_hash
+    end
+  end
+
   describe '#create_variants_hash' do
     let!(:imprintable_variant) { create(:valid_imprintable_variant) }
 

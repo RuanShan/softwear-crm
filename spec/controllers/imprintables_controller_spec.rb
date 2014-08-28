@@ -28,7 +28,7 @@ describe ImprintablesController, imprintable_spec: true do
 
   describe 'GET new' do
     it 'calls set_model_collection_hash' do
-      expect(controller).to receive(:set_model_collection_hash)
+      expect(Imprintable).to receive(:set_model_collection_hash)
       get :new
     end
   end

@@ -103,6 +103,19 @@ class Imprintable < ActiveRecord::Base
     }
   end
 
+  def self.set_model_collection_hash
+    model_collection_hash = {}
+    model_collection_hash[:brand_collection] = Brand.order(:name).map{ |b| [b.name, b.id] }
+    model_collection_hash[:store_collection] = Store.order(:name)
+    model_collection_hash[:imprintable_collection] = Imprintable.all
+    model_collection_hash[:size_collection] = Size.order(:sort_order)
+    model_collection_hash[:color_collection] = Color.order(:name)
+    model_collection_hash[:imprint_method_collection] = ImprintMethod.all
+    model_collection_hash[:all_colors] = Color.all
+    model_collection_hash[:all_sizes] = Size.all
+    model_collection_hash
+  end
+
   def description
     style_description
   end
