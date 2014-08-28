@@ -46,6 +46,11 @@ describe ImprintablesController, imprintable_spec: true do
         get :edit, id: imprintable.to_param
         expect(response).to render_template('imprintables/edit')
       end
+
+      it 'it flashes a warning to the user' do
+        put :update, id: imprintable.to_param, color: { ids: [40] }, size: { ids: [40] }
+        expect(flash[:error]).to eq 'One or more of the imprintable variants could not be created.'
+      end
     end
   end
 
@@ -93,6 +98,34 @@ describe ImprintablesController, imprintable_spec: true do
     end
   end
 
+  describe '#update_imprintable_variants' do
+    let!(:size) { create(:valid_size) }
+    let!(:color) { create(:valid_color) }
+    let!(:imprintable_variant) { ImprintableVariant.create(id: 1, imprintable_id: imprintable.id, created_at: Time.now, size_id: size.id, color_id: color.id) }
+
+    context 'when a variant is slated for removal' do
+      it 'removes the indicated variant' do
+        put :update_imprintable_variants, id: imprintable_variant.imprintable.id.to_param, update: { variants_to_remove: [imprintable_variant.id] }
+        expect(ImprintableVariant.exists?(imprintable_variant.id)).to be_falsey
+      end
+    end
+
+    context 'when an invariant is slated for addition' do
+      it 'adds the invariant to the imprintable' do
+        expect{ put :update_imprintable_variants, id: imprintable.id.to_param, update: { variants_to_add: [imprintable_variant.id] } }
+        expect(imprintable_variant.imprintable).to_not be_nil
+        expect(imprintable_variant.imprintable.id).to eq(imprintable.id)
+      end
+    end
+
+    context 'with invalid data' do
+      it 'flashes an error to the user' do
+        put :update_imprintable_variants, id: imprintable.to_param, update: { variants_to_add: {'color_id' => 40 } }
+        expect(flash[:error]).to eq 'One or more of the variants could not be saved.'
+      end
+    end
+  end
+
   describe 'protected methods' do
     describe '#set_current_action' do
       it 'sets the brand_collection' do
@@ -120,27 +153,6 @@ describe ImprintablesController, imprintable_spec: true do
             all_sizes: ['another_size']
           }
         )
-      end
-    end
-
-    describe '#update_imprintable_variants' do
-      let!(:size) { create(:valid_size) }
-      let!(:color) { create(:valid_color) }
-      let!(:imprintable_variant) { ImprintableVariant.create(id: 1, imprintable_id: imprintable.id, created_at: Time.now, size_id: size.id, color_id: color.id) }
-
-      context 'a variant is slated for removal' do
-        it 'removes the indicated variant' do
-          put :update_imprintable_variants, id: imprintable_variant.imprintable.id.to_param, update: { variants_to_remove: [imprintable_variant.id] }
-          expect(ImprintableVariant.exists?(imprintable_variant.id)).to be_falsey
-        end
-      end
-
-      context 'an invariant is slated for addition' do
-        it 'adds the invariant to the imprintable' do
-          expect{ put :update_imprintable_variants, id: imprintable.id.to_param, update: { variants_to_add: [imprintable_variant.id] } }
-          expect(imprintable_variant.imprintable).to_not be_nil
-          expect(imprintable_variant.imprintable.id).to eq(imprintable.id)
-        end
       end
     end
   end

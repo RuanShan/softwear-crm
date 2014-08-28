@@ -22,7 +22,10 @@ class ImprintablesController < InheritedResources::Base
       if color_ids && size_ids
         color_ids.each do |color_id|
           size_ids.each do |size_id|
-            ImprintableVariant.create(imprintable_id: params[:id], size_id: size_id, color_id: color_id)
+            if ImprintableVariant.new(imprintable_id: params[:id], size_id: size_id, color_id: color_id).save
+            else
+              flash[:error] = 'One or more of the imprintable variants could not be created.'
+            end
           end
         end
       end
@@ -66,7 +69,10 @@ class ImprintablesController < InheritedResources::Base
       variants_to_add.each_value do |hash|
         size_id = hash['size_id']
         color_id = hash['color_id']
-        ImprintableVariant.create(imprintable_id: params[:id], size_id: size_id, color_id: color_id)
+        if ImprintableVariant.new(imprintable_id: params[:id], size_id: size_id, color_id: color_id).save
+        else
+          flash[:error] = 'One or more of the variants could not be saved.'
+        end
       end
     end
 
