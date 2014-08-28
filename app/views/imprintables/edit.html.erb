@@ -2,4 +2,8 @@
   <h1>Edit Imprintable<small> <i><%= @imprintable.name %></i></small></h1>
 </div>
 
-<%= render partial: 'form', locals: { imprintable: @imprintable } %>
+<%= render partial: 'form',
+           locals: {
+                     imprintable: @imprintable,
+                     model_collection_hash: @instance_hash[:model_collection_hash],
+                     variants_hash: @instance_hash[:variants_hash] } %>

@@ -72,10 +72,15 @@
 
       <div class="col-sm-8">
         <%= f.collection_select :compatible_imprint_method_ids,
-                                @model_collection_hash[:imprint_method_collection],
-                                :id, :name, {}, { class: 'chosen-select',
-                                                  data: { placeholder: 'Select compatible imprint methods' },
-                                                  multiple: true } %>
+                                model_collection_hash[:imprint_method_collection],
+                                :id,
+                                :name,
+                                {},
+                                {
+                                  class: 'chosen-select',
+                                  data: { placeholder: 'Select compatible imprint methods' },
+                                  multiple: true
+                                } %>
 
         <p class="help-block">
           What imprint methods work with the imprintable

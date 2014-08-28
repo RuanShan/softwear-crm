@@ -4,14 +4,16 @@ describe 'imprintables/_imprint_information_form', imprintable_spec: true do
   before(:each) do
     imprintable = build_stubbed(:valid_imprintable)
     f = test_form_for imprintable, builder: LancengFormBuilder
-    assign(:model_collection_hash,
-           {
-             sizing_categories_collection: [],
-             imprint_method_collection: []
-           }
-    )
+    mch = {
+            sizing_categories_collection: [],
+            imprint_method_collection: []
+          }
     render partial: 'imprintables/imprint_information_form',
-           locals: { imprintable: imprintable, f: f }
+           locals: {
+                     imprintable: imprintable,
+                     f: f,
+                     model_collection_hash: mch
+                   }
   end
 
   it 'has field for sizing category, polyester, flashable,

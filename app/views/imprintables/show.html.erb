@@ -47,10 +47,12 @@
 
         <div class="tab-pane animated fadeInRight" id="size_color_availability_<%= @imprintable.id %>">
           <%= render partial: 'size_color_availability',
-                     locals: { imprintable: @imprintable,
+                     locals: {
+                               imprintable: @imprintable,
                                size_variants: @variants_hash[:size_variants],
                                color_variants: @variants_hash[:color_variants],
-                               variants_array: @variants_hash[:variants_array] } %>
+                               variants_array: @variants_hash[:variants_array]
+                             } %>
         </div>
 
         <div class="tab-pane animated fadeInRight" id="imprint_details_<%= @imprintable.id %>">
@@ -64,6 +66,5 @@
         </div>
       </div>
     </div>
-  </div>
   </div>
 </div>

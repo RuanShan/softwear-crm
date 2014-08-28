@@ -5,18 +5,20 @@ describe 'imprintables/_form.html.erb', imprintable_spec: true do
   before(:each) do
     imprintable = build_stubbed(:valid_imprintable)
     f = test_form_for imprintable, builder: LancengFormBuilder
-    assign(:model_collection_hash,
-           {
-             brand_collection: [],
-             store_collection: [],
-             imprintable_collection: [],
-             imprint_method_collection: [],
-             all_colors: [],
-             all_sizes: []
-           }
-    )
+    mch = {
+            brand_collection: [],
+            store_collection: [],
+            imprintable_collection: [],
+            imprint_method_collection: [],
+            all_colors: [],
+            all_sizes: []
+          }
     render partial: 'imprintables/form',
-           locals: { imprintable: imprintable, f: f }
+           locals: {
+                     imprintable: imprintable,
+                     f: f,
+                     model_collection_hash: mch
+                   }
   end
 
   it 'has text_field for special_considerations, material,

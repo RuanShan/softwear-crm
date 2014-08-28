@@ -128,31 +128,9 @@ describe ImprintablesController, imprintable_spec: true do
 
   describe 'protected methods' do
     describe '#set_current_action' do
-      it 'sets the brand_collection' do
-        expect(Brand).to receive_message_chain(:order, :map).and_return([['brand', 1]])
-        expect(Store).to receive(:order).with(:name).and_return(['store'])
-        expect(Imprintable).to receive(:all).and_return(['imprintable'])
-
-        expect(Size).to receive(:order).with(:sort_order).and_return(['size'])
-        expect(Color).to receive(:order).with(:name).and_return(['color'])
-        expect(ImprintMethod).to receive(:all).and_return(['imprint_method'])
-
-        expect(Color).to receive(:all).and_return(['another_color'])
-        expect(Size).to receive(:all).and_return(['another_size'])
-
-        controller.send(:set_model_collection_hash)
-        expect(assigns(:model_collection_hash)).to eq(
-          {
-            brand_collection: [['brand', 1]],
-            store_collection: ['store'],
-            imprintable_collection: ['imprintable'],
-            size_collection: ['size'],
-            color_collection: ['color'],
-            imprint_method_collection: ['imprint_method'],
-            all_colors: ['another_color'],
-            all_sizes: ['another_size']
-          }
-        )
+      it 'sets the current_action to imprintables' do
+        controller.send(:set_current_action)
+        expect(assigns(:current_action)).to eq 'imprintables'
       end
     end
   end

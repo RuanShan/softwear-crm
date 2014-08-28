@@ -3,14 +3,17 @@ require 'spec_helper'
 describe 'imprintables/new.html.erb', imprintable_spec: true do
   before(:each) do
     assign(:imprintable, Imprintable.new)
-    assign(:model_collection_hash,
+    assign(:instance_hash,
            {
-             brand_collection: [],
-             store_collection: [],
-             imprintable_collection: [],
-             imprint_method_collection: [],
-             all_colors: [],
-             all_sizes: []
+             model_collection_hash:
+               {
+                   brand_collection: [],
+                   store_collection: [],
+                   imprintable_collection: [],
+                   imprint_method_collection: [],
+                   all_colors: [],
+                   all_sizes: []
+               }
            }
     )
     render

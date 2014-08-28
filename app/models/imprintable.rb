@@ -118,7 +118,7 @@ class Imprintable < ActiveRecord::Base
   end
 
   def name
-    "#{brand.try(:name) || '<no brandbrand>'} - #{style_catalog_no} - #{style_name}"
+    "#{brand.try(:name) || '<no brand>'} - #{style_catalog_no} - #{style_name}"
   end
 
   def pricing_hash(decoration_price)

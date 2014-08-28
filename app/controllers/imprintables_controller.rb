@@ -3,15 +3,14 @@ class ImprintablesController < InheritedResources::Base
 
   def index
     super do
-      # TODO: ternary with parenthesis
-      @imprintables = params[:tag] ? (Imprintable.tagged_with(params[:tag])) : (Imprintable.all.page(params[:page]))
+      @imprintables = params[:tag] ? Imprintable.tagged_with(params[:tag]) : Imprintable.all.page(params[:page])
     end
   end
 
   def new
-    super do
-      set_model_collection_hash
-    end
+    @instance_hash = {}
+    @instance_hash[:model_collection_hash] = set_model_collection_hash
+    super
   end
 
   def update
@@ -43,17 +42,21 @@ class ImprintablesController < InheritedResources::Base
   def show
     super do |format|
       @imprintable = Imprintable.find(params[:id])
-      set_model_collection_hash
-      set_variants_hash
+      #
+      # @instance_hash = {}
+      # @instance_hash[:model_collection_hash] = set_model_collection_hash
+      @variants_hash = set_variants_hash
+
       format.html
       format.js
     end
   end
 
   def edit
-    set_model_collection_hash
+    @instance_hash = {}
+    @instance_hash[:model_collection_hash] = set_model_collection_hash
     super do
-      set_variants_hash
+      @instance_hash[:variants_hash] = set_variants_hash
     end
   end
 
@@ -96,19 +99,20 @@ class ImprintablesController < InheritedResources::Base
   private
 
   def set_variants_hash
-    @variants_hash = @imprintable.create_variants_hash
+    @imprintable.create_variants_hash
   end
 
   def set_model_collection_hash
-    @model_collection_hash = {}
-    @model_collection_hash[:brand_collection] = Brand.order(:name).map{ |b| [b.name, b.id] }
-    @model_collection_hash[:store_collection] = Store.order(:name)
-    @model_collection_hash[:imprintable_collection] = Imprintable.all
-    @model_collection_hash[:size_collection] = Size.order(:sort_order)
-    @model_collection_hash[:color_collection] = Color.order(:name)
-    @model_collection_hash[:imprint_method_collection] = ImprintMethod.all
-    @model_collection_hash[:all_colors] = Color.all
-    @model_collection_hash[:all_sizes] = Size.all
+    model_collection_hash = {}
+    model_collection_hash[:brand_collection] = Brand.order(:name).map{ |b| [b.name, b.id] }
+    model_collection_hash[:store_collection] = Store.order(:name)
+    model_collection_hash[:imprintable_collection] = Imprintable.all
+    model_collection_hash[:size_collection] = Size.order(:sort_order)
+    model_collection_hash[:color_collection] = Color.order(:name)
+    model_collection_hash[:imprint_method_collection] = ImprintMethod.all
+    model_collection_hash[:all_colors] = Color.all
+    model_collection_hash[:all_sizes] = Size.all
+    model_collection_hash
   end
 
   def permitted_params

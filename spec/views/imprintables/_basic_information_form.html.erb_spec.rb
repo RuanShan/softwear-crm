@@ -5,15 +5,17 @@ describe 'imprintables/_basic_information_form.html.erb', imprintable_spec: true
   before(:each) do
     imprintable = build_stubbed(:valid_imprintable)
     f = test_form_for imprintable, builder: LancengFormBuilder
-    assign(:model_collection_hash,
-           {
-             brand_collection: [],
-             store_collection: [],
-             imprintable_collection: [],
-           }
-    )
+    mch = {
+            brand_collection: [],
+            store_collection: [],
+            imprintable_collection: [],
+          }
     render partial: 'imprintables/basic_information_form',
-           locals: { imprintable: imprintable, f: f }
+           locals: {
+                     imprintable: imprintable,
+                     f: f,
+                     model_collection_hash: mch
+                   }
   end
 
   it 'has field for brand, style name, style catalog no, sku, retail,

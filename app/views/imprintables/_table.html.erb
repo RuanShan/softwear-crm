@@ -10,7 +10,7 @@
         </tr>
       </thead>
       <tbody>
-        <% @imprintables.each do |imprintable| %>
+        <% imprintables.each do |imprintable| %>
           <tr id="<%= model_table_row_id imprintable %>">
             <td>
               <% if imprintable.standard_offering? %>

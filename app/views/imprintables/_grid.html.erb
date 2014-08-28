@@ -15,7 +15,7 @@
         <p>
         <%= select_tag nil,
                        options_for_select(
-                         ['Select a Size'] + @model_collection_hash[:size_collection]
+                         ['Select a Size'] + model_collection_hash[:size_collection]
                                                .map{ |s| [s.display_value, s.id] }),
                          {
                              class: 'color-size-chosen-select',
@@ -55,7 +55,7 @@
         <p>
         <%= select_tag nil,
                        options_for_select(
-                         ['Select a Color'] + @model_collection_hash[:color_collection]
+                         ['Select a Color'] + model_collection_hash[:color_collection]
                                                 .map{ |c| [c.name, c.id] }),
                          { class: 'color-size-chosen-select',
                            id: 'color-select' } %>

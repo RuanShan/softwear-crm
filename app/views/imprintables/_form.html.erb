@@ -4,12 +4,20 @@
     <div class="box-info full">
       <div class="col-sm-6 clearfix">
         <%= render partial: 'basic_information_form',
-                   locals: { object: imprintable, f: f } %>
+                   locals: {
+                             object: imprintable,
+                             f: f,
+                             model_collection_hash: model_collection_hash
+                           } %>
       </div>
 
       <div class="col-sm-6 clearfix">
         <%= render partial: 'imprint_information_form',
-                   locals: { object: imprintable, f: f } %>
+                   locals: {
+                             object: imprintable,
+                             f: f,
+                             model_collection_hash: model_collection_hash
+                           } %>
       </div>
     </div>
 
@@ -18,27 +26,34 @@
                  locals: { object: imprintable, f: f } %>
     </div>
 
-    <div class="box-info full">
-      <div class="box-info">
-        <h2><strong>Size/Color</strong> Availability Information</h2>
-        <div>
-          <% if create_or_edit_text(imprintable) == 'Update' %>
+    <% if create_or_edit_text(imprintable) == 'Update' %>
+      <div class="box-info full">
+        <div class="box-info">
+          <h2><strong>Size/Color</strong> Availability Information</h2>
+          <div>
             <% variants = Imprintable.variants(imprintable.id) %>
             <% if variants.empty? %>
                 <%= render partial: 'variant_select',
-                           locals: { imprintable: imprintable, f: f } %>
+                           locals: {
+                                     imprintable: imprintable,
+                                     f: f,
+                                     model_collection_hash: model_collection_hash
+                                   } %>
             <% else %>
                 <%= render partial: 'grid',
-                           locals: { imprintable: imprintable,
+                           locals: {
+                                     imprintable: imprintable,
                                      variants: variants,
-                                     size_variants: @variants_hash[:size_variants],
-                                     color_variants: @variants_hash[:color_variants],
-                                     variants_array: @variants_hash[:variants_array] } %>
+                                     size_variants: variants_hash[:size_variants],
+                                     color_variants: variants_hash[:color_variants],
+                                     variants_array: variants_hash[:variants_array],
+                                     model_collection_hash: model_collection_hash
+                                  } %>
             <% end %>
-          <% end %>
+          </div>
         </div>
       </div>
-    </div>
+    <% end %>
 
     <div class="form-group clearfix">
       <div class="col-sm-offset-2 col-sm-8">
