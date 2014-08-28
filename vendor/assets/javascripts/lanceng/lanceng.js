@@ -76,9 +76,9 @@ $(document).ready(function(){
 
 	//RESPONSIVE SIDEBAR
 	$("button.show-sidebar").click(function(){
-	$("div.left").toggleClass("mobile-sidebar");
-	$("div.right").toggleClass("mobile-content");
-	$("div.logo-brand").toggleClass("logo-brand-toggle");
+        $("div.left").toggleClass("mobile-sidebar");
+        $("div.right").toggleClass("mobile-content");
+        $("div.logo-brand").toggleClass("logo-brand-toggle");
 	});
 
 

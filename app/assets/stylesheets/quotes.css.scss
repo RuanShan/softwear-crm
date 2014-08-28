@@ -1,16 +1,12 @@
 @media print {
-    .print {
-        display: inline;
-        overflow: visible;
+
+    .content {
+      overflow: visible;
     }
 
-    .shrink-me {
-        max-width: 300px;
-        display: inline-block;
-    }
-
-    .table-responsive {
-
+    .right {
+      left: 0 !important;
+      overflow: visible;
     }
 
     .box-info {
@@ -23,16 +19,6 @@
 
     @page {
         margin: 0.5cm;
-    }
-
-    .no-print, .no-print * {
-       display: none !important;
-    }
-}
-
-@media screen {
-    .print, .print * {
-        display: none !important;
     }
 }
 

@@ -1,11 +1,10 @@
 <!DOCTYPE html>
 <html>
-<head class="no-print">
+<head class="hidden-print">
     <%= render partial: 'shared/head' %>
 </head>
 
 <body class="tooltips">
-
 <div class="hidden-print" id="loading">
   <div class="loading-inner">
     <div class="spinner">
@@ -33,15 +32,12 @@
 </div>
 
 <div class="container">
-
     <%= render partial: 'shared/sidebar',
-               locals: { current_url: @current_url, current_action: @current_action },
-               html: { class: 'hidden-print' } %>
+               locals: { current_url: @current_url, current_action: @current_action } %>
 
     <div class="right content-page">
 
-        <%= render partial: 'shared/content_header',
-                   html: { class: 'hidden-print' } %>
+        <%= render partial: 'shared/content_header'  %>
 
         <div class="body content rows scroll-y">
             <%= yield %>
