@@ -41,28 +41,23 @@
 
       <div class="tab-content">
         <div class="tab-pane animated fadeInRight active" id="basic_info_<%= @imprintable.id %>">
-          <%= render partial: 'basic_info',
-                     locals: { imprintable: @imprintable } %>
+          <%= render 'basic_info', imprintable: @imprintable %>
         </div>
 
         <div class="tab-pane animated fadeInRight" id="size_color_availability_<%= @imprintable.id %>">
-          <%= render partial: 'size_color_availability',
-                     locals: {
-                               imprintable: @imprintable,
-                               size_variants: @variants_hash[:size_variants],
-                               color_variants: @variants_hash[:color_variants],
-                               variants_array: @variants_hash[:variants_array]
-                             } %>
+          <%= render 'size_color_availability',
+                      imprintable: @imprintable,
+                      size_variants: @variants_hash[:size_variants],
+                      color_variants: @variants_hash[:color_variants],
+                      variants_array: @variants_hash[:variants_array] %>
         </div>
 
         <div class="tab-pane animated fadeInRight" id="imprint_details_<%= @imprintable.id %>">
-          <%= render partial: 'imprint_details',
-                     locals: { imprintable: @imprintable } %>
+          <%= render 'imprint_details', imprintable: @imprintable %>
         </div>
 
         <div class="tab-pane animated fadeInRight" id="supplier_information_<%= @imprintable.id %>">
-          <%= render partial: 'supplier_details',
-                     locals: { imprintable: @imprintable } %>
+          <%= render 'supplier_details', imprintable: @imprintable %>
         </div>
       </div>
     </div>

@@ -1,5 +1,5 @@
 <div class="box-info full">
-  <%= render partial: 'shared/modal_errors', locals: { object: imprintable } %>
+  <%= render 'shared/modal_errors', object: imprintable %>
   <%= form_for imprintable, builder: LancengFormBuilder do |f| %>
     <div class="box-info full">
       <div class="col-sm-6 clearfix">
@@ -12,18 +12,16 @@
       </div>
 
       <div class="col-sm-6 clearfix">
-        <%= render partial: 'imprint_information_form',
-                   locals: {
-                             object: imprintable,
-                             f: f,
-                             model_collection_hash: model_collection_hash
-                           } %>
+        <%= render 'imprint_information_form',
+                    object: imprintable,
+                    f: f,
+                    model_collection_hash: model_collection_hash %>
       </div>
     </div>
 
     <div class="box-info full">
-      <%= render partial: 'supplier_information_form',
-                 locals: { object: imprintable, f: f } %>
+      <%= render 'supplier_information_form',
+                  object: imprintable, f: f %>
     </div>
 
     <% if create_or_edit_text(imprintable) == 'Update' %>

@@ -96,8 +96,7 @@
 
       <div class="col-sm-8">
         <%= f.fields_for :imprintable_categories do |ff| %>
-          <%= render partial: 'imprintable_category_fields',
-                     locals: { f: ff } %>
+          <%= render 'imprintable_category_fields', f: ff %>
         <% end %>
 
         <%= link_to_add_fields "<i class='fa fa-plus'></i> Add Imprintable Category".html_safe,
