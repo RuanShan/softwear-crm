@@ -15,7 +15,9 @@ module Api
     def index
       instance_variable_set(
         "@#{self.class.model_name.pluralize.underscore}",
-        (records || resource_class).where(params.permit(permitted_attributes))
+
+        (records || resource_class)
+          .where(params.permit(resource_class.column_names))
       )
 
       respond_to do |format|
@@ -54,13 +56,6 @@ module Api
 
     def self.model_name
       name.gsub('Api::', '').gsub('Controller', '').singularize
-    end
-
-    # Override this to specify which attributes can be filtered on.
-    # [:name, :age] would allow a remote ActiveResource to 
-    # query where(name: 'Whoever', age: 22)
-    def permitted_attributes
-      []
     end
 
     # Override this to specify the :include option of rendering json.

@@ -178,8 +178,8 @@ describe Imprintable, imprintable_spec: true do
     let!(:green) { create :valid_color, name: 'Green' }
     let!(:blue)  { create :valid_color, name: 'Blue' }
 
-    make_variants :red, :shirt, [:s, :m, :l], not: [:imprintable_variant, :job]
-    make_variants :green, :shirt, [:m, :l, :xl], not: [:imprintable_variant, :job]
+    make_variants :red, :shirt, [:s, :m, :l], not: [:line_item, :job]
+    make_variants :green, :shirt, [:m, :l, :xl], not: [:line_item, :job]
 
     it 'returns the sizes for each imprintable variant matching the given color' do
       sizes = shirt.sizes_by_color red

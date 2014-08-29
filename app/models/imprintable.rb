@@ -81,7 +81,7 @@ class Imprintable < ActiveRecord::Base
   def sizes_by_color(color)
     imprintable_variants
       .includes(:color, :size)
-      .where(colors: {name: 'Red'})
+      .where(colors: {name: color})
       .map(&:size)
   end
 
