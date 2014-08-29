@@ -114,9 +114,7 @@ end
   end
 
   def payment_total
-    self.payments.reduce(0) do |total, payment|
-      payment && !payment.is_refunded? ? total + payment.amount : total
-    end
+    payments.sum { |p| p if p && !p.is_refunded? }
   end
 
   def percent_paid

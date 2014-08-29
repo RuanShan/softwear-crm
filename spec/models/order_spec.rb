@@ -245,11 +245,15 @@ describe Order, order_spec: true do
     end
   end
 
-  describe '#payment_total' do
+  describe '#payment_total', new: true do
     subject do
       build_stubbed(
         :blank_order,
-        payments: [build_stubbed(:blank_payment, amount: 5)]
+        payments: [
+                    build_stubbed(:blank_payment, amount: 5),
+                    build_stubbed(:blank_payment, amount: 10),
+                    build_stubbed(:blank_payment, amount: 15, refunded: true)
+                  ]
       )
     end
 
