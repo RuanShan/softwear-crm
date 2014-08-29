@@ -177,6 +177,7 @@ ActiveRecord::Schema.define(version: 20140825161608) do
     t.integer  "size_id"
     t.integer  "color_id"
     t.datetime "deleted_at"
+    t.decimal  "weight",         precision: 10, scale: 0
   end
 
   add_index "imprintable_variants", ["deleted_at"], name: "index_imprintable_variants_on_deleted_at", using: :btree
@@ -514,8 +515,10 @@ ActiveRecord::Schema.define(version: 20140825161608) do
     t.string   "last_name"
     t.datetime "deleted_at"
     t.integer  "store_id"
+    t.string   "authentication_token"
   end
 
+  add_index "users", ["authentication_token"], name: "index_users_on_authentication_token", using: :btree
   add_index "users", ["confirmation_token"], name: "index_users_on_confirmation_token", unique: true, using: :btree
   add_index "users", ["deleted_at"], name: "index_users_on_deleted_at", using: :btree
   add_index "users", ["email"], name: "index_users_on_email", unique: true, using: :btree

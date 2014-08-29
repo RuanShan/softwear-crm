@@ -106,6 +106,7 @@ gem 'sunspot_solr'
 gem 'progress_bar'
 gem 'whenever'
 gem 'freshdesk', '~> 0.2'
+gem 'simple_token_authentication'
 
 # Use ActiveModel has_secure_password
 # gem 'bcrypt', '~> 3.1.7'

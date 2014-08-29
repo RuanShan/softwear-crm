@@ -13,17 +13,16 @@ module Api
 
     def index_by(options)
       imprintable_name = options[:imprintable]
-      color_name = options[:color]
-
+      color_name       = options[:color]
+      
       imprintable = Imprintable.find_by(common_name: imprintable_name)
-      if imprintable.nil?
-        return render json: 'not found', status: 404
-      end
+
+      return head 404 if imprintable.nil?
       
       @sizes = imprintable.sizes_by_color color_name
 
       respond_to do |format|
-        format.json(&render_json)
+        format.json { render json: @sizes }
       end
     end
   end

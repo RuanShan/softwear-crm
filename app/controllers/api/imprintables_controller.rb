@@ -1,7 +1,7 @@
 module Api
   class ImprintablesController < ApiController
     def index
-      @imprintables = Imprintable.where(standard_offering: true)
+      # @imprintables = Imprintable.where(standard_offering: true)
       super
     end
 
