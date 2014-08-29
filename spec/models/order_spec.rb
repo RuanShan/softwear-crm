@@ -245,7 +245,7 @@ describe Order, order_spec: true do
     end
   end
 
-  describe '#payment_total', new: true do
+  describe '#payment_total' do
     subject do
       build_stubbed(
         :blank_order,
