@@ -267,7 +267,7 @@ jQuery ->
 
   $(document).on('click', '#submit_button', ->
     innerHtml = document.getElementById('submit_button').innerHTML
-    if innerHtml is 'Update Imprintable'
+    if /Update Imprintable/.test(innerHtml)
       if $('#imprintable_variants_list').length
         # variants already exist
         # aggregate all the variants and populate params

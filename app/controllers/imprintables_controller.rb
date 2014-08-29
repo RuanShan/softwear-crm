@@ -38,7 +38,7 @@ class ImprintablesController < InheritedResources::Base
       failure.html do
         set_model_collection_hash
         set_variants_hash
-        render action: :edit
+        render :edit
       end
     end
   end
@@ -75,6 +75,7 @@ class ImprintablesController < InheritedResources::Base
         size_id = hash['size_id']
         color_id = hash['color_id']
         unless size_id.blank? && color_id.blank?
+          puts "creating variant with size_id == #{size_id} and == color_id #{color_id}"
           unless ImprintableVariant.new(imprintable_id: params[:id],
                                         size_id: size_id,
                                         color_id: color_id).save
@@ -84,10 +85,8 @@ class ImprintablesController < InheritedResources::Base
       end
     end
 
-    unless variants_to_remove.empty?
-      variants_to_remove.each do |imprintable_variant_id|
-        ImprintableVariant.delete(imprintable_variant_id)
-      end
+    variants_to_remove.each do |imprintable_variant_id|
+      ImprintableVariant.delete(imprintable_variant_id)
     end
 
     render json: {}
