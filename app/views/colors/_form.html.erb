@@ -1,5 +1,5 @@
 <div class="box-info">
-  <%= render partial: 'shared/modal_errors', locals: { object: color } %>
+  <%= render 'shared/modal_errors', object: color %>
 
   <%= form_for(color) do |f| %>
     <div id="horizontal-form" class="collapse in">

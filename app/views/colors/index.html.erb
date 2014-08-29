@@ -9,7 +9,7 @@
 <%= paginate @colors %>
 
 <div class="box-info row clear">
-  <%= render partial: 'table', locals: { colors: @colors } %>
+  <%= render 'table', colors: @colors %>
 </div>
 
 <%= paginate @colors %>
