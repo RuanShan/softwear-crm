@@ -1,8 +1,6 @@
 <div class="hidden-print">
   <h2><strong>Line Item</strong> Information</h2>
-  <%= render partial: 'line_items_table',
-             locals: { quote: quote },
-             html: { class: 'hidden-print' } %>
+  <%= render 'line_items_table', quote: quote %>
 </div>
 
 <div class="visible-print">

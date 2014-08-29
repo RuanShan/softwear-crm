@@ -1,7 +1,7 @@
 <%=t('quote_greet_customer',
       first_name: quote.first_name,
       valid_until: display_time(quote.valid_until_date)).html_safe %>
-<%= render partial: 'line_items_pdf', locals: { quote: quote } %>
+<%= render 'line_items_pdf', quote: quote %>
 
 <%=t('quote_email_closer', phone_number: (t :phone_number)).html_safe %>
 <%=t('quote_the_fine_print', valid_until_date: display_time(quote.valid_until_date)).html_safe %>
