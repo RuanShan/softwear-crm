@@ -276,5 +276,5 @@ jQuery ->
       else
         # variants don't exist yet
         # populate color_ids and size_ids
-        pobj = { update: populate_color_and_size_ids(), id: get_id() }
+        return { update: populate_color_and_size_ids(), id: get_id() }
   )
