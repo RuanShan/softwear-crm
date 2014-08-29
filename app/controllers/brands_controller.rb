@@ -10,7 +10,7 @@ class BrandsController < InheritedResources::Base
   def update
     super do |success, failure|
       success.html { redirect_to brands_path }
-      failure.html { render action: :edit }
+      failure.html { render :edit }
     end
   end
 
