@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe 'imprintables/_variant_select.html.erb', imprintable_variant_spec: true do
+describe 'imprintables/_variant_select.html.erb', imprintable_variant_spec: true, imprintable_spec: true do
 
   let(:imprintable) { build_stubbed(:valid_imprintable) }
   let(:color) { build_stubbed(:valid_color) }
@@ -8,9 +8,17 @@ describe 'imprintables/_variant_select.html.erb', imprintable_variant_spec: true
 
   before(:each) do
     f = test_form_for imprintable, builder: LancengFormBuilder
-    assign(:model_collection_hash, { all_colors: [color], all_sizes: [size] })
     render partial: 'variant_select',
-           locals: { imprintable: imprintable, size: size, color: color, f: f }
+           locals: {
+             imprintable: imprintable,
+             size: size,
+             color: color,
+             f: f,
+             model_collection_hash: {
+               all_colors: [color],
+               all_sizes: [size]
+             }
+           }
   end
 
   it 'has modal select for color and size' do

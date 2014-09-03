@@ -201,7 +201,7 @@ jQuery ->
         rowhead = document.querySelectorAll('#row_'+String(sub))
         color_id = $(rowhead).attr('data-color-id')
 
-        variants_to_add.push({size_id: size_id, color_id: color_id})
+        variants_to_add.push({ size_id: size_id, color_id: color_id })
 
       else if $(variant).prop('class') is 'fa fa-times changed'
         # remove variant

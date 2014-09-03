@@ -4,9 +4,7 @@ include ApplicationHelper
 feature 'Payments management', js: true, payment_spec: true do
 
   given!(:valid_user) { create(:alternate_user) }
-  before(:each) do
-    login_as(valid_user)
-  end
+  background(:each) { login_as(valid_user) }
 
   given!(:order) { create(:order) }
   given!(:payment) { create(:valid_payment, order_id: order.id) }
@@ -22,6 +20,23 @@ feature 'Payments management', js: true, payment_spec: true do
     expect(current_url).to match((edit_order_path order.id) + '#payments')
   end
 
+  context 'with a refunded payment' do
+    scenario 'balance is still correctly computed and displayed' do
+      visit (edit_order_path order.id) + '#payments'
+      find(:css, '#cash-button').click
+      fill_in 'amount_field', with: '20'
+      click_button 'Apply Payment'
+      page.driver.browser.switch_to.alert.accept
+      close_flash_modal
+      find(:css, "a.order_payment_refund_link[href='/payments/#{payment.id}/edit?order_id=#{order.id}&refund=true']").click
+      fill_in 'Refund Reason', with: 'how do i money?'
+      click_button 'Refund Payment'
+      page.driver.browser.switch_to.alert.accept
+      expect(page).to have_selector '.modal-content-success', text: 'Payment was successfully updated.'
+      expect(Payment.find(payment.id).is_refunded?).to be_truthy
+    end
+  end
+
   scenario 'A salesperson can make a payment' do
     visit (edit_order_path order.id) + '#payments'
     find(:css, '#cash-button').click
@@ -35,7 +50,7 @@ feature 'Payments management', js: true, payment_spec: true do
   scenario 'A salesperson can refund a payment' do
     visit (edit_order_path order.id) + '#payments'
     find(:css, '.order_payment_refund_link').click
-    fill_in 'payment_refund_reason', with: 'check bounced!!!! lololol'
+    fill_in 'Refund Reason', with: 'Gaga can\'t handle this shit'
     click_button 'Refund Payment'
     page.driver.browser.switch_to.alert.accept
     expect(page).to have_selector '.modal-content-success', text: 'Payment was successfully updated.'
