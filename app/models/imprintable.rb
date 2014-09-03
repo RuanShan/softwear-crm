@@ -66,6 +66,7 @@ class Imprintable < ActiveRecord::Base
   validates :sku, length: { is: 4 }, if: :is_retail?
   validates :style_catalog_no, uniqueness: { scope: :brand_id }, presence: true
   validates :style_name, uniqueness: { scope: :brand_id }, presence: true
+  validates :common_name, uniqueness: true, if: :is_retail?
   validates :supplier_link,
              format: {
                         with: URI::regexp(%w(http https)),
@@ -75,6 +76,13 @@ class Imprintable < ActiveRecord::Base
 
   def all_categories
     imprintable_categories.map(&:name).join ' '
+  end
+
+  def sizes_by_color(color)
+    imprintable_variants
+      .includes(:color, :size)
+      .where(colors: {name: color})
+      .map(&:size)
   end
 
   def create_imprintable_variants(from)
