@@ -105,4 +105,9 @@ module FormHelper
     content = object.send(method) || default
     content_tag(:span, content, options)
   end
+
+  def size_price_field(f, field, price)
+    f.text_field field, class: 'form-control',
+                  value: (number_with_precision(price, precision: 2) || 0)
+  end
 end
