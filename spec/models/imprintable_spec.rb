@@ -35,6 +35,7 @@ describe Imprintable, imprintable_spec: true do
     it { is_expected.to validate_uniqueness_of(:style_catalog_no).scoped_to(:brand_id) }
     it { is_expected.to validate_presence_of(:style_name) }
     it { is_expected.to validate_uniqueness_of(:style_name).scoped_to(:brand_id) }
+    it { is_expected.to validate_presence_of(:common_name) }
 
     context 'if retail' do
       before { allow(subject).to receive_message_chain(:is_retail?).and_return(true) }
@@ -211,6 +212,27 @@ describe Imprintable, imprintable_spec: true do
     end
   end
 
+  describe '#sizes_by_color', wwip: true do
+    let!(:shirt) { create :valid_imprintable }
+
+    let!(:red)   { create :valid_color, name: 'Red' }
+    let!(:green) { create :valid_color, name: 'Green' }
+    let!(:blue)  { create :valid_color, name: 'Blue' }
+
+    make_variants :red, :shirt, [:s, :m, :l], not: [:line_item, :job]
+    make_variants :green, :shirt, [:m, :l, :xl], not: [:line_item, :job]
+
+    it 'returns the sizes for each imprintable variant matching the given color' do
+      sizes = shirt.sizes_by_color red
+
+      expect(sizes.map(&:display_value) & %i(s m l)).to be_empty
+    end
+
+    it 'takes 1 sql query' do
+      expect(queries_after { shirt.sizes_by_color red }).to eq 1
+    end
+  end
+
   describe '#style_name_and_catalog_no' do
       let!(:imprintable) { build_stubbed(:blank_imprintable,
                                          style_catalog_no: 5555,
@@ -222,3 +244,4 @@ describe Imprintable, imprintable_spec: true do
   end
 
 end
+
