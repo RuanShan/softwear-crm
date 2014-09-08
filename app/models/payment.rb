@@ -1,8 +1,7 @@
 class Payment < ActiveRecord::Base
   acts_as_paranoid
 
-  # TODO: this doesn't seem right
-  default_scope { order(:created_at).with_deleted }
+  default_scope { order(:created_at) }
 
   belongs_to :order
   belongs_to :store

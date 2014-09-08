@@ -1,19 +1,22 @@
 require 'spec_helper'
 
-describe 'imprintables/_grid.html.erb', imprintable_variant_spec: true do
+describe 'imprintables/_grid.html.erb', imprintable_variant_spec: true, imprintable_spec: true do
   context 'there are no variants' do
     before(:each) do
       imprintable = build_stubbed(:valid_imprintable)
 
       f = test_form_for imprintable, builder: LancengFormBuilder
-      assign(:model_collection_hash, { color_collection: [], size_collection: [] } )
       render partial: 'grid',
              locals: {
                imprintable: imprintable,
                f: f,
                size_variants: [],
                color_variants: [],
-               variants_array: []
+               variants_array: [],
+               model_collection_hash: {
+                   color_collection: [],
+                   size_collection: []
+               }
              }
     end
 
@@ -32,7 +35,6 @@ describe 'imprintables/_grid.html.erb', imprintable_variant_spec: true do
       allow(imprintable_variant).to receive(:size).and_return(build_stubbed(:valid_size))
       allow(imprintable_variant).to receive(:color).and_return(build_stubbed(:valid_color))
       f = test_form_for :imprintable, builder: LancengFormBuilder
-      assign(:model_collection_hash, { color_collection: [], size_collection: [] } )
       render partial: 'grid',
              locals: {
                imprintable: imprintable_variant.imprintable,
@@ -40,7 +42,11 @@ describe 'imprintables/_grid.html.erb', imprintable_variant_spec: true do
                f: f,
                size_variants: [imprintable_variant],
                color_variants: [imprintable_variant],
-               variants_array: [imprintable_variant]
+               variants_array: [imprintable_variant],
+               model_collection_hash: {
+                 color_collection: [],
+                 size_collection: []
+               }
              }
     end
 

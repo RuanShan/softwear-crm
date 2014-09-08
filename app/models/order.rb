@@ -78,7 +78,8 @@ class Order < ActiveRecord::Base
   validates :terms, presence: true
 
   def balance
-    total - payment_total
+    balance = total - payment_total
+    balance.round(2)
 end
 
   def get_salesperson_id(id, current_user)
@@ -114,8 +115,8 @@ end
   end
 
   def payment_total
-    self.payments.reduce(0) do |total, payment|
-      payment && !payment.is_refunded? ? total + payment.amount : total
+    payments.reduce(0) do |total, p|
+      p && !p.is_refunded? ? total + p.amount : total
     end
   end
 

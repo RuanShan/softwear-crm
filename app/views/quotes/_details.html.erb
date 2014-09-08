@@ -4,15 +4,13 @@
       <div class="col-sm-6">
         <h3><strong>Customer</strong> Details</h3>
 
-        <%= render partial: 'customer_detail_fields',
-                   locals: { f: f, quote: quote } %>
+        <%= render 'customer_detail_fields', f: f, quote: quote %>
       </div>
 
       <div class="col-sm-6">
         <h3><strong>Quote</strong> Details</h3>
 
-        <%= render partial: 'quote_detail_fields',
-                   locals: { f: f, quote: quote } %>
+        <%= render 'quote_detail_fields', f: f, quote: quote %>
       </div>
     </div>
 

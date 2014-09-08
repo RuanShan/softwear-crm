@@ -120,7 +120,12 @@ describe ImprintablesController, imprintable_spec: true do
 
     context 'with invalid data' do
       it 'flashes an error to the user' do
-        put :update_imprintable_variants, id: imprintable.to_param, update: { variants_to_add: {'color_id' => 40 } }
+        expect(ImprintableVariant).to receive_message_chain(:new, :save).and_return(false)
+        put :update_imprintable_variants,
+             id: imprintable.to_param,
+             update: {
+               variants_to_add: [ { 'color_id' => 40, 'size_id' => 2 } ]
+             }
         expect(flash[:error]).to eq 'One or more of the variants could not be saved.'
       end
     end

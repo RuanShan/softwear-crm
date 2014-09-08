@@ -20,11 +20,15 @@ class ImprintablesController < InheritedResources::Base
 
       if color_ids && size_ids
         color_ids.each do |color_id|
-          size_ids.each do |size_id|
-            unless ImprintableVariant.new(imprintable_id: params[:id],
-                                          size_id: size_id,
-                                          color_id: color_id).save
-              flash[:error] = 'One or more of the imprintable variants could not be created.'
+          unless color_id.blank?
+            size_ids.each do |size_id|
+              unless color_id.blank?
+                unless ImprintableVariant.new(imprintable_id: params[:id],
+                                              size_id: size_id,
+                                              color_id: color_id).save
+                  flash[:error] = 'One or more of the imprintable variants could not be created.'
+                end
+              end
             end
           end
         end
@@ -34,7 +38,7 @@ class ImprintablesController < InheritedResources::Base
       failure.html do
         set_model_collection_hash
         set_variants_hash
-        render action: :edit
+        render :edit
       end
     end
   end
@@ -58,7 +62,7 @@ class ImprintablesController < InheritedResources::Base
   end
 
   def update_imprintable_variants
-    if params.fetch(:update).is_a? Hash
+    if params.fetch(:update, []).is_a? Hash
       variants_to_add = params[:update][:variants_to_add]
       variants_to_remove = params[:update][:variants_to_remove]
     end
@@ -67,21 +71,21 @@ class ImprintablesController < InheritedResources::Base
     variants_to_remove ||= []
 
     unless variants_to_add.empty?
-      variants_to_add.each_value do |hash|
+      variants_to_add.each do |hash|
         size_id = hash['size_id']
         color_id = hash['color_id']
-        unless ImprintableVariant.new(imprintable_id: params[:id],
-                                      size_id: size_id,
-                                      color_id: color_id).save
-          flash[:error] = 'One or more of the variants could not be saved.'
+        unless size_id.blank? && color_id.blank?
+          unless ImprintableVariant.new(imprintable_id: params[:id],
+                                        size_id: size_id,
+                                        color_id: color_id).save
+            flash[:error] = 'One or more of the variants could not be saved.'
+          end
         end
       end
     end
 
-    unless variants_to_remove.empty?
-      variants_to_remove.each do |imprintable_variant_id|
-        ImprintableVariant.delete(imprintable_variant_id)
-      end
+    variants_to_remove.each do |imprintable_variant_id|
+      ImprintableVariant.delete(imprintable_variant_id)
     end
 
     render json: {}
@@ -111,13 +115,17 @@ class ImprintablesController < InheritedResources::Base
                       :weight, :supplier_link, :main_supplier, :base_price,
                       :xxl_price, :xxxl_price, :xxxxl_price, :xxxxxl_price,
                       :xxxxxxl_price, :tag_list, :standard_offering,
-                      :proofing_template_name, :sizing_category,
+                      :proofing_template_name, :sizing_category, :common_name,
                       sample_location_ids: [],
                       coordinate_ids: [],
                       compatible_imprint_method_ids: [],
                       imprintable_categories_attributes:
                         [
                           :name, :imprintable_id, :id, :_destroy
+                        ],
+                      imprintable_variants_attributes:
+                        [
+                          :weight, :imprintable_id, :id
                         ]
                     ]
     )

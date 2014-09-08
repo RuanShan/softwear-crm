@@ -37,21 +37,19 @@
 
       <div class="tab-content">
         <div class="tab-pane animated fadeInRight active" id="timeline">
-          <%= render partial: 'shared/timeline',
-                     locals: { activities: @activities } %>
+          <%= render 'shared/timeline', activities: @activities %>
         </div>
 
         <div class="tab-pane animated  fadeInRight" id="details">
-          <%= render partial: 'details', locals: { quote: @quote } %>
+          <%= render 'details', quote: @quote %>
         </div>
 
         <div class="tab-pane animated fadeInRight" id="line_items">
-          <%= render partial: 'line_items',
-                     locals: { quote: @quote } %>
+          <%= render 'line_items', quote: @quote %>
         </div>
 
         <div class="tab-pane animated fadeInRight" id="actions">
-          <%= render partial: 'actions', locals: { quote: @quote } %>
+          <%= render 'actions', quote: @quote %>
         </div>
       </div>
     </div>

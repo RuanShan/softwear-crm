@@ -15,6 +15,7 @@ describe 'imprintables/_basic_info.html.erb', imprintable_spec: true do
     allow(imprintable).to receive_message_chain(:tag_list, :join).and_return('Soft, Comfy')
     allow(imprintable).to receive_message_chain(:coordinates, :map, :join).and_return('cord1, cord2')
     allow(imprintable).to receive_message_chain(:imprintable_categories, :map, :join).and_return('cat1, cat2')
+    allow(imprintable).to receive(:common_name).and_return('Common Name!')
 
     render partial: 'imprintables/basic_info', locals: { imprintable: imprintable }
   end
@@ -31,6 +32,7 @@ describe 'imprintables/_basic_info.html.erb', imprintable_spec: true do
     expect(rendered).to have_css('dt', text: 'Description')
     expect(rendered).to have_css('dt', text: 'Coordinates')
     expect(rendered).to have_css('dt', text: 'Categories')
+    expect(rendered).to have_css('dt', text: 'Common Name')
   end
 
   it 'displays all the imprintable\'s information' do
@@ -45,5 +47,6 @@ describe 'imprintables/_basic_info.html.erb', imprintable_spec: true do
     expect(rendered).to have_css('dd', text: imprintable.description)
     expect(rendered).to have_css('dd', text: 'cord1, cord2')
     expect(rendered).to have_css('dd', text: 'cat1, cat2')
+    expect(rendered).to have_css('dd', text: 'Common Name!')
   end
 end

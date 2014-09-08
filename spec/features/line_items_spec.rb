@@ -191,7 +191,7 @@ feature 'Line Items management', line_item_spec: true, js: true do
       expect(LineItem.where name: 'New name!').to exist
     end
 
-    scenario 'user can see the result', new: true do
+    scenario 'user can see the result' do
       expect(page).to have_content 'New name!'
     end
 

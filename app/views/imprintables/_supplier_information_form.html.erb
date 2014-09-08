@@ -44,48 +44,42 @@
               <td>
                 <div class="input-group">
                   <span class="input-group-addon">$</span>
-                  <%= f.text_field :base_price, class: 'form-control',
-                                   value: (number_with_precision(f.object.base_price, precision: 2) || 0) %>
+                  <%= size_price_field(f, :base_price, f.object.base_price) %>
                 </div>
               </td>
 
               <td>
                 <div class="input-group">
                   <span class="input-group-addon">$</span>
-                  <%= f.text_field :xxl_price, class: 'form-control',
-                                   value: (number_with_precision(f.object.xxl_price, :precision => 2) || 0) %>
+                  <%= size_price_field(f, :xxl_price, f.object.xxl_price) %>
                 </div>
               </td>
 
               <td>
                 <div class="input-group">
                   <span class="input-group-addon">$</span>
-                  <%= f.text_field :xxxl_price, class: 'form-control',
-                                   value: (number_with_precision(f.object.xxxl_price, :precision => 2) || 0) %>
+                  <%= size_price_field(f, :xxxl_price, f.object.xxxl_price) %>
                 </div>
               </td>
 
               <td>
                 <div class="input-group">
                   <span class="input-group-addon">$</span>
-                  <%= f.text_field :xxxxl_price, class: 'form-control',
-                                   value: (number_with_precision(f.object.xxxxl_price, :precision => 2) || 0) %>
+                  <%= size_price_field(f, :xxxxl_price, f.object.xxxxl_price) %>
                 </div>
               </td>
 
               <td>
                 <div class="input-group">
                   <span class="input-group-addon">$</span>
-                  <%= f.text_field :xxxxxl_price, class: 'form-control',
-                                   value: (number_with_precision(f.object.xxxxxl_price, precision: 2) || 0) %>
+                  <%= size_price_field(f, :xxxxxl_price, f.object.xxxxxl_price) %>
                 </div>
               </td>
 
               <td>
                 <div class="input-group">
                   <span class="input-group-addon">$</span>
-                  <%= f.text_field :xxxxxxl_price, class: 'form-control',
-                                   value: (number_with_precision(f.object.xxxxxxl_price, precision: 2) || 0) %>
+                  <%= size_price_field(f, :xxxxxxl_price, f.object.xxxxxxl_price) %>
                 </div>
               </td>
             </tr>

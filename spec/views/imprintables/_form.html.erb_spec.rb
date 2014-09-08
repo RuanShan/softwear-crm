@@ -24,7 +24,7 @@ describe 'imprintables/_form.html.erb', imprintable_spec: true do
   it 'has text_field for special_considerations, material,
         proofing template name, standard offering, flashable, polyester,
         sizing category, brand, style name, style catalog no, style description,
-        style sku, retail, and a submit button' do
+        style sku, retail, common name, and a submit button' do
     within_form_for Imprintable, noscope: true do
       expect(rendered).to have_field_for :special_considerations
       expect(rendered).to have_field_for :material
@@ -54,6 +54,7 @@ describe 'imprintables/_form.html.erb', imprintable_spec: true do
       expect(rendered).to have_field_for :style_description
       expect(rendered).to have_field_for :retail
       expect(rendered).to have_field_for :brand_id
+      expect(rendered).to have_field_for :common_name
       expect(rendered).to have_selector('button')
     end
   end

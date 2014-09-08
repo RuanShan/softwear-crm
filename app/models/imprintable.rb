@@ -57,6 +57,7 @@ class Imprintable < ActiveRecord::Base
   has_many :sizes, ->{ uniq }, through: :imprintable_variants
 
   accepts_nested_attributes_for :imprintable_categories, allow_destroy: true
+  accepts_nested_attributes_for :imprintable_variants
 
   validates :brand, presence: true
   validates :max_imprint_height, numericality: true, presence: true

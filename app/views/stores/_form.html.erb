@@ -1,4 +1,4 @@
-<%= render partial: 'shared/modal_errors', locals: {object: store} %>
+<%= render 'shared/modal_errors', object: store %>
 
 <%= form_for store, builder: LancengFormBuilder do |f| %>
   <div id="horizontal-form" class="collapse in">

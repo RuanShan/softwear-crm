@@ -4,7 +4,7 @@
              url: line_items_update_path do |_f| %>
 
   <div id="replaceable">
-    <%= render partial: 'line_items/standard_view', locals: { line_items: quote.standard_line_items } %>
+    <%= render 'line_items/standard_view', line_items: quote.standard_line_items %>
   </div>
 
   <div class="form-group box-info">

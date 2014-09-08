@@ -43,12 +43,19 @@
   border:1px solid #CCCCCC;
   position:relative;
 }
+
+.quote-variant-weight {
+  width: 200px;
+}
+
 #add_a_color {
   cursor:pointer;
 }
+
 #actions {
   width: 100px;
 }
+
 #add_a_size {
   cursor:pointer;
 }
@@ -63,14 +70,6 @@
 
 #imprintable_compatible_imprint_method_ids {
   width: 100%;
-}
-
-#tag_cloud {
-  width: 400px;
-  line-height: 1.6em;
-  .s { font-size: 0.8em; }
-  .m { font-size: 1.2em; }
-  .l { font-size: 1.8em; }
 }
 
 .chosen-select {

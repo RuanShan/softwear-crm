@@ -11,14 +11,13 @@
 </div>
 
 <div class="col-lg-9">
-  <%= render partial: 'imprintables/search' %>
+  <%= render 'imprintables/search' %>
 </div>
 
 <%= paginate @imprintables %>
 
 <div class="box-info row clear">
-  <%= render partial: 'imprintables/table',
-             locals: { imprintables: @imprintables } %>
+  <%= render 'imprintables/table', imprintables: @imprintables %>
 </div>
 
 <%= paginate @imprintables %>

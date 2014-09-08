@@ -2,7 +2,7 @@
   <div class="input-group">
     <%= f.collection_select :name, ImprintableCategory::VALID_CATEGORIES,
                             :to_s, :to_s, {}, { class: 'chosen-select',
-                                                data: { placeholder: 'Select categories' } }%>
+                                                data: { placeholder: 'Select categories' } } %>
 
     <span class="input-group-btn">
       <%= f.hidden_field :_destroy %>
@@ -12,7 +12,7 @@
   </div>
 
   <% if f.object.errors.include?(:name) %>
-    <%  f.object.errors.full_messages_for(:name).each do |message| %>
+    <% f.object.errors.full_messages_for(:name).each do |message| %>
       <p class="text-danger"><%= message %></p>
     <% end %>
   <% end %>

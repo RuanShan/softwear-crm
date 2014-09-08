@@ -3,10 +3,8 @@
 </div>
 
 <div class="row full">
-  <%= render partial: 'form',
-             locals: {
-                       imprintable: @imprintable,
-                       model_collection_hash: @instance_hash[:model_collection_hash],
-                       variants_hash: @instance_hash[:variants_hash]
-                     } %>
+  <%= render 'form',
+              imprintable: @imprintable,
+              model_collection_hash: @instance_hash[:model_collection_hash],
+              variants_hash: @instance_hash[:variants_hash] %>
 </div>

@@ -2,7 +2,7 @@ root = exports ? this
 
 jQuery ->
 
-  # this function are modified from an example hosted publicly at
+  # this function is modified from an example hosted publicly at
   # http://www.mredkj.com/tutorials/tableaddcolumn.html
   addColumn = (tableId, size, size_id) ->
     tableHeadObject = document.getElementById(tableId).tHead
@@ -201,7 +201,7 @@ jQuery ->
         rowhead = document.querySelectorAll('#row_'+String(sub))
         color_id = $(rowhead).attr('data-color-id')
 
-        variants_to_add.push({size_id: size_id, color_id: color_id})
+        variants_to_add.push({ size_id: size_id, color_id: color_id })
 
       else if $(variant).prop('class') is 'fa fa-times changed'
         # remove variant
@@ -267,7 +267,7 @@ jQuery ->
 
   $(document).on('click', '#submit_button', ->
     innerHtml = document.getElementById('submit_button').innerHTML
-    if innerHtml is 'Update Imprintable'
+    if /Update Imprintable/.test(innerHtml)
       if $('#imprintable_variants_list').length
         # variants already exist
         # aggregate all the variants and populate params
@@ -276,5 +276,5 @@ jQuery ->
       else
         # variants don't exist yet
         # populate color_ids and size_ids
-        pobj = { update: populate_color_and_size_ids(), id: get_id() }
+        return { update: populate_color_and_size_ids(), id: get_id() }
   )

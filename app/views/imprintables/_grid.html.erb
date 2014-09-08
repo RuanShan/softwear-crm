@@ -57,8 +57,10 @@
                        options_for_select(
                          ['Select a Color'] + model_collection_hash[:color_collection]
                                                 .map{ |c| [c.name, c.id] }),
-                         { class: 'color-size-chosen-select',
-                           id: 'color-select' } %>
+                         {
+                           class: 'color-size-chosen-select',
+                           id: 'color-select'
+                         } %>
         </p>
         <button type="button" id="color_button">Add a color</button>
       </th>

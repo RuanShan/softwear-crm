@@ -3,9 +3,5 @@
 </div>
 
 <div class="box-info full">
-  <%= render partial: 'form',
-             locals: {
-                       quote: @quote,
-                       new_quote_hash: @new_quote_hash
-                     } %>
+  <%= render 'form', quote: @quote, new_quote_hash: @new_quote_hash %>
 </div>

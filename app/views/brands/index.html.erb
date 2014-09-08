@@ -8,7 +8,7 @@
 <%= paginate @brands %>
 
 <div class="box-info row clear">
-  <%= render partial: 'table', locals: { brands: @brands } %>
+  <%= render 'table', brands: @brands %>
 </div>
 
 <%= paginate @brands %>

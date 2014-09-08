@@ -3,7 +3,7 @@
 </div>
 
 <div class="box-info col-lg-9 clear">
-  <%= render partial: 'table', locals: { stores: @stores } %>
+  <%= render 'table', stores: @stores %>
 </div>
 
 <div class="col-lg-3">
@@ -19,7 +19,7 @@
     </div>
 
     <div id="box-icon-2" class="collapse out">
-      <%= render partial: 'form', locals: { store: Store.new } %>
+      <%= render 'form', store: Store.new %>
     </div>
   </div>
 </div>
