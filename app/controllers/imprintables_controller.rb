@@ -62,7 +62,7 @@ class ImprintablesController < InheritedResources::Base
   end
 
   def update_imprintable_variants
-    if params.fetch(:update).is_a? Hash
+    if params.fetch(:update, []).is_a? Hash
       variants_to_add = params[:update][:variants_to_add]
       variants_to_remove = params[:update][:variants_to_remove]
     end
@@ -122,6 +122,10 @@ class ImprintablesController < InheritedResources::Base
                       imprintable_categories_attributes:
                         [
                           :name, :imprintable_id, :id, :_destroy
+                        ],
+                      imprintable_variants_attributes:
+                        [
+                          :weight, :imprintable_id, :id
                         ]
                     ]
     )

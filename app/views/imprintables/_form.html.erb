@@ -28,19 +28,25 @@
           <div>
             <% variants = Imprintable.variants(imprintable.id) %>
             <% if variants.empty? %>
-                <%= render 'variant_select',
-                            imprintable: imprintable,
-                            f: f,
-                            model_collection_hash: model_collection_hash %>
+              <%= render 'variant_select',
+                          imprintable: imprintable,
+                          f: f,
+                          model_collection_hash: model_collection_hash %>
             <% else %>
-                <%= render 'grid',
-                            imprintable: imprintable,
-                            variants: variants,
-                            size_variants: variants_hash[:size_variants],
-                            color_variants: variants_hash[:color_variants],
-                            variants_array: variants_hash[:variants_array],
-                            model_collection_hash: model_collection_hash %>
-            <% end %>
+              <div class="col-sm-8">
+                <%= f.fields_for :imprintable_variants do |ff| %>
+                  <%= render 'imprintable_variant_fields', f: ff %>
+                <% end %>
+              </div>
+
+              <%= render 'grid',
+                          imprintable: imprintable,
+                          variants: variants,
+                          size_variants: variants_hash[:size_variants],
+                          color_variants: variants_hash[:color_variants],
+                          variants_array: variants_hash[:variants_array],
+                          model_collection_hash: model_collection_hash %>
+          <% end %>
           </div>
         </div>
       </div>

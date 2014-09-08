@@ -29,8 +29,13 @@ feature 'Imprintable Variant Management', js: true, imprintable_variant_spec: tr
   context 'There is an imprintable invariant' do
     given!(:imprintable_variant) { create(:valid_imprintable_variant) }
 
-    before(:each) do
-      visit edit_imprintable_path imprintable_variant.imprintable.id
+    before(:each) { visit edit_imprintable_path imprintable_variant.imprintable.id }
+
+    scenario 'A user can change the weight of a variant', new: true do
+      find(:css, 'div.quote-variant-weight input.form-control').set(2)
+      click_button 'Update Imprintable'
+      expect(page).to have_selector '.modal-content-success', text: 'Imprintable was successfully updated.'
+      expect(ImprintableVariant.where(weight: 2)).to_not be_nil
     end
 
     scenario 'A user can see a grid of imprintable variants' do
