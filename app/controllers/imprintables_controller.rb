@@ -115,7 +115,7 @@ class ImprintablesController < InheritedResources::Base
                       :weight, :supplier_link, :main_supplier, :base_price,
                       :xxl_price, :xxxl_price, :xxxxl_price, :xxxxxl_price,
                       :xxxxxxl_price, :tag_list, :standard_offering,
-                      :proofing_template_name, :sizing_category,
+                      :proofing_template_name, :sizing_category, :common_name,
                       sample_location_ids: [],
                       coordinate_ids: [],
                       compatible_imprint_method_ids: [],

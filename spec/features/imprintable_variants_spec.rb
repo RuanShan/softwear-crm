@@ -31,7 +31,7 @@ feature 'Imprintable Variant Management', js: true, imprintable_variant_spec: tr
 
     before(:each) { visit edit_imprintable_path imprintable_variant.imprintable.id }
 
-    scenario 'A user can change the weight of a variant', new: true do
+    scenario 'A user can change the weight of a variant' do
       find(:css, 'div.quote-variant-weight input.form-control').set(2)
       click_button 'Update Imprintable'
       expect(page).to have_selector '.modal-content-success', text: 'Imprintable was successfully updated.'

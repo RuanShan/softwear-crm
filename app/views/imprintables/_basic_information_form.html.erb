@@ -131,7 +131,7 @@
         <%= f.text_field :tag_list %>
 
         <p class="help-block">
-          Tags are additional searchable characteristics or 'keywords'
+          Tags are additional searchable characteristics or 'keywords'.
         </p>
       </div>
     </div>
@@ -149,7 +149,7 @@
                                              multiple: true } %>
 
         <p class="help-block">
-          Stores at which there is a sample of the imprintable
+          Stores at which there is a sample of the imprintable.
         </p>
       </div>
     </div>
@@ -165,7 +165,19 @@
                                                   multiple: true } %>
 
         <p class="help-block">
-          Coordinate imprintables i.e. a ladies or youth version
+          Coordinate imprintables i.e. a ladies or youth version.
+        </p>
+      </div>
+    </div>
+
+    <div class="form-group clearfix">
+      <%= f.label :common_name, 'Common Name', class: 'col-sm-4 control-label' %>
+      <%= f.error_for :common_name %>
+      <div class="col-sm-8">
+        <%= f.text_field :common_name %>
+
+        <p class="help-block">
+          The common name of the imprintable to be used in retail product synchronization.
         </p>
       </div>
     </div>

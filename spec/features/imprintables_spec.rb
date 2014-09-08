@@ -76,13 +76,14 @@ feature 'Imprintables management', imprintable_spec: true, slow: true do
     visit imprintables_path
 
     click_link('Add an Imprintable')
-    fill_in 'Special Considerations', with: 'Special Consideration'
+    fill_in 'Special Considerations', with: 'please don\'t wash this or something'
     page.find_by_id('imprintable_sizing_category').find("option[value='#{imprintable.sizing_category}']").click
     page.find_by_id('imprintable_brand_id').find("option[value='#{imprintable.brand.id}']").click
 
     fill_in 'Style name', with: 'Sample Name'
     fill_in 'Style catalog no', with: '42'
     fill_in_summernote('#imprintable_style_description', with: 'Description')
+    fill_in 'Common Name', with: 'Super dooper imprintable'
 
     fill_in 'Sku', with: '99'
     fill_in 'Max imprint width', with:  '5.5'
@@ -93,8 +94,10 @@ feature 'Imprintables management', imprintable_spec: true, slow: true do
     expect(page).to have_selector '.modal-content-success', text: 'Imprintable was successfully created.'
     expect(current_path).to eq(imprintable_path 2)
 
-    expect(Imprintable.find_by special_considerations: 'Special Consideration').to_not be_nil
-    expect(Imprintable.find_by style_name: 'Sample Name').to_not be_nil
+    imprintable = Imprintable.find_by special_considerations: 'please don\'t wash this or something'
+    expect(imprintable).to_not be_nil
+    expect(imprintable.style_name).to eq('Sample Name')
+    expect(imprintable.common_name).to eq('Super dooper imprintable')
   end
 
   feature 'Tagging', js: true do
