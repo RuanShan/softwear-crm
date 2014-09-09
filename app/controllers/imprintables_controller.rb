@@ -36,8 +36,9 @@ class ImprintablesController < InheritedResources::Base
 
       success.html { redirect_to edit_imprintable_path params[:id] }
       failure.html do
-        set_model_collection_hash
-        set_variants_hash
+        @instance_hash = {}
+        @instance_hash[:model_collection_hash] = Imprintable.set_model_collection_hash
+        @instance_hash[:variants_hash] = set_variants_hash
         render :edit
       end
     end
