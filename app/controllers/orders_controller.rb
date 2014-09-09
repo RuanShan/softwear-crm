@@ -35,6 +35,7 @@ class OrdersController < InheritedResources::Base
 
   def edit
     super do
+      @current_action = 'orders#edit'
       assign_activities
     end
   end
