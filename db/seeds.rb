@@ -140,20 +140,30 @@ create_records([
                ], ImprintMethod)
 im = ImprintMethod.all.first
 create_records([
-                   {name: 'Red', imprint_method_id: im.id},
-                   {name: 'Orange', imprint_method_id: im.id},
-                   {name: 'Yellow', imprint_method_id: im.id},
-                   {name: 'Green', imprint_method_id: im.id},
-                   {name: 'Blue', imprint_method_id: im.id},
-                   {name: 'Indigo', imprint_method_id: im.id},
-                   {name: 'Violet', imprint_method_id: im.id}
+                   { name: 'Red', imprint_method_id: im.id },
+                   { name: 'Orange', imprint_method_id: im.id },
+                   { name: 'Yellow', imprint_method_id: im.id },
+                   { name: 'Green', imprint_method_id: im.id },
+                   { name: 'Blue', imprint_method_id: im.id },
+                   { name: 'Indigo', imprint_method_id: im.id },
+                   { name: 'Violet', imprint_method_id: im.id }
                ], InkColor)
 ic_one = InkColor.all.first
 ic_two = InkColor.all.second
 ic_three = InkColor.all.third
 create_records([
-                   {name: 'Chest', max_height: 5.5, max_width: 5.5, imprint_method_id: im.id},
-                   {name: 'Back', max_height: 5.5, max_width: 5.5, imprint_method_id: im.id}
+                   {
+                     name: 'Chest',
+                     max_height: 5.5,
+                     max_width: 5.5,
+                     imprint_method_id: im.id
+                   },
+                   {
+                     name: 'Back',
+                     max_height: 5.5,
+                     max_width: 5.5,
+                     imprint_method_id: im.id
+                   }
                ], PrintLocation)
 pl = PrintLocation.all.first
 
