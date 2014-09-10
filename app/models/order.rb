@@ -24,7 +24,7 @@ class Order < ActiveRecord::Base
 
     date :in_hand_by
 
-    reference :salesperson
+    #reference :salesperson
   end
 
   tracked by_current_user
