@@ -1,12 +1,14 @@
 class PaymentsController < InheritedResources::Base
   def create
     super do |format|
+      fire_activity(@payment, :applied_payment)
       format.html { redirect_to edit_order_path(params[:order_id], anchor: 'payments') }
     end
   end
 
   def update
     super do |format|
+      fire_activity(@payment, :refunded_payment) if @payment.refunded
       format.html { redirect_to edit_order_path(params[:payment][:order_id], anchor: 'payments') }
     end
   end
