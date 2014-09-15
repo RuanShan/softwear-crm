@@ -68,16 +68,23 @@ namespace :deploy do
 end
 
 namespace :solr do
+  rvm = '[[ -s "$HOME/.rvm/scripts/rvm" ]] && . "$HOME/.rvm/scripts/rvm"'
 
   %i(start stop restart).each do |command|
     desc "#{command} solr"
-    task command do |rails_env|
-      run "cd #{current_path} && RAILS_ENV=#{rails_env || 'production'} bundle exec rake sunspot:solr:#{command}"
+    task command, [:env] do |_cmd, args|
+      on roles(:app) do
+        execute "cd #{current_path} && #{rvm} && bundle exec rake sunspot:solr:#{command} RAILS_ENV=#{args[:env] || 'production'}"
+      end
     end
   end
+
+  after 'deploy:finished', 'solr:restart'
   
   desc 'reindex solr'
-  task :reindex do |rails_env|
-    run "cd #{current_path} && yes | RAILS_ENV=#{rails_env || 'production'} bundle exec rake sunspot:solr:reindex"
+  task :reindex, [:env] do |_cmd, args|
+    on roles(:app) do
+      execute "cd #{current_path} && #{rvm} && yes | bundle exec rake sunspot:solr:reindex RAILS_ENV=#{args[:env] || 'production'}"
+    end
   end
 end
