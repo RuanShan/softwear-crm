@@ -71,13 +71,13 @@ namespace :solr do
 
   %i(start stop restart).each do |command|
     desc "#{command} solr"
-    task command, roles: :app, except: { no_release: true } do
+    task command do
       run "cd #{current_path} && RAILS_ENV=#{rails_env} bundle exec rake sunspot:solr:#{command}"
     end
   end
   
   desc 'reindex solr'
-  task :reindex, roles: :app do
+  task :reindex do
     run "cd #{current_path} && yes | RAILS_ENV=#{rails_env} bundle exec rake sunspot:solr:reindex"
   end
 end
