@@ -1,5 +1,6 @@
 require 'spec_helper'
 include PricingModule
+include LineItemHelpers
 
 describe Imprintable, imprintable_spec: true do
 
