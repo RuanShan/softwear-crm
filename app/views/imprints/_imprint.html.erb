@@ -43,6 +43,10 @@
         <%= check_box_tag select_field_name_for.(:has_name_number), '1', checked, class: 'js-imprint-has-name-number' %>
       </div>
 
+      <div class='js-imprint-name-number-fields' style='display: <%= local_assigns[:imprint].try(:has_name_number) ? "block" : "none" %>;'>
+        <%= render 'imprints/name_number_fields', imprint: local_assigns[:imprint] %>
+      </div>
+
       <div class="full text-right">
         <%= link_to '#', class: 'js-delete-imprint-button' do %>
           <i class="fa fa-2x danger fa-times-circle"></i>
