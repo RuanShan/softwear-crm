@@ -36,7 +36,7 @@ module BatchUpdate
     updated_resources.each do |resource|
       attributes = resource_attributes[resource.id.to_s]
 
-      attributes.each { |key, value| resource.send "#{key}=", value }
+      attributes.each(&update_field_on(resource))
 
       if resource.changed?
         resource.save
@@ -62,6 +62,18 @@ module BatchUpdate
       created_resources
     )
     created_resources
+  end
+
+  def update_field_on(resource)
+    proc do |key, value|
+      val = if resource.class.columns_hash[key].try(:type) == :boolean
+          value == '1'
+        else
+          value
+        end
+
+      resource.send("#{key}=", val)
+    end
   end
 
   def inject_parent_id(resource_attributes, parent)

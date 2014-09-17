@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140910161943) do
+ActiveRecord::Schema.define(version: 20140917154631) do
 
   create_table "activities", force: true do |t|
     t.integer  "trackable_id"
@@ -225,6 +225,7 @@ ActiveRecord::Schema.define(version: 20140910161943) do
     t.datetime "deleted_at"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.boolean  "has_name_number"
   end
 
   create_table "ink_colors", force: true do |t|

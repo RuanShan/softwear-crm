@@ -5,6 +5,10 @@ shared_examples 'batch update' do
       Struct.new(:test_attr, :id) do
         alias_method :serializable_hash, :to_h
 
+        def self.columns_hash
+          {}
+        end
+
         def save
         end
       end

@@ -52,3 +52,11 @@
     ajax.done eval
 
   false
+
+$ ->
+  $('.js-imprint-has-name-number').on 'ifClicked', ->
+    # This is for some reason fired before the new check state is assigned...
+    checked = !this.checked
+    $(this).parentsUntil('.checkbox-container').parent().addClass 'editing-imprint'
+
+    # TODO spawn fields

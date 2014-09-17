@@ -21,7 +21,7 @@ feature 'Imprints Management', imprint_spec: true, js: true do
     end
   end
 
-  given(:imprint) { create(:imprint, job_id: job.id, print_location_id: print_location1.id) }
+  given(:imprint) { create(:blank_imprint, job_id: job.id, print_location_id: print_location1.id) }
 
   scenario 'user can add a new imprint to a job', retry: 3 do
     visit edit_order_path(order.id, anchor: 'jobs')
@@ -112,6 +112,23 @@ feature 'Imprints Management', imprint_spec: true, js: true do
     expect(page).to_not have_content 'Print location'
 
     expect(Imprint.where(job_id: job.id)).to_not exist
+  end
+
+  scenario 'user can check the name/number box', go_go_go: true do
+    imprint
+    expect(Imprint.where(has_name_number: true)).to_not exist
+    visit edit_order_path(order.id, anchor: 'jobs')
+    wait_for_ajax
+
+    first('.checkbox-container > div').click
+    first('.update-imprints').click
+
+    expect(Imprint.where(has_name_number: true)).to exist
+
+    first('.checkbox-container > div').click
+    first('.update-imprints').click
+
+    expect(Imprint.where(has_name_number: true)).to_not exist
   end
 
 end
