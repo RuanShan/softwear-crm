@@ -1,3 +1,4 @@
+var handler;
 var shineEditingIn = function ($container) {
   $editing = $container.find('.editing-imprint');
   
@@ -12,16 +13,16 @@ var shineEditingIn = function ($container) {
 <% @imprints.each do |imprint| %>
 
   var $container = $(".imprint-entry[data-id='<%= imprint.id %>']");
+  handler = errorHandlerFrom($printLocation, 'imprint', $printLocation, <%= imprint.id %>);
 
   <% if imprint.valid? %>    
 
     shineEditingIn($container);
+    handler.clear();
 
   <% else %>
 
     $printLocation = $container.find('.print-location-container');
-
-    handler = errorHandlerFrom($printLocation, 'imprint', $printLocation, <%= imprint.id %>);
     handler.handleErrors(<%= imprint.errors.messages.to_json.html_safe %>);
 
   <% end %>
