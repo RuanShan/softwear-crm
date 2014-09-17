@@ -15,6 +15,11 @@
         "#{resourceName}[#{resourceId}[#{field}]]"
       else
         "#{resourceName}[#{field}]"
+  findFieldElementFor = (field) ->
+    $field = $form.find("*[name^='#{getParamName(field)}']")
+    $field = $form.find("*[name^='#{getParamName(field.replace('_id', ''))}']") if $field.length == 0
+    $field = $form.find("*[name^='#{getParamName(field + '_id')}']") if $field.length == 0
+    $field
 
   handler.errorFields = []
 
@@ -31,9 +36,7 @@
       continue if fieldErrors.length == 0
       handler.errorFields.push(field)
       # Grab the input field element
-      $field = $form.find("*[name^='#{getParamName(field)}']")
-      $field = $form.find("*[name^='#{getParamName(field.replace('_id', ''))}']") if $field.length == 0
-      $field = $form.find("*[name^='#{getParamName(field + '_id')}']") if $field.length == 0
+      $field = findFieldElementFor field
       
       if $field.length == 0
         #console.log "Couldn't find field #{field} (name #{getParamName(field)})"
@@ -57,10 +60,10 @@
 
   handler.clear = () ->
     for field in handler.errorFields
-      $field = $form.find("*[name='#{getParamName(field)}']")
+      $field = findFieldElementFor field
       $errorMsgDiv = $form.find(".error[for='#{getParamName(field)}']")
       $errorMsgDiv.remove()
-      $field.unwrap() if $field.parent().attr('class') == 'field_with_errors' and not $field.data('no-wrap')
+      $field.unwrap() if $field.parent().hasClass('field_with_errors') and not $field.data('no-wrap')
     handler.errorFields = []
 
   return handler
