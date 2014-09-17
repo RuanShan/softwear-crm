@@ -1,5 +1,5 @@
-<% field_name_for = method(:imprint_select_field_name_for).to_proc.curry.(imprint) %>
+<% field_name_for = method(:imprint_select_field_name_for).to_proc.curry.(local_assigns[:imprint]) %>
 
 <div class='form-group'>
-  <%= text_field_tag field_name_for.(:name_number), imprint.name_number, class: 'form-control js-imprint-name-number' %>
+  <%= text_field_tag field_name_for.(:name_number), local_assigns[:imprint].try(:name_number), class: 'form-control js-imprint-name-number' %>
 </div>

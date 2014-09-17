@@ -15,9 +15,19 @@ describe Imprint, imprint_spec: true do
   describe 'Validations' do
     it { is_expected.to validate_presence_of :job }
     it { is_expected.to validate_presence_of :print_location }
-    it { is_expected.to validate_presence_of(:name_number).if(:has_name_number) }
     # FIXME why doesn't this work?
     # it { is_expected.to validate_uniqueness_of(:print_location).scoped_to(:job_id) }
+
+    context 'when has_name_number is true' do
+      before { subject.has_name_number = true }
+
+      it { is_expected.to validate_presence_of :name_number }
+    end
+    context 'when name_number is false' do
+      before { subject.has_name_number = false }
+
+      it { is_expected.to_not validate_presence_of :name_number }
+    end
   end
 
   describe '#name' do

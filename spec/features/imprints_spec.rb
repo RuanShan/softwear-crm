@@ -114,13 +114,14 @@ feature 'Imprints Management', imprint_spec: true, js: true do
     expect(Imprint.where(job_id: job.id)).to_not exist
   end
 
-  scenario 'user can check the name/number box' do
+  scenario 'user can check the name/number box multiple times' do
     imprint
     expect(Imprint.where(has_name_number: true)).to_not exist
     visit edit_order_path(order.id, anchor: 'jobs')
     wait_for_ajax
 
     first('.checkbox-container > div').click
+    first('.js-imprint-name-number').set('--')
     first('.update-imprints').click
 
     expect(Imprint.where(has_name_number: true)).to exist
@@ -137,7 +138,7 @@ feature 'Imprints Management', imprint_spec: true, js: true do
     wait_for_ajax
 
     first('.checkbox-container > div').click
-    first('.name-number-field').set('Mike Hawk')
+    first('.js-imprint-name-number').set('Mike Hawk')
     first('.update-imprints').click
 
     expect(Imprint.where(name_number: 'Mike Hawk')).to exist

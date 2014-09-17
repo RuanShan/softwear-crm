@@ -61,7 +61,7 @@
 
   $this = $(this)
 
-  if typeof $this.data('original-value') is 'undefined'
+  if typeof $this.data('original-value') is 'undefined' or $this.data('original-value') is null
     console.log 'ok first time set'
     $this.data('original-value', this.checked)
 

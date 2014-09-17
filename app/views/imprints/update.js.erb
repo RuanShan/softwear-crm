@@ -5,6 +5,7 @@ var shineEditingIn = function ($container) {
   if ($editing.length) {
     $editing.each(function() {
       $(this).removeClass('editing-imprint');
+      $(this).find('.js-imprint-has-name-number').removeData('original-value');
       shine($(this), true);
     });
   }
