@@ -114,7 +114,7 @@ feature 'Imprints Management', imprint_spec: true, js: true do
     expect(Imprint.where(job_id: job.id)).to_not exist
   end
 
-  scenario 'user can check the name/number box', go_go_go: true do
+  scenario 'user can check the name/number box' do
     imprint
     expect(Imprint.where(has_name_number: true)).to_not exist
     visit edit_order_path(order.id, anchor: 'jobs')
@@ -129,6 +129,18 @@ feature 'Imprints Management', imprint_spec: true, js: true do
     first('.update-imprints').click
 
     expect(Imprint.where(has_name_number: true)).to_not exist
+  end
+
+  scenario 'user can specify a name or number for an imprint' do
+    imprint
+    visit edit_order_path(order.id, anchor: 'jobs')
+    wait_for_ajax
+
+    first('.checkbox-container > div').click
+    first('.name-number-field').set('Mike Hawk')
+    first('.update-imprints').click
+
+    expect(Imprint.where(name_number: 'Mike Hawk')).to exist
   end
 
 end

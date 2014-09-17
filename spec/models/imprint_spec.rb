@@ -1,7 +1,6 @@
 require 'spec_helper'
 
 describe Imprint, imprint_spec: true do
-
   let(:imprint) { create :valid_imprint }
 
   it { is_expected.to be_paranoid }
@@ -16,6 +15,7 @@ describe Imprint, imprint_spec: true do
   describe 'Validations' do
     it { is_expected.to validate_presence_of :job }
     it { is_expected.to validate_presence_of :print_location }
+    it { is_expected.to validate_presence_of(:name_number).if(:has_name_number) }
     # FIXME why doesn't this work?
     # it { is_expected.to validate_uniqueness_of(:print_location).scoped_to(:job_id) }
   end
