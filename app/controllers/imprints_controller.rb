@@ -55,7 +55,7 @@ class ImprintsController < InheritedResources::Base
 
   def assign_imprint_attributes(imprint, attrs)
     name_number_attrs = attrs.delete('name_number')
-    if name_number_attrs
+    if name_number_attrs# && attrs.to_a.include?(['has_name_number', true])
       imprint.name_number_id ||= NameNumber.create.id
       imprint.name_number.update_attributes(name_number_attrs)
     end

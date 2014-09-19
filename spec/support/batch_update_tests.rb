@@ -125,6 +125,7 @@ shared_examples 'batch update' do
 
           it 'should create resources for negative ids in the params hash' do
             test_record = double(resource_class.name)
+            allow(test_record).to receive(:save)
             expect(resource_class).to receive(:new)
               .and_return(test_record).twice
 
@@ -151,6 +152,7 @@ shared_examples 'batch update' do
 
             it 'should assign the parent record id to the new records' do
               test_record = double(resource_class.name)
+              allow(test_record).to receive(:save)
               expect(resource_class).to receive(:new)
                 .and_return(test_record).twice
 

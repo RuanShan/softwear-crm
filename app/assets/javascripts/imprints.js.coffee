@@ -9,7 +9,7 @@
   imprintId = $imprintEntry.data('id')
 
   $printLocationContainer = $imprintContainer.find('.print-location-container')
-  $printLocationContainer.addClass 'editing-imprint'
+  # $printLocationContainer.addClass 'editing-imprint'
 
   ajax = $.ajax
     type: 'GET'
@@ -62,7 +62,7 @@
   $this = $(this)
 
   if typeof $this.data('original-value') is 'undefined' or $this.data('original-value') is null
-    console.log 'ok first time set'
+    # console.log 'ok first time set'
     $this.data('original-value', this.checked)
 
   method = if $this.data('original-value') == checked then 'removeClass' else 'addClass'

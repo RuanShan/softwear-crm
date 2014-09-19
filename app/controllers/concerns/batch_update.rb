@@ -67,6 +67,7 @@ module BatchUpdate
           attributes = resource_attributes[k]
 
           set_attributes(resource, attributes, with: assignment)
+          resource.save
 
           NewRecord.new(resource, k)
         end

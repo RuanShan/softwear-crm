@@ -6,8 +6,9 @@ describe 'imprints/_name_number_fields.html.erb', imprint_spec: true do
 
   let(:imprint) { create :valid_imprint }
 
-  it 'renders a text field for name_number' do
+  it 'renders a text field for name_number.name and name_number.number' do
     render partial: 'imprints/name_number_fields', locals: { imprint: imprint }
-    expect(rendered).to have_css 'input[type="text"][name*="name_number"]'
+    expect(rendered).to have_css 'input[type="text"][name*="name_number[name]"]'
+    expect(rendered).to have_css 'input[type="number"][name*="name_number[number]"]'
   end
 end

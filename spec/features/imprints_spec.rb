@@ -23,17 +23,19 @@ feature 'Imprints Management', imprint_spec: true, js: true do
 
   given(:imprint) { create(:blank_imprint, job_id: job.id, print_location_id: print_location1.id) }
 
-  scenario 'user can add a new imprint to a job', retry: 3 do
+  scenario 'user can add a new imprint to a job', retry: 1, busted: true do
     visit edit_order_path(order.id, anchor: 'jobs')
     wait_for_ajax
 
     first('.add-imprint').click
-    sleep 1
+    sleep 0.5
     find('.js-imprint-method-select').select imprint_method2.name
-    sleep 1.5
+    sleep 0.5
     find('.js-print-location-select').select print_location2.name
     expect(all('.editing-imprint').count).to be > 1
+    sleep 0.5
     find('.update-imprints').click
+    sleep 0.5
     expect(Imprint.where(job_id: job.id, print_location_id: print_location2.id)).to exist
   end
 
@@ -114,34 +116,37 @@ feature 'Imprints Management', imprint_spec: true, js: true do
     expect(Imprint.where(job_id: job.id)).to_not exist
   end
 
-  scenario 'user can check the name/number box multiple times' do
+  scenario 'user can check the name/number box multiple times', name_number: true do
     imprint
     expect(Imprint.where(has_name_number: true)).to_not exist
     visit edit_order_path(order.id, anchor: 'jobs')
     wait_for_ajax
 
     first('.checkbox-container > div').click
-    first('.js-imprint-name-number').set('--')
     first('.update-imprints').click
+    wait_for_ajax
 
     expect(Imprint.where(has_name_number: true)).to exist
 
     first('.checkbox-container > div').click
     first('.update-imprints').click
+    wait_for_ajax
 
     expect(Imprint.where(has_name_number: true)).to_not exist
   end
 
-  scenario 'user can specify a name or number for an imprint' do
+  scenario 'user can specify a name or number for an imprint', name_number: true do
     imprint
     visit edit_order_path(order.id, anchor: 'jobs')
     wait_for_ajax
 
     first('.checkbox-container > div').click
-    first('.js-imprint-name-number').set('Mike Hawk')
+    first('.js-imprint-name-number-name').set('Mike Hawk')
+    first('.js-imprint-name-number-number').set(99)
     first('.update-imprints').click
+    wait_for_ajax
 
-    expect(Imprint.where(name_number: 'Mike Hawk')).to exist
+    expect(NameNumber.where(name: 'Mike Hawk', number: 99)).to exist
   end
 
 end
