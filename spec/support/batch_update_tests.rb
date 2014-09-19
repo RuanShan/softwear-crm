@@ -94,6 +94,10 @@ shared_examples 'batch update' do
           let(:bad_arg) { "I am a string. Not very proc-like, huh." }
           
           it 'raises an error' do
+            dummy = double(resource_class.name)
+            allow(resource_class).to receive(:find).and_return dummy
+            allow(dummy).to receive(:id).and_return 1
+
             expect do
               subject.send(:batch_update, assignment: bad_arg)
             end
@@ -114,16 +118,18 @@ shared_examples 'batch update' do
           end
 
           before do
+            allow_any_instance_of(resource_class).to receive(:test_attr=)
             allow(params).to receive_message_chain(:permit, :permit!)
             allow(subject).to receive(:params) { params }
-            allow(resource_class).to receive(:create)
           end
 
           it 'should create resources for negative ids in the params hash' do
-            expect(resource_class)
-              .to receive(:create).with hash_including(test_attr: 'test_1')
-            expect(resource_class)
-              .to receive(:create).with hash_including(test_attr: 'test_2')
+            test_record = double(resource_class.name)
+            expect(resource_class).to receive(:new)
+              .and_return(test_record).twice
+
+            expect(test_record).to receive(:test_attr=).with('test_1')
+            expect(test_record).to receive(:test_attr=).with('test_2')
 
             subject.send(:batch_update, create_negatives: true)
           end
@@ -144,8 +150,12 @@ shared_examples 'batch update' do
             end
 
             it 'should assign the parent record id to the new records' do
-              expect(resource_class)
-                .to receive(:create).with hash_including('test_class_id' => 5)
+              test_record = double(resource_class.name)
+              expect(resource_class).to receive(:new)
+                .and_return(test_record).twice
+
+              allow(test_record).to receive(:test_attr=)
+              expect(test_record).to receive(:test_class_id=).with(5).twice
 
               subject.send(
                 :batch_update,
