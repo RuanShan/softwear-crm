@@ -64,6 +64,44 @@ shared_examples 'batch update' do
     end
 
     describe 'options' do
+      describe 'assignment:' do
+        context '<valid proc>' do
+          let(:assignment_proc) do
+            proc do |record, attrs|
+              record.test_attr = "test_attr #{attrs[:test_attr]}"
+            end
+          end
+
+          it 'calls the given proc instead of the default assignment' do
+            dummy_1 = dummy_class.new('test_1', 1)
+            dummy_2 = dummy_class.new('test_2', 2)
+
+            [dummy_1, dummy_2].each do |dummy|
+              allow(dummy).to receive(:changed?).and_return false
+            end
+
+            allow(resource_class).to receive(:find).with('1') { dummy_1 }
+            allow(resource_class).to receive(:find).with('2') { dummy_2 }
+
+            subject.send(:batch_update, assignment: assignment_proc)
+
+            expect(dummy_1.test_attr).to eq 'test_attr test_1'
+            expect(dummy_2.test_attr).to eq 'test_attr test_2'
+          end
+        end
+
+        context '<non-proc>' do
+          let(:bad_arg) { "I am a string. Not very proc-like, huh." }
+          
+          it 'raises an error' do
+            expect do
+              subject.send(:batch_update, assignment: bad_arg)
+            end
+              .to raise_error BatchUpdateError
+          end
+        end
+      end
+
       describe 'create_negatives:' do
         context 'true' do
           let(:params) do
