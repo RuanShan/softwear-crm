@@ -36,7 +36,7 @@ describe JobsController, job_spec: true do
       allow(Job).to receive(:find).and_return job
       expect(job).to receive(:name_number_csv)
 
-      get :name_number_csv, id: job.id
+      get :name_number_csv, job_id: job.id
     end
   end
 end
