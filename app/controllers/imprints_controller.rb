@@ -58,6 +58,7 @@ class ImprintsController < InheritedResources::Base
     if name_number_attrs# && attrs.to_a.include?(['has_name_number', true])
       imprint.name_number_id ||= NameNumber.create.id
       imprint.name_number.update_attributes(name_number_attrs)
+      imprint.updated_at = Time.now
     end
 
     attrs.each do |key, value|
