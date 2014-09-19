@@ -108,7 +108,7 @@ module BatchUpdate
       all_attributes.values.each do |attributes|
         attributes.each do |key, value|
           if resource_class.columns_hash[key].try(:type) == :boolean
-            attributes[key] = value == '1'
+            attributes[key] = value == '1' || value == true
           end
         end
       end
