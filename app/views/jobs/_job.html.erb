@@ -59,7 +59,7 @@
       <% end %>
 
       <h4>Imprints</h4>
-      <%= link_to 'Name/Number CSV', job_name_number_csv_path(job) %>
+      <%= link_to 'Name/Number CSV', name_number_csv_from_job_path(job) %>
       <%= form_for :imprint, builder: BatchFormBuilder, method: :put, remote: true,
                    url: job_imprints_update_path(job) do |f| %>
         <%= render partial: 'imprints/imprints', locals: { job: job } %>

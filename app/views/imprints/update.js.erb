@@ -1,7 +1,7 @@
 var handler;
 var shineEditingIn = function ($container) {
   $editing = $container.find('.editing-imprint');
-  
+
   if ($editing.length) {
     $editing.each(function() {
       $(this).removeClass('editing-imprint');
@@ -50,6 +50,10 @@ var shineEditingIn = function ($container) {
 
   <% end %>
 
+<% end %>
+
+<% if @imprints.size + @new_imprints.size == 0 %>
+  // Nothing updated
 <% end %>
 
 <%= update_order_timeline(@job.order) %>
