@@ -282,4 +282,25 @@ describe Job, job_spec: true do
     expect(job1.name).to eq 'New Job 2'
     expect(job2.name).to eq 'New Job 3'
   end
+
+  describe '#name_number_csv' do
+    let(:imprint) { build_stubbed :blank_imprint }
+    let(:imprint2) { build_stubbed :blank_imprint }
+
+    before :each do
+      name_number = double('Name/Number', name: 'Test Name', number: 200)
+      allow(imprint).to receive(:name_number).and_return name_number
+
+      name_number2 = double('Name/Number', name: 'Other Name', number: 58)
+      allow(imprint).to receive(:name_number).and_return name_number2
+    end
+
+    it 'generates a csv file formatted <number>,<name> for each imprint' do
+      csv = subject.name_number_csv
+
+      expect(csv.first).to eq ['200', 'Test Name']
+      expect(csv.last).to eq ['58', 'Other Name']
+      expect(csv.size).to eq 2
+    end
+  end
 end
