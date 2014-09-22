@@ -56,4 +56,26 @@ feature 'Payments management', js: true, payment_spec: true do
     expect(page).to have_selector '.modal-content-success', text: 'Payment was successfully updated.'
     expect(Payment.find(payment.id).is_refunded?).to be_truthy
   end
+
+  feature 'the following activities are tracked', new: true do
+    scenario 'applying a payment' do
+      visit (edit_order_path order.id) + '#payments'
+      find(:css, '#cash-button').click
+      fill_in 'amount_field', with: 20
+      click_button 'Apply Payment'
+      page.driver.browser.switch_to.alert.accept
+      activity = order.all_activities.to_a.select{ |a| a[:key] = 'payment.applied_payment' }
+      expect(activity).to_not be_nil
+    end
+
+    scenario 'refunding a payment' do
+      visit (edit_order_path order.id) + '#payments'
+      find(:css, '.order_payment_refund_link').click
+      fill_in 'Refund Reason', with: 'Muh spoon is too big'
+      click_button 'Refund Payment'
+      page.driver.browser.switch_to.alert.accept
+      activity = order.all_activities.to_a.select{ |a| a[:key] = 'payment.refunded_payment' }
+      expect(activity).to_not be_nil
+    end
+  end
 end

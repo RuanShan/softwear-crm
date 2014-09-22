@@ -1,8 +1,13 @@
-<div class="page-heading animated fadeInDownBig col-lg-9">
+<div class="page-heading animated fadeInDownBig col-lg-6">
   <h1>Edit<strong> Quote</strong></h1>
 </div>
 
-<div class="col-lg-3 text-right">
+<div class="col-ls-6 text-right">
+  <%= link_to new_order_path(quote_id: @quote.id), class: 'btn btn-primary',
+             'data-action' => 'new', 'data-toggle' => 'tooltip', 'title' => 'New Order' do %>
+  Create Order from Quote
+  <% end %>
+
   <%= link_to quote_path(@quote), class: 'btn btn-primary',
               'data-action' => 'show', 'data-toggle' => 'tooltip', 'title' => 'Print' do %>
     Print Quote
