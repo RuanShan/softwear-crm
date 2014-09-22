@@ -442,6 +442,7 @@ ActiveRecord::Schema.define(version: 20140916152537) do
   create_table "settings", force: true do |t|
     t.string   "name"
     t.string   "val"
+    t.string   "encrypted_val"
     t.boolean  "encrypted"
     t.datetime "deleted_at"
     t.datetime "created_at"

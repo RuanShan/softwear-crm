@@ -3,6 +3,7 @@ class CreateSettings < ActiveRecord::Migration
     create_table :settings do |t|
       t.string :name
       t.string :val
+      t.string :encrypted_val
       t.boolean :encrypted
 
       t.datetime :deleted_at
