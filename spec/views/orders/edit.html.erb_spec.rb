@@ -14,6 +14,8 @@ describe 'orders/edit.html.erb', order_spec: true do
 	end
 
   it 'displays a "download names and numbers" button on the top right' do
+    allow(order).to receive_message_chain(:imprints, :exists?).and_return true
+    params[:id] = order.id
     render
     expect(rendered).to have_css(
       "a[href='#{name_number_csv_from_order_path(order)}']",

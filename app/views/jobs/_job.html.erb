@@ -58,8 +58,14 @@
 
       <% end %>
 
-      <h4>Imprints</h4>
-      <%= link_to 'Name/Number CSV', name_number_csv_from_job_path(job) %>
+      <div class='row'>
+        <div class='col-sm-4'>
+          <h4>Imprints</h4>
+        </div>
+        <div class='col-sm-3 col-xs-offset-5'>
+          <%= link_to 'Download Names/Numbers CSV', name_number_csv_from_job_path(job), class: 'btn btn-info btn-block' %>
+        </div>
+      </div>
       <%= form_for :imprint, builder: BatchFormBuilder, method: :put, remote: true,
                    url: job_imprints_update_path(job) do |f| %>
         <%= render partial: 'imprints/imprints', locals: { job: job } %>

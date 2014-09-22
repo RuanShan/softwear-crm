@@ -305,7 +305,7 @@ describe Order, order_spec: true do
     end
   end
 
-  describe '#name_number_csv' do
+  describe '#name_number_csv', name_number: true do
     let!(:order) { create :order }
     let!(:job) { create :job, order_id: order.id }
     let!(:imprint) { build_stubbed :valid_imprint, job_id: job.id, has_name_number: true }

@@ -42,7 +42,7 @@ class OrdersController < InheritedResources::Base
 
   def names_numbers
     @order = Order.find(params[:id])
-    filename = "order_#{@order.name}_names_numbers_"
+    filename = "order_#{@order.name}_names_numbers.csv"
 
     send_data @order.name_number_csv, filename: sanitize_filename(filename)
   end
