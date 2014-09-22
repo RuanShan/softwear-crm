@@ -7,7 +7,7 @@ describe 'jobs/_job.html.erb', job_spec: true do
     it 'displays a "download name/numbers" button to the right of the "Imprints" h4' do
       render partial: 'jobs/job', locals: { job: job }
 
-      expect(rendered).to have_css "a[href*='name_number']", text: 'Name/Number CSV'
+      expect(rendered).to have_css "a[href*='names_numbers']", text: 'Download Names/Numbers CSV'
     end
   end
 end
