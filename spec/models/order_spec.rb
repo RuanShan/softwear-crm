@@ -308,21 +308,23 @@ describe Order, order_spec: true do
   describe '#name_number_csv' do
     let!(:order) { create :order }
     let!(:job) { create :job, order_id: order.id }
-    let!(:imprint) { create :valid_imprint, job_id: job.id, has_name_number: true }
-    let!(:imprint2) { create :valid_imprint, job_id: job.id, has_name_number: true }
+    let!(:imprint) { build_stubbed :valid_imprint, job_id: job.id, has_name_number: true }
+    let!(:imprint2) { build_stubbed :valid_imprint, job_id: job.id, has_name_number: true }
 
-    let!(:job2) { create :job }
-    let!(:imprint3) { create :valid_imprint, job_id: job2.id, has_name_number: true }
-    let!(:imprint4) { create :valid_imprint, job_id: job2.id, has_name_number: true }
+    let!(:job2) { build_stubbed :job }
+    let!(:imprint3) { build_stubbed :valid_imprint, job_id: job2.id, has_name_number: true }
+    let!(:imprint4) { build_stubbed :valid_imprint, job_id: job2.id, has_name_number: true }
 
     before :each do
-      imprint.name_number = create :name_number, name: 'Test Name', number: 33
-      imprint2.name_number = create :name_number, name: 'Other One', number: 2
+      imprint.name_number = build_stubbed :name_number, name: 'Test Name', number: 33
+      imprint2.name_number = build_stubbed :name_number, name: 'Other One', number: 2
 
-      imprint3.name_number = create :name_number, name: 'Third McThird', number: 3
-      imprint4.name_number = create :name_number, name: 'Finale', number: 1
+      imprint3.name_number = build_stubbed :name_number, name: 'Third McThird', number: 3
+      imprint4.name_number = build_stubbed :name_number, name: 'Finale', number: 1
 
-      [imprint, imprint2, imprint3, imprint4].each(&:save)
+      allow(order)
+        .to receive_message_chain(:imprints, :with_name_number)
+        .and_return [imprint, imprint2, imprint3, imprint4]
     end
 
     it 'creates a csv of all imprint name/numbers from all jobs', s_s_csv: true do
