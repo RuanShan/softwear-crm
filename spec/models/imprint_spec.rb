@@ -19,6 +19,21 @@ describe Imprint, imprint_spec: true do
     # it { is_expected.to validate_uniqueness_of(:print_location).scoped_to(:job_id) }
   end
 
+  describe 'Scopes' do
+    describe 'with_name_number', name_number: true do
+      let!(:imprint_1) { create :imprint_with_name_number }
+      let!(:imprint_2) { create :imprint_with_name_number, has_name_number: false }
+      let!(:imprint_3) { create :valid_imprint }
+
+      subject { Imprint.with_name_number }
+
+      it { is_expected.to exist }
+      it { is_expected.to include imprint_1 }
+      it { is_expected.to_not include imprint_2 }
+      it { is_expected.to_not include imprint_3 }
+    end
+  end
+
   describe '#name' do
     before do
       allow(subject).to receive(:imprint_method) { build_stubbed(:blank_imprint_method, name: 'IM name') }
