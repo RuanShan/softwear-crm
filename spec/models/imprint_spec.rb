@@ -27,10 +27,12 @@ describe Imprint, imprint_spec: true do
 
       subject { Imprint.with_name_number }
 
-      it { is_expected.to exist }
-      it { is_expected.to include imprint_1 }
-      it { is_expected.to_not include imprint_2 }
-      it { is_expected.to_not include imprint_3 }
+      it 'includes only imprins where has_name_number=true and name_number is not empty' do
+        expect(subject).to exist
+        expect(subject).to include imprint_1
+        expect(subject).to_not include imprint_2
+        expect(subject).to_not include imprint_3
+      end
     end
   end
 

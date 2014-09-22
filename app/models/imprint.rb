@@ -16,6 +16,12 @@ class Imprint < ActiveRecord::Base
   validates :job, presence: true
   validates :print_location, presence: true, uniqueness: { scope: :job_id }
 
+  def self.with_name_number
+    where(has_name_number: true)
+    .joins(:name_number)
+    .where("name_numbers.name <> '' OR NOT name_numbers.number = NULL")
+  end
+
   def name
     "#{imprint_method.name} - #{print_location.name}"
   end
