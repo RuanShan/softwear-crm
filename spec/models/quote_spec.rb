@@ -7,7 +7,8 @@ describe Quote, quote_spec: true do
   describe 'Relationships' do
     it { is_expected.to belong_to(:salesperson).class_name('User') }
     it { is_expected.to belong_to(:store) }
-    it { is_expected.to have_many(:line_items) }
+    it { is_expected.to have_many(:line_item_groups) }
+    it { is_expected.to have_many(:line_items).through(:line_item_groups) }
 
     it { is_expected.to accept_nested_attributes_for(:line_items) }
   end
