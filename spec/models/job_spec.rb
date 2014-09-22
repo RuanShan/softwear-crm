@@ -300,7 +300,7 @@ describe Job, job_spec: true do
       expect(csv[0]).to eq ['Number', 'Name']
       expect(csv[1]).to eq ['33', 'Test Name']
       expect(csv[2]).to eq ['2', 'Other One']
-      expect(csv.size).to eq 2
+      expect(csv.size).to eq 3
     end
   end
 end

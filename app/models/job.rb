@@ -124,12 +124,10 @@ class Job < ActiveRecord::Base
 
   def name_number_csv
     csv = imprints
-      .where(has_name_number: true)
-      .joins(:name_number)
-      .where("name_numbers.name <> '' OR NOT name_numbers.number = NULL")
+      .with_name_number
       .map { |i| [i.name_number.number, i.name_number.name] }
 
-    CSV.from_arrays csv
+    CSV.from_arrays csv, headers: %w(Number Name), write_headers: true
   end
 
   private
