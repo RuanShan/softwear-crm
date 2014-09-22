@@ -50,6 +50,10 @@ CrmSoftwearcrmCom::Application.routes.draw do
   end
   
   resources :orders do
+    member do
+      get 'names_numbers', as: :name_number_csv_from
+    end
+
     get 'timeline', to: 'timeline#show', as: :timeline
     resources :payments, shallow: true
     resources :artwork_requests
@@ -62,7 +66,7 @@ CrmSoftwearcrmCom::Application.routes.draw do
 
     resources :jobs, only: [:create, :update, :destroy, :show], shallow: true do
       member do
-        get 'name_number_csv', to: 'jobs#name_number_csv', as: :name_number_csv_from
+        get 'names_numbers', as: :name_number_csv_from
       end
 
       resources :line_items, except: [:update] do

@@ -14,6 +14,10 @@ class ApplicationController < ActionController::Base
 
   protected
 
+  def sanitize_filename(filename)
+    filename.gsub(/[^0-9A-z.\-]/, '_')
+  end
+
   def format_time(input_time)
     begin
       time_zone = Time.zone.now.strftime('%Z')

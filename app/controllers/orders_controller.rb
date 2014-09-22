@@ -40,6 +40,13 @@ class OrdersController < InheritedResources::Base
     end
   end
 
+  def names_numbers
+    @order = Order.find(params[:id])
+    filename = "order_#{@order.name}_names_numbers_"
+
+    send_data @order.name_number_csv, filename: sanitize_filename(filename)
+  end
+
   private
 
   def format_in_hand_by
