@@ -64,7 +64,7 @@ class Order < ActiveRecord::Base
             }
   validates :email,
             presence: true,
-            format: { with: /\A([^@\s]+)@((?:[-a-z0-9]+\.)+[a-z]{2,})\Z/i }
+            email: true
   validates :firstname, presence: true
   validates :lastname, presence: true
   validates :name, presence: true

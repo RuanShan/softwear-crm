@@ -17,7 +17,7 @@ describe ImprintablesController, imprintable_spec: true do
     end
 
     context 'there are tags that apply to one imprintable' do
-      let!(:imprintable_two) { create(:valid_imprintable, :tag_list => ['comfortable']) }
+      let!(:imprintable_two) { create(:valid_imprintable, tag_list: ['comfortable']) }
 
       it 'only assigns the imprintable with the applicable tag' do
         get :index, tag: ['comfortable']

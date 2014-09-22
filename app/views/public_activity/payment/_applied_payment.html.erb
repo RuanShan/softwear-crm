@@ -1,0 +1,11 @@
+<% if activity.trackable_type %>
+  Applied payment of <%= activity.trackable.amount %>
+<% else %>
+  Added something...
+<% end %>
+
+<% if activity.recipient && activity.recipient != activity.trackable %>
+  to
+  <%= activity.recipient_type.underscore.humanize.downcase %>
+  <%= link_to activity.recipient.name, activity.recipient %>
+<% end %>

@@ -28,8 +28,21 @@ class OrdersController < InheritedResources::Base
     super do
       @current_action = 'orders#new'
       @current_user = current_user
-      stores = Store.all
-      @empty = stores.empty?
+      @empty = Store.all.empty?
+
+      if params.has_key? :quote_id
+        quote = Quote.find(params[:quote_id])
+        @order = Order.new(
+          email: quote.email,
+          phone_number: quote.phone_number,
+          firstname: quote.first_name,
+          lastname: quote.last_name,
+          company: quote.company,
+          twitter: quote.twitter,
+          name: quote.name,
+          store_id: quote.store_id
+        )
+      end
     end
   end
 

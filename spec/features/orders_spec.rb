@@ -3,9 +3,7 @@ include ApplicationHelper
 
 feature 'Order management', order_spec: true,  js: true do
   given!(:valid_user) { create(:user) }
-  before(:each) do
-    login_as valid_user
-  end
+  background(:each) { login_as valid_user }
 
   given!(:order) { create(:order) }
 
@@ -18,7 +16,7 @@ feature 'Order management', order_spec: true,  js: true do
     expect(page).to have_css("tr#order_#{order.id}")
   end
 
-  scenario 'user creates a new order' do
+  scenario 'A user can create a new order' do
     visit root_path
     unhide_dashboard
     click_link 'Orders'
@@ -41,6 +39,7 @@ feature 'Order management', order_spec: true,  js: true do
                  "/#{ date_array.first } 4:00 PM"
     fill_in 'In Hand By Date', with: in_hand_by
     select User.find(order.salesperson_id).full_name, from: 'Salesperson'
+    sleep 15
     select order.store.name, from: 'Store'
     select 'Half down on purchase', from: 'Payment terms'
 
@@ -56,6 +55,25 @@ feature 'Order management', order_spec: true,  js: true do
     expect(Order.where(firstname: 'Guy')).to exist
   end
 
+  context 'involving quotes' do
+    given!(:quote) { create(:valid_quote) }
+
+    scenario 'A user can create an order from a quote' do
+      visit edit_quote_path quote.id
+      click_link 'Create Order from Quote'
+      click_button 'Next'
+
+      select 'Paid in full on purchase', from: 'Payment terms'
+      click_button 'Next'
+
+      select 'Pick up in Ann Arbor', from: 'Delivery method'
+      click_button 'Submit'
+      expect(page).to have_selector '.modal-content-success', text: 'Order was successfully created.'
+      expect(Order.where(firstname: quote.first_name)).to exist
+    end
+
+  end
+
   scenario 'user sees an error message when submitting invalid information' do
     visit root_path
     unhide_dashboard
@@ -69,7 +87,7 @@ feature 'Order management', order_spec: true,  js: true do
     click_button 'Submit'
 
     sleep 1
-    expect(page).to have_content 'Email is invalid'
+    expect(page).to have_content 'Email is not a valid email address'
   end
 
   scenario 'phone number field enforces proper format', pending: 'No idea why the phone number format is failing now' do
@@ -97,7 +115,7 @@ feature 'Order management', order_spec: true,  js: true do
     wait_for_ajax
     click_link 'Details'
     wait_for_ajax
-    
+
     fill_in 'Name', with: 'New Title'
 
     click_button 'Save'
@@ -110,12 +128,12 @@ feature 'Order management', order_spec: true,  js: true do
     fill_in 'Email', with: 'bad email!'
     click_button 'Save'
 
-    expect(page).to have_content 'Email is invalid'
+    expect(page).to have_content 'Email is not a valid email address'
   end
 
   scenario 'user can view updates on the timeline', timeline_spec: true do
     PublicActivity.with_tracking do
-      order.firstname = "Newfirst"
+      order.firstname = 'Newfirst'
       order.save
     end
     visit edit_order_path(order)
@@ -124,13 +142,13 @@ feature 'Order management', order_spec: true,  js: true do
   end
 
   describe 'search', search_spec: true, solr: true do
-    let!(:order2) { create(:order_with_job, name: 'Keyword order',
+    given!(:order2) { create(:order_with_job, name: 'Keyword order',
       terms: 'Net 60') }
-    let!(:order3) { create(:order_with_job, name: 'Nonkeyword order',
+    given!(:order3) { create(:order_with_job, name: 'Nonkeyword order',
       terms: 'Paid in full on purchase') }
-    let!(:order4) { create(:order_with_job, name: 'Some Order', 
+    given!(:order4) { create(:order_with_job, name: 'Some Order',
       company: 'Order with the keyword keyword!') }
-    let!(:order5) { create(:order_with_job, name: 'Dumb order',
+    given!(:order5) { create(:order_with_job, name: 'Dumb order',
       terms: 'Net 60') }
 
     scenario 'user can search orders', retry: 3 do
@@ -166,7 +184,7 @@ feature 'Order management', order_spec: true,  js: true do
         end
       end
         .query
-      
+
       query.user = valid_user
       expect(query.save).to be_truthy
 

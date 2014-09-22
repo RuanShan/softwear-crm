@@ -1,4 +1,6 @@
 class Payment < ActiveRecord::Base
+  include PublicActivity::Common
+
   acts_as_paranoid
 
   default_scope { order(:created_at) }

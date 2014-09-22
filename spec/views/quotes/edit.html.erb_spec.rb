@@ -27,4 +27,8 @@ describe 'quotes/edit.html.erb', quote_spec: true do
   it 'should contain a link to print the quote' do
     expect(rendered).to have_css('a', text: 'Print Quote')
   end
+
+  it 'should contain a link to create order from quote' do
+    expect(rendered).to have_css('a', text: 'Create Order from Quote')
+  end
 end
