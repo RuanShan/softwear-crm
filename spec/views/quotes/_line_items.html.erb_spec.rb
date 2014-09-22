@@ -6,7 +6,7 @@ describe 'quotes/_line_items.html.erb', quote_spec: true do
   end
 
   it 'displays an "add group" button' do
-    expect(rendered).to have_css("form[action='#{line_item_groups_path}'][data-remote='true']")
+    expect(rendered).to have_css("form[action='#{quote_line_item_groups_path}'][data-remote='true']")
     expect(rendered).to have_css("button[type='submit']")
   end
 end

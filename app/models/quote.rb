@@ -9,7 +9,8 @@ class Quote < ActiveRecord::Base
 
   belongs_to :salesperson, class_name: User
   belongs_to :store
-  has_many :line_items, as: :line_itemable
+  has_many :line_item_groups
+  has_many :line_items, through: :line_item_groups
 
   accepts_nested_attributes_for :line_items, allow_destroy: true
 
@@ -24,7 +25,6 @@ class Quote < ActiveRecord::Base
   validates :shipping, price: true
 
   def all_activities
-    # TODO: use string literal? also general style
     PublicActivity::Activity.where( '
       (
         activities.recipient_type = ? AND activities.recipient_id = ?

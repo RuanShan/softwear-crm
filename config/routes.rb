@@ -37,7 +37,9 @@ CrmSoftwearcrmCom::Application.routes.draw do
       get 'quote_select'
       post 'stage_quote'
     end
-    resources :line_items, except: [:update]
+    resources :line_item_groups, shallow: true do
+      resources :line_items, except: [:update]
+    end
   end
 
   get '/logout' => 'users#logout'
