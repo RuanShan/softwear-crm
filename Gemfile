@@ -43,6 +43,9 @@ gem 'bootstrap3-datetimepicker-rails', '~> 3.0.0'
 # For tagging
 gem 'acts-as-taggable-on'
 
+# For encrypting db fields
+gem 'attr_encrypted', '~> 1.3.3'
+
 # Turbolinks makes following links in your web application faster. Read more: https://github.com/rails/turbolinks
 #gem 'turbolinks'
 

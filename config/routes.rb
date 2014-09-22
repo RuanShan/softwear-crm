@@ -2,7 +2,7 @@ CrmSoftwearcrmCom::Application.routes.draw do
 
   devise_for :users, controllers: { sessions: 'users/sessions' }, skip: 'registration'
 
-  root "home#index"
+  root 'home#index'
   
   get '/users/change_password', to: 'users#edit_password', as: :change_password
   put '/users/change_password', to: 'users#update_password', as: :update_password
@@ -47,6 +47,8 @@ CrmSoftwearcrmCom::Application.routes.draw do
     resources :imprint_methods do
       get '/print_locations', to: 'imprint_methods#print_locations', as: :print_locations
     end
+    match 'integrated_crms', to: 'settings#edit', via: :get
+    match 'update_integrated_crms', to: 'settings#update', via: :put
   end
   
   resources :orders do

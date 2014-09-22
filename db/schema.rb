@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140910161943) do
+ActiveRecord::Schema.define(version: 20140916152537) do
 
   create_table "activities", force: true do |t|
     t.integer  "trackable_id"
@@ -438,6 +438,15 @@ ActiveRecord::Schema.define(version: 20140910161943) do
 
   add_index "sessions", ["session_id"], name: "index_sessions_on_session_id", unique: true, using: :btree
   add_index "sessions", ["updated_at"], name: "index_sessions_on_updated_at", using: :btree
+
+  create_table "settings", force: true do |t|
+    t.string   "name"
+    t.string   "val"
+    t.boolean  "encrypted"
+    t.datetime "deleted_at"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
 
   create_table "shipping_methods", force: true do |t|
     t.string   "name"
