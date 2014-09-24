@@ -126,7 +126,7 @@ class QuotesController < InheritedResources::Base
 
   def deliver_email(hash)
     begin
-      QuoteMailer.email_customer(hash).deliver
+      QuoteMailer.delay.email_customer(hash)
       flash[:success] = 'Your email was successfully sent!'
       fire_activity(@quote, :emailed_customer)
     rescue Net::SMTPAuthenticationError,

@@ -17,7 +17,7 @@ describe UsersController, user_spec: true do
 			end
 
 			it "sends an email to the user's email address" do
-				expect{ post *args }.to change{ActionMailer::Base.deliveries.count}.by 1
+				expect{ post *args }.to change(Sidekiq::Extensions::DelayedMailer.jobs, :size).by(1)
 			end
 
 			it 'creates the new user' do

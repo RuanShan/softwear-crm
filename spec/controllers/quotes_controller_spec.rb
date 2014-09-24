@@ -125,9 +125,9 @@ describe QuotesController, js: true, quote_spec: true do
 
   describe 'POST email_customer' do
     it 'assigns the quote and sends the customer an email' do
-      mailer = double(Mail::Message)
-      expect(mailer).to receive(:deliver)
-      expect(QuoteMailer).to receive(:email_customer).with(an_instance_of(Hash)).and_return(mailer)
+      expect{ QuoteMailer.delay.email_customer(instance_of(Hash)) }.to change(Sidekiq::Extensions::DelayedMailer.jobs, :size).by(1)
+      expect{ (post :email_customer, quote_id: quote.id) }.to change(Sidekiq::Extensions::DelayedMailer.jobs, :size).by(1)
+
       post :email_customer, quote_id: quote.id
       expect(assigns(:quote)).to eq(quote)
     end
