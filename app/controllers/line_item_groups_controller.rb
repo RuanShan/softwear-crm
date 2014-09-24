@@ -17,6 +17,20 @@ class LineItemGroupsController < InheritedResources::Base
   #   end
   # end
 
+  def show
+    super do |format|
+      format.json do
+        render json: {
+          result: 'success',
+          content: render_string(
+            partial: 'line_items',
+            locals: { line_item_group: @line_item_group }
+          )
+        }
+      end
+    end
+  end
+
   private
 
   def permitted_params

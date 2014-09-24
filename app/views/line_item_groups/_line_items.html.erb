@@ -1,10 +1,35 @@
-<div class='box-info line-items-container'>
-  <h3 class="line-item-group-title"><%= inline_field_tag line_item_group, :name, 'Name' %></h3>
-  <p class="line-item-group-description">
-    Description: <%= inline_field_tag line_item_group, :description, 'Description' %>
-  </p>
+<div id='line-item-group-<%= line_item_group.id %>' class='box-info line-items-container'>
 
-  <%= form_for :line_item, method: :put, url: line_items_update_path, remote: true, builder: BatchFormBuilder do |f| %>
+  <div class='box-info' style='background-color: #eeeeee;'>
 
-  <% end %>
+    <h3 class="line-item-group-title"><%= inline_field_tag line_item_group, :name, 'Name' %></h3>
+    <p class="line-item-group-description">
+      Description: <%= inline_field_tag line_item_group, :description, 'Description' %>
+    </p>
+
+    <%= form_for :line_item, method: :put, url: line_items_update_path, remote: true, builder: BatchFormBuilder do |f| %>
+
+      <% unless line_item_group.line_items.empty? %>
+        <%= render 'line_items/standard_view', line_items: line_item_group.line_items %>
+      <% end %>
+
+      <div class="form-group box-info">
+        <div class="col-sm-4">
+          <%= link_to new_line_item_group_line_item_path(line_item_group),
+                      class: 'btn btn-info btn-lg btn-block add-line-item',
+                      id: "add-line-item-for-#{line_item_group.id}", remote: true,
+                      data: { params: { standard_only: true }.to_param } do %>
+            <i class="fa fa-list-alt"></i> Add Line Item
+          <% end %>
+        </div>
+
+        <div class="col-sm-4 col-xs-offset-4">
+          <%= button_tag class: 'btn btn-info btn-lg btn-block update-line-items' do %>
+            <i class="fa fa-list-alt"></i> Update Line Items
+          <% end %>
+        </div>
+      </div>
+
+    <% end %>
+  </div>
 </div>

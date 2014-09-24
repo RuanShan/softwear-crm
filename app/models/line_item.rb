@@ -103,10 +103,10 @@ class LineItem < ActiveRecord::Base
     if params[:id]
       line_item = LineItem.find(params[:id])
       return line_item.line_itemable_type
-                      .safely_constantize([Job, Quote])
+                      .safely_constantize([Job, LineItemGroup])
                       .find(line_item.line_itemable_id)
     else
-      klass = [Job, Quote].detect { |li| params["#{li.name.underscore}_id"] }
+      klass = [Job, LineItemGroup].detect { |li| params["#{li.name.underscore}_id"] }
       return klass.find(params["#{klass.name.underscore}_id"])
     end
   end
