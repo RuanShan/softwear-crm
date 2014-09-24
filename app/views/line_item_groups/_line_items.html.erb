@@ -2,9 +2,9 @@
 
   <div class='box-info' style='background-color: #eeeeee;'>
 
-    <h3 class="line-item-group-title"><%= inline_field_tag line_item_group, :name, 'Name' %></h3>
+    <h3 class="line-item-group-title"><%= inline_field_tag line_item_group, :name, 'Line Items' %></h3>
     <p class="line-item-group-description">
-      Description: <%= inline_field_tag line_item_group, :description, 'Description' %>
+      Description: <%= inline_field_tag line_item_group, :description, 'Line items for the quote' %>
     </p>
 
     <%= form_for :line_item, method: :put, url: line_items_update_path, remote: true, builder: BatchFormBuilder do |f| %>
@@ -31,5 +31,16 @@
       </div>
 
     <% end %>
+
+    <div class="form-group box-info">
+      <div class="col-sm-4 col-xs-offset-4">
+        <%= link_to line_item_group_path(line_item_group),
+              class: 'btn btn-danger btn-lg btn-block delete-line-item-group-button',
+              id: "delete-line-item-group-#{line_item_group.id}", method: 'DELETE', remote: true do %>
+          <i class="fa fa-times-circle"></i> Delete Group
+        <% end %>
+      </div>
+    </div>
+
   </div>
 </div>

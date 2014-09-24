@@ -104,8 +104,6 @@ describe QuotesController, js: true, quote_spec: true do
 
     context 'with valid input' do
       it 'creates a new line_item, fires activity, and redirects' do
-        expect_any_instance_of(Quote).to receive_message_chain(:line_items, :new, :save)
-                                         .and_return true
         expect(controller).to receive(:fire_activity).once
         get :stage_quote, quote_id: quote.to_param, name: 'name', total_price: 4
         expect(response.status).to eq(302)
@@ -114,8 +112,6 @@ describe QuotesController, js: true, quote_spec: true do
 
     context 'with invalid input' do
       it 'flashes an error to the user and redirects' do
-        expect_any_instance_of(Quote).to receive_message_chain(:line_items, :new, :save)
-                                         .and_return(false)
         get :stage_quote, quote_id: quote.to_param, name: 'name', total_price: -50
         expect(flash[:error]).to eq 'The line item could not be added to the quote.'
         expect(response.status).to eq(302)

@@ -6,7 +6,7 @@ class QuotesController < InheritedResources::Base
   def new
     assign_new_quote_hash
     super do
-      @quote.line_items.build
+      @quote.line_item_groups.build.line_items.build
       @current_action = 'quotes#new'
     end
   end
@@ -63,10 +63,14 @@ class QuotesController < InheritedResources::Base
 
   def stage_quote
     @quote = Quote.find(params[:quote_id])
-    if @quote.line_items.new(name: params[:name],
-                          unit_price: params[:total_price],
-                          description: 'Canned Description',
-                          quantity: 1).save
+
+    group = @quote.line_item_groups.first
+    saved = group.line_items.new(name: params[:name],
+                         unit_price: params[:total_price],
+                         description: 'Canned Description',
+                         quantity: 1).save
+
+    if saved
       fire_activity(@quote, :added_line_item)
     else
       flash[:error] = 'The line item could not be added to the quote.'

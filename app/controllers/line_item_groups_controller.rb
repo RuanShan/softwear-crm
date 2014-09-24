@@ -2,6 +2,14 @@ class LineItemGroupsController < InheritedResources::Base
   belongs_to :quote, shallow: true
   respond_to :js
 
+  def index
+    super do |format|
+      format.html do
+        render partial: '_line_items', locals: { line_item_group: @line_item_group }
+      end
+    end
+  end
+
   def update
     super do |format|
       format.js

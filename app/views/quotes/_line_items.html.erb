@@ -1,12 +1,10 @@
 <h3>Editing <strong>Line Items</strong></h3>
 
-<%= form_for :line_item, builder: BatchFormBuilder, method: :put, remote: true, url: line_items_update_path do |_f| %>
-
+<div id='line-item-groups'>
   <% quote.line_item_groups.each do |group| %>
     <%= render 'line_item_groups/line_items', line_item_group: group %> 
   <% end %>
-
-<% end %>
+</div>
 
 <div class="form-group box-info">
   <div class="col-sm-4 col-xs-offset-4">

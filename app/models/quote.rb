@@ -10,9 +10,9 @@ class Quote < ActiveRecord::Base
   belongs_to :salesperson, class_name: User
   belongs_to :store
   has_many :line_item_groups
-  has_many :line_items, through: :line_item_groups
+  # has_many :line_items, through: :line_item_groups
 
-  accepts_nested_attributes_for :line_items, allow_destroy: true
+  # accepts_nested_attributes_for :line_items, allow_destroy: true
 
   validates :email, presence: true, email: true
   validates :estimated_delivery_date, presence: true
@@ -116,12 +116,28 @@ class Quote < ActiveRecord::Base
     end
   end
 
+  def line_items
+    line_item_groups.flat_map(&:line_items).tap do |groups|
+      groups.send(
+        :define_singleton_method,
+        :klass, -> { LineItem }
+      )
+    end
+  end
+
+  def line_items_attributes=(attributes)
+    group = @quote.line_item_groups.first
+    line_item = group.line_items.first || group.line_items.new
+    
+    line_item.update_attributes(attributes)
+  end
+
   def full_name
     "#{first_name} #{last_name}"
   end
 
   def has_line_items?
-    errors.add(:base, 'Quote must have at least one line item') if self.line_items.blank?
+    errors.add(:base, 'Quote must have at least one line item') if self.line_items.empty?
   end
 
   def line_items_subtotal

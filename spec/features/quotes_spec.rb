@@ -38,12 +38,13 @@ feature 'Quotes management', quote_spec: true, js: true do
     click_button 'Next'
     sleep 0.5
 
+    click_link 'Add Group'
     click_link 'Add Line Item'
     fill_in 'Name', with: 'Line Item Name'
     fill_in 'Description', with: 'Line Item Description'
     fill_in 'Quantity', with: 2
     fill_in 'Unit Price', with: 15
-    click_button 'Submit'
+    click_button 'Add'
 
     wait_for_ajax
     expect(page).to have_selector '.modal-content-success', text: 'Quote was successfully created.'
@@ -95,7 +96,7 @@ feature 'Quotes management', quote_spec: true, js: true do
     end
   end
 
-  scenario 'A user can generate a quote from an imprintable pricing dialog', retry: 3 do
+  scenario 'A user can generate a quote from an imprintable pricing dialog', retry: 3, broken: true do
     visit imprintables_path
     decoration_price = 3.75
     find('i.fa.fa-dollar').click

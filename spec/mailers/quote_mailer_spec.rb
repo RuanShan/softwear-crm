@@ -20,7 +20,7 @@ describe QuoteMailer, quote_spec: true do
         salesperson_id: user.id,
         store_id: store.id,
         shipping: 14.50,
-        line_items: [build_stubbed(:non_imprintable_line_item)]
+        line_item_groups: [build_stubbed(:line_item_group_with_line_items)]
     )
     hash = {
         quote: quote,
