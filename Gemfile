@@ -72,6 +72,9 @@ group :development do
   gem 'better_errors', '>= 0.3.2'
   gem 'binding_of_caller'
   gem 'mailcatcher'
+end
+
+group :development, :test do
   gem 'byebug'
 end
 
@@ -89,7 +92,6 @@ group :test do
   gem 'email_spec'
   # for accessing session object in integration tests
   gem 'rack_session_access'
-  gem 'byebug'
 end
 
 gem 'inherited_resources'

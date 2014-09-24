@@ -1,3 +1,10 @@
 <div class='box-info line-items-container'>
-hey
+  <h3 class="line-item-group-title"><%= inline_field_tag line_item_group, :name, 'Name' %></h3>
+  <p class="line-item-group-description">
+    Description: <%= inline_field_tag line_item_group, :description, 'Description' %>
+  </p>
+
+  <%= form_for :line_item, method: :put, url: line_items_update_path, remote: true, builder: BatchFormBuilder do |f| %>
+
+  <% end %>
 </div>

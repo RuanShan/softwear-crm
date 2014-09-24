@@ -1,24 +1,19 @@
 <h3>Editing <strong>Line Items</strong></h3>
 
-<%= form_for :line_item, builder: BatchFormBuilder, method: :put, remote: true,
-             url: line_items_update_path do |_f| %>
+<%= form_for :line_item, builder: BatchFormBuilder, method: :put, remote: true, url: line_items_update_path do |_f| %>
 
-  <div id="replaceable">
-    <%= render 'line_items/standard_view', line_items: quote.standard_line_items %>
-  </div>
-
-  <%= quote.line_item_groups.each do |group| %>
+  <% quote.line_item_groups.each do |group| %>
     <%= render 'line_item_groups/line_items', line_item_group: group %> 
   <% end %>
 
-  <div class="form-group box-info">
-    <div class="col-sm-4 col-xs-offset-4">
-
-      <%= link_to quote_line_item_groups_path(quote), remote: true, class: 'btn btn-info' do %>
-        <i class="fa fa-list-alt"></i> Add Group
-      <% end %>
-
-    </div>
-  </div>
-
 <% end %>
+
+<div class="form-group box-info">
+  <div class="col-sm-4 col-xs-offset-4">
+
+    <%= button_to quote_line_item_groups_path(quote), remote: true, class: 'btn btn-info' do %>
+      <i class="fa fa-list-alt"></i> Add Group
+    <% end %>
+
+  </div>
+</div>
