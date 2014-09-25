@@ -8,8 +8,12 @@ class ImprintablesController < InheritedResources::Base
   end
 
   def new
-    @instance_hash = {}
-    @instance_hash[:model_collection_hash] = Imprintable.set_model_collection_hash
+    initialize_instance_hash
+    super
+  end
+
+  def create
+    initialize_instance_hash
     super
   end
 
@@ -36,8 +40,7 @@ class ImprintablesController < InheritedResources::Base
 
       success.html { redirect_to edit_imprintable_path params[:id] }
       failure.html do
-        @instance_hash = {}
-        @instance_hash[:model_collection_hash] = Imprintable.set_model_collection_hash
+        initialize_instance_hash
         @instance_hash[:variants_hash] = set_variants_hash
         render :edit
       end
@@ -55,8 +58,7 @@ class ImprintablesController < InheritedResources::Base
   end
 
   def edit
-    @instance_hash = {}
-    @instance_hash[:model_collection_hash] = Imprintable.set_model_collection_hash
+    initialize_instance_hash
     super do
       @instance_hash[:variants_hash] = set_variants_hash
     end
@@ -93,6 +95,12 @@ class ImprintablesController < InheritedResources::Base
   end
 
   protected
+
+  def initialize_instance_hash
+    @instance_hash = {}
+    @instance_hash[:model_collection_hash] = Imprintable.set_model_collection_hash
+  end
+
 
   def set_current_action
     @current_action = 'imprintables'
