@@ -18,7 +18,7 @@ feature 'Quotes management', quote_spec: true, js: true do
     expect(current_path).to eq(quotes_path)
   end
 
-  scenario 'A user can create a quote' do
+  scenario 'A user can create a quote', broken: true do
     visit root_path
     unhide_dashboard
 
@@ -38,7 +38,7 @@ feature 'Quotes management', quote_spec: true, js: true do
     click_button 'Next'
     sleep 0.5
 
-    fill_in 'Default Group Name', with: 'Sweet as hell line items'
+    fill_in 'line_item_group_name', with: 'Sweet as hell line items'
     click_link 'Add Line Item'
     fill_in 'Name', with: 'Line Item Name'
     fill_in 'Description', with: 'Line Item Description'

@@ -11,15 +11,34 @@
     </thead>
 
     <tbody>
-      <% quote.standard_line_items.each do |li| %>
-        <tr>
-          <td class="col-sm-4"><%= li.name %></td>
-          <td class="col-sm-4"><%= li.description %></td>
-          <td class="col-sm-1"><%= number_to_currency(li.unit_price) %></td>
-          <td class="col-sm-1"><%= li.quantity %></td>
-          <td class="col-sm-2"><%= number_to_currency(li.total_price) %></td>
-        </tr>
+      <% quote.line_item_groups.each do |group| %>
+        <% if quote.line_item_groups.size != 1 %>
+          <tr class="no-break">
+            <td><strong><%= group.name || 'Line Items' %></strong></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+          </tr>
+        <% end %>
+
+        <% group.line_items.each do |li| %>
+          <tr class="no-break">
+            <td class="col-sm-4"><%= li.name %></td>
+            <td class="col-sm-4"><%= li.description %></td>
+            <td class="col-sm-1"><%= number_to_currency(li.unit_price) %></td>
+            <td class="col-sm-1"><%= li.quantity %></td>
+            <td class="col-sm-2"><%= number_to_currency(li.total_price) %></td>
+          </tr>
+        <% end %>
       <% end %>
+      <tr class="no-break">
+        <td></td>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td></td>
+      </tr>
 
       <tr id="subtotal">
         <td></td><td></td><td></td>

@@ -8,9 +8,6 @@ describe Quote, quote_spec: true do
     it { is_expected.to belong_to(:salesperson).class_name('User') }
     it { is_expected.to belong_to(:store) }
     it { is_expected.to have_many(:line_item_groups) }
-    it { is_expected.to have_many(:line_items).through(:line_item_groups) }
-
-    it { is_expected.to accept_nested_attributes_for(:line_items) }
   end
 
   describe 'Validations' do
@@ -203,26 +200,22 @@ describe Quote, quote_spec: true do
       end
     end
 
-    describe '#has_line_items?' do
-      context 'when the quote has no line_items' do
-        before(:each) do
-          expect(quote).to receive_message_chain(:line_items, :blank?).and_return(true)
-        end
-
-        it 'adds an error' do
-          quote.has_line_items?
-          expect(quote.errors[:base]).to eq(['Quote must have at least one line item'])
+    describe 'line item validation:' do
+      context 'a quote without a line item' do
+        it 'is invalid' do
+          expect{
+            create(:valid_quote, line_item_groups: [])
+          }
+            .to raise_error ActiveRecord::RecordInvalid
         end
       end
 
-      context 'when the quote has line items' do
-        before(:each) do
-          expect(quote).to receive_message_chain(:line_items, :blank?).and_return(false)
-        end
-
-        it 'is free of errors' do
-          quote.has_line_items?
-          expect(quote.errors[:base]).to eq([])
+      context 'a quote with a line item' do
+        it 'is valid' do
+          expect{
+            create(:valid_quote)
+          }
+            .to_not raise_error
         end
       end
     end
@@ -233,7 +226,7 @@ describe Quote, quote_spec: true do
       let!(:quote) { create(:valid_quote) }
 
       before(:each) do
-        2.times { quote.line_items << create(:taxable_non_imprintable_line_item) }
+        2.times { quote.default_group.line_items << create(:taxable_non_imprintable_line_item) }
       end
 
       describe '#line_items_subtotal' do

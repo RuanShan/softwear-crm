@@ -41,6 +41,11 @@ class QuotesController < InheritedResources::Base
   def create
     assign_new_quote_hash
     super do
+      if params[:line_item_group_name] && @quote.valid?
+        @quote
+          .default_group
+          .update_attributes(name: params[:line_item_group_name])
+      end
       @quote.create_freshdesk_ticket if Rails.env.production?
     end
   end
@@ -106,7 +111,14 @@ class QuotesController < InheritedResources::Base
 
   def assign_new_quote_hash
     @new_quote_hash = {}
-    @new_quote_hash[:price_information] = params[:price_information] if params[:price_information]
+
+    assign = lambda do |key|
+      @new_quote_hash[key] = params[key] if params[key]
+    end
+
+    assign[:price_information]
+    assign[:line_item_group_name]
+
     if defined? params[:quote][:line_items_attributes]
       @new_quote_hash[:quote_li_attributes] = params[:quote][:line_items_attributes]
     end

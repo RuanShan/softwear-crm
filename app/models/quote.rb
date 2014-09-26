@@ -177,17 +177,6 @@ class Quote < ActiveRecord::Base
     0.06
   end
 
-  private
-
-  def create_default_group
-    return unless line_item_groups.empty?
-
-    line_item_groups.create(
-      name:        'Line Items',
-      description: 'List of line items in the quote'
-    )
-  end
-
   def default_group
     line_item_groups.first ||
     line_item_groups.create(
@@ -196,10 +185,12 @@ class Quote < ActiveRecord::Base
     )
   end
 
+  private
+
   def prepare_nested_line_items_attributes
     no_attributes = @line_item_attributes.nil? || @line_item_attributes.empty?
     if no_attributes && line_items.empty?
-      errors.add(:line_items, 'Must have at least one line item')
+      errors.add(:must, 'have at least one line item')
       return false
     end
     return if no_attributes

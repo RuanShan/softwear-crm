@@ -48,6 +48,9 @@
     <div class="col-sm-6">
       <div class="row">
         <div class="form-group">
+          <%= label_tag :line_item_group_name, 'Group Name:', id: 'group-name' %>
+          <%= text_field_tag :line_item_group_name, new_quote_hash[:line_item_group_name] || 'Line Items' %>
+
           <% if new_quote_hash[:price_information] %>
             <% new_quote_hash[:price_information].each_with_index do |hash| %>
               <%= add_lis_from_pricing_hash(f, :line_items, hash) %>
