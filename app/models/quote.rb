@@ -24,8 +24,7 @@ class Quote < ActiveRecord::Base
   validates :valid_until_date, presence: true
   validates :shipping, price: true
 
-  after_create :create_default_group
-  validate :prepare_nested_line_items_attributes, if: :has_line_items?
+  validate :prepare_nested_line_items_attributes
   after_save :save_nested_line_items_attributes
 
   def all_activities
@@ -189,25 +188,39 @@ class Quote < ActiveRecord::Base
     )
   end
 
+  def default_group
+    line_item_groups.first ||
+    line_item_groups.create(
+      name: @default_group_name || 'Line Items',
+      description: 'Initial of line items in the quote'
+    )
+  end
+
   def prepare_nested_line_items_attributes
-    return unless @line_item_attributes && !@line_item_attributes.empty?
+    no_attributes = @line_item_attributes.nil? || @line_item_attributes.empty?
+    if no_attributes && line_items.empty?
+      errors.add(:line_items, 'Must have at least one line item')
+      return false
+    end
+    return if no_attributes
 
     @unsaved_line_items = @line_item_attributes.map do |attrs|
-      next if attrs.delete('_destroy') == 'true'
-      line_item = LineItem.new(attrs)
-      next line_item if line_item.valid?
+        next if attrs.delete('_destroy') == 'true'
+        line_item = LineItem.new(attrs)
+        next line_item if line_item.valid?
 
-      errors.add(:line_items, line_item.errors.full_messages.join(', '))
-      nil
-    end
-      .compact
+        errors.add(:line_items, line_item.errors.full_messages.join(', '))
+        nil
+      end
+        .compact
+
     nil
   end
 
   def save_nested_line_items_attributes
-    return unless @line_item_attributes && !@line_item_attributes.empty?
+    return if @unsaved_line_items.nil? || @unsaved_line_items.empty?
 
-    @unsaved_line_items.each(&:save)
+    @unsaved_line_items.each(&default_group.line_items.method(:<<))
     @unsaved_line_items = nil
   end
 end
