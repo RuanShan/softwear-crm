@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140922193957) do
+ActiveRecord::Schema.define(version: 20140926183841) do
 
   create_table "activities", force: true do |t|
     t.integer  "trackable_id"
@@ -345,6 +345,17 @@ ActiveRecord::Schema.define(version: 20140922193957) do
     t.datetime "approve_by"
     t.datetime "approved_at"
     t.datetime "deleted_at"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "quote_requests", force: true do |t|
+    t.string   "name"
+    t.string   "email"
+    t.decimal  "approx_quantity", precision: 10, scale: 0
+    t.datetime "date_needed"
+    t.string   "description"
+    t.string   "source"
     t.datetime "created_at"
     t.datetime "updated_at"
   end

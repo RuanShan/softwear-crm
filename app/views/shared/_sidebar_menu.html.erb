@@ -34,6 +34,10 @@
         <%= content_tag :li, class: ('active' if current_action == 'quotes#new') do %>
           <%= link_to new_quote_path, id: 'new_quote_link' do %><i class="fa fa-angle-right"></i> New <% end %>
         <% end %>
+
+        <%= content_tag :li, class: ('active' if current_action == 'quote_requests#index') do %>
+          <%= link_to quote_requests_path, id: 'quote_requests_link' do %><i class="fa fa-angle-right"></i> Quote Requests<% end %>
+        <% end %>
       <% end %>
     <% end %>
 

@@ -8,8 +8,11 @@ describe 'quote_requests/index.html.erb', quote_request_spec: true, story_78: tr
     render
 
     quote_requests.each do |quote_request|
-      expect(rendered).to contain quote_request.name
-      expect(rendered).to contain quote_request.email
+      expect(rendered).to have_content quote_request.name
+      expect(rendered).to have_content quote_request.email
+      expect(rendered).to have_content quote_request.date_needed.month
+      expect(rendered).to have_content quote_request.date_needed.day
+      expect(rendered).to have_content quote_request.date_needed.year
     end
   end
 end

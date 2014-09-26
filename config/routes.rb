@@ -42,6 +42,8 @@ CrmSoftwearcrmCom::Application.routes.draw do
     end
   end
 
+  resources :quote_requests, only: [:show, :index]
+
   get '/logout' => 'users#logout'
   
   scope 'configuration' do
