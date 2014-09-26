@@ -9,22 +9,25 @@ class Quote < ActiveRecord::Base
 
   belongs_to :salesperson, class_name: User
   belongs_to :store
-  has_many :line_items, as: :line_itemable
+  has_many :line_item_groups
+  # has_many :line_items, through: :line_item_groups
 
-  accepts_nested_attributes_for :line_items, allow_destroy: true
+  # accepts_nested_attributes_for :line_items, allow_destroy: true
 
   validates :email, presence: true, email: true
   validates :estimated_delivery_date, presence: true
   validates :first_name, presence: true
-  validate :has_line_items?
+  # validate :has_line_items?
   validates :last_name, presence: true
   validates :salesperson, presence: true
   validates :store, presence: true
   validates :valid_until_date, presence: true
   validates :shipping, price: true
 
+  validate :prepare_nested_line_items_attributes
+  after_save :save_nested_line_items_attributes
+
   def all_activities
-    # TODO: use string literal? also general style
     PublicActivity::Activity.where( '
       (
         activities.recipient_type = ? AND activities.recipient_id = ?
@@ -116,12 +119,26 @@ class Quote < ActiveRecord::Base
     end
   end
 
+  def line_items
+    line_item_groups.flat_map(&:line_items).tap do |groups|
+      groups.send(
+        :define_singleton_method,
+        :klass, -> { LineItem }
+      )
+    end
+  end
+
+  def line_items_attributes=(attributes)
+    @line_item_attributes ||= []
+    @line_item_attributes += attributes.values
+  end
+
   def full_name
     "#{first_name} #{last_name}"
   end
 
   def has_line_items?
-    errors.add(:base, 'Quote must have at least one line item') if self.line_items.blank?
+    line_items.empty?
   end
 
   def line_items_subtotal
@@ -154,11 +171,47 @@ class Quote < ActiveRecord::Base
     connection.request(request)
   end
 
-  def standard_line_items
-    LineItem.non_imprintable.where(line_itemable_id: id, line_itemable_type: 'Quote')
-  end
+  alias_method :standard_line_items, :line_items
 
   def tax
     0.06
+  end
+
+  def default_group
+    line_item_groups.first ||
+    line_item_groups.create(
+      name: @default_group_name || 'Line Items',
+      description: 'Initial of line items in the quote'
+    )
+  end
+
+  private
+
+  def prepare_nested_line_items_attributes
+    no_attributes = @line_item_attributes.nil? || @line_item_attributes.empty?
+    if no_attributes && line_items.empty?
+      errors.add(:must, 'have at least one line item')
+      return false
+    end
+    return if no_attributes
+
+    @unsaved_line_items = @line_item_attributes.map do |attrs|
+        next if attrs.delete('_destroy') == 'true'
+        line_item = LineItem.new(attrs)
+        next line_item if line_item.valid?
+
+        errors.add(:line_items, line_item.errors.full_messages.join(', '))
+        nil
+      end
+        .compact
+
+    nil
+  end
+
+  def save_nested_line_items_attributes
+    return if @unsaved_line_items.nil? || @unsaved_line_items.empty?
+
+    @unsaved_line_items.each(&default_group.line_items.method(:<<))
+    @unsaved_line_items = nil
   end
 end

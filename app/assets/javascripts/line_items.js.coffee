@@ -1,5 +1,5 @@
 @initializeLineItemModal = ($lineItemModal) ->
-  $currentFormDiv = null
+  $currentFormDiv = $('#li-standard-form')
   currentForm = -> $currentFormDiv.find('form')
 
   $('#lineItemModal').data('current-form-div', $currentFormDiv);

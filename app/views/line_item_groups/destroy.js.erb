@@ -1,0 +1,11 @@
+disableFor('#delete-line-item-group-<%= @line_item_group.id %>', 1000);
+
+<% if @line_item_group.destroyed? %>
+
+  $("#line-item-group-<%= @line_item_group.id %>").fadeOut(500, updateOrderTimeline);
+
+<% else %>
+  
+  errorModal("<%= j @line_item_group.errors.messages[:deletion_status].join(', ') %>");
+
+<% end %>

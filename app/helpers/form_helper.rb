@@ -95,11 +95,12 @@ module FormHelper
     add_class options, 'inline-field'
     # TODO change resource- to data-resource for validity
     options.merge! ({
-          :contenteditable   => true,
-          'resource-name'    => object.class.name.underscore,
-          'resource-plural'  => object.class.name.underscore.pluralize,
-          'resource-id'      => object.id,
-          'resource-method'  => method
+          :contenteditable          => true,
+          'resource-name'           => object.class.name.underscore,
+          'resource-plural'         => object.class.name.underscore.pluralize,
+          'resource-id'             => object.id,
+          'resource-method'         => method,
+          'data-authenticity_token' => form_authenticity_token
         })
 
     content = object.send(method) || default

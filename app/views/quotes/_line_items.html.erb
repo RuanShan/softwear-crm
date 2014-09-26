@@ -1,30 +1,17 @@
 <h3>Editing <strong>Line Items</strong></h3>
 
-<%= form_for :line_item, builder: BatchFormBuilder, method: :put, remote: true,
-             url: line_items_update_path do |_f| %>
+<div id='line-item-groups'>
+  <% quote.line_item_groups.each do |group| %>
+    <%= render 'line_item_groups/line_items', line_item_group: group %> 
+  <% end %>
+</div>
 
-  <div id="replaceable">
-    <%= render 'line_items/standard_view', line_items: quote.standard_line_items %>
+<div class="form-group box-info">
+  <div class="col-sm-4 col-xs-offset-4">
+
+    <%= button_to quote_line_item_groups_path(quote), remote: true, class: 'btn btn-info' do %>
+      <i class="fa fa-list-alt"></i> Add Group
+    <% end %>
+
   </div>
-
-  <div class="form-group box-info">
-    <div class="col-sm-3">
-
-      <%= link_to new_quote_line_item_path(quote),
-                  class: 'btn btn-info btn-lg btn-block add-line-item',
-                  id: "add-line-item-for-#{quote.id}", remote: true,
-                  data: { params: { standard_only: true }.to_param } do %>
-        <i class="fa fa-list-alt"></i> Add Line Item
-      <% end %>
-
-    </div>
-    <div class="col-sm-3 col-xs-offset-6">
-
-      <%= button_tag class: 'btn btn-info btn-lg btn-block update-line-items' do %>
-        <i class="fa fa-list-alt"></i> Update Line Items
-      <% end %>
-
-    </div>
-  </div>
-
-<% end %>
+</div>
