@@ -97,5 +97,6 @@ CrmSoftwearcrmCom::Application.routes.draw do
     resources 'imprintables'
     resources 'colors'
     resources 'sizes'
+    resources 'quote_requests', only: [:create, :index]
   end
 end
