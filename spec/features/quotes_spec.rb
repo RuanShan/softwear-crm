@@ -38,13 +38,13 @@ feature 'Quotes management', quote_spec: true, js: true do
     click_button 'Next'
     sleep 0.5
 
-    click_link 'Add Group'
+    fill_in 'Line Items Title', with: 'Sweet as hell line items'
     click_link 'Add Line Item'
     fill_in 'Name', with: 'Line Item Name'
     fill_in 'Description', with: 'Line Item Description'
     fill_in 'Quantity', with: 2
     fill_in 'Unit Price', with: 15
-    click_button 'Add'
+    click_button 'Submit'
 
     wait_for_ajax
     expect(page).to have_selector '.modal-content-success', text: 'Quote was successfully created.'
@@ -96,7 +96,7 @@ feature 'Quotes management', quote_spec: true, js: true do
     end
   end
 
-  scenario 'A user can generate a quote from an imprintable pricing dialog', retry: 3, broken: true do
+  scenario 'A user can generate a quote from an imprintable pricing dialog', retry: 2 do
     visit imprintables_path
     decoration_price = 3.75
     find('i.fa.fa-dollar').click
@@ -144,7 +144,7 @@ feature 'Quotes management', quote_spec: true, js: true do
     expect(page).to have_content(imprintable.name)
   end
 
-  scenario 'Inputting bad data for a line item doesn\'t remove all line items' do
+  scenario "Inputting bad data for a line item doesn't remove all line items", broken: true do
     visit new_quote_path
     fill_in 'Email', with: 'test@testing.com'
     fill_in 'First Name', with: 'Capy'

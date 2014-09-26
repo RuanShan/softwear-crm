@@ -17,12 +17,16 @@ class Quote < ActiveRecord::Base
   validates :email, presence: true, email: true
   validates :estimated_delivery_date, presence: true
   validates :first_name, presence: true
-  validate :has_line_items?
+  # validate :has_line_items?
   validates :last_name, presence: true
   validates :salesperson, presence: true
   validates :store, presence: true
   validates :valid_until_date, presence: true
   validates :shipping, price: true
+
+  after_create :create_default_group
+  validate :prepare_nested_line_items_attributes, if: :has_line_items?
+  after_save :save_nested_line_items_attributes
 
   def all_activities
     PublicActivity::Activity.where( '
@@ -126,10 +130,8 @@ class Quote < ActiveRecord::Base
   end
 
   def line_items_attributes=(attributes)
-    group = @quote.line_item_groups.first
-    line_item = group.line_items.first || group.line_items.new
-    
-    line_item.update_attributes(attributes)
+    @line_item_attributes ||= []
+    @line_item_attributes += attributes.values
   end
 
   def full_name
@@ -137,7 +139,7 @@ class Quote < ActiveRecord::Base
   end
 
   def has_line_items?
-    errors.add(:base, 'Quote must have at least one line item') if self.line_items.empty?
+    line_items.empty?
   end
 
   def line_items_subtotal
@@ -170,11 +172,42 @@ class Quote < ActiveRecord::Base
     connection.request(request)
   end
 
-  def standard_line_items
-    LineItem.non_imprintable.where(line_itemable_id: id, line_itemable_type: 'Quote')
-  end
+  alias_method :standard_line_items, :line_items
 
   def tax
     0.06
+  end
+
+  private
+
+  def create_default_group
+    return unless line_item_groups.empty?
+
+    line_item_groups.create(
+      name:        'Line Items',
+      description: 'List of line items in the quote'
+    )
+  end
+
+  def prepare_nested_line_items_attributes
+    return unless @line_item_attributes && !@line_item_attributes.empty?
+
+    @unsaved_line_items = @line_item_attributes.map do |attrs|
+      next if attrs.delete('_destroy') == 'true'
+      line_item = LineItem.new(attrs)
+      next line_item if line_item.valid?
+
+      errors.add(:line_items, line_item.errors.full_messages.join(', '))
+      nil
+    end
+      .compact
+    nil
+  end
+
+  def save_nested_line_items_attributes
+    return unless @line_item_attributes && !@line_item_attributes.empty?
+
+    @unsaved_line_items.each(&:save)
+    @unsaved_line_items = nil
   end
 end
