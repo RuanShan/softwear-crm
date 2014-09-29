@@ -148,4 +148,31 @@ end
 
     CSV.from_arrays csv, headers: %w(Number Name), write_headers: true
   end
+
+  def generate_jobs(job_attributes)
+    job_attributes.each do |attributes|
+      job = jobs.create(name: attributes[:job_name])
+      imprintable_id = attributes[:imprintable]
+      
+      attributes[:colors].each do |color_attributes|
+        color_id = color_attributes[:color]
+
+        color_attributes[:sizes].each do |size_attributes|
+          size_id = size_attributes[:size]
+
+          variant = ImprintableVariant.find_by(
+            imprintable_id: imprintable_id,
+            color_id:       color_id,
+            size_id:        size_id
+          )
+
+          job.line_items.create(
+            imprintable_variant_id: variant.id,
+            unit_price: variant.imprintable.base_price || 0,
+            quantity: size_attributes[:quantity],
+          )
+        end
+      end
+    end
+  end
 end

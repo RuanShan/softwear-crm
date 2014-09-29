@@ -3,7 +3,7 @@ require 'spec_helper'
 describe FBA, fba_spec: true, story_103: true do
   describe '.parse_packing_slip' do
     let!(:packing_slip) do
-      File.new("#{Rails.root}spec/fixtures/fba/TestPackingSlip.txt")
+      File.new("#{Rails.root}/spec/fixtures/fba/TestPackingSlip.txt")
     end
 
     context 'when the appropritate records exist' do
