@@ -80,6 +80,14 @@ feature 'Quotes management', quote_spec: true, js: true do
       expect(current_path).to eq(edit_quote_path quote.id)
     end
 
+    scenario 'CC\'s current salesperson by default', new: true do
+      visit edit_quote_path quote.id
+      find('a[href="#actions"]').click
+      click_link 'Email Quote'
+      sleep 0.5
+      expect(page).to have_selector 'specific cc selector'
+    end
+
     feature 'email recipients enforces proper formatting' do
       scenario 'no email is sent with improper formatting' do
         visit edit_quote_path quote.id
