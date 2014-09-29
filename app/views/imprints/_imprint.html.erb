@@ -24,9 +24,27 @@
       <div class="form-group">
         <%= label_tag :imprint_method %>
         <%= select_tag :imprint_method,
-                       options_from_collection_for_select(ImprintMethod.all, :id,
-                                                          :name, local_assigns[:imprint_method].try(:id)),
+                       options_from_collection_for_select(
+                         ImprintMethod.all,
+                         :id,
+                         :name,
+                         local_assigns[:imprint_method].try(:id)
+                       ),
+
                        class: 'form-control js-imprint-method-select' %>
+      </div>
+
+      <div class="form-group checkbox-container">
+        <%= label_tag "Name/Number Print?" %>
+
+        <!-- TODO turn this into a helper function, perhaps -->
+        <% checked = local_assigns[:imprint].try(:has_name_number) ? true : false %>
+        <%= hidden_field_tag select_field_name_for.(:has_name_number), '0' %>
+        <%= check_box_tag select_field_name_for.(:has_name_number), '1', checked, class: 'js-imprint-has-name-number' %>
+      </div>
+
+      <div class='js-imprint-name-number-fields' style='display: <%= local_assigns[:imprint].try(:has_name_number) ? "block" : "none" %>;'>
+        <%= render 'imprints/name_number_fields', imprint: local_assigns[:imprint] %>
       </div>
 
       <div class="full text-right">

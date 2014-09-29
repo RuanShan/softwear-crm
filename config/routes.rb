@@ -63,6 +63,10 @@ CrmSoftwearcrmCom::Application.routes.draw do
     end
 
     resources :jobs, only: [:create, :update, :destroy, :show], shallow: true do
+      member do
+        get 'name_number_csv', to: 'jobs#name_number_csv', as: :name_number_csv_from
+      end
+
       resources :line_items, except: [:update] do
         get :form_partial, on: :member
       end

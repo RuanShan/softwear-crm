@@ -1,3 +1,6 @@
+class BatchUpdateError < StandardError
+end
+
 module BatchUpdate
   extend ActiveSupport::Concern
 
@@ -15,9 +18,12 @@ module BatchUpdate
 
     resource_attributes = params[resource_name].to_hash
 
-    update_positives(resource_attributes)
+    update_positives(resource_attributes, options[:assignment])
     if options[:create_negatives]
-      create_from_negatives(resource_attributes, options[:parent])
+      create_from_negatives(resource_attributes,
+        options[:parent],
+        options[:assignment]
+      )
     end
 
     respond_to(&block) if block_given?
@@ -25,7 +31,9 @@ module BatchUpdate
 
   private
 
-  def update_positives(resource_attributes)
+  def update_positives(resource_attributes, assignment = nil)
+    resource_attributes = sanitize_booleans(resource_attributes)
+
     updated_resources = resource_attributes
       .keys
       .select { |k| k.to_i >= 0 }
@@ -36,7 +44,7 @@ module BatchUpdate
     updated_resources.each do |resource|
       attributes = resource_attributes[resource.id.to_s]
 
-      attributes.each { |key, value| resource.send "#{key}=", value }
+      set_attributes(resource, attributes, with: assignment)
 
       if resource.changed?
         resource.save
@@ -47,14 +55,21 @@ module BatchUpdate
     instance_variable_set("@#{self.class.controller_name}", assigned)
   end
 
-  def create_from_negatives(resource_attributes, parent = nil)
+  def create_from_negatives(resource_attributes, parent = nil, assignment = nil)
     resource_attributes = inject_parent_id(resource_attributes, parent)
+    resource_attributes = sanitize_booleans(resource_attributes)
 
     created_resources = resource_attributes
       .keys
       .select { |k| k.to_i < 0 }
       .map do |k|
-          NewRecord.new(resource_class.create(resource_attributes[k]), k)
+          resource = resource_class.new
+          attributes = resource_attributes[k]
+
+          set_attributes(resource, attributes, with: assignment)
+          resource.save
+
+          NewRecord.new(resource, k)
         end
 
     instance_variable_set(
@@ -64,12 +79,39 @@ module BatchUpdate
     created_resources
   end
 
+  def set_attributes(resource, attributes, options = {})
+    assignment = options[:with]
+    
+    if assignment
+      unless assignment.respond_to?(:call)
+        raise BatchUpdateError, "Can't #{assignment} is not callable."
+      end
+      return assignment.call(resource, attributes)
+    end
+
+    attributes.each do |key, value|
+      resource.send("#{key}=", value) if resource.respond_to?("#{key}=")
+    end
+  end
+
   def inject_parent_id(resource_attributes, parent)
     return resource_attributes unless parent
 
     resource_attributes.dup.tap do |all_attributes|
       all_attributes.values.each do |attributes|
         attributes.merge!(record_id(parent) => parent.id)
+      end
+    end
+  end
+
+  def sanitize_booleans(resource_attributes)
+    resource_attributes.dup.tap do |all_attributes|
+      all_attributes.values.each do |attributes|
+        attributes.each do |key, value|
+          if resource_class.columns_hash[key].try(:type) == :boolean
+            attributes[key] = value == '1' || value == true
+          end
+        end
       end
     end
   end

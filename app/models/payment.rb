@@ -1,8 +1,7 @@
 class Payment < ActiveRecord::Base
-  include TrackingHelpers
+  include PublicActivity::Common
 
   acts_as_paranoid
-  tracked by_current_user
 
   default_scope { order(:created_at) }
 

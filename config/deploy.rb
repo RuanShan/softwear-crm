@@ -68,45 +68,23 @@ namespace :deploy do
 end
 
 namespace :solr do
+  rvm = '[[ -s "$HOME/.rvm/scripts/rvm" ]] && . "$HOME/.rvm/scripts/rvm"'
 
-  %w[start stop].each do |command|
+  %i(start stop restart).each do |command|
     desc "#{command} solr"
-    task command do
+    task command, [:env] do |_cmd, args|
       on roles(:app) do
-        solr_pid = "#{shared_path}/pids/sunspot-solr.pid"
-        if command == "start" or (test "[ -f #{solr_pid} ]" and test "kill -0 $( cat #{solr_pid} )")
-          within current_path do
-            with rails_env: fetch(:rails_env, 'production') do
-              execute :bundle, 'exec', 'sunspot-solr', command, "--port=8983 --data-directory=#{shared_path}/solr/data --pid-dir=#{shared_path}/pids"
-            end
-          end
-        end
+        execute "cd #{current_path} && #{rvm} && bundle exec rake sunspot:solr:#{command} RAILS_ENV=#{args[:env] || 'production'}"
       end
     end
-  end
-
-  desc 'restart solr'
-  task :restart do
-    invoke 'solr:stop'
-    invoke 'solr:start'
   end
 
   after 'deploy:finished', 'solr:restart'
-
-  desc 'reindex the whole solr database'
-  task :reindex do
-    invoke 'solr:stop'
+  
+  desc 'reindex solr'
+  task :reindex, [:env] do |_cmd, args|
     on roles(:app) do
-      execute :rm, "-rf #{shared_path}/solr/data"
-    end
-    invoke 'solr:start'
-    on roles(:app) do
-      within current_path do
-        with rails_env: fetch(:rails_env, 'production') do
-          info 'Reindexing Solr database'
-          execute :bundle, 'exec', :rake, 'sunspot:solr:reindex[,,true]'
-        end
-      end
+      execute "cd #{current_path} && #{rvm} && yes | bundle exec rake sunspot:solr:reindex RAILS_ENV=#{args[:env] || 'production'}"
     end
   end
 end

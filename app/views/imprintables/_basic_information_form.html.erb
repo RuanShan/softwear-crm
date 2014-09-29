@@ -40,12 +40,12 @@
     <div class="form-group clearfix">
       <%= f.label :retail, class: 'col-sm-4 control-label' %>
       <div class="col-sm-8">
-        <div class="radio">
+        <div class="radio" id="retail_false">
           <%= f.radio_button :retail, false, value: false %>
           No
         </div>
 
-        <div class="radio">
+        <div class="radio" id="retail_true">
           <%= f.radio_button :retail, true, value: false %>
           Yes
         </div>

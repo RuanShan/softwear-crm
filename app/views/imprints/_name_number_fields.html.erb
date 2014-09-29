@@ -1,0 +1,10 @@
+<% field_name_for = method(:imprint_select_field_name_for).to_proc.curry.(local_assigns[:imprint]) %>
+
+<div class='form-group row'>
+  <div class='col-sm-9'>
+    <%= text_field_tag field_name_for.('name_number[name]'), local_assigns[:imprint].try(:name_number).try(:name), class: 'form-control js-imprint-name-number js-imprint-name-number-name' %>
+  </div>
+  <div class='col-sm-3'>
+    <%= number_field_tag field_name_for.('name_number[number]'), local_assigns[:imprint].try(:name_number).try(:number), class: 'form-control js-imprint-name-number js-imprint-name-number-number' %>
+  </div>
+</div>

@@ -11,20 +11,18 @@
 // about supported directives.
 
 //= require jquery/jquery.js
+//= require jquery-ui
 //= require jquery_ujs
 //= require slimscroll/jquery.slimscroll
 //= require summernote/summernote
 //= require summernote/lang-id
 //= require select/bootstrap-select
 //= require input/bootstrap.file-input
-//= require datepicker/bootstrap-datepicker
 //= require icheck/icheck
 //= require wizard/jquery.easyWizard
 //= require jquery/jquery.maskedinput.min.js
 //= require chosen-jquery
-//= require_tree .
 //= require bigdecimal/bigdecimal-all-last.min.js
-//= require bootstrap/bootstrap
 //= require_tree ../../../vendor/assets/javascripts/jquery/.
 //= require lanceng/lanceng
 //= require table-fixed-header/table-fixed-header
@@ -33,4 +31,7 @@
 //= require bootstrap-datetimepicker/bootstrap-datetimepicker
 //= require jquery.remotipart
 //= require sortable/sortable
-//= require jquery-ui
+//= require datepicker/bootstrap-datepicker
+//= require bootstrap/bootstrap
+
+//= require_tree .

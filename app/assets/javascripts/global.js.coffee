@@ -50,8 +50,10 @@ $(document).ajaxStop(->
       ['para', ['ul', 'ol', 'paragraph']],
       ['height', ['height']],
       ['table', ['table']],
-      ['view', ['fullscreen', 'codeview']]
-    ],
+      ['insert', ['link']],
+      ['view', ['fullscreen', 'codeview']],
+      ['help', ['help']]
+    ]
 
   $(".summernote").code "" if $(".note-editable").html() is "<p><br></p>"
 

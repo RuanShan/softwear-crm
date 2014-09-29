@@ -9,7 +9,7 @@
   imprintId = $imprintEntry.data('id')
 
   $printLocationContainer = $imprintContainer.find('.print-location-container')
-  $printLocationContainer.addClass 'editing-imprint'
+  # $printLocationContainer.addClass 'editing-imprint'
 
   ajax = $.ajax
     type: 'GET'
@@ -35,6 +35,8 @@
   $parent.find('.js-delete-imprint-button').click deleteImprint
   $parent.find('.js-print-location-select').change printLocationSelected
   $parent.find('.js-imprint-method-select').change imprintMethodSelected
+  $parent.find('.js-imprint-has-name-number').on 'ifClicked', imprintHasNameNumberChecked
+  $parent.find('.js-imprint-name-number').change nameNumberChanged
 
 @deleteImprint = ->
   $btn = $(this)
@@ -52,3 +54,22 @@
     ajax.done eval
 
   false
+
+@imprintHasNameNumberChecked = ->
+  # This is for some reason fired before the new check state is assigned...
+  checked = !this.checked
+
+  $this = $(this)
+
+  if typeof $this.data('original-value') is 'undefined' or $this.data('original-value') is null
+    # console.log 'ok first time set'
+    $this.data('original-value', this.checked)
+
+  method = if $this.data('original-value') == checked then 'removeClass' else 'addClass'
+  $this.parentsUntil('.checkbox-container').parent()[method] 'editing-imprint'
+
+  method = if checked then 'fadeIn' else 'fadeOut'
+  $this.closest('.checkbox-container').siblings('.js-imprint-name-number-fields')[method]()
+
+@nameNumberChanged = ->
+  $(this).addClass 'editing-imprint'

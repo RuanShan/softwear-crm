@@ -43,17 +43,36 @@ class ImprintsController < InheritedResources::Base
 
   def update
     @job = Job.find(params[:job_id])
-    batch_update(create_negatives: true, parent: @job) do |format|
+
+    batch_update(create_negatives: true,
+                 parent: @job,
+                 assignment: method(:assign_imprint_attributes)) do |format|
       format.js
     end
   end
 
   private
 
+  def assign_imprint_attributes(imprint, attrs)
+    name_number_attrs = attrs.delete('name_number')
+    if name_number_attrs# && attrs.to_a.include?(['has_name_number', true])
+      imprint.name_number_id ||= NameNumber.create.id
+      imprint.name_number.update_attributes(name_number_attrs)
+      imprint.updated_at = Time.now
+    end
+
+    attrs.each do |key, value|
+      imprint.send("#{key}=", value)
+    end
+  end
+
   def permitted_params
     params.permit(
       :job_id, :id,
-      imprint: [:print_location_id, :job_id]
+      imprint: [
+        :print_location_id, :job_id, :has_name_number,
+        name_number: [:name, :number]
+      ]
     )
   end
 end

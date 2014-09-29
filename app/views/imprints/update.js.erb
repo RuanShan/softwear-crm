@@ -1,9 +1,11 @@
+var handler;
 var shineEditingIn = function ($container) {
   $editing = $container.find('.editing-imprint');
-  
+
   if ($editing.length) {
     $editing.each(function() {
       $(this).removeClass('editing-imprint');
+      $(this).find('.js-imprint-has-name-number').removeData('original-value');
       shine($(this), true);
     });
   }
@@ -12,16 +14,16 @@ var shineEditingIn = function ($container) {
 <% @imprints.each do |imprint| %>
 
   var $container = $(".imprint-entry[data-id='<%= imprint.id %>']");
+  var $printLocation = $container.find('.print-location-container');
+  handler = errorHandlerFrom($printLocation, 'imprint', $printLocation, <%= imprint.id %>);
 
   <% if imprint.valid? %>    
 
+    handler.clear();
     shineEditingIn($container);
 
   <% else %>
 
-    $printLocation = $container.find('.print-location-container');
-
-    handler = errorHandlerFrom($printLocation, 'imprint', $printLocation, <%= imprint.id %>);
     handler.handleErrors(<%= imprint.errors.messages.to_json.html_safe %>);
 
   <% end %>
@@ -30,9 +32,12 @@ var shineEditingIn = function ($container) {
 <% @new_imprints.each do |new_imprint| %>
   
   var $container = $(".imprint-entry[data-id='<%= new_imprint.attributes_key %>']");
+  var $printLocation = $container.find('.print-location-container');
+  handler = errorHandlerFrom($printLocation, 'imprint', $printLocation, <%= new_imprint.attributes_key %>);
 
   <% if new_imprint.valid? %>
     
+    handler.clear();
     $container.attr('data-id', <%= new_imprint.id %>);
     $container.find('.js-print-location-select').attr(
       'name', "imprint[<%= new_imprint.id %>[print_location_id]]"
@@ -41,13 +46,14 @@ var shineEditingIn = function ($container) {
 
   <% else %>
     
-    $printLocation = $container.find('.print-location-container');
-
-    handler = errorHandlerFrom($printLocation, 'imprint', $printLocation, <%= new_imprint.attributes_key %>);
     handler.handleErrors(<%= new_imprint.errors.messages.to_json.html_safe %>);
 
   <% end %>
 
+<% end %>
+
+<% if @imprints.size + @new_imprints.size == 0 %>
+  // Nothing updated
 <% end %>
 
 <%= update_order_timeline(@job.order) %>

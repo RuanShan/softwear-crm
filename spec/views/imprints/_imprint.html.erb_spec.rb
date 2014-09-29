@@ -8,7 +8,7 @@ describe 'imprints/_imprint.html.erb', order_spec: true, imprint_spec: true do
   let(:print_location) { imprint_method.print_locations.first }
   let(:print_location2) { create(:print_location, imprint_method_id: imprint_method.id, name: 'pl2') }
 
-  let(:imprint) { create(:imprint, 
+  let(:imprint) { create(:blank_imprint, 
     job_id: job.id, print_location_id: print_location.id
   ) }
 
@@ -32,6 +32,11 @@ describe 'imprints/_imprint.html.erb', order_spec: true, imprint_spec: true do
       render partial: 'imprints/imprint', locals: { job: job, imprint_method: imprint_method }
       expect(rendered).to have_css 'select[name="imprint_method"]'
       expect(rendered).to have_css 'select[name*="print_location"]'
+    end
+
+    it 'should render a check box for whether or not this imprint has a name or number on it' do
+      render partial: 'imprints/imprint', locals: { job: job, imprint_method: imprint_method }
+      expect(rendered).to have_css 'input[type="checkbox"][name*="has_name_number"]'
     end
 
     it 'should render the local imprint method as the default option' do

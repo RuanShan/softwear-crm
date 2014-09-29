@@ -122,6 +122,16 @@ class Job < ActiveRecord::Base
     line_items.empty? ? 0 : line_items.map(&:quantity).reduce(0, :+)
   end
 
+  def name_number_csv
+    csv = imprints
+      .where(has_name_number: true)
+      .joins(:name_number)
+      .where("name_numbers.name <> '' OR NOT name_numbers.number = NULL")
+      .map { |i| [i.name_number.number, i.name_number.name] }
+
+    CSV.from_arrays csv
+  end
+
   private
 
   def assure_name_and_description
@@ -145,7 +155,7 @@ class Job < ActiveRecord::Base
   def check_for_line_items
     if LineItem.where(line_itemable_id: id, line_itemable_type: 'Job').exists?
       self.errors[:deletion_status] =
-          'All line items must be manually removed before a job can be deleted'
+        'All line items must be manually removed before a job can be deleted'
       false
     else
       true

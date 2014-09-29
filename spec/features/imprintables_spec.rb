@@ -72,6 +72,15 @@ feature 'Imprintables management', imprintable_spec: true, slow: true do
     end
   end
 
+  scenario 'Erroring on imprintable sku + retail combo doesn\'t break anything,\
+            card #237 url: https://trello.com/c/KbdIg3Bm', js: true do
+    visit edit_imprintable_path imprintable.id
+    fill_in 'Sku', with: '333'
+    find(:css, 'div.radio#retail_true ins.iCheck-helper', visible: false).click
+    click_button 'Update Imprintable'
+    expect(page).to have_selector '.modal-content-error', text: 'There was an error saving the imprintable'
+  end
+
   scenario 'A user can create a new imprintable', js: true do
     visit imprintables_path
 

@@ -1,12 +1,14 @@
 <% if activity.trackable_type %>
-  Refunded payment of <%= activity.trackable.amount %> because
+  Refunded payment of <%= activity.trackable.amount %>
+  <% if activity.recipient && activity.recipient != activity.trackable %>
+    to
+    <%= activity.recipient_type.underscore.humanize.downcase %>
+    <%= link_to activity.recipient.name, activity.recipient %>
+  <% end %>
+  because
   <%= activity.trackable.refund_reason %>
 <% else %>
   Added something...
 <% end %>
 
-<% if activity.recipient && activity.recipient != activity.trackable %>
-  to
-  <%= activity.recipient_type.underscore.humanize.downcase %>
-  <%= link_to activity.recipient.name, activity.recipient %>
-<% end %>
+

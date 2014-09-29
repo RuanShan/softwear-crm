@@ -6,3 +6,13 @@ class String
     raise "Not allowed to constantize #{self}."
   end
 end
+
+class CSV
+  def self.from_arrays(arr)
+    CSV.generate do |csv|
+      arr.each do |e|
+        csv << e
+      end
+    end
+  end
+end

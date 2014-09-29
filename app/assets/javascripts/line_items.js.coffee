@@ -80,31 +80,35 @@
 
           ajax = getOptions data, (response) ->
             $response = $(response)
+            console.log($response.text())
             clearSelectLevel 2, ->
               $response.hide()
-              $select_level(2).prepend $response
-              $response.fadeIn()
-              $responseSelect = $response.find('select')
-              $responseSelect.change ->
-                data.imprintable_id = $(this).val()
-                data.clear 'color_id'
+              unless /Brand/.test($response.text())
+                $select_level(2).prepend $response
+                $response.fadeIn()
+                $responseSelect = $response.find('select')
+                $responseSelect.change ->
+                  data.imprintable_id = $(this).val()
+                  data.clear 'color_id'
 
-                ajax = getOptions data, (response) ->
-                  $response = $(response)
-                  clearSelectLevel 3, ->
-                    $response.hide()
-                    $select_level(3).prepend $response
-                    $response.fadeIn()
-                    $responseSelect = $response.find('select')
-                    $responseSelect.change ->
-                      data.color_id = $(this).val()
+                  ajax = getOptions data, (response) ->
+                    $response = $(response)
+                    clearSelectLevel 3, ->
+                      $response.hide()
+                      unless /Imprintable/.test($response.text())
+                        $select_level(3).prepend $response
+                        $response.fadeIn()
+                        $responseSelect = $response.find('select')
+                        $responseSelect.change ->
+                          data.color_id = $(this).val()
 
-                      ajax = getOptions data, (response) ->
-                        $response = $(response)
-                        clearSelectLevel 4, ->
-                          $response.hide()
-                          $select_level(4).prepend $response
-                          $response.fadeIn()
+                          ajax = getOptions data, (response) ->
+                            $response = $(response)
+                            clearSelectLevel 4, ->
+                              $response.hide()
+                              unless /Color/.test($response.text())
+                                $select_level(4).prepend $response
+                                $response.fadeIn()
 
   handleImprintableForm $('#li-imprintable-form')
   $lineItemModal.modal 'show'

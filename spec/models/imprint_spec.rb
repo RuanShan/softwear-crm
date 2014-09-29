@@ -1,6 +1,7 @@
 require 'spec_helper'
 
 describe Imprint, imprint_spec: true do
+  let(:imprint) { create :valid_imprint }
 
   it { is_expected.to be_paranoid }
 

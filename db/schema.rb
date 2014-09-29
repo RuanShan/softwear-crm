@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140916152537) do
+ActiveRecord::Schema.define(version: 20140919140939) do
 
   create_table "activities", force: true do |t|
     t.integer  "trackable_id"
@@ -225,6 +225,8 @@ ActiveRecord::Schema.define(version: 20140916152537) do
     t.datetime "deleted_at"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.boolean  "has_name_number"
+    t.integer  "name_number_id"
   end
 
   create_table "ink_colors", force: true do |t|
@@ -265,6 +267,11 @@ ActiveRecord::Schema.define(version: 20140916152537) do
   end
 
   add_index "line_items", ["line_itemable_id", "line_itemable_type"], name: "index_line_items_on_line_itemable_id_and_line_itemable_type", using: :btree
+
+  create_table "name_numbers", force: true do |t|
+    t.string  "name"
+    t.integer "number"
+  end
 
   create_table "orders", force: true do |t|
     t.string   "email"

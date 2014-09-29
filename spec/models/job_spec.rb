@@ -282,4 +282,24 @@ describe Job, job_spec: true do
     expect(job1.name).to eq 'New Job 2'
     expect(job2.name).to eq 'New Job 3'
   end
+
+  describe '#name_number_csv', n_n_csv: true do
+    let!(:job) { create :job }
+    let!(:imprint) { create :valid_imprint, job_id: job.id, has_name_number: true }
+    let!(:imprint2) { create :valid_imprint, job_id: job.id, has_name_number: true }
+
+    before :each do
+      imprint.name_number = create :name_number, name: 'Test Name', number: 33
+      imprint2.name_number = create :name_number, name: 'Other One', number: 2
+      [imprint, imprint2].each(&:save)
+    end
+
+    it 'generates a csv file formatted <number>,<name> for each imprint' do
+      csv = CSV.parse job.name_number_csv
+
+      expect(csv.first).to eq ['33', 'Test Name']
+      expect(csv.last).to eq ['2', 'Other One']
+      expect(csv.size).to eq 2
+    end
+  end
 end
