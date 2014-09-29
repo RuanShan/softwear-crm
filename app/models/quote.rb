@@ -52,6 +52,8 @@ class Quote < ActiveRecord::Base
   def create_freshdesk_ticket
     freshdesk_info = fetch_data_to_h
 
+    freshdesk_init =
+
     client = Freshdesk.new(Figaro.env['freshdesk_url'],
                            Figaro.env['freshdesk_email'],
                            Figaro.env['freshdesk_password'])
