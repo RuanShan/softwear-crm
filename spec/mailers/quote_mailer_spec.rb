@@ -50,7 +50,7 @@ describe QuoteMailer, quote_spec: true do
       expect(@email).to have_body_text('Sample email body')
     end
 
-    it 'cc\'s the current user', new: true do
+    it 'cc\'s the current user' do
       expect(@email).to cc_to('current@user.com')
     end
   end

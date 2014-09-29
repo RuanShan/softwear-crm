@@ -17,6 +17,11 @@
                         oninput: 'invalidMsg(this);' %>
   </div>
 
+  <div class="form-group">
+    <%= label_tag :cc, 'CC' %>
+    <%= text_field_tag :cc, current_user.email, class: 'form-control' %>
+  </div>
+
   <br>
 
   <div class="form-group">

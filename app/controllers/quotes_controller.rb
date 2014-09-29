@@ -86,13 +86,16 @@ class QuotesController < InheritedResources::Base
 
   def email_customer
     @quote = Quote.find(params[:quote_id])
+
+    puts "params.inspect == #{ params.inspect }"
     
     hash = {
       quote: @quote,
       body: params[:email_body],
       subject: params[:email_subject],
       from: current_user.email,
-      to: params[:email_recipients]
+      to: params[:email_recipients],
+      cc: params[:cc]
     }
 
     deliver_email(hash)
