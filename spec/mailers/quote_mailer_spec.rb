@@ -27,7 +27,8 @@ describe QuoteMailer, quote_spec: true do
         body: 'Sample email body',
         subject: 'Amazing Test Subject',
         from: 'from@test.com',
-        to: 'to@test.com, to_two@test.com'
+        to: 'to@test.com, to_two@test.com',
+        cc: 'current@user.com'
     }
     @email = QuoteMailer.email_customer(hash)
   end
@@ -47,6 +48,10 @@ describe QuoteMailer, quote_spec: true do
 
     it 'has the body passed in from hash[:body]' do
       expect(@email).to have_body_text('Sample email body')
+    end
+
+    it 'cc\'s the current user', new: true do
+      expect(@email).to cc_to('current@user.com')
     end
   end
 end
