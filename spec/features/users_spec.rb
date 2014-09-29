@@ -13,9 +13,7 @@ feature 'Users', user_spec: true, js: true do
 	end
 
 	context 'logged in' do
-	  before(:each) do
-	    login_as valid_user
-	  end
+	  before(:each) { login_as valid_user }
 
 	  scenario 'I see my name on the dashboard' do
 	  	visit root_path
@@ -43,7 +41,7 @@ feature 'Users', user_spec: true, js: true do
 	  	expect(User.where(last_name: 'Newlast_name')).to exist
 	  end
 
-	  scenario "I can create a new user account" do
+	  scenario 'I can create a new user account' do
 	  	visit users_path
 	  	click_link 'Create new user'
 	  	fill_in 'Email', with: 'newguy@example.com'
@@ -54,7 +52,7 @@ feature 'Users', user_spec: true, js: true do
 	  	expect(page).to have_content 'success'
 	  end
 
-	  scenario "I can change my password" do
+	  scenario 'I can change my password' do
 	  	visit edit_user_path(valid_user)
 	  	click_link 'Change password'
 	  	fill_in 'Password',              with: 'NewPassword'
@@ -62,11 +60,19 @@ feature 'Users', user_spec: true, js: true do
 	  	fill_in 'Current password',      with: '1234567890'
 	  	click_button 'Update'
 	  	expect(page).to have_content 'success'
-	  end
+    end
+
+    scenario 'I can update my freshdesk information' do
+      visit edit_user_path valid_user
+      fill_in 'Freshdesk Password', with: 'pw4freshdesk'
+      fill_in 'Freshdesk Email', with: 'capybara@annarbortees.com'
+      click_button 'Update'
+      expect(page).to have_content 'success'
+    end
 
 	  scenario 'I can lock myself' do
 	  	visit orders_path
-	  	find("a#account-menu").click
+	  	find('a#account-menu').click
 	  	wait_for_ajax
 	  	click_link 'Lock me'
 	  	wait_for_ajax
@@ -76,7 +82,7 @@ feature 'Users', user_spec: true, js: true do
 	  scenario 'I am locked out if I idle for too long' do
 	  	visit orders_path
 	  	wait_for_ajax
-	  	execute_script "idleTimeoutMs = 1000; idleWarningSec = 5;"
+	  	execute_script 'idleTimeoutMs = 1000; idleWarningSec = 5;'
 	  	sleep 0.1
 	  	find('th', text: 'Salesperson').click
 	  	sleep 1.5
@@ -88,7 +94,7 @@ feature 'Users', user_spec: true, js: true do
 	  scenario 'If I see the lock-out warning, I can cancel it by clicking' do
 	  	visit orders_path
 	  	wait_for_ajax
-	  	execute_script "idleTimeoutMs = 1000; idleWarningSec = 5;"
+	  	execute_script 'idleTimeoutMs = 1000; idleWarningSec = 5;'
 	  	sleep 0.1
 	  	find('th', text: 'Salesperson').click
 	  	sleep 1.3
