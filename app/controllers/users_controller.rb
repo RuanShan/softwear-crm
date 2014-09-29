@@ -56,13 +56,13 @@ class UsersController < InheritedResources::Base
     redirect_to users_path
   end
 
-  protected
+protected
 
   def set_current_action
     @current_action = 'users'
   end
 
-  private
+private
 
   def permitted_params
     params.permit(user: [:email, :first_name, :last_name, :store_id])

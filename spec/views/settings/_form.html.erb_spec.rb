@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe 'settings/_form.html.erb', setting_spec: true, new: true do
+describe 'settings/_form.html.erb', setting_spec: true do
   before(:each) do
     freshdesk_settings = {
         freshdesk_email: build_stubbed(:valid_setting, val: 'email'),
