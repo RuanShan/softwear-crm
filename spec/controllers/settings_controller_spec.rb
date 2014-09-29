@@ -1,7 +1,7 @@
 require 'spec_helper'
 include ApplicationHelper
 
-describe SettingsController, settings_spec: true, new: true do
+describe SettingsController, setting_spec: true do
   let!(:valid_user) { create :alternate_user }
 
   before(:each) { sign_in valid_user }
