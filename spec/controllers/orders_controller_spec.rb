@@ -23,7 +23,7 @@ describe OrdersController, order_spec: true do
     end
   end
 
-  context '#names_numbers' do
+  describe 'GET #names_numbers' do
     let(:order) { build_stubbed :order }
 
     it 'sends csv data' do
@@ -31,6 +31,88 @@ describe OrdersController, order_spec: true do
       expect(order).to receive(:name_number_csv)
 
       get :names_numbers, id: order.id
+    end
+  end
+
+  describe 'GET #fba', story_103: true do
+    it 'renders index where terms = Fulfilled by Amazon' do
+      expect(Order).to receive(:fba).and_call_original
+      get :fba
+
+      expect(response).to be_successful
+    end
+  end
+
+  describe 'GET #fba_job_info', story_103: true do
+    context 'given a valid packing slip' do
+      let(:packing_slip) do
+        fixture_file_upload('fba/TestPackingSlip.txt', 'text/text')
+      end
+
+      it 'calls FBA.parse_packing_slip on the file' do
+        expect(FBA).to receive(:parse_packing_slip).and_call_original
+        get :fba_job_info, packing_slips: [packing_slip]
+
+        expect(response).to be_successful
+      end
+
+      context 'with options params' do
+        it 'passes the params to FBA.parse_packing_slip' do
+          expect(FBA).to receive(:parse_packing_slip)
+            .with(anything, { imprintables: { '0705' => '5' } })
+          
+          get :fba_job_info,
+               packing_slips: [packing_slip],
+               options: { imprintables: { '0705' => '5' } }
+
+          expect(response).to be_successful
+        end
+      end
+    end
+  end
+
+  describe 'POST #create' do
+    context 'with fba params', story_103: true do
+      let(:fba_params) do
+        [
+          {
+            job_name: 'test_fba FBA222EE2E',
+            imprintable: 500,
+            colors: [
+              {
+                color: 500,
+                sizes: [
+                  {
+                    size: 500,
+                    quantity: 10
+                  },
+                  {
+                    size: 500,
+                    quantity: 11
+                  },
+                  {
+                    size: 500,
+                    quantity: 12
+                  },
+                  {
+                    size: 500,
+                    quantity: 13
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      end
+      
+      it 'calls order#generate_jobs with' do
+        expect_any_instance_of(Order).to receive(:generate_jobs)
+          .with(fba_params)
+
+        post :create, job_attributes: fba_params
+
+        expect(response).to be_successful
+      end
     end
   end
 end

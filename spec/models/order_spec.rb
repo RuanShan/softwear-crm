@@ -14,6 +14,7 @@ describe Order, order_spec: true do
     it { is_expected.to have_many(:imprints).through(:jobs) }
 
     it { is_expected.to accept_nested_attributes_for :payments }
+    it { is_expected.to accept_nested_attributes_for :jobs }
   end
 
   describe 'Validations' do
@@ -35,12 +36,24 @@ describe Order, order_spec: true do
 
     let!(:store) { create(:valid_store) }
     let!(:user) { create(:user) }
-    # TODO struggled and failed to find a way to use build_stubbed here
+
     it 'requires a tax id number if tax_exempt? is true' do
       expect(build(:order, store_id: store.id, store: store, salesperson_id: user.id, tax_exempt: true)).to_not be_valid
     end
     it 'is valid when tax_exempt? is true and a tax id number is present' do
       expect(build(:order, store_id: store.id, store: store, salesperson_id: user.id, tax_exempt: true, tax_id_number: 12)).to be_valid
+    end
+  end
+
+  describe 'Scopes' do
+    describe 'fba' do
+      let!(:fba_order) { create :order, terms: 'Fulfilled By Amazon' }
+      let!(:normal_order) { create :order }
+
+      it 'retrieves only fba orders' do
+        expect(Order.fba).to include fba_order
+        expect(Order.fba).to_not include normal_order
+      end
     end
   end
 
@@ -333,6 +346,78 @@ describe Order, order_spec: true do
       expect(csv).to eq [           ['Number', 'Name'],
                          ['33', 'Test Name'],    ['2', 'Other One'],
                          ['3', 'Third McThird'], ['1', 'Finale']]
+    end
+  end
+
+  describe '#generate_jobs', story_103: true do
+    let!(:order) { create :order }
+
+    context 'given a hash of imprintables, colors, and sizes' do
+      let!(:size_s) { create :valid_size, sku: '02' }
+      let!(:size_m) { create :valid_size, sku: '03' }
+      let!(:size_l) { create :valid_size, sku: '04' }
+      let!(:size_xl) { create :valid_size, sku: '05' }
+      let!(:color) { create :valid_color, sku: '000' }
+      let!(:imprintable) { create :valid_imprintable, sku: '0705' }
+      let!(:variants) do
+        [size_s, size_m, size_l, size_xl].map do |size|
+          create(
+            :blank_imprintable_variant,
+            imprintable_id: imprintable.id,
+            color_id: color.id,
+            size_id: size.id
+          )
+        end
+      end
+
+      let(:fba_params) do
+        [
+          {
+            job_name: 'test_fba FBA222EE2E',
+            imprintable: imprintable.id,
+            colors: [
+              {
+                color: color.id,
+                sizes: [
+                  {
+                    size: size_s.id,
+                    quantity: 10
+                  },
+                  {
+                    size: size_m.id,
+                    quantity: 11
+                  },
+                  {
+                    size: size_l.id,
+                    quantity: 12
+                  },
+                  {
+                    size: size_xl.id,
+                    quantity: 13
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      end
+
+      it 'creates jobs for each entry in the top level array' do
+        expect(order.jobs).to_not exist
+        order.generate_jobs fba_params
+
+        expect(order.jobs.where(name: 'test_fba FBA222EE2E')).to exist
+        job = order.jobs.first
+
+        variants.each do |variant|
+          expect(job.line_items.where(imprintable_variant_id: variant.id))
+            .to exist
+        end
+
+        [10, 11, 12, 13].each do |quantity|
+          expect(job.line_items.where(quantity: quantity)).to exist
+        end
+      end
     end
   end
 end

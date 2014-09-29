@@ -5,6 +5,7 @@ describe Job, job_spec: true do
   subject { build_stubbed :blank_job }
 
   it { is_expected.to be_paranoid }
+  it { is_expected.to accept_nested_attributes_for :line_items }
 
   it 'is not deletable when it has line items', line_item_spec: true do
     job = create(:job)
