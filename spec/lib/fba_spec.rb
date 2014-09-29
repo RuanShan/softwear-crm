@@ -187,16 +187,17 @@ describe FBA, fba_spec: true, story_103: true do
     end
 
     let(:fba) do
-      FBA.new.tap do |f|
-        f.job_name = 'test_fba FBA222EE2E'
-        f.imprintable = imprintable
-        f.colors = [FBA::Color.new(color, [
+      FBA.new(
+        job_name:   'test_fba FBA222EE2E',
+        imprintable: imprintable,
+        
+        colors: [FBA::Color.new(color, [
           FBA::Size.new(size_s, 10),
           FBA::Size.new(size_m, 11),
           FBA::Size.new(size_l, 12),
           FBA::Size.new(size_xl, 13)
         ])]
-      end
+      )
     end
 
     describe '#to_h' do
