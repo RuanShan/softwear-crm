@@ -62,7 +62,7 @@ feature 'Users', user_spec: true, js: true do
 	  	expect(page).to have_content 'success'
     end
 
-    scenario 'I can update my freshdesk information', new: true do
+    scenario 'I can update my freshdesk information' do
       visit edit_user_path valid_user
       fill_in 'Freshdesk Password', with: 'pw4freshdesk'
       fill_in 'Freshdesk Email', with: 'capybara@annarbortees.com'

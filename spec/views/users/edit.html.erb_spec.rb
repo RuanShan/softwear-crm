@@ -16,11 +16,11 @@ describe 'users/edit.html.erb', user_spec: true do
 		end
   end
 
-  it 'has fields to configure freshdesk information', new: true do
+  it 'has fields to configure freshdesk information' do
     render
     within_form_for User do
-      expect(rendered).to have_fields_for :freshdesk_password
-      expect(rendered).to have_fields_form :freshdesk_email
+      expect(rendered).to have_field_for :freshdesk_password
+      expect(rendered).to have_field_for :freshdesk_email
     end
   end
 

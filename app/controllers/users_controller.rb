@@ -26,7 +26,7 @@ class UsersController < InheritedResources::Base
     flash[:notice] = t('user_creation', full_name: user.full_name, email: user.email)
     redirect_to users_path
   end
-
+  
   def update_password
     unless @current_user.update_with_password password_params
       flash[:alert] = 'Error changing password'
@@ -65,7 +65,8 @@ protected
 private
 
   def permitted_params
-    params.permit(user: [:email, :first_name, :last_name, :store_id])
+    params.permit(user: [:email, :first_name, :last_name, :store_id,
+                         :freshdesk_email, :freshdesk_password])
   end
 
   def resource_name
