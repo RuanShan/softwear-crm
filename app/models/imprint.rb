@@ -19,7 +19,7 @@ class Imprint < ActiveRecord::Base
   def self.with_name_number
     where(has_name_number: true)
     .joins(:name_number)
-    .where("name_numbers.name <> '' OR NOT name_numbers.number = NULL")
+    .where("name_numbers.name <> '' AND NOT name_numbers.number = NULL AND name_numbers.description <> ''")
   end
 
   def name
