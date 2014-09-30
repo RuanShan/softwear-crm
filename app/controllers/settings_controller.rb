@@ -11,6 +11,7 @@ class SettingsController < InheritedResources::Base
   end
 
 private
+
   def set_current_action
     @current_action = 'settings'
   end

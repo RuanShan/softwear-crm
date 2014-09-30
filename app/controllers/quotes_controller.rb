@@ -46,7 +46,7 @@ class QuotesController < InheritedResources::Base
           .default_group
           .update_attributes(name: params[:line_item_group_name])
       end
-      @quote.create_freshdesk_ticket if Rails.env.production?
+      @quote.create_freshdesk_ticket(current_user) if Rails.env.production?
     end
   end
 
@@ -110,7 +110,7 @@ class QuotesController < InheritedResources::Base
     end
   end
 
-  private
+private
 
   def assign_new_quote_hash
     @new_quote_hash = {}

@@ -10,14 +10,14 @@ class Quote < ActiveRecord::Base
   belongs_to :salesperson, class_name: User
   belongs_to :store
   has_many :line_item_groups
-  # has_many :line_items, through: :line_item_groups
+# has_many :line_items, through: :line_item_groups
 
-  # accepts_nested_attributes_for :line_items, allow_destroy: true
+# accepts_nested_attributes_for :line_items, allow_destroy: true
 
   validates :email, presence: true, email: true
   validates :estimated_delivery_date, presence: true
   validates :first_name, presence: true
-  # validate :has_line_items?
+# validate :has_line_items?
   validates :last_name, presence: true
   validates :salesperson, presence: true
   validates :store, presence: true
@@ -38,25 +38,10 @@ class Quote < ActiveRecord::Base
     ', *([self.class.name, id] * 2) ).order('created_at DESC')
   end
 
-  def create_freshdesk_customer
-    response = post_request_for_new_customer
-    parsed_xml = Hash.from_xml(response.body)
-
-    new_hash = {}
-    new_hash[:requester_name] = parsed_xml['user']['name']
-    new_hash[:requester_id] = parsed_xml['user']['id']
-
-    new_hash
-  end
-
-  def create_freshdesk_ticket
-    freshdesk_info = fetch_data_to_h
-
-    freshdesk_init =
-
-    client = Freshdesk.new(Figaro.env['freshdesk_url'],
-                           Figaro.env['freshdesk_email'],
-                           Figaro.env['freshdesk_password'])
+  def create_freshdesk_ticket(current_user)
+    config = FreshdeskModule.get_freshdesk_config(current_user)
+    client = FreshdeskModule.open_connection(config)
+    freshdesk_info = fetch_data_to_h(config)
 
     client.post_tickets(
       email: email,
@@ -68,48 +53,6 @@ class Quote < ActiveRecord::Base
       subject: 'Created by Softwear-CRM',
       custom_field: { department_7483: freshdesk_info[:department] }
     )
-  end
-
-  def fetch_data_to_h
-    freshdesk_info = {}
-    freshdesk_info = fetch_group_id_and_dept(freshdesk_info)
-    fetch_requester_id_and_name(freshdesk_info)
-  end
-
-  def fetch_group_id_and_dept(old_hash)
-    new_hash = {}
-    if store.name.downcase.include? 'arbor'
-      # HACK: pretty sure this is the id freshdesk uses for Sales - Ann Arbor
-      new_hash[:group_id]   = 86316
-      new_hash[:department] = 'Sales - Ann Arbor'
-    elsif store.name.downcase.include? 'ypsi'
-      new_hash[:group_id]   = 86317
-      new_hash[:department] = 'Sales - Ypsilanti'
-    else
-      new_hash[:group_id]   = nil
-      new_hash[:department] = nil
-    end
-    old_hash.merge(new_hash)
-  end
-
-  def fetch_requester_id_and_name(old_hash)
-    params = URI.escape("query=email is #{email}")
-    site = RestClient::Resource.new("#{ Figaro.env['freshdesk_url'] }/contacts.json?state=all&#{params}", Figaro.env['freshdesk_email'], Figaro.env['freshdesk_password'])
-
-    response = site.get(accept: 'application/json')
-
-    new_hash = {}
-    if response.body == '[]'
-      # no customer found, create new customer
-      new_hash = create_freshdesk_customer
-    else
-      # customer found, create ticket with his credentials
-      parsed_json = JSON.parse(response.body).first
-      new_hash[:requester_name] = parsed_json['user']['name']
-      new_hash[:requester_id] = parsed_json['user']['id']
-    end
-
-    old_hash.merge(new_hash)
   end
 
   def formatted_phone_number
@@ -155,24 +98,6 @@ class Quote < ActiveRecord::Base
     line_items.map { |l| l.taxable? ? l.total_price * (1 + tax) : l.total_price }.reduce(0, :+) + shipping
   end
 
-  def post_request_for_new_customer
-    uri = URI.parse("#{ Figaro.env['freshdesk_url'] }/contacts.xml")
-
-    request = Net::HTTP::Post.new(uri.request_uri)
-    request.basic_auth(Figaro.env['freshdesk_email'], Figaro.env['freshdesk_password'])
-
-    request['Content-Type'] = 'application/xml'
-
-    connection = Net::HTTP.new(uri.host, uri.port)
-
-    post_data = {}
-    post_data['user[name]']  = "#{first_name} #{last_name}"
-    post_data['user[email]'] = email
-
-    request.set_form_data(post_data)
-    connection.request(request)
-  end
-
   alias_method :standard_line_items, :line_items
 
   def tax
@@ -187,7 +112,7 @@ class Quote < ActiveRecord::Base
     )
   end
 
-  private
+private
 
   def prepare_nested_line_items_attributes
     no_attributes = @line_item_attributes.nil? || @line_item_attributes.empty?
@@ -215,5 +140,72 @@ class Quote < ActiveRecord::Base
 
     @unsaved_line_items.each(&default_group.line_items.method(:<<))
     @unsaved_line_items = nil
+  end
+
+  def fetch_data_to_h(config)
+    freshdesk_info = {}
+    freshdesk_info = fetch_group_id_and_dept(freshdesk_info)
+    fetch_requester_id_and_name(freshdesk_info, config)
+  end
+
+  def fetch_group_id_and_dept(old_hash)
+    new_hash = {}
+    if store.name.downcase.include? 'arbor'
+#     Hardcoded id's are the ones freshdesk uses for AA and Ypsi sales dept
+      new_hash[:group_id]   = 86316
+      new_hash[:department] = 'Sales - Ann Arbor'
+    elsif store.name.downcase.include? 'ypsi'
+      new_hash[:group_id]   = 86317
+      new_hash[:department] = 'Sales - Ypsilanti'
+    else
+      new_hash[:group_id]   = nil
+      new_hash[:department] = nil
+    end
+    old_hash.merge(new_hash)
+  end
+
+  def fetch_requester_id_and_name(old_hash, config)
+    parsed_json = get_customer(config, email)
+
+    new_hash = {}
+    if parsed_json.nil?
+#     no customer found, create new customer
+      new_hash = create_freshdesk_customer
+    else
+#     customer found, create ticket with his credentials
+      new_hash[:requester_name] = parsed_json['user']['name']
+      new_hash[:requester_id] = parsed_json['user']['id']
+    end
+
+    old_hash.merge(new_hash)
+  end
+
+  def create_freshdesk_customer
+    response = post_request_for_new_customer
+    parsed_xml = Hash.from_xml(response.body)
+
+    new_hash = {}
+    new_hash[:requester_name] = parsed_xml['user']['name']
+    new_hash[:requester_id] = parsed_xml['user']['id']
+
+    new_hash
+  end
+
+  def post_request_for_new_customer
+    uri = URI.parse("#{ Figaro.env['freshdesk_url'] }/contacts.xml")
+
+    request = Net::HTTP::Post.new(uri.request_uri)
+    request.basic_auth(Figaro.env['freshdesk_email'], Figaro.env['freshdesk_password'])
+
+    request['Content-Type'] = 'application/xml'
+
+    connection = Net::HTTP.new(uri.host, uri.port)
+
+    post_data = {}
+    post_data['user[name]']  = "#{first_name} #{last_name}"
+    post_data['user[email]'] = email
+
+    request.set_form_data(post_data)
+    connection.request(request)
   end
 end
