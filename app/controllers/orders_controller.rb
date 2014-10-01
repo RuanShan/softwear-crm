@@ -60,6 +60,30 @@ class OrdersController < InheritedResources::Base
     send_data @order.name_number_csv, filename: sanitize_filename(filename)
   end
 
+  def fba
+    @current_action = 'orders#fba'
+    @orders = Order.fba.page(params[:page])
+    @fba = true
+
+    render action: :index
+  end
+
+  def new_fba
+    new! do
+      @current_action = 'orders#new_fba'
+      @empty = Store.all.empty?
+    end
+  end
+
+  def fba_job_info
+    options = params.permit(:options).permit!
+    packing_slips = params[:packing_slips]
+
+    @fba_infos = packing_slips.map do |packing_slip|
+      FBA.parse_packing_slip(packing_slip, options)
+    end
+  end
+
   private
 
   def format_in_hand_by
@@ -74,7 +98,10 @@ class OrdersController < InheritedResources::Base
   end
 
   def permitted_params
-    params.permit(order: [
+    params.permit(
+      :packing_slips, :page,
+
+      order: [
       :email, :firstname, :lastname,
       :company, :twitter, :name, :po,
       :in_hand_by, :terms, :tax_exempt,

@@ -58,6 +58,12 @@ CrmSoftwearcrmCom::Application.routes.draw do
       get 'names_numbers', as: :name_number_csv_from
     end
 
+    collection do
+      get 'fba'
+      get 'new_fba'
+      get 'fba_job_info'
+    end
+
     get 'timeline', to: 'timeline#show', as: :timeline
     resources :payments, shallow: true
     resources :artwork_requests

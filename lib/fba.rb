@@ -1,6 +1,7 @@
 class FBA
   Color = Struct.new(:color, :sizes, :sku) do
     def to_h
+      return nil unless color
       {
         color: color.id,
         sizes: sizes.map(&:to_h)
@@ -9,6 +10,7 @@ class FBA
   end
   Size = Struct.new(:size, :quantity, :sku, :color_sku) do
     def to_h
+      return nil unless size
       {
         size: size.id,
         quantity: quantity.to_i
@@ -148,10 +150,11 @@ class FBA
   end
 
   def to_h
+    return nil unless imprintable
     {
       job_name: @job_name,
       imprintable: @imprintable.id,
-      colors: @colors.map(&:to_h)
+      colors: @colors.map(&:to_h).compact
     }
   end
 

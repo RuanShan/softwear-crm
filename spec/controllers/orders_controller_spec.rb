@@ -49,9 +49,9 @@ describe OrdersController, order_spec: true do
         fixture_file_upload('fba/TestPackingSlip.txt', 'text/text')
       end
 
-      it 'calls FBA.parse_packing_slip on the file' do
+      it 'calls FBA.parse_packing_slip on the file', basic: true do
         expect(FBA).to receive(:parse_packing_slip).and_call_original
-        get :fba_job_info, packing_slips: [packing_slip]
+        get :fba_job_info, packing_slips: [packing_slip], format: :js
 
         expect(response).to be_successful
       end
@@ -63,7 +63,8 @@ describe OrdersController, order_spec: true do
           
           get :fba_job_info,
                packing_slips: [packing_slip],
-               options: { imprintables: { '0705' => '5' } }
+               options: { imprintables: { '0705' => '5' } },
+               format: :js
 
           expect(response).to be_successful
         end

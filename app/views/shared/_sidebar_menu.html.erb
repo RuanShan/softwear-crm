@@ -17,6 +17,11 @@
         <%= content_tag :li, class: ('active' if current_action == 'orders#new' ) do %>
           <%= link_to new_order_path do %><i class="fa fa-angle-right"></i> New<% end %>
         <% end %>
+
+        <%= content_tag :li, class: ('active' if current_action == 'orders#new_fba') do %>
+          <%= link_to fba_orders_path do %><i class="fa fa-angle-right"></i> FBA<% end %>
+        <% end %>
+
       <% end %>
     <% end %>
 

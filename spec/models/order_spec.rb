@@ -46,8 +46,8 @@ describe Order, order_spec: true do
   end
 
   describe 'Scopes' do
-    describe 'fba' do
-      let!(:fba_order) { create :order, terms: 'Fulfilled By Amazon' }
+    describe 'fba', story_103: true do
+      let!(:fba_order) { create :order, terms: 'Fulfilled by Amazon' }
       let!(:normal_order) { create :order }
 
       it 'retrieves only fba orders' do
