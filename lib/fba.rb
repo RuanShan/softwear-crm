@@ -24,7 +24,9 @@ class FBA
       sku = parse_sku(data.first)
 
       if sku.nil?
-        return FBA.new(errors: [Error.new('Bad sku', data['Merchant ID'])])
+        return FBA.new(
+            errors: [Error.new('Bad sku', data.first['Merchant ID'])]
+          )
       end
 
       imprintable = option?(options, :imprintables, sku.imprintable) do |id|

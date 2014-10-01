@@ -2,7 +2,7 @@ require 'spec_helper'
 
 describe FBA, fba_spec: true, story_103: true do
   describe '.parse_packing_slip' do
-    let!(:packing_slip) do
+    let(:packing_slip) do
       File.new("#{Rails.root}/spec/fixtures/fba/TestPackingSlip.txt")
     end
 
@@ -179,8 +179,18 @@ describe FBA, fba_spec: true, story_103: true do
       end
     end
 
-    context 'when a sku is invalid' do
-      it 'adds an error'
+    context 'when a sku is invalid', sku: true do
+      context 'because of a bad version' do
+        before :each do
+          allow(FBA).to receive(:parse_sku).and_return nil
+        end
+
+        it 'adds a "Bad sku" error' do
+          subject = FBA.parse_packing_slip(packing_slip)
+
+          expect(subject.errors.map(&:message)).to include 'Bad sku'
+        end
+      end
     end
   end
 
