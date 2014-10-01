@@ -30,6 +30,21 @@ describe Quote, quote_spec: true do
     end
   end
 
+  describe 'callbacks', new: true do
+    context 'when supplied with an initialized at time' do
+      it 'sets initialized_at to the supplied time' do
+        quote = Quote.new(initialized_at: Time.now + 1.day)
+        expect(quote.initialized_at).to eq(Time.now + 1.day)
+      end
+    end
+
+    context 'when not supplied with a time' do
+      it 'sets initialized_at to time.now' do
+        expect(Quote.new.initialized_at).to eq(Time.now)
+      end
+    end
+  end
+
   describe 'instance methods' do
     let!(:quote) { build_stubbed(:valid_quote) }
 
@@ -160,6 +175,24 @@ describe Quote, quote_spec: true do
 
       it 'returns the value for tax' do
         expect(quote.tax).to eq(0.06)
+      end
+    end
+
+    describe '#response_time' do
+      let(:quote) { build_stubbed(:valid_quote, initialized_at: Time.now) }
+      context 'when an email hasn\'t been sent yet' do
+        it 'responds with nil' do
+          expect_any_instance_of(PublicActivity::Activity).to receive(nil).and_return(nil)
+#         still need to figure out the query
+          expect(quote.response_time).to be_nil
+        end
+      end
+
+      context 'when an email has been sent' do
+        it 'calculates the time between initialization and customer contact' do
+          expect_any_instance_of(PublicActivity::Activity).to receive(nil).and_return(Time.now + 1.day)
+          expect(quote.response_time).to eq(1.day)
+        end
       end
     end
   end

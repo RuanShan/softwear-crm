@@ -13,6 +13,10 @@ describe QuotesController, js: true, quote_spec: true do
     it 'assigns the current action' do
       expect(assigns(:current_action)).to eq('quotes#new')
     end
+
+    it 'calls Time.now to set initialized_at' do
+      expect(Time).to receive(:now)
+    end
   end
 
   describe 'GET index' do
