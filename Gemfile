@@ -75,6 +75,7 @@ group :development do
   gem 'better_errors', '>= 0.3.2'
   gem 'binding_of_caller'
   gem 'mailcatcher'
+  gem 'debugger'
 end
 
 group :development, :test do
@@ -113,7 +114,7 @@ gem 'public_activity'
 gem 'sunspot_solr'
 gem 'progress_bar'
 gem 'whenever'
-gem 'freshdesk', '~> 0.2'
+gem 'freshdesk'
 gem 'simple_token_authentication'
 gem 'sidekiq'
 

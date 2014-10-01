@@ -38,21 +38,11 @@ class Quote < ActiveRecord::Base
     ', *([self.class.name, id] * 2) ).order('created_at DESC')
   end
 
+# TODO: this is broken so don't use it yet lol
   def create_freshdesk_ticket(current_user)
     config = FreshdeskModule.get_freshdesk_config(current_user)
     client = FreshdeskModule.open_connection(config)
-    freshdesk_info = fetch_data_to_h(config)
-
-    client.post_tickets(
-      email: email,
-      requester_id: freshdesk_info[:requester_id],
-      requester_name: freshdesk_info[:requester_name],
-      source: 2,
-      group_id: freshdesk_info[:group_id],
-      ticket_type: 'Lead',
-      subject: 'Created by Softwear-CRM',
-      custom_field: { department_7483: freshdesk_info[:department] }
-    )
+    FreshdeskModule.send_ticket(client, config, self)
   end
 
   def formatted_phone_number
@@ -140,72 +130,5 @@ private
 
     @unsaved_line_items.each(&default_group.line_items.method(:<<))
     @unsaved_line_items = nil
-  end
-
-  def fetch_data_to_h(config)
-    freshdesk_info = {}
-    freshdesk_info = fetch_group_id_and_dept(freshdesk_info)
-    fetch_requester_id_and_name(freshdesk_info, config)
-  end
-
-  def fetch_group_id_and_dept(old_hash)
-    new_hash = {}
-    if store.name.downcase.include? 'arbor'
-#     Hardcoded id's are the ones freshdesk uses for AA and Ypsi sales dept
-      new_hash[:group_id]   = 86316
-      new_hash[:department] = 'Sales - Ann Arbor'
-    elsif store.name.downcase.include? 'ypsi'
-      new_hash[:group_id]   = 86317
-      new_hash[:department] = 'Sales - Ypsilanti'
-    else
-      new_hash[:group_id]   = nil
-      new_hash[:department] = nil
-    end
-    old_hash.merge(new_hash)
-  end
-
-  def fetch_requester_id_and_name(old_hash, config)
-    parsed_json = get_customer(config, email)
-
-    new_hash = {}
-    if parsed_json.nil?
-#     no customer found, create new customer
-      new_hash = create_freshdesk_customer
-    else
-#     customer found, create ticket with his credentials
-      new_hash[:requester_name] = parsed_json['user']['name']
-      new_hash[:requester_id] = parsed_json['user']['id']
-    end
-
-    old_hash.merge(new_hash)
-  end
-
-  def create_freshdesk_customer
-    response = post_request_for_new_customer
-    parsed_xml = Hash.from_xml(response.body)
-
-    new_hash = {}
-    new_hash[:requester_name] = parsed_xml['user']['name']
-    new_hash[:requester_id] = parsed_xml['user']['id']
-
-    new_hash
-  end
-
-  def post_request_for_new_customer
-    uri = URI.parse("#{ Figaro.env['freshdesk_url'] }/contacts.xml")
-
-    request = Net::HTTP::Post.new(uri.request_uri)
-    request.basic_auth(Figaro.env['freshdesk_email'], Figaro.env['freshdesk_password'])
-
-    request['Content-Type'] = 'application/xml'
-
-    connection = Net::HTTP.new(uri.host, uri.port)
-
-    post_data = {}
-    post_data['user[name]']  = "#{first_name} #{last_name}"
-    post_data['user[email]'] = email
-
-    request.set_form_data(post_data)
-    connection.request(request)
   end
 end
