@@ -15,7 +15,10 @@ describe FBA, fba_spec: true, story_103: true do
       let!(:imprintable) { create :valid_imprintable, sku: '0705' }
 
       before :each do
-        allow(FBA).to receive(:check_invalid_sizes).and_return []
+        # allow(FBA).to receive(:find_errors).and_return []
+        allow(ImprintableVariant).to receive(:size_variants_for)
+          .and_return [size_s, size_m, size_l, size_xl]
+          .map { |s| double('ImprintableVariant', size_id: s.id) }
       end
 
       it 'should return an instance of FBA' do
@@ -35,7 +38,7 @@ describe FBA, fba_spec: true, story_103: true do
         expect(subject.colors.first.sizes.map(&:size))
           .to eq [size_s, size_m, size_l, size_xl]
         expect(subject.colors.first.sizes.map(&:quantity))
-          .to eq [53, 51, 53, 52]
+          .to eq %w(53 51 53 52)
       end
 
       it 'assigns #imprintable to the imprintable that will be in the job' do
@@ -45,8 +48,9 @@ describe FBA, fba_spec: true, story_103: true do
       end
 
       it 'queries imprintable, color, and sizes based on the sku in the slip' do
-        expect(Size).to receive(:find_by)
-          .with(*%w(02 03 04 05).map { |n| { sku: n } })
+        %w(02 03 04 05).each do |sku|
+          expect(Size).to receive(:find_by).with(sku: sku)
+        end
         expect(Color).to receive(:find_by).with(sku: '000')
         expect(Imprintable).to receive(:find_by).with(sku: '0705')
 
@@ -67,7 +71,7 @@ describe FBA, fba_spec: true, story_103: true do
       let!(:imprintable) { create :valid_imprintable, sku: '0705' }
 
       before :each do
-        allow(FBA).to receive(:check_invalid_sizes).and_return []
+        allow(FBA).to receive(:find_errors).and_return []
       end
 
       it 'adds an error regarding the sku of the missing size' do
@@ -77,7 +81,7 @@ describe FBA, fba_spec: true, story_103: true do
           .to include "Couldn't find size with sku '02'"
       end
 
-      context 'options: { sizes: { "02" => "50" } }' do
+      context 'options: { sizes: { "02" => "50" } }', options: true do
         it 'uses size with id=50 for the size sku 02' do
           expect(Size).to receive(:find).with('50').and_return other_size_s
 
@@ -96,7 +100,7 @@ describe FBA, fba_spec: true, story_103: true do
       let!(:imprintable) { create :valid_imprintable, sku: '0705' }
 
       before :each do
-        allow(FBA).to receive(:check_invalid_sizes).and_return []
+        # allow(FBA).to receive(:find_errors).and_return []
       end
 
       it 'adds an error regarding the sku of the missing color' do
@@ -106,7 +110,7 @@ describe FBA, fba_spec: true, story_103: true do
           .to include "Couldn't find color with sku '000'"
       end
 
-      context 'options: { colors: { "000" => "50" } }' do
+      context 'options: { colors: { "000" => "50" } }', options: true do
         it 'uses color with id=50 for the color sku 000' do
           expect(Color).to_not receive(:find_by)
           expect(Color).to receive(:find).with('50').and_return other_color
@@ -126,7 +130,7 @@ describe FBA, fba_spec: true, story_103: true do
       let(:other_imprintable) { create :valid_imprintable, sku: '6489' }
 
       before :each do
-        allow(FBA).to receive(:check_invalid_sizes).and_return []
+        # allow(FBA).to receive(:find_errors).and_return []
       end
 
       it 'adds an error regarding the sku of the missing imprintable' do
@@ -136,7 +140,7 @@ describe FBA, fba_spec: true, story_103: true do
           .to include "Couldn't find imprintable with sku '0705'"
       end
 
-      context 'options: { imprintables: { "0705" => "50" } }' do
+      context 'options: { imprintables: { "0705" => "50" } }', options: true do
         it 'uses imprintable with id=50 for the imprintable sku 0705' do
           expect(Imprintable).to_not receive(:find_by)
           expect(Imprintable).to receive(:find).with('50')
@@ -157,20 +161,33 @@ describe FBA, fba_spec: true, story_103: true do
       let!(:imprintable) { build_stubbed :valid_imprintable, sku: '0705' }
 
       before :each do
-        allow(FBA).to receive(check_invalid_sizes).and_return [size_m]
+        [size_s, size_m, size_l, size_xl, color, imprintable]
+          .each_with_index do |object, count|
+          allow(object).to receive(:id).and_return count
+          allow(object.class).to receive(:find_by)
+            .with({sku: object.sku}).and_return object
+        end
+
+        allow(ImprintableVariant).to receive(:size_variants_for)
+          .and_return [size_s, size_l, size_xl]
+          .map { |s| double('ImprintableVariant', size_id: s.id) }
       end
 
       it 'adds an error regarding the sku of the invalid size' do
         subject = FBA.parse_packing_slip(packing_slip)
 
         expect(subject.errors.map(&:message))
-          .to include "Size with sku '03' is not valid for the imprintable 
-                       #{imprintable.common_name} and color #{color.name}"
+          .to include "Size with sku '03' is not valid for the imprintable "\
+                       "#{imprintable.common_name} and color #{color.name}"
       end
+    end
+
+    context 'when a sku is invalid' do
+      it 'adds an error'
     end
   end
 
-  context 'given a valid packing slip' do
+  context 'given valid packing slip information' do
     let!(:size_s) { build_stubbed :valid_size, sku: '02' }
     let!(:size_m) { build_stubbed :valid_size, sku: '03' }
     let!(:size_l) { build_stubbed :valid_size, sku: '04' }
@@ -179,7 +196,6 @@ describe FBA, fba_spec: true, story_103: true do
     let!(:imprintable) { build_stubbed :valid_imprintable, sku: '0705' }
 
     before :each do
-      allow(FBA).to receive(check_invalid_sizes).and_return []
       [size_s, size_m, size_l, size_xl, color, imprintable]
         .each_with_index do |object, count|
         allow(object).to receive(:id).and_return count
@@ -190,7 +206,7 @@ describe FBA, fba_spec: true, story_103: true do
       FBA.new(
         job_name:   'test_fba FBA222EE2E',
         imprintable: imprintable,
-        
+
         colors: [FBA::Color.new(color, [
           FBA::Size.new(size_s, 10),
           FBA::Size.new(size_m, 11),
@@ -200,7 +216,7 @@ describe FBA, fba_spec: true, story_103: true do
       )
     end
 
-    describe '#to_h' do
+    describe '#to_h', to_h: true do
       let!(:size_s) { build_stubbed :valid_size, sku: '02' }
       let!(:size_m) { build_stubbed :valid_size, sku: '03' }
       let!(:size_l) { build_stubbed :valid_size, sku: '04' }
