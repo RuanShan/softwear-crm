@@ -27,43 +27,55 @@ class FBA
         return FBA.new(errors: [Error.new('Bad sku', data['Merchant ID'])])
       end
 
-      colors = retrieve_colors(data)
+      imprintable = option?(options, :imprintables, sku.imprintable) do |id|
+        id ? Imprintable.find(id) : Imprintable.find_by(sku: sku.imprintable)
+      end
+
+      colors = retrieve_colors(data, options)
 
       FBA.new(
         job_name: "#{sku.idea} #{header['Shipment ID']}",
         colors: colors,
-        imprintable: Imprintable.find_by(sku: sku.imprintable),
-        imprintable_sku: sku.imprintable
+        imprintable: imprintable,
+        imprintable_sku: imprintable.try(:sku) || sku.imprintable
       )
     end
 
-    def retrieve_colors(data)
+    def retrieve_colors(data, options = {})
       sizes_by_color = {}
 
       data.each do |row|
         sku = parse_sku(row)
 
-        sizes_by_color[sku.color] ||= color_from(sku)
-        sizes_by_color[sku.color].sizes << size_from(sku, row)
+        color = sizes_by_color[sku.color] ||= color_from(sku, options)
+        color.sizes << size_from(sku, row, color, options)
       end
 
       return sizes_by_color.values
     end
 
-    def color_from(sku)
-      FBA::Color.new(
-        ::Color.find_by(sku: sku.color),
-        [],
-        sku.color
-      )
+    def option?(options, *keys)
+      yield keys.reduce(options) { |current, key| current.try(:[], key) }
     end
 
-    def size_from(sku, data)
+    def color_from(sku, options = {})
+      color = option?(options, :colors, sku.color) do |color_id|
+        color_id ? ::Color.find(color_id) : ::Color.find_by(sku: sku.color)
+      end
+
+      FBA::Color.new(color, [], color.try(:sku) || sku.color)
+    end
+
+    def size_from(sku, data, color, options = {})
+      size = option?(options, :sizes, sku.size) do |size_id|
+        size_id ? ::Size.find(size_id) : ::Size.find_by(sku: sku.size)
+      end
+
       FBA::Size.new(
-        ::Size.find_by(sku: sku.size),
+        size,
         data['Shipped'],
-        sku.size,
-        sku.color
+        size.try(:sku) || sku.size,
+        color.try(:sku) || sku.color
       )
     end
 

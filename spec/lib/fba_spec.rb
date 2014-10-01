@@ -85,8 +85,7 @@ describe FBA, fba_spec: true, story_103: true do
         it 'uses size with id=50 for the size sku 02' do
           expect(Size).to receive(:find).with('50').and_return other_size_s
 
-          subject = FBA.parse_packing_slip(packing_slip)
-          expect(subject.errors).to be_empty
+          FBA.parse_packing_slip(packing_slip, sizes: { "02" => "50" })
         end
       end
     end
@@ -112,11 +111,10 @@ describe FBA, fba_spec: true, story_103: true do
 
       context 'options: { colors: { "000" => "50" } }', options: true do
         it 'uses color with id=50 for the color sku 000' do
-          expect(Color).to_not receive(:find_by)
+          expect(Color).to_not receive(:find_by).with(sku: '456')
           expect(Color).to receive(:find).with('50').and_return other_color
           
-          subject = FBA.parse_packing_slip(packing_slip)
-          expect(subject.errors).to be_empty
+          FBA.parse_packing_slip(packing_slip, colors: { "000" => "50" })
         end
       end
     end
@@ -142,12 +140,11 @@ describe FBA, fba_spec: true, story_103: true do
 
       context 'options: { imprintables: { "0705" => "50" } }', options: true do
         it 'uses imprintable with id=50 for the imprintable sku 0705' do
-          expect(Imprintable).to_not receive(:find_by)
+          expect(Imprintable).to_not receive(:find_by).with('0705')
           expect(Imprintable).to receive(:find).with('50')
             .and_return other_imprintable
 
-          subject = FBA.parse_packing_slip(packing_slip)
-          expect(subject.errors).to be_empty
+          FBA.parse_packing_slip(packing_slip, imprintables: { "0705" => "50" })
         end
       end
     end
