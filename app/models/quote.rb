@@ -102,6 +102,10 @@ class Quote < ActiveRecord::Base
     )
   end
 
+  def response_time
+    time = time_to_first_email
+  end
+
 private
 
   def prepare_nested_line_items_attributes
@@ -130,5 +134,16 @@ private
 
     @unsaved_line_items.each(&default_group.line_items.method(:<<))
     @unsaved_line_items = nil
+  end
+
+  def time_to_first_email
+    activity = PublicActivity::Activity.where(trackable_id: id,
+                                              trackable_type: Quote,
+                                              key: 'quote.emailed_customer').order('created_at ASC').first
+    activity.nil? ? nil : quote.initialized_at.since(activity.created_at)
+  end
+
+  def subtract_dates(date_one, date_two)
+
   end
 end
