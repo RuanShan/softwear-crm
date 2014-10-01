@@ -79,8 +79,10 @@ class OrdersController < InheritedResources::Base
     options = params.permit(:options).permit!
     packing_slips = params[:packing_slips]
 
+    return if packing_slips.nil?
+
     @fba_infos = packing_slips.map do |packing_slip|
-      FBA.parse_packing_slip(packing_slip, options)
+      FBA.parse_packing_slip(StringIO.new(packing_slip.read), options)
     end
   end
 

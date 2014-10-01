@@ -110,7 +110,7 @@ describe OrdersController, order_spec: true do
         expect_any_instance_of(Order).to receive(:generate_jobs)
           .with(fba_params)
 
-        post :create, job_attributes: fba_params
+        post :create, job_attributes: fba_params.to_json
 
         expect(response).to be_successful
       end

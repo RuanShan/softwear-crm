@@ -61,7 +61,7 @@ CrmSoftwearcrmCom::Application.routes.draw do
     collection do
       get 'fba'
       get 'new_fba'
-      get 'fba_job_info'
+      post 'fba_job_info'
     end
 
     get 'timeline', to: 'timeline#show', as: :timeline

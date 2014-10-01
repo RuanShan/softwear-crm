@@ -1,0 +1,23 @@
+<div class="modal fade" id="packingSlipModal" tabindex="-1" role="dialog" aria-labelledby="packingSlipModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+        <h4 class="modal-title modal-content-area" id="packingSlipTitle">Upload packing slip(s)</h4>
+      </div>
+
+      <%= form_tag fba_job_info_orders_path, method: :post, remote: true, id: 'js-packing-slip-form' do %>
+        <div class="modal-body modal-content-area">
+          <div id='js-packing-slips'>
+            
+          </div>
+          <%= link_to '#', id: 'js-add-packing-slip-file' do %><i class='fa fa-2x fa-plus-circle'></i><% end %>
+        </div>
+
+        <div class="modal-footer modal-content-area" id="packingSlipFooter">
+          <%= submit_tag 'Upload', id: 'js-submit-packing-slips', class: 'btn btn-info' %>
+        </div>
+      <% end %>
+    </div>
+  </div>
+</div>

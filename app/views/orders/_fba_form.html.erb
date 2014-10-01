@@ -26,8 +26,13 @@
   <section class="step" data-step-title="Amazon Packing Slips">
     <div class="row">
       <div class="col-sm-6">
-        <%= render partial: 'fba_packing_slip_upload',
-                   locals: { current_user: current_user, f: f } %>
+
+        <%= link_to 'Upload Packing Slip(s)', '#', id: 'js-upload-packing-slips-button', class: 'btn btn-info' %>
+
+        <div id="js-packing-slip-info-zone">
+          
+        </div>
+
       </div>
 
       <div class="col-sm-6">
@@ -41,39 +46,14 @@
           <p style="text-align: justify">
             One job will be created for each packing slip uploaded.
             Job name and line items will be generated if the packing
-            slip is valid. It is recommended you validate the packing
-            slips before submitting the order, so that you know if
-            there were any issues while parsing the packing slips.
+            slip is valid. If any issues arise while parsing the 
+            slip, you will be informed.
           </p>
 
         </div>
       </div>
     </div>
   </section>
-
-  <!-- <section class="step" data-step-title="Validation">
-    <div class="row">
-      <div class="col-sm-6">
-        <div class="form-group">
-          validate me
-        </div>
-      </div>
-
-      <div class="col-sm-6">
-        <div class="notes">
-          <h4>Packing Slip Validation</h4>
-
-          <p style="text-align: justify">
-            Here you can validate the integrity of the packing slips.
-          </p>
-
-          <p style="text-align: justify">
-            This lets you find out if there is any sizes or colors
-            that haven't been registered in the CRM.
-          </p>
-
-        </div>
-      </div>
-    </div>
-  </section> -->
 <% end %>
+
+<%= render partial: 'packing_slip_modal' %>
