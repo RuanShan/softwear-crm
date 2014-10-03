@@ -161,26 +161,45 @@ class Order < ActiveRecord::Base
 
   def generate_jobs(job_attributes)
     job_attributes.each do |attributes|
+      attributes = HashWithIndifferentAccess.new(attributes)
+
       job = jobs.create(name: attributes[:job_name])
+      unless job.valid?
+        job.assure_name_and_description
+        job.save!
+      end
       imprintable_id = attributes[:imprintable]
       
       attributes[:colors].each do |color_attributes|
+        next if color_attributes.nil?
+
         color_id = color_attributes[:color]
 
+        LineItem.create_imprintables(job, imprintable_id, color_id)
+
         color_attributes[:sizes].each do |size_attributes|
+          next if size_attributes.nil?
+
           size_id = size_attributes[:size]
 
-          variant = ImprintableVariant.find_by(
-            imprintable_id: imprintable_id,
-            color_id:       color_id,
-            size_id:        size_id
-          )
+          job.line_items
+            .joins(:imprintable_variant)
+            .where(imprintable_variants: { size_id: size_id })
+            .readonly(false)
+            .first
+            .update_attributes(quantity: size_attributes[:quantity])
 
-          job.line_items.create(
-            imprintable_variant_id: variant.id,
-            unit_price: variant.imprintable.base_price || 0,
-            quantity: size_attributes[:quantity],
-          )
+          # variant = ImprintableVariant.find_by(
+          #   imprintable_id: imprintable_id,
+          #   color_id:       color_id,
+          #   size_id:        size_id
+          # )
+
+          # job.line_items.create(
+          #   imprintable_variant_id: variant.id,
+          #   unit_price: variant.imprintable.base_price || 0,
+          #   quantity: size_attributes[:quantity],
+          # )
         end
       end
     end

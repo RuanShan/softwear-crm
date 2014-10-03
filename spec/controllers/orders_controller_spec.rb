@@ -72,7 +72,7 @@ describe OrdersController, order_spec: true do
     end
   end
 
-  describe 'POST #create' do
+  describe 'POST #create', create: true do
     context 'with fba params', story_103: true do
       let(:fba_params) do
         [
@@ -108,7 +108,6 @@ describe OrdersController, order_spec: true do
       
       it 'calls order#generate_jobs with' do
         expect_any_instance_of(Order).to receive(:generate_jobs)
-          .with(fba_params)
 
         post :create, job_attributes: [fba_params.to_json]
 

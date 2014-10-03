@@ -53,6 +53,20 @@ class OrdersController < InheritedResources::Base
     end
   end
 
+  def create
+    return super unless params[:order].try(:[], 'terms') == 'Fulfilled by Amazon'
+
+    @order = Order.create(permitted_params[:order])
+
+    if @order.valid?
+      @order.generate_jobs(params[:job_attributes].map(&JSON.method(:parse)))
+      redirect_to order_path @order
+    else
+      @empty = Store.all.empty?
+      render 'new_fba'
+    end
+  end
+
   def names_numbers
     @order = Order.find(params[:id])
     filename = "order_#{@order.name}_names_numbers.csv"
@@ -109,6 +123,7 @@ class OrdersController < InheritedResources::Base
   def permitted_params
     params.permit(
       :packing_slips, :page,
+      :job_attributes,
 
       order: [
       :email, :firstname, :lastname,

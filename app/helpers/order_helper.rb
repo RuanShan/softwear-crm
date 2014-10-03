@@ -37,6 +37,6 @@ module OrderHelper
   end
 
   def render_fba_data(fba)
-    hidden_field_tag('job_attributes', fba.to_h.to_json)
+    hidden_field_tag('job_attributes[]', fba.to_h.to_json)
   end
 end

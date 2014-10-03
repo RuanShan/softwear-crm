@@ -213,7 +213,8 @@ class FBA
   def check_for_nil_colors
     colors
       .select { |c| c.color.nil? }
-      .map { |c| Error.new("Couldn't find color with sku '#{c.sku}'", c) }
+      .map { |c| Error.new("Couldn't find color with sku '#{c.sku}'", c, 
+                           :nil_color) }
   end
 
   def check_for_nil_sizes

@@ -391,6 +391,7 @@ describe Order, order_spec: true do
                     size: size_l.id,
                     quantity: 12
                   },
+                  nil,
                   {
                     size: size_xl.id,
                     quantity: 13
