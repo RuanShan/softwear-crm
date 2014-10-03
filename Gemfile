@@ -75,7 +75,7 @@ group :development do
   gem 'better_errors', '>= 0.3.2'
   gem 'binding_of_caller'
   gem 'mailcatcher'
-  gem 'debugger'
+  # gem 'debugger'
 end
 
 group :development, :test do
