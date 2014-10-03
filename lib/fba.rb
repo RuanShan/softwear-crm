@@ -4,7 +4,7 @@ class FBA
       return nil unless color
       {
         color: color.id,
-        sizes: sizes.map(&:to_h)
+        sizes: sizes.compact.map(&:to_h)
       }
     end
   end
@@ -162,12 +162,17 @@ class FBA
   end
 
   def to_h
-    return nil unless imprintable
-    {
-      job_name: @job_name,
-      imprintable: @imprintable.id,
-      colors: @colors.map(&:to_h).compact
-    }
+    if imprintable.nil?
+      {
+        job_name: @job_name
+      }
+    else
+      {
+        job_name: @job_name,
+        imprintable: @imprintable.id,
+        colors: @colors.map(&:to_h).compact
+      }
+    end
   end
 
   def errors

@@ -15,14 +15,14 @@ $(function() {
   if ($('#js-packing-slip-form').length == 0) return;
 
   resubmitButton = function(self, inputClass) {
-    var infoContainer = 
-      self.closest('.info');
-
     var dataElement =
       self.closest('.fba-upload');
 
+    var container =
+      self.closest('.error-result');
+
     var inputElement = 
-      dataElement
+      container
       .find('.' + inputClass);
 
     var originalValue =

@@ -5,5 +5,5 @@
     .empty()
     .append("<%=j render_fba_error_handling(@fba_infos.first) %>");
 <% else %>
-  alert("DIDN'T EVEN REALLY DO ANYTHING");
+  errorModal('Something went wrong internally');
 <% end %>

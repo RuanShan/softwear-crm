@@ -13,8 +13,13 @@ module OrderHelper
     return render 'orders/error_handling/fba_ok' if fba.errors.empty?
 
     fba.errors.reduce(''.html_safe) do |all, error|
-      all.send :original_concat,
-      render("orders/error_handling/fba_#{error.type}", error: error, fba: fba)
+      all.send(:original_concat,
+        content_tag(:div, class: 'error-result') do
+          render(
+            "orders/error_handling/fba_#{error.type}", error: error, fba: fba
+          )
+        end
+      )
     end
   end
 
@@ -28,7 +33,7 @@ module OrderHelper
 
   def fba_resubmit(input_class)
     link_to 'Retry', '#', onclick: "return resubmitButton($(this), '#{input_class}');",
-                          class: 'fba-resubmit btn btn-submit'
+                          class: 'fba-resubmit btn btn-info'
   end
 
   def render_fba_data(fba)
