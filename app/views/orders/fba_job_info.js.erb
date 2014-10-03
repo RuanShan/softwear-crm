@@ -1,3 +1,9 @@
-alert(
-  "<%=j @fba_infos.first.errors.join(', ') %>"
-);
+<% if @fba_infos %>
+  var container = $('#<%= @file_name.downcase.gsub(/\./, "_") %>-upload');
+
+  container.find('.info')
+    .empty()
+    .append("<%= render_fba_error_handling(@fba_infos.first) %>");
+<% else %>
+  alert("DIDN'T EVEN REALLY DO ANYTHING");
+<% end %>

@@ -57,3 +57,12 @@
 <% end %>
 
 <%= render partial: 'packing_slip_modal' %>
+
+<script id='template-upload' type="text/x-tmpl">
+  <div class='fba-upload' id='{%=o.name.toLowerCase().replace(".", "_")%}-upload'>
+    <h4 align='center'>{%=o.name%}</h4>
+    <div class='info'>
+      
+    </div>
+  </div>
+</script>

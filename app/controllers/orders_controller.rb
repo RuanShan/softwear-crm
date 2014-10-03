@@ -81,6 +81,8 @@ class OrdersController < InheritedResources::Base
 
     return if packing_slips.nil?
 
+    @file_name = packing_slips.first.original_filename
+
     @fba_infos = packing_slips.map do |packing_slip|
       FBA.parse_packing_slip(StringIO.new(packing_slip.read), options)
     end

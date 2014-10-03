@@ -18,7 +18,7 @@ class FBA
     end
   end
   SKU = Struct.new(:version, :idea, :print, :imprintable, :size, :color)
-  Error = Struct.new(:message, :item)
+  Error = Struct.new(:message, :item, :type)
 
   class << self
     def parse_packing_slip(packing_slip, options = {})
@@ -27,7 +27,12 @@ class FBA
 
       if sku.nil?
         return FBA.new(
-            errors: [Error.new('Bad sku', data.first['Merchant ID'])]
+            errors: [
+              Error.new(
+                'Bad sku or invalid packing slip',
+                data.first['Merchant ID'], :bad_sku
+              )
+            ]
           )
       end
 
@@ -86,7 +91,7 @@ class FBA
     def parse_sku(data)
       sku = data.is_a?(Hash) ? data['Merchant SKU'] : data
 
-      version = sku[0]
+      version = sku.try(:[], 0)
       case version
       when '0'
         /\d\-(?<idea>\w+)\-
@@ -120,7 +125,10 @@ class FBA
     def parse_footer(file)
       data = []
 
-      keys = file.gets.split("\t").map(&:strip)
+      first_line = file.gets
+      return nil if first_line.nil?
+
+      keys = first_line.split("\t").map(&:strip)
       
       file.each_line do |line|
         row = {}
@@ -186,7 +194,8 @@ class FBA
       [
         Error.new(
           "Couldn't find imprintable with sku '#{@imprintable_sku}'",
-          @imprintable_sku
+          @imprintable_sku,
+          :nil_imprintable
         )
       ]
     end
@@ -208,7 +217,8 @@ class FBA
         if fba_size.size.nil?
           Error.new(
             "Couldn't find size with sku '#{fba_size.sku}'",
-            fba_size
+            fba_size,
+            :nil_size
           )
         end
       end
@@ -229,7 +239,8 @@ class FBA
                 "Size with sku '#{fba_size.size.sku}' is not valid for "\
                 "the imprintable #{imprintable.common_name} and color "\
                 "#{fba_color.color.name}",
-                fba_size
+                fba_size,
+                :invalid_size
               )
           end
         end

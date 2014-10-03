@@ -16,9 +16,12 @@ var packingSlipUpload = function(closeButton) {
     + "</div>";
 }
 
-
 $(function() {
-  $('#js-packing-slips').append(packingSlipUpload(false));
+  if ($('#js-packing-slip-form').length == 0) return;
+
+  var currentDatas = [];
+
+  // $('#js-packing-slips').append(packingSlipUpload(false));
 
   $('#js-add-packing-slip-file').click(function() {
     $('#js-packing-slips').append(packingSlipUpload(true));
@@ -30,6 +33,26 @@ $(function() {
 
   $('#js-packing-slip-form').submit(function() {
     $('#packingSlipModal').modal('hide');
+
+    $('#js-packing-slip-form').replaceWith($(this).clone())
+
     return true;
+  });
+
+  $('#js-packing-slip-form').fileupload({
+    dataType: 'script',
+    add: function(e, data) {
+      var file = data.files[0];
+      // currentDatas.push(data);
+
+      data.context = $(tmpl('template-upload', file));
+      $('#js-packing-slip-info-zone').append(data.context);
+      data.context.data('file-data', data);
+
+      data.submit();
+      $('#packingSlipModal').modal('hide');
+    },
+
+    progress: function(e, data) { }
   });
 });

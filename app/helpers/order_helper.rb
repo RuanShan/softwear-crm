@@ -8,4 +8,12 @@ module OrderHelper
     else nil
     end
   end
+
+  def render_fba_error_handling(fba)
+    return render 'error_handling/fba_ok' if fba.errors.empty?
+
+    fba.errors.reduce('') do |all, error|
+      all + render("error_handling/fba_#{error.type}", error: error)
+    end
+  end
 end
