@@ -170,6 +170,8 @@ class Order < ActiveRecord::Base
       end
       imprintable_id = attributes[:imprintable]
       
+      byebug
+
       attributes[:colors].each do |color_attributes|
         next if color_attributes.nil?
 
