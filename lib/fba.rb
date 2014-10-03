@@ -36,8 +36,11 @@ class FBA
           )
       end
 
-      imprintable = option?(options, :imprintables, sku.imprintable) do |id|
-        id ? Imprintable.find(id) : Imprintable.find_by(sku: sku.imprintable)
+      imprintable_sku = nil
+
+      imprintable = option?(options, :imprintables, sku.imprintable) do |imp_sku|
+        imprintable_sku = imp_sku ? imp_sku : sku.imprintable
+        Imprintable.find_by(sku: imprintable_sku)
       end
 
       colors = retrieve_colors(data, options)
@@ -46,7 +49,7 @@ class FBA
         job_name: "#{sku.idea} #{header['Shipment ID']}",
         colors: colors,
         imprintable: imprintable,
-        imprintable_sku: imprintable.try(:sku) || sku.imprintable
+        imprintable_sku: imprintable_sku
       )
     end
 
@@ -64,7 +67,8 @@ class FBA
     end
 
     def option?(options, *keys)
-      yield keys.reduce(options) { |current, key| current.try(:[], key) }
+      yield keys.reduce(options) { |current, key| current.try(:[], key) ||
+                                                  current.try(:[], key.to_s) }
     end
 
     def color_from(sku, options = {})

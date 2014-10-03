@@ -1,0 +1,8 @@
+<p class='error-text'>
+  The imprintable with sku '<%= error.item %>' could not be found in the system.
+</p>
+<p>
+  (OPTIONAL) Choose a different sku to use:
+  <%= fba_input(:number_field, 'imprintables', error.item, class: 'alternate-imprintable-sku', original: error.item) %>
+  <%= fba_resubmit('alternate-imprintable-sku') %>
+</p>

@@ -1,9 +1,9 @@
 <% if @fba_infos %>
-  var container = $('#<%= @file_name.downcase.gsub(/\./, "_") %>-upload');
+  var container = $('#<%= @script_container_id %>');
 
   container.find('.info')
     .empty()
-    .append("<%= render_fba_error_handling(@fba_infos.first) %>");
+    .append("<%=j render_fba_error_handling(@fba_infos.first) %>");
 <% else %>
   alert("DIDN'T EVEN REALLY DO ANYTHING");
 <% end %>

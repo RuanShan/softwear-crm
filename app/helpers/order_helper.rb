@@ -10,10 +10,28 @@ module OrderHelper
   end
 
   def render_fba_error_handling(fba)
-    return render 'error_handling/fba_ok' if fba.errors.empty?
+    return render 'orders/error_handling/fba_ok' if fba.errors.empty?
 
-    fba.errors.reduce('') do |all, error|
-      all + render("error_handling/fba_#{error.type}", error: error)
+    fba.errors.reduce(''.html_safe) do |all, error|
+      all.send :original_concat,
+      render("orders/error_handling/fba_#{error.type}", error: error, fba: fba)
     end
+  end
+
+  def fba_input(tag, *args)
+    args.last.merge!(
+      'data-original-value' => args.last.delete(:original),
+               'onkeypress' => 'return resubmitFbaOnEnter($(this), event);'
+    )
+    send("#{tag}_tag", *args)
+  end
+
+  def fba_resubmit(input_class)
+    link_to 'Retry', '#', onclick: "return resubmitButton($(this), '#{input_class}');",
+                          class: 'fba-resubmit btn btn-submit'
+  end
+
+  def render_fba_data(fba)
+    hidden_field_tag('job_attributes', fba.to_h.to_json)
   end
 end

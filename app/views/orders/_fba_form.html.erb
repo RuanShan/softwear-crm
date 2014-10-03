@@ -54,15 +54,43 @@
       </div>
     </div>
   </section>
+
+  <section class="step" data-step-title="Done">
+    <div class="row">
+      <div class="col-sm-6">
+        <div class="form-group">
+          lst step
+        </div>
+      </div>
+
+      <div class="col-sm-6">
+        <div class="notes">
+          <h4>Ready to roll</h4>
+        </div>
+      </div>
+    </div>
+  </section>
 <% end %>
 
 <%= render partial: 'packing_slip_modal' %>
 
 <script id='template-upload' type="text/x-tmpl">
-  <div class='fba-upload' id='{%=o.name.toLowerCase().replace(".", "_")%}-upload'>
-    <h4 align='center'>{%=o.name%}</h4>
+  <div class='fba-upload', id='{%=generateUUID()%}'>
+
+    <div class='row'>
+      <div class='col-sm-4'>
+      </div>
+      <div class='col-sm-4'>
+        <h4>{%=o.name%}</h4>
+      </div>
+      <div class='col-sm-3'></div>
+      <div class='col-sm-1'>
+        <a href='#' class='error-text glyphicon glyphicon-remove' onclick='$(this).closest(".fba-upload").remove()'></a>
+      </div>
+    </div>
+    
     <div class='info'>
-      
+
     </div>
   </div>
 </script>

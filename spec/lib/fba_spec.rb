@@ -138,13 +138,13 @@ describe FBA, fba_spec: true, story_103: true do
           .to include "Couldn't find imprintable with sku '0705'"
       end
 
-      context 'options: { imprintables: { "0705" => "50" } }', options: true do
-        it 'uses imprintable with id=50 for the imprintable sku 0705' do
-          expect(Imprintable).to_not receive(:find_by).with('0705')
-          expect(Imprintable).to receive(:find).with('50')
+      context 'options: { imprintables: { "0705" => "50" } }', options: true, imp_opts: true do
+        it 'uses imprintable with sku=50 instead of sku=0705' do
+          expect(Imprintable).to_not receive(:find_by).with(sku: '0705')
+          expect(Imprintable).to receive(:find_by).with(sku: '50')
             .and_return other_imprintable
 
-          FBA.parse_packing_slip(packing_slip, imprintables: { "0705" => "50" })
+          FBA.parse_packing_slip(packing_slip, 'imprintables' => { "0705" => "50" })
         end
       end
     end

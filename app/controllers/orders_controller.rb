@@ -76,12 +76,17 @@ class OrdersController < InheritedResources::Base
   end
 
   def fba_job_info
-    options = params.permit(:options).permit!
+    params.permit('script_container_id')
+    params.permit('options').permit!
+    options = params['options']
+    options = JSON.parse(options) if options.is_a?(String)
+
     packing_slips = params[:packing_slips]
 
     return if packing_slips.nil?
 
     @file_name = packing_slips.first.original_filename
+    @script_container_id = params[:script_container_id]
 
     @fba_infos = packing_slips.map do |packing_slip|
       FBA.parse_packing_slip(StringIO.new(packing_slip.read), options)
