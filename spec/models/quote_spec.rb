@@ -17,6 +17,7 @@ describe Quote, quote_spec: true do
     it { is_expected.to validate_presence_of(:estimated_delivery_date) }
     it { is_expected.to validate_presence_of(:first_name) }
     it { is_expected.to validate_presence_of(:last_name) }
+    it { is_expected.to validate_presence_of(:quote_source) }
     it { is_expected.to validate_presence_of(:salesperson) }
     it { is_expected.to validate_presence_of(:store) }
     it { is_expected.to validate_presence_of(:valid_until_date) }

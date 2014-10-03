@@ -15,6 +15,8 @@ describe 'quotes/_quote_detail_fields.html.erb', quote_spec: true do
   it 'should contain all the necessary fields and labels' do
     expect(rendered).to have_css('label', text: 'Quote Name')
     expect(rendered).to have_css('input#quote_name')
+    expect(rendered).to have_css('label', text: 'Quote Source')
+    expect(rendered).to have_css('select#quote_quote_source')
     expect(rendered).to have_css('label', text: 'Valid Until Date')
     expect(rendered).to have_css('input#quote_valid_until_date')
     expect(rendered).to have_css('label', text: 'Estimated Delivery Date')

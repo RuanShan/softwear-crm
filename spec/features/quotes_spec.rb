@@ -33,6 +33,8 @@ feature 'Quotes management', quote_spec: true, js: true do
     sleep 0.5
 
     fill_in 'Quote Name', with: 'Quote Name'
+    find('#quote_quote_source').find("option[value='Other']").click
+    sleep 5
     fill_in 'Valid Until Date', with: Time.now + 1.day
     fill_in 'Estimated Delivery Date', with: Time.now + 1.day
     click_button 'Next'
