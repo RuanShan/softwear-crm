@@ -185,9 +185,8 @@ class Order < ActiveRecord::Base
           size_id = size_attributes[:size]
 
           job.line_items
-            .where(color_id: color_id)
             .joins(:imprintable_variant)
-            .where(imprintable_variants: { size_id: size_id })
+            .where(imprintable_variants: { size_id: size_id, color_id: color_id })
             .readonly(false)
             .first
             .update_attributes(quantity: size_attributes[:quantity])
