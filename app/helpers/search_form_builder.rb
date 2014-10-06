@@ -210,7 +210,7 @@ class SearchFormBuilder
   end
 
   def compile_select_options(field_name, options)
-    initial_value  = initial_value_for field_name
+    initial_value  = (initial_value_for field_name) || options[:selected]
     display_method = options.delete(:display) || :name
 
     proc do |total, item|

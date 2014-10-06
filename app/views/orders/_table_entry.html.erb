@@ -10,8 +10,12 @@
   </td>
   <td>
     <%= order.name %><br>
-    <%= order.firstname %> <%= order.lastname %><br>
-    <%= order.email %>
+    <% if order.fba? %>
+      <span class="label label-warning">FBA</span>
+    <% else %>
+      <%= order.firstname %> <%= order.lastname %><br>
+      <%= order.email %>
+    <% end %>
   </td>
   <td><%= order.salesperson.full_name %></td>
   <td>

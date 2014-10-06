@@ -1,0 +1,20 @@
+<% if @empty %>
+
+  <div class="page-heading animated fadeInDownBig">
+    <h1>No stores found!</h1>
+  </div>
+
+  <%= render partial: 'missing_store_error' %>
+
+<% else %>
+
+  <div class="page-heading animated fadeInDownBig">
+    <h1>Create New FBA Order <small>wizard</small></h1>
+  </div>
+
+  <div class="box-info full">
+    <%= render partial: 'fba_form',
+               locals: { order: @order, current_user: @current_user } %>
+  </div>
+
+<% end %>

@@ -1,0 +1,6 @@
+<p class='error-text'>
+  <%= error.message %>. Job will be generated with line items of size sku 
+  <%= error.item.sku %> (Quantity <%= error.item.quantity %>) omitted.
+</p>
+
+<%= render_fba_data(@fba_infos.first) %>

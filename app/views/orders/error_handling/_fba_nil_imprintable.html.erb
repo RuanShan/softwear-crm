@@ -1,0 +1,11 @@
+<p class='error-text'>
+  The imprintable with sku '<%= error.item %>' could not be found in the system.
+  A job will be generated with no line items.
+</p>
+<p>
+  (OPTIONAL) Choose a different sku to use:
+  <%= fba_input(:number_field, 'imprintables', error.item, class: 'alternate-imprintable-sku', original: error.item) %>
+  <%= fba_resubmit('alternate-imprintable-sku') %>
+</p>
+
+<%= render_fba_data(@fba_infos.first) %>

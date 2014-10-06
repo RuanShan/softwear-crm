@@ -33,5 +33,7 @@
 //= require sortable/sortable
 //= require datepicker/bootstrap-datepicker
 //= require bootstrap/bootstrap
+//= require jquery-fileupload/basic
+//= require jquery-fileupload/vendor/tmpl
 
 //= require_tree .
