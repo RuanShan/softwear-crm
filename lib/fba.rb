@@ -246,7 +246,8 @@ class FBA
         bad_sizes = fba_color.sizes.select do |fba_size|
           unless valid_size_variants.any? { |v| v.size_id == fba_size.size.id }
             errors << Error.new(
-                "Size with sku '#{fba_size.size.sku}' is not valid for "\
+                "Size with sku '#{fba_size.size.sku}' is not valid "\
+                "(No imprintable variant found) for "\
                 "the imprintable #{imprintable.common_name} and color "\
                 "#{fba_color.color.name}",
                 fba_size,
