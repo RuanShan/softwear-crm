@@ -378,11 +378,8 @@ ActiveRecord::Schema.define(version: 20141003144742) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.decimal  "shipping",                precision: 10, scale: 2
-<<<<<<< HEAD
     t.string   "quote_source"
-=======
     t.datetime "initialized_at"
->>>>>>> 124aebf869743d8de1e95fdf96f61d88e718088f
   end
 
   create_table "sample_locations", force: true do |t|
