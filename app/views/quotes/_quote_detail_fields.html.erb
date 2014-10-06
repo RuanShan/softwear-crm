@@ -7,6 +7,14 @@
 </div>
 
 <div class="form-group">
+  <%= f.label :quote_source %>
+
+  <%= f.error_for :quote_source %>
+
+  <%= f.select :quote_source, Quote::QUOTE_SOURCES, include_blank: true %>
+</div>
+
+<div class="form-group">
   <%= f.label :shipping %>
 
   <%= f.error_for :shipping %>

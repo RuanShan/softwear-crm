@@ -364,6 +364,7 @@ ActiveRecord::Schema.define(version: 20141006170342) do
     t.string   "source"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.integer  "salesperson_id"
   end
 
   create_table "quotes", force: true do |t|
@@ -382,6 +383,7 @@ ActiveRecord::Schema.define(version: 20141006170342) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.decimal  "shipping",                precision: 10, scale: 2
+    t.string   "quote_source"
     t.datetime "initialized_at"
     t.string   "quote_source"
   end

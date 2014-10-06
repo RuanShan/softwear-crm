@@ -8,6 +8,13 @@ class Quote < ActiveRecord::Base
   acts_as_paranoid
   tracked by_current_user
 
+  QUOTE_SOURCES = [
+      'Phone Call',
+      'E-mail',
+      'Walk In',
+      'Other'
+  ]
+
   belongs_to :salesperson, class_name: User
   belongs_to :store
   has_many :line_item_groups
@@ -20,6 +27,7 @@ class Quote < ActiveRecord::Base
   validates :first_name, presence: true
 # validate :has_line_items?
   validates :last_name, presence: true
+  validates :quote_source, presence: true
   validates :salesperson, presence: true
   validates :store, presence: true
   validates :valid_until_date, presence: true
