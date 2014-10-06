@@ -7,7 +7,7 @@ describe 'imprintables/_supplier_information_form', story_185: true, imprintable
   context 'when the imprintable isn\'t retail' do
     before(:each) do
       f = test_form_for non_retail_imprintable, builder: LancengFormBuilder
-      render 'supplier_information_form', imprintable: non_retail_imprintable, f: f
+      render 'supplier_information_form', object: non_retail_imprintable, f: f
     end
 
     it 'has field for main supplier, supplier link, base price,
@@ -25,26 +25,26 @@ describe 'imprintables/_supplier_information_form', story_185: true, imprintable
     end
 
     it 'doesn\'t have upcharge fields' do
-      expect(rendered).to_not have_css('input#xxl_upcharge')
-      expect(rendered).to_not have_css('input#xxxl_upcharge')
-      expect(rendered).to_not have_css('input#xxxxl_upcharge')
-      expect(rendered).to_not have_css('input#xxxxxl_upcharge')
-      expect(rendered).to_not have_css('input#xxxxxxl_upcharge')
+      expect(rendered).to_not have_css('input#imprintable_xxl_upcharge')
+      expect(rendered).to_not have_css('input#imprintable_xxxl_upcharge')
+      expect(rendered).to_not have_css('input#imprintable_xxxxl_upcharge')
+      expect(rendered).to_not have_css('input#imprintable_xxxxxl_upcharge')
+      expect(rendered).to_not have_css('input#imprintable_xxxxxxl_upcharge')
     end
   end
 
   context 'when the imprintable is retail' do
     before(:each) do
       f = test_form_for retail_imprintable, builder: LancengFormBuilder
-      render 'supplier_information_form', imprintable: retail_imprintable, f: f
+      render 'supplier_information_form', object: retail_imprintable, f: f
     end
 
     it 'has upcharge fields' do
-      expect(rendered).to have_css('input#xxl_upcharge')
-      expect(rendered).to have_css('input#xxxl_upcharge')
-      expect(rendered).to have_css('input#xxxxl_upcharge')
-      expect(rendered).to have_css('input#xxxxxl_upcharge')
-      expect(rendered).to have_css('input#xxxxxxl_upcharge')
+      expect(rendered).to have_css('input#imprintable_xxl_upcharge')
+      expect(rendered).to have_css('input#imprintable_xxxl_upcharge')
+      expect(rendered).to have_css('input#imprintable_xxxxl_upcharge')
+      expect(rendered).to have_css('input#imprintable_xxxxxl_upcharge')
+      expect(rendered).to have_css('input#imprintable_xxxxxxl_upcharge')
     end
   end
 end
