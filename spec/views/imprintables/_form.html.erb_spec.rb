@@ -13,12 +13,7 @@ describe 'imprintables/_form.html.erb', imprintable_spec: true do
             all_colors: [],
             all_sizes: []
           }
-    render partial: 'imprintables/form',
-           locals: {
-                     imprintable: imprintable,
-                     f: f,
-                     model_collection_hash: mch
-                   }
+    render 'form', imprintable: imprintable, f: f, model_collection_hash: mch
   end
 
   it 'has text_field for special_considerations, material,
