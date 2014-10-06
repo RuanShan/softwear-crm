@@ -74,17 +74,17 @@ namespace :solr do
     desc "#{command} solr"
     task command, [:env] do |_cmd, args|
       on roles(:app) do
-        execute "cd #{current_path} && #{rvm} && bundle exec rake sunspot:solr:#{command} RAILS_ENV=#{args[:env] || 'production'}"
+        execute "cd #{current_path} && #{rvm} && bundle exec rake sunspot:solr:#{command} RAILS_ENV=#{fetch(:stage) || 'production'}"
       end
     end
   end
 
   after 'deploy:finished', 'solr:restart'
-  
+
   desc 'reindex solr'
   task :reindex, [:env] do |_cmd, args|
     on roles(:app) do
-      execute "cd #{current_path} && #{rvm} && yes | bundle exec rake sunspot:solr:reindex RAILS_ENV=#{args[:env] || 'production'}"
+      execute "cd #{current_path} && #{rvm} && yes | bundle exec rake sunspot:solr:reindex RAILS_ENV=#{fetch(:stage) || 'production'}"
     end
   end
 end
