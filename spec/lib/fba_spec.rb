@@ -15,7 +15,6 @@ describe FBA, fba_spec: true, story_103: true do
       let!(:imprintable) { create :valid_imprintable, sku: '0705' }
 
       before :each do
-        # allow(FBA).to receive(:find_errors).and_return []
         allow(ImprintableVariant).to receive(:size_variants_for)
           .and_return [size_s, size_m, size_l, size_xl]
           .map { |s| double('ImprintableVariant', size_id: s.id) }
@@ -127,10 +126,6 @@ describe FBA, fba_spec: true, story_103: true do
       let!(:color) { create :valid_color, sku: '000' }
       let(:other_imprintable) { create :valid_imprintable, sku: '6489' }
 
-      before :each do
-        # allow(FBA).to receive(:find_errors).and_return []
-      end
-
       it 'adds an error regarding the sku of the missing imprintable' do
         subject = FBA.parse_packing_slip(packing_slip)
 
@@ -173,9 +168,7 @@ describe FBA, fba_spec: true, story_103: true do
       it 'adds an error regarding the sku of the invalid size' do
         subject = FBA.parse_packing_slip(packing_slip)
 
-        expect(subject.errors.map(&:message))
-          .to include "Size with sku '03' is not valid for the imprintable "\
-                       "#{imprintable.common_name} and color #{color.name}"
+        expect(subject.errors.map(&:type)).to include :invalid_size
       end
     end
 
@@ -188,7 +181,7 @@ describe FBA, fba_spec: true, story_103: true do
         it 'adds a "Bad sku" error' do
           subject = FBA.parse_packing_slip(packing_slip)
 
-          expect(subject.errors.map(&:message)).to include 'Bad sku'
+          expect(subject.errors.flat_map(&:type)).to include :bad_sku
         end
       end
     end

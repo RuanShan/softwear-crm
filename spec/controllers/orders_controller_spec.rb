@@ -74,44 +74,50 @@ describe OrdersController, order_spec: true do
 
   describe 'POST #create', create: true do
     context 'with fba params', story_103: true do
+      let(:order_params) do
+        {
+          name: 'Test FBA',
+          terms: 'Fulfilled by Amazon'
+        }
+      end
+
       let(:fba_params) do
-        [
-          {
-            job_name: 'test_fba FBA222EE2E',
-            imprintable: 500,
-            colors: [
-              {
-                color: 500,
-                sizes: [
-                  {
-                    size: 500,
-                    quantity: 10
-                  },
-                  {
-                    size: 500,
-                    quantity: 11
-                  },
-                  {
-                    size: 500,
-                    quantity: 12
-                  },
-                  {
-                    size: 500,
-                    quantity: 13
-                  }
-                ]
-              }
-            ]
-          }
-        ]
+        {
+          job_name: 'test_fba FBA222EE2E',
+          imprintable: 500,
+          colors: [
+            {
+              color: 500,
+              sizes: [
+                {
+                  size: 500,
+                  quantity: 10
+                },
+                {
+                  size: 500,
+                  quantity: 11
+                },
+                {
+                  size: 500,
+                  quantity: 12
+                },
+                {
+                  size: 500,
+                  quantity: 13
+                }
+              ]
+            }
+          ]
+        }
       end
       
       it 'calls order#generate_jobs with' do
-        expect_any_instance_of(Order).to receive(:generate_jobs)
+        dummy_order = double('Order')
+        expect(Order).to receive(:create).and_return dummy_order
+        expect(dummy_order).to receive(:valid?).and_return true
+        expect(dummy_order).to receive(:generate_jobs)
 
-        post :create, job_attributes: [fba_params.to_json]
-
-        expect(response).to be_successful
+        post :create, job_attributes: [fba_params.to_json], order: order_params
       end
     end
   end

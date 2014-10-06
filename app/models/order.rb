@@ -170,8 +170,6 @@ class Order < ActiveRecord::Base
       end
       imprintable_id = attributes[:imprintable]
       
-      byebug
-
       attributes[:colors].each do |color_attributes|
         next if color_attributes.nil?
 
@@ -190,18 +188,6 @@ class Order < ActiveRecord::Base
             .readonly(false)
             .first
             .update_attributes(quantity: size_attributes[:quantity])
-
-          # variant = ImprintableVariant.find_by(
-          #   imprintable_id: imprintable_id,
-          #   color_id:       color_id,
-          #   size_id:        size_id
-          # )
-
-          # job.line_items.create(
-          #   imprintable_variant_id: variant.id,
-          #   unit_price: variant.imprintable.base_price || 0,
-          #   quantity: size_attributes[:quantity],
-          # )
         end
       end
     end
