@@ -75,11 +75,6 @@ group :development do
   gem 'better_errors', '>= 0.3.2'
   gem 'binding_of_caller'
   gem 'mailcatcher'
-  # gem 'debugger'
-end
-
-group :development, :test do
-  gem 'byebug'
 end
 
 group :test do
@@ -123,6 +118,3 @@ gem 'sidekiq'
 
 # Use unicorn as the app server
 # gem 'unicorn'
-
-# Use debugger
-# gem 'debugger', group: [:development, :test]

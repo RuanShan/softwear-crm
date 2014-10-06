@@ -1,5 +1,6 @@
 require 'rest_client'
 require 'json'
+require 'action_view'
 
 class Quote < ActiveRecord::Base
   include TrackingHelpers
@@ -33,7 +34,9 @@ class Quote < ActiveRecord::Base
   validates :shipping, price: true
 
   validate :prepare_nested_line_items_attributes
+
   after_save :save_nested_line_items_attributes
+  after_initialize  :initialize_time
 
   def all_activities
     PublicActivity::Activity.where( '
@@ -110,7 +113,15 @@ class Quote < ActiveRecord::Base
     )
   end
 
+  def response_time
+    subtract_dates(initialized_at, time_to_first_email)
+  end
+
 private
+
+  def initialize_time
+    self.initialized_at = Time.now if self.initialized_at.blank?
+  end
 
   def prepare_nested_line_items_attributes
     no_attributes = @line_item_attributes.nil? || @line_item_attributes.empty?
@@ -138,5 +149,18 @@ private
 
     @unsaved_line_items.each(&default_group.line_items.method(:<<))
     @unsaved_line_items = nil
+  end
+
+  def time_to_first_email
+    activity = PublicActivity::Activity.where(trackable_id: id,
+                                              trackable_type: Quote,
+                                              key: 'quote.emailed_customer').order('created_at ASC').first
+    activity.nil? ? nil : activity.created_at
+  end
+
+  include ActionView::Helpers::DateHelper
+  def subtract_dates(time_one, time_two)
+    return 'An email hasn\'t been sent yet!' unless time_two
+    distance_of_time_in_words(time_one, time_two)
   end
 end

@@ -31,6 +31,25 @@ describe Quote, quote_spec: true do
     end
   end
 
+  describe 'callbacks' do
+    context 'when supplied with an initialized at time' do
+      it 'sets initialized_at to the supplied time', story_86: true do
+        time = Time.zone.now + 1.day
+        quote = Quote.new(initialized_at: time)
+        expect(quote.initialized_at).to eq(time)
+      end
+    end
+
+    context 'when not supplied with a time' do
+      it 'sets initialized_at to time.now', story_86: true do
+        format = '%d/%m/%Y %H:%M'
+        expected_val = Quote.new.initialized_at.strftime(format)
+        test_val = Time.now.strftime(format)
+        expect(expected_val).to eq(test_val)
+      end
+    end
+  end
+
   describe 'instance methods' do
     let!(:quote) { build_stubbed(:valid_quote) }
 
@@ -161,6 +180,26 @@ describe Quote, quote_spec: true do
 
       it 'returns the value for tax' do
         expect(quote.tax).to eq(0.06)
+      end
+    end
+
+    describe '#response_time', story_86: true  do
+      let(:quote) { build_stubbed(:valid_quote, initialized_at: Time.now) }
+      context 'when an email hasn\'t been sent yet' do
+        it 'responds with nil' do
+          expect(PublicActivity::Activity).to receive_message_chain(:where, :order, :first).and_return(nil)
+          expect(quote.response_time).to eq("An email hasn't been sent yet!")
+        end
+      end
+
+      context 'when an email has been sent' do
+        HelperResponse = Class.new
+        it 'calculates the time between initialization and customer contact' do
+          expect(PublicActivity::Activity).to receive_message_chain(:where, :order, :first).and_return(HelperResponse)
+          expect(HelperResponse).to receive(:nil?).and_return(false)
+          expect(HelperResponse).to receive(:created_at).and_return(Time.now + 1.day)
+          expect(quote.response_time).to_not eq("An email hasn't been sent yet!")
+        end
       end
     end
   end
