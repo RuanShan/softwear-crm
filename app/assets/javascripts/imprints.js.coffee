@@ -3,6 +3,12 @@
   id = $this.val()
   
   $this.addClass 'editing-imprint'
+  console.log($this.val())
+  console.log("option[value='#{ $this.val() }']")
+  # remove selected attribute
+  $this.children("option").removeAttr('selected')
+  # add selected attribute to appropriate option
+  $this.children("option[value='#{ $this.val() }']").attr('selected', 'selected')
   $imprintContainer = $this.parentsUntil('.imprint-container').parent()
   
   $imprintEntry = $this.parentsUntil('.imprint-entry').parent()

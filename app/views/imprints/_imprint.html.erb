@@ -30,7 +30,7 @@
                          :name,
                          local_assigns[:imprint_method].try(:id)
                        ),
-
+                       id: "imprint_method_select_#{ local_assigns[:imprint].try(:id) }",
                        class: 'form-control js-imprint-method-select' %>
       </div>
 
@@ -43,9 +43,16 @@
         <%= check_box_tag select_field_name_for.(:has_name_number), '1', checked, class: 'js-imprint-has-name-number' %>
       </div>
 
-      <div class='js-imprint-name-number-fields' style='display: <%= local_assigns[:imprint].try(:has_name_number) ? "block" : "none" %>;'>
-        <%= render 'imprints/name_number_fields', imprint: local_assigns[:imprint] %>
+      <% if local_assigns[:imprint].try(:id) %>
+      <div class="hidden" id="name_number_format_fields_<%= local_assigns[:imprint].id %>">
+        <%= text_field_tag :name_format, local_assigns[:imprint].name_format %>
+        <%= text_field_tag :number_format, local_assigns[:imprint].number_format %>
       </div>
+      <% else %>
+      <div class="hidden generic-error-message">
+        Please click 'Update' before assigning names and numbers!
+      </div>
+      <% end %>
 
       <div class="full text-right">
         <%= link_to '#', class: 'js-delete-imprint-button' do %>
