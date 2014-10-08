@@ -16,7 +16,11 @@ module Api
     private
 
     def permitted_attributes
-      [:common_name]
+      [
+        :common_name,
+        :base_upcharge,  :xxl_upcharge,    :xxxl_upcharge,
+        :xxxxl_upcharge, :xxxxxl_upcharge, :xxxxxxl_upcharge
+      ]
     end
   end
 end
