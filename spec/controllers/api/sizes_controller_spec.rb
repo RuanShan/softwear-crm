@@ -4,6 +4,7 @@ include ApiControllerTests
 describe Api::SizesController, api_size_spec: true, api_spec: true do
   it_behaves_like 'api_controller index'
   it_behaves_like 'api_controller create'
+  it_behaves_like 'a retailable api controller'
 
   describe 'GET #index' do
     context 'with valid "color" and "imprintable" parameters' do
