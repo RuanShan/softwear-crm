@@ -77,6 +77,10 @@ group :development do
   gem 'mailcatcher'
 end
 
+group :development, :test do
+  gem 'byebug'
+end
+
 group :test do
   gem 'rspec-rails', '~> 3.0.0.beta'
   gem 'factory_girl_rails', '>= 4.2.0'
