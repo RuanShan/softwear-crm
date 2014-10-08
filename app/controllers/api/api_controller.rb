@@ -12,13 +12,17 @@ module Api
 
     before_filter :permit_id, only: [:show, :update, :destroy]
 
-    def index
-      instance_variable_set(
-        "@#{self.class.model_name.pluralize.underscore}",
+    def index(&block)
+      yield if block_given?
 
-        (records || resource_class)
-          .where(params.permit(resource_class.column_names))
-      )
+      if records.nil?
+        instance_variable_set(
+          "@#{self.class.model_name.pluralize.underscore}",
+
+          (records || resource_class)
+            .where(params.permit(resource_class.column_names))
+        )
+      end
 
       respond_to do |format|
         format.json do

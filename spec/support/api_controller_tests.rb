@@ -10,7 +10,7 @@ module ApiControllerTests
             .and_return ['field_1']
 
           expect(Kernel.const_get(resource_type))
-            .to receive(:where).with('field_1' => 'value_1')
+            .to receive(:where).with(hash_including('field_1' => 'value_1'))
           expect(controller).to receive(:instance_variable_set)
             .with("@#{resource_name.pluralize}", anything)
 
