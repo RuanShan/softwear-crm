@@ -22,8 +22,9 @@ describe ArtworkRequestsController, js: true, artwork_request_spec: true do
     end
 
     it 'sends an email to the artist'do
-      expect(ArtistMailer).to receive(:artist_notification).with(an_instance_of(ArtworkRequest), 'create').and_return(double('ArtistMailer', deliver: true))
-      post :create, order_id: order.id, artwork_request: artwork_request, format: 'js'
+      expect{ ArtistMailer.delay.artist_notification(artwork_request, 'create') }.to change(Sidekiq::Extensions::DelayedMailer.jobs, :size).by(1)
+
+      expect{ (post :create, order_id: order.id, artwork_request: artwork_request, format: 'js') }.to change(Sidekiq::Extensions::DelayedMailer.jobs, :size).by(1)
     end
   end
 
@@ -39,9 +40,11 @@ describe ArtworkRequestsController, js: true, artwork_request_spec: true do
       end
 
       it 'sends an email to the artist' do
-        expect(ArtistMailer).to receive(:artist_notification).with(artwork_request, 'update').and_return(double('ArtistMailer', deliver: true))
-        put :update, order_id: order.id, id: artwork_request.id,
-                     artwork_request: artwork_request, format: 'js'
+        expect{ ArtistMailer.delay.artist_notification(artwork_request, 'update') }.to change(Sidekiq::Extensions::DelayedMailer.jobs, :size).by(1)
+        expect{ (put :update, order_id: order.id, id: artwork_request.id,
+                     artwork_request: artwork_request, format: 'js') }.to change(Sidekiq::Extensions::DelayedMailer.jobs, :size).by(1)
+
+
       end
     end
 

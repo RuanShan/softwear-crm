@@ -2,7 +2,7 @@ CrmSoftwearcrmCom::Application.routes.draw do
 
   devise_for :users, controllers: { sessions: 'users/sessions' }, skip: 'registration'
 
-  root "home#index"
+  root 'home#index'
   
   get '/users/change_password', to: 'users#edit_password', as: :change_password
   put '/users/change_password', to: 'users#update_password', as: :update_password
@@ -37,8 +37,12 @@ CrmSoftwearcrmCom::Application.routes.draw do
       get 'quote_select'
       post 'stage_quote'
     end
-    resources :line_items, except: [:update]
+    resources :line_item_groups, shallow: true do
+      resources :line_items, except: [:update]
+    end
   end
+
+  resources :quote_requests, only: [:show, :index]
 
   get '/logout' => 'users#logout'
   
@@ -47,9 +51,15 @@ CrmSoftwearcrmCom::Application.routes.draw do
     resources :imprint_methods do
       get '/print_locations', to: 'imprint_methods#print_locations', as: :print_locations
     end
+    match 'integrated_crms', to: 'settings#edit', via: :get
+    match 'update_integrated_crms', to: 'settings#update', via: :put
   end
   
   resources :orders do
+    member do
+      get 'names_numbers', as: :name_number_csv_from
+    end
+
     get 'timeline', to: 'timeline#show', as: :timeline
     resources :payments, shallow: true
     resources :artwork_requests
@@ -62,7 +72,7 @@ CrmSoftwearcrmCom::Application.routes.draw do
 
     resources :jobs, only: [:create, :update, :destroy, :show], shallow: true do
       member do
-        get 'name_number_csv', to: 'jobs#name_number_csv', as: :name_number_csv_from
+        get 'names_numbers', as: :name_number_csv_from
       end
 
       resources :line_items, except: [:update] do
@@ -89,5 +99,6 @@ CrmSoftwearcrmCom::Application.routes.draw do
     resources 'imprintables'
     resources 'colors'
     resources 'sizes'
+    resources 'quote_requests', only: [:create, :index]
   end
 end

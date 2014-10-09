@@ -1,6 +1,13 @@
 <%= render_error_modal_for @order %>
-<div class="page-heading animated fadeInDownBig">
-  <h1>Edit Order #<%= @order.id %> <small><%= @order.name %></small></h1>
+<div class="page-heading animated fadeInDownBig row">
+  <div class='col-sm-6'>
+    <h1>Edit Order #<%= @order.id %> <small><%= @order.name %></small></h1>
+  </div>
+  <div class='col-sm-3 col-xs-offset-3'>
+    <% if @order.imprints.exists? %>
+      <%= link_to 'Download Names/Numbers CSV', name_number_csv_from_order_path(@order), class: 'btn btn-info btn-block' %>
+    <% end %>
+  </div>
 </div>
 
 <%= content_tag(:div, id: 'order-page', 'data-order-id' => @order.id) {} %>

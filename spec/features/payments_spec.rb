@@ -57,7 +57,7 @@ feature 'Payments management', js: true, payment_spec: true do
     expect(Payment.find(payment.id).is_refunded?).to be_truthy
   end
 
-  feature 'the following activities are tracked', new: true do
+  feature 'the following activities are tracked' do
     scenario 'applying a payment' do
       visit (edit_order_path order.id) + '#payments'
       find(:css, '#cash-button').click

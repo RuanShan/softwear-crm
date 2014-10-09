@@ -143,10 +143,11 @@ feature 'Imprints Management', imprint_spec: true, js: true do
     first('.checkbox-container > div').click
     first('.js-imprint-name-number-name').set('Mike Hawk')
     first('.js-imprint-name-number-number').set(99)
+    first('.js-imprint-name-number-description').set('A description of the name/number font/styles')
     first('.update-imprints').click
     wait_for_ajax
 
-    expect(NameNumber.where(name: 'Mike Hawk', number: 99)).to exist
+    expect(NameNumber.where(name: 'Mike Hawk', number: 99, description: 'A description of the name/number font/styles')).to exist
   end
 
 end

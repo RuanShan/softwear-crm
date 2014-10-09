@@ -1,12 +1,11 @@
 $(window).load ->
   $("#flashModal").modal "show"
   $("#errorsModal").modal "show"
-  return
 
 $(document).ready ->
   $(document).on 'click', '.js-remove-fields', (event) ->
     $(this).prev('input[type=hidden]').val('1')
-    $(this).closest('.js-removeable').hide()
+    $(this).closest('.js-removeable').remove()
     event.preventDefault()
 
   $(document).on 'click', '.js-add-fields', (event) ->
@@ -21,7 +20,6 @@ $(document).ready ->
     buttonsClass: "btn btn-default"
     submitButtonClass: "btn btn-primary"
 
-  return
 
 $(document).ajaxStart(->
   $('#js-ajax-loading').modal('show'))

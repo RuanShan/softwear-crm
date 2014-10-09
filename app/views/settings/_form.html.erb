@@ -1,0 +1,22 @@
+<div class="box-info">
+  <%= form_tag update_integrated_crms_path, method: :put do %>
+    <% freshdesk_settings.each do |key, value| %>
+      <%= fields_for 'fd_settings[]', value do |f| %>
+        <div class="form-group">
+          <%= f.label :name, key.to_s.titleize, class: 'col-sm-2 control-label' %>
+          <div class="col-sm-10">
+            <% if key == :freshdesk_password %>
+              <%= f.text_field :val, class: 'form-control', type: 'password' %>
+            <% else %>
+              <%= f.text_field :val, class: 'form-control' %>
+            <% end %>
+          </div>
+        </div>
+      <% end %>
+    <% end %>
+
+    <div class="form-group clearfix">
+      <%= submit_tag 'Update' %>
+    </div>
+  <% end %>
+</div>

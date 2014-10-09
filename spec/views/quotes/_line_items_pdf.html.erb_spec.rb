@@ -3,9 +3,10 @@ require 'spec_helper'
 describe 'quotes/_line_items_pdf.html.erb', quote_spec: true do
   let!(:quote) { build_stubbed(:valid_quote) }
   let!(:line_item) { build_stubbed(:non_imprintable_line_item) }
+  let!(:line_item_group) { double(:line_item_group, line_items: [line_item]) }
 
   before(:each) do
-    allow(quote).to receive(:standard_line_items).and_return([line_item])
+    allow(quote).to receive(:line_item_groups).and_return [line_item_group]
     render partial: 'quotes/line_items_pdf', locals: { quote: quote }
   end
 

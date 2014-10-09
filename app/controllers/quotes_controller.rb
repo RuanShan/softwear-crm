@@ -6,7 +6,7 @@ class QuotesController < InheritedResources::Base
   def new
     assign_new_quote_hash
     super do
-      @quote.line_items.build
+      @quote.line_item_groups.build.line_items.build
       @current_action = 'quotes#new'
     end
   end
@@ -41,7 +41,12 @@ class QuotesController < InheritedResources::Base
   def create
     assign_new_quote_hash
     super do
-      @quote.create_freshdesk_ticket if Rails.env.production?
+      if params[:line_item_group_name] && @quote.valid?
+        @quote
+          .default_group
+          .update_attributes(name: params[:line_item_group_name])
+      end
+      @quote.create_freshdesk_ticket(current_user) if Rails.env.production?
     end
   end
 
@@ -63,10 +68,14 @@ class QuotesController < InheritedResources::Base
 
   def stage_quote
     @quote = Quote.find(params[:quote_id])
-    if @quote.line_items.new(name: params[:name],
-                          unit_price: params[:total_price],
-                          description: 'Canned Description',
-                          quantity: 1).save
+
+    group = @quote.line_item_groups.first
+    saved = group.line_items.new(name: params[:name],
+                         unit_price: params[:total_price],
+                         description: 'Canned Description',
+                         quantity: 1).save
+
+    if saved
       fire_activity(@quote, :added_line_item)
     else
       flash[:error] = 'The line item could not be added to the quote.'
@@ -77,13 +86,14 @@ class QuotesController < InheritedResources::Base
 
   def email_customer
     @quote = Quote.find(params[:quote_id])
-    
+
     hash = {
       quote: @quote,
       body: params[:email_body],
       subject: params[:email_subject],
       from: current_user.email,
-      to: params[:email_recipients]
+      to: params[:email_recipients],
+      cc: params[:cc]
     }
 
     deliver_email(hash)
@@ -98,11 +108,18 @@ class QuotesController < InheritedResources::Base
     end
   end
 
-  private
+private
 
   def assign_new_quote_hash
     @new_quote_hash = {}
-    @new_quote_hash[:price_information] = params[:price_information] if params[:price_information]
+
+    assign = lambda do |key|
+      @new_quote_hash[key] = params[key] if params[key]
+    end
+
+    assign[:price_information]
+    assign[:line_item_group_name]
+
     if defined? params[:quote][:line_items_attributes]
       @new_quote_hash[:quote_li_attributes] = params[:quote][:line_items_attributes]
     end
@@ -126,7 +143,7 @@ class QuotesController < InheritedResources::Base
 
   def deliver_email(hash)
     begin
-      QuoteMailer.email_customer(hash).deliver
+      QuoteMailer.delay.email_customer(hash)
       flash[:success] = 'Your email was successfully sent!'
       fire_activity(@quote, :emailed_customer)
     rescue Net::SMTPAuthenticationError,

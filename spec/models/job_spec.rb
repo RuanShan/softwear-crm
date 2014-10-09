@@ -297,9 +297,10 @@ describe Job, job_spec: true do
     it 'generates a csv file formatted <number>,<name> for each imprint' do
       csv = CSV.parse job.name_number_csv
 
-      expect(csv.first).to eq ['33', 'Test Name']
-      expect(csv.last).to eq ['2', 'Other One']
-      expect(csv.size).to eq 2
+      expect(csv[0]).to eq ['Number', 'Name']
+      expect(csv[1]).to eq ['33', 'Test Name']
+      expect(csv[2]).to eq ['2', 'Other One']
+      expect(csv.size).to eq 3
     end
   end
 end

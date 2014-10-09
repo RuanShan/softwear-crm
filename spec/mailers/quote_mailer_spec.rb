@@ -20,14 +20,15 @@ describe QuoteMailer, quote_spec: true do
         salesperson_id: user.id,
         store_id: store.id,
         shipping: 14.50,
-        line_items: [build_stubbed(:non_imprintable_line_item)]
+        line_item_groups: [build_stubbed(:line_item_group_with_line_items)]
     )
     hash = {
         quote: quote,
         body: 'Sample email body',
         subject: 'Amazing Test Subject',
         from: 'from@test.com',
-        to: 'to@test.com, to_two@test.com'
+        to: 'to@test.com, to_two@test.com',
+        cc: 'current@user.com'
     }
     @email = QuoteMailer.email_customer(hash)
   end
@@ -47,6 +48,10 @@ describe QuoteMailer, quote_spec: true do
 
     it 'has the body passed in from hash[:body]' do
       expect(@email).to have_body_text('Sample email body')
+    end
+
+    it 'cc\'s the current user' do
+      expect(@email).to cc_to('current@user.com')
     end
   end
 end

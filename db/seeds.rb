@@ -63,7 +63,7 @@ if !deleted_exists && !exists
 	default_user = User.new(first_name: 'Admin', last_name: 'User',
 													email: 'admin@softwearcrm.com',
 													password: pw, password_confirmation: pw,
-                          store_id: 1)
+                          store_id: 1, freshdesk_email: 'devteam@annarbortees.com')
 	default_user.confirm!
 	default_user.save
 	puts "Created default user (email: #{default_user.email}, password: #{pw})"

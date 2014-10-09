@@ -30,6 +30,7 @@ updateDelay = 1000
     resourceId:     $this.attr('resource-id'),
     field:          $this.attr('resource-method'),
     content:        $this.text(),
+    token:          $this.data('authenticity_token'),
     getParamName: (-> "#{this.resourceName}[#{this.field}]"),
     getErrorFor:  (-> "#{this.resourceName}[#{this.resourceId}][#{this.field}]")
 
@@ -79,6 +80,7 @@ updateDelay = 1000
 
         params = {}
         params[self.getParamName()] = self.content
+        params['authenticity_token'] = self.token
 
         ajax = $.ajax
           type: 'PUT',
@@ -126,6 +128,7 @@ updateDelay = 1000
             callback(false) for callback in inlineEditableCallbacks
 
         ajax.fail (jqXHR, textStatus) ->
+          return if changedSinceAjax
           alert "Something went wrong with the server and
                your changes couldn't be saved."
 

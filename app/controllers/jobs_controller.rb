@@ -70,18 +70,14 @@ class JobsController < InheritedResources::Base
     end
   end
 
-  def name_number_csv
+  def names_numbers
     @job = Job.find(params[:id])
-    filename = "#{@job.name}_name_numbers.csv"
+    filename = "order_#{@job.order.name}_job_#{@job.name}_names_numbers.csv"
 
     send_data @job.name_number_csv, filename: sanitize_filename(filename)
   end
 
   private
-
-  def sanitize_filename(filename)
-    filename.gsub(/[^0-9A-z.\-]/, '_')
-  end
 
   def permitted_params
     params.permit(

@@ -22,4 +22,15 @@ describe OrdersController, order_spec: true do
       end
     end
   end
+
+  context '#names_numbers' do
+    let(:order) { build_stubbed :order }
+
+    it 'sends csv data' do
+      allow(Order).to receive(:find).and_return order
+      expect(order).to receive(:name_number_csv)
+
+      get :names_numbers, id: order.id
+    end
+  end
 end

@@ -22,3 +22,15 @@
   <%= f.select :store_id, Store.order(:name).map{ |s| [s.name, s.id] },
                { prompt: 'Please select a store' } %>
 </div>
+
+<div class='form-group'>
+  <%= f.label :freshdesk_email, 'Freshdesk Email' %>
+  <%= f.error_for :freshdesk_email %>
+  <%= f.text_field :freshdesk_email, autocomplete: 'off' %>
+</div>
+
+<div class='form-group'>
+  <%= f.label :freshdesk_password, 'Freshdesk Password' %>
+  <%= f.error_for :freshdesk_password %>
+  <%= f.password_field :freshdesk_password, autocomplete: 'off' %>
+</div>

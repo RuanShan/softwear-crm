@@ -104,8 +104,6 @@ describe QuotesController, js: true, quote_spec: true do
 
     context 'with valid input' do
       it 'creates a new line_item, fires activity, and redirects' do
-        expect_any_instance_of(Quote).to receive_message_chain(:line_items, :new, :save)
-                                         .and_return true
         expect(controller).to receive(:fire_activity).once
         get :stage_quote, quote_id: quote.to_param, name: 'name', total_price: 4
         expect(response.status).to eq(302)
@@ -114,8 +112,6 @@ describe QuotesController, js: true, quote_spec: true do
 
     context 'with invalid input' do
       it 'flashes an error to the user and redirects' do
-        expect_any_instance_of(Quote).to receive_message_chain(:line_items, :new, :save)
-                                         .and_return(false)
         get :stage_quote, quote_id: quote.to_param, name: 'name', total_price: -50
         expect(flash[:error]).to eq 'The line item could not be added to the quote.'
         expect(response.status).to eq(302)
@@ -125,9 +121,9 @@ describe QuotesController, js: true, quote_spec: true do
 
   describe 'POST email_customer' do
     it 'assigns the quote and sends the customer an email' do
-      mailer = double(Mail::Message)
-      expect(mailer).to receive(:deliver)
-      expect(QuoteMailer).to receive(:email_customer).with(an_instance_of(Hash)).and_return(mailer)
+      expect{ QuoteMailer.delay.email_customer(instance_of(Hash)) }.to change(Sidekiq::Extensions::DelayedMailer.jobs, :size).by(1)
+      expect{ (post :email_customer, quote_id: quote.id) }.to change(Sidekiq::Extensions::DelayedMailer.jobs, :size).by(1)
+
       post :email_customer, quote_id: quote.id
       expect(assigns(:quote)).to eq(quote)
     end

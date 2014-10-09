@@ -47,8 +47,9 @@ class Order < ActiveRecord::Base
 
   belongs_to :salesperson, class_name: User
   belongs_to :store
-  has_many :artwork_requests, through: :jobs
   has_many :jobs
+  has_many :artwork_requests, through: :jobs
+  has_many :imprints, through: :jobs
   has_many :payments
   has_many :proofs
 
@@ -138,5 +139,13 @@ end
 
   def total
     subtotal + subtotal * tax
+  end
+
+  def name_number_csv
+    csv = imprints
+      .with_name_number
+      .map { |i| [i.name_number.number, i.name_number.name] }
+
+    CSV.from_arrays csv, headers: %w(Number Name), write_headers: true
   end
 end

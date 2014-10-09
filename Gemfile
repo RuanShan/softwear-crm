@@ -43,6 +43,9 @@ gem 'bootstrap3-datetimepicker-rails', '~> 3.0.0'
 # For tagging
 gem 'acts-as-taggable-on'
 
+# For encrypting db fields
+gem 'attr_encrypted', '~> 1.3.3'
+
 # Turbolinks makes following links in your web application faster. Read more: https://github.com/rails/turbolinks
 #gem 'turbolinks'
 
@@ -72,6 +75,10 @@ group :development do
   gem 'better_errors', '>= 0.3.2'
   gem 'binding_of_caller'
   gem 'mailcatcher'
+  # gem 'debugger'
+end
+
+group :development, :test do
   gem 'byebug'
 end
 
@@ -89,7 +96,6 @@ group :test do
   gem 'email_spec'
   # for accessing session object in integration tests
   gem 'rack_session_access'
-  gem 'byebug'
 end
 
 gem 'inherited_resources'
@@ -108,8 +114,9 @@ gem 'public_activity'
 gem 'sunspot_solr'
 gem 'progress_bar'
 gem 'whenever'
-gem 'freshdesk', '~> 0.2'
+gem 'freshdesk'
 gem 'simple_token_authentication'
+gem 'sidekiq'
 
 # Use ActiveModel has_secure_password
 # gem 'bcrypt', '~> 3.1.7'

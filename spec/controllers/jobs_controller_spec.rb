@@ -31,12 +31,12 @@ describe JobsController, job_spec: true do
     end
   end
 
-  describe 'GET #name_number_csv', n_n_csv: true do
+  describe 'GET #names_numbers', n_n_csv: true do
     it 'sends csv data' do
       allow(Job).to receive(:find).and_return job
       expect(job).to receive(:name_number_csv)
 
-      get :name_number_csv, id: job.id
+      get :names_numbers, id: job.id
     end
   end
 end

@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140919140939) do
+ActiveRecord::Schema.define(version: 20141003144742) do
 
   create_table "activities", force: true do |t|
     t.integer  "trackable_id"
@@ -252,6 +252,17 @@ ActiveRecord::Schema.define(version: 20140919140939) do
 
   add_index "jobs", ["deleted_at"], name: "index_jobs_on_deleted_at", using: :btree
 
+  create_table "line_item_groups", force: true do |t|
+    t.string   "name"
+    t.string   "description"
+    t.integer  "quote_id"
+    t.datetime "deleted_at"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "line_item_groups", ["quote_id"], name: "index_line_item_groups_on_quote_id", using: :btree
+
   create_table "line_items", force: true do |t|
     t.string   "name"
     t.integer  "quantity"
@@ -271,6 +282,7 @@ ActiveRecord::Schema.define(version: 20140919140939) do
   create_table "name_numbers", force: true do |t|
     t.string  "name"
     t.integer "number"
+    t.string  "description"
   end
 
   create_table "orders", force: true do |t|
@@ -338,6 +350,18 @@ ActiveRecord::Schema.define(version: 20140919140939) do
     t.datetime "updated_at"
   end
 
+  create_table "quote_requests", force: true do |t|
+    t.string   "name"
+    t.string   "email"
+    t.decimal  "approx_quantity", precision: 10, scale: 0
+    t.datetime "date_needed"
+    t.string   "description"
+    t.string   "source"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.integer  "salesperson_id"
+  end
+
   create_table "quotes", force: true do |t|
     t.string   "email"
     t.string   "phone_number"
@@ -354,6 +378,7 @@ ActiveRecord::Schema.define(version: 20140919140939) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.decimal  "shipping",                precision: 10, scale: 2
+    t.string   "quote_source"
   end
 
   create_table "sample_locations", force: true do |t|
@@ -446,6 +471,16 @@ ActiveRecord::Schema.define(version: 20140919140939) do
   add_index "sessions", ["session_id"], name: "index_sessions_on_session_id", unique: true, using: :btree
   add_index "sessions", ["updated_at"], name: "index_sessions_on_updated_at", using: :btree
 
+  create_table "settings", force: true do |t|
+    t.string   "name"
+    t.string   "val"
+    t.string   "encrypted_val"
+    t.boolean  "encrypted"
+    t.datetime "deleted_at"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
   create_table "shipping_methods", force: true do |t|
     t.string   "name"
     t.string   "tracking_url"
@@ -501,12 +536,12 @@ ActiveRecord::Schema.define(version: 20140919140939) do
   add_index "tags", ["name"], name: "index_tags_on_name", unique: true, using: :btree
 
   create_table "users", force: true do |t|
-    t.string   "email",                  default: "", null: false
-    t.string   "encrypted_password",     default: "", null: false
+    t.string   "email",                        default: "", null: false
+    t.string   "encrypted_password",           default: "", null: false
     t.string   "reset_password_token"
     t.datetime "reset_password_sent_at"
     t.datetime "remember_created_at"
-    t.integer  "sign_in_count",          default: 0,  null: false
+    t.integer  "sign_in_count",                default: 0,  null: false
     t.datetime "current_sign_in_at"
     t.datetime "last_sign_in_at"
     t.string   "current_sign_in_ip"
@@ -515,7 +550,7 @@ ActiveRecord::Schema.define(version: 20140919140939) do
     t.datetime "confirmed_at"
     t.datetime "confirmation_sent_at"
     t.string   "unconfirmed_email"
-    t.integer  "failed_attempts",        default: 0,  null: false
+    t.integer  "failed_attempts",              default: 0,  null: false
     t.string   "unlock_token"
     t.datetime "locked_at"
     t.datetime "created_at"
@@ -525,6 +560,9 @@ ActiveRecord::Schema.define(version: 20140919140939) do
     t.datetime "deleted_at"
     t.integer  "store_id"
     t.string   "authentication_token"
+    t.string   "freshdesk_email"
+    t.string   "freshdesk_password"
+    t.string   "encrypted_freshdesk_password"
   end
 
   add_index "users", ["authentication_token"], name: "index_users_on_authentication_token", using: :btree

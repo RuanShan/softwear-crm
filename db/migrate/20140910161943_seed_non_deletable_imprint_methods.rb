@@ -20,7 +20,7 @@ class SeedNonDeletableImprintMethods < ActiveRecord::Migration
      'Outsourced Embroidery', 'Transfer Printing', 'Transfer Making',
      'Button Making', 'Name/Number Print'].each do |im|
 
-      imprint_method = ImprintMethod.find(name: im)
+      imprint_method = ImprintMethod.find_by(name: im)
       imprint_method.destroy if imprint_method
     end
 

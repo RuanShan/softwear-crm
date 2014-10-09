@@ -12,6 +12,6 @@ class QuoteMailer < ActionMailer::Base
                          locals: { quote: quote })
       )
 
-    mail(from: hash[:from], to: hash[:to], subject: hash[:subject])
+    mail(from: hash[:from], to: hash[:to], subject: hash[:subject], cc: hash[:cc])
   end
 end

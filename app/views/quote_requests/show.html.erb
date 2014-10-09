@@ -1,0 +1,50 @@
+<h1>Quote Request from <%= @quote_request.name %></h1>
+
+<div class='user-profile-content'>
+  <div class='row'>
+    <div class='col-sm-2'>
+      <strong>Email:</strong>
+    </div>
+    <div class='col-sm-10'>
+      <%= @quote_request.email %>
+    </div>
+  </div>
+
+  <div class='row'>
+    <div class='col-sm-2'>
+      <strong>Approximate Quantity:</strong>
+    </div>
+    <div class='col-sm-10'>
+      <%= @quote_request.approx_quantity %>
+    </div>
+  </div>
+
+  <div class='row'>
+    <div class='col-sm-2'>
+      <strong>Date Needed:</strong>
+    </div>
+    <div class='col-sm-10'>
+      <%= @quote_request.date_needed.strftime("%m/%d/%Y") %>
+    </div>
+  </div>
+
+  <div class='row'>
+    <div class='col-sm-2'>
+      <strong>Source:</strong>
+    </div>
+    <div class='col-sm-10'>
+      <%= @quote_request.source %>
+    </div>
+  </div>
+
+  <div class='row'>
+    <div class='col-sm-2'>
+      <strong>Description:</strong>
+    </div>
+    <div class='col-sm-10'>
+      <%= @quote_request.description %>
+    </div>
+  </div>
+</div>
+
+<%= link_to "All Quote Requests", quote_requests_path, class: 'btn btn-info' %>

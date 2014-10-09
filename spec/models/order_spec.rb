@@ -11,6 +11,7 @@ describe Order, order_spec: true do
     it { is_expected.to have_many :jobs }
     it { is_expected.to have_many :payments }
     it { is_expected.to have_many :proofs }
+    it { is_expected.to have_many(:imprints).through(:jobs) }
 
     it { is_expected.to accept_nested_attributes_for :payments }
   end
@@ -301,6 +302,37 @@ describe Order, order_spec: true do
 
     it 'returns the value for tax' do
       expect(subject.tax).to eq(0.06)
+    end
+  end
+
+  describe '#name_number_csv', name_number: true do
+    let!(:order) { create :order }
+    let!(:job) { create :job, order_id: order.id }
+    let!(:imprint) { build_stubbed :valid_imprint, job_id: job.id, has_name_number: true }
+    let!(:imprint2) { build_stubbed :valid_imprint, job_id: job.id, has_name_number: true }
+
+    let!(:job2) { build_stubbed :job }
+    let!(:imprint3) { build_stubbed :valid_imprint, job_id: job2.id, has_name_number: true }
+    let!(:imprint4) { build_stubbed :valid_imprint, job_id: job2.id, has_name_number: true }
+
+    before :each do
+      imprint.name_number = build_stubbed :name_number, name: 'Test Name', number: 33
+      imprint2.name_number = build_stubbed :name_number, name: 'Other One', number: 2
+
+      imprint3.name_number = build_stubbed :name_number, name: 'Third McThird', number: 3
+      imprint4.name_number = build_stubbed :name_number, name: 'Finale', number: 1
+
+      allow(order)
+        .to receive_message_chain(:imprints, :with_name_number)
+        .and_return [imprint, imprint2, imprint3, imprint4]
+    end
+
+    it 'creates a csv of all imprint name/numbers from all jobs', s_s_csv: true do
+      csv = CSV.parse order.name_number_csv
+
+      expect(csv).to eq [           ['Number', 'Name'],
+                         ['33', 'Test Name'],    ['2', 'Other One'],
+                         ['3', 'Third McThird'], ['1', 'Finale']]
     end
   end
 end

@@ -8,8 +8,8 @@ class String
 end
 
 class CSV
-  def self.from_arrays(arr)
-    CSV.generate do |csv|
+  def self.from_arrays(arr, options = {})
+    CSV.generate(options) do |csv|
       arr.each do |e|
         csv << e
       end
