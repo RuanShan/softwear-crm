@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20141006170342) do
+ActiveRecord::Schema.define(version: 20141008232804) do
 
   create_table "activities", force: true do |t|
     t.integer  "trackable_id"
@@ -132,6 +132,19 @@ ActiveRecord::Schema.define(version: 20141006170342) do
   end
 
   add_index "coordinate_imprintables", ["coordinate_id", "imprintable_id"], name: "coordinate_imprintable_index", using: :btree
+
+  create_table "emails", force: true do |t|
+    t.string   "subject"
+    t.text     "body"
+    t.string   "sent_to"
+    t.string   "sent_from"
+    t.string   "cc_emails"
+    t.integer  "emailable_id"
+    t.string   "emailable_type"
+    t.datetime "deleted_at"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
 
   create_table "imprint_method_imprintables", force: true do |t|
     t.integer  "imprint_method_id"

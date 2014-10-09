@@ -2,7 +2,7 @@ require 'spec_helper'
 
 describe 'quotes/_line_items_pdf.html.erb', quote_spec: true do
   let!(:quote) { build_stubbed(:valid_quote) }
-  let!(:line_item) { build_stubbed(:non_imprintable_line_item) }
+  let!(:line_item) { build_stubbed(:imprintable_line_item) }
   let!(:line_item_group) { double(:line_item_group, line_items: [line_item]) }
 
   before(:each) do
