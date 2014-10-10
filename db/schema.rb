@@ -376,7 +376,6 @@ ActiveRecord::Schema.define(version: 20141008232804) do
     t.string   "source"
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.integer  "salesperson_id"
   end
 
   create_table "quotes", force: true do |t|
