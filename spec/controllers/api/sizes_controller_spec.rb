@@ -2,8 +2,8 @@ require 'spec_helper'
 include ApiControllerTests
 
 describe Api::SizesController, api_size_spec: true, api_spec: true do
-  it_behaves_like 'api_controller index'
   it_behaves_like 'api_controller create'
+  it_behaves_like 'a retailable api controller'
 
   describe 'GET #index' do
     context 'with valid "color" and "imprintable" parameters' do
@@ -13,7 +13,9 @@ describe Api::SizesController, api_size_spec: true, api_spec: true do
         expect(Imprintable).to receive(:find_by).with(common_name: 'Common')
           .and_return imprintable
         
-        allow(imprintable).to receive(:sizes_by_color).and_return 'test'
+        allow(imprintable).to receive_message_chain(
+          :sizes_by_color, :where
+        ).and_return 'test'
 
         get :index, format: :json, color: 'Blue', imprintable: 'Common'
 

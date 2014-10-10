@@ -64,6 +64,10 @@ GEM
     bootstrap3-datetimepicker-rails (3.0.0.1)
       momentjs-rails (~> 2.5.0)
     builder (3.1.4)
+    byebug (3.5.1)
+      columnize (~> 0.8)
+      debugger-linecache (~> 1.2)
+      slop (~> 3.6)
     capistrano (3.2.1)
       i18n
       rake (>= 10.0.0)
@@ -109,6 +113,7 @@ GEM
       coffee-script-source
       execjs
     coffee-script-source (1.7.0)
+    columnize (0.8.9)
     compass (0.12.6)
       chunky_png (~> 1.2)
       fssm (>= 0.2.7)
@@ -120,6 +125,7 @@ GEM
     daemons (1.1.9)
     database_cleaner (1.2.0)
     debug_inspector (0.0.2)
+    debugger-linecache (1.2.0)
     devise (3.2.4)
       bcrypt (~> 3.0)
       orm_adapter (~> 0.1)
@@ -333,6 +339,7 @@ GEM
     skinny (0.2.3)
       eventmachine (~> 1.0.0)
       thin (~> 1.5.0)
+    slop (3.6.0)
     sprockets (2.11.0)
       hike (~> 1.2)
       multi_json (~> 1.0)
@@ -402,6 +409,7 @@ DEPENDENCIES
   binding_of_caller
   bootstrap-sass
   bootstrap3-datetimepicker-rails (~> 3.0.0)
+  byebug
   capistrano (~> 3.2.0)
   capistrano-bundler
   capistrano-rails
