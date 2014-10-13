@@ -46,6 +46,7 @@ class QuotesController < InheritedResources::Base
           .default_group
           .update_attributes(name: params[:line_item_group_name])
       end
+      @quote
       # scrapping for now since freshdesk is a piece of shit
       # @quote.create_freshdesk_ticket(current_user) if Rails.env.production?
     end
@@ -174,7 +175,7 @@ private
                    :email, :phone_number, :first_name, :last_name, :company,
                    :twitter, :name, :valid_until_date, :estimated_delivery_date,
                    :salesperson_id, :store_id, :shipping, :quote_source,
-                    # quote_request_ids: [],
+                    quote_request_ids: [],
                     line_items_attributes: [
                      :name, :quantity, :taxable, :description, :id,
                      :imprintable_variant_id, :unit_price, :_destroy
