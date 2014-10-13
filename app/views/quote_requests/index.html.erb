@@ -23,15 +23,10 @@
               <%= quote_request.date_needed.strftime("%m/%d/%Y") %>
             </td>
             <td>
-              <% if quote_request.salesperson_id.nil? %>
-                  <%= link_to edit_quote_request_path(quote_request), remote: true do %>
-                    <i class="fa fa-2x fa-edit"></i> Unassigned (Assign)
-                  <% end %>
-              <% else %>
-                  <%= link_to edit_quote_request_path(quote_request), remote: true do %>
-                      <i class="fa fa-2x fa-edit"></i> <%= quote_request.salesperson.full_name %> (Change)
-                  <% end %>
-              <% end %>
+              <% @users = [] %>
+              <% User.all.each do |u| @users <<  { value: u.id, text: u.full_name } end %>
+
+              <%= editable quote_request, :salesperson_id, type: :select, data: { source: @users.to_json } %>
             </td>
           </tr>
         <% end %>

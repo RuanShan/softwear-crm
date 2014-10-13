@@ -1,5 +1,7 @@
 class ApplicationController < ActionController::Base
   include PublicActivity::StoreController
+  helper_method :xeditable?
+
   # Prevent CSRF attacks by raising an exception.
   # For APIs, you may want to use :null_session instead.
   protect_from_forgery with: :exception
@@ -11,6 +13,10 @@ class ApplicationController < ActionController::Base
   before_action :assign_current_url
   before_action :assign_current_action
   before_action :assign_request_time
+
+  def xeditable? object = nil
+    true # Or something like current_user.xeditable?
+  end
 
   protected
 

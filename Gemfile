@@ -113,6 +113,7 @@ gem 'whenever'
 gem 'freshdesk', '~> 0.2'
 gem 'simple_token_authentication'
 gem 'sidekiq'
+gem 'x-editable-rails'
 
 # Use ActiveModel has_secure_password
 # gem 'bcrypt', '~> 3.1.7'

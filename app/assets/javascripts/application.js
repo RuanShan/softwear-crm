@@ -33,5 +33,7 @@
 //= require sortable/sortable
 //= require datepicker/bootstrap-datepicker
 //= require bootstrap/bootstrap
+//= require editable/bootstrap-editable
+//= require editable/rails
 
 //= require_tree .
