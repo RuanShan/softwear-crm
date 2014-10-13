@@ -2,7 +2,7 @@ require 'spec_helper'
 
 describe 'quotes/_line_items_table.html.erb', quote_spec: true do
   let!(:quote) { build_stubbed(:valid_quote) }
-  let!(:line_item) { build_stubbed(:non_imprintable_line_item) }
+  let!(:line_item) { build_stubbed(:imprintable_line_item) }
   let!(:line_item_group) { double(:line_item_group, line_items: [line_item]) }
 
   before(:each) do
@@ -24,5 +24,9 @@ describe 'quotes/_line_items_table.html.erb', quote_spec: true do
     expect(rendered).to have_css('td', text: number_to_currency(quote.standard_line_items.first.unit_price))
     expect(rendered).to have_css('td', text: quote.standard_line_items.first.quantity)
     expect(rendered).to have_css('td', text: number_to_currency(quote.standard_line_items.first.total_price))
+  end
+
+  it "should have a link to the supplier's website for the imprintable" do
+    expect(rendered).to have_link(line_item.name, href: line_item.supplier_link)
   end
 end

@@ -88,6 +88,16 @@ class QuotesController < InheritedResources::Base
   def email_customer
     @quote = Quote.find(params[:quote_id])
 
+    email = Email.create(
+        body: params[:email_body],
+        subject: params[:email_subject],
+        sent_from: current_user.email,
+        sent_to: params[:email_recipients],
+        cc_emails: params[:cc]
+    )
+
+    @quote.emails << email
+
     hash = {
       quote: @quote,
       body: params[:email_body],
@@ -163,10 +173,13 @@ private
     params.permit(quote: [
                    :email, :phone_number, :first_name, :last_name, :company,
                    :twitter, :name, :valid_until_date, :estimated_delivery_date,
-                   :salesperson_id, :store_id, :shipping,
+                   :quote_source, :salesperson_id, :store_id, :shipping,
                     line_items_attributes: [
                      :name, :quantity, :taxable, :description, :id,
                      :imprintable_variant_id, :unit_price, :_destroy
+                    ],
+                    emails_attributes: [
+                        :subject, :body, :sent_to, :sent_from, :cc_emails, :id, :_destroy
                     ]
                   ])
   end
