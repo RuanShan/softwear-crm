@@ -1,5 +1,5 @@
 require 'spec_helper'
-
+require 'x-editable-rails/view_helpers'
 
 describe 'quote_requests/index.html.erb', quote_request_spec: true, story_78: true, story_80: true do
   let!(:quote_requests) { [build_stubbed(:quote_request)] * 3 }
