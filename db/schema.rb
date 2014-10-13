@@ -302,6 +302,7 @@ ActiveRecord::Schema.define(version: 20141013152807) do
   create_table "name_numbers", force: true do |t|
     t.string  "name"
     t.integer "number"
+    t.string  "description"
     t.integer "imprint_id"
     t.integer "imprintable_variant_id"
   end
@@ -380,6 +381,7 @@ ActiveRecord::Schema.define(version: 20141013152807) do
     t.string   "source"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.integer  "salesperson_id"
   end
 
   create_table "quotes", force: true do |t|

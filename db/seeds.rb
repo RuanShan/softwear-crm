@@ -277,3 +277,27 @@ create_records([
                ], ArtworkRequest)
 
 ar = ArtworkRequest.all.first
+
+# Quote Request SEEDING
+#----------------------
+create_records([
+   {
+       name: 'QR without Salesperson',
+       email: 'no_salesperson@emailworld.com',
+       description: 'No Salesperson',
+       approx_quantity: 55,
+       date_needed: Time.now + 2.days,
+       source: 'Source',
+       salesperson_id: nil,
+   },
+
+   {
+       name: 'QR with saleperson',
+       email: 'salesperson@emailworld.com',
+       description: 'Salesperson',
+       approx_quantity: 55,
+       date_needed: Time.now + 2.days,
+       source: 'Source',
+       salesperson_id: 1,
+   }
+              ], QuoteRequest)

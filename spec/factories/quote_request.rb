@@ -8,6 +8,11 @@ FactoryGirl.define do
       date_needed Time.now + 2.days
       sequence(:description) { |n| "This is the order from person #{n}" }
       source "Probably the wordpress site"
+
+      factory :valid_quote_request_with_salesperson
+        before(:create) do |quote_request|
+          quote_request.salesperson_id = create(:alternate_user).id
+        end
     end
   end
 end
