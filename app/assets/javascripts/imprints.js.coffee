@@ -3,6 +3,11 @@
   id = $this.val()
   
   $this.addClass 'editing-imprint'
+  # todo: using hardcoded name/number name
+  if $this.children("option[value='#{ id }']").text() is 'Name/Number'
+    $this.parent().siblings("div.js-name-number-format-fields").toggleClass("hidden", false)
+  else
+    $this.parent().siblings("div.js-name-number-format-fields").toggleClass("hidden", true)
   $imprintContainer = $this.parentsUntil('.imprint-container').parent()
   
   $imprintEntry = $this.parentsUntil('.imprint-entry').parent()

@@ -116,6 +116,7 @@ gem 'whenever'
 gem 'freshdesk'
 gem 'simple_token_authentication'
 gem 'sidekiq'
+gem 'x-editable-rails'
 gem 'jquery-fileupload-rails'
 
 # Use ActiveModel has_secure_password
@@ -123,3 +124,6 @@ gem 'jquery-fileupload-rails'
 
 # Use unicorn as the app server
 # gem 'unicorn'
+
+# Use debugger
+# gem 'debugger', group: [:development, :test]

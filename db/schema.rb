@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20141009022643) do
+ActiveRecord::Schema.define(version: 20141013152807) do
 
   create_table "activities", force: true do |t|
     t.integer  "trackable_id"
@@ -245,6 +245,8 @@ ActiveRecord::Schema.define(version: 20141009022643) do
     t.datetime "updated_at"
     t.boolean  "has_name_number"
     t.integer  "name_number_id"
+    t.string   "name_format"
+    t.string   "number_format"
   end
 
   create_table "ink_colors", force: true do |t|
@@ -301,6 +303,8 @@ ActiveRecord::Schema.define(version: 20141009022643) do
     t.string  "name"
     t.integer "number"
     t.string  "description"
+    t.integer "imprint_id"
+    t.integer "imprintable_variant_id"
   end
 
   create_table "orders", force: true do |t|
@@ -379,9 +383,9 @@ ActiveRecord::Schema.define(version: 20141009022643) do
   create_table "quote_requests", force: true do |t|
     t.string   "name"
     t.string   "email"
-    t.decimal  "approx_quantity", precision: 10, scale: 0
+    t.string   "approx_quantity"
     t.datetime "date_needed"
-    t.string   "description"
+    t.text     "description"
     t.string   "source"
     t.datetime "created_at"
     t.datetime "updated_at"
@@ -404,8 +408,8 @@ ActiveRecord::Schema.define(version: 20141009022643) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.decimal  "shipping",                precision: 10, scale: 2
-    t.string   "quote_source"
     t.datetime "initialized_at"
+    t.string   "quote_source"
   end
 
   create_table "sample_locations", force: true do |t|

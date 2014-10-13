@@ -42,7 +42,7 @@ CrmSoftwearcrmCom::Application.routes.draw do
     end
   end
 
-  resources :quote_requests, only: [:show, :index]
+  resources :quote_requests
 
   get '/logout' => 'users#logout'
   

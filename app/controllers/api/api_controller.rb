@@ -4,6 +4,7 @@ module Api
     include InheritedResources::BaseHelpers
     extend  InheritedResources::ClassMethods
     extend  InheritedResources::UrlHelpers
+
     respond_to :json
     self.responder = InheritedResources::Responder
 

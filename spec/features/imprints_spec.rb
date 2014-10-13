@@ -3,16 +3,14 @@ include GeneralHelpers
 
 feature 'Imprints Management', imprint_spec: true, js: true do
   given!(:valid_user) { create(:user) }
-  before(:each) do
-    login_as valid_user
-  end
+  background(:each) { login_as valid_user }
 
   given!(:order) { create :order_with_job }
   given(:job) { order.jobs.first }
   
   -> (t,&b) {b.call(t)}.call(
-       [['Digital', 'Screen', 'Embroidery'], 
-        ['Front',   'Lower',  'Wherever']]) do |name|
+       [%w(Digital Screen Embroidery),
+        %w(Front   Lower  Wherever)]) do |name|
     3.times do |n|
       let!("imprint_method#{n+1}") { create(:valid_imprint_method, 
                           name: name.first[n]) }
@@ -148,6 +146,28 @@ feature 'Imprints Management', imprint_spec: true, js: true do
     wait_for_ajax
 
     expect(NameNumber.where(name: 'Mike Hawk', number: 99, description: 'A description of the name/number font/styles')).to exist
+  end
+
+  scenario 'A user can select a pre-populated name/number imprint method from
+            the dropdown and edit name and number_format fields', story_190: true do
+    imprint
+    visit edit_order_path(order.id, anchor: 'jobs')
+    wait_for_ajax
+
+    expect(page).to have_css("input#name_format_#{ imprint.id }.hidden")
+    expect(page).to have_css("input#number_format_#{ imprint.id }.hidden")
+    find("imprint_method_#{ imprint.id }").find(:xpath, "'//select[contains(option, 'Name/Number')]'").select_option
+    expect(page).to_not have_css("input#name_format_#{ imprint.id }.hidden")
+    expect(page).to_not have_css("input#number_format_#{ imprint.id }.hidden")
+
+    fill_in "#name_format_#{ imprint.id }", with: '5 inch height'
+    fill_in "#number_format_#{ imprint.id }", with: 'really big'
+
+    first('.update-imprints').click
+    wait_for_ajax
+
+    expect(Imprint.find(imprint.id).name_format).to eq '5 inch height'
+    expect(Imprint.find(imprint.id).number_format).to eq 'really big'
   end
 
 end

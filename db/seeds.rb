@@ -134,54 +134,52 @@ create_records([
 
 # ImprintMethod SEEDING
 # ----------------
+ImprintMethod.create({name: 'Screen Printing'})
 
-create_records([
-                   { name: 'Screen Printing' }
-               ], ImprintMethod)
 im = ImprintMethod.all.first
 create_records([
-                   { name: 'Red', imprint_method_id: im.id },
-                   { name: 'Orange', imprint_method_id: im.id },
-                   { name: 'Yellow', imprint_method_id: im.id },
-                   { name: 'Green', imprint_method_id: im.id },
-                   { name: 'Blue', imprint_method_id: im.id },
-                   { name: 'Indigo', imprint_method_id: im.id },
-                   { name: 'Violet', imprint_method_id: im.id }
-               ], InkColor)
+  { name: 'Red', imprint_method_id: im.id },
+  { name: 'Orange', imprint_method_id: im.id },
+  { name: 'Yellow', imprint_method_id: im.id },
+  { name: 'Green', imprint_method_id: im.id },
+  { name: 'Blue', imprint_method_id: im.id },
+  { name: 'Indigo', imprint_method_id: im.id },
+  { name: 'Violet', imprint_method_id: im.id }
+], InkColor)
 ic_one = InkColor.all.first
 ic_two = InkColor.all.second
 ic_three = InkColor.all.third
 create_records([
-                   {
-                     name: 'Chest',
-                     max_height: 5.5,
-                     max_width: 5.5,
-                     imprint_method_id: im.id
-                   },
-                   {
-                     name: 'Back',
-                     max_height: 5.5,
-                     max_width: 5.5,
-                     imprint_method_id: im.id
-                   }
-               ], PrintLocation)
+  {
+    name: 'Chest',
+    max_height: 5.5,
+    max_width: 5.5,
+    imprint_method_id: im.id
+  },
+  {
+    name: 'Back',
+    max_height: 5.5,
+    max_width: 5.5,
+    imprint_method_id: im.id
+  }
+], PrintLocation)
 pl = PrintLocation.all.first
 
 # Brand SEEDING
 # ----------------
 create_records([
-    { name: 'American Apparel', sku: '01'},
-    { name: 'Gildan', sku: '03'}
+  { name: 'American Apparel', sku: '01'},
+  { name: 'Gildan', sku: '03'}
 ], Brand)
 
 # Color SEEDING
 # ----------------
 create_records([
-    { name: 'White', sku: '000'},
-    { name: 'Black', sku: '001'},
-    { name: 'Royal', sku: '002'},
-    { name: 'Navy', sku: '003'},
-    { name: 'Red', sku: '004'}
+  { name: 'White', sku: '000'},
+  { name: 'Black', sku: '001'},
+  { name: 'Royal', sku: '002'},
+  { name: 'Navy', sku: '003'},
+  { name: 'Red', sku: '004'}
 ], Color)
 
 # Imprintable SEEDING
@@ -279,3 +277,27 @@ create_records([
                ], ArtworkRequest)
 
 ar = ArtworkRequest.all.first
+
+# Quote Request SEEDING
+#----------------------
+create_records([
+   {
+       name: 'QR without Salesperson',
+       email: 'no_salesperson@emailworld.com',
+       description: 'No Salesperson',
+       approx_quantity: 55,
+       date_needed: Time.now + 2.days,
+       source: 'Source',
+       salesperson_id: nil,
+   },
+
+   {
+       name: 'QR with saleperson',
+       email: 'salesperson@emailworld.com',
+       description: 'Salesperson',
+       approx_quantity: 55,
+       date_needed: Time.now + 2.days,
+       source: 'Source',
+       salesperson_id: 1,
+   }
+              ], QuoteRequest)

@@ -10,6 +10,9 @@ describe Imprint, imprint_spec: true do
     it { is_expected.to belong_to :print_location }
     it { is_expected.to have_one(:imprint_method).through(:print_location) }
     it { is_expected.to have_one(:order).through(:job) }
+    context 'when testing story-189', story_189: true do
+      it { is_expected.to have_many :name_numbers }
+    end
   end
 
   describe 'Validations' do
@@ -27,7 +30,7 @@ describe Imprint, imprint_spec: true do
 
       subject { Imprint.with_name_number }
 
-      it 'includes only imprins where has_name_number=true and name_number is not empty' do
+      it 'includes only imprints where has_name_number=true and name_number is not empty' do
         expect(subject).to exist
         expect(subject).to include imprint_1
         expect(subject).to_not include imprint_2

@@ -154,25 +154,6 @@ describe LineItem, line_item_spec: true do
     end
   end
 
-  describe '#supplier_link' do
-    let(:line_item) do
-      build_stubbed(:blank_line_item,
-
-                    imprintable_variant: build_stubbed(:blank_imprintable_variant,
-
-                                                       imprintable: build_stubbed(:blank_imprintable,
-                                                                                  supplier_link: 'www.texasrattlesnake.com'
-                                                       )
-                    )
-      )
-    end
-
-    it 'returns the imprintable supplier_link' do
-      expect(line_item.supplier_link)
-      .to eq(line_item.imprintable_variant.imprintable.supplier_link)
-    end
-  end
-
   describe '#style_catalog_no' do
     let(:line_item) do
       build_stubbed(:blank_line_item,

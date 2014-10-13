@@ -88,10 +88,6 @@ class LineItem < ActiveRecord::Base
     imprintable_variant.size.display_value
   end
 
-  def supplier_link
-    imprintable_variant.imprintable.supplier_link
-  end
-
   def style_catalog_no
     imprintable_variant.imprintable.style_catalog_no
   end

@@ -20,6 +20,8 @@ $(document).ready ->
     buttonsClass: "btn btn-default"
     submitButtonClass: "btn btn-primary"
 
+  $('.editable').editable()
+
 
 $(document).ajaxStart(->
   $('#js-ajax-loading').modal('show'))

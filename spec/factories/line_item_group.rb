@@ -8,8 +8,8 @@ FactoryGirl.define do
 
     factory :line_item_group_with_line_items do
       line_items { |li| [
-        li.association(:imprintable_line_item),
-        li.association(:imprintable_line_item)
+        li.association(:non_imprintable_line_item),
+        li.association(:non_imprintable_line_item)
       ] }
     end
   end

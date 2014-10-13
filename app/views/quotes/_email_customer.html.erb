@@ -1,3 +1,4 @@
+<% require 'x-editable-rails/view_helpers' %>
 <%= form_tag quote_email_customer_path(quote.id), id: 'email-form' do %>
 
   <div class="form-group">
@@ -19,7 +20,7 @@
 
   <div class="form-group">
     <%= label_tag :cc, 'CC' %>
-    <%= text_field_tag :cc, current_user.email, class: 'form-control' %>
+    <%= text_field_tag :cc, "#{current_user.full_name} <#{current_user.email}>", class: 'form-control' %>
   </div>
 
   <br>

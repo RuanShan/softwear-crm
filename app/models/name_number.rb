@@ -1,3 +1,4 @@
 class NameNumber < ActiveRecord::Base
-  has_one :imprint
+  belongs_to :imprint
+  belongs_to :imprintable_variant
 end
