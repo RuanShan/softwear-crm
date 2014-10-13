@@ -5,7 +5,7 @@
     <div class="row">
       <div class="col-sm-6">
         <div class="form-group">
-          <%= render 'customer_detail_fields', f: f %>
+          <%= render 'customer_detail_fields', f: f, name: params[:name].try(:split, " ") || nil, email: params[:email] %>
         </div>
       </div>
 
@@ -33,7 +33,7 @@
   <section class="step" data-step-title="Quote Details">
     <div class="row">
       <div class="col-sm-6">
-        <%= render 'quote_detail_fields', current_user: current_user, f: f, quote: quote %>
+        <%= render 'quote_detail_fields', current_user: current_user, f: f, quote: quote, quote_request_id: params[:quote_request_id] %>
       </div>
 
       <div class="col-sm-6">

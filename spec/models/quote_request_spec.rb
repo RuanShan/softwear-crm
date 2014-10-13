@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe QuoteRequest, quote_request_spec: true, story_78: true do
+describe QuoteRequest, quote_request_spec: true, story_78: true, story_79: true do
   it { is_expected.to have_db_column(:name).of_type(:string) }
   it { is_expected.to have_db_column(:email).of_type(:string) }
   # it { is_expected.to have_db_column(:approx_quantity).of_type(:decimal) }
@@ -10,4 +10,6 @@ describe QuoteRequest, quote_request_spec: true, story_78: true do
 
   it { is_expected.to have_db_column(:created_at).of_type(:datetime) }
   it { is_expected.to have_db_column(:updated_at).of_type(:datetime) }
+
+  it { is_expected.to have_and_belong_to_many(:quotes) }
 end

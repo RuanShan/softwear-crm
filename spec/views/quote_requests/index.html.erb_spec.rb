@@ -15,4 +15,8 @@ describe 'quote_requests/index.html.erb', quote_request_spec: true, story_78: tr
       expect(rendered).to have_content quote_request.date_needed.year
     end
   end
+
+  it 'has a generate quote button' do
+
+  end
 end

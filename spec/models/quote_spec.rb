@@ -4,11 +4,12 @@ describe Quote, quote_spec: true do
 
   it { is_expected.to be_paranoid }
 
-  describe 'Relationships', story_74: true do
+  describe 'Relationships', story_74: true, story_79: true do
     it { is_expected.to belong_to(:salesperson).class_name('User') }
     it { is_expected.to belong_to(:store) }
     it { is_expected.to have_many(:emails) }
     it { is_expected.to have_many(:line_item_groups) }
+    it { is_expected.to have_and_belong_to_many(:quote_requests) }
   end
 
   describe 'Validations' do

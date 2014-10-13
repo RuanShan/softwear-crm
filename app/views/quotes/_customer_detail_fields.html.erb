@@ -1,7 +1,7 @@
 <div class="form-group">
   <%= f.label :email %>
   <%= f.error_for :email %>
-  <%= f.text_field :email, placeholder: 'Email' %>
+  <%= f.text_field :email, email.nil? ? {placeholder: 'Email'} : {value: email} %>
 </div>
 
 <div class="form-group">
@@ -17,7 +17,7 @@
 
   <%= f.error_for :first_name %>
 
-  <%= f.text_field :first_name, placeholder: 'First Name' %>
+  <%= f.text_field :first_name, name.nil? ? {placeholder: 'First Name'} : {value: name[0]} %>
 </div>
 
 <div class="form-group">
@@ -25,7 +25,7 @@
 
   <%= f.error_for :last_name %>
 
-  <%= f.text_field :last_name, placeholder: 'Last Name' %>
+  <%= f.text_field :last_name, name.nil? ? {placeholder: 'Last Name'} : {value: name[-1]} %>
 </div>
 
 <div class="form-group">
