@@ -46,6 +46,7 @@ class QuotesController < InheritedResources::Base
           .default_group
           .update_attributes(name: params[:line_item_group_name])
       end
+      @quote
       # scrapping for now since freshdesk is a piece of shit
       # @quote.create_freshdesk_ticket(current_user) if Rails.env.production?
     end
