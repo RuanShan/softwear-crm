@@ -9,7 +9,7 @@ class Imprint < ActiveRecord::Base
 
   belongs_to :job
   belongs_to :print_location
-  belongs_to :name_number
+  has_many :name_numbers
   has_one :imprint_method, through: :print_location
   has_one :order, through: :job
 

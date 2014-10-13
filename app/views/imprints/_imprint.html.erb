@@ -34,19 +34,12 @@
                        class: 'form-control js-imprint-method-select' %>
       </div>
 
-      <div class="form-group checkbox-container">
-        <%= label_tag "Name/Number Print?" %>
-
-        <!-- TODO turn this into a helper function, perhaps -->
-        <% checked = local_assigns[:imprint].try(:has_name_number) ? true : false %>
-        <%= hidden_field_tag select_field_name_for.(:has_name_number), '0' %>
-        <%= check_box_tag select_field_name_for.(:has_name_number), '1', checked, class: 'js-imprint-has-name-number' %>
-      </div>
-
       <% if local_assigns[:imprint].try(:id) %>
-      <div class="hidden" id="name_number_format_fields_<%= local_assigns[:imprint].id %>">
-        <%= text_field_tag :name_format, local_assigns[:imprint].name_format %>
-        <%= text_field_tag :number_format, local_assigns[:imprint].number_format %>
+      <div class="hidden js-name-number-format-fields form-group" id="name_number_format_fields_<%= local_assigns[:imprint].id %>">
+        <%= label_tag :name_format %>
+        <%= text_field_tag :name_format, local_assigns[:imprint].name_format, class: 'form-control' %>
+        <%= label_tag :number_format %>
+        <%= text_field_tag :number_format, local_assigns[:imprint].number_format, class: 'form-control' %>
       </div>
       <% else %>
       <div class="hidden generic-error-message">

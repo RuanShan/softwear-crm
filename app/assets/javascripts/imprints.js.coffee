@@ -3,12 +3,11 @@
   id = $this.val()
   
   $this.addClass 'editing-imprint'
-  console.log($this.val())
-  console.log("option[value='#{ $this.val() }']")
-  # remove selected attribute
-  $this.children("option").removeAttr('selected')
-  # add selected attribute to appropriate option
-  $this.children("option[value='#{ $this.val() }']").attr('selected', 'selected')
+  # todo: using hardcoded name/number name
+  if $this.children("option[value='#{ id }']").text() is 'Name/Number'
+    $this.parent().siblings("div.js-name-number-format-fields").toggleClass("hidden", false)
+  else
+    $this.parent().siblings("div.js-name-number-format-fields").toggleClass("hidden", true)
   $imprintContainer = $this.parentsUntil('.imprint-container').parent()
   
   $imprintEntry = $this.parentsUntil('.imprint-entry').parent()

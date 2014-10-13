@@ -149,7 +149,7 @@ feature 'Imprints Management', imprint_spec: true, js: true do
   end
 
   scenario 'A user can select a pre-populated name/number imprint method from
-            the dropdown and edit name and number_format fields', story_189: true do
+            the dropdown and edit name and number_format fields', story_190: true do
     imprint
     visit edit_order_path(order.id, anchor: 'jobs')
     wait_for_ajax
