@@ -4,6 +4,7 @@
     <table>
       <thead>
       <tr>
+        <th>Base Upcharge</th>
         <th>2XL</th>
         <th>3XL</th>
         <th>4XL</th>
@@ -14,6 +15,13 @@
 
       <tbody>
       <tr>
+        <td>
+          <div class="input-group">
+            <span class="input-group-addon">$</span>
+            <%= size_price_field(f, :base_upcharge, f.object.base_upcharge) %>
+          </div>
+        </td>
+
         <td>
           <div class="input-group">
             <span class="input-group-addon">$</span>

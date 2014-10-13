@@ -9,7 +9,8 @@ describe 'imprintables/retail_upcharge_fields.html.erb', story_185: true, imprin
     render 'retail_upcharge_fields', f: f
   end
 
-  it 'has fields each size xxl and above' do
+  it 'has fields for base_upcharge + each size xxl and above' do
+    expect(rendered).to have_css('input#imprintable_base_upcharge')
     expect(rendered).to have_css('input#imprintable_xxl_upcharge')
     expect(rendered).to have_css('input#imprintable_xxxl_upcharge')
     expect(rendered).to have_css('input#imprintable_xxxxl_upcharge')
