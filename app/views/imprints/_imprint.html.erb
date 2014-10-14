@@ -1,12 +1,13 @@
 <% select_field_name_for = method(:imprint_select_field_name_for).to_proc.curry.(local_assigns[:imprint]) %>
+<% id = local_assigns[:imprint].try(:id) || increment_new_imprint_counter %>
 
-<div class="col-sm-4 imprint-entry" data-id="<%= local_assigns[:imprint].try(:id) || increment_new_imprint_counter %>">
+<div class="col-sm-4 imprint-entry" data-id="<%= id %>">
   <div class="box-info imprint-container">
 
   <% if ImprintMethod.all.empty? %>
     <p>
       Looks like there aren't any Imprint Methods registered. 
-      <%= link_to "Click here", new_imprint_method_path %> to add one.
+      <%= link_to 'Click here', new_imprint_method_path %> to add one.
     </p>
   <% else %>
       <div class="print-location-container">
@@ -17,7 +18,11 @@
                                                 ImprintMethod.first.print_locations
                                               end,
 
-                             name: select_field_name_for.(:print_location_id),
+                             name: if local_assigns[:imprint].try(:id)
+                                     select_field_name_for.(:print_location_id)
+                                   else
+                                      "imprint[#{id}[print_location_id]]"
+                                   end,
                              default: local_assigns[:imprint].try(:print_location).try(:id) } %>
       </div>
 
@@ -30,20 +35,15 @@
                          :name,
                          local_assigns[:imprint_method].try(:id)
                        ),
-                       id: "imprint_method_select_#{ local_assigns[:imprint].try(:id) }",
+                       id: "imprint_method_select_#{ id }",
                        class: 'form-control js-imprint-method-select' %>
       </div>
 
       <% if local_assigns[:imprint].try(:id) %>
-      <div class="hidden js-name-number-format-fields form-group" id="name_number_format_fields_<%= local_assigns[:imprint].id %>">
-        <%= label_tag :name_format %>
-        <%= text_field_tag :name_format, local_assigns[:imprint].name_format, class: 'form-control' %>
-        <%= label_tag :number_format %>
-        <%= text_field_tag :number_format, local_assigns[:imprint].number_format, class: 'form-control' %>
-      </div>
+        <%= render 'imprints/name_number_fields', imprint: imprint, imprint_method_name: imprint.imprint_method.name %>
       <% else %>
-      <div class="hidden generic-error-message">
-        Please click 'Update' before assigning names and numbers!
+      <div class="hidden generic-error-message js-name-number-format-fields">
+        Please click 'Update' before assigning name and number!
       </div>
       <% end %>
 

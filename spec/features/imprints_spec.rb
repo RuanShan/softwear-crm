@@ -149,16 +149,14 @@ feature 'Imprints Management', imprint_spec: true, js: true do
   end
 
   scenario 'A user can select a pre-populated name/number imprint method from
-            the dropdown and edit name and number_format fields', story_190: true do
+            the dropdown and edit name and number_format fields', new: true, story_189: true do
     imprint
     visit edit_order_path(order.id, anchor: 'jobs')
     wait_for_ajax
 
-    expect(page).to have_css("input#name_format_#{ imprint.id }.hidden")
-    expect(page).to have_css("input#number_format_#{ imprint.id }.hidden")
+    expect(page).to have_css('div.js-name-number-format-fields.hidden')
     find("imprint_method_#{ imprint.id }").find(:xpath, "'//select[contains(option, 'Name/Number')]'").select_option
-    expect(page).to_not have_css("input#name_format_#{ imprint.id }.hidden")
-    expect(page).to_not have_css("input#number_format_#{ imprint.id }.hidden")
+    expect(page).to_not have_css('div.js-name-number-format-fields.hidden')
 
     fill_in "#name_format_#{ imprint.id }", with: '5 inch height'
     fill_in "#number_format_#{ imprint.id }", with: 'really big'

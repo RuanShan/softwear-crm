@@ -4,12 +4,15 @@
   
   $this.addClass 'editing-imprint'
   # todo: using hardcoded name/number name
+  $name_number_container = $this.parent().siblings("div.js-name-number-format-fields")
   if $this.children("option[value='#{ id }']").text() is 'Name/Number'
-    $this.parent().siblings("div.js-name-number-format-fields").toggleClass("hidden", false)
+    $name_number_container.toggleClass("hidden", false)
+    $name_number_container.children("input").toggleClass("editing-imprint", true)
   else
-    $this.parent().siblings("div.js-name-number-format-fields").toggleClass("hidden", true)
+    $name_number_container.toggleClass("hidden", true)
+    $name_number_container.children("input").toggleClass("editing-imprint", false)
+
   $imprintContainer = $this.parentsUntil('.imprint-container').parent()
-  
   $imprintEntry = $this.parentsUntil('.imprint-entry').parent()
   imprintId = $imprintEntry.data('id')
 
@@ -41,7 +44,8 @@
   $parent.find('.js-print-location-select').change printLocationSelected
   $parent.find('.js-imprint-method-select').change imprintMethodSelected
   $parent.find('.js-imprint-has-name-number').on 'ifClicked', imprintHasNameNumberChecked
-  $parent.find('.js-imprint-name-number').change nameNumberChanged
+  $parent.find('.js-name-format-field').change printLocationSelected
+  $parent.find('.js-number-format-field').change printLocationSelected
 
 @deleteImprint = ->
   $btn = $(this)
