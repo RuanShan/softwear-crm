@@ -9,9 +9,9 @@ feature 'Imprints Management', imprint_spec: true, js: true do
   given(:job) { order.jobs.first }
   
   -> (t,&b) {b.call(t)}.call(
-       [%w(Digital Screen Embroidery),
-        %w(Front   Lower  Wherever)]) do |name|
-    3.times do |n|
+       [%w(Digital Screen Embroidery Name/Number),
+        %w(Front   Lower  Wherever Somewhere)]) do |name|
+    4.times do |n|
       let!("imprint_method#{n+1}") { create(:valid_imprint_method, 
                           name: name.first[n]) }
       let!("print_location#{n+1}") { create(:valid_print_location, name: name[1][n],
@@ -114,13 +114,12 @@ feature 'Imprints Management', imprint_spec: true, js: true do
     expect(Imprint.where(job_id: job.id)).to_not exist
   end
 
-  scenario 'user can check the name/number box multiple times', name_number: true do
+  scenario 'user can check the name/number box multiple times', name_number: true, pending: 'might not need this checkbox' do
     imprint
     expect(Imprint.where(has_name_number: true)).to_not exist
     visit edit_order_path(order.id, anchor: 'jobs')
     wait_for_ajax
 
-    first('.checkbox-container > div').click
     first('.update-imprints').click
     wait_for_ajax
 
@@ -133,39 +132,19 @@ feature 'Imprints Management', imprint_spec: true, js: true do
     expect(Imprint.where(has_name_number: true)).to_not exist
   end
 
-  scenario 'user can specify a name or number for an imprint', name_number: true do
+  scenario 'user can specify a name and number formats for an imprint', name_number: true, story_189: true do
     imprint
     visit edit_order_path(order.id, anchor: 'jobs')
     wait_for_ajax
 
-    first('.checkbox-container > div').click
-    first('.js-imprint-name-number-name').set('Mike Hawk')
-    first('.js-imprint-name-number-number').set(99)
-    first('.js-imprint-name-number-description').set('A description of the name/number font/styles')
+    select 'Name/Number', from: 'imprint_method'
+
+    first('.js-name-format-field').set('Extra wide')
+    first('.js-number-format-field').set('Extra long')
     first('.update-imprints').click
     wait_for_ajax
 
-    expect(NameNumber.where(name: 'Mike Hawk', number: 99, description: 'A description of the name/number font/styles')).to exist
+    expect(imprint.reload.name_format).to eq('Extra wide')
+    expect(imprint.reload.number_format).to eq('Extra long')
   end
-
-  scenario 'A user can select a pre-populated name/number imprint method from
-            the dropdown and edit name and number_format fields', new: true, story_189: true do
-    imprint
-    visit edit_order_path(order.id, anchor: 'jobs')
-    wait_for_ajax
-
-    expect(page).to have_css('div.js-name-number-format-fields.hidden')
-    find("imprint_method_#{ imprint.id }").find(:xpath, "'//select[contains(option, 'Name/Number')]'").select_option
-    expect(page).to_not have_css('div.js-name-number-format-fields.hidden')
-
-    fill_in "#name_format_#{ imprint.id }", with: '5 inch height'
-    fill_in "#number_format_#{ imprint.id }", with: 'really big'
-
-    first('.update-imprints').click
-    wait_for_ajax
-
-    expect(Imprint.find(imprint.id).name_format).to eq '5 inch height'
-    expect(Imprint.find(imprint.id).number_format).to eq 'really big'
-  end
-
 end

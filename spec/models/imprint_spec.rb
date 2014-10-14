@@ -23,7 +23,7 @@ describe Imprint, imprint_spec: true do
   end
 
   describe 'Scopes' do
-    describe 'with_name_number', name_number: true do
+    describe 'with_name_number', name_number: true, pending: 'implementing this in story-190' do
       let!(:imprint_1) { create :imprint_with_name_number }
       let!(:imprint_2) { create :imprint_with_name_number, has_name_number: false }
       let!(:imprint_3) { create :valid_imprint }

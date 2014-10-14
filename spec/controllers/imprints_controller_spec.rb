@@ -18,23 +18,21 @@ describe ImprintsController, imprint_spec: true do
         imprint: {
           imprint.id.to_s => {
             has_name_number: '1',
-            name_number: { name: 'test name', number: '2' }
+            name_format: 'name format',
+            number_format: 'number format'
           }
         }
       }
     end
 
-    it 'properly assigns name/number fields' do
-      expect(NameNumber.where(name: 'test name')).to_not exist
-      expect(imprint.has_name_number).to_not be_truthy
-      expect(imprint.name_number).to be_nil
+    it 'properly assigns name/number fields', story_189: true do
+      expect(imprint.name_format).to be_nil
 
       put :update, name_number_params.merge(job_id: job.id, format: :js)
 
       imprint.reload
-      expect(imprint.has_name_number).to eq true
-      expect(NameNumber.where(name: 'test name')).to exist
-      expect(imprint.name_number).to eq NameNumber.find_by(name: 'test name')
+      expect(imprint.name_format).to eq 'name format'
+      expect(imprint.number_format).to eq 'number format'
     end
   end
 end
