@@ -9,7 +9,7 @@ describe 'quotes/_quote_detail_fields.html.erb', quote_spec: true do
     form_for(quote, url: quote_path(quote), builder: LancengFormBuilder) do |f|
       @f = f
     end
-    render partial: 'quotes/quote_detail_fields', locals: { f: @f, quote: quote }
+    render partial: 'quotes/quote_detail_fields', locals: { f: @f, quote: quote, quote_request_id: nil }
   end
 
   it 'should contain all the necessary fields and labels' do

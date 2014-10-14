@@ -1,3 +1,16 @@
+<div class="form-group hide">
+  <%= f.label :quote_request_ids, 'Quote Requests' %>
+
+  <% qr_ids =
+            if !quote_request_id.nil?
+              quote_request_id
+            else
+              quote.quote_request_ids
+            end
+  %>
+
+  <%= f.select :quote_request_ids, [qr_ids], {}, { name: 'quote[quote_request_ids][]' } %>
+</div>
 
 <div class="form-group">
   <%= f.label :name, 'Quote Name' %>

@@ -33,13 +33,8 @@ feature 'Quote Requests Management', js: true, quote_request_spec: true do
     page.find('button.editable-submit').click
     expect(QuoteRequest.where(salesperson_id: valid_user.id)).to exist
   end
-end
-feature 'Quote Request Features', js: true, quote_request_spec: true, story_79: true do
-  given!(:quote_request) { create(:quote_request) }
-  given!(:valid_user) { create(:alternate_user) }
-  before(:each) { login_as(valid_user) }
 
-  scenario 'A user can create a Quote from a Quote Request' do
+  scenario 'A user can create a Quote from a Quote Request', story_79: true do
     visit root_path
     unhide_dashboard
     click_link 'Quotes'
@@ -69,7 +64,6 @@ feature 'Quote Request Features', js: true, quote_request_spec: true, story_79: 
 
     wait_for_ajax
     expect(page).to have_selector '.modal-content-success', text: 'Quote was successfully created.'
-    expect(current_path). to eq(quote_path(quote.id + 1))
-    expect(Quote.where(quote_request_ids: [quote_request.id])).to exist
+    expect(Quote.last.quote_request_ids).to eq([quote_request.id])
   end
 end
