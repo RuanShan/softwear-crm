@@ -132,7 +132,7 @@ feature 'Imprints Management', imprint_spec: true, js: true do
     expect(Imprint.where(has_name_number: true)).to_not exist
   end
 
-  scenario 'user can specify a name and number formats for an imprint', name_number: true, story_189: true do
+  scenario 'a user can specify a name and number formats for an imprint', name_number: true, story_189: true do
     imprint
     visit edit_order_path(order.id, anchor: 'jobs')
     wait_for_ajax
@@ -146,5 +146,21 @@ feature 'Imprints Management', imprint_spec: true, js: true do
 
     expect(imprint.reload.name_format).to eq('Extra wide')
     expect(imprint.reload.number_format).to eq('Extra long')
+  end
+
+  scenario 'a user can add names and numbers to a table, when a name and number imprint is present', name_number: true, story_190: true do
+    imprint
+    visit edit_order_path(order.id, anchor: 'jobs')
+    wait_for_ajax
+
+    select 'Name/Number', from: 'imprint_method'
+
+    # select imprintable_variant from variant select field
+    fill_in :name, with: 'Test name'
+    fill_in :number, with: 'Test number'
+    click_link 'Add'
+
+    expect(NameNumber.find_by(name: 'Test name')).to exist
+    expect(page).to have_selector('relevant-table-row-selector')
   end
 end
