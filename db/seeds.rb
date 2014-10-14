@@ -135,6 +135,7 @@ create_records([
 # ImprintMethod SEEDING
 # ----------------
 ImprintMethod.create({name: 'Screen Printing'})
+ImprintMethod.create({name: 'Name/Number', deletable: false})
 
 im = ImprintMethod.all.first
 create_records([

@@ -20,7 +20,7 @@
       <%= form_for :line_item, method: :put, url: line_items_update_path, remote: true, builder: BatchFormBuilder do |f| %>
         <% job.sort_line_items.tap do |sorted_line_items| %>
           <% unless sorted_line_items.empty? %>
-            <% sorted_line_items.each do |imprintable_name, by_color| %>
+            <% sorted_line_items.each do |_imprintable_name, by_color| %>
               <% by_color.each do |color_name, line_items| %>
                 <%= render partial: 'line_items/imprintable_edit',
                            locals: { color_name: color_name,
@@ -67,7 +67,7 @@
         </div>
       </div>
       <%= form_for :imprint, builder: BatchFormBuilder, method: :put, remote: true,
-                   url: job_imprints_update_path(job) do |f| %>
+                   url: job_imprints_update_path(job) do |_f| %>
         <%= render partial: 'imprints/imprints', locals: { job: job } %>
 
         <div class="form-group box-info">
@@ -80,7 +80,6 @@
 
           </div>
           <div class="col-sm-4 col-xs-offset-4">
-            <!-- <button type="button" class="btn btn-info btn-lg btn-block update-imprints" onclick="updateImprints($(this))"><i class="fa fa-pagelines"></i> Update Imprints</button> -->
             <%= button_tag class: 'btn btn-info btn-lg btn-block update-imprints' do %>
               <i class="fa fa-pagelines"></i> Update Imprints
             <% end %>
