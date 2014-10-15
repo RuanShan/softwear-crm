@@ -39,6 +39,7 @@ class Quote < ActiveRecord::Base
   validate :prepare_nested_line_items_attributes
 
   after_save :save_nested_line_items_attributes
+  after_save :set_quote_request_statuses_to_quoted
   after_initialize  :initialize_time
 
   def all_activities
@@ -120,7 +121,20 @@ class Quote < ActiveRecord::Base
     subtract_dates(initialized_at, time_to_first_email)
   end
 
+  def quote_request_ids=(ids)
+    super
+    @quote_request_ids_assigned = true
+  end
+
 private
+
+  def set_quote_request_statuses_to_quoted
+    return unless @quote_request_ids_assigned
+    
+    quote_requests.find_each { |q| q.update_attributes(status: 'quoted') }
+
+    @quote_request_ids_assigned = nil
+  end
 
   def initialize_time
     self.initialized_at = Time.now if self.initialized_at.blank?
