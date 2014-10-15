@@ -17,8 +17,8 @@ class BatchFormBuilder < LancengFormBuilder
   end
 
   def select(method, *other_args)
-    raise 'Not implemented in BatchFormBuilder. '\
-          'Remove this definition if you really want to.'
+    raise 'Not implemented in BatchFormBuilder.
+           Remove this definition if you really want to.'
   end
 
   def fields_for(object, *args)

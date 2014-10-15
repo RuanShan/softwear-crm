@@ -86,8 +86,13 @@
 
           </div>
         </div>
-
       <% end %>
+
+      <div class="form-group box-info full">
+        <%= render 'jobs/name_number_form', job: job %>
+        <%= render 'jobs/name_number_table', job: job %>
+      </div>
+
 
       <div class="form-group box-info">
         <div class="col-sm-4 col-xs-offset-4">

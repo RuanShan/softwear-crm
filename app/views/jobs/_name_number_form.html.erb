@@ -1,0 +1,28 @@
+<%= form_for :name_number, method: :post, remote: true, url: job_name_numbers_path(job) do |f| %>
+  <h4>Add a name/number</h4>
+
+  <div class="form-group col-xs-3">
+    <%= f.select :imprint_id,
+                 job.name_number_imprints.collect{ |i| [i.name, i.id] },
+                 { prompt: 'Select an imprint' },
+                 { class: 'form-control js-name-number-imprint-select' } %>
+  </div>
+
+  <div class="form-group col-xs-3">
+    <%= f.select :imprintable_variant_id,
+                   job.imprintable_variants.collect { |iv| [iv.full_name, iv.id] },
+                   { prompt: 'Select an imprintable' },
+                   { class: 'form-control js-name-number-imprintable-select' } %>
+  </div>
+
+  <div class="form-group col-xs-3">
+    <%= f.text_field :name, class: 'form-control js-name-field', placeholder: 'Name' %>
+  </div>
+
+  <div class="form-group col-xs-1">
+    <%= f.text_field :number, class: 'form-control js-number-field', placeholder: 'Number' %>
+  </div>
+
+  <%= f.submit class: 'btn btn-default' %>
+
+<% end %>
