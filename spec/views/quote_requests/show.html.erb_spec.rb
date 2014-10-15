@@ -5,6 +5,13 @@ describe 'quote_requests/show.html.erb', quote_request_spec: true, story_78: tru
   let!(:quotes) { [build_stubbed(:valid_quote), build_stubbed(:valid_quote)] }
 
   before(:each) do
+    quotes.class_eval do
+      alias_method :find_each, :each
+      def any?
+        !empty?
+      end
+    end
+
     allow(quote_request).to receive(:quotes).and_return quotes
     quotes.each_with_index do |quote, i|
       allow(quote).to receive(:id).and_return i

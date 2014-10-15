@@ -290,6 +290,7 @@ create_records([
        date_needed: Time.now + 2.days,
        source: 'Source',
        salesperson_id: nil,
+       status: 'pending'
    },
 
    {
@@ -300,5 +301,6 @@ create_records([
        date_needed: Time.now + 2.days,
        source: 'Source',
        salesperson_id: 1,
+       status: 'assigned'
    }
               ], QuoteRequest)
