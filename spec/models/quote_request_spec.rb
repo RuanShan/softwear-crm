@@ -31,4 +31,15 @@ describe QuoteRequest, quote_request_spec: true, story_78: true do
       end
     end
   end
+
+  describe '#salesperson_id=', story_195: true do
+    let!(:user) { create(:user) }
+
+    it 'sets status to "assigned"' do
+      quote_request = create(:quote_request)
+      quote_request.salesperson_id = user.id
+      quote_request.save
+      expect(quote_request.reload.status).to eq 'assigned'
+    end
+  end
 end
