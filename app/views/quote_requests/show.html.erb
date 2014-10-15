@@ -14,8 +14,8 @@
     <div class='col-sm-2'>
       <strong>Status:</strong>
     </div>
-    <div class='col-sm-10'>
-      <em><%= @quote_request.status %></em>
+    <div class='col-sm-10' id='quote-request-status'>
+      <%= render 'status_show', quote_request: @quote_request %>
     </div>
   </div>
 

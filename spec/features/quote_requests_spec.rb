@@ -72,11 +72,11 @@ feature 'Quote Requests Management', js: true, quote_request_spec: true do
   scenario 'A user can change the status of a quote', story_195: true do
     visit quote_request_path(quote_request)
 
-    click_button 'change_status'
+    find('#change-status').click
     wait_for_ajax
     fill_in 'quote_request_status', with: 'whatever'
 
-    click_button 'confirm_status'
+    find('#quote-request-submit').click
     wait_for_ajax
 
     expect(page).to have_content 'whatever'

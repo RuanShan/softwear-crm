@@ -1,10 +1,11 @@
 class QuoteRequestsController < InheritedResources::Base
-  respond_to :json
+  respond_to :json, :js
 
-  def update
-    @quote_request = QuoteRequest.find(params[:id])
-    @quote_request.salesperson_id = params[:quote_request][:salesperson_id]
-    @quote_request.save
-    respond_with @quote_request
+  private
+
+  def permitted_params
+    params.permit(
+      quote_request: [:status, :salesperson_id]
+    )
   end
 end

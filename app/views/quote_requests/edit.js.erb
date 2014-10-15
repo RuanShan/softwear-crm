@@ -1,0 +1,11 @@
+$('#quote-request-status').html(
+  "<%=j render 'status_edit', quote_request: @quote_request, custom_cancel: true %>"
+);
+
+$('#cancel-quote-request-edit-button')
+  .click(function() {
+    $('#quote-request-status').html(
+      "<%=j render 'status_show', quote_request: @quote_request %>"
+    );
+    return false;
+  });

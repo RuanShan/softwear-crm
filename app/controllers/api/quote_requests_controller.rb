@@ -1,15 +1,15 @@
 module Api
   class QuoteRequestsController < ApiController
 
-    def create
-      quote_request = QuoteRequest.new(quote_request_params)
-      if quote_request.save
-        respond_to do |format|
-          format.json { render json: quote_request, status: :created}
-        end
-      end
-
-    end
+    # TODO I'm not entirely why this code was here.
+    # def create
+    #   quote_request = QuoteRequest.new(quote_request_params)
+    #   if quote_request.save
+    #     respond_to do |format|
+    #       format.json { render json: quote_request, status: :created}
+    #     end
+    #   end
+    # end
 
     private
 
