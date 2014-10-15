@@ -204,5 +204,16 @@ describe Quote, quote_spec: true do
         end
       end
     end
+
+    describe '#quote_request_ids=', story_195: true do
+      let!(:quote_request) { create(:valid_quote_request_with_salesperson) }
+      let!(:quote) { create(:valid_quote) }
+
+      it 'assigns quote_request.status to "quoted"' do
+        quote.quote_request_ids = [quote_request.id]
+        expect(quote.save).to eq true
+        expect(quote_request.reload.status).to eq 'quoted'
+      end
+    end
   end
 end

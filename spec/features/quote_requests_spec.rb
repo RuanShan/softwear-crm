@@ -24,7 +24,7 @@ feature 'Quote Requests Management', js: true, quote_request_spec: true do
     expect(QuoteRequest.where(salesperson_id: valid_user.id)).to exist
   end
 
-  scenario 'A user can assign an unassigned quote request', story_80: true do
+  scenario 'A user can assign an unassigned quote request', story_80: true, story_195: true do
     quote_request.salesperson_id = nil
     quote_request.save
     visit quote_requests_path
@@ -32,9 +32,10 @@ feature 'Quote Requests Management', js: true, quote_request_spec: true do
     page.find('div.editable-input').find("option[value='#{valid_user.id}']").click
     page.find('button.editable-submit').click
     expect(QuoteRequest.where(salesperson_id: valid_user.id)).to exist
+    expect(quote_request.reload.status).to eq 'assigned'
   end
 
-  scenario 'A user can create a Quote from a Quote Request', story_79: true do
+  scenario 'A user can create a Quote from a Quote Request', story_79: true, story_195: true, create_quote: true do
     visit root_path
     unhide_dashboard
     click_link 'Quotes'
@@ -65,5 +66,20 @@ feature 'Quote Requests Management', js: true, quote_request_spec: true do
     wait_for_ajax
     expect(page).to have_selector '.modal-content-success', text: 'Quote was successfully created.'
     expect(Quote.last.quote_request_ids).to eq([quote_request.id])
+    expect(quote_request.reload.status).to eq 'quoted'
+  end
+
+  scenario 'A user can change the status of a quote', story_195: true do
+    visit quote_request_path(quote_request)
+
+    click_button 'change_status'
+    wait_for_ajax
+    fill_in 'quote_request_status', with: 'whatever'
+
+    click_button 'confirm_status'
+    wait_for_ajax
+
+    expect(page).to have_content 'whatever'
+    expect(QuoteRequest.where(status: 'whatever')).to exist
   end
 end

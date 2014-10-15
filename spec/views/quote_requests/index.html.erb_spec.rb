@@ -11,6 +11,7 @@ describe 'quote_requests/index.html.erb', quote_request_spec: true, story_78: tr
     quote_requests.each do |quote_request|
       expect(rendered).to have_content quote_request.name
       expect(rendered).to have_content quote_request.email
+      expect(rendered).to have_content quote_request.status
       expect(rendered).to have_content quote_request.date_needed.month
       expect(rendered).to have_content quote_request.date_needed.day
       expect(rendered).to have_content quote_request.date_needed.year
@@ -19,6 +20,6 @@ describe 'quote_requests/index.html.erb', quote_request_spec: true, story_78: tr
   end
 
   it 'has a generate quote button' do
-
+    # damn, nick
   end
 end
