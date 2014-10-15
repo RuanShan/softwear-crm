@@ -8,4 +8,9 @@ class QuoteRequest < ActiveRecord::Base
             :date_needed, :description, :source, presence: true
 
   before_validation(on: :create) { self.status = 'pending' if status.nil? }
+
+  def salesperson_id=(id)
+    super
+    self.status = 'assigned'
+  end
 end
