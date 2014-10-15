@@ -1,0 +1,40 @@
+<div class="slimScrollDiv" id="js-name-number-table">
+  <div class="table-scroll">
+    <div class="table-responsive">
+      <table data-sortable class="table table-hover table-striped" data-sortable-initialized="true">
+        <thead>
+          <tr>
+            <th>Imprint</th>
+            <th>Imprintable</th>
+            <th>Name</th>
+            <th>Number</th>
+            <th>Destroy</th>
+          </tr>
+        </thead>
+
+        <tbody>
+          <% name_numbers = job.name_number_imprints.flat_map{ |i| i.name_numbers } %>
+          <% name_numbers.each do |nn| %>
+            <tr>
+              <td><%= nn.imprint.name %></td>
+              <td><%= nn.imprintable_variant.full_name %></td>
+              <td><%= nn.name %></td>
+              <td><%= nn.number %></td>
+              <td>
+                <%= link_to name_number_path(nn, job_id: job.id),
+                            data: {
+                              method: :delete, remote: true, confirm: 'Are you sure?'
+                            }, title: 'Destroy' do %>
+                <i class="fa danger fa-times-circle" id="destroy-name-number-<%= nn.id %>"></i>
+                <% end %>
+              </td>
+            </tr>
+          <% end %>
+        </tbody>
+      </table>
+      <!-- end div .table-responsive -->
+    </div>
+    <div class="slimScrollBar"></div>
+    <div class="slimScrollRail"></div>
+  </div>
+</div>

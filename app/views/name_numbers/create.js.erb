@@ -1,0 +1,7 @@
+// this is what gets rendered after successful name/number creation
+$('#js-name-number-table').replaceWith("<%= j(render partial: 'jobs/name_number_table',
+                               locals: { job: @job }).html_safe %>");
+
+<% if @name_number.errors.any? %>
+  $("#flashModal").modal();
+<% end %>

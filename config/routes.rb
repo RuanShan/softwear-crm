@@ -77,6 +77,7 @@ CrmSoftwearcrmCom::Application.routes.draw do
     end
 
     resources :jobs, only: [:create, :update, :destroy, :show], shallow: true do
+      resources :name_numbers, only: [:create, :destroy]
       member do
         get 'names_numbers', as: :name_number_csv_from
       end
