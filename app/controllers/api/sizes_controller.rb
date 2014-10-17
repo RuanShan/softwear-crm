@@ -11,6 +11,10 @@ module Api
 
     private
 
+    def permitted_attributes
+      [:name, :sku, :display_value]
+    end
+
     def index_by(options)
       imprintable_name = options[:imprintable]
       color_name       = options[:color]
