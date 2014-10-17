@@ -76,11 +76,6 @@ module Api
       instance_variable_get("@#{self.class.model_name.underscore}")
     end
 
-    alias_method :params!, :params
-    def params
-      super.permit(*permitted_params)
-    end
-
     def permitted_attributes
       []
     end
@@ -94,7 +89,7 @@ module Api
       
       usual_params = [:id]
 
-      [usual_params, model_attributes]
+      params.permit(usual_params, model_attributes)
     end
 
     private
