@@ -17,11 +17,15 @@ module Api
       yield if block_given?
 
       if records.nil?
+        key_values = permitted_attributes.map do |a|
+          [a, params[a]] if params.key?(a)
+        end
+          .compact
+
         instance_variable_set(
           "@#{self.class.model_name.pluralize.underscore}",
 
-          resource_class
-            .where(Hash[permitted_attributes.map { |a| [a, params[a]] }])
+          resource_class.where(Hash[key_values])
         )
       end
 

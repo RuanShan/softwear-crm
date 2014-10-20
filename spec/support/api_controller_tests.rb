@@ -7,11 +7,12 @@ module ApiControllerTests
     describe 'GET #index', api_controller_spec: true do
       context 'with params' do
         it 'queries based on permitted field names in the params' do
-          allow(resource_type).to receive(:column_names)
-            .and_return ['field_1']
+          allow_any_instance_of(described_class)
+            .to receive(:permitted_attributes)
+            .and_return [:field_1]
 
           expect(resource_type)
-            .to receive(:where).with(hash_including('field_1' => 'value_1'))
+            .to receive(:where).with(hash_including(field_1: 'value_1'))
           expect(controller).to receive(:instance_variable_set)
             .with("@#{resource_name.pluralize}", anything)
 
