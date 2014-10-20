@@ -3,5 +3,11 @@ module Api
     def index
       super { @colors = Color.where(retail: true) }
     end
+
+    protected
+
+    def permitted_attributes
+      [:name, :sku, :hexcode]
+    end
   end
 end

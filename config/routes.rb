@@ -103,6 +103,9 @@ CrmSoftwearcrmCom::Application.routes.draw do
   get '/search', to: 'search/queries#search', as: :search
 
   namespace 'api' do
+    resources 'orders', only: [:index, :show]
+    resources 'jobs', only: [:index, :show]
+    resources 'imprints', only: [:index, :show]
     resources 'imprintables'
     resources 'colors'
     resources 'sizes'
