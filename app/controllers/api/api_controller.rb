@@ -5,13 +5,13 @@ module Api
     extend  InheritedResources::ClassMethods
     extend  InheritedResources::UrlHelpers
 
+    acts_as_token_authentication_handler_for User
+
     respond_to :json
     self.responder = InheritedResources::Responder
 
     self.class_attribute :resource_class, :instance_writer => false unless self.respond_to? :resource_class
     self.class_attribute :parents_symbols,  :resources_configuration, :instance_writer => false
-
-    before_action :authenticate_user!
 
     def index(&block)
       yield if block_given?
