@@ -49,4 +49,8 @@ module ApplicationHelper
     link_to imprintable.name, imprintable_path(imprintable),
             class: 'imprintable_modal_link', remote: true
   end
+
+  def xeditable?(object = nil)
+    true
+  end
 end

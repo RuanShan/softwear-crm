@@ -130,6 +130,10 @@ class Job < ActiveRecord::Base
     CSV.from_arrays csv, headers: %w(Number Name), write_headers: true
   end
 
+  def name_number_imprints
+    imprints.select{ |i| i.imprint_method.name == 'Name/Number' }
+  end
+
   private
 
   def assure_name_and_description

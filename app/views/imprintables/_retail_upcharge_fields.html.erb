@@ -1,0 +1,63 @@
+<div class="form-group clearfix">
+  <%= f.label :upcharge_pricing, class: 'col-sm-4 control-label' %>
+  <div class="col-sm-8">
+    <table>
+      <thead>
+      <tr>
+        <th>Base Upcharge</th>
+        <th>2XL</th>
+        <th>3XL</th>
+        <th>4XL</th>
+        <th>5XL</th>
+        <th>6XL</th>
+      </tr>
+      </thead>
+
+      <tbody>
+      <tr>
+        <td>
+          <div class="input-group">
+            <span class="input-group-addon">$</span>
+            <%= size_price_field(f, :base_upcharge, f.object.base_upcharge) %>
+          </div>
+        </td>
+
+        <td>
+          <div class="input-group">
+            <span class="input-group-addon">$</span>
+            <%= size_price_field(f, :xxl_upcharge, f.object.xxl_upcharge) %>
+          </div>
+        </td>
+
+        <td>
+          <div class="input-group">
+            <span class="input-group-addon">$</span>
+            <%= size_price_field(f, :xxxl_upcharge, f.object.xxxl_upcharge) %>
+          </div>
+        </td>
+
+        <td>
+          <div class="input-group">
+            <span class="input-group-addon">$</span>
+            <%= size_price_field(f, :xxxxl_upcharge, f.object.xxxxl_upcharge) %>
+          </div>
+        </td>
+
+        <td>
+          <div class="input-group">
+            <span class="input-group-addon">$</span>
+            <%= size_price_field(f, :xxxxxl_upcharge, f.object.xxxxxl_upcharge) %>
+          </div>
+        </td>
+
+        <td>
+          <div class="input-group">
+            <span class="input-group-addon">$</span>
+            <%= size_price_field(f, :xxxxxxl_upcharge, f.object.xxxxxxl_upcharge) %>
+          </div>
+        </td>
+      </tr>
+      </tbody>
+    </table>
+  </div>
+</div>

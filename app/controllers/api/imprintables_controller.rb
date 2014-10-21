@@ -1,8 +1,9 @@
 module Api
   class ImprintablesController < ApiController
     def index
-      # @imprintables = Imprintable.where(standard_offering: true)
-      super
+      super do
+        @imprintables = Imprintable.where(retail: true)
+      end
     end
 
     def show
@@ -15,7 +16,11 @@ module Api
     private
 
     def permitted_attributes
-      [:common_name]
+      [
+        :common_name,
+        :base_upcharge,  :xxl_upcharge,    :xxxl_upcharge,
+        :xxxxl_upcharge, :xxxxxl_upcharge, :xxxxxxl_upcharge
+      ]
     end
   end
 end

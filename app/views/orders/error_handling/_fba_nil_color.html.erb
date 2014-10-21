@@ -1,0 +1,12 @@
+<p class='error-text'>
+  Unable to find color with sku '<%= error.item.sku %>'. A job will be generated
+  with line items of color sku '<%= error.item.sku %>' 
+  (<%= error.item.sizes.compact.size %> sizes) omitted.
+</p>
+<p>
+  (OPTIONAL) Choose a different color to use:
+  <%= fba_input(:select, 'colors', options_from_collection_for_select(Color.all, :id, :name), class: 'alternate-color', original: error.item.sku) %>
+  <%= fba_resubmit('alternate-color') %>
+</p>
+
+<%= render_fba_data(@fba_infos.first) %>

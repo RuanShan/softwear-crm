@@ -18,7 +18,7 @@ feature 'Quotes management', quote_spec: true, js: true do
     expect(current_path).to eq(quotes_path)
   end
 
-  scenario 'A user can create a quote', broken: true do
+  scenario 'A user can create a quote' do
     visit root_path
     unhide_dashboard
 
@@ -34,7 +34,7 @@ feature 'Quotes management', quote_spec: true, js: true do
 
     fill_in 'Quote Name', with: 'Quote Name'
     find('#quote_quote_source').find("option[value='Other']").click
-    sleep 5
+    sleep 1
     fill_in 'Valid Until Date', with: Time.now + 1.day
     fill_in 'Estimated Delivery Date', with: Time.now + 1.day
     click_button 'Next'
@@ -121,6 +121,9 @@ feature 'Quotes management', quote_spec: true, js: true do
     click_button 'Next'
     sleep 0.5
 
+    fill_in 'Quote Name', with: 'Quote Name'
+    find('#quote_quote_source').find("option[value='Other']").click
+    sleep 1
     fill_in 'Valid Until Date', with: Time.now + 1.day
     fill_in 'Estimated Delivery Date', with: Time.now + 1.day
     click_button 'Next'

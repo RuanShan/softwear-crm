@@ -6,6 +6,31 @@ describe 'users/edit.html.erb', user_spec: true do
 		assign(:user, user)
 	end
 
+  context 'when the user views their own profile' do
+    before(:each) do
+      assign(:current_user, user)
+    end
+
+    it "displays the user's authentication token", story_192: true do
+      render
+      expect(rendered)
+        .to have_content "( Authentication token: #{user.authentication_token} )"
+    end
+  end
+
+  context "when the user views another user's profile" do
+    let!(:other_user) { create(:alternate_user) }
+
+    before(:each) do
+      assign(:current_user, other_user)
+    end
+
+    it 'does not display an authentication token' do
+      render
+      expect(rendered).to_not have_content other_user.authentication_token
+    end
+  end
+
 	it 'has fields for first_name, last_name and email' do
 		render
 		within_form_for User do

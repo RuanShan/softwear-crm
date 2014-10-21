@@ -12,6 +12,15 @@
 
   <div class='row'>
     <div class='col-sm-2'>
+      <strong>Status:</strong>
+    </div>
+    <div class='col-sm-10' id='quote-request-status'>
+      <%= render 'status_show', quote_request: @quote_request %>
+    </div>
+  </div>
+
+  <div class='row'>
+    <div class='col-sm-2'>
       <strong>Approximate Quantity:</strong>
     </div>
     <div class='col-sm-10'>
@@ -45,6 +54,18 @@
       <%= @quote_request.description %>
     </div>
   </div>
+
+  <% if @quote_request.quotes.any? %>
+    <div class='row'>
+      <strong>Quotes:</strong>
+    </div>
+
+    <% @quote_request.quotes.find_each do |quote| %>
+      <div class='indent-field'>
+        <%= link_to quote.name, quote_path(quote) %>
+      </div>
+    <% end %>
+  <% end %>
 </div>
 
 <%= link_to "All Quote Requests", quote_requests_path, class: 'btn btn-info' %>

@@ -57,3 +57,7 @@ jobCollapse = (id, collapsed) ->
 
 $(window).load ->
   registerJobEvents($('body'))
+
+#jQuery ->
+#  $('.chosen-select').chosen
+#    width: '200px'

@@ -12,6 +12,10 @@ String.class_eval do
   def a_or_an
     (%w(a e i o u).include?(downcase.first) ? 'an ' : 'a ') + self
   end
+
+  def whitespace?
+    self =~ /^\s*$/
+  end
 end
 
 Hash.class_eval do

@@ -68,7 +68,7 @@ describe QuotesController, js: true, quote_spec: true do
         allow(Rails).to receive_message_chain(:env, :production?).and_return true
       end
 
-      it 'should call create_freshdesk_ticket' do
+      it 'should call create_freshdesk_ticket', pending: "Freshdesk..." do
         expect_any_instance_of(Quote).to receive(:create_freshdesk_ticket).once
         post :create, quote: attributes_for(:valid_quote)
       end
@@ -126,6 +126,14 @@ describe QuotesController, js: true, quote_spec: true do
 
       post :email_customer, quote_id: quote.id
       expect(assigns(:quote)).to eq(quote)
+    end
+
+    it "inserts the email into the quote's emails", story_74: true do
+      post :email_customer, quote_id: quote.id, email_body: 'this is a body', email_subject: 'subject', email_recipients: 'blah@blah.com', cc: ''
+      expect(quote.emails.first.body).to eq('this is a body')
+      expect(quote.emails.first.subject).to eq('subject')
+      expect(quote.emails.first.sent_to).to eq('blah@blah.com')
+      expect(quote.emails.first.cc_emails).to eq('')
     end
   end
 

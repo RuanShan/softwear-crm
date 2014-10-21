@@ -87,5 +87,9 @@
         </table>
       </div>
     </div>
+
+    <% if object.retail? %>
+      <%= render 'retail_upcharge_fields', object: object, f: f %>
+    <% end %>
   </div>
 </div>

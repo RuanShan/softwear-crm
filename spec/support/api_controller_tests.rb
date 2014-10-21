@@ -1,16 +1,18 @@
 module ApiControllerTests
   shared_examples 'api_controller index' do
     resource_name = described_class.controller_name.singularize
-    resource_type = described_class.controller_name.singularize.camelize
+    resource_type_name = described_class.controller_name.singularize.camelize
+    resource_type = Kernel.const_get(resource_type_name)
 
     describe 'GET #index', api_controller_spec: true do
       context 'with params' do
         it 'queries based on permitted field names in the params' do
-          allow(Kernel.const_get(resource_type)).to receive(:column_names)
-            .and_return ['field_1']
+          allow_any_instance_of(described_class)
+            .to receive(:permitted_attributes)
+            .and_return [:field_1]
 
-          expect(Kernel.const_get(resource_type))
-            .to receive(:where).with('field_1' => 'value_1')
+          expect(resource_type)
+            .to receive(:where).with(hash_including(field_1: 'value_1'))
           expect(controller).to receive(:instance_variable_set)
             .with("@#{resource_name.pluralize}", anything)
 

@@ -8,7 +8,7 @@ describe 'quotes/_customer_detail_fields.html.erb', quote_spec: true do
     form_for(quote, url: quote_path(quote), builder: LancengFormBuilder) do |f|
       @f = f
     end
-    render partial: 'quotes/customer_detail_fields', locals: { f: @f }
+    render partial: 'quotes/customer_detail_fields', locals: { f: @f, email: nil, name: nil, quote: quote }
   end
 
   it 'should contain labels for email, phone number, first name, last name, company, and twitter' do

@@ -1,0 +1,12 @@
+Shipment ID	FBA237FK5S
+Name	FBA - Bride / Whitestown, IN (9/22)
+Plan name/ID	PLN212ZHP
+Ship To	Amazon.com, 4255 Anson Blvd, Whitestown, IN, US, 46075
+Total SKUs	4
+Total Units	209
+
+Merchant SKU	Title	ASIN	FNSKU	external-id	Condition	Shipped
+0-fba_wedd_bride-2070502000	Bride | Flowy, Silky, Fashionable Racerback Women's Bridal Tank Top-Adult,S	B00LMLAK5G	X000MFX7VN		New	53
+0-fba_wedd_bride-2070503000	Bride | Flowy, Silky, Fashionable Racerback Women's Bridal Tank Top-Adult,M	B00LMLAPUG	X000MFX80D		New	51
+0-fba_wedd_bride-2070504000	Bride | Flowy, Silky, Fashionable Racerback Women's Bridal Tank Top-Adult,L	B00LMLAVMI	X000MFX7YF		New	53
+0-fba_wedd_bride-2070505000	Bride | Flowy, Silky, Fashionable Racerback Women's Bridal Tank Top-Adult,XL	B00LMLB0VY	X000MFX7VX		New	52
