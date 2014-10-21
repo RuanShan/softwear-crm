@@ -53,11 +53,58 @@ class OrdersController < InheritedResources::Base
     end
   end
 
+  def create
+    return super unless params[:order].try(:[], 'terms') == 'Fulfilled by Amazon'
+
+    @order = Order.create(permitted_params[:order])
+
+    if @order.valid?
+      @order.generate_jobs(params[:job_attributes].map(&JSON.method(:parse)))
+      redirect_to order_path @order
+    else
+      @empty = Store.all.empty?
+      render 'new_fba'
+    end
+  end
+
   def names_numbers
     @order = Order.find(params[:id])
     filename = "order_#{@order.name}_names_numbers.csv"
 
     send_data @order.name_number_csv, filename: sanitize_filename(filename)
+  end
+
+  def fba
+    @current_action = 'orders#fba'
+    @orders = Order.fba.page(params[:page])
+    @fba = true
+
+    render action: :index
+  end
+
+  def new_fba
+    new! do
+      @current_action = 'orders#new_fba'
+      @empty = Store.all.empty?
+    end
+  end
+
+  def fba_job_info
+    params.permit('script_container_id')
+    params.permit('options').permit!
+    options = params['options']
+    options = JSON.parse(options) if options.is_a?(String)
+
+    packing_slips = params[:packing_slips]
+
+    return if packing_slips.nil?
+
+    @file_name = packing_slips.first.original_filename
+    @script_container_id = params[:script_container_id]
+
+    @fba_infos = packing_slips.map do |packing_slip|
+      FBA.parse_packing_slip(StringIO.new(packing_slip.read), options)
+    end
   end
 
   private
@@ -74,7 +121,11 @@ class OrdersController < InheritedResources::Base
   end
 
   def permitted_params
-    params.permit(order: [
+    params.permit(
+      :packing_slips, :page,
+      :job_attributes,
+
+      order: [
       :email, :firstname, :lastname,
       :company, :twitter, :name, :po,
       :in_hand_by, :terms, :tax_exempt,

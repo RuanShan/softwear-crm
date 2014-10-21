@@ -7,6 +7,12 @@
                html: { method: :put }, builder: LancengFormBuilder do |f| %>
     <%= render_error_modal_for @user %>
 
+    <% if @current_user == @user %>
+      <div style='margin-bottom: 10px;'>
+        ( <label>Authentication token: </label> <%= @current_user.authentication_token %> )
+      </div>
+    <% end %>
+
     <%= render partial: 'users/fields', locals: { f: f } %>
 
     <div class='form-group'>

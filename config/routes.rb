@@ -42,7 +42,7 @@ CrmSoftwearcrmCom::Application.routes.draw do
     end
   end
 
-  resources :quote_requests, only: [:show, :index]
+  resources :quote_requests
 
   get '/logout' => 'users#logout'
   
@@ -60,6 +60,12 @@ CrmSoftwearcrmCom::Application.routes.draw do
       get 'names_numbers', as: :name_number_csv_from
     end
 
+    collection do
+      get 'fba'
+      get 'new_fba'
+      post 'fba_job_info'
+    end
+
     get 'timeline', to: 'timeline#show', as: :timeline
     resources :payments, shallow: true
     resources :artwork_requests
@@ -71,6 +77,7 @@ CrmSoftwearcrmCom::Application.routes.draw do
     end
 
     resources :jobs, only: [:create, :update, :destroy, :show], shallow: true do
+      resources :name_numbers, only: [:create, :destroy]
       member do
         get 'names_numbers', as: :name_number_csv_from
       end
@@ -96,6 +103,9 @@ CrmSoftwearcrmCom::Application.routes.draw do
   get '/search', to: 'search/queries#search', as: :search
 
   namespace 'api' do
+    resources 'orders', only: [:index, :show]
+    resources 'jobs', only: [:index, :show]
+    resources 'imprints', only: [:index, :show]
     resources 'imprintables'
     resources 'colors'
     resources 'sizes'

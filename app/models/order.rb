@@ -35,7 +35,8 @@ class Order < ActiveRecord::Base
     'Half down on purchase',
     'Paid in full on pick up',
     'Net 30',
-    'Net 60'
+    'Net 60',
+    'Fulfilled by Amazon'
   ]
 
   VALID_DELIVERY_METHODS = [
@@ -61,27 +62,36 @@ class Order < ActiveRecord::Base
             inclusion: {
                 in: VALID_DELIVERY_METHODS,
                 message: 'Invalid delivery method'
-            }
+            },
+            unless: :fba?
   validates :email,
             presence: true,
-            email: true
-  validates :firstname, presence: true
-  validates :lastname, presence: true
+            email: true,
+            unless: :fba?
+  validates :firstname, presence: true, unless: :fba?
+  validates :lastname, presence: true, unless: :fba?
   validates :name, presence: true
   validates :phone_number,
             format: {
               with: /\d{3}-\d{3}-\d{4}/,
               message: 'is incorrectly formatted, use 000-000-0000'
-            }
+            },
+            unless: :fba?
   validates :salesperson, presence: true
   validates :store, presence: true
   validates :tax_id_number, presence: true, if: :tax_exempt?
   validates :terms, presence: true
 
+  scope :fba, -> { where(terms: 'Fulfilled by Amazon') }
+
+  def fba?
+    terms == 'Fulfilled by Amazon'
+  end
+
   def balance
     balance = total - payment_total
     balance.round(2)
-end
+  end
 
   def get_salesperson_id(id, current_user)
     id ? Order.find(id).salesperson_id : current_user.id
@@ -147,5 +157,39 @@ end
       .map { |i| [i.name_number.number, i.name_number.name] }
 
     CSV.from_arrays csv, headers: %w(Number Name), write_headers: true
+  end
+
+  def generate_jobs(job_attributes)
+    job_attributes.each do |attributes|
+      attributes = HashWithIndifferentAccess.new(attributes)
+
+      job = jobs.create(name: attributes[:job_name])
+      unless job.valid?
+        job.assure_name_and_description
+        job.save!
+      end
+      imprintable_id = attributes[:imprintable]
+      
+      attributes[:colors].each do |color_attributes|
+        next if color_attributes.nil?
+
+        color_id = color_attributes[:color]
+
+        LineItem.create_imprintables(job, imprintable_id, color_id)
+
+        color_attributes[:sizes].each do |size_attributes|
+          next if size_attributes.nil?
+
+          size_id = size_attributes[:size]
+
+          job.line_items
+            .joins(:imprintable_variant)
+            .where(imprintable_variants: { size_id: size_id, color_id: color_id })
+            .readonly(false)
+            .first
+            .update_attributes(quantity: size_attributes[:quantity])
+        end
+      end
+    end
   end
 end

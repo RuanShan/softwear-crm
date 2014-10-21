@@ -1,12 +1,13 @@
 <% select_field_name_for = method(:imprint_select_field_name_for).to_proc.curry.(local_assigns[:imprint]) %>
+<% id = local_assigns[:imprint].try(:id) || increment_new_imprint_counter %>
 
-<div class="col-sm-4 imprint-entry" data-id="<%= local_assigns[:imprint].try(:id) || increment_new_imprint_counter %>">
+<div class="col-sm-4 imprint-entry" data-id="<%= id %>">
   <div class="box-info imprint-container">
 
   <% if ImprintMethod.all.empty? %>
     <p>
       Looks like there aren't any Imprint Methods registered. 
-      <%= link_to "Click here", new_imprint_method_path %> to add one.
+      <%= link_to 'Click here', new_imprint_method_path %> to add one.
     </p>
   <% else %>
       <div class="print-location-container">
@@ -17,7 +18,11 @@
                                                 ImprintMethod.first.print_locations
                                               end,
 
-                             name: select_field_name_for.(:print_location_id),
+                             name: if local_assigns[:imprint].try(:id)
+                                     select_field_name_for.(:print_location_id)
+                                   else
+                                      "imprint[#{id}[print_location_id]]"
+                                   end,
                              default: local_assigns[:imprint].try(:print_location).try(:id) } %>
       </div>
 
@@ -30,22 +35,17 @@
                          :name,
                          local_assigns[:imprint_method].try(:id)
                        ),
-
+                       id: "imprint_method_select_#{ id }",
                        class: 'form-control js-imprint-method-select' %>
       </div>
 
-      <div class="form-group checkbox-container">
-        <%= label_tag "Name/Number Print?" %>
-
-        <!-- TODO turn this into a helper function, perhaps -->
-        <% checked = local_assigns[:imprint].try(:has_name_number) ? true : false %>
-        <%= hidden_field_tag select_field_name_for.(:has_name_number), '0' %>
-        <%= check_box_tag select_field_name_for.(:has_name_number), '1', checked, class: 'js-imprint-has-name-number' %>
+      <% if local_assigns[:imprint].try(:id) %>
+        <%= render 'imprints/name_number_fields', imprint: imprint, imprint_method_name: imprint.imprint_method.name %>
+      <% else %>
+      <div class="hidden generic-error-message js-name-number-format-fields">
+        Please click 'Update' before assigning name and number!
       </div>
-
-      <div class='js-imprint-name-number-fields' style='display: <%= local_assigns[:imprint].try(:has_name_number) ? "block" : "none" %>;'>
-        <%= render 'imprints/name_number_fields', imprint: local_assigns[:imprint] %>
-      </div>
+      <% end %>
 
       <div class="full text-right">
         <%= link_to '#', class: 'js-delete-imprint-button' do %>

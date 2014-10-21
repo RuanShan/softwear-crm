@@ -39,7 +39,7 @@
 <div class="form-group">
   <%= f.label :terms, 'Payment terms' %>
   <%= f.error_for :terms %>
-  <%= f.select :terms, Order::VALID_PAYMENT_TERMS %>
+  <%= f.select :terms, Order::VALID_PAYMENT_TERMS - ['Fulfilled by Amazon'] %>
 </div>
 
 <div class="form-group">

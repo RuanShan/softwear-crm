@@ -1,0 +1,9 @@
+<% if @fba_infos %>
+  var container = $('#<%= @script_container_id %>');
+
+  container.find('.info')
+    .empty()
+    .append("<%=j render_fba_error_handling(@fba_infos.first) %>");
+<% else %>
+  errorModal('Something went wrong internally');
+<% end %>

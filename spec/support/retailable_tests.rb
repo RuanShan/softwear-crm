@@ -36,3 +36,21 @@ shared_examples 'retailable' do
 
   end
 end
+
+shared_examples 'a retailable api controller' do
+  resource_name = described_class.controller_name.singularize
+  resource_type = Kernel.const_get(
+      described_class.controller_name.singularize.camelize
+    )
+
+  describe 'GET #index' do
+    it "assigns @#{resource_name.pluralize} where retail: true" do
+      allow(resource_type).to receive(:where).and_call_original
+      expect(resource_type).to receive(:where)
+        .with(hash_including retail: true)
+        .and_call_original
+
+      get 'index', format: :json
+    end
+  end
+end

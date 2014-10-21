@@ -1,0 +1,21 @@
+<%= form_for quote_request, remote: true do |f| %>
+
+  <%= f.text_field :status %>
+
+  <%= button_tag id: 'quote-request-submit' do %>
+    <i class='fa fa-check'></i>
+  <% end %>
+
+  <% if local_assigns[:custom_cancel] %>
+    <a href="#" id='cancel-quote-request-edit-button'>
+      <i class='fa danger fa-times-circle'></i>
+    </a>
+
+  <% else %>
+
+    <%= link_to quote_request_path(quote_request), id: 'cancel-change-status', title: 'Cancel', method: :get, remote: true do %>
+      <i class='fa danger fa-times-circle'></i>
+    <% end %>
+  <% end %>
+
+<% end %>

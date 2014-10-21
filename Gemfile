@@ -75,7 +75,6 @@ group :development do
   gem 'better_errors', '>= 0.3.2'
   gem 'binding_of_caller'
   gem 'mailcatcher'
-  # gem 'debugger'
 end
 
 group :development, :test do
@@ -117,6 +116,8 @@ gem 'whenever'
 gem 'freshdesk'
 gem 'simple_token_authentication'
 gem 'sidekiq'
+gem 'x-editable-rails'
+gem 'jquery-fileupload-rails'
 
 # Use ActiveModel has_secure_password
 # gem 'bcrypt', '~> 3.1.7'

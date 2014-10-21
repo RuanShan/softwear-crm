@@ -1,5 +1,6 @@
 require 'rest_client'
 require 'json'
+require 'action_view'
 
 class Quote < ActiveRecord::Base
   include TrackingHelpers
@@ -16,8 +17,11 @@ class Quote < ActiveRecord::Base
 
   belongs_to :salesperson, class_name: User
   belongs_to :store
+  has_many :emails, as: :emailable, class_name: Email, dependent: :destroy
   has_many :line_item_groups
 # has_many :line_items, through: :line_item_groups
+  has_many :quote_requests, through: :quote_request_quotes
+  has_many :quote_request_quotes
 
 # accepts_nested_attributes_for :line_items, allow_destroy: true
 
@@ -33,7 +37,10 @@ class Quote < ActiveRecord::Base
   validates :shipping, price: true
 
   validate :prepare_nested_line_items_attributes
+
   after_save :save_nested_line_items_attributes
+  after_save :set_quote_request_statuses_to_quoted
+  after_initialize  :initialize_time
 
   def all_activities
     PublicActivity::Activity.where( '
@@ -110,7 +117,28 @@ class Quote < ActiveRecord::Base
     )
   end
 
+  def response_time
+    subtract_dates(initialized_at, time_to_first_email)
+  end
+
+  def quote_request_ids=(ids)
+    super
+    @quote_request_ids_assigned = true
+  end
+
 private
+
+  def set_quote_request_statuses_to_quoted
+    return unless @quote_request_ids_assigned
+    
+    quote_requests.find_each { |q| q.update_attributes(status: 'quoted') }
+
+    @quote_request_ids_assigned = nil
+  end
+
+  def initialize_time
+    self.initialized_at = Time.now if self.initialized_at.blank?
+  end
 
   def prepare_nested_line_items_attributes
     no_attributes = @line_item_attributes.nil? || @line_item_attributes.empty?
@@ -138,5 +166,18 @@ private
 
     @unsaved_line_items.each(&default_group.line_items.method(:<<))
     @unsaved_line_items = nil
+  end
+
+  def time_to_first_email
+    activity = PublicActivity::Activity.where(trackable_id: id,
+                                              trackable_type: Quote,
+                                              key: 'quote.emailed_customer').order('created_at ASC').first
+    activity.nil? ? nil : activity.created_at
+  end
+
+  include ActionView::Helpers::DateHelper
+  def subtract_dates(time_one, time_two)
+    return 'An email hasn\'t been sent yet!' unless time_two
+    distance_of_time_in_words(time_one, time_two)
   end
 end
