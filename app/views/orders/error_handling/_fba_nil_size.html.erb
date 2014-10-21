@@ -1,0 +1,7 @@
+<p class='error-text'>
+  Unable to locate size with sku '<%= error.item.sku %>' (Quantity <%= error.item.quantity %>). 
+  Job will be generated
+  with line items of size sku '<%= error.item.sku %>' omitted.
+</p>
+
+<%= render_fba_data(@fba_infos.first) %>

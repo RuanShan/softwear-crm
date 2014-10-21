@@ -4,10 +4,12 @@ describe Quote, quote_spec: true do
 
   it { is_expected.to be_paranoid }
 
-  describe 'Relationships' do
+  describe 'Relationships', story_74: true, story_79: true do
     it { is_expected.to belong_to(:salesperson).class_name('User') }
     it { is_expected.to belong_to(:store) }
+    it { is_expected.to have_many(:emails) }
     it { is_expected.to have_many(:line_item_groups) }
+    it { is_expected.to have_and_belong_to_many(:quote_requests) }
   end
 
   describe 'Validations' do
@@ -28,6 +30,25 @@ describe Quote, quote_spec: true do
       it { is_expected.to allow_value('9').for :shipping }
       it { is_expected.to allow_value('2.4').for :shipping }
       it { is_expected.to_not allow_value('21.321').for :shipping }
+    end
+  end
+
+  describe 'callbacks' do
+    context 'when supplied with an initialized at time' do
+      it 'sets initialized_at to the supplied time', story_86: true do
+        time = Time.zone.now + 1.day
+        quote = Quote.new(initialized_at: time)
+        expect(quote.initialized_at).to eq(time)
+      end
+    end
+
+    context 'when not supplied with a time' do
+      it 'sets initialized_at to time.now', story_86: true do
+        format = '%d/%m/%Y %H:%M'
+        expected_val = Quote.new.initialized_at.strftime(format)
+        test_val = Time.now.strftime(format)
+        expect(expected_val).to eq(test_val)
+      end
     end
   end
 
@@ -161,6 +182,37 @@ describe Quote, quote_spec: true do
 
       it 'returns the value for tax' do
         expect(quote.tax).to eq(0.06)
+      end
+    end
+
+    describe '#response_time', story_86: true  do
+      let(:quote) { build_stubbed(:valid_quote, initialized_at: Time.now) }
+      context 'when an email hasn\'t been sent yet' do
+        it 'responds with nil' do
+          expect(PublicActivity::Activity).to receive_message_chain(:where, :order, :first).and_return(nil)
+          expect(quote.response_time).to eq("An email hasn't been sent yet!")
+        end
+      end
+
+      context 'when an email has been sent' do
+        HelperResponse = Class.new
+        it 'calculates the time between initialization and customer contact' do
+          expect(PublicActivity::Activity).to receive_message_chain(:where, :order, :first).and_return(HelperResponse)
+          expect(HelperResponse).to receive(:nil?).and_return(false)
+          expect(HelperResponse).to receive(:created_at).and_return(Time.now + 1.day)
+          expect(quote.response_time).to_not eq("An email hasn't been sent yet!")
+        end
+      end
+    end
+
+    describe '#quote_request_ids=', story_195: true do
+      let!(:quote_request) { create(:valid_quote_request_with_salesperson) }
+      let!(:quote) { create(:valid_quote) }
+
+      it 'assigns quote_request.status to "quoted"' do
+        quote.quote_request_ids = [quote_request.id]
+        expect(quote.save).to eq true
+        expect(quote_request.reload.status).to eq 'quoted'
       end
     end
   end

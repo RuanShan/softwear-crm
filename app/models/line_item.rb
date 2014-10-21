@@ -29,7 +29,8 @@ class LineItem < ActiveRecord::Base
   validates :unit_price, presence: true, price: true
 
   def self.create_imprintables(line_itemable, imprintable, color, options = {})
-    new_imprintables.each(&:save)
+    new_imprintables(line_itemable, imprintable, color, options)
+      .each(&:save)
   end
 
   def self.new_imprintables(line_itemable, imprintable, color, options = {})

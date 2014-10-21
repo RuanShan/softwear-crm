@@ -1,0 +1,5 @@
+<em id='quote-request-status-text'><%= quote_request.status %></em>
+
+<%= link_to edit_quote_request_path(quote_request), id: 'change-status', title: 'Edit', method: :get, remote: true do %>
+  <i class='fa fa-edit'></i>
+<% end %>

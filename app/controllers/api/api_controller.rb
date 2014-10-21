@@ -4,26 +4,33 @@ module Api
     include InheritedResources::BaseHelpers
     extend  InheritedResources::ClassMethods
     extend  InheritedResources::UrlHelpers
+
+    acts_as_token_authentication_handler_for User
+
     respond_to :json
     self.responder = InheritedResources::Responder
 
     self.class_attribute :resource_class, :instance_writer => false unless self.respond_to? :resource_class
     self.class_attribute :parents_symbols,  :resources_configuration, :instance_writer => false
 
-    before_filter :permit_id, only: [:show, :update, :destroy]
+    def index(&block)
+      yield if block_given?
 
-    def index
-      instance_variable_set(
-        "@#{self.class.model_name.pluralize.underscore}",
+      if records.nil?
+        key_values = permitted_attributes.map do |a|
+          [a, params[a]] if params.key?(a)
+        end
+          .compact
 
-        (records || resource_class)
-          .where(params.permit(resource_class.column_names))
-      )
+        instance_variable_set(
+          "@#{self.class.model_name.pluralize.underscore}",
+
+          resource_class.where(Hash[key_values])
+        )
+      end
 
       respond_to do |format|
-        format.json do
-          render json: records, include: includes
-        end
+        format.json(&render_json(records))
       end
     end
 
@@ -48,9 +55,11 @@ module Api
 
     protected
 
-    def render_json
+    def render_json(records = nil)
       proc do
-        render json: record, include: includes
+        render json: (records || record),
+               methods: [[:id] + permitted_attributes],
+               include: includes
       end
     end
 
@@ -60,7 +69,7 @@ module Api
 
     # Override this to specify the :include option of rendering json.
     def includes
-      nil
+      {}
     end
 
     def records
@@ -71,10 +80,22 @@ module Api
       instance_variable_get("@#{self.class.model_name.underscore}")
     end
 
-    private
-
-    def permit_id
-      params.permit :id
+    def permitted_attributes
+      []
     end
+
+    def permitted_params
+      model_attributes = if permitted_attributes.empty?
+        {}
+      else
+        { self.class.model_name.underscore => send(:permitted_attributes) }
+      end
+      
+      usual_params = [:id]
+
+      params.permit(usual_params, model_attributes)
+    end
+
+    private
   end
 end

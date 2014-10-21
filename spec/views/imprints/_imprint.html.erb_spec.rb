@@ -34,11 +34,6 @@ describe 'imprints/_imprint.html.erb', order_spec: true, imprint_spec: true do
       expect(rendered).to have_css 'select[name*="print_location"]'
     end
 
-    it 'should render a check box for whether or not this imprint has a name or number on it' do
-      render partial: 'imprints/imprint', locals: { job: job, imprint_method: imprint_method }
-      expect(rendered).to have_css 'input[type="checkbox"][name*="has_name_number"]'
-    end
-
     it 'should render the local imprint method as the default option' do
       pending "The version of Nokogiri used by Rspec doesn't support the :checked pseudoclass, "\
               "so there's no way to test for this outside of feature specs."
