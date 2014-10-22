@@ -6,6 +6,8 @@ module Api
     extend  InheritedResources::UrlHelpers
 
     acts_as_token_authentication_handler_for User
+    skip_before_filter :authenticate_user!
+    skip_before_filter :verify_authenticity_token
 
     respond_to :json
     self.responder = InheritedResources::Responder
@@ -16,18 +18,13 @@ module Api
     def index(&block)
       yield if block_given?
 
-      if records.nil?
-        key_values = permitted_attributes.map do |a|
-          [a, params[a]] if params.key?(a)
-        end
-          .compact
-
-        instance_variable_set(
-          "@#{self.class.model_name.pluralize.underscore}",
-
-          resource_class.where(Hash[key_values])
-        )
+      key_values = permitted_attributes.map do |a|
+        [a, params[a]] if params.key?(a)
       end
+        .compact
+
+      self.records = resource_class if records.nil?
+      self.records = records.where(Hash[key_values])
 
       respond_to do |format|
         format.json(&render_json(records))
@@ -74,6 +71,10 @@ module Api
 
     def records
       instance_variable_get("@#{self.class.model_name.underscore.pluralize}")
+    end
+
+    def records=(r)
+      instance_variable_set("@#{self.class.model_name.underscore.pluralize}", r)
     end
 
     def record

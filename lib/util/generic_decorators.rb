@@ -1,3 +1,9 @@
+Object.class_eval do
+  def ergo
+    yield self or self
+  end
+end
+
 String.class_eval do
   def last(*args)
     if args.empty?
