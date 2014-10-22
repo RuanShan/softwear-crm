@@ -141,6 +141,11 @@ feature 'Order management', order_spec: true,  js: true do
     expect(page).to have_content "Updated order #{order.name}"
   end
 
+  scenario 'user can select quotes for the order' do
+    pending "Doing this would require selecting from Chosen!"
+    expect(false).to eq true
+  end
+
   describe 'search', search_spec: true, solr: true do
     given!(:order2) { create(:order_with_job, name: 'Keyword order',
       terms: 'Net 60') }

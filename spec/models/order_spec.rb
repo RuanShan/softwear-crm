@@ -12,6 +12,7 @@ describe Order, order_spec: true do
     it { is_expected.to have_many :payments }
     it { is_expected.to have_many :proofs }
     it { is_expected.to have_many(:imprints).through(:jobs) }
+    it { is_expected.to have_and_belong_to_many(:quotes) }
 
     it { is_expected.to accept_nested_attributes_for :payments }
     it { is_expected.to accept_nested_attributes_for :jobs }
