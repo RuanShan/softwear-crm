@@ -48,21 +48,4 @@ namespace :deploy do
 
   after :publishing, :restart
 
-  after :restart, :clear_cache do
-    on roles(:web), in: :groups, limit: 3, wait: 10 do
-      # Here we can do anything such as:
-      # within release_path do
-      #   execute :rake, 'cache:clear'
-      # end
-    end
-  end
-
-  before :updated, :setup_solr_data_dir do
-    on roles(:app) do
-      unless test "[ -d #{shared_path}/solr/data ]"
-        execute :mkdir, "-p #{shared_path}/solr/data"
-      end
-    end
-  end
-
 end
