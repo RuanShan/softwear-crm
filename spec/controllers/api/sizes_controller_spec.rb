@@ -15,10 +15,11 @@ describe Api::SizesController, api_size_spec: true, api_spec: true do
       it "returns sizes associated with the imprintable's variant by color" do
         expect(Imprintable).to receive(:find_by).with(common_name: 'Common')
           .and_return imprintable
-        
-        allow(imprintable).to receive_message_chain(
-          :sizes_by_color, :where
-        ).and_return 'test'
+
+        expect(imprintable)
+          .to receive(:sizes_by_color)
+          .with('Blue', retail: true)
+          .and_return 'test'
 
         get :index, format: :json, color: 'Blue', imprintable: 'Common'
 

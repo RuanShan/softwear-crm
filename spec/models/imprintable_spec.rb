@@ -212,7 +212,7 @@ describe Imprintable, imprintable_spec: true do
     end
   end
 
-  describe '#sizes_by_color', wwip: true do
+  describe '#sizes_by_color', sizes_by_color: true do
     let!(:shirt) { create :valid_imprintable }
 
     let!(:red)   { create :valid_color, name: 'Red' }
@@ -223,13 +223,24 @@ describe Imprintable, imprintable_spec: true do
     make_variants :green, :shirt, [:m, :l, :xl], not: [:line_item, :job]
 
     it 'returns the sizes for each imprintable variant matching the given color' do
-      sizes = shirt.sizes_by_color red
+      sizes = shirt.sizes_by_color 'Red'
 
-      expect(sizes.map(&:display_value) & %i(s m l)).to be_empty
+      expect(sizes.map(&:name)).to_not be_empty
+      expect(sizes.map(&:name)).to eq %w(s m l)
     end
 
-    it 'takes 1 sql query' do
-      expect(queries_after { shirt.sizes_by_color red }).to eq 1
+    it 'takes 4 sql queries' do
+      expect(queries_after { shirt.sizes_by_color 'Red' }).to eq 4
+    end
+
+    describe 'options' do
+      it 'adds additional options to the query on sizes' do
+        size_m.update_attributes retail: true
+        expect(size_m.reload.retail).to eq true
+
+        sizes = shirt.sizes_by_color 'Red', retail: true
+        expect(sizes.map(&:name)).to eq ['m']
+      end
     end
   end
 
