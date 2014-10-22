@@ -18,14 +18,12 @@ module Api
     def index(&block)
       yield if block_given?
 
-      if records.nil?
-        key_values = permitted_attributes.map do |a|
-          [a, params[a]] if params.key?(a)
-        end
-          .compact
-
-        self.records = resource_class
+      key_values = permitted_attributes.map do |a|
+        [a, params[a]] if params.key?(a)
       end
+        .compact
+
+      self.records = resource_class if records.nil?
       self.records = records.where(Hash[key_values])
 
       respond_to do |format|
