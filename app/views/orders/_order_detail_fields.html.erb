@@ -37,6 +37,12 @@
 </div>
 
 <div class="form-group">
+  <%= f.label :quote_ids, 'Related Quote(s)' %>
+  <%= f.error_for :quote_ids %>
+  <%= f.select :quote_ids, order.quotes.map { |q| [q.name, q.id] }, {}, { multiple: true, name: 'order[quote_ids][]' } %>
+</div>
+
+<div class="form-group">
   <%= f.label :terms, 'Payment terms' %>
   <%= f.error_for :terms %>
   <%= f.select :terms, Order::VALID_PAYMENT_TERMS - ['Fulfilled by Amazon'] %>
