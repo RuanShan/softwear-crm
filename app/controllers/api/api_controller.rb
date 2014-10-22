@@ -24,12 +24,9 @@ module Api
         end
           .compact
 
-        instance_variable_set(
-          "@#{self.class.model_name.pluralize.underscore}",
-
-          resource_class.where(Hash[key_values])
-        )
+        self.records = resource_class
       end
+      self.records = records.where(Hash[key_values])
 
       respond_to do |format|
         format.json(&render_json(records))
@@ -76,6 +73,10 @@ module Api
 
     def records
       instance_variable_get("@#{self.class.model_name.underscore.pluralize}")
+    end
+
+    def records=(r)
+      instance_variable_set("@#{self.class.model_name.underscore.pluralize}", r)
     end
 
     def record
