@@ -1,0 +1,26 @@
+<div class="col-sm-6">
+    <div class="box-info">
+      <h2><strong>Basic</strong> Information</h2>
+      <div class="form-group">
+        <%= f.label :brand_id, class: 'control-label' %>
+        <%= f.select :brand_id, model_collection_hash[:brand_collection], prompt: 'Select a brand' %>
+      </div>
+
+      <div class="form-group">
+        <%= f.label :style_name, 'Style Name', class: 'control-label' %>
+        <%= f.text_field :style_name, class: 'form-control' %>
+      </div>
+
+      <div class="form-group">
+        <%= f.label :style_catalog_no, 'Catalog Number', class: 'control-label' %>
+        <%= f.text_field :style_catalog_no, class: 'form-control' %>
+        <p class="help-block">The catalog number specified by the manufacturer, <i>NOT NECESSARILY</i> the same as the supplier</p>
+      </div>
+
+      <div class="form-group">
+        <%= f.label :style_description, 'Style Description', class: 'control-label' %>
+        <%= f.text_area :style_description, class: 'summernote' %>
+        <p class="help-block">Description of the imprintable</p>
+      </div>
+    </div>
+</div>

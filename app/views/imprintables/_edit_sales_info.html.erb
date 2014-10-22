@@ -1,0 +1,134 @@
+<div class="col-sm-6">
+    <div class="box-info">
+      <h2><strong>Sales</strong> Information</h2>
+
+      <div class="form-group">
+        <%= f.label :standard_offering, 'Standard Offering', class: 'control-label' %>
+        <%= f.error_for :standard_offering %>
+        <%= f.check_box  :standard_offering, { class: 'checkbox' }, 'true', 'false' %>
+      </div>
+
+      <div class="form-group">
+        <%= f.label :main_supplier, class: 'control-label' %>
+        <%= f.error_for :main_supplier %>
+        <%= f.text_field :main_supplier, class: 'form-control' %>
+        <p class="help-block">The primary supplier from which we purchase</p>
+      </div>
+
+      <div class="form-group">
+        <%= f.label :supplier_link, class: 'control-label' %>
+        <%= f.error_for :supplier_link %>
+        <%= f.text_field :supplier_link, class: 'form-control' %>
+        <p class="help-block">URL to imprintable on suppliers website</p>
+      </div>
+
+      <div class="form-group">
+        <%= f.label :imprintable_categories, 'Imprintable Category', class: 'control-label' %>
+        <%= f.error_for :imprintable_categories %>
+          <%= f.fields_for :imprintable_categories do |ff| %>
+              <%= render 'imprintable_category_fields', f: ff %>
+          <% end %>
+
+          <%= link_to_add_fields "<i class='fa fa-plus'></i> Add Imprintable Category".html_safe,
+                                 f, :imprintable_categories %>
+      </div>
+
+      <div class="form-group">
+        <%= f.label :coordinate_ids, 'Coordinate Imprintables', class: 'control-label' %>
+        <%= f.error_for :coordinate_ids %>
+         <%= f.collection_select :coordinate_ids,
+                                  model_collection_hash[:imprintable_collection],
+                                  :id, :name, {}, { class: 'chosen-select',
+                                                    data: { placeholder: 'Select coordinates' },
+                                                    multiple: true } %>
+
+         <p class="help-block">Coordinate imprintables i.e. a ladies or youth version.</p>
+      </div>
+
+      <div class="form-group">
+        <%= f.label :sample_location_ids, 'Sample Locations', class: 'control-label' %>
+        <%= f.error_for :sample_location_ids %>
+          <%= f.collection_select :sample_location_ids,
+                                  model_collection_hash[:store_collection], :id,
+                                  :name, {}, { class: 'chosen-select',
+                                               data: { placeholder: 'Select sample locations' },
+                                               multiple: true } %>
+
+          <p class="help-block">Stores at which there is a sample of the imprintable.</p>
+      </div>
+
+      <div class="form-group">
+        <%= f.label :tag_list, 'Tags (separated by commas)', class: 'control-label' %>
+        <%= f.error_for :tag_list %>
+         <%= f.text_field :tag_list %>
+
+          <p class="help-block">
+            Tags are additional searchable characteristics or 'keywords'.
+          </p>
+      </div>
+
+      <div class="form-group">
+        <%= f.label :pricing, 'Pricing Upcharges', class: 'control-label' %>
+          <table>
+            <thead>
+            <tr>
+              <th>Base</th>
+              <th>2XL</th>
+              <th>3XL</th>
+              <th>4XL</th>
+              <th>5XL</th>
+              <th>6XL</th>
+            </tr>
+            </thead>
+
+            <tbody>
+            <tr>
+              <td>
+                <div class="input-group">
+                  <span class="input-group-addon">$</span>
+                  <%= size_price_field(f, :base_price, f.object.base_price) %>
+                </div>
+              </td>
+
+              <td>
+                <div class="input-group">
+                  <span class="input-group-addon">$</span>
+                  <%= size_price_field(f, :xxl_price, f.object.xxl_price) %>
+                </div>
+              </td>
+
+              <td>
+                <div class="input-group">
+                  <span class="input-group-addon">$</span>
+                  <%= size_price_field(f, :xxxl_price, f.object.xxxl_price) %>
+                </div>
+              </td>
+
+              <td>
+                <div class="input-group">
+                  <span class="input-group-addon">$</span>
+                  <%= size_price_field(f, :xxxxl_price, f.object.xxxxl_price) %>
+                </div>
+              </td>
+
+              <td>
+                <div class="input-group">
+                  <span class="input-group-addon">$</span>
+                  <%= size_price_field(f, :xxxxxl_price, f.object.xxxxxl_price) %>
+                </div>
+              </td>
+
+              <td>
+                <div class="input-group">
+                  <span class="input-group-addon">$</span>
+                  <%= size_price_field(f, :xxxxxxl_price, f.object.xxxxxxl_price) %>
+                </div>
+              </td>
+            </tr>
+            </tbody>
+          </table>
+          <p class="help-block">Charge above base pricing for the imprintable</p>
+      </div>
+
+    </div>
+</div>
