@@ -25,7 +25,7 @@ set :deploy_to, '/home/ubuntu/RailsApps/crm.softwearcrm.com'
 # set :pty, true
 
 # Default value for :linked_files is []
-set :linked_files, %w{config/database.yml config/application.yml}
+set :linked_files, %w{config/database.yml config/application.yml config/sunspot.yml}
 
 # Default value for linked_dirs is []
 # set :linked_dirs, %w{bin log tmp/pids tmp/cache tmp/sockets vendor/bundle public/system}
@@ -65,26 +65,4 @@ namespace :deploy do
     end
   end
 
-end
-
-namespace :solr do
-  rvm = '[[ -s "$HOME/.rvm/scripts/rvm" ]] && . "$HOME/.rvm/scripts/rvm"'
-
-  %i(start stop restart).each do |command|
-    desc "#{command} solr"
-    task command, [:env] do |_cmd, args|
-      on roles(:app) do
-        execute "cd #{current_path} && #{rvm} && bundle exec rake sunspot:solr:#{command} RAILS_ENV=#{args[:env] || 'production'}"
-      end
-    end
-  end
-
-  after 'deploy:finished', 'solr:restart'
-  
-  desc 'reindex solr'
-  task :reindex, [:env] do |_cmd, args|
-    on roles(:app) do
-      execute "cd #{current_path} && #{rvm} && yes | bundle exec rake sunspot:solr:reindex RAILS_ENV=#{args[:env] || 'production'}"
-    end
-  end
 end
