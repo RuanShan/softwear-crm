@@ -6,6 +6,8 @@ module Api
     extend  InheritedResources::UrlHelpers
 
     acts_as_token_authentication_handler_for User
+    skip_before_filter :authenticate_user!
+    skip_before_filter :verify_authenticity_token
 
     respond_to :json
     self.responder = InheritedResources::Responder
