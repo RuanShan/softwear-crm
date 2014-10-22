@@ -32,6 +32,8 @@ class OrdersController < InheritedResources::Base
 
       if params.has_key? :quote_id
         quote = Quote.find(params[:quote_id])
+
+        @quote_id = params[:quote_id].to_i
         @order = Order.new(
           email: quote.email,
           phone_number: quote.phone_number,
