@@ -188,7 +188,6 @@ feature 'Imprintables management', imprintable_spec: true, slow: true do
         find_button('Update Imprintable').click
 
         expect(page).to have_selector '.modal-content-success', text: 'Imprintable was successfully updated.'
-        sleep(10)
         expect(ImprintableCategory.where(imprintable_id: imprintable.id).empty?).to be_truthy
       end
     end
