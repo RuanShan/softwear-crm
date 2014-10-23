@@ -1,14 +1,14 @@
 require 'spec_helper'
 
-describe 'imprintables/_imprint_information_form', imprintable_spec: true do
+describe 'imprintables/_edit_production_info.html.erb', imprintable_spec: true do
+
   before(:each) do
     imprintable = build_stubbed(:valid_imprintable)
     f = test_form_for imprintable, builder: LancengFormBuilder
     mch = {
-            sizing_categories_collection: [],
             imprint_method_collection: []
           }
-    render partial: 'imprintables/imprint_information_form',
+    render partial: 'imprintables/edit_production_info',
            locals: {
                      imprintable: imprintable,
                      f: f,
@@ -16,17 +16,18 @@ describe 'imprintables/_imprint_information_form', imprintable_spec: true do
                    }
   end
 
-  it 'has field for sizing category, polyester, flashable,
-      proofing template name, special considerations,
-      compatible imprint methods and imprint category' do
+  it 'has field for brand, style name, catalog no, description' do
     within_form_for Imprintable, noscope: true do
-      expect(rendered).to have_field_for :sizing_category
       expect(rendered).to have_field_for :polyester
+      expect(rendered).to have_field_for :material
+      expect(rendered).to have_field_for :weight
+      expect(rendered).to have_field_for :max_imprint_width
+      expect(rendered).to have_field_for :max_imprint_height
+      expect(rendered).to have_field_for :sizing_category
       expect(rendered).to have_field_for :flashable
       expect(rendered).to have_field_for :proofing_template_name
       expect(rendered).to have_field_for :special_considerations
       expect(rendered).to have_field_for :compatible_imprint_method_ids
-      expect(rendered).to have_content 'Add Imprintable Category'
     end
   end
 end

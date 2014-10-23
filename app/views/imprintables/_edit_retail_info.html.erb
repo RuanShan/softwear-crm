@@ -1,7 +1,98 @@
-<div class="box-info">
-  <h2><strong>Retail</strong> Information</h2>
-  Retail Offering? <br />
-  Common Name: <br />
-  SKU: <br />
-  Imrpintable Upcharge: <br />
-</div>
+<div class="col-sm-8">
+    <div class="box-info">
+      <h2><strong>Retail</strong> Information</h2>
+      <div class="form-group">
+        <%= f.label :retail, class: 'control-label' %>
+          <div class="radio" id="retail_false">
+            <%= f.radio_button :retail, false, value: false %>
+            No
+          </div>
+
+          <div class="radio" id="retail_true">
+            <%= f.radio_button :retail, true, value: false %>
+            Yes
+          </div>
+
+          <p class="help-block">Is this imprintable used in our retail operation?</p>
+      </div>
+
+      <div class="form-group">
+        <%= f.label :common_name, 'Common Name', class: 'control-label' %>
+        <%= f.error_for :common_name %>
+        <%= f.text_field :common_name %>
+          <p class="help-block">
+            The common name of the imprintable to be used in retail product synchronization.
+            Additionally, it's the imprintable name presented to the retail customer.
+          </p>
+      </div>
+
+      <div class="form-group">
+        <%= f.label :sku, class: 'control-label' %>
+          <%= f.text_field :sku, class: 'form-control' %>
+          <p class="help-block">4-Character Retail SKU Used to Identify the Imprintable</p>
+      </div>
+
+      <div class="form-group">
+        <%= f.label :upcharge_pricing, 'Retail Product Upcharge', class: 'control-label' %>
+          <table class="size-price-table">
+            <thead>
+            <tr>
+              <th>Base Upcharge</th>
+              <th>2XL</th>
+              <th>3XL</th>
+              <th>4XL</th>
+              <th>5XL</th>
+              <th>6XL</th>
+            </tr>
+            </thead>
+
+            <tbody>
+            <tr>
+              <td>
+                <div class="input-group">
+                  <span class="input-group-addon">$</span>
+                  <%= size_price_field(f, :base_upcharge, f.object.base_upcharge) %>
+                </div>
+              </td>
+
+              <td>
+                <div class="input-group">
+                  <span class="input-group-addon">$</span>
+                  <%= size_price_field(f, :xxl_upcharge, f.object.xxl_upcharge) %>
+                </div>
+              </td>
+
+              <td>
+                <div class="input-group">
+                  <span class="input-group-addon">$</span>
+                  <%= size_price_field(f, :xxxl_upcharge, f.object.xxxl_upcharge) %>
+                </div>
+              </td>
+
+              <td>
+                <div class="input-group">
+                  <span class="input-group-addon">$</span>
+                  <%= size_price_field(f, :xxxxl_upcharge, f.object.xxxxl_upcharge) %>
+                </div>
+              </td>
+
+              <td>
+                <div class="input-group">
+                  <span class="input-group-addon">$</span>
+                  <%= size_price_field(f, :xxxxxl_upcharge, f.object.xxxxxl_upcharge) %>
+                </div>
+              </td>
+
+              <td>
+                <div class="input-group">
+                  <span class="input-group-addon">$</span>
+                  <%= size_price_field(f, :xxxxxxl_upcharge, f.object.xxxxxxl_upcharge) %>
+                </div>
+              </td>
+            </tr>
+            </tbody>
+          </table>
+      </div>
+
+    </div>
+ </div>
