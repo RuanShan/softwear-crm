@@ -254,5 +254,13 @@ describe Imprintable, imprintable_spec: true do
     end
   end
 
+  describe '#imprintable_variant_weight_for_size' do
+    it 'returns the maximum imprintable variant weight for a given size (They should be uniform)'
+  end
+
+  describe '#update_weights_for_size' do
+    it 'updates all imprintable variants of given size with weight'
+  end
+
 end
 

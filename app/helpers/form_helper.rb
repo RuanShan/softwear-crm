@@ -14,8 +14,8 @@ module FormHelper
   # Rather than passing a specific resource, you pass a class, i.e. Order.
   # Many of the same functions in the Rails form builder are available
   # on the search form builder.
-  # 
-  # Theoretically this could be used to save a search query to the 
+  #
+  # Theoretically this could be used to save a search query to the
   # database as well if you pass a query object after the model class.
   def search_form_for(model, *args, &block)
     query = if args.first.is_a? Search::Query
@@ -54,7 +54,7 @@ module FormHelper
 
     @current_user.search_queries.joins(:query_models).
       where(search_query_models: { name: model.name }).each do |query|
-        
+
         select_options.send :original_concat, content_tag(:option,
           query.name, value: query.id, selected: query.id == current)
     end

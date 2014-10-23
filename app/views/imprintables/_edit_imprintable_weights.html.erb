@@ -1,0 +1,28 @@
+<div class="table-responsive">
+  <table class="table table-hover table-condensed" id="imprintable_weights_list">
+    <thead>
+    <tr>
+      <% size_variants.each_with_index do |size_variant, size_index| %>
+          <% size = size_variant.size %>
+          <th id="col_<%= size_index + 1 %>" data-size-id="<%= size.id %>" class="size-col-header">
+            <%= size.display_value %>
+          </th>
+      <% end %>
+    </tr>
+    </thead>
+    <tbody>
+    <tr>
+        <% size_variants.each_with_index do |size_variant, size_index| %>
+
+            <% size = size_variant.size %>
+            <td>
+              <div class="input-group">
+                <%= text_field_tag "imprintable_variant_weights[#{size.id}]", imprintable.imprintable_variant_weight_for_size(size), class: 'form-control' %>
+                <span class="input-group-addon">ounces</span>
+              </div>
+            </td>
+        <% end %>
+    </tr>
+    </tbody>
+  </table>
+</div>

@@ -1,63 +1,71 @@
-<div class="box-info full">
-  <%= render 'shared/modal_errors', object: imprintable %>
-  <%= form_for imprintable, builder: LancengFormBuilder do |f| %>
-    <div class="box-info full">
-      <div class="col-sm-6 clearfix">
-        <%= render 'basic_information_form',
-                    object: imprintable,
-                    f: f,
-                    model_collection_hash: model_collection_hash %>
-      </div>
 
-      <div class="col-sm-6 clearfix">
-        <%= render 'imprint_information_form',
-                    object: imprintable,
-                    f: f,
-                    model_collection_hash: model_collection_hash %>
-      </div>
-    </div>
 
-    <div class="box-info full">
-      <%= render 'supplier_information_form', object: imprintable, f: f %>
-    </div>
+<%= form_for imprintable, builder: LancengFormBuilder do |f| %>
 
-    <% if create_or_edit_text(imprintable) == 'Update' %>
-      <div class="box-info full">
-        <div class="box-info">
-          <h2><strong>Size/Color</strong> Availability Information</h2>
-          <div>
-            <% variants = Imprintable.variants(imprintable.id) %>
-            <% if variants.empty? %>
-              <%= render 'variant_select',
-                          imprintable: imprintable,
-                          f: f,
-                          model_collection_hash: model_collection_hash %>
-            <% else %>
-              <div class="col-sm-8">
-                <%= f.fields_for :imprintable_variants do |ff| %>
-                  <%= render 'imprintable_variant_fields', f: ff %>
-                <% end %>
-              </div>
 
-              <%= render 'grid',
-                          imprintable: imprintable,
-                          variants: variants,
-                          size_variants: variants_hash[:size_variants],
-                          color_variants: variants_hash[:color_variants],
-                          variants_array: variants_hash[:variants_array],
-                          model_collection_hash: model_collection_hash %>
-          <% end %>
-          </div>
-        </div>
-      </div>
-    <% end %>
+<%= render 'shared/modal_errors', object: imprintable %>
 
-    <div class="form-group clearfix">
-      <div class="col-sm-offset-2 col-sm-8">
-        <button type="submit" id="submit_button" class="btn btn-info">
-          <%= create_or_edit_text(imprintable) %> Imprintable
-        </button>
-      </div>
-    </div>
-  <% end %>
+<div class="row">
+    <%= render 'imprintables/edit_basic_info', object: imprintable, f: f, model_collection_hash: model_collection_hash %>
+    <%= render 'imprintables/edit_sales_info', object: imprintable, f: f, model_collection_hash: model_collection_hash  %>
 </div>
+
+<div class="row">
+    <%= render 'imprintables/edit_retail_info', object: imprintable, f: f %>
+    <%= render 'imprintables/edit_production_info', object: imprintable, f: f, model_collection_hash: model_collection_hash  %>
+</div>
+
+
+<% if !imprintable.new_record? %>
+
+
+        <% if !imprintable.imprintable_variants.empty? %>
+            <div class="box-info">
+              <h2><strong>Imprintable Variant</strong> Weights By Size</h2>
+
+              <%= render 'edit_imprintable_weights',
+                         imprintable: imprintable,
+                         variants: imprintable.imprintable_variants,
+                         size_variants: variants_hash[:size_variants],
+                         color_variants: variants_hash[:color_variants],
+                         variants_array: variants_hash[:variants_array],
+                         model_collection_hash: model_collection_hash
+              %>
+            </div>
+        <% end %>
+
+        <div class="box-info">
+        <h2><strong>Size/Color</strong> Availability Information</h2>
+
+
+        <% if imprintable.imprintable_variants.empty? %>
+            <%= render 'variant_select',
+                       imprintable: imprintable,
+                       f: f,
+                       model_collection_hash: model_collection_hash %>
+        <% else %>
+            <%= render 'grid',
+                       imprintable: imprintable,
+                       variants: imprintable.imprintable_variants,
+                       size_variants: variants_hash[:size_variants],
+                       color_variants: variants_hash[:color_variants],
+                       variants_array: variants_hash[:variants_array],
+                       model_collection_hash: model_collection_hash,
+                       f: f
+            %>
+        <% end %>
+      </div>
+
+<% end %>
+
+
+
+
+  <div class="form-group clearfix">
+    <div class="col-sm-offset-2 col-sm-8">
+      <button type="submit" id="submit_button" class="btn btn-info">
+        <%= create_or_edit_text(imprintable) %> Imprintable
+      </button>
+    </div>
+  </div>
+<% end %>
