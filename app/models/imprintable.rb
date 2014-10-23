@@ -161,4 +161,14 @@ class Imprintable < ActiveRecord::Base
   def style_name_and_catalog_no
     "#{style_catalog_no} - #{style_name}"
   end
+
+  def imprintable_variant_weight_for_size(size)
+    imprintable_variants.where(size_id: size.id).maximum(:weight)
+  end
+
+  def update_weights_for_size(size, weight)
+    weight = weight.to_f
+    imprintable_variants.where(size_id: size.id).update_all(weight: weight)
+  end
+
 end

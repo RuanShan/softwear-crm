@@ -176,7 +176,7 @@ feature 'Imprintables management', imprintable_spec: true, slow: true do
       expect(ImprintableCategory.where(imprintable_id: imprintable.id)).to_not be_nil
     end
 
-    context 'there is already an associated imprintable category' do
+    context 'there is already an associated imprintable category', js: true, wip: true do
       given!(:category) { create(:imprintable_category, imprintable_id: imprintable.id) }
 
       scenario 'A user can delete an imprintable category' do
@@ -188,6 +188,7 @@ feature 'Imprintables management', imprintable_spec: true, slow: true do
         find_button('Update Imprintable').click
 
         expect(page).to have_selector '.modal-content-success', text: 'Imprintable was successfully updated.'
+        sleep(10)
         expect(ImprintableCategory.where(imprintable_id: imprintable.id).empty?).to be_truthy
       end
     end
