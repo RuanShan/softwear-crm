@@ -24,7 +24,7 @@ module Api
 
       @imprintable_variants =
         imprintable.variants_of_color(color_name)
-        .where(size: { retail: true })
+        .where(sizes: { retail: true })
 
 
       respond_to do |format|
