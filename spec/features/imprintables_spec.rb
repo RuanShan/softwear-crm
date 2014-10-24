@@ -89,8 +89,8 @@ feature 'Imprintables management', imprintable_spec: true, slow: true do
     page.find_by_id('imprintable_sizing_category').find("option[value='#{imprintable.sizing_category}']").click
     page.find_by_id('imprintable_brand_id').find("option[value='#{imprintable.brand.id}']").click
 
-    fill_in 'Style name', with: 'Sample Name'
-    fill_in 'Style catalog no', with: '42'
+    fill_in 'Style Name', with: 'Sample Name'
+    fill_in 'Catalog Number', with: '42'
     fill_in_summernote('#imprintable_style_description', with: 'Description')
     fill_in 'Common Name', with: 'Super dooper imprintable'
 
@@ -112,7 +112,7 @@ feature 'Imprintables management', imprintable_spec: true, slow: true do
   feature 'Tagging', js: true do
     given!(:imprintable_two) { create(:valid_imprintable) }
     given!(:imprintable_three) { create(:valid_imprintable) }
-    
+
     scenario 'A user can tag an imprintable' do
       visit edit_imprintable_path imprintable.id
 
@@ -127,7 +127,7 @@ feature 'Imprintables management', imprintable_spec: true, slow: true do
 
   context 'There is a store available', js: true do
     given!(:store) { create(:valid_store) }
-    
+
     scenario 'A user can utilize sample location token input field', js: true do
       visit edit_imprintable_path imprintable.id
 
@@ -142,11 +142,11 @@ feature 'Imprintables management', imprintable_spec: true, slow: true do
 
   context 'There is another imprintable' do
     given!(:coordinate) { create(:valid_imprintable) }
-    
+
     scenario 'A user can utilize coordinate token input field', js: true do
       visit edit_imprintable_path imprintable.id
 
-      select_from_chosen(coordinate.name, from: 'Coordinates')
+      select_from_chosen(coordinate.name, from: 'Coordinate Imprintables')
       find_button('Update Imprintable').click
 
       expect(page).to have_selector '.modal-content-success', text: 'Imprintable was successfully updated.'
@@ -156,7 +156,7 @@ feature 'Imprintables management', imprintable_spec: true, slow: true do
     scenario 'Coordinates are reflected symmetrically', js: true, pending: 'select from chosen' do
       visit edit_imprintable_path imprintable.id.
 
-      select_from_chosen(coordinate.name, from: 'Coordinates')
+      select_from_chosen(coordinate.name, from: 'Coordinate Imprintables')
       find_button('Update Imprintable').click
 
       expect(page).to have_selector '.modal-content-success', text: 'Imprintable was successfully updated.'
@@ -176,7 +176,7 @@ feature 'Imprintables management', imprintable_spec: true, slow: true do
       expect(ImprintableCategory.where(imprintable_id: imprintable.id)).to_not be_nil
     end
 
-    context 'there is already an associated imprintable category' do
+    context 'there is already an associated imprintable category', js: true, wip: true do
       given!(:category) { create(:imprintable_category, imprintable_id: imprintable.id) }
 
       scenario 'A user can delete an imprintable category' do
@@ -195,7 +195,7 @@ feature 'Imprintables management', imprintable_spec: true, slow: true do
 
   context 'There is an imprint method' do
     given!(:imprint_method) { create(:valid_imprint_method) }
-    
+
     scenario 'A user can utilize compatible imprint methods token input field', js: true do
       visit edit_imprintable_path imprintable.id
 
@@ -211,7 +211,7 @@ feature 'Imprintables management', imprintable_spec: true, slow: true do
     visit edit_imprintable_path imprintable.id
 
     fill_in 'Special Considerations', with: 'Edited Special Consideration'
-    fill_in 'Style name', with: 'Edited Style Name'
+    fill_in 'Style Name', with: 'Edited Style Name'
     find_button('Update Imprintable').click
 
     expect(page).to have_selector '.modal-content-success', text: 'Imprintable was successfully updated.'
@@ -240,7 +240,7 @@ feature 'Imprintables management', imprintable_spec: true, slow: true do
     find_link("pricing_button_#{imprintable.id}").click
     expect(page).to have_selector '#contentModal.modal.fade.in'
   end
-  
+
   scenario 'A user can navigate to all tabs of the modal show menu (card #133)', js: true  do
     visit imprintables_path
 
@@ -267,7 +267,7 @@ feature 'Imprintables management', imprintable_spec: true, slow: true do
 
   context 'There are 2 different imprintables', js: true do
     given!(:imprintable_two) { create(:valid_imprintable) }
-    
+
     scenario 'A user can display the modal show without having multiple shows being rendered at once (card #136)' do
       visit imprintables_path
 
