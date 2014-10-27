@@ -52,6 +52,11 @@ $(window).load ->
     if window.location.hash.indexOf($(this).attr 'href') == -1
       window.location.hash = $(this).attr 'href'
 
+  # console.log $('select[name="order[quote_ids][]"]').length
+  $('select[name="order[quote_ids][]"]').chosen
+    placeholder_text_multiple: 'Select any relevent quotes'
+    width: '600px'
+
   # TODO instead of Nigel's 'hack' 
   # possibly create a show for Job that would present relevant info
   if window.location.hash != ''

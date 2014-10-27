@@ -331,6 +331,14 @@ ActiveRecord::Schema.define(version: 20141024174658) do
 
   add_index "orders", ["deleted_at"], name: "index_orders_on_deleted_at", using: :btree
 
+  create_table "orders_quotes", force: true do |t|
+    t.integer  "order_id"
+    t.integer  "quote_id"
+    t.datetime "deleted_at"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
   create_table "payments", force: true do |t|
     t.integer  "order_id"
     t.integer  "salesperson_id"
