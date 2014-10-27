@@ -6,13 +6,6 @@ module Api
       end
     end
 
-    def show
-      @imprintable = Imprintable.find(params[:id])
-      respond_to do |format|
-        format.json { render json: @imprintable, include: [:colors, :sizes, :style, :brand, :imprintable_variants] }
-      end
-    end
-
     private
 
     def permitted_attributes
@@ -21,6 +14,10 @@ module Api
         :base_upcharge,  :xxl_upcharge,    :xxxl_upcharge,
         :xxxxl_upcharge, :xxxxxl_upcharge, :xxxxxxl_upcharge
       ]
+    end
+    
+    def includes
+      # [:colors, :sizes, :imprintable_variants]
     end
   end
 end

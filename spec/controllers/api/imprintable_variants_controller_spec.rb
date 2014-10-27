@@ -1,29 +1,32 @@
 require 'spec_helper'
 include ApiControllerTests
 
-describe Api::SizesController, api_size_spec: true, api_spec: true do
+describe Api::ImprintableVariantsController, api_imprintable_variant_spec: true, api_spec: true do
   let!(:valid_user) { create :alternate_user }
   before(:each) { sign_in valid_user }
-
-  it_behaves_like 'api_controller create'
-  it_behaves_like 'a retailable api controller'
 
   describe 'GET #index' do
     context 'with valid "color" and "imprintable" parameters' do
       let!(:imprintable) { create :valid_imprintable, common_name: 'Common' }
 
-      it "returns sizes associated with the imprintable's variant by color" do
+      it "returns imprintable_variants associated with the imprintable and color" do
         expect(Imprintable).to receive(:find_by).with(common_name: 'Common')
           .and_return imprintable
 
-        expect(imprintable)
-          .to receive(:sizes_by_color)
-          .with('Blue', retail: true)
+        dummy = double('variants')
+        expect(dummy)
+          .to receive(:where)
+          .with(size: { retail: true })
           .and_return 'test'
+
+        expect(imprintable)
+          .to receive(:variants_of_color)
+          .with('Blue')
+          .and_return dummy
 
         get :index, format: :json, color: 'Blue', imprintable: 'Common'
 
-        expect(assigns(:sizes)).to eq 'test'
+        expect(assigns(:imprintable_variants)).to eq 'test'
       end
     end
 
