@@ -17,7 +17,7 @@ module Api
     end
     
     def includes
-      [:colors, :sizes, :imprintable_variants]
+      # [:colors, :sizes, :imprintable_variants]
     end
   end
 end
