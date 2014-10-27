@@ -5,7 +5,7 @@ describe 'orders/_order_detail_fields.html.erb', order_spec: true do
 
   let!(:order) { create :order }
   let!(:f) { test_form_for order, builder: LancengFormBuilder }
-  let(:render!) { render partial: 'orders/order_detail_fields', locals: {  order: order, f: f, current_user: create(:user) } }
+  let(:render!) { render partial: 'orders/order_detail_fields', locals: {  order: order, f: f, current_user: create(:user), show_quotes: true } }
 
   it 'should display the correct fields' do
     render!

@@ -36,11 +36,13 @@
   <%= f.select :store_id, options_for_select(Store.order(:name).map{ |s| [s.name, s.id] }, store_id) %>
 </div>
 
-<div class="form-group">
-  <%= f.label :quote_ids, 'Related Quote(s)' %>
-  <%= f.error_for :quote_ids %>
-  <%= f.select :quote_ids, order.quotes.map { |q| [q.name, q.id] }, {}, { multiple: true, name: 'order[quote_ids][]' } %>
-</div>
+<% if local_assigns[:show_quotes] %>
+  <div class="form-group">
+    <%= f.label :quote_ids, 'Related Quote(s)' %>
+    <%= f.error_for :quote_ids %>
+    <%= f.select :quote_ids, Quote.all.map { |q| [q.name, q.id] }, {}, { multiple: true } %>
+  </div>
+<% end %>
 
 <div class="form-group">
   <%= f.label :terms, 'Payment terms' %>
