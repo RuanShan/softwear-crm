@@ -214,6 +214,33 @@ create_records([
     { name: 'Ypsilanti Store' }
 ], Store)
 
+# Quote SEEDING
+# --------------
+create_records([
+    {
+      name: 'Quotastic',
+      first_name: 'First',
+      last_name: 'Last',
+      email: 'test@test.com',
+      twitter: '@quoteman',
+      phone_number: '987-654-5468',
+      valid_until_date: Time.now + 10.months,
+      estimated_delivery_date: Time.now + 6.days,
+      quote_source: 'Other',
+      store: Store.first,
+      shipping: 222.22,
+      salesperson_id: 1,
+      line_items_attributes: {
+        '1' => {
+          name: 'Quote Line Item',
+          description: 'This one is inside a quote, as you may have noticed',
+          quantity: 12,
+          unit_price: 2
+        }
+      }
+    }
+  ], Quote)
+
 # Order SEEDING
 # --------------
 create_records([
@@ -276,8 +303,6 @@ create_records([
         job_ids: [j.id]
     }
                ], ArtworkRequest)
-
-ar = ArtworkRequest.all.first
 
 # Quote Request SEEDING
 #----------------------
