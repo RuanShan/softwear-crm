@@ -1,0 +1,113 @@
+<div class="col-sm-5">
+    <div class="box-info">
+      <h2><strong>Production</strong> Information</h2>
+
+      <div class="form-group">
+        <%= f.label :polyester, class: 'control-label' %>
+        <%= f.error_for :polyester %>
+        <%= f.check_box :polyester, { class: 'checkbox' }, 'true', 'false' %>
+        <p class="help-block">Does the material include polyester?</p>
+      </div>
+
+      <div class="form-group">
+        <%= f.label :material, class: 'control-label' %>
+        <%= f.error_for :material %>
+        <%= f.text_field :material, class: 'form-control' %>
+        <p class="help-block">The material makeup of the imprintable</p>
+      </div>
+
+      <div class="form-group">
+        <%= f.label :weight, class: 'control-label' %>
+        <%= f.error_for :weight %>
+        <%= f.text_field :weight, class: 'form-control' %>
+        <p class="help-block">The material weight</p>
+      </div>
+
+        <div class="form-group">
+            <%= f.label :max_imprint_width, class: 'control-label' %>
+            <div class="input-group">
+                <%= f.error_for :max_imprint_width %>
+                <%= f.text_field :max_imprint_width,
+                                 class: 'form-control',
+                                 placeholder: 'Width (0.00) in inches' %>
+                <span class='input-group-addon'>inches</span>
+            </div>
+        </div>
+
+      <div class="form-group">
+        <%= f.label :max_imprint_height, class: 'control-label' %>
+          <div class="input-group">
+            <%= f.error_for :max_imprint_height %>
+            <%= f.text_field :max_imprint_height,
+                             class: 'form-control',
+                             placeholder: 'Height (0.00) in inches' %>
+            <span class='input-group-addon'>inches</span>
+          </div>
+      </div>
+
+      <div class="form-group">
+        <%= f.label :sizing_category, 'Sizing Category',
+                    class: 'control-label' %>
+
+        <%= f.error_for :sizing_category %>
+          <%= f.select :sizing_category, Imprintable::SIZING_CATEGORIES,
+                       { prompt: 'Please select a sizing category' },
+                       { class: 'form-control', id: 'imprintable_sizing_category' } %>
+
+          <p class="help-block">
+            Select the sizing category for the imprintable
+          </p>
+      </div>
+
+      <div class="form-group">
+      </div>
+
+      <div class="form-group">
+        <%= f.label :flashable, class: 'control-label' %>
+        <%= f.error_for :flashable %>
+          <%=  f.check_box :flashable, { class: 'checkbox' }, 'true', 'false' %>
+      </div>
+
+      <div class="form-group">
+        <%= f.label :proofing_template_name, 'Proofing Template Name',
+                    class: 'control-label' %>
+        <%= f.error_for :proofing_template_name %>
+          <%= f.text_field :proofing_template_name, class: 'form-control' %>
+
+          <p class="help-block">
+            The proofing template used by the art department
+          </p>
+      </div>
+
+      <div class="form-group">
+        <%= f.label :compatible_imprint_method_ids, 'Compatible Imprint Methods',
+                    class: 'control-label' %>
+
+        <%= f.error_for :compatible_imprint_method_ids %>
+
+          <%= f.collection_select :compatible_imprint_method_ids,
+                                  model_collection_hash[:imprint_method_collection],
+                                  :id,
+                                  :name,
+                                  {},
+                                  {
+                                          class: 'chosen-select',
+                                          data: { placeholder: 'Select compatible imprint methods' },
+                                          multiple: true
+                                  } %>
+
+          <p class="help-block">
+            What imprint methods work with the imprintable
+          </p>
+      </div>
+
+      <div class="form-group">
+        <%= f.label :special_considerations, 'Special Considerations',
+                    class: 'control-label' %>
+
+        <%= f.error_for :special_considerations %>
+          <%= f.text_area :special_considerations, class: 'form-control' %>
+      </div>
+
+    </div>
+</div>

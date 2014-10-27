@@ -38,6 +38,8 @@ class ImprintablesController < InheritedResources::Base
         end
       end
 
+      update_imprintable_variant_weights params[:imprintable_variant_weights] unless params[:imprintable_variant_weights].nil?
+
       success.html { redirect_to edit_imprintable_path params[:id] }
       failure.html do
         initialize_instance_hash
@@ -107,6 +109,14 @@ class ImprintablesController < InheritedResources::Base
   end
 
   private
+
+  def update_imprintable_variant_weights(imprintable_variant_weights)
+    imprintable_variant_weights.each do |size_id, weight|
+      size = Size.find(size_id)
+      @imprintable.update_weights_for_size(size, weight)
+    end
+  end
+
 
   def set_variants_hash
     @imprintable.create_variants_hash

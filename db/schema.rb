@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20141022161408) do
+ActiveRecord::Schema.define(version: 20141024174658) do
 
   create_table "activities", force: true do |t|
     t.integer  "trackable_id"
@@ -191,7 +191,7 @@ ActiveRecord::Schema.define(version: 20141022161408) do
     t.integer  "size_id"
     t.integer  "color_id"
     t.datetime "deleted_at"
-    t.decimal  "weight",         precision: 10, scale: 0
+    t.decimal  "weight",         precision: 10, scale: 1
   end
 
   add_index "imprintable_variants", ["deleted_at"], name: "index_imprintable_variants_on_deleted_at", using: :btree
@@ -230,6 +230,7 @@ ActiveRecord::Schema.define(version: 20141022161408) do
     t.decimal  "xxxxl_upcharge",         precision: 10, scale: 2
     t.decimal  "xxxxxl_upcharge",        precision: 10, scale: 2
     t.decimal  "xxxxxxl_upcharge",       precision: 10, scale: 2
+    t.decimal  "base_upcharge",          precision: 10, scale: 2
   end
 
   add_index "imprintables", ["deleted_at"], name: "index_imprintables_on_deleted_at", using: :btree
@@ -302,7 +303,6 @@ ActiveRecord::Schema.define(version: 20141022161408) do
   create_table "name_numbers", force: true do |t|
     t.string  "name"
     t.string  "number"
-    t.string  "description"
     t.integer "imprint_id"
     t.integer "imprintable_variant_id"
   end
