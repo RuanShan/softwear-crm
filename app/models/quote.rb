@@ -53,11 +53,29 @@ class Quote < ActiveRecord::Base
     ', *([self.class.name, id] * 2) ).order('created_at DESC')
   end
 
-# TODO: this is broken so don't use it yet lol
+# TODO: this is broken so don't use it yet lulz
   def create_freshdesk_ticket(current_user)
     config = FreshdeskModule.get_freshdesk_config(current_user)
     client = FreshdeskModule.open_connection(config)
     FreshdeskModule.send_ticket(client, config, self)
+  end
+
+  def get_freshdesk_ticket
+    # logic for getting freshdesk ticket
+    # Once it grabs ticket, if CRM Quote ID not set, set it
+    # https://github.com/AnnArborTees/softwear-mockbot/blob/release-2014-10-17/app/models/spree/store.rb
+    # Rails.cache.fetch(action, :expires => 30.minutes) do
+
+          response = get(action)
+
+          if response.code == 200
+            puts response.body, response.code, response.message, response.headers.inspect
+          else
+            raise ActiveRecord::RecordNotFound
+          end
+
+          OpenStruct.new JSON.parse(response.body) # Railsifys (JSON Attributes to methods)
+    # end
   end
 
   def formatted_phone_number

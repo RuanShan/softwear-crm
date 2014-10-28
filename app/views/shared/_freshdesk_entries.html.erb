@@ -1,0 +1,20 @@
+<div class="the-timeline dashboard-timeline">
+  <ul>
+    <li>
+      <div class="the-date" data-date="<%= Time.now.to_s(:db) %>">
+        <span><%= Time.now.strftime('%d') %></span>
+        <small><%= Time.now.strftime('%b') %></small>
+      </div>
+
+      <h4>Information Owner</h4>
+
+      <p>
+        Information
+      </p>
+
+      <p class="time">
+        <%= display_time(Time.now) %>
+      </p>
+    </li>
+  </ul>
+</div>
