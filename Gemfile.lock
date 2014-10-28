@@ -461,6 +461,7 @@ DEPENDENCIES
   sidekiq-status
   simple_form
   simple_token_authentication
+  sinatra
   summernote-rails
   sunspot_matchers
   sunspot_rails
