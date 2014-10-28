@@ -62,6 +62,12 @@ describe Quote, quote_spec: true do
       end
     end
 
+    describe '#get_freshdesk_ticket', story_70: true, pending: 'Not sure how to implement this yet' do
+      it 'does cool things' do
+        expect(false).to be_truthy
+      end
+    end
+
     describe '#create_freshdesk_ticket', pending: 'Freshdesk is some shite' do
       it 'calls Freshdesk.new and post_tickets with the correct args' do
         freshdesk_info = {

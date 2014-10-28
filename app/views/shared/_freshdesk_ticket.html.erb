@@ -6,11 +6,9 @@
    %>
 
   <% if no_ticket_id_entered %>
-    No freshdesk ticket ID entered for the order. Please add
-    one and save the quote to view activity.
+    <%= Figaro.env['quote_no_fd_id'] %>
   <% elsif ticket_id_no_ticket %>
-    Could not find the freshdesk ticket for the ticket ID entered.
-    Please double check ticket ID is correct
+    <%= Figaro.env['quote_invalid_fd_id'] %>
   <% elsif true %>
     <%= render 'shared/freshdesk_entries', freshdesk_ticket: freshdesk_ticket %>
   <% end %>
