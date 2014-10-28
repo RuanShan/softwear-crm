@@ -1,3 +1,30 @@
+<div class="row clear">
+  <div class="col-sm-6">
+    <%= select_tag nil,
+                   options_for_select(
+                           ['Select a Color'] + model_collection_hash[:color_collection]
+                           .map{ |c| [c.name, c.id] }),
+                   {
+                           class: 'color-size-chosen-select',
+                           id: 'color-select'
+                   } %>
+      <a href="#" class="btn btn-default" id="color_button">Add Color</a>
+  </div>
+  <div class="col-sm-6">
+    <%= select_tag nil,
+                   options_for_select(
+                           ['Select a Size'] + model_collection_hash[:size_collection]
+                           .map{ |s| [s.display_value, s.id] }),
+                   {
+                           class: 'color-size-chosen-select',
+                           id: 'size-select'
+                   } %>
+      <a href="#" class="btn btn-default" id="size_button">Add a size</a>
+  </div>
+</div>
+
+<br />
+
 <div class="table-responsive clear">
 
   <table class="table table-hover" id="imprintable_variants_list">
@@ -12,19 +39,6 @@
             <i class="fa fa-minus" id="col_minus_<%= size_index + 1 %>"></i>
           </th>
       <% end %>
-      <th id="add_a_size">
-        <p>
-          <%= select_tag nil,
-                         options_for_select(
-                                 ['Select a Size'] + model_collection_hash[:size_collection]
-                                 .map{ |s| [s.display_value, s.id] }),
-                         {
-                                 class: 'color-size-chosen-select',
-                                 id: 'size-select'
-                         } %>
-        </p>
-        <button type="button" id="size_button">Add a size</button>
-      </th>
     </tr>
     </thead>
     <tbody>
@@ -52,19 +66,6 @@
         </tr>
     <% end %>
     <tr>
-      <th id="add_a_color">
-        <p>
-          <%= select_tag nil,
-                         options_for_select(
-                                 ['Select a Color'] + model_collection_hash[:color_collection]
-                                 .map{ |c| [c.name, c.id] }),
-                         {
-                                 class: 'color-size-chosen-select',
-                                 id: 'color-select'
-                         } %>
-        </p>
-        <button type="button" id="color_button">Add a color</button>
-      </th>
       <% if variants_array.empty? %>
           <td><a class="button" id="select_button">Select</a></td>
       <% end %>
