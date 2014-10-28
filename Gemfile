@@ -116,6 +116,7 @@ gem 'whenever'
 gem 'freshdesk'
 gem 'simple_token_authentication'
 gem 'sidekiq'
+gem 'sidekiq-status'
 gem 'x-editable-rails'
 gem 'jquery-fileupload-rails'
 
