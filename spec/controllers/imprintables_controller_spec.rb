@@ -140,7 +140,7 @@ describe ImprintablesController, imprintable_spec: true do
         put :update_imprintable_variants,
              id: imprintable.to_param,
              update: {
-               variants_to_add: [ { 'color_id' => 40, 'size_id' => 2 } ]
+               variants_to_add: { '0' => { 'color_id' => 40, 'size_id' => 2 } }
              }
         expect(flash[:error]).to eq 'One or more of the variants could not be saved.'
       end
