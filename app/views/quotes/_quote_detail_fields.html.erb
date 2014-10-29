@@ -1,36 +1,23 @@
 <div class="form-group hide">
   <%= f.label :quote_request_ids, 'Quote Requests' %>
-
-  <% qr_ids =
-            if !quote_request_id.nil?
-              quote_request_id
-            else
-              quote.quote_request_ids
-            end
-  %>
-
+  <% qr_ids = !quote_request_id.nil? ? quote_request_id : quote.quote_request_ids %>
   <%= f.select :quote_request_ids, [qr_ids], {}, { name: 'quote[quote_request_ids][]' } %>
 </div>
 
 <div class="form-group">
   <%= f.label :name, 'Quote Name' %>
-
   <%= f.error_for :name %>
-
   <%= f.text_field :name %>
 </div>
 
 <div class="form-group">
   <%= f.label :quote_source %>
-
   <%= f.error_for :quote_source %>
-
   <%= f.select :quote_source, Quote::QUOTE_SOURCES, include_blank: true %>
 </div>
 
 <div class="form-group">
   <%= f.label :shipping %>
-
   <%= f.error_for :shipping %>
 
   <div class="input-group">
@@ -41,7 +28,6 @@
 
 <div class="form-group">
   <%= f.label :valid_until_date, 'Valid Until Date' %>
-
   <%= f.error_for :valid_until_date %>
 
   <div class="input-group date js-datetimepicker">
@@ -57,7 +43,6 @@
 
 <div class="form-group">
   <%= f.label :estimated_delivery_date, 'Estimated Delivery Date' %>
-
   <%= f.error_for :estimated_delivery_date %>
 
   <div class="input-group date js-datetimepicker">
@@ -73,9 +58,7 @@
 
 <div class="form-group">
   <%= f.label :salesperson_id, 'Salesperson' %>
-
   <%= f.error_for :salesperson_id %>
-
   <%= f.select :salesperson_id,
                 options_for_select(User.all.map{ |u| [u.full_name, u.id] },
                                    quote.id ? quote.salesperson_id : current_user.id ) %>
@@ -83,10 +66,14 @@
 
 <div class="form-group">
   <%= f.label :store_id, 'Store' %>
-
   <%= f.error_for :store_id %>
-
   <%= f.select :store_id,
                 options_for_select(Store.order(:name).map{ |s| [s.name, s.id] },
                                    quote.id ? quote.store_id : current_user.store_id ) %>
+</div>
+
+<div class="form-group">
+  <%= f.label :freshdesk_ticket_id, 'Freshdesk Ticket ID' %>
+  <%= f.error_for :freshdesk_ticket_id %>
+  <%= f.text_field :freshdesk_ticket_id %>
 </div>

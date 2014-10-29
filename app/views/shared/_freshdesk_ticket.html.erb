@@ -1,16 +1,13 @@
 <div class="user-profile-content">
   <h4>Freshdesk Timeline</h4>
-  <%
-     def no_ticket_id_entered; return false; end
-     def ticket_id_no_ticket; return false; end
-   %>
-
-  <% if no_ticket_id_entered %>
-    <%= Figaro.env['quote_no_fd_id'] %>
-  <% elsif ticket_id_no_ticket %>
-    <%= Figaro.env['quote_invalid_fd_id'] %>
-  <% elsif true %>
-    <%= render 'shared/freshdesk_entries', freshdesk_ticket: freshdesk_ticket %>
+  <% if quote.no_ticket_id_entered? %>
+    <%=t :quote_no_fd_id %>
+  <% elsif quote.no_fd_login? current_user %>
+    <%=t :quote_invalid_fd_id %>
+  <% elsif quote.has_freshdesk_ticket? current_user %>
+    <%= render 'shared/freshdesk_entries', freshdesk_ticket: quote.get_freshdesk_ticket(current_user).helpdesk_ticket %>
+  <% else %>
+    <%=t :quote_invalid_configuration %>
   <% end %>
 
 </div>

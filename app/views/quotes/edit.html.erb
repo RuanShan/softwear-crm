@@ -46,7 +46,7 @@
             <%= render 'shared/timeline', activities: @activities %>
           </div>
           <div class="col-sm-6">
-            <%= render 'shared/freshdesk_ticket', freshdesk_ticket: @quote.freshdesk_ticket %>
+            <%= render 'shared/freshdesk_ticket', quote: @quote, current_user: @current_user %>
           </div>
         </div>
 

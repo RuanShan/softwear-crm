@@ -4,8 +4,8 @@ module FreshdeskModule
   def self.get_freshdesk_config(current_user)
     settings = Setting.get_freshdesk_settings
     if user_configured? current_user
-      settings[:freshdesk_email] = current_user.email
-      settings[:freshdesk_password] = current_user.password
+      settings[:freshdesk_email] = current_user.freshdesk_email
+      settings[:freshdesk_password] = current_user.freshdesk_password
     end
     settings
   end

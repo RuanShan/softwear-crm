@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20141024174658) do
+ActiveRecord::Schema.define(version: 20141028150149) do
 
   create_table "activities", force: true do |t|
     t.integer  "trackable_id"
@@ -419,6 +419,7 @@ ActiveRecord::Schema.define(version: 20141024174658) do
     t.decimal  "shipping",                precision: 10, scale: 2
     t.datetime "initialized_at"
     t.string   "quote_source"
+    t.string   "freshdesk_ticket_id"
   end
 
   create_table "sample_locations", force: true do |t|

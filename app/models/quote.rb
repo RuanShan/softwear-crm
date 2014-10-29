@@ -60,22 +60,45 @@ class Quote < ActiveRecord::Base
     FreshdeskModule.send_ticket(client, config, self)
   end
 
-  def get_freshdesk_ticket
+  def no_ticket_id_entered?
+    freshdesk_ticket_id.blank?
+  end
+
+  def no_fd_login?(current_user)
+    config = FreshdeskModule.get_freshdesk_config(current_user)
+    if config.has_key?(:freshdesk_email) && config.has_key?(:freshdesk_password)
+      false
+    else
+      true
+    end
+  end
+
+  def has_freshdesk_ticket?(current_user)
+    response = get_freshdesk_ticket current_user
+    response.quote_fd_id_configured ? false : true
+  end
+
+  # this function assumes that the following functions are called beforehand
+  # with the same user (and therefore doesn't bother checking if they're true or false):
+  #   no_ticket_id_entered
+  #   no_fd_login
+  #   no_ticket
+  def get_freshdesk_ticket(current_user)
     # logic for getting freshdesk ticket
     # Once it grabs ticket, if CRM Quote ID not set, set it
     # https://github.com/AnnArborTees/softwear-mockbot/blob/release-2014-10-17/app/models/spree/store.rb
-    # Rails.cache.fetch(action, :expires => 30.minutes) do
+    Rails.cache.fetch(:quote_fd_ticket, :expires => 30.minutes) do
+      config = FreshdeskModule.get_freshdesk_config(current_user)
+      unless config.has_key?(:freshdesk_email) && config.has_key?(:freshdesk_password)
+        return OpenStruct.new JSON.parse(ticket)
+      end
 
-          response = get(action)
-
-          if response.code == 200
-            puts response.body, response.code, response.message, response.headers.inspect
-          else
-            raise ActiveRecord::RecordNotFound
-          end
-
-          OpenStruct.new JSON.parse(response.body) # Railsifys (JSON Attributes to methods)
-    # end
+      client = Freshdesk.new(Figaro.env['freshdesk_url'], config[:freshdesk_email], config[:freshdesk_password])
+      client.response_format = 'json'
+      ticket = client.get_tickets(freshdesk_ticket_id)
+      ticket = '{ "quote_fd_id_configured": "false" }' if ticket.nil?
+      return OpenStruct.new JSON.parse(ticket)
+    end
   end
 
   def formatted_phone_number
