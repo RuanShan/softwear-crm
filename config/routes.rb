@@ -1,7 +1,6 @@
 require 'sidekiq/web'
 
 CrmSoftwearcrmCom::Application.routes.draw do
-
   devise_for :users, controllers: { sessions: 'users/sessions' }, skip: 'registration'
 
   root 'home#index'
@@ -103,6 +102,11 @@ CrmSoftwearcrmCom::Application.routes.draw do
     resources :queries
   end
   get '/search', to: 'search/queries#search', as: :search
+
+
+  resources :sales_reports, only: [:index]
+  get '/sales_reports/:report_type/:start_time...:end_time', to: 'sales_reports#show'
+
 
   namespace 'api' do
     resources 'orders', only: [:index, :show]

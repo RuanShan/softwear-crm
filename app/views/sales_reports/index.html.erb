@@ -1,0 +1,7 @@
+<h1>Sales Reports</h1>
+<%= form_tag 'sales_reports', method: :get do %>
+  <%= text_field_tag :start_time, nil, placeholder: 'Start Time' %>
+  <%= text_field_tag :end_time, nil, placeholder: 'End Time' %>
+  <%= select_tag :report, options_for_select(@reports), include_blank: true %>
+  <%= button_tag 'Generate Report' %>
+<% end %>
