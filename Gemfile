@@ -115,7 +115,9 @@ gem 'progress_bar'
 gem 'whenever'
 gem 'freshdesk'
 gem 'simple_token_authentication'
+gem 'sinatra', require: false
 gem 'sidekiq'
+gem 'sidekiq-status'
 gem 'x-editable-rails'
 gem 'jquery-fileupload-rails'
 
