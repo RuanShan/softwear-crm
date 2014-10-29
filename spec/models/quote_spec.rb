@@ -62,9 +62,95 @@ describe Quote, quote_spec: true do
       end
     end
 
-    describe '#get_freshdesk_ticket', story_70: true, pending: 'Not sure how to implement this yet' do
-      it 'does cool things' do
-        expect(false).to be_truthy
+    describe '#get_freshdesk_ticket', story_70: true do
+      # used for stubbing responses and methods
+      class BogusClass; end
+      # set expectations
+      before(:each) do
+        expect(FreshdeskModule).to receive(:get_freshdesk_config).and_return(
+          {
+            freshdesk_email: 'lolol',
+            freshdesk_password: 'zomgwtfbbq'
+          })
+        expect(Freshdesk).to receive(:new).with(any_args).and_return(BogusClass)
+        expect(BogusClass).to receive(:response_format=)
+      end
+
+      context 'when freshdesk returns a valid ticket' do
+        # used to stub the "ticket"
+        class SuccessClass; end
+        it 'returns the ticket' do
+          expect(BogusClass).to receive(:get_tickets).and_return('{ "success": "true"}')
+          test = quote.get_freshdesk_ticket BogusClass
+          expect(test.success).to eq('true')
+        end
+      end
+
+      context 'when freshdesk returns an invalid ticket' do
+        it 'returns an OpenStruct object with one field' do
+          expect(BogusClass).to receive(:get_tickets).and_return nil
+          test = quote.get_freshdesk_ticket BogusClass
+          expect(test.quote_fd_id_configured).to eq('false')
+        end
+      end
+    end
+
+    describe '#no_ticket_id_entered?', story_70: true do
+      context 'when a quote has a freshdesk_ticket_id' do
+        let!(:quote) { build_stubbed(:valid_quote, freshdesk_ticket_id: '123456') }
+        it 'returns false' do
+          expect(quote.no_ticket_id_entered?).to be_falsey
+        end
+      end
+
+      context 'when a quote does not have a freshdesk_ticket_id' do
+        it 'returns true' do
+          expect(quote.no_ticket_id_entered?).to be_truthy
+        end
+      end
+    end
+
+    describe '#no_fd_login?', story_70: true do
+      # use this for stubbing out current_user in the method
+      class BogusClass; end
+
+      context 'when a user doesn\'t have any freshdesk configuration available' do
+        it 'returns true' do
+          expect(FreshdeskModule).to receive(:get_freshdesk_config).and_return({ lol: true })
+          expect(quote.no_fd_login? BogusClass).to be_truthy
+        end
+      end
+
+      context 'when a user has freshdesk configured' do
+        it 'returns false' do
+          expect(FreshdeskModule).to receive(:get_freshdesk_config).and_return(
+          {
+            freshdesk_email: 'something',
+            freshdesk_password: 'something_else'
+          })
+          expect(quote.no_fd_login? BogusClass).to be_falsey
+        end
+      end
+    end
+
+    describe '#has_freshdesk_ticket?', story_70: true do
+      # used for stubbing
+      class BogusClass; end
+
+      context 'when get_freshdesk_ticket returns a valid ticket' do
+        it 'returns true' do
+          expect(quote).to receive(:get_freshdesk_ticket).and_return(BogusClass)
+          expect(BogusClass).to receive(:quote_fd_id_configured).and_return nil
+          expect(quote.has_freshdesk_ticket? BogusClass).to be_truthy
+        end
+      end
+
+      context 'when get_freshdesk_ticket returns an invalid ticket' do
+        it 'returns false' do
+          expect(quote).to receive(:get_freshdesk_ticket).and_return(BogusClass)
+          expect(BogusClass).to receive(:quote_fd_id_configured).and_return true
+          expect(quote.has_freshdesk_ticket? BogusClass).to be_falsey
+        end
       end
     end
 
@@ -96,6 +182,8 @@ describe Quote, quote_spec: true do
         quote.create_freshdesk_ticket
       end
     end
+
+
 
     describe '#formatted_phone_number' do
       let(:quote) { build_stubbed(:blank_quote, phone_number: '7342742659') }

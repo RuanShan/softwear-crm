@@ -82,19 +82,15 @@ class Quote < ActiveRecord::Base
   # with the same user (and therefore doesn't bother checking if they're true or false):
   #   no_ticket_id_entered
   #   no_fd_login
-  #   no_ticket
   def get_freshdesk_ticket(current_user)
     # logic for getting freshdesk ticket
     # Once it grabs ticket, if CRM Quote ID not set, set it
     # https://github.com/AnnArborTees/softwear-mockbot/blob/release-2014-10-17/app/models/spree/store.rb
     Rails.cache.fetch(:quote_fd_ticket, :expires => 30.minutes) do
       config = FreshdeskModule.get_freshdesk_config(current_user)
-      unless config.has_key?(:freshdesk_email) && config.has_key?(:freshdesk_password)
-        return OpenStruct.new JSON.parse(ticket)
-      end
-
       client = Freshdesk.new(Figaro.env['freshdesk_url'], config[:freshdesk_email], config[:freshdesk_password])
       client.response_format = 'json'
+
       ticket = client.get_tickets(freshdesk_ticket_id)
       ticket = '{ "quote_fd_id_configured": "false" }' if ticket.nil?
       return OpenStruct.new JSON.parse(ticket)
