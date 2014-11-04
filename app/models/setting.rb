@@ -20,11 +20,13 @@ class Setting < ActiveRecord::Base
       return freshdesk_records
     elsif configured?(freshdesk_ymls)
       # TODO: create Settings records with environment variables here to use in your form
-      return Setting.create_and_save_fd_settings(freshdesk_ymls[:url],
-                                                 freshdesk_ymls[:email],
-                                                 freshdesk_ymls[:password])
+      Setting.create_and_save_fd_settings(freshdesk_ymls[:url],
+                                          freshdesk_ymls[:email],
+                                          freshdesk_ymls[:password])
+      return freshdesk_ymls
     else
-      return Setting.create_and_save_fd_settings(nil, nil, nil)
+      Setting.create_and_save_fd_settings(nil, nil, nil)
+      return nil
     end
   end
 
@@ -40,7 +42,7 @@ private
     password_setting = Setting.create(name: 'freshdesk_password', val: password, encrypted: true)
 
     Setting.transaction do
-      # In case the db is messed up and saving any one of these fails
+      # If the db messes up and saving any one of these fails
       # (even without validation) then none of the records should be saved,
       # hence the transaction
       url_setting.save(validate: false)

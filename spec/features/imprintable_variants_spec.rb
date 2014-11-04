@@ -28,6 +28,8 @@ feature 'Imprintable Variant Management', js: true, imprintable_variant_spec: tr
 
   context 'There is an imprintable variant' do
     given!(:imprintable_variant) { create(:valid_imprintable_variant) }
+    given!(:color) { create(:valid_color) }
+    given!(:size) { create(:valid_size) }
 
     before(:each) { visit edit_imprintable_path imprintable_variant.imprintable.id }
 
@@ -36,15 +38,27 @@ feature 'Imprintable Variant Management', js: true, imprintable_variant_spec: tr
       expect(page).to have_css('#imprintable_variants_list')
     end
 
-    scenario 'A user can add a size column', pending: 'Unsure how to select from chosen' do
-      select_from_chosen(size.display_value, from: 'size_select_chosen')
+    scenario 'A user can add a size column', story_213: true do
+      # for some reason using only 1 click wouldn't work, using 2 does ._.
+      find('#size_select_chosen').click
+      find('#size_select_chosen').click
+      sleep 0.5
+      find('#size_select_chosen li', text: size.display_value).click
       find('#size_button').click
+      expect(page).to have_selector 'th', text: size.display_value
+      click_button 'Update Imprintable'
+
       expect(page).to have_selector 'th', text: size.display_value
     end
 
-    scenario 'A user can add a color row', pending: 'Unsure how to select from chosen' do
-      select_from_chosen(color.name, from: 'color-select')
+    scenario 'A user can add a color row', story_213: true do
+      find('#color_select_chosen').click
+      find('#color_select_chosen').click
+      sleep 0.5
+      find('#color_select_chosen li', text: color.name).click
       find('#color_button').click
+      expect(page).to have_selector 'th', text: color.name
+      click_button 'Update Imprintable'
       expect(page).to have_selector 'th', text: color.name
     end
 

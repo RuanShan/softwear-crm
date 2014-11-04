@@ -1,9 +1,11 @@
+require 'sidekiq/web'
+
 CrmSoftwearcrmCom::Application.routes.draw do
 
   devise_for :users, controllers: { sessions: 'users/sessions' }, skip: 'registration'
 
   root 'home#index'
-  
+
   get '/users/change_password', to: 'users#edit_password', as: :change_password
   put '/users/change_password', to: 'users#update_password', as: :update_password
   get '/users/lock', to: 'users#lock', as: :lock_user
@@ -45,7 +47,7 @@ CrmSoftwearcrmCom::Application.routes.draw do
   resources :quote_requests
 
   get '/logout' => 'users#logout'
-  
+
   scope 'configuration' do
     resources :shipping_methods, :stores
     resources :imprint_methods do
@@ -54,7 +56,7 @@ CrmSoftwearcrmCom::Application.routes.draw do
     match 'integrated_crms', to: 'settings#edit', via: :get
     match 'update_integrated_crms', to: 'settings#update', via: :put
   end
-  
+
   resources :orders do
     member do
       get 'names_numbers', as: :name_number_csv_from
@@ -107,8 +109,13 @@ CrmSoftwearcrmCom::Application.routes.draw do
     resources 'jobs', only: [:index, :show]
     resources 'imprints', only: [:index, :show]
     resources 'imprintables'
+    resources 'imprintable_variants', only: [:index, :show]
     resources 'colors'
     resources 'sizes'
     resources 'quote_requests', only: [:create, :index]
+  end
+
+  authenticate :user do
+    mount Sidekiq::Web => '/sidekiq'
   end
 end

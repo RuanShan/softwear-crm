@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 describe ApplicationHelper, application_helper_spec: true do
-  describe "#model_table_row_id" do
+  describe '#model_table_row_id' do
     let! (:shipping_method) { create(:valid_shipping_method) }
 
     it 'returns the model name underscored and with the record id at the end' do
@@ -10,7 +10,7 @@ describe ApplicationHelper, application_helper_spec: true do
 
   end
 
-  describe "#create_or_edit_text" do
+  describe '#create_or_edit_text' do
 
     context 'object is a new record' do
       it 'returns Create' do
@@ -38,15 +38,32 @@ describe ApplicationHelper, application_helper_spec: true do
 
   describe '#display_time' do
     context 'datetime is nil' do
-      it 'should return nil' do
+      it 'returns nil' do
         expect(display_time('')).to eq(nil)
       end
     end
 
     context 'there is a valid datetime' do
       let!(:datetime) { DateTime.new(1991, 9, 25) }
-      it 'should return a formatted date' do
+      it 'returns a formatted date' do
         expect(display_time(datetime)).to eq('Sep 25, 1991, 12:00 AM')
+      end
+    end
+  end
+
+  context 'freshdesk time parsing', story_70: true do
+    let!(:fd_time) { '2014-10-29T19:00:45-04:00' }
+
+    describe '#display_freshdesk_time', pending: 'blocked on this one, throws a "bad value for range" exception?' do
+      it 'returns a nicely formatted date' do
+        expect(display_freshdesk_time(fd_time).to eq('Oct 29, 2014, 07:00 PM'))
+      end
+    end
+
+    describe '#parse_freshdesk_time' do
+      let!(:format_string) { '%Y-%m-%dT%H:%M:%S' }
+      it 'returns a datetime object' do
+        expect(parse_freshdesk_time(fd_time)).to eq(DateTime.new(2014, 10, 29, 19, 0, 45))
       end
     end
   end

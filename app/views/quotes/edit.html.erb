@@ -42,7 +42,12 @@
 
       <div class="tab-content">
         <div class="tab-pane animated fadeInRight active" id="timeline">
-          <%= render 'shared/timeline', activities: @activities %>
+          <div class="col-sm-6">
+            <%= render 'shared/timeline', activities: @activities %>
+          </div>
+          <div class="col-sm-6">
+            <%= render 'shared/freshdesk_ticket', quote: @quote, current_user: @current_user %>
+          </div>
         </div>
 
         <div class="tab-pane animated  fadeInRight" id="details">

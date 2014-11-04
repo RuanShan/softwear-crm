@@ -79,10 +79,14 @@ class Imprintable < ActiveRecord::Base
     imprintable_categories.map(&:name).join ' '
   end
 
-  def sizes_by_color(color, size_options = nil)
+  def variants_of_color(color)
     imprintable_variants
       .joins(:color, :size)
       .where(colors: { name: color.try(:name) || color })
+  end
+
+  def sizes_by_color(color, size_options = nil)
+    variants_of_color(color)
       .ergo { |v| v.where(sizes: size_options) if size_options }
       .map(&:size)
   end
@@ -105,7 +109,7 @@ class Imprintable < ActiveRecord::Base
 
     size_variants.sort! { |x,y| x.size.sort_order <=> y.size.sort_order }
 
-    color_variants = variants_array.uniq(&:color_id)
+    color_variants = variants_array.uniq(&:color_id).sort! {|x,y| x.color.name <=> y.color.name }
     {
         size_variants: size_variants,
         color_variants: color_variants,
