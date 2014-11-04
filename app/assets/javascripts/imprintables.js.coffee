@@ -6,7 +6,6 @@ jQuery ->
   # http://www.mredkj.com/tutorials/tableaddcolumn.html
   addColumn = (tableId, size, size_id) ->
     tableHeadObject = document.getElementById(tableId).tHead
-    select = document.getElementById("add_a_size")
 
     # first make sure size hasn't already been selected
     tableHeaders = tableHeadObject.rows[0].cells
@@ -20,41 +19,38 @@ jQuery ->
           break
       ++h
 
-    h = 0
-    while h < tableHeadObject.rows.length
-      row = tableHeadObject.rows[h]
+    first_row = 0
+    row = tableHeadObject.rows[first_row]
 
-      newTH = document.createElement("th")
-      newTH.id = "col_#{String(row.cells.length - 1)}"
-      newTH.setAttribute "data-size-id", size_id
+    # create the new column header
+    newTH = document.createElement("th")
+    newTH.id = "col_#{String(row.cells.length)}"
+    newTH.setAttribute "data-size-id", size_id
 
-      tableHeadObject.rows[h].deleteCell row.cells.length - 1
-      tableHeadObject.rows[h].appendChild newTH
+    row.appendChild newTH
 
-      headerPlus = document.createElement("i")
-      headerMinus = document.createElement("i")
+    headerPlus = document.createElement("i")
+    headerMinus = document.createElement("i")
 
-      headerPlus.id = "col_plus_#{ String(row.cells.length - 1) }"
-      headerMinus.id = "col_minus_#{ String(row.cells.length - 1) }"
+    headerPlus.id = "col_plus_#{ String(row.cells.length - 1) }"
+    headerMinus.id = "col_minus_#{ String(row.cells.length - 1) }"
 
-      newTH.innerHTML = size
+    newTH.innerHTML = size
 
-      headerPlus.className = "fa fa-plus"
-      headerMinus.className = "fa fa-minus"
+    headerPlus.className = "fa fa-plus"
+    headerMinus.className = "fa fa-minus"
 
-      newTH.appendChild headerPlus
-      newTH.appendChild headerMinus
-
-      tableHeadObject.rows[h].appendChild select
-      ++h
+    newTH.appendChild headerPlus
+    newTH.appendChild headerMinus
 
     tblBodyObj = document.getElementById(tableId).tBodies[0]
 
+    # append a new cell at the end of each row
     i = 0
     row = tableHeadObject.rows[0]
     while i < tblBodyObj.rows.length - 1
       newCell = tblBodyObj.rows[i].insertCell(-1)
-      newCell.id = "cell_#{ String(i + 1) }_#{ String(row.cells.length - 2) }"
+      newCell.id = "cell_#{ String(i + 1) }_#{ String(row.cells.length - 1) }"
 
       cellPlus = document.createElement("i")
       cellMinus = document.createElement("i")
@@ -63,8 +59,10 @@ jQuery ->
       cellMinus.className = "fa fa-minus cell"
 
       check = document.createElement("i")
+      # the changed class is used to update in the imprintables controller,
+      # so we need to add it to the class name here
       check.className = "fa fa-check changed"
-      check.id = "image_#{ String(i + 1) }_#{ String(row.cells.length - 2) }"
+      check.id = "image_#{ String(i + 1) }_#{ String(row.cells.length - 1) }"
 
       newCell.appendChild check
       newCell.appendChild cellPlus
@@ -77,7 +75,7 @@ jQuery ->
     tableBodyObject = table.tBodies[0]
 
     # first make sure the color hasn't already been selected
-    rowCount = tableBodyObject.rows.length - 1
+    rowCount = tableBodyObject.rows.length - 2
     while rowCount >= 0
       if (tableBodyObject.rows[rowCount].cells[0].outerText is color)
         if(!confirm("This would create a duplicate color, are you sure you wish to proceed?"))
@@ -222,11 +220,6 @@ jQuery ->
 
   $('.chosen-select').chosen()
 
-
-#  $(document).on(load, ->
-#    $('.chosen-select').chosen()
-#  )
-
   get_id = ->
     url_array = document.URL.split('/')
     id = url_array[url_array.length - 2]
@@ -255,7 +248,6 @@ jQuery ->
     change_cell('fa fa-times', $(this))
   )
 
-#  $('.color-size-chosen-select').chosen( { width: '200px' } )
   $('#color-select').chosen( { width: '200px' }).change( (event) ->
     if(event.target == this)
       root.color_id = $(this).val()

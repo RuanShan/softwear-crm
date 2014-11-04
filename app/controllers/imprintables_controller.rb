@@ -76,9 +76,9 @@ class ImprintablesController < InheritedResources::Base
     variants_to_remove ||= []
 
     unless variants_to_add.empty?
-      variants_to_add.each do |hash|
-        size_id = hash['size_id']
-        color_id = hash['color_id']
+      variants_to_add.each do |_key, value|
+        size_id = value['size_id']
+        color_id = value['color_id']
         unless size_id.blank? && color_id.blank?
           unless ImprintableVariant.new(imprintable_id: params[:id],
                                         size_id: size_id,

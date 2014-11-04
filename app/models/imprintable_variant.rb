@@ -8,7 +8,7 @@ class ImprintableVariant < ActiveRecord::Base
   belongs_to :size
 
   validates :color, presence: true
-  validates :color_id, uniqueness: { scope: [:size, :imprintable] }
+  validates :color_id, uniqueness: { scope: [:size_id, :imprintable_id] }
   validates :imprintable, presence: true
   validates :size, presence: true
 

@@ -5,7 +5,7 @@
         <h3><strong>Order</strong> Details</h3>
 
         <%= render partial: 'order_detail_fields',
-                   locals: { f: f, order: order } %>
+                   locals: { f: f, order: order, show_quotes: true } %>
 
         <div class="form-group">
           <%= f.label :commission_amount %>

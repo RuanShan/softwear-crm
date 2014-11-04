@@ -32,6 +32,8 @@ class OrdersController < InheritedResources::Base
 
       if params.has_key? :quote_id
         quote = Quote.find(params[:quote_id])
+
+        @quote_id = params[:quote_id].to_i
         @order = Order.new(
           email: quote.email,
           phone_number: quote.phone_number,
@@ -126,12 +128,15 @@ class OrdersController < InheritedResources::Base
       :job_attributes,
 
       order: [
-      :email, :firstname, :lastname,
-      :company, :twitter, :name, :po,
-      :in_hand_by, :terms, :tax_exempt,
-      :tax_id_number, :redo_reason,
-      :delivery_method, :phone_number, :commission_amount,
-      :store_id, :salesperson_id, :total
-    ])
+        :email, :firstname, :lastname,
+        :company, :twitter, :name, :po,
+        :in_hand_by, :terms, :tax_exempt,
+        :tax_id_number, :redo_reason,
+        :delivery_method, :phone_number, :commission_amount,
+        :store_id, :salesperson_id, :total,
+
+        quote_ids: []
+      ]
+    )
   end
 end
