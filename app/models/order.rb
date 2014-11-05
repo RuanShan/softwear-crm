@@ -53,8 +53,9 @@ class Order < ActiveRecord::Base
   has_many :imprints, through: :jobs
   has_many :payments
   has_many :proofs
-  has_many :orders_quotes, class_name: OrdersQuotes
-  has_many :quotes, through: :orders_quotes
+  has_many :order_quotes
+  has_many :quotes, through: :order_quotes
+  has_many :quote_requests, through: :quotes
 
   accepts_nested_attributes_for :payments
 

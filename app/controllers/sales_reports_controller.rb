@@ -3,11 +3,18 @@ class SalesReportsController < ApplicationController
     @reports = Report::SALES_REPORTS
   end
 
+  def create
+    redirect_to sales_reports_show_path(start_time: params[:start_time],
+                                   end_time: params[:end_time],
+                                   report_type: params[:report_type])
+  end
+
   def show
     @report = Report.new(start_time: params[:start_time], end_time: params[:end_time])
+    get_data
     respond_to do |format|
       format.html { render }
-      format.csv { render layout: nil}
+      format.csv { render layout: nil }
     end
   end
 
@@ -15,7 +22,7 @@ class SalesReportsController < ApplicationController
 
   def get_data
     if params[:report_type] == 'quote_request_success'
-      @total_quote_request_count = 17
+      @data = @report.quote_request_success
     end
   end
 end

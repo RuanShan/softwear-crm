@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20141028150149) do
+ActiveRecord::Schema.define(version: 20141105162712) do
 
   create_table "activities", force: true do |t|
     t.integer  "trackable_id"
@@ -307,6 +307,14 @@ ActiveRecord::Schema.define(version: 20141028150149) do
     t.integer "imprintable_variant_id"
   end
 
+  create_table "order_quotes", force: true do |t|
+    t.integer  "order_id"
+    t.integer  "quote_id"
+    t.datetime "deleted_at"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
   create_table "orders", force: true do |t|
     t.string   "email"
     t.string   "firstname"
@@ -330,14 +338,6 @@ ActiveRecord::Schema.define(version: 20141028150149) do
   end
 
   add_index "orders", ["deleted_at"], name: "index_orders_on_deleted_at", using: :btree
-
-  create_table "orders_quotes", force: true do |t|
-    t.integer  "order_id"
-    t.integer  "quote_id"
-    t.datetime "deleted_at"
-    t.datetime "created_at"
-    t.datetime "updated_at"
-  end
 
   create_table "payments", force: true do |t|
     t.integer  "order_id"

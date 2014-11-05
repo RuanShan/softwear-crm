@@ -20,10 +20,10 @@ class Quote < ActiveRecord::Base
   has_many :emails, as: :emailable, class_name: Email, dependent: :destroy
   has_many :line_item_groups
 # has_many :line_items, through: :line_item_groups
-  has_many :quote_requests, through: :quote_request_quotes
   has_many :quote_request_quotes
-  # has_many :orders_quoteses
-  # has_many :orders, through: :orders_quoteses
+  has_many :quote_requests, through: :quote_request_quotes
+  has_many :order_quotes
+  has_many :orders, through: :order_quotes
 
 # accepts_nested_attributes_for :line_items, allow_destroy: true
 

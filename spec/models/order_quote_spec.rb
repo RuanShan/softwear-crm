@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe OrdersQuotes, order_spec: true, quote_spec: true, story_48: true do
+describe OrderQuote, order_spec: true, quote_spec: true, story_48: true do
   it { is_expected.to be_paranoid }
 
   describe 'Relationships' do

@@ -59,6 +59,11 @@ class OrdersController < InheritedResources::Base
     return super unless params[:order].try(:[], 'terms') == 'Fulfilled by Amazon'
 
     @order = Order.create(permitted_params[:order])
+    unless @quote_id.nil?
+      unless OrderQuote.new(quote_id: @quote_id, order_id: @order.id).save
+        flash[:error] = 'Something went wrong creating your order!'
+      end
+    end
 
     if @order.valid?
       @order.generate_jobs(params[:job_attributes].map(&JSON.method(:parse)))

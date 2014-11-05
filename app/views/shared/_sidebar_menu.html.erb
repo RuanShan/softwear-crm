@@ -27,10 +27,10 @@
 
     <li><a href="#fakelink"><i class="fa fa-users"></i> Customers <span class="label label-danger new-circle">W.I.P.</span></a>
 
-    <%= content_tag :li, class: ('active' if current_url.include?('quotes')) do %>
+    <%= content_tag :li, class: ('active' if current_url.include?('quote')) do %>
       <a href="#" id="quotes_list"><i class="fa fa-tasks"></i><i class="fa fa-angle-double-down i-right"></i> Quotes</a>
 
-      <%= content_tag :ul, class: ('visible' if current_url.include?('quotes')) do %>
+      <%= content_tag :ul, class: ('visible' if current_url.include?('quote')) do %>
 
         <%= content_tag :li, class: ('active' if current_action == 'quotes#index') do %>
           <%= link_to quotes_path, id: 'quotes_path_link' do %><i class="fa fa-angle-right"></i> List<% end %>
@@ -40,7 +40,7 @@
           <%= link_to new_quote_path, id: 'new_quote_link' do %><i class="fa fa-angle-right"></i> New <% end %>
         <% end %>
 
-        <%= content_tag :li, class: ('active' if current_action == 'quote_requests#index') do %>
+        <%= content_tag :li, class: ('active' if current_action == 'quote_requests') do %>
           <%= link_to quote_requests_path, id: 'quote_requests_link' do %><i class="fa fa-angle-right"></i> Quote Requests<% end %>
         <% end %>
       <% end %>
