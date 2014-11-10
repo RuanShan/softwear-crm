@@ -1,5 +1,5 @@
 <div class="col-sm-2"><%= line_item.name %></div>
-<div class="col-sm-5"><%= line_item.description %></div>
+<div class="col-sm-5"><%= h line_item.description %></div>
 <div class="col-sm-1"><%= human_boolean line_item.taxable? %></div>
 <div class="col-sm-1"><%= line_item.quantity %></div>
 <div class="col-sm-1"><%= number_to_currency line_item.unit_price %></div>
