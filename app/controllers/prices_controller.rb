@@ -19,6 +19,13 @@ class PricesController < ApplicationController
     end
   end
 
+  def index
+    respond_to do |format|
+      session[:prices] = [] unless session[:prices].is_a? Array
+      format.js
+    end
+  end
+
   def destroy
     respond_to do |format|
       session[:prices].delete_at(params[:id].to_i)

@@ -11,7 +11,8 @@ feature 'Pricing management', js: true, prices_spec: true do
     visit imprintables_path
     click_link("pricing_button_#{imprintable.id}")
     fill_in 'decoration_price', with: '5'
-    click_button 'Fetch Prices!'
+    fill_in 'pricing_group', with: 'Line Items'
+    click_button 'Add to Pricing Table'
 
     expect(page).to have_css('td', text: "#{imprintable.base_price + 5}")
     expect(page).to have_css('td', text: "#{imprintable.xxl_price + 5}")
@@ -32,7 +33,8 @@ feature 'Pricing management', js: true, prices_spec: true do
     visit imprintables_path
     click_link("pricing_button_#{imprintable.id}")
     fill_in 'decoration_price', with: '5'
-    click_button 'Fetch Prices!'
+    fill_in 'pricing_group', with: 'Line Items'
+    click_button 'Add to Pricing Table'
 
     expect(page).to have_css('tr#price_0')
 
@@ -40,6 +42,20 @@ feature 'Pricing management', js: true, prices_spec: true do
     page.driver.browser.switch_to.alert.accept
 
     expect(page).to_not have_css('tr#price_0')
+  end
+
+  scenario 'A user can group prices into separate groups', story_67: true do
+    visit imprintables_path
+    click_link("pricing_button_#{imprintable.id}")
+    fill_in 'decoration_price', with: '5'
+    fill_in 'pricing_group', with: 'Line Items'
+    click_button 'Add to Pricing Table'
+
+    click_link("pricing_button_#{imprintable.id}")
+    fill_in 'decoration_price', with: '2'
+    fill_in 'pricing_group', with: 'Not Line Items'
+    click_button 'Add to Pricing Table'
+    expect(page).to have_content 'CONTENT!'
   end
 
   context 'There are two different prices in the pricing table', slow: true do
