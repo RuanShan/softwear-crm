@@ -1,0 +1,16 @@
+<%= search_form_for QuoteRequest do |s| %>
+    <div class="row">
+      <div class="col-sm-3">
+        <%= s.select :status, QuoteRequest::QUOTE_REQUEST_STATUSES,
+                     nil: 'Status...', id: 'quote_requests_search_filter' %>
+      </div>
+
+      <div class="col-sm-3">
+        <%= s.fulltext placeholder: 'Keywords', id: 'quote_requests_search' %>
+      </div>
+
+      <div class="col-sm-1">
+        <%= s.submit %>
+      </div>
+    </div>
+<% end %>

@@ -82,4 +82,14 @@ feature 'Quote Requests Management', js: true, quote_request_spec: true do
     expect(page).to have_content 'whatever'
     expect(QuoteRequest.where(status: 'whatever')).to exist
   end
+
+  scenario 'A user can search existing quote requests with status filter', solr: true, story_207: true do
+    visit quote_requests_path
+    page.find_by_id('quote_requests_search_filter').find("option[value='assigned']").click
+    click_button 'Search'
+    expect(page).to have_css("a[href='/quote_requests/1']")
+    page.find_by_id('quote_requests_search_filter').find("option[value='pending']").click
+    click_button 'Search'
+    expect(page).to_not have_css("a[href='/quote_requests/1']")
+  end
 end

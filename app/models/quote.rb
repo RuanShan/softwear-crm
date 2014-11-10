@@ -12,6 +12,7 @@ class Quote < ActiveRecord::Base
       'Phone Call',
       'E-mail',
       'Walk In',
+      'Online Form',
       'Other'
   ]
 

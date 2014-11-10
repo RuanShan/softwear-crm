@@ -32,7 +32,7 @@ CrmSoftwearcrmCom::Application.routes.draw do
 
   resources :quotes, shallow: true do
     post 'email_customer'
-    get 'populate_email_modal'
+    get 'populate_email'
     collection do
       get 'quote_select'
       post 'stage_quote'

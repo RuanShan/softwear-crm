@@ -82,16 +82,16 @@ feature 'Quotes management', quote_spec: true, js: true do
       expect(current_path).to eq(edit_quote_path quote.id)
     end
 
-    scenario 'CC\'s current salesperson by default' do
+    scenario 'CC\'s current salesperson by default', david: true do
       visit edit_quote_path quote.id
       find('a[href="#actions"]').click
       click_link 'Email Quote'
       sleep 0.5
-      expect(page).to have_selector "input#cc[value='#{ valid_user.email }'"
+      expect(page).to have_selector "input#cc[value='#{ valid_user.email }']"
     end
 
     feature 'email recipients enforces proper formatting' do
-      scenario 'no email is sent with improper formatting' do
+      scenario 'no email is sent with improper formatting', david: true do
         visit edit_quote_path quote.id
         find('a[href="#actions"]').click
         click_link 'Email Quote'
@@ -99,6 +99,7 @@ feature 'Quotes management', quote_spec: true, js: true do
         fill_in 'email_recipients', with: 'this.is.not@formatted.properly.com'
         find('input[value="Submit"]').click
         sleep 0.5
+        sleep 50
 
         expect(page).to_not have_selector '.modal-content-success'
         expect(page).to have_content 'Send Quote'

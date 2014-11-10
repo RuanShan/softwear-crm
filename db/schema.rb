@@ -244,8 +244,8 @@ ActiveRecord::Schema.define(version: 20141015152004) do
     t.datetime "deleted_at"
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.integer  "name_number_id"
     t.boolean  "has_name_number"
+    t.integer  "name_number_id"
     t.string   "name_format"
     t.string   "number_format"
   end
