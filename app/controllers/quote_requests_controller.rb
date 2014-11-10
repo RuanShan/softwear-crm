@@ -3,6 +3,12 @@ class QuoteRequestsController < InheritedResources::Base
 
   before_action :set_current_action
 
+  def index
+    super do
+      @quote_requests = QuoteRequest.all.page(params[:page])
+    end
+  end
+
   private
 
   def permitted_params

@@ -2,45 +2,14 @@
 
 <br clear='all' />
 
-<div class='box-info full'>
-  <div class='table-responsive'>
-    <table class='table table-hover'>
-      <thead>
-        <th><strong>Name</strong></th>
-        <th><strong>Email</strong></th>
-        <th><strong>Est. Qty</strong></th>
-        <th><strong>Date Needed</strong></th>
-        <th><strong>Salesperson</strong></th>
-        <th><strong>Generate Quotes</strong></th>
-      </thead>
-
-      <tbody>
-        <% @quote_requests.each do |quote_request| %>
-          <tr>
-            <td>
-              <%= link_to quote_request.name, quote_request %>
-            </td>
-            <td><%= quote_request.email %></td>
-            <td><%= quote_request.approx_quantity %></td>
-            <td>
-              <%= quote_request.date_needed.strftime('%m/%d/%Y') %>
-            </td>
-            <td>
-              <% @users = [] %>
-              <% User.all.each do |u| @users <<  { value: u.id, text: u.full_name } end %>
-
-              <%= editable quote_request, :salesperson_id, type: :select, data: { source: @users.to_json } %>
-            </td>
-            <td>
-              <%= link_to 'Generate Quote',
-                          new_quote_path(name: quote_request.name,
-                                         email: quote_request.email,
-                                         quote_request_id: quote_request.id),
-                          class: 'btn btn-primary' %>
-            </td>
-          </tr>
-        <% end %>
-      </tbody>
-    </table>
-  </div>
+<div class="col-lg-9">
+  <%= render partial: 'quote_requests/search' %>
 </div>
+
+<%= paginate @quote_requests %>
+
+<div class="box-info row clear">
+  <%= render partial: 'quote_requests/table', locals: { quote_requests: @quote_requests } %>
+</div>
+
+<%= paginate @quote_requests %>

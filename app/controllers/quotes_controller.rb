@@ -122,11 +122,9 @@ class QuotesController < InheritedResources::Base
     redirect_to edit_quote_path params[:quote_id]
   end
 
-  def populate_email_modal
-    respond_to do |format|
-      @quote = Quote.find(params[:quote_id])
-      format.js
-    end
+  def populate_email
+    @quote = Quote.find(params[:quote_id])
+    render 'populate_email', locals: { quote: @quote }
   end
 
 private

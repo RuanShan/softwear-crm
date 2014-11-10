@@ -11,9 +11,7 @@ class ProofsController < InheritedResources::Base
     order = Order.find(params[:order_id])
     proof = Proof.find(params[:id])
     if request.get?
-      @variable_hash = {
-        order: order, proof: proof, reminder: reminder
-      }
+      render 'email_customer', locals: { order: order, proof: proof, reminder: reminder }
     elsif request.post?
       email_hash = {
         body: email_body(order, reminder),
