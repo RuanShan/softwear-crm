@@ -95,6 +95,8 @@ group :test do
   gem 'email_spec'
   # for accessing session object in integration tests
   gem 'rack_session_access'
+  # for faking redis (used by sidekiq)
+  gem 'fakeredis', :require => 'fakeredis/rspec'
 end
 
 gem 'inherited_resources'

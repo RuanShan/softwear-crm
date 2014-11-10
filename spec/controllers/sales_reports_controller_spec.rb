@@ -21,8 +21,12 @@ describe SalesReportsController, story_82: true, sales_report_spec: true do
   end
 
   describe 'POST create' do
-    it 'redirects', new: true do
-      expect(false).to be_truthy
+    let(:params) { { start_time: '2014-10-2', end_time: '2014-11-20', report_type: 'quote_request_success' } }
+    subject { post :create, params }
+    it 'redirects' do
+      expect(subject).to redirect_to(sales_reports_show_path(start_time: params[:start_time],
+                                                             end_time: params[:end_time],
+                                                             report_type: params[:report_type]))
     end
   end
 end

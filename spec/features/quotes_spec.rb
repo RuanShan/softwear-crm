@@ -87,7 +87,7 @@ feature 'Quotes management', quote_spec: true, js: true do
       find('a[href="#actions"]').click
       click_link 'Email Quote'
       sleep 0.5
-      expect(page).to have_selector "input#cc[value='#{ valid_user.email }'"
+      expect(page).to have_selector "input#cc[value='#{valid_user.full_name} <#{ valid_user.email }>']"
     end
 
     feature 'email recipients enforces proper formatting' do
@@ -157,7 +157,7 @@ feature 'Quotes management', quote_spec: true, js: true do
     expect(page).to have_content(imprintable.name)
   end
 
-  scenario "Inputting bad data for a line item doesn't remove all line items", broken: true do
+  scenario "Inputting bad data for a line item doesn't remove all line items" do
     visit new_quote_path
     fill_in 'Email', with: 'test@testing.com'
     fill_in 'First Name', with: 'Capy'

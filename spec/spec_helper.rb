@@ -1,12 +1,26 @@
 # This file is copied to spec/ when you run 'rails generate rspec:install'
-ENV["RAILS_ENV"] ||= 'test'
-require File.expand_path("../../config/environment", __FILE__)
+ENV['RAILS_ENV'] ||= 'test'
+require File.expand_path('../../config/environment', __FILE__)
 require 'rspec/rails'
 require 'rake'
 require 'paperclip/matchers'
 require 'public_activity/testing'
 require 'email_spec'
 require 'sidekiq/testing'
+require 'fakeredis'
+
+# explicitly use fakeredis with sidekiq
+redis_opts = { url: 'redis://127.0.0.1:6379/1', namespace: 'cms_queue' }
+# If fakeredis is loaded, use it explicitly
+redis_opts.merge!(driver: Redis::Connection::Memory) if defined?(Redis::Connection::Memory)
+
+Sidekiq.configure_client do |config|
+  config.redis = redis_opts
+end
+
+Sidekiq.configure_server do |config|
+  config.redis = redis_opts
+end
 # Requires supporting ruby files with custom matchers and macros, etc, in
 # spec/support/ and its subdirectories. Files matching `spec/**/*_spec.rb` are
 # run as spec files by default. This means that files in spec/support that end
@@ -14,7 +28,7 @@ require 'sidekiq/testing'
 # run twice. It is recommended that you do not name files matching this glob to
 # end with _spec.rb. You can configure this pattern with with the --pattern
 # option on the command line or in ~/.rspec, .rspec or `.rspec-local`.
-Dir[Rails.root.join("spec/support/**/*.rb")].each { |f| require f }
+Dir[Rails.root.join('spec/support/**/*.rb')].each { |f| require f }
 include SunspotHelpers
 
 # Checks for pending migrations before tests are run.
