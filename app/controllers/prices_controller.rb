@@ -9,11 +9,31 @@ class PricesController < ApplicationController
     end
   end
 
+  # session[:prices] == {
+  #   pricing_group_1: [
+  #     { pricing_hash_1 },
+  #     { pricing_hash_2 }
+  #   ],
+  #     pricing_group_2: [
+  #       { pricing_hash_3 },
+  #       ...
+  #     ],
+  #     ...
+  # }
   def create
     respond_to do |format|
+      if params[:pricing_group].nil?
+        flash[:error] = 'Pricing group cannot be empty'
+        return
+      end
       @imprintable = Imprintable.find(params[:id])
-      session[:prices] = [] unless session[:prices].is_a? Array
-      session[:prices] << @imprintable.pricing_hash(params[:decoration_price].to_f)
+      session[:prices] = {} unless session[:prices].is_a? Hash
+      pricing_group_sym = params[:pricing_group].to_sym
+      pricing_group_array = session[:prices][pricing_group_sym]
+      pricing_hash = @imprintable.pricing_hash(params[:decoration_price].to_f)
+      pricing_group_array << pricing_hash
+#     merge the new pricing_group over the old one
+      session[:prices][pricing_group_sym].merge!
 
       format.js
     end
@@ -21,7 +41,7 @@ class PricesController < ApplicationController
 
   def index
     respond_to do |format|
-      session[:prices] = [] unless session[:prices].is_a? Array
+      session[:prices] = {} unless session[:prices].is_a? Hash
       format.js
     end
   end
