@@ -44,8 +44,6 @@ class QuotesController < InheritedResources::Base
     super do
       # create QuoteRequestQuote if necessary
       unless @quote_request_id.nil?
-        # TODO: remove this
-        puts 'YOU DID IT MOTHER FUCKER'
         unless QuoteRequestQuote.new(quote_request_id: @quote_request_id,
                                      quote_id: @quote.id).save
           flash[:error] = 'Something went wrong creating your quote from a request!'
