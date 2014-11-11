@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20141105162712) do
+ActiveRecord::Schema.define(version: 20141111180207) do
 
   create_table "activities", force: true do |t|
     t.integer  "trackable_id"
@@ -296,6 +296,7 @@ ActiveRecord::Schema.define(version: 20141105162712) do
     t.decimal  "unit_price",             precision: 10, scale: 2
     t.integer  "line_itemable_id"
     t.string   "line_itemable_type"
+    t.string   "url"
   end
 
   add_index "line_items", ["line_itemable_id", "line_itemable_type"], name: "index_line_items_on_line_itemable_id_and_line_itemable_type", using: :btree
