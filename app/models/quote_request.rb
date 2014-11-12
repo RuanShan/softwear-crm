@@ -4,10 +4,9 @@ class QuoteRequest < ActiveRecord::Base
 
   searchable do
     text :name, :email, :description, :source, :status
-    # TODO implement search for salesperson by name
-    # text :salesperson do
-    #   salesperson.map{ |person| person.name }
-    # end
+    text :salesperson do
+      salesperson.name
+    end
 
     string :status
   end
