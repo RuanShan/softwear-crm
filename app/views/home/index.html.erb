@@ -2,7 +2,7 @@
   <h1>Dashboard<small></small></h1>
 </div>
 
-<% if !current_user.quote_requests.empty? %>
+<% if !current_user.pending_quote_requests.empty? %>
     <div class="box-info row clear">
       <h2 class="heading">Pending Quote Requests Assigned to You</h2>
       <%= render partial: 'quote_requests/table', locals: { quote_requests: current_user.pending_quote_requests } %>
