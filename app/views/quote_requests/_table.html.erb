@@ -2,6 +2,7 @@
   <div class='table-responsive'>
     <table class='table table-hover' id="quote-request-table">
       <thead>
+      <th><strong>Created</strong></th>
       <th><strong>Name</strong></th>
       <th><strong>Email</strong></th>
       <th><strong>Est. Qty</strong></th>
@@ -14,6 +15,9 @@
       <tbody>
       <% @quote_requests.each do |quote_request| %>
           <tr>
+            <td>
+              <%= quote_request.created_at.strftime("%m/%d/%Y") %>
+            </td>
             <td>
               <%= link_to quote_request.name, quote_request %>
             </td>

@@ -122,6 +122,7 @@ gem 'sidekiq'
 gem 'sidekiq-status'
 gem 'x-editable-rails'
 gem 'jquery-fileupload-rails'
+gem 'php-serialize'
 
 # Use ActiveModel has_secure_password
 # gem 'bcrypt', '~> 3.1.7'

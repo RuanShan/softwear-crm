@@ -21,3 +21,5 @@ class QuoteRequestsController < InheritedResources::Base
     @current_action = 'quote_requests'
   end
 end
+
+

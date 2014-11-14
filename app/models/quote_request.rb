@@ -1,17 +1,19 @@
 class QuoteRequest < ActiveRecord::Base
 
-  paginates_per 100
+  default_scope { order('created_at DESC') }
+
+  paginates_per 50
 
   searchable do
     text :name, :email, :description, :source, :status
     text :salesperson do
-      salesperson.name
+      salesperson.try(:name)
     end
 
     string :status
   end
 
-  QUOTE_REQUEST_STATUSES = %w(assigned pending)
+  QUOTE_REQUEST_STATUSES = %w(assigned pending quoted)
 
   belongs_to :salesperson, class_name: User
   has_many :quote_request_quotes
