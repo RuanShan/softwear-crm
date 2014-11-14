@@ -1,6 +1,6 @@
 class QuoteRequest < ActiveRecord::Base
 
-  default_scope { order('created_at DESC') }
+  default_scope { order('quote_requests.created_at DESC') }
 
   paginates_per 50
 

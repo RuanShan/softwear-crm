@@ -53,7 +53,7 @@ class Quote < ActiveRecord::Base
       (
         activities.trackable_type = ? AND activities.trackable_id = ?
       )
-    ', *([self.class.name, id] * 2) ).order('created_at DESC')
+    ', *([self.class.name, id] * 2) ).order('activities.created_at DESC')
   end
 
 # TODO: this is broken so don't use it yet lulz
@@ -170,7 +170,7 @@ private
 
   def set_quote_request_statuses_to_quoted
     return unless @quote_request_ids_assigned
-    
+
     quote_requests.find_each { |q| q.update_attributes(status: 'quoted') }
 
     @quote_request_ids_assigned = nil
@@ -211,7 +211,7 @@ private
   def time_to_first_email
     activity = PublicActivity::Activity.where(trackable_id: id,
                                               trackable_type: Quote,
-                                              key: 'quote.emailed_customer').order('created_at ASC').first
+                                              key: 'quote.emailed_customer').order('activities.created_at ASC').first
     activity.nil? ? nil : activity.created_at
   end
 
