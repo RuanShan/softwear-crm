@@ -9,7 +9,7 @@ class QuoteRequest < ActiveRecord::Base
     text :salesperson do
       salesperson.try(:name)
     end
-
+    prder
     string :status
   end
 

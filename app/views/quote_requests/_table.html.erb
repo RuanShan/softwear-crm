@@ -13,7 +13,7 @@
       </thead>
 
       <tbody>
-      <% @quote_requests.each do |quote_request| %>
+      <% quote_requests.each do |quote_request| %>
           <tr>
             <td>
               <%= quote_request.created_at.strftime("%m/%d/%Y") %>
