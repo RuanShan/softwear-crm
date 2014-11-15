@@ -1,71 +1,93 @@
-<h1>Quote Request from <%= @quote_request.name %></h1>
-
-<div class='user-profile-content'>
-  <div class='row'>
-    <div class='col-sm-2'>
-      <strong>Email:</strong>
-    </div>
-    <div class='col-sm-10'>
-      <%= @quote_request.email %>
-    </div>
+<div class="page-heading animated fadeInDownBig row">
+  <div class="pull-left">
+    <h1>Quote Request from <%= @quote_request.name %></h1>
   </div>
-
-  <div class='row'>
-    <div class='col-sm-2'>
-      <strong>Status:</strong>
-    </div>
-    <div class='col-sm-10' id='quote-request-status'>
-      <%= render 'status_show', quote_request: @quote_request %>
-    </div>
-  </div>
-
-  <div class='row'>
-    <div class='col-sm-2'>
-      <strong>Approximate Quantity:</strong>
-    </div>
-    <div class='col-sm-10'>
-      <%= @quote_request.approx_quantity %>
-    </div>
-  </div>
-
-  <div class='row'>
-    <div class='col-sm-2'>
-      <strong>Date Needed:</strong>
-    </div>
-    <div class='col-sm-10'>
-      <%= @quote_request.date_needed.strftime("%m/%d/%Y") %>
-    </div>
-  </div>
-
-  <div class='row'>
-    <div class='col-sm-2'>
-      <strong>Source:</strong>
-    </div>
-    <div class='col-sm-10'>
-      <%= @quote_request.source %>
-    </div>
-  </div>
-
-  <div class='row'>
-    <div class='col-sm-2'>
-      <strong>Description:</strong>
-    </div>
-    <div class='col-sm-10'>
-      <%= @quote_request.description %>
-    </div>
-  </div>
-
-  <% if @quote_request.quotes.any? %>
-    <div class='row'>
-      <strong>Quotes:</strong>
-    </div>
-
-    <% @quote_request.quotes.find_each do |quote| %>
-      <div class='indent-field'>
-        <%= link_to quote.name, quote_path(quote) %>
-      </div>
+  <div class='pull-right'>
+    <%= link_to new_quote_path(name: @quote_request.name, email: @quote_request.email, quote_request_id: @quote_request.id), class: 'btn btn-success' do  %>
+        <i class="fa fa-quote-left"></i> Start Quote
     <% end %>
-  <% end %>
+    <%= link_to quote_requests_path, class: 'btn btn-primary' do  %>
+        <i class="fa fa-arrow-circle-left"></i> Return to Quote Request List
+    <% end %>
+  </div>
 </div>
 
-<%= link_to "All Quote Requests", quote_requests_path, class: 'btn btn-info' %>
+<div class="box-info full">
+  <div class='user-profile-content'>
+
+    <div class='row'>
+      <div class='col-sm-2'>
+        <strong>Salesperson:</strong>
+      </div>
+      <div class='col-sm-10'>
+        <%= editable @quote_request, :salesperson_id, type: :select, data: { source: User.all.map{ |x|  { x.id => x.full_name } } } %>
+      </div>
+    </div>
+
+    <div class='row'>
+      <div class='col-sm-2'>
+        <strong>Email:</strong>
+      </div>
+      <div class='col-sm-10'>
+        <%= @quote_request.email %>
+      </div>
+    </div>
+
+    <div class='row'>
+      <div class='col-sm-2'>
+        <strong>Status:</strong>
+      </div>
+      <div class='col-sm-10' id='quote-request-status'>
+        <%= editable @quote_request, :status, type: :select, data: { source: QuoteRequest::QUOTE_REQUEST_STATUSES } %>
+      </div>
+    </div>
+
+    <div class='row'>
+      <div class='col-sm-2'>
+        <strong>Approximate Quantity:</strong>
+      </div>
+      <div class='col-sm-10'>
+        <%= @quote_request.approx_quantity %>
+      </div>
+    </div>
+
+    <div class='row'>
+      <div class='col-sm-2'>
+        <strong>Date Needed:</strong>
+      </div>
+      <div class='col-sm-10'>
+        <%= @quote_request.date_needed.strftime("%F") %>
+      </div>
+    </div>
+
+    <div class='row'>
+      <div class='col-sm-2'>
+        <strong>Source:</strong>
+      </div>
+      <div class='col-sm-10'>
+        <%= @quote_request.source %>
+      </div>
+    </div>
+
+    <div class='row'>
+      <div class='col-sm-2'>
+        <strong>Description:</strong>
+      </div>
+      <div class='col-sm-10'>
+        <%= @quote_request.description %>
+      </div>
+    </div>
+
+    <% if @quote_request.quotes.any? %>
+        <div class='row'>
+          <strong>Quotes:</strong>
+        </div>
+
+        <% @quote_request.quotes.find_each do |quote| %>
+            <div class='indent-field'>
+              <%= link_to quote.name, quote_path(quote) %>
+            </div>
+        <% end %>
+    <% end %>
+  </div>
+</div>

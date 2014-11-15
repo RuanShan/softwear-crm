@@ -1,40 +1,42 @@
 <div class='box-info full'>
   <div class='table-responsive'>
-    <table class='table table-hover' id="quote-request-table">
+    <table class='table table-hover table-striped table-compact' id="quote-request-table">
       <thead>
       <th><strong>Created</strong></th>
-      <th><strong>Name</strong></th>
-      <th><strong>Email</strong></th>
+      <th><strong>Requester</strong></th>
       <th><strong>Est. Qty</strong></th>
       <th><strong>Date Needed</strong></th>
       <th><strong>Salesperson</strong></th>
       <th><strong>Status</strong></th>
-      <th><strong>Generate Quotes</strong></th>
+      <th><strong>Actions</strong></th>
       </thead>
 
       <tbody>
       <% quote_requests.each do |quote_request| %>
           <tr>
             <td>
-              <%= quote_request.created_at.strftime("%m/%d/%Y") %>
+              <%= quote_request.created_at.strftime("%F") %>
             </td>
             <td>
-              <%= link_to quote_request.name, quote_request %>
+              <%= link_to quote_request.name, quote_request %><br />
+              <%= quote_request.email %>
             </td>
-            <td><%= quote_request.email %></td>
             <td><%= quote_request.approx_quantity %></td>
             <td>
-              <%= quote_request.date_needed.strftime("%m/%d/%Y") %>
+              <%= quote_request.date_needed.strftime("%F") %>
             </td>
             <td>
-              <% @users = [] %>
-              <% User.all.each do |u| @users <<  { value: u.id, text: u.full_name } end %>
-
-              <%= editable quote_request, :salesperson_id, type: :select, data: { source: @users.to_json } %>
+              <%= editable quote_request, :salesperson_id, type: :select, data: { source: User.all.map{ |x|  { x.id => x.full_name } } } %>
             </td>
             <td><%= quote_request.status %></td>
             <td>
-              <%= link_to 'Generate Quote', new_quote_path(name: quote_request.name, email: quote_request.email, quote_request_id: quote_request.id), class: 'btn btn-primary' %>
+              <%= link_to quote_request, class: 'btn btn-primary' do  %>
+                  <i class="fa fa-eye"></i> Show
+              <% end %>
+
+              <%= link_to new_quote_path(name: quote_request.name, email: quote_request.email, quote_request_id: quote_request.id), class: 'btn btn-success' do  %>
+                <i class="fa fa-quote-left"></i> Start Quote
+              <% end %>
             </td>
           </tr>
       <% end %>
