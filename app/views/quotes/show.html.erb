@@ -1,50 +1,58 @@
-<div class="box-info full" onload="printPage();">
-  <div class="page-heading col-lg-10">
-    <h1><strong>Ann Arbor T-Shirt Company</strong> Quote</h1>
+<div class="page-heading animated fadeInDownBig row">
+  <div class="pull-left">
+    <h1><strong>Ann Arbor T-Shirt Company</strong> Quote #<%= @quote.id %></h1>
   </div>
 
-  <div class="col-sm-1 text-right hidden-print">
-    <%= link_to 'Print', '#', class: 'btn btn-default', id: 'print-button' %>
-  </div>
-
-  <div class="col-sm-1 text-right hidden-print">
-    <%= link_to 'Email Quote', quote_populate_email_path(@quote.id),
-                 class: 'btn btn-default' %>
+  <div class='pull-right hidden-print'>
+    <%= link_to '#', class: 'btn btn-success', id: 'print-button' do  %>
+        <i class="fa fa-print"></i> Print
+    <% end %>
+    <%= link_to quote_populate_email_path(@quote.id), class: 'btn btn-success' do  %>
+        <i class="fa fa-envelope"></i> Email Quote
+    <% end %>
   </div>
 </div>
 
 <div class="box-info">
   <div class="col-xs-6">
-    <div class="box-info">
-      <h2><strong>Customer</strong> Information</h2>
+      <h2><strong>Customer</strong> Details</h2>
+      <dl>
+        <dt>Name</dt>
+        <di><%= @quote.full_name %></di>
 
-      <div>
-        <p><label>Email:</label> <%= @quote.email %></p>
-        <p><label>Phone Number:</label> <%= @quote.phone_number %></p>
-        <p><label>Name:</label> <%= @quote.full_name %></p>
-        <p><label>Company:</label> <%= @quote.company %></p>
-        <p><label>Twitter:</label> <%= @quote.twitter %></p>
-      </div>
-    </div>
+        <dt>E-mail</dt>
+        <di><%= @quote.email %></di>
+
+        <dt>Company</dt>
+        <di><%= @quote.company %></di>
+
+        <dt>Phone Number</dt>
+        <di><%= @quote.phone_number %></di>
+
+        <dt>Estimated Delivery:</dt>
+        <di><%= display_time(@quote.estimated_delivery_date) %></di>
+      </dl>
   </div>
 
   <div class="col-xs-6">
-    <div class="box-info">
       <h2><strong>Quote</strong> Details</h2>
+    <dl>
+      <dt>Quote ID</dt>
+      <di>#<%= @quote.id %></di>
 
-      <div>
-        <p><label>Name:</label> <%= @quote.name %></p>
-        <p><label>Valid Until:</label> <%= display_time(@quote.valid_until_date) %></p>
-        <p><label>Estimated Delivery:</label> <%= display_time(@quote.estimated_delivery_date) %></p>
-        <p><label>Salesperson:</label> <%= @quote.salesperson.full_name %></p>
-        <p><label>Store:</label> <%= @quote.store.name %></p>
-      </div>
+      <dt>Quote Name</dt>
+      <di><%= @quote.name %></di>
+
+      <dt>Salesperson</dt>
+      <di><%= @quote.salesperson.full_name %></di>
+
+      <dt>Valid Until</dt>
+      <di><%= display_time @quote.valid_until_date %></di>
+    </dl>
     </div>
-  </div>
-</div>
 
-<div class="box-info">
-  <div class="box-info">
+  <div class="col-xs-12 clear">
     <%= render 'quotes/line_item_information', quote: @quote %>
   </div>
+
 </div>

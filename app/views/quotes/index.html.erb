@@ -1,5 +1,12 @@
-<div class="page-heading animated fadeInDownBig col-lg-9">
-  <h1>Quotes <small> View and edit quotes</small></h1>
+<div class="page-heading animated fadeInDownBig row">
+  <div class="pull-left">
+    <h1>Quotes <small> View and edit quotes</small></h1>
+  </div>
+  <div class="pull-right">
+    <%= link_to new_quote_path, class: 'btn btn-success' do  %>
+        <i class="fa fa-plus"></i> New Quote
+    <% end %>
+  </div>
 </div>
 
 <div class="box-info row clear">
@@ -7,33 +14,30 @@
     <table class="table table-hover">
       <thead>
         <tr>
+          <th>Customer</th>
           <th>Name</th>
-          <th>Email</th>
-          <th>Phone</th>
-          <th>Company</th>
-          <th>Twitter</th>
-          <th>Name</th>
-          <th>Valid until date</th>
-          <th>Estimated delivery date</th>
+          <th>Valid Until</th>
+          <th>Est. Delivery Date</th>
           <th>Salesperson</th>
           <th>Store</th>
-          <th></th>
-          <th></th>
-          <th></th>
         </tr>
       </thead>
 
       <tbody>
         <% @quotes.each do |quote| %>
           <tr>
-            <td><%= quote.full_name %></td>
-            <td><%= quote.email %></td>
-            <td><%= quote.phone_number %></td>
-            <td><%= quote.company %></td>
-            <td><%= quote.twitter %></td>
-            <td><%= quote.name %></td>
-            <td><%= quote.valid_until_date %></td>
-            <td><%= quote.estimated_delivery_date %></td>
+            <td>
+              <dl>
+                <dd><%= quote.full_name %></dd>
+                <dd><%= quote.email %></dd>
+                <dd><%= quote.company %></dd>
+                <dd><%= quote.phone_number %></dd>
+                <dd><%= quote.twitter %></dd>
+              </dl>
+             </td>
+            <td><%= link_to quote.name, quote_path(quote) %></td>
+            <td><%= quote.valid_until_date.strftime('%F') %></td>
+            <td><%= quote.estimated_delivery_date.strftime('%F') %></td>
             <td><%= quote.salesperson.full_name %></td>
             <td><%= quote.store.name %></td>
             <td>

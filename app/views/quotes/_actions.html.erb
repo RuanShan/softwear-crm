@@ -1,8 +1,18 @@
-<h3><strong>Actions</strong></h3>
+<div class="box-info col-xs-12">
+  <h3><strong>Actions</strong></h3>
 
-<br>
 
-<div class="box-info full">
-  <%= link_to 'Email Quote', quote_populate_email_path(quote.id),
-              class: 'btn btn-primary btn-lg'%>
+
+  <%= link_to new_order_path(quote_id: @quote.id), class: 'btn btn-success btn-lg' do %>
+      <i class="fa fa-plus"></i> Create Order from Quote
+  <% end %>
+
+  <%= link_to quote_path(@quote), class: 'btn btn-primary btn-lg' do %>
+      <i class="fa fa-print"></i> Print Quote
+  <% end %>
+
+  <%= link_to quote_populate_email_path(quote.id),
+              class: 'btn btn-primary btn-lg' do %>
+      <i class="fa fa-envelope"></i> Email Quote to Customer
+  <% end %>
 </div>

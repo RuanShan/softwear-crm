@@ -3,14 +3,14 @@
 </div>
 
 <div class="col-ls-6 text-right">
-  <%= link_to new_order_path(quote_id: @quote.id), class: 'btn btn-primary',
+  <%= link_to new_order_path(quote_id: @quote.id), class: 'btn btn-success',
              'data-action' => 'new', 'data-toggle' => 'tooltip', 'title' => 'New Order' do %>
-  Create Order from Quote
+    <i class="fa fa-plus"></i> Create Order from Quote
   <% end %>
 
   <%= link_to quote_path(@quote), class: 'btn btn-primary',
               'data-action' => 'show', 'data-toggle' => 'tooltip', 'title' => 'Print' do %>
-    Print Quote
+      <i class="fa fa-print"></i> Print Quote
   <% end %>
 </div>
 

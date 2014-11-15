@@ -18,8 +18,10 @@
               <%= quote_request.created_at.strftime("%F") %>
             </td>
             <td>
-              <%= link_to quote_request.name, quote_request %><br />
-              <%= quote_request.email %>
+              <dl>
+                <dd><%= link_to quote_request.name, quote_request %></dd>
+                <dd><%= quote_request.email %></dd>
+              </dl>
             </td>
             <td><%= quote_request.approx_quantity %></td>
             <td>

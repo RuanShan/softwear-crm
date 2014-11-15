@@ -1,25 +1,20 @@
-<div class="table-responsive container-fluid">
+
   <table class="table table-hover">
-    <thead>
-    <tr>
-      <th>Name</th>
-      <th>Description</th>
-      <th>Unit Price</th>
-      <th>Quantity</th>
-      <th>Totals</th>
-    </tr>
-    </thead>
 
     <tbody>
       <% quote.line_item_groups.each do |group| %>
-        <% if quote.line_item_groups.size != 1 %>
+        <% if quote.line_item_groups.size > 1 && !group.line_items.empty? %>
           <tr class="no-break">
-            <td><strong><%= group.name || 'Line Items' %></strong></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
+            <td colspan="5"><h3><strong><%= group.name || 'Line Items' %></strong></h3></strong></td>
           </tr>
+
+            <tr>
+              <th>Name</th>
+              <th>Description</th>
+              <th>Unit Price</th>
+              <th>Quantity</th>
+              <th>Totals</th>
+            </tr>
         <% end %>
 
         <% group.line_items.each do |li| %>
@@ -32,13 +27,6 @@
           </tr>
         <% end %>
       <% end %>
-      <tr class="no-break">
-        <td></td>
-        <td></td>
-        <td></td>
-        <td></td>
-        <td></td>
-      </tr>
 
       <tr id="subtotal">
         <td></td><td></td><td></td>
@@ -65,4 +53,3 @@
       </tr>
     </tbody>
   </table>
-</div>
