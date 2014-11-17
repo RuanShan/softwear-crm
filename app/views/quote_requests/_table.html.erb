@@ -39,6 +39,10 @@
               <%= link_to new_quote_path(name: quote_request.name, email: quote_request.email, quote_request_id: quote_request.id), class: 'btn btn-success' do  %>
                 <i class="fa fa-quote-left"></i> Start Quote
               <% end %>
+
+              <%= link_to quote_request_dock_path(quote_request), class: 'btn btn-success dock' do  %>
+                  <i class="fa fa-toggle-down"></i> Dock
+              <% end %>
             </td>
           </tr>
       <% end %>

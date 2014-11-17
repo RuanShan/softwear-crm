@@ -43,7 +43,9 @@ CrmSoftwearcrmCom::Application.routes.draw do
     end
   end
 
-  resources :quote_requests
+  resources :quote_requests do
+    get :dock
+  end
 
   get '/logout' => 'users#logout'
 
@@ -121,4 +123,6 @@ CrmSoftwearcrmCom::Application.routes.draw do
   authenticate :user do
     mount Sidekiq::Web => '/sidekiq'
   end
+
+  get '/undock', to: 'home#undock'
 end

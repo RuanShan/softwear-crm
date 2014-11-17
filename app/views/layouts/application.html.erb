@@ -42,14 +42,16 @@
         <div class="body content rows scroll-y">
             <%= yield %>
             <%= render partial: 'shared/footer'  %>
+            <%= render partial: 'shared/dock' %>
         </div>
+
     </div>
 
     <%= render partial: 'shared/modal_flash' %>
     <%= render partial: 'shared/modal_content' %>
     <%= render partial: 'shared/modal_timeout' %>
-
 </div>
+
 
 </body>
 <% if Rails.env.development? %>

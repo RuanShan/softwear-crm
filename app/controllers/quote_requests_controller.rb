@@ -9,6 +9,12 @@ class QuoteRequestsController < InheritedResources::Base
     end
   end
 
+  def dock
+    quote_request = QuoteRequest.find(params[:quote_request_id])
+    session[:docked] = quote_request
+    redirect_to root_path, notice: "Docked Quote Request #{quote_request.id}"
+  end
+
   private
 
   def permitted_params
