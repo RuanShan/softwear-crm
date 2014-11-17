@@ -5,11 +5,10 @@ describe 'prices/_create.html.erb', prices_spec: true do
 
   before(:each) do
     allow(imprintable).to receive(:name).and_return('Name')
-    render partial: 'prices/create',
-           locals: {
-             imprintable: imprintable,
-             session: { prices: [imprintable.pricing_hash(2)] }
-           }
+    session = {
+      pricing_groups: { pricing_group_one: [imprintable.pricing_hash(2)] }
+    }
+    render 'prices/create', imprintable: imprintable, session: session
   end
 
   it 'displays a the table headers' do

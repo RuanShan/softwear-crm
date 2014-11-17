@@ -11,18 +11,18 @@ class Setting < ActiveRecord::Base
       freshdesk_password: Setting.find_by(name: 'freshdesk_password')
     }
     freshdesk_ymls = {
-      url: Figaro.env['freshdesk_url'],
-      email: Figaro.env['freshdesk_email'],
-      password: Figaro.env['freshdesk_password']
+      freshdesk_url: Figaro.env['freshdesk_url'],
+      freshdesk_email: Figaro.env['freshdesk_email'],
+      freshdesk_password: Figaro.env['freshdesk_password']
     }
 
     if configured?(freshdesk_records)
       return freshdesk_records
     elsif configured?(freshdesk_ymls)
       # TODO: create Settings records with environment variables here to use in your form
-      Setting.create_and_save_fd_settings(freshdesk_ymls[:url],
-                                          freshdesk_ymls[:email],
-                                          freshdesk_ymls[:password])
+      Setting.create_and_save_fd_settings(freshdesk_ymls[:freshdesk_url],
+                                          freshdesk_ymls[:freshdesk_email],
+                                          freshdesk_ymls[:freshdesk_password])
       return freshdesk_ymls
     else
       Setting.create_and_save_fd_settings(nil, nil, nil)
