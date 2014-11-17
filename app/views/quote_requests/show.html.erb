@@ -3,14 +3,14 @@
     <h1>Quote Request from <%= @quote_request.name %></h1>
   </div>
   <div class='pull-right'>
-    <%= link_to new_quote_path(name: @quote_request.name, email: @quote_request.email, quote_request_id: @quote_request.id), class: 'btn btn-success' do  %>
-        <i class="fa fa-quote-left"></i> Create Quote
-    <% end %>
     <%= link_to quote_requests_path, class: 'btn btn-primary' do  %>
         <i class="fa fa-arrow-circle-left"></i> Return to Quote Request List
     <% end %>
-    <%= link_to quote_request_dock_path(@quote_request), class: 'btn btn-success dock' do  %>
+    <%= link_to quote_request_dock_path(@quote_request), class: 'btn btn-warning dock' do  %>
         <i class="fa fa-toggle-down"></i> Dock
+    <% end %>
+    <%= link_to new_quote_path(name: @quote_request.name, email: @quote_request.email, quote_request_id: @quote_request.id), class: 'btn btn-success' do  %>
+        <i class="fa fa-quote-left"></i> Create Quote
     <% end %>
   </div>
 </div>
