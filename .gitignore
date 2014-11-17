@@ -16,7 +16,6 @@
 /tmp
 /.idea/
 /config/*.yml
-!/config/sunspot.yml
 *.rbc
 capybara-*.html
 .rspec
@@ -45,6 +44,7 @@ Gemfile.lock
 /solr/development/data/*
 /solr/test/data/*
 /solr/pids/*
+/solr/*
 
 # these should all be checked in to normalise the environment:
 # Gemfile.lock, .ruby-version, .ruby-gemset

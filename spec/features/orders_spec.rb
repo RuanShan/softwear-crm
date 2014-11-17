@@ -57,12 +57,13 @@ feature 'Order management', order_spec: true,  js: true do
 
   context 'involving quotes' do
     given!(:quote) { create(:valid_quote) }
-
-    scenario 'A user can create an order from a quote' do
+    background(:each) do
       visit edit_quote_path quote.id
       click_link 'Create Order from Quote'
       click_button 'Next'
+    end
 
+    scenario 'A user can create an order from a quote' do
       select 'Paid in full on purchase', from: 'Payment terms'
       click_button 'Next'
 
@@ -72,6 +73,26 @@ feature 'Order management', order_spec: true,  js: true do
       expect(Order.where(firstname: quote.first_name)).to exist
     end
 
+    context 'when failing to fill the order form properly' do
+      scenario 'entries are still created in the linker table', new: true, story_248: true do
+        expect(OrderQuote.count).to eq(0)
+#       fail the form
+        click_button 'Next'
+        click_button 'Submit'
+#       expect failure
+        expect(page).to have_selector '.modal-content-error', text: 'There was an error saving the order'
+        close_error_modal
+        click_button 'Next'
+
+        select 'Net 30', from: 'order_terms'
+        click_button 'Next'
+
+        select 'Pick up in Ann Arbor', from: 'order_delivery_method'
+        click_button 'Submit'
+        expect(page).to have_selector '.modal-content-success', text: 'Order was successfully created.'
+        expect(OrderQuote.count).to eq(1)
+      end
+    end
   end
 
   scenario 'user sees an error message when submitting invalid information' do
@@ -139,6 +160,11 @@ feature 'Order management', order_spec: true,  js: true do
     visit edit_order_path(order)
 
     expect(page).to have_content "Updated order #{order.name}"
+  end
+
+  scenario 'user can select quotes for the order' do
+    pending "Doing this would require selecting from Chosen!"
+    expect(false).to eq true
   end
 
   describe 'search', search_spec: true, solr: true do

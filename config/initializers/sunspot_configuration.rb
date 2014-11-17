@@ -15,8 +15,8 @@ end
 
 Sunspot::DSL::Fields.class_eval do
   alias_method :super_text, :text
-  def text(*args)
-    super_text(*args)
+  def text(*args, &block)
+    super_text(*args, &block)
     register_fields 'text', args
   end
 

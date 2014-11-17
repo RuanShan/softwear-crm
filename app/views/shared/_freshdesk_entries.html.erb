@@ -1,0 +1,31 @@
+<div class="the-timeline dashboard-timeline">
+  <% ticket_date = parse_freshdesk_time freshdesk_ticket['created_at'] %>
+  <ul>
+    <li>
+      <div class="the-date" data-date="<%= ticket_date.to_s(:db) %>">
+        <span><%= ticket_date.strftime('%d') %></span>
+        <small><%= ticket_date.strftime('%b') %></small>
+      </div>
+
+      <h4>Ticket <%= freshdesk_ticket['display_id'] %></h4>
+      <div class="the-notes">
+        <b>Subject:</b> <%= freshdesk_ticket['subject'] %><br/>
+        <b>Ticket Type:</b> <%= freshdesk_ticket['ticket_type'] %><br/>
+        <b>Requester Name:</b> <%= freshdesk_ticket['requester_name'] %><br/>
+        <b>Due By:</b> <%= display_freshdesk_time freshdesk_ticket['due_by'] %>
+
+        <h4>Notes: </h4>
+        <% freshdesk_ticket['notes'].each do |note| %>
+        <div class="the-notes default">
+          <%= note['note']['body_html'].html_safe %>
+          <b>Created At:</b> <%= display_freshdesk_time note['note']['created_at'] %>
+        </div>
+        <% end %>
+      </div>
+
+      <p class="time">
+        <%= display_time ticket_date %>
+      </p>
+    </li>
+  </ul>
+</div>

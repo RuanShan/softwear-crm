@@ -32,6 +32,8 @@ class OrdersController < InheritedResources::Base
 
       if params.has_key? :quote_id
         quote = Quote.find(params[:quote_id])
+
+        session[:quote_id] = params[:quote_id]
         @order = Order.new(
           email: quote.email,
           phone_number: quote.phone_number,
@@ -54,9 +56,25 @@ class OrdersController < InheritedResources::Base
   end
 
   def create
-    return super unless params[:order].try(:[], 'terms') == 'Fulfilled by Amazon'
+    unless params[:order].try(:[], 'terms') == 'Fulfilled by Amazon'
+      super do
+        if session.has_key? :quote_id
+          unless OrderQuote.new(quote_id: session[:quote_id], order_id: @order.id).save
+            flash[:error] = 'Something went wrong creating your order!'
+          end
+          session[:quote_id] = nil
+        end
+      end
+      return
+    end
 
     @order = Order.create(permitted_params[:order])
+    if session.has_key? :quote_id
+      unless OrderQuote.new(quote_id: session[:quote_id], order_id: @order.id).save
+        flash[:error] = 'Something went wrong creating your order!'
+      end
+      session[:quote_id] = nil
+    end
 
     if @order.valid?
       @order.generate_jobs(params[:job_attributes].map(&JSON.method(:parse)))
@@ -126,12 +144,15 @@ class OrdersController < InheritedResources::Base
       :job_attributes,
 
       order: [
-      :email, :firstname, :lastname,
-      :company, :twitter, :name, :po,
-      :in_hand_by, :terms, :tax_exempt,
-      :tax_id_number, :redo_reason,
-      :delivery_method, :phone_number, :commission_amount,
-      :store_id, :salesperson_id, :total
-    ])
+        :email, :firstname, :lastname,
+        :company, :twitter, :name, :po,
+        :in_hand_by, :terms, :tax_exempt,
+        :tax_id_number, :redo_reason,
+        :delivery_method, :phone_number, :commission_amount,
+        :store_id, :salesperson_id, :total,
+
+        quote_ids: []
+      ]
+    )
   end
 end

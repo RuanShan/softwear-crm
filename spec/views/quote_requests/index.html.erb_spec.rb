@@ -1,25 +1,21 @@
 require 'spec_helper'
 require 'x-editable-rails/view_helpers'
 
-describe 'quote_requests/index.html.erb', quote_request_spec: true, story_78: true, story_80: true do
-  let!(:quote_requests) { [build_stubbed(:quote_request)] * 3 }
+describe 'quote_requests/index.html.erb',
+         quote_request_spec: true, story_78: true, story_80: true, story_207: true do
 
-  it 'displays the names and emails of all the quote requests' do
-    assign(:quote_requests, quote_requests)
+  before(:each) do
+    assign(:quote_requests, Kaminari.paginate_array([]).page(1))
     render
-
-    quote_requests.each do |quote_request|
-      expect(rendered).to have_content quote_request.name
-      expect(rendered).to have_content quote_request.email
-      expect(rendered).to have_content quote_request.status
-      expect(rendered).to have_content quote_request.date_needed.month
-      expect(rendered).to have_content quote_request.date_needed.day
-      expect(rendered).to have_content quote_request.date_needed.year
-      expect(rendered).to have_content quote_request.salesperson
-    end
   end
 
-  it 'has a generate quote button' do
-    # damn, nick
+  it 'has a table of quote requests and paginates them' do
+    expect(rendered).to have_selector('table#quote-request-table')
+    expect(rendered).to have_selector('div.pagination')
+  end
+
+  it 'renders the _table and _search partials' do
+    expect(rendered).to render_template(partial: '_table')
+    expect(rendered).to render_template(partial: '_search')
   end
 end

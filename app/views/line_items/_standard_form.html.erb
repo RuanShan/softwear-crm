@@ -5,6 +5,7 @@
 	<%= f.label.error.check_box    :taxable, style: 'width: 34px; height: 34px;' %>
 	<%= f.label.error.number_field :quantity %>
 	<%= f.label.error.text_field :unit_price %>
+    <%= f.label.error.text_field :url %>
 
   <%= f.submit 'Submit', id: 'standard-line-item-submit' unless local_assigns[:hide_submit] %>
 <% end %>

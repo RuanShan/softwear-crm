@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe 'quotes/_line_item_fields.html.erb', quote_spec: true do
+describe 'quotes/_line_item_fields.html.erb', quote_spec: true, story_75: true do
   let!(:quote) { build_stubbed(:valid_quote) }
   let!(:line_item) { build_stubbed(:non_imprintable_line_item) }
 
@@ -22,10 +22,11 @@ describe 'quotes/_line_item_fields.html.erb', quote_spec: true do
     expect(rendered).to have_css('label', text: 'Taxable')
     expect(rendered).to have_css('label', text: 'Quantity')
     expect(rendered).to have_css('label', text: 'Unit Price')
+    expect(rendered).to have_css('label', text: 'URL')
   end
 
   it 'should have appropriate fields for line item attributes' do
-    expect(rendered).to have_css('fieldset input', count: 6)
+    expect(rendered).to have_css('fieldset input', count: 7)
     expect(rendered).to have_css('fieldset textarea', count: 1)
   end
 end

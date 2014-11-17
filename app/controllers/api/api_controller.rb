@@ -37,13 +37,6 @@ module Api
       end
     end
 
-    def create
-      super do |format|
-        response.headers['Location'] = collection_url(record)
-        format.json(&render_json)
-      end
-    end
-
     def update
       super do |format|
         format.json(&render_json)
@@ -79,22 +72,6 @@ module Api
 
     def record
       instance_variable_get("@#{self.class.model_name.underscore}")
-    end
-
-    def permitted_attributes
-      []
-    end
-
-    def permitted_params
-      model_attributes = if permitted_attributes.empty?
-        {}
-      else
-        { self.class.model_name.underscore => send(:permitted_attributes) }
-      end
-      
-      usual_params = [:id]
-
-      params.permit(usual_params, model_attributes)
     end
 
     private

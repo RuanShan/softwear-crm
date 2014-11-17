@@ -6,6 +6,7 @@ class QuotesController < InheritedResources::Base
   def new
     assign_new_quote_hash
     super do
+      @quote_request_id = params[:quote_request_id] if params.has_key?(:quote_request_id)
       @quote.line_item_groups.build.line_items.build
       @current_action = 'quotes#new'
     end
@@ -41,6 +42,14 @@ class QuotesController < InheritedResources::Base
   def create
     assign_new_quote_hash
     super do
+      # create QuoteRequestQuote if necessary
+      unless @quote_request_id.nil?
+        unless QuoteRequestQuote.new(quote_request_id: @quote_request_id,
+                                     quote_id: @quote.id).save
+          flash[:error] = 'Something went wrong creating your quote from a request!'
+        end
+      end
+
       if params[:line_item_group_name] && @quote.valid?
         @quote
           .default_group
@@ -113,11 +122,9 @@ class QuotesController < InheritedResources::Base
     redirect_to edit_quote_path params[:quote_id]
   end
 
-  def populate_email_modal
-    respond_to do |format|
-      @quote = Quote.find(params[:quote_id])
-      format.js
-    end
+  def populate_email
+    @quote = Quote.find(params[:quote_id])
+    render 'populate_email', locals: { quote: @quote }
   end
 
 private
@@ -174,7 +181,7 @@ private
     params.permit(quote: [
                    :email, :phone_number, :first_name, :last_name, :company,
                    :twitter, :name, :valid_until_date, :estimated_delivery_date,
-                   :salesperson_id, :store_id, :shipping, :quote_source,
+                   :salesperson_id, :store_id, :shipping, :quote_source, :freshdesk_ticket_id,
                     quote_request_ids: [],
                     line_items_attributes: [
                      :name, :quantity, :taxable, :description, :id,

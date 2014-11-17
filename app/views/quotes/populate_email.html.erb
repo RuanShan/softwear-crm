@@ -1,0 +1,7 @@
+<div class="page-heading animated fadeInDownBig row" id="js-populate-emailr">
+  <h1>E-mail Quote #<%= @quote.id %> to customer</h1>
+</div>
+
+<div class="box-info row">
+  <%= render partial: 'email_customer', locals: { quote: quote } %>
+</div>

@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20141015152004) do
+ActiveRecord::Schema.define(version: 20141111180207) do
 
   create_table "activities", force: true do |t|
     t.integer  "trackable_id"
@@ -191,7 +191,7 @@ ActiveRecord::Schema.define(version: 20141015152004) do
     t.integer  "size_id"
     t.integer  "color_id"
     t.datetime "deleted_at"
-    t.decimal  "weight",         precision: 10, scale: 0
+    t.decimal  "weight",         precision: 10, scale: 1
   end
 
   add_index "imprintable_variants", ["deleted_at"], name: "index_imprintable_variants_on_deleted_at", using: :btree
@@ -244,8 +244,8 @@ ActiveRecord::Schema.define(version: 20141015152004) do
     t.datetime "deleted_at"
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.integer  "name_number_id"
     t.boolean  "has_name_number"
+    t.integer  "name_number_id"
     t.string   "name_format"
     t.string   "number_format"
   end
@@ -296,6 +296,7 @@ ActiveRecord::Schema.define(version: 20141015152004) do
     t.decimal  "unit_price",             precision: 10, scale: 2
     t.integer  "line_itemable_id"
     t.string   "line_itemable_type"
+    t.string   "url"
   end
 
   add_index "line_items", ["line_itemable_id", "line_itemable_type"], name: "index_line_items_on_line_itemable_id_and_line_itemable_type", using: :btree
@@ -305,6 +306,14 @@ ActiveRecord::Schema.define(version: 20141015152004) do
     t.string  "number"
     t.integer "imprint_id"
     t.integer "imprintable_variant_id"
+  end
+
+  create_table "order_quotes", force: true do |t|
+    t.integer  "order_id"
+    t.integer  "quote_id"
+    t.datetime "deleted_at"
+    t.datetime "created_at"
+    t.datetime "updated_at"
   end
 
   create_table "orders", force: true do |t|
@@ -411,6 +420,7 @@ ActiveRecord::Schema.define(version: 20141015152004) do
     t.decimal  "shipping",                precision: 10, scale: 2
     t.datetime "initialized_at"
     t.string   "quote_source"
+    t.string   "freshdesk_ticket_id"
   end
 
   create_table "sample_locations", force: true do |t|

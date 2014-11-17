@@ -8,15 +8,10 @@ describe ProofsController, js: true, proofs_spec: true do
 
   describe 'email_customer' do
     context 'GET request' do
-      it 'assigns @variable_hash and renders email_customer.js.erb' do
+      it 'assigns renders email_customer.html.erb', story_207: true do
         get :email_customer, id: proof.id, order_id: proof.order_id,
-                             reminder: 'false', format: 'js'
+                             reminder: 'false'
         expect(response).to render_template('email_customer')
-        expect(assigns(:variable_hash)).to eq({
-                                                order: Order.find(proof.order_id),
-                                                proof: proof,
-                                                reminder: false
-                                              })
       end
     end
 
@@ -25,7 +20,7 @@ describe ProofsController, js: true, proofs_spec: true do
         it 'sends approval email, and changes status to Emailed Customer' do
           expect{ ProofMailer.delay.proof_approval_email(instance_of(Hash)) }.to change(Sidekiq::Extensions::DelayedMailer.jobs, :size).by(1)
           expect{ (post :email_customer, id: proof.id, order_id: proof.order_id,
-                        reminder: 'false', format: 'js') }.to change(Sidekiq::Extensions::DelayedMailer.jobs, :size).by(1)
+                        reminder: 'false') }.to change(Sidekiq::Extensions::DelayedMailer.jobs, :size).by(1)
           expect(Proof.find(proof.id).status).to eq('Emailed Customer')
         end
       end
@@ -35,7 +30,7 @@ describe ProofsController, js: true, proofs_spec: true do
         it 'sends reminder email and does not change the proof status' do
           expect{ ProofMailer.delay.proof_reminder_email(instance_of(Hash)) }.to change(Sidekiq::Extensions::DelayedMailer.jobs, :size).by(1)
           expect{ (post :email_customer, id: proof.id, order_id: proof.order_id,
-                        reminder: 'true', format: 'js') }.to change(Sidekiq::Extensions::DelayedMailer.jobs, :size).by(1)
+                        reminder: 'true') }.to change(Sidekiq::Extensions::DelayedMailer.jobs, :size).by(1)
           expect(Proof.find(proof.id).status).to eq(proof.status)
         end
       end

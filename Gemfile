@@ -95,6 +95,8 @@ group :test do
   gem 'email_spec'
   # for accessing session object in integration tests
   gem 'rack_session_access'
+  # for faking redis (used by sidekiq)
+  gem 'fakeredis', :require => 'fakeredis/rspec'
 end
 
 gem 'inherited_resources'
@@ -115,9 +117,12 @@ gem 'progress_bar'
 gem 'whenever'
 gem 'freshdesk'
 gem 'simple_token_authentication'
+gem 'sinatra', require: false
 gem 'sidekiq'
+gem 'sidekiq-status'
 gem 'x-editable-rails'
 gem 'jquery-fileupload-rails'
+gem 'php-serialize'
 
 # Use ActiveModel has_secure_password
 # gem 'bcrypt', '~> 3.1.7'

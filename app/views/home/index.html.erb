@@ -1,7 +1,14 @@
 <div class="page-heading">
-  <h1>Dashboard <small>your first page</small></h1>
+  <h1>Dashboard<small></small></h1>
 </div>
 
-<div class="row clear">
+<% if !current_user.pending_quote_requests.empty? %>
+    <div class="box-info row clear">
+      <h2 class="heading">Pending Quote Requests Assigned to You</h2>
+      <%= render partial: 'quote_requests/table', locals: { quote_requests: current_user.pending_quote_requests } %>
+    </div>
+<% end %>
+
+<div class="box-info row clear">
   <%= render partial: 'shared/timeline', locals: { activities: @activities } %>
 </div>

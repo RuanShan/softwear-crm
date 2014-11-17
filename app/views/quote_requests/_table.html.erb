@@ -1,0 +1,63 @@
+<div class='box-info full'>
+  <div class='table-responsive'>
+    <table class='table table-hover table-striped table-compact' id="quote-request-table">
+      <thead>
+      <th><strong>Created</strong></th>
+      <th><strong>Requester</strong></th>
+      <th><strong>Est. Qty</strong></th>
+      <th><strong>Date Needed</strong></th>
+      <th><strong>Salesperson</strong></th>
+      <th><strong>Status</strong></th>
+      <th><strong>Actions</strong></th>
+      </thead>
+
+      <tbody>
+      <% quote_requests.each do |quote_request| %>
+          <tr>
+            <td>
+              <%= quote_request.created_at.strftime("%F") %>
+            </td>
+            <td>
+              <dl>
+                <dd><%= link_to quote_request.name, quote_request %></dd>
+                <dd><%= quote_request.email %></dd>
+              </dl>
+            </td>
+            <td><%= quote_request.approx_quantity %></td>
+            <td>
+              <%= quote_request.date_needed.strftime("%F") %>
+            </td>
+            <td>
+              <%= editable quote_request, :salesperson_id, type: :select, data: { source: User.all.map{ |x|  { x.id => x.full_name } } } %>
+            </td>
+            <td><%= quote_request.status %></td>
+            <td>
+
+              <div class="btn-group btn-group-s">
+                <%= link_to quote_request,
+                            class: 'btn btn-primary', 'data-action' => 'edit',
+                            'data-toggle' => 'tooltip', 'title' => 'View Quote Request' do %>
+                    <i class="fa fa-eye"></i>
+                <% end %>
+
+                <%= link_to quote_request_dock_path(quote_request), class: 'btn btn-warning',
+                            'data-action' => 'destroy',
+                            'data-toggle' => 'tooltip', 'title' => 'Dock Quote Request' do %>
+                    <i class="fa fa-toggle-down"></i>
+                <% end %>
+
+                <%= link_to new_quote_path(name: quote_request.name, email: quote_request.email, quote_request_id: quote_request.id),
+                            class: 'btn btn-success',
+                            'data-action' => 'quote',
+                            'data-toggle' => 'tooltip',
+                            'title' => 'Start Quote from Quote Request' do %>
+                    <i class="fa fa-quote-left"></i>
+                <% end %>
+              </div>
+            </td>
+          </tr>
+      <% end %>
+      </tbody>
+    </table>
+  </div>
+</div>

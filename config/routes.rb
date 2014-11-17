@@ -1,9 +1,10 @@
-CrmSoftwearcrmCom::Application.routes.draw do
+require 'sidekiq/web'
 
+CrmSoftwearcrmCom::Application.routes.draw do
   devise_for :users, controllers: { sessions: 'users/sessions' }, skip: 'registration'
 
   root 'home#index'
-  
+
   get '/users/change_password', to: 'users#edit_password', as: :change_password
   put '/users/change_password', to: 'users#update_password', as: :update_password
   get '/users/lock', to: 'users#lock', as: :lock_user
@@ -32,7 +33,7 @@ CrmSoftwearcrmCom::Application.routes.draw do
 
   resources :quotes, shallow: true do
     post 'email_customer'
-    get 'populate_email_modal'
+    get 'populate_email'
     collection do
       get 'quote_select'
       post 'stage_quote'
@@ -42,10 +43,12 @@ CrmSoftwearcrmCom::Application.routes.draw do
     end
   end
 
-  resources :quote_requests
+  resources :quote_requests do
+    get :dock
+  end
 
   get '/logout' => 'users#logout'
-  
+
   scope 'configuration' do
     resources :shipping_methods, :stores
     resources :imprint_methods do
@@ -54,7 +57,7 @@ CrmSoftwearcrmCom::Application.routes.draw do
     match 'integrated_crms', to: 'settings#edit', via: :get
     match 'update_integrated_crms', to: 'settings#update', via: :put
   end
-  
+
   resources :orders do
     member do
       get 'names_numbers', as: :name_number_csv_from
@@ -102,13 +105,24 @@ CrmSoftwearcrmCom::Application.routes.draw do
   end
   get '/search', to: 'search/queries#search', as: :search
 
+
+  resources :sales_reports, only: [:index, :create]
+  get '/sales_reports/:report_type/:start_time...:end_time', to: 'sales_reports#show', as: :sales_reports_show
+
   namespace 'api' do
     resources 'orders', only: [:index, :show]
     resources 'jobs', only: [:index, :show]
     resources 'imprints', only: [:index, :show]
     resources 'imprintables'
+    resources 'imprintable_variants', only: [:index, :show]
     resources 'colors'
     resources 'sizes'
     resources 'quote_requests', only: [:create, :index]
   end
+
+  authenticate :user do
+    mount Sidekiq::Web => '/sidekiq'
+  end
+
+  get '/undock', to: 'home#undock'
 end

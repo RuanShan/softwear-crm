@@ -25,12 +25,12 @@
       <% end %>
     <% end %>
 
-    <li><a href="#fakelink"><i class="fa fa-users"></i> Customers <span class="label label-danger new-circle">W.I.P.</span></a>
+    <!--<li><a href="#fakelink"><i class="fa fa-users"></i> Customers <span class="label label-danger new-circle">W.I.P.</span></a>-->
 
-    <%= content_tag :li, class: ('active' if current_url.include?('quotes')) do %>
+    <%= content_tag :li, class: ('active' if current_url.include?('quote')) do %>
       <a href="#" id="quotes_list"><i class="fa fa-tasks"></i><i class="fa fa-angle-double-down i-right"></i> Quotes</a>
 
-      <%= content_tag :ul, class: ('visible' if current_url.include?('quotes')) do %>
+      <%= content_tag :ul, class: ('visible' if current_url.include?('quote')) do %>
 
         <%= content_tag :li, class: ('active' if current_action == 'quotes#index') do %>
           <%= link_to quotes_path, id: 'quotes_path_link' do %><i class="fa fa-angle-right"></i> List<% end %>
@@ -40,7 +40,7 @@
           <%= link_to new_quote_path, id: 'new_quote_link' do %><i class="fa fa-angle-right"></i> New <% end %>
         <% end %>
 
-        <%= content_tag :li, class: ('active' if current_action == 'quote_requests#index') do %>
+        <%= content_tag :li, class: ('active' if current_action == 'quote_requests') do %>
           <%= link_to quote_requests_path, id: 'quote_requests_link' do %><i class="fa fa-angle-right"></i> Quote Requests<% end %>
         <% end %>
       <% end %>
@@ -69,14 +69,17 @@
       <% end %>
     <% end %>
 
-    <li>
-      <a href="#fakelink"><i class="fa fa-bar-chart-o"></i><i class="fa fa-angle-double-down i-right"></i> Reports <span class="label label-danger new-circle">W.I.P.</span></a>
-      <ul>
-        <li><a href="#fakelink"><i class="fa fa-angle-right"></i> Receivables</a></li>
-        <li><a href="#fakelink"><i class="fa fa-angle-right"></i> Sales Tax</a></li>
-        <li><a href="#fakelink"><i class="fa fa-angle-right"></i> Location</a></li>
-      </ul>
-    </li>
+      <%= content_tag :li, class: ('active' if current_url.include?('reports')) do %>
+        <a href="#fakelink"><i class="fa fa-bar-chart-o"></i><i class="fa fa-angle-double-down i-right"></i>Reports</a>
+
+        <%= content_tag :ul, class: ('visible' if current_url.include?('reports')) do %>
+
+          <%= content_tag :li, class: ('active' if current_action == 'sales_reports') do %>
+            <%= link_to sales_reports_path do %><i class="fa fa-angle-right"></i> Sales Reports<% end %>
+          <% end %>
+
+        <% end %>
+      <% end %>
 
     <%= content_tag :li, class: ('active' if current_url.include?('artwork')) do %>
       <a href="#fakelink"><i class="fa fa-picture-o"></i><i class="fa fa-angle-double-down i-right"></i>Artwork <span class="label label-danger new-circle">W.I.P.</span></a>

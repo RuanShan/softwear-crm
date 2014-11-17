@@ -2,7 +2,11 @@ class SettingsController < InheritedResources::Base
   before_action :set_current_action
 
   def edit
-    @freshdesk_settings = Setting.get_freshdesk_settings
+    @freshdesk_settings = {
+        freshdesk_url: Setting.find_by(name: 'freshdesk_url'),
+        freshdesk_email: Setting.find_by(name: 'freshdesk_email'),
+        freshdesk_password: Setting.find_by(name: 'freshdesk_password')
+    }
   end
 
   def update

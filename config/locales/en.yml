@@ -98,3 +98,13 @@ en:
                             If you've finalized your garment selection and this occurs,
                             and it is determined we will not be able to provide you with the garment of your choosing,
                             you will be contacted by a salesperson so that alternate options may be discussed.</p>"
+
+  quote_no_fd_id: "You don't have a ticket id entered for this quote. Please enter a ticket
+                   ID from freshdesk in the details tab to continue."
+
+  quote_invalid_fd_id: "Could not find the freshdesk ticket for the ticket ID entered.
+                            Please double check ticket ID is correct."
+
+  quote_invalid_configuration: "There is something wrong with the information being used to
+                                contact freshdesk. Make sure that the password and email you have
+                                listed under your user profile is accurate and try again."

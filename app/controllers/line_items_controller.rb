@@ -306,7 +306,7 @@ private
       :brand_id, :color_id, :imprintable_id, :job_id,
       :standard_only, :ids, :standard,
       line_item: [
-        :id, :name, :description, :quantity, 
+        :id, :name, :description, :quantity, :url,
         :unit_price, :imprintable_variant_id,
         :taxable
       ]

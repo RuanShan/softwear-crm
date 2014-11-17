@@ -45,6 +45,16 @@ module ApplicationHelper
     datetime.strftime('%b %d, %Y, %I:%M %p') unless datetime.blank?
   end
 
+  # takes a string and parses it into a datetime
+  def parse_freshdesk_time(fd_time)
+    DateTime.strptime(fd_time, '%Y-%m-%dT%H:%M:%S')
+  end
+
+  # takes a string date from freshdesk and displays it
+  def display_freshdesk_time(fd_time)
+    display_time(parse_freshdesk_time(fd_time))
+  end
+
   def imprintable_modal(imprintable)
     link_to imprintable.name, imprintable_path(imprintable),
             class: 'imprintable_modal_link', remote: true

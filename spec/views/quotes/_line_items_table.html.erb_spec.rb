@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe 'quotes/_line_items_table.html.erb', quote_spec: true do
+describe 'quotes/_line_items_table.html.erb', quote_spec: true, story_75: true do
   let!(:quote) { build_stubbed(:valid_quote) }
   let!(:line_item) { build_stubbed(:non_imprintable_line_item) }
   let!(:line_item_group) { double(:line_item_group, line_items: [line_item]) }
@@ -24,5 +24,23 @@ describe 'quotes/_line_items_table.html.erb', quote_spec: true do
     expect(rendered).to have_css('td', text: number_to_currency(quote.standard_line_items.first.unit_price))
     expect(rendered).to have_css('td', text: quote.standard_line_items.first.quantity)
     expect(rendered).to have_css('td', text: number_to_currency(quote.standard_line_items.first.total_price))
+  end
+
+  context 'line item with url' do
+    let!(:line_item) { build_stubbed(:non_imprintable_line_item, url: 'google.com') }
+
+    it 'should link to the line item via its name if url is not blank' do
+      expect(rendered).to have_css('a', text: quote.standard_line_items.first.name)
+      expect(rendered).to have_link("#{quote.standard_line_items.first.name}", href: "http://#{quote.standard_line_items.first.url}")
+    end
+  end
+
+  context 'line item without url' do
+    let!(:line_item) { build_stubbed(:non_imprintable_line_item, url: nil) }
+
+    it 'should not link to the line item via its name if url is blank' do
+      expect(rendered).to_not have_css('a', text: quote.standard_line_items.first.name)
+      expect(rendered).to_not have_link("#{quote.standard_line_items.first.name}", href: "http://#{quote.standard_line_items.first.url}")
+    end
   end
 end
