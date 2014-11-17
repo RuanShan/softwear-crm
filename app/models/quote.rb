@@ -91,7 +91,7 @@ class Quote < ActiveRecord::Base
     # https://github.com/AnnArborTees/softwear-mockbot/blob/release-2014-10-17/app/models/spree/store.rb
     Rails.cache.fetch(:quote_fd_ticket, :expires => 30.minutes) do
       config = FreshdeskModule.get_freshdesk_config(current_user)
-      client = Freshdesk.new(Figaro.env['freshdesk_url'], config[:freshdesk_email], config[:freshdesk_password])
+      client = Freshdesk.new(config[:freshdesk_url], config[:freshdesk_email], config[:freshdesk_password])
       client.response_format = 'json'
 
       ticket = client.get_tickets(freshdesk_ticket_id)

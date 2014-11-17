@@ -68,10 +68,11 @@ class QuotesController < InheritedResources::Base
       @quote_select_hash[:index] = params[:index].to_i
 
       index = @quote_select_hash[:index]
-      name = session[:prices][index][:name]
-      unit_price = session[:prices][index][:prices][:base_price]
-
-      @quote_select_hash[:new_line_item] = LineItem.new(name: name, unit_price: unit_price, description: 'Canned Description')
+      # TODO: refactor this
+      # name = session[:prices][index][:name]
+      # unit_price = session[:prices][index][:prices][:base_price]
+      #
+      # @quote_select_hash[:new_line_item] = LineItem.new(name: name, unit_price: unit_price, description: 'Canned Description')
 
       format.js
     end

@@ -10,9 +10,27 @@
 
             <%= text_field_tag :decoration_price, nil,
                                placeholder: 'Enter decoration price...', class: 'form-control' %>
+
           </div>
           <p class="help-block">The decoration price of the imprintable</p>
         </div>
+      </div>
+
+      <div class="form-group clearfix">
+        <label class="col-sm-4 control-label" for=".">Pricing Group</label>
+
+        <div class="col-sm-8">
+          <div id="pricing-group-select" class="input-group">
+            <%= select_tag :pricing_group_select, options_for_select(session[:pricing_groups].keys), include_blank: true, class: 'form-control' %>
+          </div>
+
+          <div id="pricing-group-input" class="input-group">
+            <%= text_field_tag :pricing_group_text, nil, class: 'form-control', placeholder: 'New Pricing Group' %>
+          </div>
+
+          <%= link_to '#', class: 'btn btn-info', id: 'add-a-price' do %> Add A Pricing Group <% end %>
+        </div>
+
       </div>
     </div>
 
@@ -20,7 +38,7 @@
 
     <div class="form-group clearfix">
       <div class="col-sm-offset-2 col-sm-8">
-        <button type="submit" class="btn btn-info">Fetch Prices!</button>
+        <button type="submit" class="btn btn-info">Add to Pricing Table</button>
       </div>
     </div>
   <% end %>
