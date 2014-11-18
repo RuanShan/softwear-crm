@@ -157,7 +157,7 @@ feature 'Quotes management', quote_spec: true, js: true do
     expect(page).to have_content(imprintable.name)
   end
 
-  scenario "Inputting bad data for a line item doesn't remove all line items" do
+  scenario "Inputting bad data for a line item doesn't remove all line items", story_249: true  do
     visit new_quote_path
     fill_in 'Email', with: 'test@testing.com'
     fill_in 'First Name', with: 'Capy'
@@ -183,6 +183,8 @@ feature 'Quotes management', quote_spec: true, js: true do
     click_button 'Next'
     click_button 'Next'
     expect(page).to have_selector('div.line-item-form', count: 2)
+    expect(page).to have_selector("div.line-item-form input[value='This Should Still be here!']")
+    expect(page).to have_selector('div.line-item-form textarea', text: 'Line Item Description')
   end
 
   feature 'the following actions are tracked:' do
