@@ -48,7 +48,7 @@ feature 'Pricing management', js: true, prices_spec: true do
 
  # TODO: this scenario is messed up, running it individually works fine but
  # TODO: when run in a suite it usually fails
-  scenario 'A user can group prices into separate groups', story_67: true, new: true do
+  scenario 'A user can group prices into separate groups', story_67: true do
     visit imprintables_path
     click_link("pricing_button_#{imprintable.id}")
     fill_in 'decoration_price', with: '5'

@@ -6,9 +6,9 @@ class Setting < ActiveRecord::Base
 
   def self.get_freshdesk_settings
     freshdesk_records = {
-      freshdesk_url: Setting.find_by(name: 'freshdesk_url'),
-      freshdesk_email: Setting.find_by(name: 'freshdesk_email'),
-      freshdesk_password: Setting.find_by(name: 'freshdesk_password')
+      freshdesk_url: Setting.find_by(name: 'freshdesk_url').name,
+      freshdesk_email: Setting.find_by(name: 'freshdesk_email').name,
+      freshdesk_password: Setting.find_by(name: 'freshdesk_password').name
     }
     freshdesk_ymls = {
       freshdesk_url: Figaro.env['freshdesk_url'],
