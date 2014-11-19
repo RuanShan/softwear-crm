@@ -37,7 +37,7 @@
                     <i class="fa fa-times"></i>
                   <% end %>
 
-                  <%= link_to quote_select_quotes_path(index: index),
+                  <%= link_to quote_select_quotes_path(index: index, pricing_group: key),
                               class: 'btn btn-default', remote: true,
                               'title' => 'Add to Quote' do %>
                     Add to Quote
