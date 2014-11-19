@@ -94,7 +94,7 @@ class Quote < ActiveRecord::Base
       client = Freshdesk.new(config[:freshdesk_url], config[:freshdesk_email], config[:freshdesk_password])
       client.response_format = 'json'
 
-      ticket = client.get_tickets(freshdesk_ticket_id) unless freshdesk_ticket_id.nil?
+      ticket = client.get_tickets(freshdesk_ticket_id)
       ticket = '{ "quote_fd_id_configured": "false" }' if ticket.nil?
       return OpenStruct.new JSON.parse(ticket)
     end
