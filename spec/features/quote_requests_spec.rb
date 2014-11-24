@@ -130,4 +130,17 @@ feature 'Quote Requests Management', js: true, quote_request_spec: true do
     click_button 'Search'
     expect(page).to_not have_css("a[href='/quote_requests/1']")
   end
+
+  context 'when more then 1 user is present' do
+    let!(:new_salesperson) { build_stubbed(:user) }
+
+    scenario 'A user can reassign a quote requests salesperson', story_272: true, new: true do
+      visit quote_request_path(quote_request)
+      find("span[data-name='salesperson_id']").click
+      find("div.editable-input select.form-control").click
+      find("div.editable-input select option[value='#{new_salesperson.id}']").click
+      find("div.editable-buttons button[type='submit']").click
+      expect(page).to have_content new_salesperson.full_name
+    end
+  end
 end
