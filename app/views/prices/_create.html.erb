@@ -57,9 +57,7 @@
               <% end %>
           </td>
           <td class="col-sm-3 text-right">
-            <%= link_to 'Create Quote from Table',
-                        new_quote_path(price_information: session[:pricing_groups]),
-                        class: 'btn btn-default' %>
+            <%= link_to 'Create Quote from Table', new_quote_path, class: 'btn btn-default' %>
           </td>
         </tr>
       </tbody>

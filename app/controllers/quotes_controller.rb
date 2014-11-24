@@ -7,6 +7,19 @@ class QuotesController < InheritedResources::Base
     assign_new_quote_hash
     super do
       @quote_request_id = params[:quote_request_id] if params.has_key?(:quote_request_id)
+      # TODO: this is pretty gross...
+      if @new_quote_hash.has_key?(:price_information)
+        @new_quote_hash[:price_information].each do |_key, outer_value|
+          unless outer_value.nil?
+            outer_value.each do |inner_value|
+              new_line_item = LineItem.new(name: inner_value[:name],
+                                           unit_price: inner_value[:prices][:base_price],
+                                           url: inner_value[:supplier_link])
+              @quote.line_items << new_line_item
+            end
+          end
+        end
+      end
       @quote.line_item_groups.build.line_items.build
       @current_action = 'quotes#new'
     end
@@ -132,12 +145,8 @@ private
   def assign_new_quote_hash
     @new_quote_hash = {}
 
-    assign = lambda do |key|
-      @new_quote_hash[key] = params[key] if params[key]
-    end
-
-    assign[:price_information]
-    assign[:line_item_group_name]
+    @new_quote_hash[:price_information] = session[:pricing_groups]
+    @new_quote_hash[:line_item_group_name] = params[:line_item_group_name] if params[:line_item_group_name]
 
     if defined? params[:quote][:line_items_attributes]
       @new_quote_hash[:quote_li_attributes] = params[:quote][:line_items_attributes]
