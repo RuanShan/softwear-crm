@@ -132,7 +132,7 @@ feature 'Quote Requests Management', js: true, quote_request_spec: true do
   end
 
   context 'when more then 1 user is present' do
-    let!(:new_salesperson) { build_stubbed(:user) }
+    let!(:new_salesperson) { create(:user) }
 
     scenario 'A user can reassign a quote requests salesperson', story_272: true, new: true do
       visit quote_request_path(quote_request)

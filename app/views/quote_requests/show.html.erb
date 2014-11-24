@@ -23,7 +23,7 @@
         <strong>Salesperson:</strong>
       </div>
       <div class='col-sm-10'>
-        <%= editable @quote_request, :salesperson_id, type: :select, data: { source: User.all.map{ |x| [  x.full_name  ] } } %>
+        <%= editable @quote_request, :salesperson_id, type: :select, data: { source: User.all.map{ |x| { value: x.id, text: x.full_name  } } } %>
       </div>
     </div>
 
