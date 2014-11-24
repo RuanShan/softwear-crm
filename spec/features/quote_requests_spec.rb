@@ -134,7 +134,7 @@ feature 'Quote Requests Management', js: true, quote_request_spec: true do
   context 'when more then 1 user is present' do
     let!(:new_salesperson) { create(:user) }
 
-    scenario 'A user can reassign a quote requests salesperson', story_272: true, new: true do
+    scenario 'A user can reassign a quote requests salesperson', story_272: true do
       visit quote_request_path(quote_request)
       find("span[data-name='salesperson_id']").click
       find("div.editable-input select.form-control").click
