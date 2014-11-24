@@ -31,6 +31,21 @@ module FreshdeskModule
     )
   end
 
+  def self.get_contacts(page)
+    config = Setting.get_freshdesk_settings
+
+    # configure authentication
+    RestClient.add_before_execution_proc do | req, _params |
+      req.basic_auth Figaro.env['freshdesk_api_key'], 'X'
+    end
+
+    query_string = "contacts.json?page=#{page}"
+
+    resource = RestClient::Resource.new config[:freshdesk_url]+query_string
+
+    JSON.parse(resource.get)
+  end
+
 private
 
   def self.user_configured?(current_user)

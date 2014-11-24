@@ -24,6 +24,9 @@ gem 'summernote-rails'
 # For active_record_cookie store
 gem 'activerecord-session_store', github: 'rails/activerecord-session_store'
 
+# activeresource
+gem 'activeresource'
+
 # Use jquery as the JavaScript library
 gem 'jquery-rails'
 
