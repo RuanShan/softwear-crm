@@ -20,6 +20,10 @@ describe FreshdeskModule, freshdesk_spec: true do
   end
 
   describe '.get_contacts', story_262: true do
+    # TODO: for these tests to pass, you have to make sure an environment variable under the key
+    # 'freshdesk_api_key' exists that stores the devteam's apikey. to find the api key, go to
+    # annarbortees.freshdesk.com, navigate to user settings and the api key will be on that page
+
     before(:each) do
       expect(Setting).to receive(:get_freshdesk_settings).and_return({freshdesk_url: 'http://annarbortees.freshdesk.com/'})
     end
