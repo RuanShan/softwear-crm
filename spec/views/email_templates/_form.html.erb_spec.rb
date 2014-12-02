@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe 'email_templates/_form.html.erb', email_template_spec: true do
+describe 'email_templates/_form.html.erb', email_template_spec: true, story_265: true do
   let!(:email_template) { build_stubbed(:blank_email_template) }
 
   before(:each) do
