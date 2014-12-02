@@ -1,6 +1,6 @@
-include 'spec_helper'
+require 'spec_helper'
 
-describe 'new.html.erb', email_template_spec: true, story_265: true do
+describe 'email_templates/new.html.erb', email_template_spec: true, story_265: true do
   before(:each) do
     assign(:email_template, EmailTemplate.new)
     render

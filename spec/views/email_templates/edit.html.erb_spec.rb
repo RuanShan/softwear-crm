@@ -8,7 +8,7 @@ describe 'email_templates/edit.html.erb', email_template_spec: true, story_265: 
     render file: 'email_templates/edit', id: email_template.to_param
   end
 
-  it 'has a form to create a new mockup group' do
+  it 'has a form to create a new template' do
     expect(rendered).to have_selector("form[action='#{email_template_path(email_template)}'][method='post']")
   end
 end
