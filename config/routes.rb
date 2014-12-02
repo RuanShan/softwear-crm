@@ -50,7 +50,7 @@ CrmSoftwearcrmCom::Application.routes.draw do
   get '/logout' => 'users#logout'
 
   scope 'configuration' do
-    resources :shipping_methods, :stores
+    resources :shipping_methods, :stores, :email_templates
     resources :imprint_methods do
       get '/print_locations', to: 'imprint_methods#print_locations', as: :print_locations
     end

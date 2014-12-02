@@ -1,0 +1,51 @@
+<div class="box-info full">
+  <div class="table-responsive">
+    <table class="table table-hover" id="email_templates_list">
+      <thead>
+      <tr>
+        <th>Subject</th>
+        <th>From</th>
+        <th>BCC</th>
+        <th>CC</th>
+        <th>Body</th>
+        <th></th>
+      </tr>
+      </thead>
+      <tbody>
+      <% email_templates.each do |email_template| %>
+        <tr id="<%= model_table_row_id email_template %>">
+          <td><%= email_template.subject %></td>
+          <td><%= email_template.from %></td>
+          <td><%= email_template.bcc %></td>
+          <td><%= email_template.cc %></td>
+          <td><%= email_template.body %></td>
+          <td>
+            <div class="btn-group btn-group-xs">
+              <%= link_to edit_email_template_path(email_template),
+                          class: 'btn btn-default',
+                          data: {
+                            action: 'edit',
+                            toggle: 'tooltip'
+                          },
+                          title: 'Edit' do %>
+                <i class="fa fa-edit"></i>
+              <% end %>
+
+              <%= link_to email_template_path(email_template), class: 'btn btn-default',
+                          data: {
+                            confirm: 'Are you sure you would like to delete the template?',
+                            action: 'destroy',
+                            toggle: 'tooltip'
+                          },
+                          title: 'Destroy',
+                          method: :delete do %>
+                <i class="fa fa-times"></i>
+              <% end %>
+            </div>
+          </td>
+        </tr>
+      <% end %>
+      </tbody>
+    </table>
+  </div>
+</div>

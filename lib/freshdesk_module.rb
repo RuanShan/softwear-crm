@@ -31,12 +31,12 @@ module FreshdeskModule
     )
   end
 
-  def self.get_contacts(page)
+  def self.get_contacts(page, auth_email, auth_pw)
     config = Setting.get_freshdesk_settings
 
     # configure authentication
     RestClient.add_before_execution_proc do | req, _params |
-      req.basic_auth Figaro.env['freshdesk_api_key'], 'X'
+      req.basic_auth auth_email, auth_pw
     end
 
     query_string = "contacts.json?page=#{page}"
@@ -44,6 +44,27 @@ module FreshdeskModule
     resource = RestClient::Resource.new config[:freshdesk_url]+query_string
 
     JSON.parse(resource.get)
+  end
+
+  def self.get_contact(freshdesk_id)
+    config = Setting.get_freshdesk_settings
+    if config[:freshdesk_email].blank? || config[:freshdesk_password].blank?
+      raise 'User freshdesk information isn\'t configured'
+    end
+    page = 1
+    response = FreshdeskModule.get_contacts(page, config[:freshdesk_email], config[:freshdesk_password])
+    while response != []
+      raise 'freshdesk configuration is invalid' if response.class == Hash
+
+      response.each do |user|
+        if user['user']['id'] == freshdesk_id
+          return user
+        end
+      end
+
+      page += 1
+      response = FreshdeskModule.get_contacts(page, config[:freshdesk_email], config[:freshdesk_password])
+    end
   end
 
 private

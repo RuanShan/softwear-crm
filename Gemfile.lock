@@ -201,6 +201,7 @@ GEM
       activesupport (>= 3.0.0)
     launchy (2.4.2)
       addressable (~> 2.3)
+    liquid (3.0.0)
     mail (2.5.4)
       mime-types (~> 1.16)
       treetop (~> 1.4.8)
@@ -451,6 +452,7 @@ DEPENDENCIES
   js-routes
   kaminari
   launchy (~> 2.4.2)
+  liquid
   mailcatcher
   momentjs-rails (~> 2.5.0)
   mysql2

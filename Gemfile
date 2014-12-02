@@ -39,6 +39,9 @@ gem 'launchy', '~> 2.4.2'
 # For token inputs
 gem 'chosen-rails'
 
+# use liquid to allow users to make custom templates
+gem 'liquid'
+
 # For the datetimepicker
 gem 'momentjs-rails', '~> 2.5.0'
 gem 'bootstrap3-datetimepicker-rails', '~> 3.0.0'

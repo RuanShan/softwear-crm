@@ -5,7 +5,7 @@ namespace :freshdesk do
   desc 'Pull contacts from freshdesk\'s api and store locally'
   task sync_contacts: :environment do
     page = 1
-    response = FreshdeskModule.get_contacts(page)
+    response = FreshdeskModule.get_contacts(page, Figaro.env['freshdesk_api_key'], 'X')
     while response != []
       # save contacts
       response.each do |user_hash|
@@ -20,7 +20,7 @@ namespace :freshdesk do
       end
 
       page += 1
-      response = FreshdeskModule.get_contacts(page)
+      response = FreshdeskModule.get_contacts(page, Figaro.env['freshdesk_api_key'], 'X')
     end
   end
 end
