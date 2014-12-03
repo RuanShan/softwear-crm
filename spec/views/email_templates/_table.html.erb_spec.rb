@@ -10,6 +10,7 @@ describe 'email_templates/_table.html.erb', email_template_spec: true, story_265
     expect(rendered).to have_selector('th', text: 'From')
     expect(rendered).to have_selector('th', text: 'Cc')
     expect(rendered).to have_selector('th', text: 'Bcc')
+    expect(rendered).to have_selector('th', text: 'Associated Quote')
     expect(rendered).to have_selector('th', text: 'Body')
   end
 
@@ -18,6 +19,7 @@ describe 'email_templates/_table.html.erb', email_template_spec: true, story_265
     expect(rendered).to have_selector('td', text: email_templates.first.from)
     expect(rendered).to have_selector('td', text: email_templates.first.cc)
     expect(rendered).to have_selector('td', text: email_templates.first.bcc)
+    expect(rendered).to have_selector('td', text: email_templates.first.quote.name)
     expect(rendered).to have_selector('td', text: email_templates.first.body)
   end
 
