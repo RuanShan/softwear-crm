@@ -7,6 +7,7 @@ FactoryGirl.define do
       from    'noreply@test.com'
       cc      'other_customer@hotmail.com'
       bcc     'devteam@annarbortees.com'
+      quote { |q| q.association(:valid_quote) }
     end
   end
 end

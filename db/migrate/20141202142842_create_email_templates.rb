@@ -5,10 +5,12 @@ class CreateEmailTemplates < ActiveRecord::Migration
       t.string :from
       t.string :bcc
       t.string :cc
+      t.integer :quote_id
       t.text :body
       t.text :template
 
       t.datetime :deleted_at
     end
+
   end
 end

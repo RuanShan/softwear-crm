@@ -1,7 +1,7 @@
 require 'spec_helper'
 include ApplicationHelper
 
-feature 'Email Templates Management', js: true, email_template_spec: true, story_265: true, new: true do
+feature 'Email Templates Management', js: true, email_template_spec: true, story_265: true do
   given!(:email_template) { create(:valid_email_template) }
   given!(:valid_user) { create(:alternate_user) }
   background(:each) { login_as valid_user }
@@ -19,7 +19,7 @@ feature 'Email Templates Management', js: true, email_template_spec: true, story
     visit email_templates_path
     click_link 'Add an Email Template'
     fill_in 'Subject', with: 'Your new quote from Ann Arbor Tees'
-    fill_in 'Body', with: 'Thank you {{quote.name}} for your purchase'
+    select email_template.quote.name, from: 'Associated Model'
     click_button 'Create Email Template'
     expect(EmailTemplate.where(subject: 'Your new quote from Ann Arbor Tees')).to exist
   end
@@ -38,6 +38,15 @@ feature 'Email Templates Management', js: true, email_template_spec: true, story
     page.driver.browser.switch_to.alert.accept
     wait_for_ajax
     expect(EmailTemplate.where(subject: email_template.subject).blank?).to be_truthy
+  end
+
+  scenario 'A user can preview an email template\'s body' do
+    visit email_templates_path
+    find("a[href='/configuration/email_templates/#{email_template.id}/edit']").click
+    fill_in 'Body', with: 'My new body'
+    click_link 'Preview Body'
+    wait_for_ajax
+    expect(page).to have_css '.modal-body', text: 'My new body'
   end
 
   scenario 'A user can email a template to a customer', pending: 'Fill this mother in' do

@@ -1,9 +1,10 @@
 class EmailTemplate < ActiveRecord::Base
   acts_as_paranoid
 
+  belongs_to :quote
+
   ### Validation
   validates :subject, presence: true
-  validates :body, presence: true
 
   validates :from, allow_blank: true, email: true
   validates :cc, allow_blank: true, email: true
@@ -43,6 +44,12 @@ class EmailTemplate < ActiveRecord::Base
   def deliver_to(address, options = {})
     options[:cc] ||= cc unless cc.blank?
     options[:bcc] ||= bcc unless bcc.blank?
+    # TODO: this will need refactoring when expanding the types of records that
+    # can be associated
+    unless quote_id.blank?
+      quote = Quote.find(quote_id)
+      options.merge(quote.attributes)
+    end
 
     # Liquid doesn't like symbols as keys
     options.stringify_keys!

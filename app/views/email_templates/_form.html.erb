@@ -35,14 +35,39 @@
         </div>
       </div>
 
-
+      <!-- FIXME: for now this will work, but eventually if users are to be able to
+                  select more than one type of record to associate with, then you'll
+                  need to refactor EmailTemplates relationship with quote (to become polymorphic) -->
       <div class="form-group">
-        <%= f.label :body, class: 'col-sm-2 control-label' %>
+        <%= f.label :quote_id, 'Associated Model', class: 'col-sm-2 control-label' %>
         <div class="col-sm-10">
-          <%= f.text_area :body, class: 'form-control' %>
-          <p class="help-block">Use liquid here</p>
+          <%= f.select :quote_id,
+                        Quote.all.collect { |q| [q.name, q.id] },
+                        { include_blank: true },
+                        class: 'form-control' %>
+          <p class="help-block">Which quote would you like to associate the template with?</p>
+
+        <% unless email_template.new_record? %>
+          <div id="associated_record_fields">
+            <!-- TODO: make this conditional so that if someone selects something other than a quote the column names are properly populated -->
+            <%= render 'email_templates/column_names',
+                        column_names: Quote.column_names %>
+          </div>
+        <% end %>
         </div>
       </div>
+
+      <% unless email_template.new_record? %>
+        <div class="form-group">
+          <%= f.label :body, class: 'col-sm-2 control-label' %>
+          <div class="col-sm-10">
+            <%= f.text_area :body, placeholder: 'Insert Liquid here', class: 'form-control' %>
+            <!-- TODO: this button parses the URL to find the associated record, its sloppy and users will have to update the email_template before
+                       they can see an accurate preview if they have recently changed the associated quote -->
+            <%= link_to 'Preview Body', email_template_preview_body_path(email_template.id), remote: true, class: 'btn btn-default col-sm-2', id: 'preview_button' %>
+          </div>
+        </div>
+      <% end %>
 
       <div class="form-group">
         <div class="col-sm-offset-2 col-sm-10">

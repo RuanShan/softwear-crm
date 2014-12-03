@@ -9,15 +9,16 @@ class Quote < ActiveRecord::Base
   tracked by_current_user
 
   QUOTE_SOURCES = [
-      'Phone Call',
-      'E-mail',
-      'Walk In',
-      'Online Form',
-      'Other'
+    'Phone Call',
+    'E-mail',
+    'Walk In',
+    'Online Form',
+    'Other'
   ]
 
   belongs_to :salesperson, class_name: User
   belongs_to :store
+  has_many :email_templates
   has_many :emails, as: :emailable, class_name: Email, dependent: :destroy
   has_many :line_item_groups
 # has_many :line_items, through: :line_item_groups

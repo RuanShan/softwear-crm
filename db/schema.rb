@@ -138,6 +138,7 @@ ActiveRecord::Schema.define(version: 20141202142842) do
     t.string   "from"
     t.string   "bcc"
     t.string   "cc"
+    t.integer  "quote_id"
     t.text     "body"
     t.text     "template"
     t.datetime "deleted_at"

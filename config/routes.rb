@@ -50,12 +50,19 @@ CrmSoftwearcrmCom::Application.routes.draw do
   get '/logout' => 'users#logout'
 
   scope 'configuration' do
-    resources :shipping_methods, :stores, :email_templates
+    resources :shipping_methods, :stores
     resources :imprint_methods do
       get '/print_locations', to: 'imprint_methods#print_locations', as: :print_locations
     end
     match 'integrated_crms', to: 'settings#edit', via: :get
     match 'update_integrated_crms', to: 'settings#update', via: :put
+    resources :email_templates do
+      get '/preview_body', to: 'email_templates#preview_body', as: :preview_body
+      collection do
+        # TODO: you'll need something like this if you want to expand templates to use more than just quotes
+        get '/fetch_table_attributes/(:table_name)', to: 'email_templates#fetch_table_attributes'
+      end
+    end
   end
 
   resources :orders do

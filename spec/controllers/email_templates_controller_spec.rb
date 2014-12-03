@@ -45,4 +45,20 @@ describe EmailTemplatesController, email_template_spec: true, story_265: true do
       end
     end
   end
+
+  describe 'GET fetch_table_attributes' do
+    before(:each) { get :fetch_table_attributes, table_name: Quote, format: :js }
+    it 'assigns column names to be the attributes of Quote' do
+      expect(assigns(:column_names)).to eq(Quote.column_names)
+    end
+  end
+
+  describe 'GET preview_body' do
+    it 'calls parse, render and assigns body' do
+      expect_any_instance_of(Liquid::Template).to receive(:parse).and_return(Liquid::Template.new)
+      expect_any_instance_of(Liquid::Template).to receive(:render).and_return('Rendered String')
+      get :preview_body, email_template_id: template.id, format: :js
+      expect(assigns(:body)).to eq('Rendered String')
+    end
+  end
 end

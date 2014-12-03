@@ -6,7 +6,6 @@ describe EmailTemplate, email_template_spec: true, story_265: true do
 
   describe 'Validations' do
     it { is_expected.to validate_presence_of(:subject) }
-    it { is_expected.to validate_presence_of(:body) }
 
     # Email validations
     it { is_expected.to allow_value('test@gmail.com').for(:from) }
@@ -30,7 +29,7 @@ describe EmailTemplate, email_template_spec: true, story_265: true do
 
   describe '#render' do
     it 'calls render on template with options passed' do
-      expect(subject).to receive_message_chain(:template, :render).with(any_instance_of Hash)
+      expect(email_template).to receive_message_chain(:template, :render)
       email_template.render
     end
   end
@@ -40,7 +39,7 @@ describe EmailTemplate, email_template_spec: true, story_265: true do
       from = email_template.from
       subject = email_template.subject
       body = email_template.body
-      expected = "[EmailTemplate] From #{from}, '#{subject}': #{body}"
+      expected = "[EmailTemplate] From: #{from}, '#{subject}': #{body}"
       expect(email_template.to_s).to eq(expected)
     end
   end
