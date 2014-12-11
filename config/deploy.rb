@@ -49,3 +49,25 @@ namespace :deploy do
   after :publishing, :restart
 
 end
+
+namespace :data do
+
+  desc 'Dump data in envrionment into seed files'
+  task :dump do
+    on roles(:db) do
+      within release_path do
+        with rails_env: (fetch(:rails_env) || fetch(:stage)) do
+          execute :rake, 'db:data:dump'
+        end
+      end
+    end
+  end
+
+  desc 'Copy remote data to local server'
+  task :download do
+    run_locally do
+      execute "scp ubuntu@crm.softwearcrm.com:#{release_path}/db/data.yml ./db/data.yml"
+      execute :rake, 'db:data:load'
+    end
+  end
+end
