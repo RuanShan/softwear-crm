@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head class="hidden-print">
-    <%= render partial: 'shared/head' %>
+    <%= render 'shared/head' %>
 </head>
 
 <body class="tooltips">
@@ -32,24 +32,25 @@
 </div>
 
 <div class="container">
-    <%= render partial: 'shared/sidebar',
-               locals: { current_url: @current_url, current_action: @current_action } %>
+    <%= render 'shared/sidebar',
+               current_url: @current_url,
+               current_action: @current_action %>
 
     <div class="right content-page">
 
-        <%= render partial: 'shared/content_header'  %>
+        <%= render 'shared/content_header'  %>
 
         <div class="body content rows scroll-y">
             <%= yield %>
-            <%= render partial: 'shared/footer'  %>
-            <%= render partial: 'shared/dock' %>
+            <%= render 'shared/footer'  %>
+            <%= render 'shared/dock' %>
         </div>
 
     </div>
 
-    <%= render partial: 'shared/modal_flash' %>
-    <%= render partial: 'shared/modal_content' %>
-    <%= render partial: 'shared/modal_timeout' %>
+    <%= render 'shared/modal_flash' %>
+    <%= render 'shared/modal_content' %>
+    <%= render 'shared/modal_timeout' %>
 </div>
 
 

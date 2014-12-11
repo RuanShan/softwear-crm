@@ -6,8 +6,9 @@ describe 'quotes/_line_items_table.html.erb', quote_spec: true, story_75: true d
   let!(:line_item_group) { double(:line_item_group, line_items: [line_item]) }
 
   before(:each) do
-    allow(quote).to receive(:line_item_groups).and_return [line_item_group]
-    render partial: 'quotes/line_items_table', locals: { quote: quote }
+    allow(quote).to receive(:line_item_groups).and_return [line_item_group, line_item_group]
+    allow(line_item_group).to receive(:name).and_return('AWWYESH')
+    render 'quotes/line_items_table', quote: quote
   end
 
   it 'should have a table header with line item attributes' do

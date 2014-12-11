@@ -6,7 +6,8 @@ describe 'quotes/_line_items_pdf.html.erb', quote_spec: true, story_75: true do
   let!(:line_item_group) { double(:line_item_group, line_items: [line_item]) }
 
   before(:each) do
-    allow(quote).to receive(:line_item_groups).and_return [line_item_group]
+    allow(quote).to receive(:line_item_groups).and_return [line_item_group, line_item_group]
+    allow(line_item_group).to receive(:name).and_return 'Indigo Montoya'
     render partial: 'quotes/line_items_pdf', locals: { quote: quote }
   end
 

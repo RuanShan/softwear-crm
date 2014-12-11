@@ -11,7 +11,9 @@ feature 'Pricing management', js: true, prices_spec: true do
     visit imprintables_path
     click_link("pricing_button_#{imprintable.id}")
     fill_in 'decoration_price', with: '5'
-    click_button 'Fetch Prices!'
+    click_link 'Add A Pricing Group'
+    fill_in 'pricing_group_text', with: 'Line Items'
+    click_button 'Add to Pricing Table'
 
     expect(page).to have_css('td', text: "#{imprintable.base_price + 5}")
     expect(page).to have_css('td', text: "#{imprintable.xxl_price + 5}")
@@ -32,62 +34,102 @@ feature 'Pricing management', js: true, prices_spec: true do
     visit imprintables_path
     click_link("pricing_button_#{imprintable.id}")
     fill_in 'decoration_price', with: '5'
-    click_button 'Fetch Prices!'
+    click_link 'Add A Pricing Group'
+    fill_in 'pricing_group_text', with: 'Line Items'
+    click_button 'Add to Pricing Table'
 
-    expect(page).to have_css('tr#price_0')
+    expect(page).to have_css('tr#price-Line_Items-0')
 
     find(:css, '#price_actions_0 a[data-action="destroy"]').click
     page.driver.browser.switch_to.alert.accept
 
-    expect(page).to_not have_css('tr#price_0')
+    expect(page).to_not have_css('tr#price-Line_items-0')
+  end
+
+ # TODO: this scenario is messed up, running it individually works fine but
+ # TODO: when run in a suite it usually fails
+  scenario 'A user can group prices into separate groups', story_67: true do
+    visit imprintables_path
+    click_link("pricing_button_#{imprintable.id}")
+    fill_in 'decoration_price', with: '5'
+    click_link 'Add A Pricing Group'
+    # for some reason the next line tends to glitch out, hence the sleeps
+    sleep 0.5
+    fill_in 'pricing_group_text', with: 'Line Items'
+    sleep 0.5
+
+    click_button 'Add to Pricing Table'
+
+    sleep 0.5
+    close_content_modal
+    sleep 0.5
+
+    click_link("pricing_button_#{imprintable.id}")
+    fill_in 'decoration_price', with: '2'
+    sleep 0.5
+    click_link 'Add A Pricing Group'
+    # for some reason the next line tends to glitch out, hence the sleeps
+    sleep 0.5
+    fill_in 'pricing_group_text', with: 'Not Line Items'
+    sleep 0.5
+
+    click_button 'Add to Pricing Table'
+    expect(page).to have_content 'Line Items'
+    expect(page).to have_content 'Not Line Items'
   end
 
   context 'There are two different prices in the pricing table', slow: true do
     background(:each) do
-      session = [
-        {
-          name: imprintable.name,
-          supplier_link: imprintable.supplier_link,
-          sizes: 'S - L',
-          prices: {
-              base_price: 10,
-              xxl_price: 12,
-              xxxl_price: 14,
-              xxxxl_price: 15,
-              xxxxxl_price: 16,
-              xxxxxxl_price: 17
-          }
-        },
-        {
-          name: imprintable.name,
-          supplier_link: imprintable.supplier_link,
-          sizes: 'M - XL',
-          prices: {
-              base_price: 5,
-              xxl_price: 6,
-              xxxl_price: 7,
-              xxxxl_price: 8,
-              xxxxxl_price: 9,
-              xxxxxxl_price: 10
-          }
+      session = {
+        pricing_groups: {
+          pricing_group_one: [
+            {
+              name: imprintable.name,
+              supplier_link: imprintable.supplier_link,
+              sizes: 'S - L',
+              prices: {
+                  base_price: 10,
+                  xxl_price: 12,
+                  xxxl_price: 14,
+                  xxxxl_price: 15,
+                  xxxxxl_price: 16,
+                  xxxxxxl_price: 17
+              }
+            }
+          ],
+          pricing_group_two: [
+            {
+              name: imprintable.name,
+              supplier_link: imprintable.supplier_link,
+              sizes: 'M - XL',
+              prices: {
+                  base_price: 5,
+                  xxl_price: 6,
+                  xxxl_price: 7,
+                  xxxxl_price: 8,
+                  xxxxxl_price: 9,
+                  xxxxxxl_price: 10
+              }
+            }
+          ]
         }
-      ]
-      page.set_rack_session(prices: session)
+      }
+      page.set_rack_session(session)
     end
 
     scenario 'A user can delete all prices from the pricing table' do
       visit imprintables_path
       click_link 'View Pricing Table'
 
-      expect(page).to have_css('tr#price_0')
-      expect(page).to have_css('tr#price_1')
+      expect(page).to have_css('tr#price-pricing_group_one-0')
+      expect(page).to have_css('tr#price-pricing_group_two-0')
 
       sleep 0.5
       find(:css, 'a[data-action="destroy_all"]').click
       page.driver.browser.switch_to.alert.accept
 
-      expect(page).to_not have_css('tr#price_0')
-      expect(page).to_not have_css('tr#price_1')
+      expect(page).to_not have_css('tr#price-pricing_group_one-0')
+      expect(page).to_not have_css('tr#price-pricing_group_two-0')
     end
   end
 end

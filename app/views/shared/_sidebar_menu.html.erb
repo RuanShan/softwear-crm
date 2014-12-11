@@ -128,8 +128,12 @@
           <%= link_to stores_path do %><i class="fa fa-angle-right"></i> Stores <% end %>
         <% end %>
 
-        <%= content_tag :li, class:('active' if current_action == 'settings') do %>
+        <%= content_tag :li, class: ('active' if current_action == 'settings') do %>
           <%= link_to integrated_crms_path do %><i class="fa fa-angle-right"></i> Integrated CRMs <% end %>
+        <% end %>
+
+        <%= content_tag :li, class: ('active' if current_action == 'email_templates') do %>
+          <%= link_to email_templates_path do %><i class="fa fa-angle-right"></i> Email Templates <% end %>
         <% end %>
       <% end %>
     <% end %>

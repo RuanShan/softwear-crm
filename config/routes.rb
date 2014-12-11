@@ -56,6 +56,13 @@ CrmSoftwearcrmCom::Application.routes.draw do
     end
     match 'integrated_crms', to: 'settings#edit', via: :get
     match 'update_integrated_crms', to: 'settings#update', via: :put
+    resources :email_templates do
+      get '/preview_body', to: 'email_templates#preview_body', as: :preview_body
+      collection do
+        # TODO: you'll need something like this if you want to expand templates to use more than just quotes
+        get '/fetch_table_attributes/(:table_name)', to: 'email_templates#fetch_table_attributes'
+      end
+    end
   end
 
   resources :orders do

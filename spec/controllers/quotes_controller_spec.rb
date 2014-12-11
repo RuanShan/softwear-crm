@@ -68,7 +68,7 @@ describe QuotesController, js: true, quote_spec: true do
         allow(Rails).to receive_message_chain(:env, :production?).and_return true
       end
 
-      it 'should call create_freshdesk_ticket', pending: "Freshdesk..." do
+      it 'should call create_freshdesk_ticket', pending: 'Freshdesk...' do
         expect_any_instance_of(Quote).to receive(:create_freshdesk_ticket).once
         post :create, quote: attributes_for(:valid_quote)
       end
@@ -81,16 +81,17 @@ describe QuotesController, js: true, quote_spec: true do
 
     before(:each) do
       allow(Quote).to receive(:all).and_return([quote])
-      allow(controller).to receive_message_chain(:session, :[], :[], :[]).and_return({})
+      allow(controller).to receive_message_chain(:session, :[], :[], :[], :[]).and_return({})
       allow(LineItem).to receive(:new).and_return(line_item)
-      get :quote_select, format: :js, index: '3'
+      get :quote_select, format: :js, index: '3', pricing_group: 'Something'
     end
 
     it 'assigns quote_select_hash' do
       hash = {
         quotes: [quote],
         index: 3,
-        new_line_item: line_item
+        new_line_item: line_item,
+        pricing_group: 'Something'
       }
       expect(assigns(:quote_select_hash)).to eq(hash)
     end
