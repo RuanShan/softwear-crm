@@ -9,15 +9,16 @@ class Quote < ActiveRecord::Base
   tracked by_current_user
 
   QUOTE_SOURCES = [
-      'Phone Call',
-      'E-mail',
-      'Walk In',
-      'Online Form',
-      'Other'
+    'Phone Call',
+    'E-mail',
+    'Walk In',
+    'Online Form',
+    'Other'
   ]
 
   belongs_to :salesperson, class_name: User
   belongs_to :store
+  has_many :email_templates
   has_many :emails, as: :emailable, class_name: Email, dependent: :destroy
   has_many :line_item_groups
 # has_many :line_items, through: :line_item_groups
@@ -91,7 +92,7 @@ class Quote < ActiveRecord::Base
     # https://github.com/AnnArborTees/softwear-mockbot/blob/release-2014-10-17/app/models/spree/store.rb
     Rails.cache.fetch(:quote_fd_ticket, :expires => 30.minutes) do
       config = FreshdeskModule.get_freshdesk_config(current_user)
-      client = Freshdesk.new(Figaro.env['freshdesk_url'], config[:freshdesk_email], config[:freshdesk_password])
+      client = Freshdesk.new(config[:freshdesk_url], config[:freshdesk_email], config[:freshdesk_password])
       client.response_format = 'json'
 
       ticket = client.get_tickets(freshdesk_ticket_id)

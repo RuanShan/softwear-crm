@@ -2,12 +2,7 @@
   <div class="li-standard-form">
     <fieldset class="js-removeable">
       <%= f.label :name %>
-
-      <% if defined? name %>
-        <%= f.text_field :name, value: name %>
-      <% else %>
-        <%= f.text_field :name %>
-      <% end %>
+      <%= f.text_field :name %>
 
       <%= f.label :description %>
       <%= f.text_area :description %>
@@ -19,11 +14,7 @@
       <%= f.number_field :quantity %>
 
       <%= f.label :unit_price, 'Unit Price' %>
-      <% if defined? unit_price %>
-        <%= f.text_field :unit_price, value: unit_price %>
-      <% else %>
-        <%= f.text_field :unit_price %>
-      <% end %>
+      <%= f.text_field :unit_price %>
 
       <%= f.label :url, 'URL' %>
       <%= f.text_field :url %>

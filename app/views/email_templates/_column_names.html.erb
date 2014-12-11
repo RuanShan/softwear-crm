@@ -1,0 +1,9 @@
+<h4>Here are the available methods you have to use:</h4>
+<p class="help-block">Use like this "{{<%= column_names.first %>}}"<br/>
+  Check <%= link_to 'this', 'https://github.com/Shopify/liquid/wiki/Liquid-for-Designers' %> out for information on Liquid's syntax</p>
+<ul>
+  <% column_names.each do |name| %>
+    <!-- TODO: move this into its own stylesheet -->
+    <li style="width:180px; display:inline; float:left;"><%= name %></li>
+  <% end %>
+</ul>

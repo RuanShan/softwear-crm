@@ -1,6 +1,7 @@
 $(window).load ->
   $("#flashModal").modal "show"
   $("#errorsModal").modal "show"
+  $("#dock").zIndex(1000)
 
 $(document).ready ->
   $(document).on 'click', '.js-remove-fields', (event) ->

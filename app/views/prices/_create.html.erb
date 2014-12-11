@@ -15,33 +15,37 @@
       </thead>
 
       <tbody>
-        <% session[:prices].each_with_index do |hash, index| %>
-          <tr id=<%= "price_#{index}" %>>
-            <td><%= link_to(hash[:name], hash[:supplier_link]) %></td>
-            <td><%= hash[:sizes] %></td>
-            <td><%= number_to_currency hash[:prices][:base_price] %></td>
-            <td><%= number_to_currency hash[:prices][:xxl_price] %></td>
-            <td><%= number_to_currency hash[:prices][:xxxl_price] %></td>
-            <td><%= number_to_currency hash[:prices][:xxxxl_price] %></td>
-            <td><%= number_to_currency hash[:prices][:xxxxxl_price] %></td>
-            <td><%= number_to_currency hash[:prices][:xxxxxxl_price] %></td>
-            <td>
-              <div class="btn-group btn-group-xs" id="price_actions_<%= index %>">
-                <%= link_to price_path(index), class: 'btn btn-default',
-                            data: { confirm: 'Are you sure you would like to delete the price?' },
-                            method: :delete, remote: true,
-                            'data-action' => 'destroy', 'data-toggle' => 'tooltip', 'title' => 'Destroy' do %>
-                  <i class="fa fa-times"></i>
-                <% end %>
+        <% session[:pricing_groups].each do |key, pricing_array| %>
+        <tr><td colspan="100"><%= key %></td></tr>
+          <% pricing_array.each_with_index do |pricing_hash, index| %>
+            <tr id=<%= "price-#{key.to_s.gsub(/\s/, '_')}-#{index}" %>>
+              <td><%= link_to(pricing_hash[:name], pricing_hash[:supplier_link]) %></td>
+              <td><%= pricing_hash[:sizes] %></td>
+              <td><%= number_to_currency pricing_hash[:prices][:base_price] %></td>
+              <td><%= number_to_currency pricing_hash[:prices][:xxl_price] %></td>
+              <td><%= number_to_currency pricing_hash[:prices][:xxxl_price] %></td>
+              <td><%= number_to_currency pricing_hash[:prices][:xxxxl_price] %></td>
+              <td><%= number_to_currency pricing_hash[:prices][:xxxxxl_price] %></td>
+              <td><%= number_to_currency pricing_hash[:prices][:xxxxxxl_price] %></td>
+              <td>
+                <div class="btn-group btn-group-xs" id="price_actions_<%= index %>">
+                  <%= link_to price_path(id: index, key: key), class: 'btn btn-default',
+                              data: { confirm: 'Are you sure you would like to delete the price?' },
+                              method: :delete,
+                              remote: true,
+                              'data-action' => 'destroy', 'data-toggle' => 'tooltip', 'title' => 'Destroy' do %>
+                    <i class="fa fa-times"></i>
+                  <% end %>
 
-                <%= link_to quote_select_quotes_path(index: index),
-                            class: 'btn btn-default', remote: true ,
-                            'title' => 'Add to Quote' do %>
-                  Add to Quote
-                <% end %>
-              </div>
-            </td>
-          </tr>
+                  <%= link_to quote_select_quotes_path(index: index, pricing_group: key),
+                              class: 'btn btn-default', remote: true,
+                              'title' => 'Add to Quote' do %>
+                    Add to Quote
+                  <% end %>
+                </div>
+              </td>
+            </tr>
+          <% end %>
         <% end %>
 
         <tr>
@@ -53,9 +57,7 @@
               <% end %>
           </td>
           <td class="col-sm-3 text-right">
-            <%= link_to 'Create Quote from Table',
-                        new_quote_path(price_information: session[:prices]),
-                        class: 'btn btn-default' %>
+            <%= link_to 'Create Quote from Table', new_quote_path, class: 'btn btn-default' %>
           </td>
         </tr>
       </tbody>

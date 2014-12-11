@@ -6,7 +6,7 @@ module ApplicationHelper
       render("#{association.to_s.singularize}_fields", f: builder)
     end
     link_to(name, '#', class: 'btn btn-info js-add-fields',
-            data: { id: id, fields: fields.gsub("\n", "") })
+            data: { id: id, fields: fields.gsub("\n", '') })
   end
 
   def model_table_row_id(object)

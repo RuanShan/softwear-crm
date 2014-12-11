@@ -3,7 +3,7 @@
     <div id="dock" class="box-info success col-xs-6">
       <h2>Docked Quote Request</h2>
       <div class="additional-btn">
-        <%= link_to "/undock", data: {remote: true}, class: 'additional-icon', 'data-toggle' => 'close' do  %>
+        <%= link_to '/undock', data: {remote: true}, class: 'additional-icon', 'data-toggle' => 'close' do  %>
             <i class="fa fa-times"></i>
         <% end %>
         <%= link_to new_quote_path(name: session[:docked].name, email: session[:docked].email, quote_request_id: session[:docked].id), class: 'additional-icon', 'data-toggle' => 'close' do  %>
@@ -21,7 +21,7 @@
           <%= session[:docked].description %>
         </p>
         <p>
-          Needed By: <%= session[:docked].date_needed.strftime("%F") %>
+          Needed By: <%= session[:docked].date_needed.strftime('%F') %>
         </p>
       </div>
     </div>

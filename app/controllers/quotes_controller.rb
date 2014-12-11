@@ -7,6 +7,19 @@ class QuotesController < InheritedResources::Base
     assign_new_quote_hash
     super do
       @quote_request_id = params[:quote_request_id] if params.has_key?(:quote_request_id)
+      # TODO: this is pretty gross...
+      if @new_quote_hash.has_key?(:price_information)
+        @new_quote_hash[:price_information].each do |_key, outer_value|
+          unless outer_value.nil?
+            outer_value.each do |inner_value|
+              new_line_item = LineItem.new(name: inner_value[:name],
+                                           unit_price: inner_value[:prices][:base_price],
+                                           url: inner_value[:supplier_link])
+              @quote.line_items << new_line_item
+            end
+          end
+        end
+      end
       @quote.line_item_groups.build.line_items.build
       @current_action = 'quotes#new'
     end
@@ -65,11 +78,11 @@ class QuotesController < InheritedResources::Base
     respond_to do |format|
       @quote_select_hash = {}
       @quote_select_hash[:quotes] = Quote.all
-      @quote_select_hash[:index] = params[:index].to_i
+      index = @quote_select_hash[:index] = params[:index].to_i
+      pricing_group = @quote_select_hash[:pricing_group] = params[:pricing_group]
 
-      index = @quote_select_hash[:index]
-      name = session[:prices][index][:name]
-      unit_price = session[:prices][index][:prices][:base_price]
+      name = session[:pricing_groups][pricing_group.to_sym][index][:name]
+      unit_price = session[:pricing_groups][pricing_group.to_sym][index][:prices][:base_price]
 
       @quote_select_hash[:new_line_item] = LineItem.new(name: name, unit_price: unit_price, description: 'Canned Description')
 
@@ -132,12 +145,8 @@ private
   def assign_new_quote_hash
     @new_quote_hash = {}
 
-    assign = lambda do |key|
-      @new_quote_hash[key] = params[key] if params[key]
-    end
-
-    assign[:price_information]
-    assign[:line_item_group_name]
+    @new_quote_hash[:price_information] = session[:pricing_groups]
+    @new_quote_hash[:line_item_group_name] = params[:line_item_group_name] if params[:line_item_group_name]
 
     if defined? params[:quote][:line_items_attributes]
       @new_quote_hash[:quote_li_attributes] = params[:quote][:line_items_attributes]
@@ -179,17 +188,16 @@ private
 
   def permitted_params
     params.permit(quote: [
-                   :email, :phone_number, :first_name, :last_name, :company,
-                   :twitter, :name, :valid_until_date, :estimated_delivery_date,
-                   :salesperson_id, :store_id, :shipping, :quote_source, :freshdesk_ticket_id,
-                    quote_request_ids: [],
-                    line_items_attributes: [
-                     :name, :quantity, :taxable, :description, :id,
-                     :imprintable_variant_id, :unit_price, :_destroy
-                    ],
-                    emails_attributes: [
-                        :subject, :body, :sent_to, :sent_from, :cc_emails, :id, :_destroy
-                    ]
-                  ])
+      :email, :phone_number, :first_name, :last_name, :company,
+      :twitter, :name, :valid_until_date, :estimated_delivery_date,
+      :salesperson_id, :store_id, :shipping, :quote_source, :freshdesk_ticket_id,
+       quote_request_ids: [],
+       line_items_attributes: [
+        :name, :quantity, :taxable, :description, :id,
+        :imprintable_variant_id, :unit_price, :_destroy, :url
+       ],
+       emails_attributes: [
+           :subject, :body, :sent_to, :sent_from, :cc_emails, :id, :_destroy
+       ]])
   end
 end

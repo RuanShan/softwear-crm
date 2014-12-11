@@ -1,0 +1,11 @@
+<div class="page-heading animated fadeInDownBig col-lg-9">
+  <h1>Email Templates <small>View and edit email templates</small></h1>
+</div>
+
+<div class="col-lg-3 text-right">
+  <%= link_to 'Add an Email Template', new_email_template_path, class: 'btn btn-primary' %>
+</div>
+
+<div class="box-info row clear">
+  <%= render 'table', email_templates: @email_templates %>
+</div>

@@ -24,6 +24,9 @@ gem 'summernote-rails'
 # For active_record_cookie store
 gem 'activerecord-session_store', github: 'rails/activerecord-session_store'
 
+# activeresource
+gem 'activeresource'
+
 # Use jquery as the JavaScript library
 gem 'jquery-rails'
 
@@ -35,6 +38,9 @@ gem 'launchy', '~> 2.4.2'
 
 # For token inputs
 gem 'chosen-rails'
+
+# use liquid to allow users to make custom templates
+gem 'liquid'
 
 # For the datetimepicker
 gem 'momentjs-rails', '~> 2.5.0'

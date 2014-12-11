@@ -7,6 +7,10 @@ module GeneralHelpers
     find('#flashModal .close').click
   end
 
+  def close_content_modal
+    find('#contentModal .close').click
+  end
+
   def unhide_dashboard
     selector = 'button.button-menu-mobile.show-sidebar'
     return if all(selector).empty?

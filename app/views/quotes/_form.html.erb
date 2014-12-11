@@ -52,8 +52,10 @@
           <%= text_field_tag :line_item_group_name, new_quote_hash[:line_item_group_name] || 'Line Items' %>
 
           <% if new_quote_hash[:price_information] %>
-            <% new_quote_hash[:price_information].each_with_index do |hash| %>
-              <%= add_lis_from_pricing_hash(f, :line_items, hash) %>
+            <% new_quote_hash[:price_information].each do |_key, pricing_group| %>
+              <% pricing_group.each do |hash| %>
+                <%= add_lis_from_pricing_hash(f, :line_items, hash) %>
+              <% end %>
             <% end %>
           <% elsif new_quote_hash[:quote_li_attributes] %>
             <% new_quote_hash[:quote_li_attributes].each do |_key, hash| %>
