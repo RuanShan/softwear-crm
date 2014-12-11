@@ -8,7 +8,7 @@ class QuotesController < InheritedResources::Base
     super do
       @quote_request_id = params[:quote_request_id] if params.has_key?(:quote_request_id)
       # TODO: this is pretty gross...
-      if @new_quote_hash.has_key?(:price_information)
+      unless @new_quote_hash[:price_information].nil?
         @new_quote_hash[:price_information].each do |_key, outer_value|
           unless outer_value.nil?
             outer_value.each do |inner_value|
