@@ -9,6 +9,7 @@ role :web, %w{ubuntu@50.17.187.22}
 role :db,  %w{ubuntu@50.17.187.22}
 
 set :branch, 'develop'
+set :linked_files, fetch(:linked_files) + %w{config/remote_database.yml}
 
 # Extended Server Syntax
 # ======================
