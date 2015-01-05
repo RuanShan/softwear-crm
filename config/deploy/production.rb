@@ -8,6 +8,8 @@ role :app, %w{ubuntu@crm.softwearcrm.com}
 role :web, %w{ubuntu@crm.softwearcrm.com}
 role :db,  %w{ubuntu@crm.softwearcrm.com}
 
+set :branch, 'master'
+
 # Extended Server Syntax
 # ======================
 # This can be used to drop a more detailed server
