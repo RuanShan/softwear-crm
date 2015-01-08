@@ -1,0 +1,11 @@
+<%= search_form_for Quote do |s| %>
+    <div class="row">
+      <div class="col-sm-3">
+        <%= s.fulltext placeholder: 'Keywords', id: 'quotes_search' %>
+      </div>
+
+      <div class="col-sm-1">
+        <%= s.submit %>
+      </div>
+    </div>
+<% end %>

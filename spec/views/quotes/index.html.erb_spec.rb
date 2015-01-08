@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe 'quotes/index.html.erb', quote_spec: true, story_306: true do
+describe 'quotes/index.html.erb', quote_spec: true, story_306: true, story_305: true do
   let!(:quote) { create(:valid_quote) }
 
   before(:each) do
@@ -23,5 +23,9 @@ describe 'quotes/index.html.erb', quote_spec: true, story_306: true do
     expect(rendered).to have_css('td', text: quote.company)
     expect(rendered).to have_css('td', text: quote.phone_number)
     expect(rendered).to have_css('td', text: quote.twitter)
+  end
+
+  it 'renders the _search partial' do
+    expect(rendered).to render_template(partial: '_search')
   end
 end

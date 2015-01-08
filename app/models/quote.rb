@@ -9,6 +9,11 @@ class Quote < ActiveRecord::Base
   default_scope { order('created_at DESC') }
   tracked by_current_user
 
+  searchable do
+    text :email, :first_name, :last_name, :name, :company, :twitter, :phone_number,
+         :quote_source, :freshdesk_ticket_id
+  end
+
   QUOTE_SOURCES = [
     'Phone Call',
     'E-mail',
