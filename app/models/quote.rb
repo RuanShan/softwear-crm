@@ -33,7 +33,6 @@ class Quote < ActiveRecord::Base
   validates :estimated_delivery_date, presence: true
   validates :first_name, presence: true
 # validate :has_line_items?
-  validates :last_name, presence: true
   validates :quote_source, presence: true
   validates :salesperson, presence: true
   validates :store, presence: true

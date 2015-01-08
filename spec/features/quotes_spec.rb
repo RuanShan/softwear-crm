@@ -160,8 +160,9 @@ feature 'Quotes management', quote_spec: true, js: true do
     sleep 0.5
     click_link 'Add to Quote'
     sleep 0.5
-    page.select(quote.name, from: 'quote_id')
-    sleep 0.5
+    page.find('div.chosen-container').click
+    sleep 1
+    page.find('li.active-result').click
     click_button 'Submit'
 
     sleep 1

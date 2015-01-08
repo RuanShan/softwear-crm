@@ -1,4 +1,7 @@
 $(window).load ->
+  $('.js-clear-btn').click ->
+    document.getElementById("js_search").value = "";
+
   deleteSearchQuery = ->
     $this = $(this)
     queryId = $this.data('query-id')

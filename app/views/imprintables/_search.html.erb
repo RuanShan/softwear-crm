@@ -1,29 +1,33 @@
 <%= search_form_for Imprintable do |s| %>
   <div class="row">
-    <div class="col-sm-3">
+    <div class="col-sm-4">
       <%= s.select :all_categories, ImprintableCategory::VALID_CATEGORIES,
                    nil: 'Category...' %>
     </div>
 
-    <div class="col-sm-3">
+    <div class="col-sm-4">
       <%= s.select :sizing_category, Imprintable::SIZING_CATEGORIES,
                    id: 'filter_sizing_category' %>
     </div>
 
-    <div class="col-sm-2">
+    <div class="col-sm-4">
       <%= s.yes_or_no_select :standard_offering %>
     </div>
 
-    <div class="col-sm-3">
-      <%= s.fulltext id: 'imprintables_search' %>
+    <div class="col-sm-4">
+      <%= s.fulltext id: 'js_search' %>
     </div>
 
-    <div class="col-sm-1">
+    <div class="col-sm-2">
       <%= s.submit %>
     </div>
 
-    <div class="col-sm-1">
+    <div class="col-sm-2">
       <%= s.save %>
+    </div>
+
+    <div class="col-sm-2">
+      <%= link_to 'Clear', '#', class: 'btn btn-primary js-clear-btn' %>
     </div>
   </div>
 <% end %>

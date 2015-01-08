@@ -153,6 +153,7 @@ class Imprintable < ActiveRecord::Base
     {
         name: name,
         supplier_link: supplier_link,
+        description: self.description,
         sizes: sizes_string,
         prices: get_prices(self, decoration_price)
     }
