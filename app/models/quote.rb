@@ -10,6 +10,11 @@ class Quote < ActiveRecord::Base
   paginates_per 50
   tracked by_current_user
 
+  searchable do
+    text :email, :first_name, :last_name, :name, :company, :twitter, :phone_number,
+         :quote_source, :freshdesk_ticket_id
+  end
+
   QUOTE_SOURCES = [
     'Phone Call',
     'E-mail',
