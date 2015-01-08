@@ -1,10 +1,10 @@
 require 'spec_helper'
 
-describe 'quotes/index.html.erb', quote_spec: true do
-  let!(:quote) { build_stubbed(:valid_quote) }
+describe 'quotes/index.html.erb', quote_spec: true, story_306: true do
+  let!(:quote) { create(:valid_quote) }
 
   before(:each) do
-    assign(:quotes, [quote])
+    assign(:quotes, Quote.all.page)
     render file: 'quotes/index'
   end
 

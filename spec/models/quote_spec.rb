@@ -33,6 +33,22 @@ describe Quote, quote_spec: true do
     end
   end
 
+  describe 'Scopes' do
+    context 'when there are multiple quotes', story_306: true do
+      let!(:quote_one) { create(:valid_quote, created_at: Time.now) }
+      let!(:quote_two) { create(:valid_quote, created_at: Time.now + 1.day) }
+      let!(:quote_three) { create(:valid_quote, created_at: Time.now + 2.day) }
+
+      it 'orders so the first quote is the newest, i.e. quote_three' do
+        expect(Quote.first).to eq(quote_three)
+      end
+
+      it 'orders so the last quote is the oldest, i.e. quote_one' do
+        expect(Quote.last).to eq(quote_one)
+      end
+    end
+  end
+
   describe 'callbacks' do
     context 'when supplied with an initialized at time' do
       it 'sets initialized_at to the supplied time', story_86: true do

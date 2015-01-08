@@ -6,6 +6,7 @@ class Quote < ActiveRecord::Base
   include TrackingHelpers
 
   acts_as_paranoid
+  default_scope { order('created_at DESC') }
   tracked by_current_user
 
   QUOTE_SOURCES = [
