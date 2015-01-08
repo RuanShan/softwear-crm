@@ -23,6 +23,13 @@ $(document).ready ->
 
   $('.editable').editable()
 
+  $('.js-datetimepicker').find('.input-group-addon').on "click", ->
+    console.log('double wtf')
+
+  $('.js-datetimepicker').find('.form-control').on "click", ->
+    console.log('wtf')
+    $(this).siblings('.input-group-addon').trigger "click"
+
 
 $(document).ajaxStart(->
   $('#js-ajax-loading').modal('show'))
