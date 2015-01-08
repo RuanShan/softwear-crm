@@ -7,6 +7,7 @@ class Quote < ActiveRecord::Base
 
   acts_as_paranoid
   default_scope { order('created_at DESC') }
+  paginates_per 50
   tracked by_current_user
 
   QUOTE_SOURCES = [
