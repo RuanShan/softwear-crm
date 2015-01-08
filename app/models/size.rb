@@ -5,6 +5,10 @@ class Size < ActiveRecord::Base
 
   default_scope { order(:sort_order) }
 
+  searchable do
+    text :name, :display_value, :sku
+  end
+
   before_validation :set_sort_order
 
   has_many :imprintable_variants, dependent: :destroy

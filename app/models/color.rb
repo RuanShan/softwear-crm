@@ -5,6 +5,10 @@ class Color < ActiveRecord::Base
 
   default_scope { order(:name) }
 
+  searchable do
+    text :name, :sku, :hexcode
+  end
+
   has_many :imprintable_variants, dependent: :destroy
 
   validates :name, uniqueness: true, presence: true

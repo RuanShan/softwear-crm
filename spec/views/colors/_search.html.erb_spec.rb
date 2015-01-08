@@ -1,13 +1,13 @@
 require 'spec_helper'
 
-describe 'quotes/_search.html.erb', quote_spec: true, story_305: true do
+describe 'colors/_search.html.erb', color_spec: true, story_221: true do
 
   before(:each) do
-    render partial: 'quotes/search'
+    render partial: 'colors/search'
   end
 
   it 'has  a text box for input and a submit button' do
-    expect(rendered).to have_css("input#quotes_search")
+    expect(rendered).to have_css("input#colors_search")
     expect(rendered).to have_css("input.submit[value='Search']")
   end
 
