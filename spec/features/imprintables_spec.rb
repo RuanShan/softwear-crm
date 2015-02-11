@@ -49,7 +49,7 @@ feature 'Imprintables management', imprintable_spec: true, slow: true do
       visit imprintables_path
 
       select 'Girls', from: 'filter_sizing_category'
-      fill_in 'imprintables_search', with: 'test'
+      fill_in 'js_search', with: 'test'
       click_button 'Search'
 
       expect(page).to have_content test_imprintable1.name
@@ -64,7 +64,7 @@ feature 'Imprintables management', imprintable_spec: true, slow: true do
       visit imprintables_path
 
       select 'Infant', from: 'filter_sizing_category'
-      fill_in 'imprintables_search', with: 'I should be there'
+      fill_in 'js_search', with: 'I should be there'
       click_button 'Search'
 
       expect(page).to have_content 'Infant'

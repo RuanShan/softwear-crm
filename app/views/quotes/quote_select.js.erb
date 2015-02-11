@@ -1,5 +1,6 @@
 $('#contentBody').fadeOut();
 
 $('#contentBody').html("<%= j(render 'quotes/quote_select', quote_select_hash: @quote_select_hash).html_safe %>");
+initializeQuoteSelectChosen();
 
 $('#contentBody').fadeIn();

@@ -41,4 +41,8 @@ describe 'quotes/show.html.erb', quote_spec: true do
   it 'should contain a button to email a customer' do
     expect(rendered).to have_link('Email Quote')
   end
+
+  it 'should contain a link to Quote#Edit' do
+    expect(rendered).to have_css('a', text: 'Edit')
+  end
 end

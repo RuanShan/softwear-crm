@@ -18,7 +18,6 @@ describe Quote, quote_spec: true do
     it { is_expected.to_not allow_value('not_an-email').for :email }
     it { is_expected.to validate_presence_of(:estimated_delivery_date) }
     it { is_expected.to validate_presence_of(:first_name) }
-    it { is_expected.to validate_presence_of(:last_name) }
     it { is_expected.to validate_presence_of(:quote_source) }
     it { is_expected.to validate_presence_of(:salesperson) }
     it { is_expected.to validate_presence_of(:store) }

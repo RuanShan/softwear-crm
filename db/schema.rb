@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20141202142842) do
+ActiveRecord::Schema.define(version: 20150103171106) do
 
   create_table "activities", force: true do |t|
     t.integer  "trackable_id"
@@ -306,7 +306,7 @@ ActiveRecord::Schema.define(version: 20141202142842) do
   create_table "line_items", force: true do |t|
     t.string   "name"
     t.integer  "quantity"
-    t.boolean  "taxable"
+    t.boolean  "taxable",                                         default: true
     t.text     "description"
     t.integer  "imprintable_variant_id"
     t.datetime "deleted_at"

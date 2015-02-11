@@ -4,6 +4,7 @@ module QuoteHelper
     id = new_object.object_id
     new_object.unit_price = field_hash[:prices][:base_price]
     new_object.name = field_hash[:name]
+    new_object.description = field_hash[:description]
     f.fields_for(association, new_object, child_index: id) do |builder|
       render(association.to_s.singularize + '_fields', f: builder)
     end
@@ -14,7 +15,7 @@ module QuoteHelper
     id = new_object.object_id
     new_object.name = params[:name]
     new_object.description = params[:description]
-    new_object.taxable = params[:description]
+    new_object.taxable = params[:taxable]
     new_object.quantity = params[:quantity]
     new_object.unit_price = params[:unit_price]
     new_object.url = params[:url]

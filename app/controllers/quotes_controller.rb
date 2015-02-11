@@ -83,8 +83,12 @@ class QuotesController < InheritedResources::Base
 
       name = session[:pricing_groups][pricing_group.to_sym][index][:name]
       unit_price = session[:pricing_groups][pricing_group.to_sym][index][:prices][:base_price]
+      puts session[:pricing_groups].inspect
+      puts '!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!'
+      puts '!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!1'
+      description = session[:pricing_groups][pricing_group.to_sym][index][:description]
 
-      @quote_select_hash[:new_line_item] = LineItem.new(name: name, unit_price: unit_price, description: 'Canned Description')
+      @quote_select_hash[:new_line_item] = LineItem.new(name: name, unit_price: unit_price, description: description)
 
       format.js
     end
@@ -96,7 +100,7 @@ class QuotesController < InheritedResources::Base
     group = @quote.line_item_groups.first
     saved = group.line_items.new(name: params[:name],
                          unit_price: params[:total_price],
-                         description: 'Canned Description',
+                         description: params[:description],
                          quantity: 1).save
 
     if saved
