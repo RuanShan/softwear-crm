@@ -58,5 +58,8 @@ Gemfile.lock
 # ignore everything in the public/assets folder
 /public/assets/*
 
+# vim swp files
+*.swp
+
 # i dont know what this file is lol
 dump.rdb
