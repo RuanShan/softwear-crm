@@ -109,6 +109,10 @@ class Quote < ActiveRecord::Base
     end
   end
 
+  def formal?
+    !informal?
+  end
+
   def line_items
     line_item_groups.flat_map(&:line_items).tap do |groups|
       groups.send(
