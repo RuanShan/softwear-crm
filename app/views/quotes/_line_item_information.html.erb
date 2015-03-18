@@ -47,9 +47,11 @@
             </tr>
           <% end %>
 
-          <% if quote.formal? %>
+          <% if quote.formal? || !quote.shipping.zero? %>
             <tr id="shipping">
-              <td></td><td></td><td></td>
+              <td></td><td></td>
+              <% if quote.formal? %> <td></td> <% end %>
+
               <td><strong>Shipping:</strong></td>
               <td><%= number_to_currency(quote.shipping) %></td>
             </tr>

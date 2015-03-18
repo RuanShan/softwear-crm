@@ -192,7 +192,7 @@ private
 
   def permitted_params
     params.permit(quote: [
-      :email, :phone_number, :first_name, :last_name, :company,
+      :email, :informal, :phone_number, :first_name, :last_name, :company,
       :twitter, :name, :valid_until_date, :estimated_delivery_date,
       :salesperson_id, :store_id, :shipping, :quote_source, :freshdesk_ticket_id,
        quote_request_ids: [],
