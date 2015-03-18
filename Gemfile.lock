@@ -325,6 +325,7 @@ GEM
     rspec-retry (0.3.0)
       rspec
     rspec-support (3.0.0.beta2)
+    rubinius-debugger (2.2.1)
     rubyzip (1.1.3)
     sass (3.2.19)
     sass-rails (4.0.3)
@@ -481,6 +482,7 @@ DEPENDENCIES
   rspec-mocks
   rspec-rails (~> 3.0.0.beta)
   rspec-retry
+  rubinius-debugger
   sass-rails (~> 4.0.2)
   sdoc
   selenium-webdriver

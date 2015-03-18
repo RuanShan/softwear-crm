@@ -84,7 +84,8 @@ group :development do
 end
 
 group :development, :test do
-  gem 'byebug'
+  gem 'byebug', platforms: :mri
+  gem 'rubinius-debugger', platforms: :rbx
 end
 
 group :test do
