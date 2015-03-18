@@ -33,10 +33,10 @@ describe 'quotes/_line_item_information.html.erb', quote_spec: true, story_75: t
     end
 
     it 'displays subtotal' do
-      expect(rendered).to have_css 'id > strong', text: 'Subtotal:'
+      expect(rendered).to have_css 'td > strong', text: 'Subtotal:'
     end
     it 'displays shipping' do
-      expect(rendered).to have_css 'id > strong', text: 'Shipping:'
+      expect(rendered).to have_css 'td > strong', text: 'Shipping:'
     end
   end
 
@@ -62,10 +62,10 @@ describe 'quotes/_line_item_information.html.erb', quote_spec: true, story_75: t
     end
 
     it 'does not display subtotal' do
-      expect(rendered).to_not have_css 'id > strong', text: 'Subtotal:'
+      expect(rendered).to_not have_css 'td > strong', text: 'Subtotal:'
     end
     it 'does not display shipping' do
-      expect(rendered).to_not have_css 'id > strong', text: 'Shipping:'
+      expect(rendered).to_not have_css 'td > strong', text: 'Shipping:'
     end
   end
 
