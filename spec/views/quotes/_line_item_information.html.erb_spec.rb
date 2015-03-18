@@ -5,15 +5,19 @@ describe 'quotes/_line_item_information.html.erb', quote_spec: true, story_75: t
   let!(:line_item) { build_stubbed(:non_imprintable_line_item) }
   let!(:line_item_group) { double(:line_item_group, line_items: [line_item]) }
 
+  def render!
+    render 'quotes/line_item_information', quote: quote
+  end
+
   before(:each) do
     allow(quote).to receive(:line_item_groups).and_return [line_item_group, line_item_group]
     allow(line_item_group).to receive(:name).and_return ('Whats yo name?!?!')
-    render 'quotes/line_item_information', quote: quote
   end
 
   context 'when the quote is formal', story_277: true do
     before(:each) do
       quote.informal = false
+      render!
     end
 
     it 'has a table header with Name, Description, Unit Price, Quantity, and Totals' do
@@ -43,6 +47,7 @@ describe 'quotes/_line_item_information.html.erb', quote_spec: true, story_75: t
   context 'when the quote is informal', story_277: true do
     before(:each) do
       quote.informal = true
+      render!
     end
 
     it 'should omit the Totals header' do
@@ -73,6 +78,7 @@ describe 'quotes/_line_item_information.html.erb', quote_spec: true, story_75: t
     let!(:line_item) { build_stubbed(:non_imprintable_line_item, url: 'google.com') }
 
     it 'should link to the line item via its name if url is not blank' do
+      render!
       expect(rendered).to have_css('a', text: quote.standard_line_items.first.name)
       expect(rendered).to have_link("#{quote.standard_line_items.first.name}", href: "http://#{quote.standard_line_items.first.url}")
     end
@@ -82,6 +88,7 @@ describe 'quotes/_line_item_information.html.erb', quote_spec: true, story_75: t
     let!(:line_item) { build_stubbed(:non_imprintable_line_item, url: nil) }
 
     it 'should not link to the line item via its name if url is blank' do
+      render!
       expect(rendered).to_not have_css('a', text: quote.standard_line_items.first.name)
       expect(rendered).to_not have_link("#{quote.standard_line_items.first.name}", href: "http://#{quote.standard_line_items.first.url}")
     end
