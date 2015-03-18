@@ -11,21 +11,90 @@ describe 'quotes/_line_items_table.html.erb', quote_spec: true, story_75: true d
     render 'quotes/line_items_table', quote: quote
   end
 
-  it 'should have a table header with line item attributes' do
-    expect(rendered).to have_css('th', text: 'Name')
-    expect(rendered).to have_css('th', text: 'Description')
-    expect(rendered).to have_css('th', text: 'Unit Price')
-    expect(rendered).to have_css('th', text: 'Quantity')
-    expect(rendered).to have_css('th', text: 'Totals')
+  context 'when the quote is formal', story_277: true do
+    before(:each) do
+      quote.informal = false
+    end
+
+    it 'has a table header with Name, Description, Unit Price, Quantity, and Totals' do
+      expect(rendered).to have_css('th', text: 'Name')
+      expect(rendered).to have_css('th', text: 'Description')
+      expect(rendered).to have_css('th', text: 'Unit Price')
+      expect(rendered).to have_css('th', text: 'Quantity')
+      expect(rendered).to have_css('th', text: 'Totals')
+    end
+
+    it "should have appropriate td's for line item attributes" do
+      expect(rendered).to have_css('td', text: quote.standard_line_items.first.name)
+      expect(rendered).to have_css('td', text: quote.standard_line_items.first.description)
+      expect(rendered).to have_css('td', text: number_to_currency(quote.standard_line_items.first.unit_price))
+      expect(rendered).to have_css('td', text: quote.standard_line_items.first.quantity)
+      expect(rendered).to have_css('td', text: number_to_currency(quote.standard_line_items.first.total_price))
+    end
+
+    it 'displays subtotal' do
+      expect(rendered).to have_css 'id > strong', text: 'Subtotal:'
+    end
+    it 'displays tax' do
+      expect(rendered).to have_css 'id > strong', text: 'Tax:'
+    end
+    it 'displays shipping' do
+      expect(rendered).to have_css 'id > strong', text: 'Shipping:'
+    end
+    it 'displays total' do
+      expect(rendered).to have_css 'id > strong', text: 'Total:'
+    end
   end
 
-  it "should have appropriate td's for line item attributes" do
-    expect(rendered).to have_css('td', text: quote.standard_line_items.first.name)
-    expect(rendered).to have_css('td', text: quote.standard_line_items.first.description)
-    expect(rendered).to have_css('td', text: number_to_currency(quote.standard_line_items.first.unit_price))
-    expect(rendered).to have_css('td', text: quote.standard_line_items.first.quantity)
-    expect(rendered).to have_css('td', text: number_to_currency(quote.standard_line_items.first.total_price))
+  context 'when the quote is informal', story_277: true do
+    before(:each) do
+      quote.informal = true
+    end
+
+    it 'should omit the Totals header' do
+      expect(rendered).to have_css('th', text: 'Name')
+      expect(rendered).to have_css('th', text: 'Description')
+      expect(rendered).to have_css('th', text: 'Unit Price')
+      expect(rendered).to have_css('th', text: 'Quantity')
+      expect(rendered).to_not have_css('th', text: 'Totals')
+    end
+
+    it 'should omit the total price' do
+      expect(rendered).to have_css('td', text: quote.standard_line_items.first.name)
+      expect(rendered).to have_css('td', text: quote.standard_line_items.first.description)
+      expect(rendered).to have_css('td', text: number_to_currency(quote.standard_line_items.first.unit_price))
+      expect(rendered).to have_css('td', text: quote.standard_line_items.first.quantity)
+      expect(rendered).to_not have_css('td', text: number_to_currency(quote.standard_line_items.first.total_price))
+    end
+
+    it 'does not display subtotal' do
+      expect(rendered).to_not have_css 'id > strong', text: 'Subtotal:'
+    end
+
+    context 'when shipping is 0' do
+      before(:each) do
+        allow(quote).to receive(:shipping).and_return 0
+      end
+
+      it 'does not display shipping' do
+        expect(rendered).to_not have_css 'id > strong', text: 'Shipping:'
+      end
+    end
+    context 'when shipping is nonzero' do
+      before(:each) do
+        allow(quote).to receive(:shipping).and_return 12.05
+      end
+
+      it 'displays shipping' do
+        expect(rendered).to have_css 'id > strong', text: 'Shipping:'
+      end
+    end
+
+    it 'does not display tax' do
+      expect(rendered).to_not have_css 'id > strong', text: 'Tax:'
+    end
   end
+
 
   context 'line item with url' do
     let!(:line_item) { build_stubbed(:non_imprintable_line_item, url: 'google.com') }
