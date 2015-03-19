@@ -15,6 +15,17 @@ describe QuoteRequest, quote_request_spec: true, story_78: true do
     it { is_expected.to have_db_column(:status).of_type(:string) }
   end
 
+  describe 'Validations' do
+    context 'when status == "could_not_quote"', story_472: true do
+      before { subject.status = 'could_not_quote' }
+      it { is_expected.to validate_presence_of :reason }
+    end
+    context 'when status != "could_not_quote"', story_472: true do
+      before { subject.status = 'pending' }
+      it { is_expected.to_not validate_presence_of :reason }
+    end
+  end
+
   describe 'status', story_195: true do
     context 'on creation' do
       it 'is "pending"' do

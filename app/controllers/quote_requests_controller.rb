@@ -19,7 +19,7 @@ class QuoteRequestsController < InheritedResources::Base
 
   def permitted_params
     params.permit(
-      quote_request: [:status, :salesperson_id]
+      :id, quote_request: [:status, :salesperson_id, :reason]
     )
   end
 

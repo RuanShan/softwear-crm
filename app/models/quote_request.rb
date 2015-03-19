@@ -13,7 +13,10 @@ class QuoteRequest < ActiveRecord::Base
     string :status
   end
 
-  QUOTE_REQUEST_STATUSES = %w(assigned pending quoted)
+  QUOTE_REQUEST_STATUSES = %w(
+    assigned pending quoted requested_info could_not_quote
+    referred_to_design_studio
+  )
 
   belongs_to :salesperson, class_name: User
   has_many :quote_request_quotes
@@ -22,11 +25,16 @@ class QuoteRequest < ActiveRecord::Base
 
   validates :name, :email, :approx_quantity, :status,
             :date_needed, :description, :source, presence: true
+  validates :reason, presence: true, if: :reason_needed?
 
   before_validation(on: :create) { self.status = 'pending' if status.nil? }
 
   def salesperson_id=(id)
     super
     self.status = 'assigned'
+  end
+
+  def reason_needed?
+    status == 'could_not_quote'
   end
 end

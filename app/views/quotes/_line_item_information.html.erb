@@ -19,7 +19,9 @@
                 <th>Description</th>
                 <th>Unit Price</th>
                 <th>Quantity</th>
-                <th>Totals</th>
+                <% if quote.formal? %>
+                  <th>Totals</th>
+                <% end %>
               </tr>
           <% end %>
 
@@ -29,23 +31,31 @@
               <td class="col-sm-4"><%= li.description %></td>
               <td class="col-sm-1"><%= number_to_currency(li.unit_price) %></td>
               <td class="col-sm-1"><%= li.quantity %></td>
-              <td class="col-sm-2"><%= number_to_currency(li.total_price) %></td>
+              <% if quote.formal? %>
+                <td class="col-sm-2"><%= number_to_currency(li.total_price) %></td>
+              <% end %>
             </tr>
           <% end %>
         <% end %>
 
         <span class="no-break">
-          <tr id="subtotal">
-            <td></td><td></td><td></td>
-            <td><strong>Subtotal:</strong></td>
-            <td><%= number_to_currency(quote.line_items_subtotal) %></td>
-          </tr>
+          <% if quote.formal? %>
+            <tr id="subtotal">
+              <td></td><td></td><td></td>
+              <td><strong>Subtotal:</strong></td>
+              <td><%= number_to_currency(quote.line_items_subtotal) %></td>
+            </tr>
+          <% end %>
 
-          <tr id="shipping">
-            <td></td><td></td><td></td>
-            <td><strong>Shipping:</strong></td>
-            <td><%= number_to_currency(quote.shipping) %></td>
-          </tr>
+          <% if quote.formal? || !quote.shipping.zero? %>
+            <tr id="shipping">
+              <td></td><td></td>
+              <% if quote.formal? %> <td></td> <% end %>
+
+              <td><strong>Shipping:</strong></td>
+              <td><%= number_to_currency(quote.shipping) %></td>
+            </tr>
+          <% end %>
         </span>
 
       </tbody>
