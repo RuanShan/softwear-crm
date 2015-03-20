@@ -1,4 +1,7 @@
 class QuoteRequest < ActiveRecord::Base
+  include TrackingHelpers
+
+  tracked by_current_user + { params: { s: ->(_c, r) { r.track_state_changes } } }
 
   default_scope { order('quote_requests.created_at DESC') }
 
@@ -36,5 +39,21 @@ class QuoteRequest < ActiveRecord::Base
 
   def reason_needed?
     status == 'could_not_quote'
+  end
+
+  def status=(new_status)
+    @old_status = status
+    super(new_status)
+  end
+
+  def track_state_changes
+    if status != @old_status
+      {
+        status_changed_from: @old_status,
+        status_changed_to: status
+      }
+    else
+      {}
+    end
   end
 end
