@@ -5,6 +5,7 @@ class QuotesController < InheritedResources::Base
 
   def new
     assign_new_quote_hash
+    add_params_from_docked_quote_request
     super do
       @quote_request_id = params[:quote_request_id] if params.has_key?(:quote_request_id)
       # TODO: this is pretty gross...
@@ -146,7 +147,16 @@ class QuotesController < InheritedResources::Base
     render 'populate_email', locals: { quote: @quote }
   end
 
-private
+  private
+
+  def add_params_from_docked_quote_request
+    docked = session[:docked]
+    return if docked.nil?
+
+    params[:name]             = docked.name
+    params[:email]            = docked.email
+    params[:quote_request_id] = docked.id
+  end
 
   def assign_new_quote_hash
     @new_quote_hash = {}
