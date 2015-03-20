@@ -112,6 +112,53 @@ describe LineItem, line_item_spec: true do
     end
   end
 
+  describe '#group_name=', story_303: true do
+    context 'when the line item is part of a quote' do
+      let!(:quote) { create :valid_quote }
+      let!(:line_item_attributes) { attributes_for :line_item, name: 'whee', description: 'important' }
+
+      before(:each) do
+        quote.line_items_attributes = { line_item: line_item_attributes }
+      end
+
+      context 'and the quote has a group of the given name' do
+        before(:each) do
+          quote.line_item_groups << create(:line_item_group, name: 'Test Group')
+          quote.save!
+        end
+
+        it 'hops over to the existing group' do
+          group = quote.line_item_groups.find_by(name: 'Test Group')
+          line_item = quote.line_items.first
+          original_group = line_item.line_itemable
+
+          expect(group.line_items).to_not include line_item
+
+          line_item.group_name = 'Test Group'
+          line_item.save!
+
+          expect(group.reload.line_items).to include line_item
+          expect(original_group.reload.line_items).to_not include line_item
+        end
+      end
+      context 'and the quote does not have a group of the given name' do
+        before(:each) do
+          quote.save!
+        end
+
+        it 'creates a new group within the quote with the given name' do
+          line_item = quote.line_items.first
+
+          line_item.group_name = 'New Group'
+          line_item.save!
+
+          expect(quote.line_item_groups.pluck(:name)).to include 'New Group'
+          expect(line_item.line_itemable.name).to eq 'New Group'
+        end
+      end
+    end
+  end
+
   describe '#imprintable' do
     let(:line_item) do
       build_stubbed(
