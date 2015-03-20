@@ -28,6 +28,7 @@ class QuotesController < InheritedResources::Base
   def index
     super do
       @current_action = 'quotes#index'
+      @quotes = Quote.all.page(params[:page])
     end
   end
 
