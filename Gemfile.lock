@@ -1,4 +1,12 @@
 GIT
+  remote: git://github.com/annarbortees/freshdesk-api.git
+  revision: e820d22d39627c6f7ba81a587afbc61506ac8a1c
+  specs:
+    freshdesk (0.3.pre.SNAPSHOT)
+      nokogiri
+      rest-client
+
+GIT
   remote: git://github.com/jetthoughts/yaml_db.git
   revision: fb4b6bd7e12de3cffa93e0a298a1e5253d7e92ba
   ref: fb4b6bd7e12de3cffa93e0a298a1e5253d7e92ba
@@ -172,9 +180,6 @@ GEM
       rails (>= 3, < 5)
     font-awesome-sass (4.1.0)
       sass (~> 3.2)
-    freshdesk (0.2)
-      nokogiri
-      rest-client
     fssm (0.2.10)
     funkify (0.0.4)
     google_drive (0.3.9)
@@ -229,7 +234,7 @@ GEM
       sqlite3-ruby
       thin
     mime-types (1.25.1)
-    mini_portile (0.6.0)
+    mini_portile (0.6.2)
     minitest (4.7.5)
     momentjs-rails (2.5.1)
       railties (>= 3.1)
@@ -240,9 +245,9 @@ GEM
     net-scp (1.2.1)
       net-ssh (>= 2.6.5)
     net-ssh (2.9.0)
-    netrc (0.7.7)
-    nokogiri (1.6.3.1)
-      mini_portile (= 0.6.0)
+    netrc (0.10.3)
+    nokogiri (1.6.6.2)
+      mini_portile (~> 0.6.0)
     oauth (0.4.7)
     oauth2 (0.9.4)
       faraday (>= 0.8, < 0.10)
@@ -297,7 +302,7 @@ GEM
     remotipart (1.2.1)
     responders (1.0.0)
       railties (>= 3.2, < 5)
-    rest-client (1.7.2)
+    rest-client (1.7.3)
       mime-types (>= 1.16, < 3.0)
       netrc (~> 0.7)
     rsolr (1.0.10)
@@ -455,7 +460,7 @@ DEPENDENCIES
   fakeredis
   figaro
   font-awesome-sass
-  freshdesk
+  freshdesk!
   funkify
   google_drive
   hirb (~> 0.7.1)
