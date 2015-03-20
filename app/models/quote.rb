@@ -16,7 +16,7 @@ class Quote < ActiveRecord::Base
     'Other'
   ]
 
-  default_scope -> { order('created_at DESC') }
+  default_scope -> { order('quotes.created_at DESC') }
 
   belongs_to :salesperson, class_name: User
   belongs_to :store
