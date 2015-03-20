@@ -1,12 +1,18 @@
 module QuoteHelper
-  def add_lis_from_pricing_hash(f, association, field_hash)
+  def add_lis_from_pricing_hash(f, association, field_hash, group_name = nil)
     new_object = f.object.send(association).klass.new
     id = new_object.object_id
-    new_object.unit_price = field_hash[:prices][:base_price]
-    new_object.name = field_hash[:name]
+
+    new_object.unit_price  = field_hash[:prices][:base_price]
+    new_object.name        = field_hash[:name]
     new_object.description = field_hash[:description]
+
     f.fields_for(association, new_object, child_index: id) do |builder|
-      render(association.to_s.singularize + '_fields', f: builder)
+      render(
+        association.to_s.singularize + '_fields',
+        f: builder,
+        group_name: group_name
+      )
     end
   end
 

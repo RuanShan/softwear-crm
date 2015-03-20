@@ -1,4 +1,4 @@
-<div class="line-item-form">
+<div class="line-item-form quote-line-item-fields">
   <div class="li-standard-form">
     <fieldset class="js-removeable">
       <%= f.label :name %>
@@ -7,8 +7,9 @@
       <%= f.label :description %>
       <%= f.text_area :description %>
 
-      <%= f.label :taxable, style: 'width: 34px; height: 34px;' %>
-      <%= f.check_box :taxable, checked: true, style: 'width: 34px; height: 34px;' %>
+      <%= f.label :taxable %>
+      <%= f.check_box :taxable, checked: true %>
+      <br />
 
       <%= f.label :quantity %>
       <%= f.number_field :quantity %>
@@ -21,6 +22,8 @@
 
       <%= f.hidden_field :_destroy %>
       <%= link_to 'Remove Line Item', '#', class: 'js-remove-fields btn' %>
+
+      <%= f.hidden_field :group_name, value: group_name if local_assigns[:group_name] %>
     </fieldset>
   </div>
   <br>

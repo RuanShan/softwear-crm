@@ -67,6 +67,7 @@ class QuotesController < InheritedResources::Base
         @quote
           .default_group
           .update_attributes(name: params[:line_item_group_name])
+
       end
       @quote
       # scrapping for now since freshdesk is a piece of shit
@@ -191,14 +192,17 @@ private
   end
 
   def permitted_params
-    params.permit(quote: [
+    params.permit(
+      :line_item_group_name,
+      quote: [
       :email, :informal, :phone_number, :first_name, :last_name, :company,
       :twitter, :name, :valid_until_date, :estimated_delivery_date,
       :salesperson_id, :store_id, :shipping, :quote_source, :freshdesk_ticket_id,
        quote_request_ids: [],
        line_items_attributes: [
         :name, :quantity, :taxable, :description, :id,
-        :imprintable_variant_id, :unit_price, :_destroy, :url
+        :imprintable_variant_id, :unit_price, :_destroy, :url,
+        :group_name
        ],
        emails_attributes: [
            :subject, :body, :sent_to, :sent_from, :cc_emails, :id, :_destroy
