@@ -10,18 +10,6 @@ class PricesController < ApplicationController
     end
   end
 
-  # session[:pricing_groups] == {
-  #   pricing_group_1: [
-  #     { pricing_hash_1 },
-  #     { pricing_hash_2 }
-  #   ],
-  #     pricing_group_2: [
-  #       { pricing_hash_3 },
-  #       ...
-  #     ],
-  #     ...
-  # }
-
   def create
     respond_to do |format|
       if params[:pricing_group_select].blank? && params[:pricing_group_text].blank?
