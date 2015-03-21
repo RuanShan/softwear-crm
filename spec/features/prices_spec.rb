@@ -56,12 +56,12 @@ feature 'Pricing management', js: true, prices_spec: true do
     wait_for_ajax
     click_link("pricing_button_#{imprintable.id}")
     fill_in 'decoration_price', with: '2'
-    wait_for_ajax
+    sleep(0.5)
     click_link 'New Group'
     # for some reason the next line tends to glitch out, hence the sleeps
-    wait_for_ajax
+    sleep(0.5)
     fill_in 'pricing_group_text', with: 'Not Line Items'
-    wait_for_ajax
+    sleep(0.5)
 
     click_button 'Add to Pricing Table'
     expect(page).to have_content 'Line Items'
