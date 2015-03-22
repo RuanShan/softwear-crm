@@ -1,24 +1,29 @@
-<div class="box-info full">
-  <div class="table-responsive">
-    <table class="table table-hover">
-      <thead>
-        <tr>
-          <th>Item</th>
-          <th>Sizes</th>
-          <th>Base Price</th>
-          <th>2XL</th>
-          <th>3XL</th>
-          <th>4XL</th>
-          <th>5XL</th>
-          <th>6XL</th>
-        </tr>
-      </thead>
+<div class="col-xs-12 clearfix clear">
+  <% if session[:pricing_groups].nil? || session[:pricing_groups].empty? %>
+    <div class="alert alert-warning clear">
+      Your pricing table is currently empty
+    </div>
+  <% else %>
+  <table class="table table-condensed table-hover">
+    <thead>
+    <tr>
+      <th>Item</th>
+      <th>Sizes</th>
+      <th>Base</th>
+      <th>2XL</th>
+      <th>3XL</th>
+      <th>4XL</th>
+      <th>5XL</th>
+      <th>6XL</th>
+    </tr>
+    </thead>
 
-      <tbody>
-        <% session[:pricing_groups].each do |key, pricing_array| %>
-        <tr><td colspan="100"><%= key %></td></tr>
-          <% pricing_array.each_with_index do |pricing_hash, index| %>
-            <tr id=<%= "price-#{key.to_s.gsub(/\s/, '_')}-#{index}" %>>
+    <tbody>
+    <% session[:pricing_groups].each do |group, pricing_array| %>
+        <tr>
+          <td colspan="9"><b>Group:</b> <%= group %></td></tr>
+            <% pricing_array.each_with_index do |pricing_hash, index| %>
+            <tr id=<%= "price-#{group.to_s.gsub(/\s/, '_')}-#{index}" %>>
               <td><%= link_to(pricing_hash[:name], pricing_hash[:supplier_link]) %></td>
               <td><%= pricing_hash[:sizes] %></td>
               <td><%= number_to_currency pricing_hash[:prices][:base_price] %></td>
@@ -29,38 +34,37 @@
               <td><%= number_to_currency pricing_hash[:prices][:xxxxxxl_price] %></td>
               <td>
                 <div class="btn-group btn-group-xs" id="price_actions_<%= index %>">
-                  <%= link_to price_path(id: index, key: key), class: 'btn btn-default',
-                              data: { confirm: 'Are you sure you would like to delete the price?' },
-                              method: :delete,
-                              remote: true,
-                              'data-action' => 'destroy', 'data-toggle' => 'tooltip', 'title' => 'Destroy' do %>
-                    <i class="fa fa-times"></i>
+                  <%= link_to price_path(id: index, group: group),
+                              method: :delete,  remote: true, class: 'btn btn-danger',
+                              data: {
+                                      confirm: 'Are you sure you would like to delete the price?'
+                              } do %>
+                      <i class="fa fa-times"></i> Remove
                   <% end %>
 
-                  <%= link_to quote_select_quotes_path(index: index, pricing_group: key),
-                              class: 'btn btn-default', remote: true,
-                              'title' => 'Add to Quote' do %>
-                    Add to Quote
+                  <%= link_to quote_select_quotes_path(index: index, pricing_group: group),
+                              class: 'btn btn-warning', remote: true do %>
+                      <i class="fa fa-plus"></i> Add to Quote
                   <% end %>
                 </div>
               </td>
             </tr>
-          <% end %>
         <% end %>
-
-        <tr>
-          <td><%= link_to destroy_all_prices_path, class: 'btn btn-default',
-                          data: { confirm: 'Are you sure you want to delete every price?' },
-                          remote: true, 'data-action' => 'destroy_all',
-                          'data-toggle' => 'tooltip', 'title' => 'Destroy All' do %>
-                Delete all Prices
-              <% end %>
-          </td>
-          <td class="col-sm-3 text-right">
-            <%= link_to 'Create Quote from Table', new_quote_path, class: 'btn btn-default' %>
-          </td>
-        </tr>
-      </tbody>
-    </table>
-  </div>
+    <% end %>
+    </tbody>
+  </table>
 </div>
+<div class="col-xs-12 text-right">
+  <%= link_to destroy_all_prices_path, class: 'btn btn-danger',
+              data: { confirm: 'Are you sure you want to delete every price?' },
+              remote: true do %>
+      <i class="glyphicon glyphicon-remove"></i> Delete Pricing Table
+  <% end %>
+
+  <%= link_to new_quote_path, class: 'btn btn-success' do %>
+      <i class="glyphicon glyphicon-usd"></i> Create Quote from Table
+  <% end %>
+
+</div>
+  <% end %>
+<br clear="all" />

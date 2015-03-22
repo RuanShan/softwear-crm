@@ -8,7 +8,7 @@
       <div class="input-group">
         <span class="input-group-addon">$</span>
 
-        <%= text_field_tag :decoration_price, nil,
+        <%= text_field_tag :decoration_price, session[:last_price],
                            placeholder: 'Enter decoration price...', class: 'form-control', required: true %>
 
       </div>

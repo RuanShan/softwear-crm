@@ -26,7 +26,7 @@ class PricesController < ApplicationController
       session[:pricing_groups][pricing_group_key] ||= []
       pricing_hash = @imprintable.pricing_hash(params[:decoration_price].to_f)
       session[:pricing_groups][pricing_group_key] << pricing_hash
-
+      session[:last_price] = params[:decoration_price].to_f
       format.js
     end
   end
@@ -40,10 +40,10 @@ class PricesController < ApplicationController
 
   def destroy
     respond_to do |format|
-      key = params[:key].to_sym
+      group = params[:group].to_sym
       id = params[:id].to_i
-      session[:pricing_groups][key].delete_at(id)
-      session[:pricing_groups].delete(key) if session[:pricing_groups][key].size == 0
+      session[:pricing_groups][group].delete_at(id)
+      session[:pricing_groups].delete(group) if session[:pricing_groups][group].size == 0
       format.js { render 'create' }
     end
   end

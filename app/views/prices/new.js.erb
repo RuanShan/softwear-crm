@@ -1,3 +1,4 @@
 $('#contentModal .modal-body').html("<%= j(render 'prices/new', imprintable: @imprintable )
                                           .html_safe %>");
+$('#contentModal .modal-dialog').css('width', '600px');
 $('#contentModal').modal('show');
