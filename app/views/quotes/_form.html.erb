@@ -45,7 +45,7 @@
   </section>
 
   <section class="step" data-step-title="Line Items">
-    <div class="col-sm-6">
+    <div class="col-sm-12">
       <div class="row">
         <div class="form-group">
           <%= label_tag :line_item_group_name, 'Default Group Name:', id: 'group-name' %>
@@ -71,16 +71,6 @@
           <% end %>
 
           <%= link_to_add_fields 'Add Line Item', f, :line_items %>
-        </div>
-      </div>
-    </div>
-      <div class="col-sm-6">
-        <div class="notes">
-          <h4>Line Items Instructions</h4>
-
-          <p class="justify">
-            Make sure that there is<strong> at least one</strong> line item present
-          </p>
         </div>
       </div>
     </div>
