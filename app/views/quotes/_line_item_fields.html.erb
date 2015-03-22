@@ -1,21 +1,27 @@
-<div class="line-item-form quote-line-item-fields">
+<div class="line-item-form quote-line-item-fields js-removeable">
   <div class="li-standard-form">
-    <div class="js-removeable">
-      <div class="col-xs-8">
+      <div class="col-xs-5">
         <%= f.label :name %>
         <%= f.text_field :name %>
-        <%= f.label :url, 'URL' %>
+      </div>
+
+      <div class="col-xs-3">
+        <%= f.label :url, 'URL for more item info' %>
         <%= f.text_field :url %>
       </div>
 
       <div class="col-xs-1">
-        <%= f.label :quantity %>
+        <%= f.label :quantity, 'Qty.' %>
         <%= f.number_field :quantity %>
       </div>
 
       <div class="col-xs-2">
         <%= f.label :unit_price, 'Unit Price' %>
-        <%= f.text_field :unit_price %>
+
+        <div class="input-group">
+          <span class="input-group-addon">$</span>
+          <%= f.text_field :unit_price %>
+        </div>
       </div>
 
       <div class="col-xs-1">
@@ -28,15 +34,16 @@
         <%= f.text_area :description %>
       </div>
 
-      <div class="col-xs-12">
-
+      <div class="col-xs-12 text-right">
+        <br clear="all" />
+          <%= link_to '#', class: 'js-remove-fields btn btn-danger' do %>
+              <i class="glyphicon glyphicon-remove-sign"></i> Remove Line Item
+          <% end %>
+        <br clear="all" />
         <%= f.hidden_field :_destroy %>
-        <%= link_to 'Remove Line Item', '#', class: 'js-remove-fields btn' %>
-
         <%= f.hidden_field :group_name, value: group_name if local_assigns[:group_name] %>
       </div>
-      <br clear="all" />
     </div>
-  </div>
-  <br>
+  <br clear="all" />
 </div>
+<br clear="all" />
