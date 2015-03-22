@@ -24,24 +24,24 @@
             </td>
             <td><%= raw imprintable.style_description %></td>
             <td>
-              <div class="btn-group btn-group-sm">
-                <%= link_to new_price_path(id: imprintable.id), class: 'btn btn-success btn-fullwidth',
+              <div>
+                <%= link_to new_price_path(id: imprintable.id), class: 'btn-sm btn btn-success btn-fullwidth',
                             id: "pricing_button_#{imprintable.id}", remote: true,
                             'data-action' => 'new', 'data-toggle' => 'tooltip', 'title' => 'Price' do %>
                   <i class="fa fa-dollar"></i> Price
                 <% end %>
                 <br clear="all" />
-                <%= link_to imprintable_path(imprintable), class: 'btn btn-primary btn-fullwidth',
+                <%= link_to imprintable_path(imprintable), class: 'btn-sm btn btn-primary btn-fullwidth',
                             'data-action' => 'show', 'data-toggle' => 'tooltip', 'title' => 'Show' do %>
                     <i class="fa fa-eye"></i> Show
                 <% end %>
 
-                <%= link_to edit_imprintable_path(imprintable), class: 'btn btn-warning btn-fullwidth',
+                <%= link_to edit_imprintable_path(imprintable), class: 'btn-sm btn btn-warning btn-fullwidth',
                             'data-action' => 'edit', 'data-toggle' => 'tooltip', 'title' => 'Edit' do %>
                   <i class="fa fa-edit"></i> Edit
                 <% end %>
 
-                <%= link_to imprintable_path(imprintable), class: 'btn btn-danger btn-fullwidth',
+                <%= link_to imprintable_path(imprintable), class: 'btn-sm btn btn-danger btn-fullwidth',
                             data: { confirm: 'Are you sure you would like to delete the imprintable?', method: :delete },
                             'data-action' => 'destroy', 'data-toggle' => 'tooltip', 'title' => 'Destroy' do %>
                   <i class="fa fa-times"></i> Destroy

@@ -33,9 +33,9 @@
               <td><%= number_to_currency pricing_hash[:prices][:xxxxxl_price] %></td>
               <td><%= number_to_currency pricing_hash[:prices][:xxxxxxl_price] %></td>
               <td>
-                <div class="btn-group btn-group-xs" id="price_actions_<%= index %>">
+                <div id="price_actions_<%= index %>">
                   <%= link_to price_path(id: index, group: group),
-                              method: :delete,  remote: true, class: 'btn btn-danger',
+                              method: :delete,  remote: true, class: 'btn btn-xs btn-danger',
                               data: {
                                       confirm: 'Are you sure you would like to delete the price?'
                               } do %>
@@ -43,7 +43,7 @@
                   <% end %>
 
                   <%= link_to quote_select_quotes_path(index: index, pricing_group: group),
-                              class: 'btn btn-warning', remote: true do %>
+                              class: 'btn btn-xs btn-warning', remote: true do %>
                       <i class="fa fa-plus"></i> Add to Quote
                   <% end %>
                 </div>
