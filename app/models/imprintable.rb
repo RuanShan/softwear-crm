@@ -111,9 +111,9 @@ class Imprintable < ActiveRecord::Base
 
     color_variants = variants_array.uniq(&:color_id).sort! {|x,y| x.color.name <=> y.color.name }
     {
-        size_variants: size_variants,
-        color_variants: color_variants,
-        variants_array: variants_array
+      size_variants: size_variants,
+      color_variants: color_variants,
+      variants_array: variants_array
     }
   end
 
@@ -176,4 +176,40 @@ class Imprintable < ActiveRecord::Base
     imprintable_variants.where(size_id: size.id).update_all(weight: weight)
   end
 
+  %i(base xxl xxxl xxxxl xxxxxl xxxxxxl).each do |pre|
+    # base_price_ok
+    define_method "#{pre}_price_ok" do
+      !send("#{pre}_price").nil?
+    end
+    # base_price_nil
+    define_method "#{pre}_price_nil" do
+      send("#{pre}_price").nil?
+    end
+
+    # imprintable.base_price_ok = false
+    define_method "#{pre}_price_ok=" do |new_ok|
+      if    new_ok == '1' || new_ok == 'true'  || new_ok == true
+        new_ok = true
+      elsif new_ok == '0' || new_ok == 'false' || new_ok == false
+        new_ok = false
+      end
+
+      instance_variable_set("@#{pre}_price_ok", new_ok)
+      instance_variable_set("@#{pre}_price_nil", !new_ok)
+      send("#{pre}_price=", nil) unless new_ok
+    end
+
+    # if (for example):
+    # base_price_ok = false was set,
+    # make sure base_price is nil.
+    # TODO this works but maybe actually test this stuff
+    before_save do
+      if instance_variable_get("@#{pre}_price_nil")
+        send("#{pre}_price=", nil)
+
+        instance_variable_set("@#{pre}_price_ok", nil)
+        instance_variable_set("@#{pre}_price_nil", nil)
+      end
+    end
+  end
 end
