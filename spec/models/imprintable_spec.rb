@@ -262,5 +262,36 @@ describe Imprintable, imprintable_spec: true do
     it 'updates all imprintable variants of given size with weight'
   end
 
+  describe '#base_price_ok=', story_205: true do
+    let!(:imprintable) { create :valid_imprintable }
+
+    context 'true' do
+      it 'sets base_price to a non-nil value after saving' do
+        imprintable.base_price = nil
+        imprintable.save!
+        expect(imprintable.reload.base_price).to be_nil
+
+        imprintable.base_price_ok = true
+        imprintable.base_price = 1.0
+        imprintable.save!
+
+        expect(imprintable.reload.base_price).to_not be_nil
+      end
+    end
+
+    context 'false' do
+      it 'sets base_price to nil after saving' do
+        imprintable.base_price = 1.0
+        imprintable.save!
+        expect(imprintable.reload.base_price).to_not be_nil
+
+        imprintable.base_price_ok = false
+        imprintable.save!
+
+        expect(imprintable.reload.base_price).to be_nil
+      end
+    end
+  end
+
 end
 
