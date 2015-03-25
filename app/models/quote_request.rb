@@ -26,8 +26,7 @@ class QuoteRequest < ActiveRecord::Base
   has_many :quotes, through: :quote_request_quotes
   has_many :orders, through: :quotes
 
-  validates :name, :email, :approx_quantity, :status,
-            :date_needed, :description, :source, presence: true
+  validates :name, :email, :description, :source, presence: true
   validates :reason, presence: true, if: :reason_needed?
 
   before_validation(on: :create) { self.status = 'pending' if status.nil? }

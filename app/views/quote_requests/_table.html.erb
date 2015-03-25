@@ -25,7 +25,7 @@
             </td>
             <td><%= quote_request.approx_quantity %></td>
             <td>
-              <%= quote_request.date_needed.strftime("%F") %>
+              <%= quote_request.date_needed.strftime("%F") rescue 'n/a' %>
             </td>
             <td>
               <%= editable quote_request, :salesperson_id, type: :select, data: { source: User.all.map{ |x|  { x.id => x.full_name } } } %>
