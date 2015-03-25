@@ -45,44 +45,36 @@
   </section>
 
   <section class="step" data-step-title="Line Items">
-    <div class="col-sm-6">
-      <div class="row">
-        <div class="form-group">
-          <%= label_tag :line_item_group_name, 'Default Group Name:', id: 'group-name' %>
+  <div class="row">
 
+      <% if new_quote_hash[:price_information] %>
+        <% new_quote_hash[:price_information].each do |group_name, pricing_groups| %>
+          <div class='quote-line-item-group col-xs-12 clear clearfix'>
+            <h3><%= group_name %></h3>
+            <% pricing_groups.each do |hash| %>
+              <%= add_lis_from_pricing_hash(f, :line_items, hash, group_name) %>
+            <% end %>
+          </div>
+
+        <% end %>
+      <% elsif new_quote_hash[:quote_li_attributes] %>
+
+        <% new_quote_hash[:quote_li_attributes].each do |_key, hash| %>
+          <%= add_line_items_from_params(f, :line_items, hash) if (hash[:_destroy] == 'false') %>
+        <% end %>
+
+      <% end %>
+
+        <div class="col-xs-12 quote-line-item-group">
+
+          <%= label_tag :line_item_group_name, 'Default Group Name:', id: 'group-name' %>
           <%= text_field_tag :line_item_group_name, new_quote_hash[:line_item_group_name] || 'Line Items' %>
 
-          <% if new_quote_hash[:price_information] %>
-            <% new_quote_hash[:price_information].each do |group_name, pricing_groups| %>
-              <div class='quote-line-item-group'>
-                <h3><%= group_name %></h3>
-                <% pricing_groups.each do |hash| %>
-                  <%= add_lis_from_pricing_hash(f, :line_items, hash, group_name) %>
-                <% end %>
-              </div>
-
-            <% end %>
-          <% elsif new_quote_hash[:quote_li_attributes] %>
-
-            <% new_quote_hash[:quote_li_attributes].each do |_key, hash| %>
-              <%= add_line_items_from_params(f, :line_items, hash) if (hash[:_destroy] == 'false') %>
-            <% end %>
-
-          <% end %>
-
-          <%= link_to_add_fields 'Add Line Item', f, :line_items %>
-        </div>
-      </div>
-    </div>
-      <div class="col-sm-6">
-        <div class="notes">
-          <h4>Line Items Instructions</h4>
-
-          <p class="justify">
-            Make sure that there is<strong> at least one</strong> line item present
+          <p>
+            <%= link_to_add_fields 'Add Line Item', f, :line_items %>
           </p>
+
         </div>
-      </div>
     </div>
   </section>
 <% end %>

@@ -1,17 +1,16 @@
 <div class="standard-line-items-container">
   <div class="row">
-    <div class="col-sm-2"><strong>Name</strong></div>
-    <div class="col-sm-4"><strong>Description</strong></div>
-    <div class="col-sm-1"><strong>Taxable</strong></div>
-    <div class="col-sm-1"><strong>Qty</strong></div>
-    <div class="col-sm-1"><strong>Unit Price</strong></div>
-    <div class="col-sm-1"><strong>Total</strong></div>
-    <div class="col-sm-1"><strong>URL</strong></div>
-    <div class="col-sm-1"></div>
+    <div class="col-xs-4"><strong>Name</strong></div>
+    <div class="col-xs-3"><strong>Description</strong></div>
+    <div class="col-xs-1"><strong>Taxable</strong></div>
+    <div class="col-xs-1"><strong>Qty</strong></div>
+    <div class="col-xs-1"><strong>Unit</strong></div>
+    <div class="col-xs-1"><strong>Total</strong></div>
+    <div class="col-xs-1"></div>
   </div>
+
   <% line_items.each do |l| %>
-    <% # TODO inline CSS %>
-    <div id="line-item-<%=l.id%>" class="row" style="margin-top: 10px; border-bottom: solid 1px #dddddd;">
+    <div id="line-item-<%=l.id%>" class="row quote-line-item-row">
       <%= render partial: 'line_items/standard_view_entry', locals: { line_item: l } %>
     </div>
   <% end %>

@@ -5,8 +5,9 @@
         <tr>
           <th>Standard Offering</th>
           <th>Imprintable</th>
+          <th>Upcharge</th>
           <th>Description</th>
-          <th id="actions" >Actions</th>
+          <th id="actions" style="width: 120px;">Actions</th>
         </tr>
       </thead>
       <tbody>
@@ -18,29 +19,32 @@
               <% end %>
             </td>
             <td><%= imprintable_modal(imprintable) %></td>
+            <td>
+              <%= number_to_currency imprintable.base_price%>
+            </td>
             <td><%= raw imprintable.style_description %></td>
             <td>
-              <div class="btn-group btn-group-xs">
-                <%= link_to new_price_path(id: imprintable.id), class: 'btn btn-default',
+              <div>
+                <%= link_to new_price_path(id: imprintable.id), class: 'btn-sm btn btn-success btn-fullwidth',
                             id: "pricing_button_#{imprintable.id}", remote: true,
                             'data-action' => 'new', 'data-toggle' => 'tooltip', 'title' => 'Price' do %>
-                  <i class="fa fa-dollar"></i>
+                  <i class="fa fa-dollar"></i> Price
                 <% end %>
-
-                <%= link_to edit_imprintable_path(imprintable), class: 'btn btn-default',
-                            'data-action' => 'edit', 'data-toggle' => 'tooltip', 'title' => 'Edit' do %>
-                  <i class="fa fa-edit"></i>
-                <% end %>
-
-                <%= link_to imprintable_path(imprintable), class: 'btn btn-default',
+                <br clear="all" />
+                <%= link_to imprintable_path(imprintable), class: 'btn-sm btn btn-primary btn-fullwidth',
                             'data-action' => 'show', 'data-toggle' => 'tooltip', 'title' => 'Show' do %>
-                  <i class="fa fa-eye"></i>
+                    <i class="fa fa-eye"></i> Show
                 <% end %>
 
-                <%= link_to imprintable_path(imprintable), class: 'btn btn-default',
+                <%= link_to edit_imprintable_path(imprintable), class: 'btn-sm btn btn-warning btn-fullwidth',
+                            'data-action' => 'edit', 'data-toggle' => 'tooltip', 'title' => 'Edit' do %>
+                  <i class="fa fa-edit"></i> Edit
+                <% end %>
+
+                <%= link_to imprintable_path(imprintable), class: 'btn-sm btn btn-danger btn-fullwidth',
                             data: { confirm: 'Are you sure you would like to delete the imprintable?', method: :delete },
                             'data-action' => 'destroy', 'data-toggle' => 'tooltip', 'title' => 'Destroy' do %>
-                  <i class="fa fa-times"></i>
+                  <i class="fa fa-times"></i> Destroy
                 <% end %>
               </div>
             </td>

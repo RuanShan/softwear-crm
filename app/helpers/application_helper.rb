@@ -45,6 +45,11 @@ module ApplicationHelper
     datetime.strftime('%b %d, %Y, %I:%M %p') unless datetime.blank?
   end
 
+
+  def display_date(datetime)
+    datetime.strftime('%b %d, %Y') unless datetime.blank?
+  end
+
   # takes a string and parses it into a datetime
   def parse_freshdesk_time(fd_time)
     DateTime.strptime(fd_time, '%Y-%m-%dT%H:%M:%S')

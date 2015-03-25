@@ -5,14 +5,14 @@ class SearchFormBuilder
 
   YesOrNo = Struct.new(:name, :value) { alias_method :to_s, :value }
 
-  # Just pass <metadata option>: true to the options of any field method, 
+  # Just pass <metadata option>: true to the options of any field method,
   # and it will be applied
   # (boolean is automatically applied for yes/no radios and checkbox)
   METADATA_OPTIONS = [:negate, :greater_than, :less_than]
 
   YES_OR_NO_CHOICES = [YesOrNo.new('Yes', 'true'), YesOrNo.new('No', 'false')]
 
-  def initialize(model, query, template, current_user=nil, 
+  def initialize(model, query, template, current_user=nil,
                  last_search=nil, locals={})
     @model        = model
     @query        = query
@@ -31,7 +31,7 @@ class SearchFormBuilder
   # Remember to define self.permitted_search_locals in your controller
   def pass_locals_to_controller(locals)
     raise SearchException, "Locals should be a hash" unless locals.is_a? Hash
-    
+
     locals.reduce(''.html_safe) do |content, l|
       name  = l.first
       value = l.last
@@ -46,9 +46,9 @@ class SearchFormBuilder
   # These methods are not actually useful right now.
   %i(filter_all filter_any).each do |method_name|
     define_method(method_name) do |&block|
-      raise SearchException, 
+      raise SearchException,
             "Filter groups in search forms aren't quite implemented yet."
-      
+
       @filter_group_stack.push method_name.to_s.last(3).to_sym
       block.call(self)
       @filter_group_stack.pop
@@ -102,7 +102,7 @@ class SearchFormBuilder
   end
 
   %i(text_field text_area number_field).each do |method_name|
-    
+
     define_method method_name do |field_name, options={}|
       if @model.nil?
         raise SearchException,
@@ -138,7 +138,7 @@ class SearchFormBuilder
               .(input_name_for(field_name))
 
     @template.content_tag(:div, class: 'form-group') do
-      process_options(field_name, options) + 
+      process_options(field_name, options) +
       radio['true',  initial == 'true',  options] + span[yes] +
       radio['false', initial == 'false', options] + span[no]  +
       radio['nil',   !initial,           options] + span[either]
@@ -220,7 +220,7 @@ class SearchFormBuilder
       next total if value.empty?
 
       selected = value.to_s == initial_value.to_s ? 'selected' : nil
-      option = 
+      option =
         @template.content_tag(:option, name, value: value, selected: selected)
 
       total.send(:original_concat, option)
@@ -230,14 +230,14 @@ class SearchFormBuilder
   def initial_fulltext_value
     return query_model.default_fulltext if query_model
     return nil unless @last_search
-    
+
     case @last_search
     when Hash then (@last_search[model_name] || @last_search)[:fulltext]
     else
       begin
         query       = Search::Query.find(@last_search.to_i)
         query_model = query.query_models.where(name: @model.name).first
-        
+
         return '' if query_model.nil?
 
         query_model.default_fulltext

@@ -30,14 +30,24 @@
 }
 
 .quote-line-item-group {
-  background-color: #DBDBDB;
-  margin-bottom: 15px;
-  padding: 5px;
+  background: #fff;
+  border: solid 1px #E5E9EC;
+  margin-bottom: 10px;
+}
+.quote-line-item-group:hover {
+  background: #fafafa;
 }
 
-.quote-line-item-fields {
-  background-color: white;
-  padding: 5px;
-  margin-bottom: 15px;
-  border: 1px solid black;
+.quote-line-item-row{
+  border-bottom: solid 1px #E5E9EC;
+  margin-bottom: 10px;
 }
+
+.editing-line-item {
+  border: solid 1px #E5E9EC;
+  margin: 10px 0 0 0;
+  padding: 10px 0;
+  background-color: #ffffff;
+
+}
+

@@ -1,44 +1,47 @@
-<%= search_form_for Imprintable do |s| %>
-  <div class="row">
-    <div class="col-sm-4">
-      <%= s.select :all_categories, ImprintableCategory::VALID_CATEGORIES,
-                   nil: 'Category...' %>
+<%= search_form_for Imprintable, class: 'form-horizontal' do |s| %>
+
+    <div class="form-group">
+      <div class="col-sm-12">
+        <%= s.fulltext id: 'js_search', placeholder: 'Search Terms', class: 'form-control' %>
+      </div>
+    </div>
+    <div class="form-group">
+      <div class="col-sm-4">
+        <%= s.select :all_categories, ImprintableCategory::VALID_CATEGORIES,
+                     nil: 'Category...', class: 'form-control' %>
+      </div>
+      <div class="col-sm-4">
+        <%= s.select :sizing_category, Imprintable::SIZING_CATEGORIES,
+                     id: 'filter_sizing_category' %>
+      </div>
+      <div class="col-sm-4">
+        <%= s.yes_or_no_select :standard_offering %>
+      </div>
     </div>
 
-    <div class="col-sm-4">
-      <%= s.select :sizing_category, Imprintable::SIZING_CATEGORIES,
-                   id: 'filter_sizing_category' %>
-    </div>
+    <div class="form-group text-right">
 
-    <div class="col-sm-4">
-      <%= s.yes_or_no_select :standard_offering %>
-    </div>
+      <%= s.save class: 'btn btn-primary' do %>
+          <i class="glyphicon glyphicon-floppy-save"></i> Save
+      <% end %>
 
-    <div class="col-sm-4">
-      <%= s.fulltext id: 'js_search' %>
-    </div>
 
-    <div class="col-sm-2">
-      <%= s.submit %>
-    </div>
+      <%= link_to '#', class: 'btn btn-warning js-clear-btn' do  %>
+        <i class="glyphicon glyphicon-refresh"></i> Clear
+      <% end %>
 
-    <div class="col-sm-2">
-      <%= s.save %>
+        <%= button_tag class: 'btn btn-success' do %>
+            <i class="glyphicon glyphicon-search"></i> Search
+        <% end %>
     </div>
-
-    <div class="col-sm-2">
-      <%= link_to 'Clear', '#', class: 'btn btn-primary js-clear-btn' %>
-    </div>
-  </div>
 <% end %>
 
-<div class="row margin-top-10">
-  <div class="col-sm-3">
-    <label>Saved Searches:</label>
+
+<div class="form-group">
+  <div class="col-sm-9">
     <%= select_search_queries Imprintable, 'data-go' => 'query-go-spot' %>
   </div>
-
-  <div id="query-go-spot" class="col-sm-2 margin-top-20">
+  <div id="query-go-spot" class="col-sm-3">
 
   </div>
 </div>

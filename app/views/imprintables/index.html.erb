@@ -1,16 +1,17 @@
-<div class="page-heading animated fadeInDownBig col-lg-8">
+<div class="page-heading animated fadeInDownBig col-sm-6">
   <h1>Imprintables <small>View and edit imprintables</small></h1>
 </div>
 
-<div class="col-lg-2 text-right">
-  <%= link_to 'View Pricing Table', prices_path, class: 'btn btn-default', remote: true %>
+<div class="col-sm-6 text-right">
+  <%= link_to prices_path, class: 'btn btn-success', remote: true do  %>
+      <i class="glyphicon glyphicon-th-list"></i> View Pricing Table
+    <% end %>
+  <%= link_to new_imprintable_path, class: 'btn btn-primary' do %>
+      <i class="glyphicon glyphicon-plus-sign"></i> New Imprintable
+<% end %>
 </div>
 
-<div class="col-lg-2 text-right">
-  <%= link_to 'Add an Imprintable', new_imprintable_path, class: 'btn btn-primary' %>
-</div>
-
-<div class="col-lg-9">
+<div class="col-sm-8 col-sm-offset-2 col-xs-12">
   <%= render 'imprintables/search' %>
 </div>
 

@@ -1,30 +1,49 @@
-<div class="line-item-form quote-line-item-fields">
+<div class="line-item-form quote-line-item-fields js-removeable">
   <div class="li-standard-form">
-    <fieldset class="js-removeable">
-      <%= f.label :name %>
-      <%= f.text_field :name %>
+      <div class="col-xs-5">
+        <%= f.label :name %>
+        <%= f.text_field :name %>
+      </div>
 
-      <%= f.label :description %>
-      <%= f.text_area :description %>
+      <div class="col-xs-3">
+        <%= f.label :url, 'URL for more item info' %>
+        <%= f.text_field :url %>
+      </div>
 
-      <%= f.label :taxable %>
-      <%= f.check_box :taxable, checked: true %>
-      <br />
+      <div class="col-xs-1">
+        <%= f.label :quantity, 'Qty.' %>
+        <%= f.number_field :quantity %>
+      </div>
 
-      <%= f.label :quantity %>
-      <%= f.number_field :quantity %>
+      <div class="col-xs-2">
+        <%= f.label :unit_price, 'Unit Price' %>
 
-      <%= f.label :unit_price, 'Unit Price' %>
-      <%= f.text_field :unit_price %>
+        <div class="input-group">
+          <span class="input-group-addon">$</span>
+          <%= f.text_field :unit_price %>
+        </div>
+      </div>
 
-      <%= f.label :url, 'URL' %>
-      <%= f.text_field :url %>
+      <div class="col-xs-1">
+        <%= f.label :taxable %>
+        <%= f.check_box :taxable, checked: true %>
+      </div>
 
-      <%= f.hidden_field :_destroy %>
-      <%= link_to 'Remove Line Item', '#', class: 'js-remove-fields btn' %>
+      <div class="col-xs-12">
+        <%= f.label :description %>
+        <%= f.text_area :description %>
+      </div>
 
-      <%= f.hidden_field :group_name, value: group_name if local_assigns[:group_name] %>
-    </fieldset>
-  </div>
-  <br>
+      <div class="col-xs-12 text-right">
+        <br clear="all" />
+          <%= link_to '#', class: 'js-remove-fields btn btn-danger' do %>
+              <i class="glyphicon glyphicon-remove-sign"></i> Remove Line Item
+          <% end %>
+        <br clear="all" />
+        <%= f.hidden_field :_destroy %>
+        <%= f.hidden_field :group_name, value: group_name if local_assigns[:group_name] %>
+      </div>
+    </div>
+  <br clear="all" />
 </div>
+<br clear="all" />
