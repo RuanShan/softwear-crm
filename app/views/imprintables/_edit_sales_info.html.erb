@@ -72,12 +72,30 @@
           <table class="size-price-table">
             <thead>
             <tr>
-              <th>Base</th>
-              <th>2XL</th>
-              <th>3XL</th>
-              <th>4XL</th>
-              <th>5XL</th>
-              <th>6XL</th>
+              <th>
+                Base
+                <%= f.check_box :base_price_ok, class: 'upcharge-check-box', data: { for: 'base_price' } %>
+              </th>
+              <th>
+                2XL
+                <%= f.check_box :xxl_price_ok, class: 'upcharge-check-box', data: { for: 'xxl_price' } %>
+              </th>
+              <th>
+                3XL
+                <%= f.check_box :xxxl_price_ok, class: 'upcharge-check-box', data: { for: 'xxxl_price' } %>
+              </th>
+              <th>
+                4XL
+                <%= f.check_box :xxxxl_price_ok, class: 'upcharge-check-box', data: { for: 'xxxxl_price' } %>
+              </th>
+              <th>
+                5XL
+                <%= f.check_box :xxxxxl_price_ok, class: 'upcharge-check-box', data: { for: 'xxxxxl_price' } %>
+              </th>
+              <th>
+                6XL
+                <%= f.check_box :xxxxxxl_price_ok, class: 'upcharge-check-box', data: { for: 'xxxxxxl_price' } %>
+              </th>
             </tr>
             </thead>
 

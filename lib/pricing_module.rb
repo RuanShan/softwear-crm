@@ -11,6 +11,6 @@ module PricingModule
   end
 
   def is_valid_price?(number)
-    (!number.nil?) && (number > 0)
+    (!number.nil?)
   end
 end

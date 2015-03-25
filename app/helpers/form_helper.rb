@@ -108,7 +108,9 @@ module FormHelper
   end
 
   def size_price_field(f, field, price)
-    f.text_field field, class: 'form-control',
-                  value: (number_with_precision(price, precision: 2) || 0)
+    f.text_field field,
+      class: "form-control upcharge-#{field}",
+      value: (number_with_precision(price, precision: 2) || 0),
+      disabled: f.object.try("#{field}_nil")
   end
 end
