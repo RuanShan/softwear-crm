@@ -3,7 +3,9 @@ class QuoteRequestMailer < ActionMailer::Base
 
   def notify_sales_of_bad_quote_requests(errors)
     @errors = errors
-    mail(to: 'sales@annarbortees.com', subject: "Bad Quotes Requests within Wordpress #{Time.now.strftime('%Y-%m-%d %H:%M')}")
+    mail(to: 'sales@annarbortees.com',
+         subject: "Bad Quotes Requests within Wordpress #{Time.now.strftime('%Y-%m-%d %H:%M')}",
+         from: Figaro.env.smtp_user_name )
 
   end
 end
