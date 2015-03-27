@@ -44,7 +44,7 @@ feature 'Quotes management', quote_spec: true, js: true do
     click_link 'Add Line Item'
     fill_in 'Name', with: 'Line Item Name'
     fill_in 'Description', with: 'Line Item Description'
-    fill_in 'Quantity', with: 2
+    fill_in 'Qty.', with: 2
     fill_in 'Unit Price', with: 15
     click_button 'Submit'
 
@@ -72,7 +72,7 @@ feature 'Quotes management', quote_spec: true, js: true do
   feature 'Quote emailing' do
     scenario 'A user can email a quote to the customer' do
       visit edit_quote_path quote.id
-      find('a[href="#actions"]').click
+      find('a[href="#quote_actions"]').click
       click_link 'Email Quote'
       sleep 0.5
       find('input[value="Submit"]').click
@@ -84,7 +84,7 @@ feature 'Quotes management', quote_spec: true, js: true do
 
     scenario 'CC\'s current salesperson by default' do
       visit edit_quote_path quote.id
-      find('a[href="#actions"]').click
+      find('a[href="#quote_actions"]').click
       click_link 'Email Quote'
       sleep 0.5
       expect(page).to have_selector "input#cc[value='#{valid_user.full_name} <#{ valid_user.email }>']"
@@ -113,8 +113,6 @@ feature 'Quotes management', quote_spec: true, js: true do
     decoration_price = 3.75
     sleep 0.5
     find(:css, 'input#decoration_price').set(decoration_price)
-    click_link 'Add A Pricing Group'
-    sleep 0.5
     fill_in 'pricing_group_text', with: 'Line Items'
     sleep 0.5
 
@@ -138,20 +136,17 @@ feature 'Quotes management', quote_spec: true, js: true do
     expect(page).to have_css("input[value='#{ imprintable.name }']")
     expect(page).to have_css("input[value='#{ imprintable.base_price + decoration_price }']")
     fill_in 'Description', with: 'Description'
-    fill_in 'Quantity', with: '1'
+    fill_in 'Qty.', with: '1'
     click_button 'Submit'
 
     expect(page).to have_selector '.modal-content-success', text: 'Quote was successfully created.'
     expect(current_path).to eq(quote_path(quote.id + 1))
   end
 
-  scenario 'A user can add a single price from the pricing table to an existing quote', retry: 2 do
+  scenario 'A user can add a single price from the pricing table to an existing quote', retry: 2, try2fix: true do
     visit imprintables_path
     find("#pricing_button_#{imprintable.id}").click
     fill_in 'decoration_price', with: '3.95'
-    sleep 0.5
-    click_link 'Add A Pricing Group'
-
     sleep 0.5
     fill_in 'pricing_group_text', with: 'Line Items'
     sleep 0.5
@@ -163,7 +158,7 @@ feature 'Quotes management', quote_spec: true, js: true do
     page.find('div.chosen-container').click
     sleep 1
     page.find('li.active-result').click
-    click_button 'Submit'
+    click_button 'Add To Quote'
 
     sleep 1
     expect(current_path).to eq(edit_quote_path quote.id)
@@ -188,7 +183,7 @@ feature 'Quotes management', quote_spec: true, js: true do
     click_link 'Add Line Item'
     fill_in 'Name', with: 'This Should Still be here!'
     fill_in 'Description', with: 'Line Item Description'
-    fill_in 'Quantity', with: 2
+    fill_in 'Qty.', with: 2
     fill_in 'Unit Price', with: 15
 
     click_link 'Add Line Item'
@@ -226,7 +221,7 @@ feature 'Quotes management', quote_spec: true, js: true do
 
       fill_in 'Name', with: 'Line Item Name'
       fill_in 'Description', with: 'Line Item Description'
-      fill_in 'Quantity', with: 2
+      fill_in 'Qty.', with: 2
       fill_in 'Unit Price', with: 15
       click_button 'Submit'
 
