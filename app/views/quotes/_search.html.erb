@@ -1,0 +1,34 @@
+<%= search_form_for Quote, class: 'form-horizontal' do |s| %>
+
+    <div class="form-group">
+      <div class="col-sm-12">
+        <%= s.fulltext id: 'js_search', placeholder: 'Search Terms', class: 'form-control' %>
+      </div>
+    </div>
+
+    <div class="form-group text-right">
+
+      <%= s.save class: 'btn btn-primary' do %>
+          <i class="glyphicon glyphicon-floppy-save"></i> Save
+      <% end %>
+
+
+      <%= link_to '#', class: 'btn btn-warning js-clear-btn' do  %>
+        <i class="glyphicon glyphicon-refresh"></i> Clear
+      <% end %>
+
+        <%= button_tag class: 'btn btn-success' do %>
+            <i class="glyphicon glyphicon-search"></i> Search
+        <% end %>
+    </div>
+<% end %>
+
+
+<div class="form-group">
+  <div class="col-sm-9">
+    <%= select_search_queries Quote, 'data-go' => 'query-go-spot' %>
+  </div>
+  <div id="query-go-spot" class="col-sm-3">
+
+  </div>
+</div>
