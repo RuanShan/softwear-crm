@@ -143,7 +143,7 @@ feature 'Quotes management', quote_spec: true, js: true do
     expect(current_path).to eq(quote_path(quote.id + 1))
   end
 
-  scenario 'A user can add a single price from the pricing table to an existing quote', retry: 2, try2fix: true do
+  scenario 'A user can add a single price from the pricing table to an existing quote', retry: 2 do
     visit imprintables_path
     find("#pricing_button_#{imprintable.id}").click
     fill_in 'decoration_price', with: '3.95'
@@ -194,6 +194,78 @@ feature 'Quotes management', quote_spec: true, js: true do
     expect(page).to have_selector('div.line-item-form', count: 2)
     expect(page).to have_selector("div.line-item-form input[value='This Should Still be here!']")
     expect(page).to have_selector('div.line-item-form textarea', text: 'Line Item Description')
+  end
+
+  scenario 'Pricing table prices with > 2 decimal places are rounded', story_491: true, test: true do
+    imprintable = build_stubbed :valid_imprintable
+    session = {
+      pricing_groups: {
+        :'GROUP' => [imprintable.pricing_hash(4)]
+      }
+    }
+    session[:pricing_groups][:'GROUP'][0][:prices][:base_price] = 0.54322112312312
+    page.set_rack_session(session)
+
+    visit new_quote_path
+    click_button 'Next'
+    sleep 0.5
+    click_button 'Next'
+
+    expect(page).to have_selector("input[type='text'][value='0.54']")
+  end
+
+  scenario 'Inputting bad data for the quote does not kill line item info', story_491: true do
+    imprintable = build_stubbed :valid_imprintable
+    session = {
+      pricing_groups: {
+        :'GROUP' => [imprintable.pricing_hash(4)]
+      }
+    }
+    page.set_rack_session(session)
+
+    visit new_quote_path
+    # fill_in 'Email', with: 'test@testing.com'
+    fill_in 'First Name', with: 'Capy'
+    fill_in 'Last Name', with: 'Bara'
+    click_button 'Next'
+    sleep 0.5
+
+    fill_in 'Quote Name', with: 'Quote Name'
+    fill_in 'Valid Until Date', with: Time.now + 1.day
+    fill_in 'Estimated Delivery Date', with: Time.now + 1.day
+    click_button 'Next'
+    sleep 0.5
+
+    fill_in 'Qty.', with: 2
+
+    click_button 'Submit'
+    sleep 0.5
+    find('button[data-dismiss="modal"]').click
+
+    click_button 'Next'
+    sleep 1
+    click_button 'Next'
+
+    expect(page).to have_selector("input[id$='_quantity']", text: '2')
+  end
+
+  scenario 'Error reports turn the page to the first on on which there is an error', story_491: true do
+    visit new_quote_path
+    fill_in 'Email', with: 'test@testing.com'
+    fill_in 'First Name', with: 'Capy'
+    fill_in 'Last Name', with: 'Bara'
+    fill_in 'Company', with: 'stuff'
+    click_button 'Next'
+    sleep 0.5
+
+    click_button 'Next'
+    sleep 0.5
+    click_button 'Submit'
+
+    sleep 0.5
+    find('button[data-dismiss="modal"]').click
+
+    expect(page).to have_selector(".current[data-step='2']")
   end
 
   feature 'the following actions are tracked:' do
