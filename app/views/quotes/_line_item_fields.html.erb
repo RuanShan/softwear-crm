@@ -20,7 +20,7 @@
 
         <div class="input-group">
           <span class="input-group-addon">$</span>
-          <%= f.text_field :unit_price %>
+          <%= f.text_field :unit_price, value: f.object.unit_price.try(:round, 2) %>
         </div>
       </div>
 
