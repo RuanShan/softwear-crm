@@ -56,6 +56,8 @@ class QuotesController < InheritedResources::Base
 
   def create
     assign_new_quote_hash
+    session[:last_quote_line_items] = params[:quote].try(:[], :line_items_attributes)
+
     super do
       # create QuoteRequestQuote if necessary
       unless @quote_request_id.nil?
@@ -75,6 +77,8 @@ class QuotesController < InheritedResources::Base
       # scrapping for now since freshdesk is a piece of shit
       # @quote.create_freshdesk_ticket(current_user) if Rails.env.production?
     end
+
+    session.delete(:last_quote_line_items)
   end
 
   def quote_select

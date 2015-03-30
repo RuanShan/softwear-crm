@@ -196,7 +196,7 @@ feature 'Quotes management', quote_spec: true, js: true do
     expect(page).to have_selector('div.line-item-form textarea', text: 'Line Item Description')
   end
 
-  scenario 'Pricing table prices with > 2 decimal places are rounded', story_491: true, test: true do
+  scenario 'Pricing table prices with > 2 decimal places are rounded', story_491: true do
     imprintable = build_stubbed :valid_imprintable
     session = {
       pricing_groups: {
@@ -214,7 +214,7 @@ feature 'Quotes management', quote_spec: true, js: true do
     expect(page).to have_selector("input[type='text'][value='0.54']")
   end
 
-  scenario 'Inputting bad data for the quote does not kill line item info', story_491: true do
+  scenario 'Inputting bad data for the quote does not kill line item info', story_491: true, test: true do
     imprintable = build_stubbed :valid_imprintable
     session = {
       pricing_groups: {
@@ -246,7 +246,7 @@ feature 'Quotes management', quote_spec: true, js: true do
     sleep 1
     click_button 'Next'
 
-    expect(page).to have_selector("input[id$='_quantity']", text: '2')
+    expect(page).to have_selector("input[id$='_quantity'][value='2']")
   end
 
   scenario 'Error reports turn the page to the first on on which there is an error', story_491: true do

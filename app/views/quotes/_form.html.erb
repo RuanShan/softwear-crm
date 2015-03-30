@@ -48,11 +48,12 @@
   <div class="row">
 
       <% if new_quote_hash[:price_information] %>
+
         <% new_quote_hash[:price_information].each do |group_name, pricing_groups| %>
           <div class='quote-line-item-group col-xs-12 clear clearfix'>
             <h3><%= group_name %></h3>
-            <% pricing_groups.each do |hash| %>
-              <%= add_lis_from_pricing_hash(f, :line_items, hash, group_name) %>
+            <% pricing_groups.each_with_index do |hash, i| %>
+              <%= add_lis_from_pricing_hash(f, :line_items, hash, group_name, line_items_from_last_attempt.try(:[], i)) %>
             <% end %>
           </div>
 
