@@ -190,7 +190,7 @@ feature 'Quotes management', quote_spec: true, js: true do
     click_button 'Submit'
     close_error_modal
     click_button 'Next'
-    click_button 'Next'
+
     expect(page).to have_selector('div.line-item-form', count: 2)
     expect(page).to have_selector("div.line-item-form input[value='This Should Still be here!']")
     expect(page).to have_selector('div.line-item-form textarea', text: 'Line Item Description')
