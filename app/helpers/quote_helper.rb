@@ -45,4 +45,18 @@ module QuoteHelper
       .values
       .select { |li| !li['group_name'].nil? }
   end
+
+  def first_step_with_error(quote)
+    steps = []
+    quote.errors.each do |field, _message|
+      if Quote::STEP_1_FIELDS.include?(field)
+        return nil
+      elsif Quote::STEP_2_FIELDS.include?(field)
+        steps << 2
+      elsif Quote::STEP_3_FIELDS.include?(field)
+        steps << 3
+      end
+    end
+    steps.min
+  end
 end

@@ -1,7 +1,13 @@
 <%= render_error_modal_for quote %>
 
+<% if step = first_step_with_error(quote) %>
+  <script type='text/javascript'>
+    <%= render partial: 'jump_to_step', formats: [:js], locals: { step: step } %>
+  </script>
+<% end %>
+
 <%= form_for quote, builder: LancengFormBuilder, html: { id: 'easyWizard' } do |f| %>
-  <section class="step" data-step-title="Customer Information">
+  <section class="step step-1" data-step-title="Customer Information">
     <div class="row">
       <div class="col-sm-6">
         <div class="form-group">
@@ -30,7 +36,7 @@
     </div>
   </section>
 
-  <section class="step" data-step-title="Quote Details">
+  <section class="step step-2" data-step-title="Quote Details">
     <div class="row">
       <div class="col-sm-6">
         <%= render 'quote_detail_fields', current_user: current_user, f: f, quote: quote, quote_request_id: params[:quote_request_id] %>
@@ -44,7 +50,7 @@
     </div>
   </section>
 
-  <section class="step" data-step-title="Line Items">
+  <section class="step step-3" data-step-title="Line Items">
   <div class="row">
 
       <% if new_quote_hash[:price_information] %>

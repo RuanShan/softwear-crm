@@ -214,7 +214,7 @@ feature 'Quotes management', quote_spec: true, js: true do
     expect(page).to have_selector("input[type='text'][value='0.54']")
   end
 
-  scenario 'Inputting bad data for the quote does not kill line item info', story_491: true, test: true do
+  scenario 'Inputting bad data for the quote does not kill line item info', story_491: true do
     imprintable = build_stubbed :valid_imprintable
     session = {
       pricing_groups: {

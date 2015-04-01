@@ -16,6 +16,29 @@ class Quote < ActiveRecord::Base
     'Other'
   ]
 
+  STEP_1_FIELDS = [
+    :email,
+    :phone_number,
+    :first_name,
+    :last_name,
+    :company,
+    :twitter
+  ]
+  STEP_2_FIELDS = [
+    :name,
+    :informal,
+    :quote_source,
+    :shipping,
+    :valid_until_date,
+    :estimated_delivery_date,
+    :salesperson, :salesperson_id,
+    :store,
+    :freshdesk_ticket_id
+  ]
+  STEP_3_FIELDS = [
+    :line_items
+  ]
+
   default_scope -> { order('quotes.created_at DESC') }
 
   belongs_to :salesperson, class_name: User
