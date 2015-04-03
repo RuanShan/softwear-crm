@@ -8,6 +8,11 @@ class Quote < ActiveRecord::Base
   acts_as_paranoid
   tracked by_current_user
 
+  searchable do
+    text :name, :email, :first_name, :last_name,
+         :company, :twitter
+  end
+
   QUOTE_SOURCES = [
     'Phone Call',
     'E-mail',
