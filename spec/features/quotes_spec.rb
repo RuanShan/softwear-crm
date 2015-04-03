@@ -107,12 +107,13 @@ feature 'Quotes management', quote_spec: true, js: true do
     end
   end
 
-  scenario 'A user can generate a quote from an imprintable pricing dialog', retry: 2 do
+  scenario 'A user can generate a quote from an imprintable pricing dialog', retry: 2, story_489: true do
     visit imprintables_path
     find('i.fa.fa-dollar').click
     decoration_price = 3.75
     sleep 0.5
-    find(:css, 'input#decoration_price').set(decoration_price)
+    fill_in 'Decoration Price', with: decoration_price
+    fill_in 'Quantity', with: 3
     fill_in 'pricing_group_text', with: 'Line Items'
     sleep 0.5
 
@@ -133,10 +134,10 @@ feature 'Quotes management', quote_spec: true, js: true do
     click_button 'Next'
     sleep 0.5
 
-    expect(page).to have_css("input[value='#{ imprintable.name }']")
-    expect(page).to have_css("input[value='#{ imprintable.base_price + decoration_price }']")
+    expect(page).to have_css("input[name*='name'][value='#{ imprintable.name }']")
+    expect(page).to have_css("input[name*='price'][value='#{ imprintable.base_price + decoration_price }']")
+    expect(page).to have_css("input[name*='quantity'][value='3']")
     fill_in 'Description', with: 'Description'
-    fill_in 'Qty.', with: '1'
     click_button 'Submit'
 
     expect(page).to have_selector '.modal-content-success', text: 'Quote was successfully created.'
