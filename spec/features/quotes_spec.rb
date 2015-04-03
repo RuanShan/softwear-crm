@@ -201,6 +201,22 @@ feature 'Quotes management', quote_spec: true, js: true do
     expect(page).to have_selector('div.line-item-form textarea', text: 'Line Item Description')
   end
 
+  feature 'search', search_spec: true, solr: true do
+    given!(:quote1) { create(:quote, name: 'The keyword') }
+    given!(:quote2) { create(:quote, name: 'Something else') }
+    given!(:quote3) { create(:quote, name: 'Keyword one again') }
+
+    scenario 'user can search quotes', story_305: true do
+      visit quotes_path
+
+      fill_in 'search_quote_fulltext', with: 'Keyword'
+      click_button 'Search'
+      expect(page).to have_content 'The keyword'
+      expect(page).to have_content 'Keyword one again'
+      expect(page).to have_content 'Something else'
+    end
+  end
+
   feature 'the following actions are tracked:' do
     scenario 'Quote creation' do
       visit root_path
