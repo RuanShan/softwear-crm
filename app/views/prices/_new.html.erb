@@ -14,7 +14,19 @@
       </div>
       <p class="help-block">The decoration price of the imprintable</p>
     </div>
+
+    <div class="col-sm-12">
+      <%= label_tag :quantity, 'Quantity', class: 'col-sm-12 control-label' %>
+      <div class="input-group">
+        <span class="input-group-addon">x</span>
+
+        <%= number_field_tag :quantity, 1,
+                           class: 'form-control', required: true %>
+
+      </div>
+        <p class="help-block">The quantity being offered</p>
     </div>
+  </div>
 
   <div class="form-group clearfix">
     <%= label_tag :pricing_group, 'Pricing Group', class: 'col-sm-12 control-label' %>

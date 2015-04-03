@@ -8,6 +8,7 @@
     <thead>
     <tr>
       <th>Item</th>
+      <th>Quantity</th>
       <th>Sizes</th>
       <th>Base</th>
       <th>2XL</th>
@@ -25,6 +26,7 @@
             <% pricing_array.each_with_index do |pricing_hash, index| %>
             <tr id=<%= "price-#{group.to_s.gsub(/\s/, '_')}-#{index}" %>>
               <td><%= link_to(pricing_hash[:name], pricing_hash[:supplier_link]) %></td>
+              <td><%= pricing_hash[:quantity] %></td>
               <td><%= pricing_hash[:sizes] %></td>
               <td><%= number_to_currency pricing_hash[:prices][:base_price] %></td>
               <td><%= number_to_currency pricing_hash[:prices][:xxl_price] %></td>

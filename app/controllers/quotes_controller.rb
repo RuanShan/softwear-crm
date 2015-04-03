@@ -15,7 +15,8 @@ class QuotesController < InheritedResources::Base
             outer_value.each do |inner_value|
               new_line_item = LineItem.new(name: inner_value[:name],
                                            unit_price: inner_value[:prices][:base_price],
-                                           url: inner_value[:supplier_link])
+                                           url: inner_value[:supplier_link],
+                                           quantity: inner_value[:quantity])
               @quote.line_items << new_line_item
             end
           end

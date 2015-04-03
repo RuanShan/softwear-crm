@@ -24,7 +24,7 @@ class PricesController < ApplicationController
       pricing_group_key = params[:pricing_group_select].to_sym unless params[:pricing_group_select].blank?
       # if pricing_groups[pricing_group_key] is null, then make it an array
       session[:pricing_groups][pricing_group_key] ||= []
-      pricing_hash = @imprintable.pricing_hash(params[:decoration_price].to_f)
+      pricing_hash = @imprintable.pricing_hash(params[:decoration_price].to_f, params[:quantity].to_i)
       session[:pricing_groups][pricing_group_key] << pricing_hash
       session[:last_price] = params[:decoration_price].to_f
       format.js
