@@ -13,4 +13,12 @@ module ImprintHelper
       "imprint[#{@new_imprint_counter}[#{field}]]"
     end
   end
+
+  def update_name_number_table(job)
+    %(
+      $("#job-#{job.id}").find('.job-name-number-info')
+        .html("#{j render('jobs/name_number_form', job: job) + render('jobs/name_number_table', job: job)}");
+    )
+      .html_safe
+  end
 end

@@ -38,7 +38,7 @@ feature 'Imprints Management', imprint_spec: true, js: true do
     expect(Imprint.where(job_id: job.id, print_location_id: print_location2.id)).to exist
   end
 
-  scenario 'user can click outside an imprint to update', story_473: true, pending: "won't work and not worth debugging" do
+  scenario 'user can click outside an imprint to update', story_473: true, pending: "spec won't work and not worth debugging" do
     visit edit_order_path(order.id, anchor: 'jobs')
     wait_for_ajax
 
