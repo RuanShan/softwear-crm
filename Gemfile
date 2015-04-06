@@ -84,7 +84,8 @@ group :development do
 end
 
 group :development, :test do
-  gem 'byebug'
+  gem 'byebug', platforms: :mri
+  gem 'rubinius-debugger', platforms: :rbx
 end
 
 group :test do
@@ -121,7 +122,7 @@ gem 'public_activity'
 gem 'sunspot_solr'
 gem 'progress_bar'
 gem 'whenever'
-gem 'freshdesk'
+gem 'freshdesk', github: 'annarbortees/freshdesk-api'
 gem 'simple_token_authentication'
 gem 'sinatra', require: false
 gem 'sidekiq'

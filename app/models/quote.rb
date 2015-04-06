@@ -8,6 +8,11 @@ class Quote < ActiveRecord::Base
   acts_as_paranoid
   tracked by_current_user
 
+  searchable do
+    text :name, :email, :first_name, :last_name,
+         :company, :twitter
+  end
+
   QUOTE_SOURCES = [
     'Phone Call',
     'E-mail',
@@ -15,6 +20,31 @@ class Quote < ActiveRecord::Base
     'Online Form',
     'Other'
   ]
+
+  STEP_1_FIELDS = [
+    :email,
+    :phone_number,
+    :first_name,
+    :last_name,
+    :company,
+    :twitter
+  ]
+  STEP_2_FIELDS = [
+    :name,
+    :informal,
+    :quote_source,
+    :shipping,
+    :valid_until_date,
+    :estimated_delivery_date,
+    :salesperson, :salesperson_id,
+    :store,
+    :freshdesk_ticket_id
+  ]
+  STEP_3_FIELDS = [
+    :line_items
+  ]
+
+  default_scope -> { order('quotes.created_at DESC') }
 
   belongs_to :salesperson, class_name: User
   belongs_to :store
@@ -107,6 +137,10 @@ class Quote < ActiveRecord::Base
       last_four    = phone_number[6, 4]
       "(#{area_code}) #{middle_three}-#{last_four}"
     end
+  end
+
+  def formal?
+    !informal?
   end
 
   def line_items

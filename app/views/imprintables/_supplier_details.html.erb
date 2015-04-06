@@ -12,12 +12,12 @@
           <tr>
             <th>Name</th>
             <th>Sizes Available</th>
-            <th>Base Price</th>
-            <th>2XL</th>
-            <th>3XL</th>
-            <th>4XL</th>
-            <th>5XL</th>
-            <th>6XL</th>
+            <% if imprintable.base_price_ok %><th>Base Price</th><% end %>
+            <% if imprintable.xxl_price_ok %><th>2XL</th><% end %>
+            <% if imprintable.xxxl_price_ok %><th>3XL</th><% end %>
+            <% if imprintable.xxxxl_price_ok %><th>4XL</th><% end %>
+            <% if imprintable.xxxxxl_price_ok %><th>5XL</th><% end %>
+            <% if imprintable.xxxxxxl_price_ok %><th>6XL</th><% end %>
           </tr>
         </thead>
 
@@ -25,14 +25,25 @@
           <tr>
             <td><%= link_to imprintable.name, imprintable.supplier_link %></td>
             <td><%= display_sizes(imprintable) %></td>
-            <% # TODO: possibly refactor into method or something %>
-            <% #      not sure how to go about doing this? %>
-            <td><%= number_to_currency imprintable.base_price unless imprintable.base_price == 0.0 %></td>
-            <td><%= number_to_currency imprintable.xxl_price unless imprintable.xxl_price == 0.0 %></td>
-            <td><%= number_to_currency imprintable.xxxl_price unless imprintable.xxxl_price == 0.0 %></td>
-            <td><%= number_to_currency imprintable.xxxxl_price unless imprintable.xxxxl_price == 0.0 %></td>
-            <td><%= number_to_currency imprintable.xxxxxl_price unless imprintable.xxxxxl_price == 0.0 %></td>
-            <td><%= number_to_currency imprintable.xxxxxxl_price unless imprintable.xxxxxxl_price == 0.0 %></td>
+
+            <% if imprintable.base_price_ok %>
+              <td><%= number_to_currency imprintable.base_price %></td>
+            <% end %>
+            <% if imprintable.xxl_price_ok %>
+              <td><%= number_to_currency imprintable.xxl_price %></td>
+            <% end %>
+            <% if imprintable.xxxl_price_ok %>
+              <td><%= number_to_currency imprintable.xxxl_price %></td>
+            <% end %>
+            <% if imprintable.xxxxl_price_ok %>
+              <td><%= number_to_currency imprintable.xxxxl_price %></td>
+            <% end %>
+            <% if imprintable.xxxxxl_price_ok %>
+              <td><%= number_to_currency imprintable.xxxxxl_price %></td>
+            <% end %>
+            <% if imprintable.xxxxxxl_price_ok %>
+              <td><%= number_to_currency imprintable.xxxxxxl_price %></td>
+            <% end %>
           </tr>
         </tbody>
        </table>

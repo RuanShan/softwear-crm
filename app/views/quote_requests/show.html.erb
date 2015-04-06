@@ -54,6 +54,17 @@
       </div>
     </div>
 
+    <% if @quote_request.status == 'could_not_quote' %>
+      <div id='quote-request-reason-div' class='row'>
+        <div class='col-sm-2'>
+          <strong>Reason:</strong>
+        </div>
+        <div class='col-sm-10' id='quote-request-reason'>
+          <%= @quote_request.reason %>
+        </div>
+      </div>
+    <% end %>
+
     <div class='row'>
       <div class='col-sm-2'>
         <strong>Approximate Quantity:</strong>
@@ -68,7 +79,7 @@
         <strong>Date Needed:</strong>
       </div>
       <div class='col-sm-10'>
-        <%= @quote_request.date_needed.strftime("%F") %>
+        <%= @quote_request.date_needed.strftime("%F") rescue 'n/a' %>
       </div>
     </div>
 

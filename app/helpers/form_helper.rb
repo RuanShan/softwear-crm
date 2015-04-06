@@ -46,7 +46,7 @@ module FormHelper
     return unless @current_user
     add_class options, 'form-control', 'search-query-select'
     options[:id] = "select_query_for_#{model.name.underscore}"
-    select_options = content_tag(:option, "#{model.name.humanize} queries...", value: 'nil')
+    select_options = content_tag(:option, "Saved Searches", value: 'nil')
 
     current = if session[:last_search] =~ /\d/
       session[:last_search].to_i
@@ -108,7 +108,9 @@ module FormHelper
   end
 
   def size_price_field(f, field, price)
-    f.text_field field, class: 'form-control',
-                  value: (number_with_precision(price, precision: 2) || 0)
+    f.text_field field,
+      class: "form-control upcharge-#{field}",
+      value: (number_with_precision(price, precision: 2) || 0),
+      disabled: f.object.try("#{field}_nil")
   end
 end
