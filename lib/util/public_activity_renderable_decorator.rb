@@ -10,7 +10,7 @@ module PublicActivity
         key_for_default = self.key.split('.')
         key_for_default[-2] = 'default'
         path = key_for_default.join '/'
-        super_render(context, params.merge(display: path))
+        super_render(context, params.merge(partial: path))
       end
     end
   end

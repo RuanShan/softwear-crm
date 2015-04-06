@@ -1,4 +1,15 @@
 GIT
+  remote: git://github.com/AnnArborTees/public_activity.git
+  revision: aae6d11702991411c49446db4784fcb91376e0a1
+  branch: master
+  specs:
+    public_activity (2.0)
+      actionpack (>= 3.0.0)
+      activerecord (>= 3.0)
+      i18n (>= 0.5.0)
+      railties (>= 3.0.0)
+
+GIT
   remote: git://github.com/annarbortees/freshdesk-api.git
   revision: e820d22d39627c6f7ba81a587afbc61506ac8a1c
   specs:
@@ -265,11 +276,6 @@ GEM
     progress_bar (1.0.2)
       highline (~> 1.6.1)
       options (~> 2.3.0)
-    public_activity (1.4.2)
-      actionpack (>= 3.0.0)
-      activerecord (>= 3.0)
-      i18n (>= 0.5.0)
-      railties (>= 3.0.0)
     rack (1.5.2)
     rack-protection (1.5.3)
       rack
@@ -480,7 +486,7 @@ DEPENDENCIES
   paranoia (~> 2.0)
   php-serialize
   progress_bar
-  public_activity
+  public_activity!
   rack_session_access
   rails (= 4.0.4)
   remotipart

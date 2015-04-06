@@ -23,6 +23,6 @@ class Imprint < ActiveRecord::Base
   end
 
   def name
-    "#{imprint_method.name} - #{print_location.name}"
+    "#{imprint_method.try(:name) || '---'} - #{print_location.try(:name) || '---'}"
   end
 end

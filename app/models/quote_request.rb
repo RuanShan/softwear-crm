@@ -1,7 +1,7 @@
 class QuoteRequest < ActiveRecord::Base
   include TrackingHelpers
 
-  tracked by_current_user + { params: { s: ->(_c, r) { r.track_state_changes } } }
+  tracked by_current_user + { parameters: { s: ->(_c, r) { r.track_state_changes } } }
 
   default_scope { order('quote_requests.created_at DESC') }
 
