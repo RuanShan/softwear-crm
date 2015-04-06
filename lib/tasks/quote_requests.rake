@@ -1,7 +1,7 @@
 require 'php_serialize'
 require 'mysql2'
 require 'json'
-
+require 'pp'
 
 namespace :quote_requests do
 
@@ -75,9 +75,8 @@ namespace :quote_requests do
         end
 
         if quantity.nil? || date_needed.nil? || description.nil? || name.nil?
-          puts "Quantity or date_needed or description nil for #{lead.inspect}"
           puts "[ERROR] Importing http://www.annarbortees.com/wp-admin/admin.php?page=gf_entries&view=entry&id=#{pending_entry['form_id']}&lid=#{pending_entry['id']}"
-          next
+          puts "quantity = #{quantity}\ndate_needed#{date_needed}\ndescription = #{description}\nname = #{name}\n"
         end
 
 
@@ -88,7 +87,7 @@ namespace :quote_requests do
             name: name,
             email: lead['Email'],
             approx_quantity: quantity,
-            date_needed: Date.parse(date_needed),
+            date_needed: (Date.parse(date_needed) rescue ''),
             description: description,
             source: form_details['title']
         }
@@ -104,7 +103,8 @@ namespace :quote_requests do
 
 
       rescue Exception => e
-        puts e.message
+        pp e.message
+        pp e.backtrace
         puts "[ERROR] Importing http://www.annarbortees.com/wp-admin/admin.php?page=gf_entries&view=entry&id=#{pending_entry['form_id']}&lid=#{pending_entry['id']}"
       end
     end
@@ -166,9 +166,8 @@ namespace :quote_requests do
         end
 
         if quantity.nil? || date_needed.nil? || description.nil? || name.nil?
-          puts "Quantity or date_needed or description nil for #{lead.inspect}"
           puts "[ERROR] Importing http://www.annarbortees.com/wp-admin/admin.php?page=gf_entries&view=entry&id=#{pending_entry['form_id']}&lid=#{pending_entry['id']}"
-          next
+          puts "quantity = #{quantity}\ndate_needed#{date_needed}\ndescription = #{description}\nname = #{name}\n"
         end
 
 
@@ -179,7 +178,7 @@ namespace :quote_requests do
             name: name,
             email: lead['Email'],
             approx_quantity: quantity,
-            date_needed: Date.parse(date_needed),
+            date_needed: (Date.parse(date_needed) rescue ''),
             description: description,
             source: form_details['title']
         }
@@ -196,7 +195,8 @@ namespace :quote_requests do
 
 
       rescue Exception => e
-        puts e.message
+        pp e.message
+        pp e.backtrace
         puts "[ERROR] Importing http://www.annarbortees.com/wp-admin/admin.php?page=gf_entries&view=entry&id=#{pending_entry['form_id']}&lid=#{pending_entry['id']}"
       end
     end
@@ -259,8 +259,6 @@ namespace :quote_requests do
         if quantity.nil? || date_needed.nil? || description.nil? || name.nil?
           puts "[ERROR] Importing http://www.annarbortees.com/wp-admin/admin.php?page=gf_entries&view=entry&id=#{pending_entry['form_id']}&lid=#{pending_entry['id']} Quantity or date_needed or description nil for #{lead.inspect}"
           errors <<  "[ERROR] Importing http://www.annarbortees.com/wp-admin/admin.php?page=gf_entries&view=entry&id=#{pending_entry['form_id']}&lid=#{pending_entry['id']} Quantity or date_needed or description nil for #{lead.inspect}"
-
-          next
         end
 
 

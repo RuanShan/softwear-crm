@@ -122,7 +122,7 @@ gem 'public_activity'
 gem 'sunspot_solr'
 gem 'progress_bar'
 gem 'whenever'
-gem 'freshdesk'
+gem 'freshdesk', github: 'annarbortees/freshdesk-api'
 gem 'simple_token_authentication'
 gem 'sinatra', require: false
 gem 'sidekiq'

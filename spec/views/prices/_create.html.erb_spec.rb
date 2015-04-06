@@ -32,4 +32,9 @@ describe 'prices/_create.html.erb', prices_spec: true do
     expect(rendered).to have_css('td', text: '15.99')
     expect(rendered).to have_css('td', text: '--')
   end
+
+  it 'displays quantity', story_489: true do
+    expect(rendered).to have_css('th', text: 'Quantity')
+    expect(rendered).to have_css('td', text: '1')
+  end
 end

@@ -79,7 +79,7 @@
         <strong>Date Needed:</strong>
       </div>
       <div class='col-sm-10'>
-        <%= @quote_request.date_needed.strftime("%F") %>
+        <%= @quote_request.date_needed.strftime("%F") rescue 'n/a' %>
       </div>
     </div>
 

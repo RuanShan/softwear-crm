@@ -1,19 +1,24 @@
-<div class="col-sm-2"><%= line_item.name %></div>
-<div class="col-sm-4"><%= h line_item.description %></div>
-<div class="col-sm-1"><%= human_boolean line_item.taxable? %></div>
-<div class="col-sm-1"><%= line_item.quantity %></div>
-<div class="col-sm-1"><%= number_to_currency line_item.unit_price %></div>
-<div class="col-sm-1"><%= number_to_currency line_item.total_price %></div>
-<div class="col-sm-1"><%= line_item.url %></div>
+<div class="col-xs-4">
+  <% if line_item.url.blank? %>
+    <%= line_item.name %>
+  <% else %>
+      <%= link_to line_item.name, line_item.url, target: '_blank' %>
+  <% end %>
+</div>
+<div class="col-xs-3"><%= raw line_item.description %></div>
+<div class="col-xs-1"><%= human_boolean line_item.taxable? %></div>
+<div class="col-xs-1"><%= line_item.quantity %></div>
+<div class="col-xs-1"><%= number_to_currency line_item.unit_price %></div>
+<div class="col-xs-1"><%= number_to_currency line_item.total_price %></div>
 
-<div class='col-sm-1'>
+<div class='col-xs-1'>
   <%= link_to edit_line_item_path(line_item), class: 'line-item-button',
               method: :get, remote: true, title: 'Edit' do %>
-    <i class="fa fa-2x fa-edit"></i>
+    <i class="glyphicon-edit glyphicon warning"></i>
   <% end %>
 
   <%= link_to line_item_path(line_item), class: 'line-item-button',
               method: :delete, remote: true, title: 'Delete' do %>
-    <i class="fa fa-2x danger fa-times-circle"></i>
+    <i class="glyphicon-remove-sign glyphicon danger"></i>
   <% end %>
 </div>

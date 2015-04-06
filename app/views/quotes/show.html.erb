@@ -1,6 +1,7 @@
 <div class="page-heading animated fadeInDownBig row">
   <div class="pull-left">
-    <h1><strong>Ann Arbor T-Shirt Company</strong> Quote #<%= @quote.id %></h1>
+    <h1><strong>Ann Arbor T-Shirt Company Quote</strong> #<%= @quote.id %></h1>
+    <h2><%= @quote.name %></h2>
   </div>
 
   <div class='pull-right hidden-print'>
@@ -23,34 +24,33 @@
         <dt>Name</dt>
         <di><%= @quote.full_name %></di>
 
+        <% unless @quote.company.blank? %>
+            <dt>Company</dt>
+            <di><%= @quote.company %></di>
+        <% end %>
+
         <dt>E-mail</dt>
         <di><%= @quote.email %></di>
 
-        <dt>Company</dt>
-        <di><%= @quote.company %></di>
-
+        <% unless @quote.phone_number.blank? %>
         <dt>Phone Number</dt>
         <di><%= @quote.phone_number %></di>
+        <% end %>
 
-        <dt>Estimated Delivery:</dt>
-        <di><%= display_time(@quote.estimated_delivery_date) %></di>
       </dl>
   </div>
 
   <div class="col-xs-6">
       <h2><strong>Quote</strong> Details</h2>
     <dl>
-      <dt>Quote ID</dt>
-      <di>#<%= @quote.id %></di>
-
-      <dt>Quote Name</dt>
-      <di><%= @quote.name %></di>
+      <dt>Estimated Delivery:</dt>
+      <di><%= display_date @quote.estimated_delivery_date  %></di>
 
       <dt>Salesperson</dt>
       <di><%= @quote.salesperson.full_name %></di>
 
       <dt>Valid Until</dt>
-      <di><%= display_time @quote.valid_until_date %></di>
+      <di><%= display_date @quote.valid_until_date %></di>
     </dl>
     </div>
 

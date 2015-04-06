@@ -22,7 +22,7 @@
         <% group.line_items.each do |li| %>
           <tr class="no-break">
             <td class="col-sm-4"><%= li.url.blank? ? (li.name) : (link_to li.name, url_with_protocol(li.url), target: '_blank') %></td>
-            <td class="col-sm-4"><%= li.description %></td>
+            <td class="col-sm-4"><%= raw li.description %></td>
             <td class="col-sm-1"><%= number_to_currency(li.unit_price) %></td>
             <td class="col-sm-1"><%= li.quantity %></td>
             <% if quote.formal? %>

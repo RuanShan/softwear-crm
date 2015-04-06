@@ -23,9 +23,10 @@ module TrackingHelpers
       end
       # Allows parameters to be applied through (controller, record) procs,
       # or you can just pass one or more hashes.
+      # TODO this does not work and is not used.
       def with_params(*params)
         {
-          params: lambda(controller, record) do
+          params: lambda do |controller, record|
             params.reduce({}) do |total, entry|
               total.merge case entry
                 when Proc, Method
@@ -37,6 +38,8 @@ module TrackingHelpers
                   hash
                 when Hash
                   entry
+                when Symbol, String
+                  record.send(entry, controller)
                 else
                   raise "Must be a hash or proc. "\
                         "Got #{entry.class.name} instead."

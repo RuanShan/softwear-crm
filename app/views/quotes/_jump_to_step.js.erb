@@ -1,0 +1,14 @@
+$(function() {
+  var currentStep = 1;
+  var targetStep = <%= step %>;
+
+  var nextStep = function() {
+    if (currentStep >= targetStep) return;
+
+    currentStep += 1;
+    $('button.next').click();
+    setTimeout(nextStep, 500);
+  }
+
+  nextStep();
+});

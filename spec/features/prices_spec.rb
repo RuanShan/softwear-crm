@@ -10,9 +10,8 @@ feature 'Pricing management', js: true, prices_spec: true do
   scenario 'A user can price an imprintable' do
     visit imprintables_path
     click_link("pricing_button_#{imprintable.id}")
-    fill_in 'decoration_price', with: '5'
-    click_link 'Add A Pricing Group'
-    fill_in 'pricing_group_text', with: 'Line Items'
+    fill_in 'decoration_price', with: '5.0'
+    fill_in 'pricing_group_text', with: 'Line Item Group'
     click_button 'Add to Pricing Table'
 
     expect(page).to have_css('td', text: "#{imprintable.base_price + 5}")
@@ -34,7 +33,6 @@ feature 'Pricing management', js: true, prices_spec: true do
     visit imprintables_path
     click_link("pricing_button_#{imprintable.id}")
     fill_in 'decoration_price', with: '5'
-    click_link 'Add A Pricing Group'
     fill_in 'pricing_group_text', with: 'Line Items'
     click_button 'Add to Pricing Table'
 
@@ -52,26 +50,18 @@ feature 'Pricing management', js: true, prices_spec: true do
     visit imprintables_path
     click_link("pricing_button_#{imprintable.id}")
     fill_in 'decoration_price', with: '5'
-    click_link 'Add A Pricing Group'
-    # for some reason the next line tends to glitch out, hence the sleeps
-    sleep 0.5
     fill_in 'pricing_group_text', with: 'Line Items'
-    sleep 0.5
-
     click_button 'Add to Pricing Table'
-
-    sleep 0.5
     close_content_modal
-    sleep 0.5
-
+    wait_for_ajax
     click_link("pricing_button_#{imprintable.id}")
     fill_in 'decoration_price', with: '2'
-    sleep 0.5
-    click_link 'Add A Pricing Group'
+    sleep(0.5)
+    click_link 'New Group'
     # for some reason the next line tends to glitch out, hence the sleeps
-    sleep 0.5
+    sleep(0.5)
     fill_in 'pricing_group_text', with: 'Not Line Items'
-    sleep 0.5
+    sleep(0.5)
 
     click_button 'Add to Pricing Table'
     expect(page).to have_content 'Line Items'
@@ -124,7 +114,7 @@ feature 'Pricing management', js: true, prices_spec: true do
       expect(page).to have_css('tr#price-pricing_group_one-0')
       expect(page).to have_css('tr#price-pricing_group_two-0')
 
-      sleep 0.5
+      wait_for_ajax
       find(:css, 'a[data-action="destroy_all"]').click
       page.driver.browser.switch_to.alert.accept
 

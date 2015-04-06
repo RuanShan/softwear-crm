@@ -9,6 +9,12 @@
   </div>
 </div>
 
+<div class="col-sm-8 col-sm-offset-2 col-xs-12">
+  <%= render 'quotes/search' %>
+</div>
+
+<%= paginate @quotes %>
+
 <div class="box-info row clear">
   <div class="table-responsive">
     <table class="table table-hover">
@@ -70,3 +76,5 @@
     </table>
   </div>
 </div>
+
+<%= paginate @quotes %>

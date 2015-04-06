@@ -1,0 +1,12 @@
+<% if activity.parameters[:s].try(:[], :status_changed_to) %>
+  Quote request
+  <%= link_to activity.trackable.name, activity.trackable %>
+
+  status
+  <strong><%= activity.parameters[:s][:status_changed_from] %></strong>
+  =&gt;
+  <strong><%= activity.parameters[:s][:status_changed_to] %></strong>
+
+<% else %>
+  Updated quote request <%= activity.trackable.name %>
+<% end %>
