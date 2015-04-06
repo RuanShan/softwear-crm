@@ -9,7 +9,7 @@ class GetRidOfNameNumberPrint < ActiveRecord::Migration
     ActiveRecord::Base.connection.execute(
       %(
         INSERT INTO imprint_methods (name)
-          VALUES "Name/Number"
+          VALUES ("Name/Number")
       ))
     end
   end
