@@ -1,3 +1,4 @@
 $('#contentModal .modal-body').html("<%= j(render(template: 'imprintables/show',
                                                   formats: [:html])).html_safe %>");
+$('#contentModal .modal-dialog').css('width', '90%');
 $('#contentModal').modal('show');

@@ -37,3 +37,52 @@
 .btn-fullwidth {
   width: 100%;
 }
+
+dl.left-right {
+
+  dt {
+    float: left;
+    clear: left;
+    text-align: right;
+  }
+  dt:after {
+    content: ":";
+  }
+  dd {
+    float: left;
+    margin: 0 0 0 2px;
+  }
+
+  &:after {
+    visibility: hidden;
+    display: block;
+    font-size: 0;
+    content: " ";
+    clear: both;
+    height: 0;
+  }
+
+}
+
+dl.left-right-pretty {
+
+
+  dt {
+    float: left;
+    clear: left;
+    width: 200px;
+    text-align: right;
+    font-weight: bold;
+  }
+
+  dt:after {
+    content: ":";
+  }
+
+  dd {
+    margin: 0 0 0 205px;
+    padding: 0 0 0.5em 0;
+  }
+}
+
+

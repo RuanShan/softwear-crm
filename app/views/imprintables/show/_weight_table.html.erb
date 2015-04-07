@@ -1,0 +1,23 @@
+<h3>Weight by Size</h3>
+<table class="table table-hover table-condensed" id="imprintable_weights_list">
+  <thead>
+  <tr>
+    <% imprintable.imprintable_variants.joins(:size).group(:size_id).order('sizes.sort_order ASC').each do |variant| %>
+        <% size = variant.size %>
+        <th>
+          <%= size.display_value %>
+        </th>
+    <% end %>
+  </tr>
+  </thead>
+  <tbody>
+  <tr>
+    <% imprintable.imprintable_variants.joins(:size).group(:size_id).order('sizes.sort_order ASC').each do |variant| %>
+        <% size = variant.size %>
+        <td>
+            <%= imprintable.imprintable_variant_weight_for_size(size) %> ounces
+        </td>
+    <% end %>
+  </tr>
+  </tbody>
+</table>

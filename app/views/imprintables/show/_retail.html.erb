@@ -1,0 +1,52 @@
+<div class="user-profile-content">
+
+  <h3>Details</h3>
+  <dl class="left-right-pretty">
+    <dt>Common Name</dt>
+    <dd><%= imprintable.common_name %></dd>
+    <dt>SKU</dt>
+    <dd><%= imprintable.sku %></dd>
+  </dl>
+
+  <h3>Retail Pricing</h3>
+  <table class="table table-hover" id="imprintable_supplier_pricing">
+    <thead>
+    <tr>
+      <th>Sizes Available</th>
+      <% if imprintable.base_price_ok %><th>Base Upcharge</th><% end %>
+      <% if imprintable.xxl_price_ok %><th>2XL</th><% end %>
+      <% if imprintable.xxxl_price_ok %><th>3XL</th><% end %>
+      <% if imprintable.xxxxl_price_ok %><th>4XL</th><% end %>
+      <% if imprintable.xxxxxl_price_ok %><th>5XL</th><% end %>
+      <% if imprintable.xxxxxxl_price_ok %><th>6XL</th><% end %>
+    </tr>
+    </thead>
+
+    <tbody>
+    <tr>
+      <td><%= display_sizes(imprintable) %></td>
+
+      <% if imprintable.base_price_ok %>
+          <td><%= number_to_currency imprintable.base_upcharge %></td>
+      <% end %>
+      <% if imprintable.xxl_price_ok %>
+          <td><%= number_to_currency imprintable.xxl_upcharge %></td>
+      <% end %>
+      <% if imprintable.xxxl_price_ok %>
+          <td><%= number_to_currency imprintable.xxxl_upcharge %></td>
+      <% end %>
+      <% if imprintable.xxxxl_price_ok %>
+          <td><%= number_to_currency imprintable.xxxxl_upcharge %></td>
+      <% end %>
+      <% if imprintable.xxxxxl_price_ok %>
+          <td><%= number_to_currency imprintable.xxxxxl_upcharge %></td>
+      <% end %>
+      <% if imprintable.xxxxxxl_price_ok %>
+          <td><%= number_to_currency imprintable.xxxxxxl_upcharge %></td>
+      <% end %>
+    </tr>
+    </tbody>
+  </table>
+
+  <%= render 'imprintables/show/weight_table', imprintable: imprintable %>
+</div>
