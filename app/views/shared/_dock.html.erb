@@ -28,7 +28,7 @@
           <%= session[:docked].description %>
         </p>
         <p>
-          Needed By: <%= session[:docked].date_needed.strftime('%F') %>
+          Needed By: <%= session[:docked].date_needed.strftime('%F') rescue 'n/a' %>
         </p>
       </div>
     </div>
