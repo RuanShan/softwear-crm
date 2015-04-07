@@ -67,4 +67,6 @@
       <dt>Tags</dt>
       <dd><%= imprintable.tags.empty? ? 'Not Specified' : imprintable.tags.map{|x| x.name}.join(', ') %></dd>
     </dl>
+
+    <%= render 'imprintables/show/weight_table', imprintable: imprintable %>
 </div>

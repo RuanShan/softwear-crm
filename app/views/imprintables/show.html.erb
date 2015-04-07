@@ -17,7 +17,7 @@
     <div class="box-info full">
 
       <ul class="nav nav-tabs nav-justified">
-        <li>
+        <li class="active">
           <a href="#sales_info_<%= @imprintable.id %>" data-toggle="tab">
             <i class="fa fa-check-square-o"></i> Sales
           </a>
@@ -43,7 +43,7 @@
 
       <div class="tab-content">
 
-        <div class="tab-pane animated fadeInRight" id="sales_info_<%= @imprintable.id %>">
+        <div class="tab-pane animated fadeInRight active" id="sales_info_<%= @imprintable.id %>">
           <%= render 'imprintables/show/sales', imprintable: @imprintable %>
         </div>
 
