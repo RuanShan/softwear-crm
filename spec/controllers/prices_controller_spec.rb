@@ -36,15 +36,16 @@ describe PricesController, js: true, prices_spec: true do
       expect(assigns(:imprintable)).to eq(imprintable)
     end
 
-    it 'adds the imprintable hash to the pricing table in session' do
+    it 'adds the imprintable hash to the pricing table in session', story_489: true do
       expect(session[:pricing_groups]).to be_nil
       post :create, {
           decoration_price: 4,
           id: imprintable.id,
           format: 'js',
-          pricing_group_text: 'GROUP'
+          pricing_group_text: 'GROUP',
+          quantity: 3
       }
-      expect(session[:pricing_groups][:'GROUP'].first).to eq(imprintable.pricing_hash(4))
+      expect(session[:pricing_groups][:'GROUP'].first).to eq(imprintable.pricing_hash(4, 3))
     end
   end
 

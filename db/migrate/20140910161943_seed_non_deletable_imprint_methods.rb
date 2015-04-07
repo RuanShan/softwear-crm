@@ -4,7 +4,7 @@ class SeedNonDeletableImprintMethods < ActiveRecord::Migration
 
     ['Screen Print', 'Digital Print', 'In-House Embroidery',
      'Outsourced Embroidery', 'Transfer Printing', 'Transfer Making',
-     'Button Making', 'Name/Number Print'].each do |im|
+     'Button Making', 'Name/Number'].each do |im|
 
       imprint_method = ImprintMethod.find_or_create_by(name: im)
       imprint_method.deletable = false
@@ -18,7 +18,7 @@ class SeedNonDeletableImprintMethods < ActiveRecord::Migration
   def down
     ['Screen Print', 'Digital Print', 'In-House Embroidery',
      'Outsourced Embroidery', 'Transfer Printing', 'Transfer Making',
-     'Button Making', 'Name/Number Print'].each do |im|
+     'Button Making', 'Name/Number'].each do |im|
 
       imprint_method = ImprintMethod.find_by(name: im)
       imprint_method.destroy if imprint_method

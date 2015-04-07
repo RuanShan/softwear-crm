@@ -39,6 +39,7 @@ $(document).ajaxStop(->
 
 @initializeDateTimePicker = ->
   $(".js-datetimepicker").datetimepicker()
+  $(".js-datetimepicker input[type='text']").datetimepicker()
 
 @initializeSummernote = ->
   $(".summernote").summernote

@@ -4,7 +4,10 @@ describe 'quotes/index.html.erb', quote_spec: true do
   let!(:quote) { build_stubbed(:valid_quote) }
 
   before(:each) do
-    assign(:quotes, [quote])
+    assign(
+      :quotes,
+      Kaminari.paginate_array([quote]).page(1)
+    )
     render file: 'quotes/index'
   end
 

@@ -5,6 +5,7 @@ class QuotesController < InheritedResources::Base
 
   def new
     assign_new_quote_hash
+    add_params_from_docked_quote_request
     super do
       @quote_request_id = params[:quote_request_id] if params.has_key?(:quote_request_id)
       # TODO: this is pretty gross...
@@ -14,7 +15,8 @@ class QuotesController < InheritedResources::Base
             outer_value.each do |inner_value|
               new_line_item = LineItem.new(name: inner_value[:name],
                                            unit_price: inner_value[:prices][:base_price],
-                                           url: inner_value[:supplier_link])
+                                           url: inner_value[:supplier_link],
+                                           quantity: inner_value[:quantity])
               @quote.line_items << new_line_item
             end
           end
@@ -28,6 +30,7 @@ class QuotesController < InheritedResources::Base
   def index
     super do
       @current_action = 'quotes#index'
+      @quotes = Quote.all.page(params[:page])
     end
   end
 
@@ -54,6 +57,8 @@ class QuotesController < InheritedResources::Base
 
   def create
     assign_new_quote_hash
+    session[:last_quote_line_items] = params[:quote].try(:[], :line_items_attributes)
+
     super do
       # create QuoteRequestQuote if necessary
       unless @quote_request_id.nil?
@@ -67,11 +72,14 @@ class QuotesController < InheritedResources::Base
         @quote
           .default_group
           .update_attributes(name: params[:line_item_group_name])
+
       end
       @quote
       # scrapping for now since freshdesk is a piece of shit
       # @quote.create_freshdesk_ticket(current_user) if Rails.env.production?
     end
+
+    session.delete(:last_quote_line_items)
   end
 
   def quote_select
@@ -144,7 +152,16 @@ class QuotesController < InheritedResources::Base
     render 'populate_email', locals: { quote: @quote }
   end
 
-private
+  private
+
+  def add_params_from_docked_quote_request
+    docked = session[:docked]
+    return if docked.nil?
+
+    params[:name]             = docked.name
+    params[:email]            = docked.email
+    params[:quote_request_id] = docked.id
+  end
 
   def assign_new_quote_hash
     @new_quote_hash = {}
@@ -191,14 +208,17 @@ private
   end
 
   def permitted_params
-    params.permit(quote: [
+    params.permit(
+      :line_item_group_name,
+      quote: [
       :email, :informal, :phone_number, :first_name, :last_name, :company,
       :twitter, :name, :valid_until_date, :estimated_delivery_date,
       :salesperson_id, :store_id, :shipping, :quote_source, :freshdesk_ticket_id,
        quote_request_ids: [],
        line_items_attributes: [
         :name, :quantity, :taxable, :description, :id,
-        :imprintable_variant_id, :unit_price, :_destroy, :url
+        :imprintable_variant_id, :unit_price, :_destroy, :url,
+        :group_name
        ],
        emails_attributes: [
            :subject, :body, :sent_to, :sent_from, :cc_emails, :id, :_destroy

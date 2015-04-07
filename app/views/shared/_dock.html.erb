@@ -6,8 +6,15 @@
         <%= link_to '/undock', data: {remote: true}, class: 'additional-icon', 'data-toggle' => 'close' do  %>
             <i class="fa fa-times"></i>
         <% end %>
-        <%= link_to new_quote_path(name: session[:docked].name, email: session[:docked].email, quote_request_id: session[:docked].id), class: 'additional-icon', 'data-toggle' => 'close' do  %>
+        <%= link_to new_quote_path, class: 'additional-icon', 'data-toggle' => 'close' do  %>
             <i class="fa fa-plus"></i>
+        <% end %>
+
+        <%= link_to '#', id: 'minimize-dock', class: 'additional-icon' do %>
+            <i class="fa fa-chevron-down"></i>
+        <% end %>
+        <%= link_to '#', id: 'maximize-dock', class: 'additional-icon' do %>
+            <i class="fa fa-chevron-up"></i>
         <% end %>
       </div>
       <div id="dock-body" class="collapse in">
@@ -21,7 +28,7 @@
           <%= session[:docked].description %>
         </p>
         <p>
-          Needed By: <%= session[:docked].date_needed.strftime('%F') %>
+          Needed By: <%= session[:docked].date_needed.strftime('%F') rescue 'n/a' %>
         </p>
       </div>
     </div>

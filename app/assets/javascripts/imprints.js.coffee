@@ -82,3 +82,13 @@
 
 @nameNumberChanged = ->
   $(this).addClass 'editing-imprint'
+
+$ ->
+  if $('.imprint-container').length isnt 0
+    $(document).mouseup (e) ->
+
+      unless $(e.target).is('.imprint-container *')
+        $('.update-imprints').click() if $('.editing-imprint').length isnt 0
+  else
+    console.log 'i dont care lol'
+
