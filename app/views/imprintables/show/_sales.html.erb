@@ -55,9 +55,9 @@
     <h3>Additional Info</h3>
     <dl class="left-right-pretty">
       <dt>Main Supplier</dt>
-      <dd><%= imprintable.supplier_link.blank? ? 'Not Specified ' :  imprintable.main_supplier %></dd>
+      <dd><%= imprintable.main_supplier.blank? ? 'Not Specified ' :  imprintable.main_supplier %></dd>
       <dt>Supplier Link</dt>
-      <dd><%= imprintable.supplier_link.blank? ? 'Not Specified ' : link_to(imprintable.supplier_link) %></dd>
+      <dd><%= imprintable.supplier_link.blank? ? 'Not Specified ' : link_to(imprintable.supplier_link, imprintable.supplier_link) %></dd>
       <dt>Categories</dt>
       <dd><%= imprintable.imprintable_categories.empty? ? 'Not Specified' : imprintable.imprintable_categories.map{|x| x.name}.join(', ') %></dd>
       <dt>Coordinates</dt>

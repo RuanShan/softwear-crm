@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe 'imprintables/_size_color_availability.html.erb', imprintable_spec: true do
+describe 'imprintables/show/_sizing.html.erb', imprintable_spec: true do
   before(:each) do
     imprintable = build_stubbed(:valid_imprintable)
     size = build_stubbed(:valid_size, display_value: 'M')
@@ -17,8 +17,8 @@ describe 'imprintables/_size_color_availability.html.erb', imprintable_spec: tru
     allow(variant).to receive_message_chain(:color, :id).and_return color.id
     allow(variant).to receive(:name).and_return 'Blue'
 
-    render partial: 'imprintables/size_color_availability',
-           locals: {
+    render 'imprintables/show/sizing',
+           {
                imprintable: imprintable,
                variants_array: [variant, variant],
                color_variants: [variant, variant],
