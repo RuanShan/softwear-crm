@@ -29,8 +29,8 @@ describe 'quotes/show.html.erb', quote_spec: true do
     expect(rendered).to have_css('dt', text: 'Salesperson')
 
     expect(rendered).to have_content(quote.name)
-    expect(rendered).to have_content(display_time(quote.valid_until_date))
-    expect(rendered).to have_content(display_time(quote.estimated_delivery_date))
+    expect(rendered).to have_content(display_date(quote.valid_until_date))
+    expect(rendered).to have_content(display_date(quote.estimated_delivery_date))
     expect(rendered).to have_content(quote.salesperson.full_name)
   end
 

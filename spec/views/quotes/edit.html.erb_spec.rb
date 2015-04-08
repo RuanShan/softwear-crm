@@ -14,14 +14,14 @@ describe 'quotes/edit.html.erb', quote_spec: true do
     expect(rendered).to have_css('a[href="#timeline"]', text: 'Timeline')
     expect(rendered).to have_css('a[href="#details"]', text: 'Details')
     expect(rendered).to have_css('a[href="#line_items"]', text: 'Line Items')
-    expect(rendered).to have_css('a[href="#actions"]', text: 'Actions')
+    expect(rendered).to have_css('a[href="#quote_actions"]', text: 'Actions')
   end
 
   it 'should contain divs with ids equal to timeline, details, line_items and actions' do
     expect(rendered).to have_css('div#timeline')
     expect(rendered).to have_css('div#details')
     expect(rendered).to have_css('div#line_items')
-    expect(rendered).to have_css('div#actions')
+    expect(rendered).to have_css('div#quote_actions')
   end
 
   it 'should contain a link to print the quote' do

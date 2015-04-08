@@ -31,8 +31,7 @@ describe 'quotes/_form.html.erb', quote_spec: true do
 
   context 'in the third section' do
     it 'should contain two divs of class col-sm-6, one with line items instructions' do
-      expect(rendered).to have_css('section[data-step-title="Line Items"] .col-sm-6', count: 2)
-      expect(rendered).to have_css('section[data-step-title="Line Items"] .notes', text: 'Line Items Instructions')
+      expect(rendered).to have_css('section[data-step-title="Line Items"] .col-xs-12')
     end
   end
 end

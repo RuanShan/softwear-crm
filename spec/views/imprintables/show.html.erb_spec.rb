@@ -13,10 +13,9 @@ describe 'imprintables/show.html.erb', imprintable_spec: true do
   context 'The imprintable is not part of the standard product set' do
     it 'has a tabbed display with basic info, size/color availability,
         imprint details, and supplier information listed' do
-      expect(rendered).to have_selector("#basic_info_#{imprintable.id}")
-      expect(rendered).to have_selector("#size_color_availability_#{imprintable.id}")
-      expect(rendered).to have_selector("#imprint_details_#{imprintable.id}")
-      expect(rendered).to have_selector("#supplier_information_#{imprintable.id}")
+      expect(rendered).to have_selector("#sales_info_#{imprintable.id}")
+      expect(rendered).to have_selector("#production_info_#{imprintable.id}")
+      expect(rendered).to have_selector("#sizing_info_#{imprintable.id}")
       expect(rendered).to_not have_content 'This Imprintable is part of the Standard Product Set'
     end
   end

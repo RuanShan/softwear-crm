@@ -9,13 +9,12 @@ describe 'quote_requests/_table.html.erb', quote_request: true, story_207: true 
   end
 
   it 'displays the correct fields for the quote requests' do
-    expect(rendered).to have_selector('th', text: 'Name')
-    expect(rendered).to have_selector('th', text: 'Email')
+    expect(rendered).to have_selector('th', text: 'Requester')
     expect(rendered).to have_selector('th', text: 'Est. Qty')
     expect(rendered).to have_selector('th', text: 'Date Needed')
     expect(rendered).to have_selector('th', text: 'Salesperson')
     expect(rendered).to have_selector('th', text: 'Status')
-    expect(rendered).to have_selector('th', text: 'Generate Quotes')
+    expect(rendered).to have_selector('th', text: 'actions')
   end
 
   it 'has a generate quote button' do
