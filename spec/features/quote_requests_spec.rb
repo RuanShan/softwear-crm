@@ -41,7 +41,7 @@ feature 'Quote Requests Management', js: true, quote_request_spec: true do
       unhide_dashboard
       click_link 'Quotes'
       click_link 'Quote Requests'
-      click_link 'Generate Quote'
+      find("a[data-action='quote']").click
     end
 
     scenario 'A user can create a Quote from a Quote Request', story_79: true, story_195: true, create_quote: true do
@@ -62,7 +62,7 @@ feature 'Quote Requests Management', js: true, quote_request_spec: true do
       click_link 'Add Line Item'
       fill_in 'Name', with: 'Line Item Name'
       fill_in 'Description', with: 'Line Item Description'
-      fill_in 'Quantity', with: 2
+      fill_in 'Qty.', with: 2
       fill_in 'Unit Price', with: 15
       click_button 'Submit'
 
@@ -75,17 +75,14 @@ feature 'Quote Requests Management', js: true, quote_request_spec: true do
     context 'when a user fails to fill out the quote form correctly' do
       scenario 'entries are still created in the linker table', story_248: true do
         expect(QuoteRequestQuote.count).to eq(0)
-#       fail the form
         click_button 'Next'
         sleep 0.5
         click_button 'Next'
         sleep 0.5
         click_button 'Submit'
-#       expect failure
         expect(page).to have_selector '#errorsModal .modal-content-error', text: 'There was an error saving the quote'
         close_error_modal
 
-#       fill out the form with proper values
         click_button 'Next'
 
         select 'Phone Call', from: 'quote_quote_source'
@@ -97,7 +94,7 @@ feature 'Quote Requests Management', js: true, quote_request_spec: true do
         click_link 'Add Line Item'
         fill_in 'Name', with: 'Line Item Name'
         fill_in 'Description', with: 'Line Item Description'
-        fill_in 'Quantity', with: 2
+        fill_in 'Qty.', with: 2
         fill_in 'Unit Price', with: 15
         click_button 'Submit'
 
@@ -107,10 +104,10 @@ feature 'Quote Requests Management', js: true, quote_request_spec: true do
     end
   end
 
-  scenario 'A user can change the status of a quote', story_195: true do
+  scenario 'A user can change the status of a quote', story_195: true, current: true do
     visit quote_request_path(quote_request)
 
-    find('#change-status').click
+    find(".editable[data-placeholder='Status']").click
     wait_for_ajax
     fill_in 'quote_request_status', with: 'whatever'
 

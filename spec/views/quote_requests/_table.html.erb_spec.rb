@@ -14,10 +14,7 @@ describe 'quote_requests/_table.html.erb', quote_request: true, story_207: true 
     expect(rendered).to have_selector('th', text: 'Date Needed')
     expect(rendered).to have_selector('th', text: 'Salesperson')
     expect(rendered).to have_selector('th', text: 'Status')
-    expect(rendered).to have_selector('th', text: 'actions')
+    expect(rendered).to have_selector('th', text: 'Actions')
   end
 
-  it 'has a generate quote button' do
-    expect(rendered).to have_css("a.btn-primary[href='#{ new_quote_path(name: quote_request.name, email: quote_request.email, quote_request_id: quote_request.id) }']")
-  end
 end

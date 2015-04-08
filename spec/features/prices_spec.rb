@@ -21,7 +21,7 @@ feature 'Pricing management', js: true, prices_spec: true do
     expect(page).to have_css('td', text: "#{imprintable.xxxxxl_price + 5}")
     expect(page).to have_css('td', text: "#{imprintable.xxxxxxl_price + 5}")
 
-    expect(page).to have_content 'Base Price'
+    expect(page).to have_content 'Base'
     expect(page).to have_content '2XL'
     expect(page).to have_content '3XL'
     expect(page).to have_content '4XL'
@@ -44,11 +44,14 @@ feature 'Pricing management', js: true, prices_spec: true do
     expect(page).to_not have_css('tr#price-Line_items-0')
   end
 
- # TODO: this scenario is messed up, running it individually works fine but
- # TODO: when run in a suite it usually fails
+
+  # TODO: this scenario is messed up, running it individually works fine but
+  # TODO: when run in a suite it usually fails
   scenario 'A user can group prices into separate groups', story_67: true do
+    wait_for_ajax
     visit imprintables_path
     click_link("pricing_button_#{imprintable.id}")
+    wait_for_ajax
     fill_in 'decoration_price', with: '5'
     fill_in 'pricing_group_text', with: 'Line Items'
     click_button 'Add to Pricing Table'
@@ -115,7 +118,7 @@ feature 'Pricing management', js: true, prices_spec: true do
       expect(page).to have_css('tr#price-pricing_group_two-0')
 
       wait_for_ajax
-      find(:css, 'a[data-action="destroy_all"]').click
+      find(:css, "a[href='#{destroy_all_prices_path}']").click
       page.driver.browser.switch_to.alert.accept
 
       expect(page).to_not have_css('tr#price-pricing_group_one-0')
