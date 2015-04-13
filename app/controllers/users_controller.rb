@@ -66,7 +66,8 @@ private
 
   def permitted_params
     params.permit(user: [:email, :first_name, :last_name, :store_id,
-                         :freshdesk_email, :freshdesk_password])
+                         :freshdesk_email, :freshdesk_password,
+                         :insightly_api_key])
   end
 
   def resource_name
