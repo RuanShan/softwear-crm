@@ -72,6 +72,14 @@ namespace :quote_requests do
           if key.downcase.include? 'mind'
             description = val
           end
+
+          if key.downcase.include? 'phone'
+            phone_number = val
+          end
+
+          if key.downcase.include? 'organization'
+            organization = val
+          end
         end
 
         if quantity.nil? || date_needed.nil? || description.nil? || name.nil?
@@ -87,6 +95,8 @@ namespace :quote_requests do
             name: name,
             email: lead['Email'],
             approx_quantity: quantity,
+            phone_number: phone_number,
+            organization: organization,
             date_needed: (Date.parse(date_needed) rescue ''),
             description: description,
             source: form_details['title']
@@ -163,6 +173,18 @@ namespace :quote_requests do
           if key.downcase.include? 'mind'
             description = val
           end
+
+          if key.downcase.include? 'phone'
+            phone_number = val
+          end
+
+          if key.downcase.include? 'organization'
+            organization = val
+          end
+
+          # TODO allow uploading of files
+          # if key.downcase.include? 'upload'
+          # end
         end
 
         if quantity.nil? || date_needed.nil? || description.nil? || name.nil?
@@ -178,6 +200,8 @@ namespace :quote_requests do
             name: name,
             email: lead['Email'],
             approx_quantity: quantity,
+            phone_number: phone_number,
+            organization: organization,
             date_needed: (Date.parse(date_needed) rescue ''),
             description: description,
             source: form_details['title']
@@ -254,6 +278,14 @@ namespace :quote_requests do
           if key.downcase.include? 'mind'
             description = val
           end
+
+          if key.downcase.include? 'phone'
+            phone_number = val
+          end
+
+          if key.downcase.include? 'organization'
+            organization = val
+          end
         end
 
         if quantity.nil? || date_needed.nil? || description.nil? || name.nil?
@@ -269,6 +301,8 @@ namespace :quote_requests do
             name: name,
             email: lead['Email'],
             approx_quantity: quantity,
+            phone_number: phone_number,
+            organization: organization,
             date_needed: Date.parse(date_needed),
             description: description,
             source: form_details['title']

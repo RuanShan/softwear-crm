@@ -47,6 +47,24 @@
 
     <div class='row'>
       <div class='col-sm-2'>
+        <strong>Phone Number:</strong>
+      </div>
+      <div class='col-sm-10'>
+        <%= @quote_request.phone_number || 'n/a' %>
+      </div>
+    </div>
+
+    <div class='row'>
+      <div class='col-sm-2'>
+        <strong>Organization</strong>
+      </div>
+      <div class='col-sm-10'>
+        <%= @quote_request.organization || 'n/a' %>
+      </div>
+    </div>
+
+    <div class='row'>
+      <div class='col-sm-2'>
         <strong>Status:</strong>
       </div>
       <div class='col-sm-10' id='quote-request-status'>
