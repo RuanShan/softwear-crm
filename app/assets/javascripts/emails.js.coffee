@@ -3,11 +3,12 @@
 # You can use CoffeeScript in this file: http://coffeescript.org/
 jQuery ->
   $('#email-template-select').change ->
-    $.ajax
-      method: 'GET'
-      url: "/" + $(this).attr('data-model') + "s/" + $(this).attr('data-record-id') + '/emails/new'
-      data: email_template_id: $(this).val()
-      dataType: 'script'
-    return
+    if $(this).val() != ''
+      $.ajax
+        method: 'GET'
+        url: "/" + $(this).attr('data-model') + "s/" + $(this).attr('data-record-id') + '/emails/new'
+        data: email_template_id: $(this).val()
+        dataType: 'script'
+      return
   return
 

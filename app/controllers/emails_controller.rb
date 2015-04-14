@@ -21,14 +21,10 @@ class EmailsController < InheritedResources::Base
   end
 
   def populate_fields_from_template
-    # begin
-      @email_template = EmailTemplate.find(params[:email_template_id])
-      @email = Email.new if @email.nil?
-      @quote = Quote.find(params[:quote_id])
-      @email.populate_fields_from_template(@email_template, quote: @quote, user: current_user)
-    # rescue Exception => e
-    #   flash[:error] = "Sorry, the e-mail template you were looking for does not exist. #{e}"
-    # end
+    @email_template = EmailTemplate.find(params[:email_template_id])
+    @email = Email.new if @email.nil?
+    @quote = Quote.find(params[:quote_id])
+    @email.populate_fields_from_template(@email_template, quote: @quote, salesperson: current_user)
   end
 
 end

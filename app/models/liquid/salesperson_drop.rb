@@ -1,4 +1,4 @@
-class UserDrop < Liquid::Drop
+class SalespersonDrop < Liquid::Drop
 
   def initialize(user)
     @user = user

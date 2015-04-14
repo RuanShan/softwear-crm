@@ -20,7 +20,6 @@ class LineItemDrop < Liquid::Drop
     @line_item.taxable
   end
 
-
   def description
     @line_item.description
   end

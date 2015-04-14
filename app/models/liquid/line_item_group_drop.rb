@@ -4,10 +4,6 @@ class LineItemGroupDrop < Liquid::Drop
     @line_item_group = line_item_group
   end
 
-  def id
-    @line_item_group.id
-  end
-
   def name
     @line_item_group.name
   end

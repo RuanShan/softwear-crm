@@ -4,6 +4,8 @@ class Email < ActiveRecord::Base
   belongs_to :emailable, polymorphic: true
 
   validates :body, :to, :from, :subject, :plaintext_body,  presence: true
+  validates :to, :from, name_and_email: true
+  validates :cc, :bcc, allow_blank: true, name_and_email: true
 
   def populate_fields_from_template(email_template, records = {})
     drops = {}
