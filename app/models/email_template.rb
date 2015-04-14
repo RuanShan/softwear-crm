@@ -6,7 +6,7 @@ class EmailTemplate < ActiveRecord::Base
   belongs_to :quote
 
   validates :subject, :body, :name, :template_type, presence: true
-  validates :from, :cc, :bcc, allow_blank: true, email: true
+  validates :from, :cc, :bcc, allow_blank: true, name_and_email: true
 
   private
 
