@@ -8,12 +8,4 @@ class EmailTemplate < ActiveRecord::Base
   validates :subject, :body, :name, :template_type, presence: true
   validates :from, :cc, :bcc, allow_blank: true, name_and_email: true
 
-  private
-
-  def set_utf_8
-    byebug
-    self.body.valid_encoding?
-    self.body = self.body.force_encoding("UTF-8")
-  end
-
 end

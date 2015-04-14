@@ -22,6 +22,6 @@ class EmailTemplatesController < InheritedResources::Base
   end
 
   def permitted_params
-    params.permit(email_template: %i(subject from cc bcc body template_type name))
+    params.permit(email_template: %i(subject from cc bcc body template_type name plaintext_body to))
   end
 end

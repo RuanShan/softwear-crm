@@ -3,6 +3,20 @@ class Email < ActiveRecord::Base
 
   belongs_to :emailable, polymorphic: true
 
-  validates :body, :to, :from, :subject,  presence: true
+  validates :body, :to, :from, :subject, :plaintext_body,  presence: true
+
+  def populate_fields_from_template(email_template, records = {})
+    drops = {}
+
+    records.each do |key, val|
+      class_name = "#{key.to_s.camelize}Drop"
+      instance = class_name.constantize.new(val)
+      drops[key.to_s] = instance
+    end
+
+    %w(to from subject cc bcc body plaintext_body).each do |attribute|
+      self.send("#{attribute}=", Liquid::Template.parse(email_template.send(attribute)).render(drops))
+    end
+  end
 
 end

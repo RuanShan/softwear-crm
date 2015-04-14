@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150413150809) do
+ActiveRecord::Schema.define(version: 20150414184724) do
 
   create_table "activities", force: true do |t|
     t.integer  "trackable_id"
@@ -142,6 +142,8 @@ ActiveRecord::Schema.define(version: 20150413150809) do
     t.datetime "deleted_at"
     t.string   "template_type"
     t.string   "name"
+    t.text     "plaintext_body"
+    t.string   "to"
   end
 
   create_table "emails", force: true do |t|
@@ -156,6 +158,7 @@ ActiveRecord::Schema.define(version: 20150413150809) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.string   "bcc"
+    t.text     "plaintext_body"
   end
 
   create_table "freshdesk_local_contacts", force: true do |t|
