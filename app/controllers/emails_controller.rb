@@ -14,7 +14,25 @@ class EmailsController < InheritedResources::Base
     end
   end
 
+  def create
+    super do |success, failure|
+      success.html do
+        send_email
+        redirect_to send("#{parent.class.to_s.underscore}_path", parent), success: 'Successfully e-mailed customer their quote details'
+      end
+      failure.html { render :new }
+    end
+  end
+
   private
+
+  def permitted_params
+    params.permit(email: %i(subject to from cc bcc body plaintext_body))
+  end
+
+  def send_email
+    QuoteMailer.email_customer(@email).deliver
+  end
 
   def find_email_templates
     @email_templates = EmailTemplate.where(template_type: parent.class.to_s)

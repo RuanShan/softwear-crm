@@ -4,7 +4,7 @@ class EmailTemplatesController < InheritedResources::Base
   def create
     super do |success, failure|
       success.html { redirect_to email_templates_path, notice: "Email Template '#{@email_template.name}' was created successfully"  }
-      failure.html { render :edit }
+      failure.html { render :new }
     end
   end
 
