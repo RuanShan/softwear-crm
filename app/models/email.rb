@@ -3,8 +3,6 @@ class Email < ActiveRecord::Base
 
   belongs_to :emailable, polymorphic: true
 
-  validates :body, presence: true
-  validates :sent_from, presence: true
-  validates :sent_to, presence: true
-  validates :subject, presence: true
+  validates :body, :to, :from, :subject,  presence: true
+
 end

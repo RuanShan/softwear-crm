@@ -32,12 +32,13 @@ CrmSoftwearcrmCom::Application.routes.draw do
   end
 
   resources :quotes, shallow: true do
-    post 'email_customer'
-    get 'populate_email'
+    resource :emails
+
     collection do
       get 'quote_select'
       post 'stage_quote'
     end
+
     resources :line_item_groups, shallow: true do
       resources :line_items, except: [:update]
     end

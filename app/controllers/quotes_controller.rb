@@ -120,38 +120,6 @@ class QuotesController < InheritedResources::Base
     redirect_to edit_quote_path params[:quote_id]
   end
 
-  def email_customer
-    @quote = Quote.find(params[:quote_id])
-
-    email = Email.create(
-        body: params[:email_body],
-        subject: params[:email_subject],
-        sent_from: current_user.email,
-        sent_to: params[:email_recipients],
-        cc_emails: params[:cc]
-    )
-
-    @quote.emails << email
-
-    hash = {
-      quote: @quote,
-      body: params[:email_body],
-      subject: params[:email_subject],
-      from: current_user.email,
-      to: params[:email_recipients],
-      cc: params[:cc]
-    }
-
-    deliver_email(hash)
-
-    redirect_to edit_quote_path params[:quote_id]
-  end
-
-  def populate_email
-    @quote = Quote.find(params[:quote_id])
-    render 'populate_email', locals: { quote: @quote }
-  end
-
   private
 
   def add_params_from_docked_quote_request

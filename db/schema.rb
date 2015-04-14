@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150406193222) do
+ActiveRecord::Schema.define(version: 20150413150809) do
 
   create_table "activities", force: true do |t|
     t.integer  "trackable_id"
@@ -138,23 +138,24 @@ ActiveRecord::Schema.define(version: 20150406193222) do
     t.string   "from"
     t.string   "bcc"
     t.string   "cc"
-    t.integer  "quote_id"
     t.text     "body"
-    t.text     "template"
     t.datetime "deleted_at"
+    t.string   "template_type"
+    t.string   "name"
   end
 
   create_table "emails", force: true do |t|
     t.string   "subject"
     t.text     "body"
-    t.string   "sent_to"
-    t.string   "sent_from"
-    t.string   "cc_emails"
+    t.string   "to"
+    t.string   "from"
+    t.string   "cc"
     t.integer  "emailable_id"
     t.string   "emailable_type"
     t.datetime "deleted_at"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.string   "bcc"
   end
 
   create_table "freshdesk_local_contacts", force: true do |t|

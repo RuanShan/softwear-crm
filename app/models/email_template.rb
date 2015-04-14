@@ -1,90 +1,19 @@
 class EmailTemplate < ActiveRecord::Base
   acts_as_paranoid
 
+  TEMPLATE_TYPES = %w(Quote)
+
   belongs_to :quote
 
-  ### Validation
-  validates :subject, presence: true
-
-  validates :from, allow_blank: true, email: true
-  validates :cc, allow_blank: true, email: true
-  validates :bcc, allow_blank: true, email: true
-
-
-  #
-  # Puts the parse error from Liquid on the error list if parsing failed
-  #
-  def after_validation
-    errors.add :template, @syntax_error unless @syntax_error.nil?
-  end
-
-  ### Attributes
-
-  #
-  # body contains the raw template. When updating this attribute, the
-  # email_template parses the template and stores the serialized object
-  # for quicker rendering.
-  #
-  def body=(text)
-    self[:body] = text
-
-    begin
-      @template = Liquid::Template.parse(text)
-      self[:template] = Marshal.dump(@template)
-    rescue Liquid::SyntaxError => error
-      @syntax_error = error.message
-    end
-  end
-
-  ### Methods
-
-  #
-  # Delivers the email
-  #
-  def deliver_to(address, options = {})
-    options[:cc] ||= cc unless cc.blank?
-    options[:bcc] ||= bcc unless bcc.blank?
-    # TODO: this will need refactoring when expanding the types of records that
-    # can be associated
-    unless quote_id.blank?
-      quote = Quote.find(quote_id)
-      options.merge(quote.attributes)
-    end
-
-    # Liquid doesn't like symbols as keys
-    options.stringify_keys!
-    TemplateMailer.deliver_email_template(address, self, options)
-  end
-
-  #
-  # Renders body as Liquid Markup template
-  #
-  def render(options = {})
-    template.render options
-  end
-
-  #
-  # Usable string representation
-  #
-  def to_s
-    "[EmailTemplate] From: #{from}, '#{subject}': #{body}"
-  end
+  validates :subject, :body, :name, :template_type, presence: true
+  validates :from, :cc, :bcc, allow_blank: true, email: true
 
   private
-  #
-  # Returns a usable Liquid:Template instance
-  #
-  def template
-    return @template unless @template.nil?
 
-    if self[:template].blank?
-      @template = Liquid::Template.parse body
-      self[:template] = Marshal.dump @template
-      save
-    else
-      @template = Marshal.load self[:template]
-    end
-
-    @template
+  def set_utf_8
+    byebug
+    self.body.valid_encoding?
+    self.body = self.body.force_encoding("UTF-8")
   end
+
 end

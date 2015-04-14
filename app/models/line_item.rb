@@ -18,7 +18,7 @@ class LineItem < ActiveRecord::Base
   belongs_to :line_itemable, polymorphic: true
 
   validates :description, presence: true, unless: :imprintable?
-  validates :imprintable_variant_id, 
+  validates :imprintable_variant_id,
             uniqueness: {
               scope: [:line_itemable_id, :line_itemable_type]
             }, if: :imprintable?
@@ -44,7 +44,7 @@ class LineItem < ActiveRecord::Base
     imprintable_variants.map do |variant|
       LineItem.new(
         imprintable_variant_id: variant.id,
-        unit_price: options[:base_unit_price] || 
+        unit_price: options[:base_unit_price] ||
                     variant.imprintable.base_price || 0,
         quantity: 0,
         line_itemable_id: line_itemable.id,
@@ -55,7 +55,7 @@ class LineItem < ActiveRecord::Base
 
   %i(description name).each do |method|
     define_method(method) do
-      imprintable? ? imprintable_variant.send(method) : self[method]
+      imprintable? ? imprintable_variant.send(method) : self[method] rescue ''
     end
   end
 
