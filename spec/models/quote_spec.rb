@@ -30,6 +30,28 @@ describe Quote, quote_spec: true do
       it { is_expected.to allow_value('2.4').for :shipping }
       it { is_expected.to_not allow_value('21.321').for :shipping }
     end
+
+    describe 'insightly', story_516: true do
+      context 'when salesperson has an insightly api key' do
+        before(:each) do
+          allow(subject).to receive(:salesperson_has_insightly?).and_return true
+        end
+
+        Quote::INSIGHTLY_FIELDS.each do |field|
+          it { is_expected.to validate_presence_of(field) }
+        end
+      end
+
+      context 'when salesperson does not have an insightly api key' do
+        before(:each) do
+          allow(subject).to receive(:salesperson_has_insightly?).and_return false
+        end
+
+        Quote::INSIGHTLY_FIELDS.each do |field|
+          it { is_expected.to_not validate_presence_of(field) }
+        end
+      end
+    end
   end
 
   describe 'callbacks' do
