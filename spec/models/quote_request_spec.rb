@@ -30,20 +30,76 @@ describe QuoteRequest, quote_request_spec: true, story_78: true do
 
   describe 'Insightly', story_513: true do
     context 'when assigned' do
-      it 'finds an insightly contact with an email matching the supplied email' do
-        dummy_contact = Object.new
-        dummy_client = Object.new
-        expect(dummy_client).to receive(:get_contacts)
-          .with(email: 'test@test.com')
-          .and_return [dummy_contact]
+      context 'and there exists a contact with a matching email on insightly' do
+        before(:each) do
+          dummy_contact = Object.new
+          dummy_client = Object.new
+          expect(dummy_client).to receive(:get_contacts)
+            .with(email: 'test@test.com')
+            .and_return [dummy_contact]
 
-        expect(dummy_contact).to receive(:contact_id).and_return 123
+          expect(dummy_contact).to receive(:contact_id).and_return 123
 
-        allow(subject).to receive(:insightly).and_return dummy_client
+          allow(subject).to receive(:insightly).and_return dummy_client
+        end
 
-        subject.salesperson_id = create(:user).id
-        subject.save
-        expect(subject.insightly_contact_id).to eq 123
+        it 'finds that contact and assigns its id to insightly_contact_id' do
+          subject.approx_quantity = 1
+          subject.date_needed = 2.weeks.from_now
+          subject.source = 'rspec'
+          subject.description = 'shirts now pls'
+          subject.name = 'who care'
+
+          subject.email = 'test@test.com'
+          subject.phone_number = '(123)-123-1233'
+          subject.salesperson_id = create(:user).id
+          expect(subject.status).to eq 'assigned'
+          subject.save
+          expect(subject).to be_valid
+          expect(subject.reload.insightly_contact_id).to eq 123
+        end
+      end
+
+      context 'and there is no matching-email contact on insightly' do
+        before(:each) do
+          dummy_contact = Object.new
+          dummy_client = Object.new
+          expect(dummy_client).to receive(:get_contacts)
+            .with(email: 'test@test.com')
+            .and_return []
+
+          expect(dummy_client).to receive(:create_contact)
+            .with(
+              first_name: 'who',
+              last_name: 'care',
+              contactinfos: [
+                { type: 'EMAIL', detail: 'test@test.com' },
+                { type: 'PHONE', detail: '(123)-123-1233' }
+              ]
+              # organization: TODO
+            )
+            .and_return dummy_contact
+
+          expect(dummy_contact).to receive(:contact_id).and_return 321
+
+          allow(subject).to receive(:insightly).and_return dummy_client
+        end
+
+        it 'creates an insightly contact' do
+          subject.approx_quantity = 1
+          subject.date_needed = 2.weeks.from_now
+          subject.source = 'rspec'
+          subject.description = 'shirts now pls'
+          subject.name = 'who care'
+
+          subject.email = 'test@test.com'
+          subject.phone_number = '(123)-123-1233'
+          subject.salesperson_id = create(:user).id
+          expect(subject.status).to eq 'assigned'
+          subject.save
+          expect(subject).to be_valid
+          expect(subject.reload.insightly_contact_id).to eq 321
+        end
       end
     end
   end
