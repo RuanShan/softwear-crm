@@ -30,6 +30,7 @@ class QuoteRequest < ActiveRecord::Base
   validates :reason, presence: true, if: :reason_needed?
 
   before_validation(on: :create) { self.status = 'pending' if status.nil? }
+  before_save :link_integrated_crm_contacts_when_assigned
 
   def salesperson_id=(id)
     super
@@ -54,5 +55,44 @@ class QuoteRequest < ActiveRecord::Base
     else
       {}
     end
+  end
+
+  def linked_with_insightly?
+    !insightly_contact_id.nil?
+  end
+
+  def link_with_insightly!
+    return if insightly.nil?
+
+    contact = insightly.get_contacts(email: email).first
+    if contact.nil?
+      /(?<first_name>^\w+)\s+(?<last_name>.*)/ =~ name
+
+      contact = insightly.create_contact(
+        first_name:   first_name,
+        last_name:    last_name,
+        contactinfos: insightly_contactinfos
+      )
+    end
+    self.insightly_contact_id = contact.contact_id if contact
+  end
+
+  def insightly_contactinfos
+    infos = []
+    infos << { type: 'EMAIL', detail: email }        if email
+    infos << { type: 'PHONE', detail: phone_number } if phone_number
+    infos
+  end
+
+  private
+
+  def link_integrated_crm_contacts_when_assigned
+    return unless status == 'assigned'
+
+    link_with_insightly! unless linked_with_insightly?
+  end
+
+  def insightly
+    @insightly ||= Insightly2::Client.new(Setting.insightly_api_key)
   end
 end

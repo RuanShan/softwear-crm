@@ -11,7 +11,8 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150413195148) do
+ActiveRecord::Schema.define(version: 20150415161310) do
+
   create_table "activities", force: true do |t|
     t.integer  "trackable_id"
     t.string   "trackable_type"
@@ -425,6 +426,7 @@ ActiveRecord::Schema.define(version: 20150413195148) do
     t.string   "reason"
     t.string   "phone_number"
     t.string   "organization"
+    t.integer  "insightly_contact_id"
   end
 
   create_table "quotes", force: true do |t|
