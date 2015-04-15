@@ -1,9 +1,12 @@
-<div class="page-heading animated fadeInDownBig col-lg-9">
-  <h1>Email Templates <small>View and edit email templates</small></h1>
-</div>
-
-<div class="col-lg-3 text-right">
-  <%= link_to 'Add an Email Template', new_email_template_path, class: 'btn btn-primary' %>
+<div class="page-heading animated fadeInDownBig row">
+  <div class="pull-left">
+    <h1>Email Templates <small> View and edit email templates</small></h1>
+  </div>
+  <div class="pull-right">
+    <%= link_to new_email_template_path, class: 'btn btn-success' do  %>
+        <i class="fa fa-plus-circle"></i> New Email Template
+    <% end %>
+  </div>
 </div>
 
 <div class="box-info row clear">

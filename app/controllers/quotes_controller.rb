@@ -91,9 +91,6 @@ class QuotesController < InheritedResources::Base
 
       name = session[:pricing_groups][pricing_group.to_sym][index][:name]
       unit_price = session[:pricing_groups][pricing_group.to_sym][index][:prices][:base_price]
-      puts session[:pricing_groups].inspect
-      puts '!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!'
-      puts '!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!1'
       description = session[:pricing_groups][pricing_group.to_sym][index][:description]
 
       @quote_select_hash[:new_line_item] = LineItem.new(name: name, unit_price: unit_price, description: description)
@@ -118,38 +115,6 @@ class QuotesController < InheritedResources::Base
     end
 
     redirect_to edit_quote_path params[:quote_id]
-  end
-
-  def email_customer
-    @quote = Quote.find(params[:quote_id])
-
-    email = Email.create(
-        body: params[:email_body],
-        subject: params[:email_subject],
-        sent_from: current_user.email,
-        sent_to: params[:email_recipients],
-        cc_emails: params[:cc]
-    )
-
-    @quote.emails << email
-
-    hash = {
-      quote: @quote,
-      body: params[:email_body],
-      subject: params[:email_subject],
-      from: current_user.email,
-      to: params[:email_recipients],
-      cc: params[:cc]
-    }
-
-    deliver_email(hash)
-
-    redirect_to edit_quote_path params[:quote_id]
-  end
-
-  def populate_email
-    @quote = Quote.find(params[:quote_id])
-    render 'populate_email', locals: { quote: @quote }
   end
 
   private
@@ -187,23 +152,6 @@ class QuotesController < InheritedResources::Base
     unless params[:quote].nil? or params[:quote][:estimated_delivery_date].nil?
       estimated_delivery_date = params[:quote][:estimated_delivery_date]
       params[:quote][:estimated_delivery_date] = format_time(estimated_delivery_date)
-    end
-  end
-
-  def deliver_email(hash)
-    begin
-      QuoteMailer.delay.email_customer(hash)
-      flash[:success] = 'Your email was successfully sent!'
-      fire_activity(@quote, :emailed_customer)
-    rescue Net::SMTPAuthenticationError,
-           Net::SMTPServerBusy,
-           Net::SMTPSyntaxError,
-           Net::SMTPFatalError,
-           Net::SMTPUnknownError => _e
-      flash[:notice] = 'Your email was unable to be sent'
-      flash[:success] = nil
-      @activity = PublicActivity::Activity.find_by_trackable_id(params[:quote_id])
-      @activity.destroy
     end
   end
 

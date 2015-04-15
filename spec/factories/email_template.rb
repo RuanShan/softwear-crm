@@ -2,12 +2,14 @@ FactoryGirl.define do
   factory :blank_email_template, class: EmailTemplate do
 
     factory :valid_email_template do
+      name 'Valid E-mail Template'
       subject 'Test subject'
-      body    'Liquid shite'
-      from    'noreply@test.com'
-      cc      'other_customer@hotmail.com'
-      bcc     'devteam@annarbortees.com'
-      quote { |q| q.association(:valid_quote) }
+      body    'Liquid Text Here {{quote.id}}'
+      body    'Liquid Text Here Plaintext {{quote.id}}'
+      from    'No Reply <noreply@test.com>'
+      cc      'Other Customer <other_customer@hotmail.com>'
+      bcc     'Dev Team <devteam@annarbortees.com>'
+      template_type 'Quote'
     end
   end
 end
