@@ -30,7 +30,7 @@ class QuoteRequest < ActiveRecord::Base
   validates :reason, presence: true, if: :reason_needed?
 
   before_validation(on: :create) { self.status = 'pending' if status.nil? }
-  before_save :link_integrated_crm_contacts_when_assigned
+  before_create :link_integrated_crm_contacts
 
   def salesperson_id=(id)
     super
@@ -57,24 +57,49 @@ class QuoteRequest < ActiveRecord::Base
     end
   end
 
+  def insightly_contact_url
+    return nil if insightly_contact_id.nil?
+    "https://annarbortees.insight.ly/Contacts/Details/#{insightly_contact_id}"
+  end
+
   def linked_with_insightly?
     !insightly_contact_id.nil?
   end
 
   def link_with_insightly!
     return if insightly.nil?
+    begin
+      contact = insightly.get_contacts(email: email).first
+      if contact.nil?
+        /(?<first_name>^\w+)\s+(?<last_name>.*)/ =~ name
 
-    contact = insightly.get_contacts(email: email).first
-    if contact.nil?
-      /(?<first_name>^\w+)\s+(?<last_name>.*)/ =~ name
+        if organization
+          org = insightly.get_organisations
+            .select { |o| o.organisation_name.downcase == organization.downcase }
+            .first ||
+            insightly.create_organisation(
+              organisation: {
+                organisation_name: organization
+              }
+            )
+        end
 
-      contact = insightly.create_contact(
-        first_name:   first_name,
-        last_name:    last_name,
-        contactinfos: insightly_contactinfos
-      )
+        contact = insightly.create_contact(contact: {
+          first_name:   first_name,
+          last_name:    last_name,
+          contactinfos: insightly_contactinfos,
+          links: [({ organisation_id: org.organisation_id } if org)].compact
+        })
+      end
+
+      if contact
+        self.insightly_contact_id = contact.contact_id
+        logger.info "Set Quote Request Insightly contact to #{insightly_contact_id}"
+      end
+
+    rescue Insightly2::Errors::ClientError
+      logger.error "(QUOTE REQUEST) Bad Insightly API Key in settings"
     end
-    self.insightly_contact_id = contact.contact_id if contact
   end
 
   def insightly_contactinfos
@@ -86,13 +111,13 @@ class QuoteRequest < ActiveRecord::Base
 
   private
 
-  def link_integrated_crm_contacts_when_assigned
-    return unless status == 'assigned'
-
+  def link_integrated_crm_contacts
     link_with_insightly! unless linked_with_insightly?
   end
 
   def insightly
-    @insightly ||= Insightly2::Client.new(Setting.insightly_api_key)
+    api_key = Setting.insightly_api_key
+    return (@insightly = nil) if api_key.nil? || api_key.empty?
+    @insightly ||= Insightly2::Client.new(api_key)
   end
 end

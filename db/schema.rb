@@ -445,8 +445,8 @@ ActiveRecord::Schema.define(version: 20150415161310) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.decimal  "shipping",                 precision: 10, scale: 2
-    t.datetime "initialized_at"
     t.string   "quote_source"
+    t.datetime "initialized_at"
     t.string   "freshdesk_ticket_id"
     t.boolean  "informal"
     t.integer  "insightly_category_id"

@@ -10,7 +10,7 @@ describe Setting, setting_spec: true do
 
   describe '.insightly_api_key', story_513: true do
     it 'returns the setting with the name "insightly_api_key"' do
-      Setting.create(name: 'insightly_api_key', val: '123insightly', encryped: false)
+      Setting.create(name: 'insightly_api_key', val: '123insightly', encrypted: false)
       expect(Setting.insightly_api_key).to eq '123insightly'
     end
   end

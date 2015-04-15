@@ -29,11 +29,13 @@ describe QuoteRequest, quote_request_spec: true, story_78: true do
   end
 
   describe 'Insightly', story_513: true do
-    context 'when assigned' do
+    context 'when created' do
+      let(:dummy_contact) { Object.new }
+      let(:dummy_client) { Object.new }
+      let(:dummy_organisation) { Struct.new(:organisation_name, :organisation_id) }
+
       context 'and there exists a contact with a matching email on insightly' do
         before(:each) do
-          dummy_contact = Object.new
-          dummy_client = Object.new
           expect(dummy_client).to receive(:get_contacts)
             .with(email: 'test@test.com')
             .and_return [dummy_contact]
@@ -48,10 +50,11 @@ describe QuoteRequest, quote_request_spec: true, story_78: true do
           subject.date_needed = 2.weeks.from_now
           subject.source = 'rspec'
           subject.description = 'shirts now pls'
-          subject.name = 'who care'
+          subject.name = 'who cares'
 
           subject.email = 'test@test.com'
           subject.phone_number = '(123)-123-1233'
+          subject.organization = 'test org'
           subject.salesperson_id = create(:user).id
           expect(subject.status).to eq 'assigned'
           subject.save
@@ -61,44 +64,111 @@ describe QuoteRequest, quote_request_spec: true, story_78: true do
       end
 
       context 'and there is no matching-email contact on insightly' do
-        before(:each) do
-          dummy_contact = Object.new
-          dummy_client = Object.new
-          expect(dummy_client).to receive(:get_contacts)
-            .with(email: 'test@test.com')
-            .and_return []
+        context 'and no existing organization exists' do
+          before(:each) do
+            subject.approx_quantity = 1
+            subject.date_needed = 2.weeks.from_now
+            subject.source = 'rspec'
+            subject.description = 'shirts now pls'
+            subject.name = 'who cares'
 
-          expect(dummy_client).to receive(:create_contact)
-            .with(
-              first_name: 'who',
-              last_name: 'care',
-              contactinfos: [
-                { type: 'EMAIL', detail: 'test@test.com' },
-                { type: 'PHONE', detail: '(123)-123-1233' }
+            subject.email = 'test@test.com'
+            subject.phone_number = '(123)-123-1233'
+            subject.salesperson_id = create(:user).id
+
+            dummy_contact = Object.new
+            dummy_client = Object.new
+            expect(dummy_client).to receive(:get_contacts)
+              .with(email: 'test@test.com')
+              .and_return []
+
+            allow(dummy_contact).to receive(:contact_id).and_return 321
+
+            allow(subject).to receive(:insightly).and_return dummy_client
+
+            expect(dummy_client).to receive(:get_organisations)
+              .and_return [
+                dummy_organisation.new('irrelevant', 1),
+                dummy_organisation.new('also irrelevant', 2),
               ]
-              # organization: TODO
-            )
-            .and_return dummy_contact
 
-          expect(dummy_contact).to receive(:contact_id).and_return 321
+            expect(dummy_client).to receive(:create_organisation)
+              .with(organisation: {
+                  organisation_name: 'test org'
+                })
+              .and_return(dummy_organisation.new('test org', 4))
 
-          allow(subject).to receive(:insightly).and_return dummy_client
+            expect(dummy_client).to receive(:create_contact)
+              .with(contact: {
+                first_name: 'who',
+                last_name: 'cares',
+                contactinfos: [
+                  { type: 'EMAIL', detail: 'test@test.com' },
+                  { type: 'PHONE', detail: '(123)-123-1233' }
+                ],
+                links: [{ organisation_id: 4 }]
+              })
+              .and_return dummy_contact
+          end
+
+          it 'creates one and links it' do
+            subject.organization = 'test org'
+            expect(subject.status).to eq 'assigned'
+            subject.save
+            expect(subject).to be_valid
+            expect(subject.reload.insightly_contact_id).to eq 321
+          end
         end
 
-        it 'creates an insightly contact' do
-          subject.approx_quantity = 1
-          subject.date_needed = 2.weeks.from_now
-          subject.source = 'rspec'
-          subject.description = 'shirts now pls'
-          subject.name = 'who care'
+        context 'and an existing organization exists' do
+          before(:each) do
+            subject.approx_quantity = 1
+            subject.date_needed = 2.weeks.from_now
+            subject.source = 'rspec'
+            subject.description = 'shirts now pls'
+            subject.name = 'who cares'
 
-          subject.email = 'test@test.com'
-          subject.phone_number = '(123)-123-1233'
-          subject.salesperson_id = create(:user).id
-          expect(subject.status).to eq 'assigned'
-          subject.save
-          expect(subject).to be_valid
-          expect(subject.reload.insightly_contact_id).to eq 321
+            subject.email = 'test@test.com'
+            subject.phone_number = '(123)-123-1233'
+            subject.salesperson_id = create(:user).id
+
+            dummy_contact = Object.new
+            dummy_client = Object.new
+            expect(dummy_client).to receive(:get_contacts)
+              .with(email: 'test@test.com')
+              .and_return []
+
+            allow(dummy_contact).to receive(:contact_id).and_return 321
+
+            allow(subject).to receive(:insightly).and_return dummy_client
+
+            expect(dummy_client).to receive(:get_organisations)
+              .and_return [
+                dummy_organisation.new('irrelevant', 1),
+                dummy_organisation.new('also irrelevant', 2),
+                dummy_organisation.new('Test org', 3),
+              ]
+
+            expect(dummy_client).to receive(:create_contact)
+              .with(contact: {
+                first_name: 'who',
+                last_name: 'cares',
+                contactinfos: [
+                  { type: 'EMAIL', detail: 'test@test.com' },
+                  { type: 'PHONE', detail: '(123)-123-1233' }
+                ],
+                links: [{ organisation_id: 3 }]
+              })
+              .and_return dummy_contact
+          end
+
+          it 'links it' do
+            subject.organization = 'test org'
+            expect(subject.status).to eq 'assigned'
+            subject.save
+            expect(subject).to be_valid
+            expect(subject.reload.insightly_contact_id).to eq 321
+          end
         end
       end
     end
