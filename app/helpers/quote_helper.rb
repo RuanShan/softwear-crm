@@ -54,8 +54,10 @@ module QuoteHelper
         return nil
       elsif Quote::STEP_2_FIELDS.include?(field)
         steps << 2
-      elsif Quote::STEP_3_FIELDS.include?(field)
+      elsif Quote::INSIGHTLY_FIELDS.include?(field)
         steps << 3
+      elsif Quote::STEP_4_FIELDS.include?(field)
+        steps << 4
       end
     end
     steps.min

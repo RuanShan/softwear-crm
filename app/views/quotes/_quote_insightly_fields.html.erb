@@ -1,0 +1,41 @@
+<% unless insightly_available? %>
+  <h4>You must have a valid Insightly API Key to set these fields.</h4>
+<% end %>
+
+<div class="form-group">
+  <%= f.label :insightly_category_id, 'Category' %>
+  <%= f.error_for :insightly_category_id %>
+  <%= insightly_select f, :insightly_category_id, insightly_categories %>
+</div>
+
+<div class="form-group">
+  <%= f.label :insightly_probability, 'Probability' %>
+  <%= f.error_for :insightly_probability %>
+  <%= insightly_field f, :text, :insightly_probability %>
+</div>
+
+<div class="form-group">
+  <%= f.label :insightly_value, 'Value' %>
+  <%= f.error_for :insightly_value %>
+  <%= insightly_field f, :text, :insightly_value %>
+</div>
+
+<div class="form-group">
+  <%= f.label :insightly_pipeline_id, 'Pipeline' %>
+  <%= f.error_for :insightly_pipeline_id %>
+  <%= insightly_select f, :insightly_pipeline_id, insightly_pipelines %>
+</div>
+
+<div class="form-group">
+  <%= f.label :insightly_opportunity_id, 'Profile' %>
+  <%= f.error_for :insightly_opportunity_id %>
+  <%= insightly_select f, :insightly_opportunity_id, insightly_opportunity_profiles %>
+</div>
+
+<div class="form-group">
+  <%= f.label :insightly_bid_tier_id, 'Bid Tier' %>
+  <%= f.error_for :insightly_bid_tier_id %>
+  <%= insightly_select f, :insightly_bid_tier_id, insightly_bid_tiers %>
+</div>
+
+

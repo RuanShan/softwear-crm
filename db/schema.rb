@@ -11,8 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150414184724) do
-
+ActiveRecord::Schema.define(version: 20150413195148) do
   create_table "activities", force: true do |t|
     t.integer  "trackable_id"
     t.string   "trackable_type"
@@ -443,11 +442,20 @@ ActiveRecord::Schema.define(version: 20150414184724) do
     t.datetime "deleted_at"
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.decimal  "shipping",                precision: 10, scale: 2
+    t.decimal  "shipping",                 precision: 10, scale: 2
     t.datetime "initialized_at"
     t.string   "quote_source"
     t.string   "freshdesk_ticket_id"
     t.boolean  "informal"
+    t.integer  "insightly_category_id"
+    t.decimal  "insightly_probability",    precision: 10, scale: 2
+    t.decimal  "insightly_value",          precision: 10, scale: 2
+    t.integer  "insightly_pipeline_id"
+    t.integer  "insightly_opportunity_id"
+    t.integer  "insightly_bid_tier_id"
+    t.boolean  "is_rushed"
+    t.integer  "qty"
+    t.boolean  "deadline_is_specified"
   end
 
   create_table "sample_locations", force: true do |t|

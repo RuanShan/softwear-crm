@@ -38,10 +38,21 @@ class Quote < ActiveRecord::Base
     :estimated_delivery_date,
     :salesperson, :salesperson_id,
     :store,
-    :freshdesk_ticket_id
+    :freshdesk_ticket_id,
+    :is_rushed,
+    :qty,
+    :deadline_is_specified
   ]
-  STEP_3_FIELDS = [
+  STEP_4_FIELDS = [
     :line_items
+  ]
+  INSIGHTLY_FIELDS = [
+    :insightly_category_id,
+    :insightly_probability,
+    :insightly_value,
+    :insightly_pipeline_id,
+    :insightly_opportunity_id,
+    :insightly_bid_tier_id,
   ]
 
   default_scope -> { order('quotes.created_at DESC') }
@@ -68,6 +79,7 @@ class Quote < ActiveRecord::Base
   validates :store, presence: true
   validates :valid_until_date, presence: true
   validates :shipping, price: true
+  validates *INSIGHTLY_FIELDS, presence: true, if: :salesperson_has_insightly?
 
   validate :prepare_nested_line_items_attributes
 
@@ -198,6 +210,10 @@ class Quote < ActiveRecord::Base
   def quote_request_ids=(ids)
     super
     @quote_request_ids_assigned = true
+  end
+
+  def salesperson_has_insightly?
+    !salesperson.insightly_api_key.nil?
   end
 
 private
