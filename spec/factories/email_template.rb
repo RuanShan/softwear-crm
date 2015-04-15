@@ -5,6 +5,7 @@ FactoryGirl.define do
       name 'Valid E-mail Template'
       subject 'Test subject'
       body    'Liquid Text Here {{quote.id}}'
+      body    'Liquid Text Here Plaintext {{quote.id}}'
       from    'No Reply <noreply@test.com>'
       cc      'Other Customer <other_customer@hotmail.com>'
       bcc     'Dev Team <devteam@annarbortees.com>'

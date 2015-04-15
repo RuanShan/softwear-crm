@@ -3,8 +3,6 @@ class EmailTemplate < ActiveRecord::Base
 
   TEMPLATE_TYPES = %w(Quote)
 
-  belongs_to :quote
-
   validates :subject, :body, :name, :template_type, :to, :plaintext_body, :from, presence: true
 
 end
