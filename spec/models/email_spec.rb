@@ -12,7 +12,9 @@ describe Email, email_spec: true, story_74: true do
   describe 'Validations' do
     it { is_expected.to validate_presence_of(:subject) }
     it { is_expected.to validate_presence_of(:body) }
-    it { is_expected.to validate_presence_of(:sent_to) }
-    it { is_expected.to validate_presence_of(:sent_from) }
+    it { is_expected.to validate_presence_of(:plaintext_body) }
+    it { is_expected.to validate_presence_of(:to) }
+    it { is_expected.to validate_presence_of(:from) }
+    it { is_expected.to validate_presence_of(:emailable) }
   end
 end
