@@ -79,6 +79,24 @@
 </div>
 
 <div class="form-group">
+  <%= f.label :is_rushed, 'Rushed?' %>
+  <%= f.error_for :is_rushed %>
+  <%= f.check_box :is_rushed %>
+</div>
+
+<div class="form-group">
+  <%= f.label :qty %>
+  <%= f.error_for :qty %>
+  <%= f.number_field :qty %>
+</div>
+
+<div class="form-group">
+  <%= f.label :deadline_is_specified %>
+  <%= f.error_for :deadline_is_specified %>
+  <%= f.check_box :deadline_is_specified %>
+</div>
+
+<div class="form-group">
   <%= f.label :freshdesk_ticket_id, 'Freshdesk Ticket ID' %>
   <%= f.error_for :freshdesk_ticket_id %>
   <%= f.text_field :freshdesk_ticket_id %>

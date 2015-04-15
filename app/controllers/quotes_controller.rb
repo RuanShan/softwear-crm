@@ -214,6 +214,7 @@ class QuotesController < InheritedResources::Base
       :email, :informal, :phone_number, :first_name, :last_name, :company,
       :twitter, :name, :valid_until_date, :estimated_delivery_date,
       :salesperson_id, :store_id, :shipping, :quote_source, :freshdesk_ticket_id,
+      :is_rushed, :qty, :deadline_is_specified,
        quote_request_ids: [],
        line_items_attributes: [
         :name, :quantity, :taxable, :description, :id,
@@ -222,6 +223,6 @@ class QuotesController < InheritedResources::Base
        ],
        emails_attributes: [
            :subject, :body, :sent_to, :sent_from, :cc_emails, :id, :_destroy
-       ]])
+       ]] + Quote::INSIGHTLY_FIELDS)
   end
 end

@@ -29,6 +29,11 @@
           </a>
         </li>
         <li>
+          <a href="#insightly" data-toggle="tab">
+            <i class="fa fa-search"></i> Insightly
+          </a>
+        </li>
+        <li>
           <a href="#line_items" data-toggle="tab">
             <i class="fa fa-bars"></i> Line Items
           </a>
@@ -52,6 +57,10 @@
 
         <div class="tab-pane animated  fadeInRight" id="details">
           <%= render 'details', quote: @quote %>
+        </div>
+
+        <div class="tab-pane animated  fadeInRight" id="insightly">
+          <%= render 'insightly', quote: @quote %>
         </div>
 
         <div class="tab-pane animated fadeInRight" id="line_items">
