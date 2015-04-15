@@ -59,7 +59,6 @@ class Order < ActiveRecord::Base
 
   accepts_nested_attributes_for :payments
 
-  # TODO: custom validator for phone?
   validates :delivery_method,
             presence: true,
             inclusion: {
@@ -172,7 +171,7 @@ class Order < ActiveRecord::Base
         job.save!
       end
       imprintable_id = attributes[:imprintable]
-      
+
       attributes[:colors].each do |color_attributes|
         next if color_attributes.nil?
 

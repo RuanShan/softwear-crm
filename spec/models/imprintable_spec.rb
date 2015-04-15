@@ -190,7 +190,7 @@ describe Imprintable, imprintable_spec: true do
   describe '#pricing_hash' do
     let!(:imprintable_variant) { create(:valid_imprintable_variant) }
 
-    it 'returns an array of hashes, each containing the imprintable name, sizes, supplier_url and prices as well as a quantity', story_489: true do
+    it 'returns an array of hashes, each containing the imprintable name, sizes, supplier_url and prices as well as a quantity', story_489: true, current: true do
       decoration_price = 5
       imprintable = imprintable_variant.imprintable
       resultant =
@@ -201,7 +201,11 @@ describe Imprintable, imprintable_spec: true do
               prices: get_prices(imprintable, decoration_price),
               quantity: 2
           }
-      expect(imprintable.pricing_hash(decoration_price, 2)).to eq(resultant)
+
+      resultant.each do |key, val|
+        expect(imprintable.pricing_hash(decoration_price, 2)[key]).to eq(val)
+      end
+
     end
   end
 

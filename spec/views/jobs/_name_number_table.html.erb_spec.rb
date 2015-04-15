@@ -3,7 +3,6 @@ require 'spec_helper'
 describe 'jobs/_name_number_table.html.erb', imprint_spec: true, name_number_spec: true, story_190: true do
   let!(:order) { create :order_with_job }
   let(:job) { order.jobs.first }
-
   let(:imprint) { create :valid_imprint }
 
   it 'contains a table with the appropriate headers' do

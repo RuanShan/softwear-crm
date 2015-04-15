@@ -6,7 +6,6 @@ describe QuoteRequest, quote_request_spec: true, story_78: true do
   describe 'Fields' do
     it { is_expected.to have_db_column(:name).of_type(:string) }
     it { is_expected.to have_db_column(:email).of_type(:string) }
-    # it { is_expected.to have_db_column(:approx_quantity).of_type(:decimal) }
     it { is_expected.to have_db_column(:date_needed).of_type(:datetime) }
     it { is_expected.to have_db_column(:description).of_type(:text) }
     it { is_expected.to have_db_column(:source).of_type(:string) }
@@ -208,9 +207,9 @@ describe QuoteRequest, quote_request_spec: true, story_78: true do
         quote_request.save
         activity = quote_request.activities.first
 
-        expect(activity.parameters[:s]).to be_a Hash
-        expect(activity.parameters[:s][:status_changed_from]).to eq 'pending'
-        expect(activity.parameters[:s][:status_changed_to]).to eq 'requested_info'
+        expect(activity.parameters['s']).to be_a Hash
+        expect(activity.parameters['s']['status_changed_from']).to eq 'pending'
+        expect(activity.parameters['s']['status_changed_to']).to eq 'requested_info'
       end
     end
   end
