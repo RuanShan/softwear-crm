@@ -1,0 +1,21 @@
+<div class="page-heading animated fadeInDownBig">
+  <h1>Email Quote Information <small>Quote #<%= @quote.id %> <i><%= @quote.name %></i></small></h1>
+</div>
+
+<div class="box-info">
+  <%= render 'shared/modal_errors', object: @email %>
+    <div class="form-group">
+      <%= label_tag :template, 'Template', class: 'col-sm-2 control-label' %>
+      <div class="col-sm-10">
+        <%= select_tag :template_type, options_from_collection_for_select(@email_templates, :id, :name, include_blank: true),
+                       prompt: 'Select Email Template...',
+                       class: 'form-control', id: 'email-template-select',
+                       data: {model: 'quote', 'record-id' => @quote.id} %>
+        <br/>
+      </div>
+    </div>
+
+    <div id="email-form-container">
+        <%= render 'form', {quote: @quote, email: @email} %>
+    </div>
+</div>

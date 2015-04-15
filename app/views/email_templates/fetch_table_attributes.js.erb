@@ -1,6 +1,0 @@
-<% unless @table_name.blank? %>
-  $('#associated_record_fields').html("<%= j(render('email_templates/column_names',
-                                                  column_names: @column_names,
-                                                  table_name: @table_name
-                                                  )).html_safe %>");
-<% end %>
