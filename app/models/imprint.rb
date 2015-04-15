@@ -20,6 +20,7 @@ class Imprint < ActiveRecord::Base
     where(has_name_number: true)
     .joins(:name_number)
     .where("name_numbers.name <> '' AND NOT name_numbers.number = NULL AND name_numbers.description <> ''")
+    .references(:name_numbers)
   end
 
   def name
