@@ -28,6 +28,26 @@ describe QuoteRequest, quote_request_spec: true, story_78: true do
     end
   end
 
+  describe 'Insightly', story_513: true do
+    context 'when assigned' do
+      it 'finds an insightly contact with an email matching the supplied email' do
+        dummy_contact = Object.new
+        dummy_client = Object.new
+        expect(dummy_client).to receive(:get_contacts)
+          .with(email: 'test@test.com')
+          .and_return [dummy_contact]
+
+        expect(dummy_contact).to receive(:contact_id).and_return 123
+
+        allow(subject).to receive(:insightly).and_return dummy_client
+
+        subject.salesperson_id = create(:user).id
+        subject.save
+        expect(subject.insightly_contact_id).to eq 123
+      end
+    end
+  end
+
   describe 'status', story_195: true do
     context 'on creation' do
       it 'is "pending"' do
