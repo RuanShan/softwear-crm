@@ -1,5 +1,11 @@
 <div class="page-heading animated fadeInDownBig col-lg-6">
   <h1>Edit<strong> Quote</strong></h1>
+
+  <% if @quote.insightly_opportunity_id %>
+    <div class="pull-left">
+      <h4>(<%= link_to 'Insightly', @quote.insightly_opportunity_link, target: '_blank' %>)</h4>
+    </div>
+  <% end %>
 </div>
 
 <div class="col-ls-6 text-right">

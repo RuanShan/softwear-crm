@@ -240,6 +240,11 @@ class Quote < ActiveRecord::Base
     super
   end
 
+  def insightly_opportunity_link
+    return if insightly_opportunity_id.nil?
+    "https://annarbortees.insight.ly/Opportunities/details/#{insightly_opportunity_id}"
+  end
+
   def create_insightly_opportunity
     return if insightly.nil?
 
@@ -254,7 +259,7 @@ class Quote < ActiveRecord::Base
           bid_currency: 'USD',
           # bid_amount: line_item_subtotal or something?
           # bid_type: ???
-          forecast_close_date: valid_until_date.strftime('%F %T'),
+          forecast_close_date: (created_at + 3.days).strftime('%F %T'),
           pipeline_id: insightly_pipeline_id,
           customfields: insightly_customfields,
           links: insightly_contact_links,
@@ -304,7 +309,7 @@ class Quote < ActiveRecord::Base
     if is_rushed?
       fields << {
         custom_field_id: 'OPPORTUNITY_FIELD_1',
-        field_value: valid_until_date.strftime('%F %T')
+        field_value: estimated_delivery_date.strftime('%F %T')
       }
     end
     fields << {

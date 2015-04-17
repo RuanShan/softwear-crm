@@ -53,7 +53,7 @@ describe Quote, quote_spec: true do
                 opportunity_state: 'Open',
                 probability: subject.insightly_probability,
                 bid_currency: 'USD',
-                forecast_close_date: subject.valid_until_date.strftime('%F %T'),
+                forecast_close_date: (subject.created_at + 3.days).strftime('%F %T'),
                 pipeline_id: 10,
                 customfields: subject.insightly_customfields,
                 links: []
@@ -124,14 +124,16 @@ describe Quote, quote_spec: true do
           end
 
           context 'when #is_rushed is true' do
-            it 'adds OPPORTUNITY_FIELD_1 with valid_until_date.strftime("%F %T")' do
+            it 'adds OPPORTUNITY_FIELD_1 with estimated_delivery_date.strftime("%F %T")' do
+              subject.estimated_delivery_date = 5.days.from_now
               subject.is_rushed = true
               expect(customfields).to include(
                 custom_field_id: 'OPPORTUNITY_FIELD_1',
-                field_value: subject.valid_until_date.strftime('%F %T')
+                field_value: subject.estimated_delivery_date.strftime('%F %T')
               )
             end
           end
+
           context 'when #is_rushed is false' do
             it 'does not add OPPORTUNITY_FIELD_1' do
               subject.is_rushed = false
