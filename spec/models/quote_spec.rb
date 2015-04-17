@@ -45,14 +45,18 @@ describe Quote, quote_spec: true do
           subject = create :valid_quote
           dummy_insightly = Object.new
           subject.insightly_pipeline_id = 10
+          allow(subject).to receive(:description).and_return 'desc'
+          allow(subject).to receive(:insightly_bid_amount).and_return 15.22
 
           expect(dummy_insightly).to receive(:create_opportunity)
             .with({
               opportunity: {
                 opportunity_name: subject.name,
                 opportunity_state: 'Open',
+                opportunity_details: 'desc',
                 probability: subject.insightly_probability,
                 bid_currency: 'USD',
+                bid_amount: 15.22,
                 forecast_close_date: (subject.created_at + 3.days).strftime('%F %T'),
                 pipeline_id: 10,
                 customfields: subject.insightly_customfields,

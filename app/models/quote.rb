@@ -52,6 +52,7 @@ class Quote < ActiveRecord::Base
     :insightly_value,
     :insightly_pipeline_id,
     :insightly_opportunity_profile_id,
+    :insightly_bid_amount,
     :insightly_bid_tier_id,
   ]
 
@@ -246,6 +247,13 @@ class Quote < ActiveRecord::Base
     "https://annarbortees.insight.ly/Opportunities/details/#{insightly_opportunity_id}"
   end
 
+  def description
+    quote_requests.map do |qr|
+      qr.description
+    end
+      .join("\n")
+  end
+
   def create_insightly_opportunity
     return if insightly.nil?
 
@@ -255,11 +263,10 @@ class Quote < ActiveRecord::Base
         opportunity: {
           opportunity_name: name,
           opportunity_state: 'Open',
-          # opportunity_details:
+          opportunity_details: description,
           probability: insightly_probability,
           bid_currency: 'USD',
-          # bid_amount: line_item_subtotal or something?
-          # bid_type: ???
+          bid_amount: insightly_bid_amount,
           forecast_close_date: (created_at + 3.days).strftime('%F %T'),
           pipeline_id: insightly_pipeline_id,
           customfields: insightly_customfields,
