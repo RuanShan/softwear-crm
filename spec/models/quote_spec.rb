@@ -40,6 +40,120 @@ describe Quote, quote_spec: true do
         Quote::INSIGHTLY_FIELDS.each do |field|
           it { is_expected.to validate_presence_of(field) }
         end
+
+        it 'can create an opportunity in Insightly', story_514: true do
+          subject = create :valid_quote
+          dummy_insightly = Object.new
+          subject.insightly_pipeline_id = 10
+
+          expect(dummy_insightly).to receive(:create_opportunity)
+            .with({
+              opportunity: {
+                opportunity_name: subject.name,
+                opportunity_state: 'Open',
+                probability: subject.insightly_probability,
+                bid_currency: 'USD',
+                forecast_close_date: subject.valid_until_date.strftime('%F %T'),
+                pipeline_id: 10,
+                customfields: subject.insightly_customfields,
+                links: []
+              }
+            })
+            .and_return(OpenStruct.new(opportunity_id: 123))
+
+          allow(subject).to receive(:insightly).and_return dummy_insightly
+
+          subject.create_insightly_opportunity
+          expect(subject.reload.insightly_opportunity_id).to eq 123
+        end
+
+        context '#insightly_customfields', story_514: true do
+          subject { create :valid_quote }
+          def customfields
+            subject.insightly_customfields
+          end
+
+          context 'when there is an opportunity_profile_id' do
+            it 'it adds OPPORTUNITY_FIELD_12 with its option value' do
+              subject.insightly_opportunity_profile_id = 1
+              allow(subject).to receive_message_chain(:insightly_opportunity_profile, :option_value)
+                .and_return 'TARGET'
+              expect(customfields).to include(
+                custom_field_id: 'OPPORTUNITY_FIELD_12',
+                field_value: 'TARGET'
+              )
+            end
+          end
+
+          context 'when there is a bid_tier_id' do
+            it 'it adds OPPORTUNITY_FIELD_11 with its option value' do
+              subject.insightly_bid_tier_id = 1
+              allow(subject).to receive_message_chain(:insightly_bid_tier, :option_value)
+                .and_return 'TARGET'
+              expect(customfields).to include(
+                custom_field_id: 'OPPORTUNITY_FIELD_11',
+                field_value: 'TARGET'
+              )
+            end
+          end
+
+          it 'adds OPPORTUNITY_FIELD_3 with "Yes" or "No" depending on #deadline_is_specified?' do
+            subject.deadline_is_specified = true
+            expect(customfields).to include(
+              custom_field_id: 'OPPORTUNITY_FIELD_3',
+              field_value: 'Yes'
+            )
+            subject.deadline_is_specified = false
+            expect(customfields).to include(
+              custom_field_id: 'OPPORTUNITY_FIELD_3',
+              field_value: 'No'
+            )
+          end
+
+          it 'adds OPPORTUNITY_FIELD_5 with "Yes" or "No" depending on #is_rushed?' do
+            subject.is_rushed = true
+            expect(customfields).to include(
+              custom_field_id: 'OPPORTUNITY_FIELD_5',
+              field_value: 'Yes'
+            )
+            subject.is_rushed = false
+            expect(customfields).to include(
+              custom_field_id: 'OPPORTUNITY_FIELD_5',
+              field_value: 'No'
+            )
+          end
+
+          context 'when #is_rushed is true' do
+            it 'adds OPPORTUNITY_FIELD_1 with valid_until_date.strftime("%F %T")' do
+              subject.is_rushed = true
+              expect(customfields).to include(
+                custom_field_id: 'OPPORTUNITY_FIELD_1',
+                field_value: subject.valid_until_date.strftime('%F %T')
+              )
+            end
+          end
+          context 'when #is_rushed is false' do
+            it 'does not add OPPORTUNITY_FIELD_1' do
+              subject.is_rushed = false
+              expect(customfields.flat_map(&:values)).to_not include 'OPPORTUNITY_FIELD_1'
+            end
+          end
+
+          it 'adds OPPORTUNITY_FIELD_2 with #qty' do
+            subject.qty = 1234
+            expect(customfields).to include(
+              custom_field_id: 'OPPORTUNITY_FIELD_2',
+              field_value: 1234
+            )
+          end
+
+          it 'adds OPPORTUNITY_FIELD_10 with "Online - WordPress Quote Request"' do
+            expect(customfields).to include(
+              custom_field_id: 'OPPORTUNITY_FIELD_10',
+              field_value: 'Online - WordPress Quote Request'
+            )
+          end
+        end
       end
 
       context 'when salesperson does not have an insightly api key' do
