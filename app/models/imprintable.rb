@@ -20,6 +20,7 @@ class Imprintable < ActiveRecord::Base
          :description
 
     text :all_categories
+    text :compatible_print_methods
 
     string :sizing_category
     string :name
@@ -75,8 +76,12 @@ class Imprintable < ActiveRecord::Base
                      },
              allow_blank: true
 
+  def compatible_print_methods
+    compatible_imprint_methods.pluck(:name).join ' '
+  end
+
   def all_categories
-    imprintable_categories.map(&:name).join ' '
+    imprintable_categories.pluck(:name).join ' '
   end
 
   def variants_of_color(color)
