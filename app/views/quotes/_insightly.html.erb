@@ -2,6 +2,7 @@
   <%= form_for quote, builder: LancengFormBuilder do |f| %>
     <div class="row">
       <h3><strong>Insightly</strong> Settings</h3>
+      Note: if there is already a linked opportunity, changing these fields will not update it.
 
       <%= render 'quote_insightly_fields', f: f, quote: quote, quote_request_id: nil %>
     </div>

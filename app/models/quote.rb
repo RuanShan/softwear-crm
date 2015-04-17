@@ -233,6 +233,7 @@ class Quote < ActiveRecord::Base
   end
 
   def reload
+    @insightly = nil
     @i_bid_tier = nil
     @i_task_category = nil
     @i_pipeline = nil
@@ -339,7 +340,7 @@ class Quote < ActiveRecord::Base
   end
 
   def insightly
-    if salesperson.insightly_api_key
+    if salesperson && salesperson.insightly_api_key
       @insightly ||= Insightly2::Client.new(salesperson.insightly_api_key)
     end
   end
