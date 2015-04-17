@@ -82,6 +82,7 @@ class QuoteRequest < ActiveRecord::Base
                 organisation_name: organization
               }
             )
+          insightly_organisation_id = org.try(:organisation_id)
         end
 
         contact = insightly.create_contact(contact: {

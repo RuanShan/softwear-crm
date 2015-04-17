@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150415161310) do
+ActiveRecord::Schema.define(version: 20150417175529) do
 
   create_table "activities", force: true do |t|
     t.integer  "trackable_id"
@@ -427,6 +427,7 @@ ActiveRecord::Schema.define(version: 20150415161310) do
     t.string   "phone_number"
     t.string   "organization"
     t.integer  "insightly_contact_id"
+    t.integer  "insightly_organisation_id"
   end
 
   create_table "quotes", force: true do |t|
@@ -444,20 +445,21 @@ ActiveRecord::Schema.define(version: 20150415161310) do
     t.datetime "deleted_at"
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.decimal  "shipping",                 precision: 10, scale: 2
-    t.string   "quote_source"
+    t.decimal  "shipping",                         precision: 10, scale: 2
     t.datetime "initialized_at"
+    t.string   "quote_source"
     t.string   "freshdesk_ticket_id"
     t.boolean  "informal"
     t.integer  "insightly_category_id"
-    t.decimal  "insightly_probability",    precision: 10, scale: 2
-    t.decimal  "insightly_value",          precision: 10, scale: 2
+    t.integer  "insightly_probability"
+    t.decimal  "insightly_value",                  precision: 10, scale: 2
     t.integer  "insightly_pipeline_id"
     t.integer  "insightly_opportunity_id"
     t.integer  "insightly_bid_tier_id"
     t.boolean  "is_rushed"
     t.integer  "qty"
     t.boolean  "deadline_is_specified"
+    t.integer  "insightly_opportunity_profile_id"
   end
 
   create_table "sample_locations", force: true do |t|

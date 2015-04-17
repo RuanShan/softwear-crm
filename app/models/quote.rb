@@ -51,7 +51,7 @@ class Quote < ActiveRecord::Base
     :insightly_probability,
     :insightly_value,
     :insightly_pipeline_id,
-    :insightly_opportunity_id,
+    :insightly_opportunity_profile_id,
     :insightly_bid_tier_id,
   ]
 
@@ -85,6 +85,7 @@ class Quote < ActiveRecord::Base
 
   after_save :save_nested_line_items_attributes
   after_save :set_quote_request_statuses_to_quoted
+  after_create :create_insightly_opportunity
   after_initialize  :initialize_time
 
   def all_activities
@@ -216,7 +217,127 @@ class Quote < ActiveRecord::Base
     !salesperson.insightly_api_key.nil?
   end
 
-private
+  def insightly_opportunity_profile
+    @i_opportunity_profile ||= find_custom_field('OPPORTUNITY_FIELD_12', insightly_opportunity_profile_id)
+  end
+  def insightly_bid_tier
+    @i_bid_tier ||= find_custom_field('OPPORTUNITY_FIELD_11', insightly_bid_tier_id)
+  end
+
+  def insightly_task_category
+    @i_task_category ||= insightly.get_task_category(id: insightly_category_id)
+  end
+
+  def insightly_pipeline
+    @i_pipeline ||= insightly.get_pipeline(id: insightly_pipeline_id)
+  end
+
+  def reload
+    @i_bid_tier = nil
+    @i_task_category = nil
+    @i_pipeline = nil
+    @i_opportunity_profile = nil
+    super
+  end
+
+  def create_insightly_opportunity
+    return if insightly.nil?
+
+    begin
+      # TODO resolve unsure fields
+      self.insightly_opportunity_id = insightly.create_opportunity(
+        opportunity: {
+          opportunity_name: name,
+          opportunity_state: 'Open',
+          # opportunity_details:
+          probability: insightly_probability,
+          bid_currency: 'USD',
+          # bid_amount: line_item_subtotal or something?
+          # bid_type: ???
+          forecast_close_date: valid_until_date.strftime('%F %T'),
+          pipeline_id: insightly_pipeline_id,
+          customfields: insightly_customfields,
+          links: insightly_contact_links,
+        }
+      )
+        .opportunity_id
+      self.save(validate: false)
+    rescue Insightly2::Errors::ClientError => _e
+      nil
+    end
+  end
+
+  def insightly_contact_links
+    quote_requests.flat_map do |qr|
+      c = []
+      c << { contact_id: qr.insightly_contact_id }
+      if qr.insightly_organisation_id
+        c << { organisation_id: qr.insightly_organisation_id }
+      end
+      c
+    end
+      .uniq
+  end
+
+  def insightly_customfields
+    fields = []
+    if insightly_opportunity_profile_id
+      fields << {
+        custom_field_id: 'OPPORTUNITY_FIELD_12',
+        field_value: insightly_opportunity_profile.option_value
+      }
+    end
+    if insightly_bid_tier_id
+      fields << {
+        custom_field_id: 'OPPORTUNITY_FIELD_11',
+        field_value: insightly_bid_tier.option_value
+      }
+    end
+    fields << {
+      custom_field_id: 'OPPORTUNITY_FIELD_3',
+      field_value: yes_or_no(deadline_is_specified?)
+    }
+    fields << {
+      custom_field_id: 'OPPORTUNITY_FIELD_5',
+      field_value: yes_or_no(is_rushed?)
+    }
+    if is_rushed?
+      fields << {
+        custom_field_id: 'OPPORTUNITY_FIELD_1',
+        field_value: valid_until_date.strftime('%F %T')
+      }
+    end
+    fields << {
+      custom_field_id: 'OPPORTUNITY_FIELD_2',
+      field_value: qty
+    }
+    fields << {
+      custom_field_id: 'OPPORTUNITY_FIELD_10',
+      field_value: 'Online - WordPress Quote Request'
+    }
+    fields
+  end
+
+  private
+
+  def yes_or_no(bool)
+    bool ? 'Yes' : 'No'
+  end
+
+  def find_custom_field(field_id, option_id)
+    return if insightly.nil? || option_id.nil?
+
+    insightly.get_custom_field(id: field_id)
+      .custom_field_options
+      .find { |f| f['option_id'].to_i == option_id }
+      .tap { |f| return OpenStruct.new(f) if f }
+  end
+
+  def insightly
+    if salesperson.insightly_api_key
+      @insightly ||= Insightly2::Client.new(salesperson.insightly_api_key)
+    end
+  end
 
   def set_quote_request_statuses_to_quoted
     return unless @quote_request_ids_assigned
