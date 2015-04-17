@@ -27,6 +27,7 @@ class Imprintable < ActiveRecord::Base
     float :base_price
     boolean :flashable
     boolean :standard_offering
+    boolean :retail
   end
 
   SIZING_CATEGORIES = [
