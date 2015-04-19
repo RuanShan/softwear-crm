@@ -5,6 +5,8 @@ class UseJsonInsteadOfYamlSerialization < ActiveRecord::Migration
       SET parameters='{}'
       WHERE parameters LIKE '--- !ruby/hash:ActiveSupport::HashWithIndifferentAccess%')
     )
+
+    ActiveRecord::Base.connection.execute(
     %(UPDATE activities
       SET parameters='{}'
       WHERE parameters LIKE '--- {%')
