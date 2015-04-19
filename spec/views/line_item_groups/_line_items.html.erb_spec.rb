@@ -11,6 +11,6 @@ describe '_line_items.html.erb', line_item_group_spec: true, story_66: true do
   end
 
   it 'displays a "delete group" button' do
-    expect(rendered).to have_css('button', text: 'Delete Group')
+    expect(rendered).to have_css('a', text: 'Delete Group')
   end
 end

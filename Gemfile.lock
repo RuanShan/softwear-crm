@@ -215,6 +215,9 @@ GEM
     inherited_resources (1.4.1)
       has_scope (~> 0.6.0.rc)
       responders (~> 1.0.0.rc)
+    insightly2 (0.1.7)
+      activesupport
+      faraday
     jbuilder (1.5.3)
       activesupport (>= 3.0.0)
       multi_json (>= 1.2.0)
@@ -477,6 +480,7 @@ DEPENDENCIES
   google_drive
   hirb (~> 0.7.1)
   inherited_resources
+  insightly2
   jbuilder (~> 1.2)
   jquery-fileupload-rails
   jquery-rails

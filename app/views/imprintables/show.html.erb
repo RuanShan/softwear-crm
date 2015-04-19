@@ -18,47 +18,54 @@
 
       <ul class="nav nav-tabs nav-justified">
         <li class="active">
-          <a href="#basic_info_<%= @imprintable.id %>" data-toggle="tab">
-            <i class="fa fa-info"></i> Basic Info
+          <a href="#sales_info_<%= @imprintable.id %>" data-toggle="tab">
+            <i class="fa fa-check-square-o"></i> Sales
           </a>
         </li>
         <li>
-          <a href="#size_color_availability_<%= @imprintable.id %>" data-toggle="tab">
-            <i class="fa fa-check-square-o"></i> Size/Color Availability
+          <a href="#production_info_<%= @imprintable.id %>" data-toggle="tab">
+            <i class="fa fa-check-square-o"></i> Production
           </a>
         </li>
         <li>
-          <a href="#imprint_details_<%= @imprintable.id %>" data-toggle="tab">
-            <i class="fa fa-search"></i> Imprint Details
+          <a href="#sizing_info_<%= @imprintable.id %>" data-toggle="tab">
+            <i class="fa fa-search"></i> Sizing
           </a>
         </li>
+        <% if @imprintable.retail? %>
         <li>
-          <a href="#supplier_information_<%= @imprintable.id %>" data-toggle="tab">
-            <i class="fa fa-info-circle"></i> Supplier Information
+          <a href="#retail_info_<%= @imprintable.id %>" data-toggle="tab">
+            <i class="fa fa-check-square-o"></i> Retail
           </a>
         </li>
+        <% end %>
       </ul>
 
       <div class="tab-content">
-        <div class="tab-pane animated fadeInRight active" id="basic_info_<%= @imprintable.id %>">
-          <%= render 'basic_info', imprintable: @imprintable %>
+
+        <div class="tab-pane animated fadeInRight active" id="sales_info_<%= @imprintable.id %>">
+          <%= render 'imprintables/show/sales', imprintable: @imprintable %>
         </div>
 
-        <div class="tab-pane animated fadeInRight" id="size_color_availability_<%= @imprintable.id %>">
-          <%= render 'size_color_availability',
+
+        <div class="tab-pane animated fadeInRight" id="production_info_<%= @imprintable.id %>">
+          <%= render 'imprintables/show/production', imprintable: @imprintable %>
+        </div>
+
+        <div class="tab-pane animated fadeInRight" id="sizing_info_<%= @imprintable.id %>">
+          <%= render 'imprintables/show/sizing',
                       imprintable: @imprintable,
                       size_variants: @variants_hash[:size_variants],
                       color_variants: @variants_hash[:color_variants],
                       variants_array: @variants_hash[:variants_array] %>
         </div>
 
-        <div class="tab-pane animated fadeInRight" id="imprint_details_<%= @imprintable.id %>">
-          <%= render 'imprint_details', imprintable: @imprintable %>
-        </div>
+        <% if @imprintable.retail? %>
+            <div class="tab-pane animated fadeInRight" id="retail_info_<%= @imprintable.id %>">
+              <%= render 'imprintables/show/retail', imprintable: @imprintable %>
+            </div>
+        <% end %>
 
-        <div class="tab-pane animated fadeInRight" id="supplier_information_<%= @imprintable.id %>">
-          <%= render 'supplier_details', imprintable: @imprintable %>
-        </div>
       </div>
     </div>
   </div>

@@ -4,6 +4,12 @@ class Setting < ActiveRecord::Base
   attr_encrypted :val, key: 'h4rdc0ded1337ness', if: :encrypted?
   validates :val, presence: true
 
+  def self.insightly_api_key
+    Setting.find_by(name: 'insightly_api_key').try(:val) ||
+      Figaro.env['insightly_api_key'] ||
+      create_and_save_insightly_api_key
+  end
+
   def self.get_freshdesk_settings
     freshdesk_records = {
       freshdesk_url: Setting.find_by(name: 'freshdesk_url').val,
@@ -34,6 +40,16 @@ private
 
   def self.configured?(records)
     records.values.all?
+  end
+
+  def self.create_and_save_insightly_api_key
+    return if Setting.where(name: 'insightly_api_key').exists?
+
+    Setting.transaction do
+      Setting.create(name: 'insightly_api_key', val: nil, encrypted: false)
+    end
+
+    nil
   end
 
   def self.create_and_save_fd_settings(url, email, password)

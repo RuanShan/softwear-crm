@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150406193222) do
+ActiveRecord::Schema.define(version: 20150417203558) do
 
   create_table "activities", force: true do |t|
     t.integer  "trackable_id"
@@ -138,23 +138,27 @@ ActiveRecord::Schema.define(version: 20150406193222) do
     t.string   "from"
     t.string   "bcc"
     t.string   "cc"
-    t.integer  "quote_id"
     t.text     "body"
-    t.text     "template"
     t.datetime "deleted_at"
+    t.string   "template_type"
+    t.string   "name"
+    t.text     "plaintext_body"
+    t.string   "to"
   end
 
   create_table "emails", force: true do |t|
     t.string   "subject"
     t.text     "body"
-    t.string   "sent_to"
-    t.string   "sent_from"
-    t.string   "cc_emails"
+    t.string   "to"
+    t.string   "from"
+    t.string   "cc"
     t.integer  "emailable_id"
     t.string   "emailable_type"
     t.datetime "deleted_at"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.string   "bcc"
+    t.text     "plaintext_body"
   end
 
   create_table "freshdesk_local_contacts", force: true do |t|
@@ -420,6 +424,10 @@ ActiveRecord::Schema.define(version: 20150406193222) do
     t.integer  "salesperson_id"
     t.string   "status"
     t.string   "reason"
+    t.string   "phone_number"
+    t.string   "organization"
+    t.integer  "insightly_contact_id"
+    t.integer  "insightly_organisation_id"
   end
 
   create_table "quotes", force: true do |t|
@@ -437,11 +445,22 @@ ActiveRecord::Schema.define(version: 20150406193222) do
     t.datetime "deleted_at"
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.decimal  "shipping",                precision: 10, scale: 2
+    t.decimal  "shipping",                         precision: 10, scale: 2
     t.datetime "initialized_at"
     t.string   "quote_source"
     t.string   "freshdesk_ticket_id"
     t.boolean  "informal"
+    t.integer  "insightly_category_id"
+    t.integer  "insightly_probability"
+    t.decimal  "insightly_value",                  precision: 10, scale: 2
+    t.integer  "insightly_pipeline_id"
+    t.integer  "insightly_opportunity_id"
+    t.integer  "insightly_bid_tier_id"
+    t.boolean  "is_rushed"
+    t.integer  "qty"
+    t.boolean  "deadline_is_specified"
+    t.integer  "insightly_opportunity_profile_id"
+    t.decimal  "insightly_bid_amount",             precision: 10, scale: 2
   end
 
   create_table "sample_locations", force: true do |t|
@@ -626,6 +645,7 @@ ActiveRecord::Schema.define(version: 20150406193222) do
     t.string   "freshdesk_email"
     t.string   "freshdesk_password"
     t.string   "encrypted_freshdesk_password"
+    t.string   "insightly_api_key"
   end
 
   add_index "users", ["authentication_token"], name: "index_users_on_authentication_token", using: :btree

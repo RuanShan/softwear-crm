@@ -39,6 +39,7 @@
                   <%= link_to price_path(id: index, group: group),
                               method: :delete,  remote: true, class: 'btn btn-xs btn-danger',
                               data: {
+                                      action: 'destroy',
                                       confirm: 'Are you sure you would like to delete the price?'
                               } do %>
                       <i class="fa fa-times"></i> Remove

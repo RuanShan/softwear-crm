@@ -122,6 +122,7 @@ gem 'public_activity', github: 'AnnArborTees/public_activity', branch: 'master'
 gem 'sunspot_solr'
 gem 'progress_bar'
 gem 'whenever'
+gem 'insightly2'
 gem 'freshdesk', github: 'annarbortees/freshdesk-api'
 gem 'simple_token_authentication'
 gem 'sinatra', require: false

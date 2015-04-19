@@ -1,5 +1,11 @@
 <div class="page-heading animated fadeInDownBig col-lg-6">
   <h1>Edit<strong> Quote</strong></h1>
+
+  <% if @quote.insightly_opportunity_id %>
+    <div class="pull-left">
+      <h4>(<%= link_to 'Insightly', @quote.insightly_opportunity_link, target: '_blank' %>)</h4>
+    </div>
+  <% end %>
 </div>
 
 <div class="col-ls-6 text-right">
@@ -29,6 +35,11 @@
           </a>
         </li>
         <li>
+          <a href="#insightly" data-toggle="tab">
+            <i class="fa fa-search"></i> Insightly
+          </a>
+        </li>
+        <li>
           <a href="#line_items" data-toggle="tab">
             <i class="fa fa-bars"></i> Line Items
           </a>
@@ -52,6 +63,10 @@
 
         <div class="tab-pane animated  fadeInRight" id="details">
           <%= render 'details', quote: @quote %>
+        </div>
+
+        <div class="tab-pane animated  fadeInRight" id="insightly">
+          <%= render 'insightly', quote: @quote %>
         </div>
 
         <div class="tab-pane animated fadeInRight" id="line_items">

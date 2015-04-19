@@ -131,7 +131,7 @@ class Job < ActiveRecord::Base
   end
 
   def name_number_imprints
-    imprints.includes(:imprint_method).where('imprint_methods.name = "Name/Number"')
+    imprints.includes(:imprint_method).where('imprint_methods.name = "Name/Number"').references(:imprint_methods)
   end
 
   private

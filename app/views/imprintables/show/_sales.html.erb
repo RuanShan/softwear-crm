@@ -1,0 +1,72 @@
+<div class="user-profile-content" id="supplier_information_<%= imprintable.id%>">
+  <h3>Basic Info</h3>
+  <dl class="left-right-pretty">
+    <dt>Brand</dt>
+    <dd><%= imprintable.brand.try(:name) %></dd>
+    <dt>Style Name</dt>
+    <dd><%= imprintable.style_name %></dd>
+    <dt>Catalog No.</dt>
+    <dd><%= imprintable.style_catalog_no %></dd>
+    <dt>Style Description</dt>
+    <dd><%= raw imprintable.description %></dd>
+  </dl>
+
+  <h3>Sizing Pricing</h3>
+    <div class="table-responsive">
+      <table class="table table-hover" id="imprintable_supplier_pricing">
+        <thead>
+          <tr>
+            <th>Sizes Available</th>
+            <% if imprintable.base_price_ok %><th>Base Upcharge</th><% end %>
+            <% if imprintable.xxl_price_ok %><th>2XL</th><% end %>
+            <% if imprintable.xxxl_price_ok %><th>3XL</th><% end %>
+            <% if imprintable.xxxxl_price_ok %><th>4XL</th><% end %>
+            <% if imprintable.xxxxxl_price_ok %><th>5XL</th><% end %>
+            <% if imprintable.xxxxxxl_price_ok %><th>6XL</th><% end %>
+          </tr>
+        </thead>
+
+        <tbody>
+          <tr>
+            <td><%= display_sizes(imprintable) %></td>
+
+            <% if imprintable.base_price_ok %>
+              <td><%= number_to_currency imprintable.base_price %></td>
+            <% end %>
+            <% if imprintable.xxl_price_ok %>
+              <td><%= number_to_currency imprintable.xxl_price %></td>
+            <% end %>
+            <% if imprintable.xxxl_price_ok %>
+              <td><%= number_to_currency imprintable.xxxl_price %></td>
+            <% end %>
+            <% if imprintable.xxxxl_price_ok %>
+              <td><%= number_to_currency imprintable.xxxxl_price %></td>
+            <% end %>
+            <% if imprintable.xxxxxl_price_ok %>
+              <td><%= number_to_currency imprintable.xxxxxl_price %></td>
+            <% end %>
+            <% if imprintable.xxxxxxl_price_ok %>
+              <td><%= number_to_currency imprintable.xxxxxxl_price %></td>
+            <% end %>
+          </tr>
+        </tbody>
+       </table>
+     </div>
+    <h3>Additional Info</h3>
+    <dl class="left-right-pretty">
+      <dt>Main Supplier</dt>
+      <dd><%= imprintable.main_supplier.blank? ? 'Not Specified ' :  imprintable.main_supplier %></dd>
+      <dt>Supplier Link</dt>
+      <dd><%= imprintable.supplier_link.blank? ? 'Not Specified ' : link_to(imprintable.supplier_link, imprintable.supplier_link) %></dd>
+      <dt>Categories</dt>
+      <dd><%= imprintable.imprintable_categories.empty? ? 'Not Specified' : imprintable.imprintable_categories.map{|x| x.name}.join(', ') %></dd>
+      <dt>Coordinates</dt>
+      <dd><%= imprintable.coordinate_imprintables.empty? ? 'Not Specified' :  imprintable.coordinate_imprintables.map{|x| x.name}.join(', ') %></dd>
+      <dt>Sample Locations</dt>
+      <dd><%= imprintable.sample_locations.empty? ? 'Not Specified' : imprintable.sample_locations.map{|x| x.name}.join(', ') %></dd>
+      <dt>Tags</dt>
+      <dd><%= imprintable.tags.empty? ? 'Not Specified' : imprintable.tags.map{|x| x.name}.join(', ') %></dd>
+    </dl>
+
+    <%= render 'imprintables/show/weight_table', imprintable: imprintable %>
+</div>

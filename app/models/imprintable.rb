@@ -177,6 +177,18 @@ class Imprintable < ActiveRecord::Base
     imprintable_variants.where(size_id: size.id).update_all(weight: weight)
   end
 
+  def max_print_sizes_for_imprint(imprint_method)
+    max_imprint_sizes = {}
+    imprint_method.print_locations.each do |pl|
+      max_imprint_sizes[pl.name] = {
+          w: [max_imprint_width, pl.max_width].min,
+          h: [max_imprint_height, pl.max_height].min,
+          imprint_max: "#{pl.max_width}in x #{pl.max_height}in"
+      }
+    end
+    max_imprint_sizes
+  end
+
   %i(base xxl xxxl xxxxl xxxxxl xxxxxxl).each do |pre|
     # base_price_ok
     define_method "#{pre}_price_ok" do

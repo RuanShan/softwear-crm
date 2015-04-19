@@ -11,7 +11,7 @@
     <%= link_to '#', class: 'btn btn-success', id: 'print-button' do  %>
         <i class="fa fa-print"></i> Print
     <% end %>
-    <%= link_to quote_populate_email_path(@quote.id), class: 'btn btn-success' do  %>
+    <%= link_to new_quote_emails_path(@quote), class: 'btn btn-success' do  %>
         <i class="fa fa-envelope"></i> Email Quote
     <% end %>
   </div>

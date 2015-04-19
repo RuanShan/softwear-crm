@@ -14,7 +14,7 @@ describe 'prices/_create.html.erb', prices_spec: true do
   it 'displays a the table headers' do
     expect(rendered).to have_content('Item')
     expect(rendered).to have_content('Sizes')
-    expect(rendered).to have_content('Base Price')
+    expect(rendered).to have_content('Base')
     expect(rendered).to have_content('2XL')
     expect(rendered).to have_content('3XL')
     expect(rendered).to have_content('4XL')
@@ -30,7 +30,7 @@ describe 'prices/_create.html.erb', prices_spec: true do
     expect(rendered).to have_css('td', text: '13.99')
     expect(rendered).to have_css('td', text: '14.99')
     expect(rendered).to have_css('td', text: '15.99')
-    expect(rendered).to have_css('td', text: '--')
+    expect(rendered).to_not have_css('td', text: '--')
   end
 
   it 'displays quantity', story_489: true do

@@ -1,0 +1,54 @@
+<div class="user-profile-content">
+
+  <h3>Compatible Imprint Methods & Max Print Size</h3>
+  <% unless imprintable.compatible_imprint_methods.empty? %>
+  <table class="table table-striped table-hover table-condensed">
+    <thead>
+        <th>
+          Imprint Method
+        </th>
+        <th>
+          Locations and Max Size
+        </th>
+    </thead>
+    <tbody>
+    <% imprintable.compatible_imprint_methods.each do |im| %>
+    <tr>
+        <td>
+          <%= im.name %>
+        </td>
+        <td>
+          <dl class="left-right">
+          <% imprintable.max_print_sizes_for_imprint(im).each do |location, size| %>
+            <dt><%= link_to location, '#', data: {toggle: 'tooltip', html: true,  'original-title' =>  "Garment: #{imprintable.max_imprint_width}in x #{imprintable.max_imprint_height}<br /> Imprint: #{size[:imprint_max]}"} %></dt>
+            <dd><%= size[:w] %>in wide x <%= size[:h] %>in tall</dd>
+          <% end %>
+          </dl>
+        </td>
+    </tr>
+    <% end %>
+    </tbody>
+  </table>
+      <% else %>
+  <p class="alert alert-danger">
+    No Compatible Imprint Methods are assigned to this garment
+  </p>
+      <% end %>
+
+    <dl class="left-right-pretty">
+        <dt>Sizing Category</dt>
+        <dd><%= imprintable.sizing_category.blank? ? 'Not Specified' : imprintable.sizing_category %></dd>
+        <dt>Material</dt>
+        <dd><%= imprintable.material.blank? ? 'Not Specified' : imprintable.material %></dd>
+        <dt>Material Weight</dt>
+        <dd><%= imprintable.weight.blank? ? 'Not Specified' : imprintable.weight %></dd>
+        <dt>Flashable?</dt>
+        <dd><%= human_boolean(imprintable.flashable) %></dd>
+        <dt>Polyester?</dt>
+        <dd><%= human_boolean(imprintable.polyester) %></dd>
+        <dt>Special Considerations</dt>
+        <dd><%= imprintable.special_considerations.blank? ? 'Not Specified' : imprintable.special_considerations  %></dd>
+        <dt>Proofing Template Name</dt>
+        <dd><%= imprintable.proofing_template_name.blank? ? 'Not Specified' : imprintable.proofing_template_name %></dd>
+    </dl>
+</div>

@@ -49,13 +49,18 @@ module QuoteHelper
 
   def first_step_with_error(quote)
     steps = []
+    without_id = lambda do |field|
+      field.to_s.gsub(/_id^/, '').to_sym
+    end
     quote.errors.each do |field, _message|
       if Quote::STEP_1_FIELDS.include?(field)
         return nil
       elsif Quote::STEP_2_FIELDS.include?(field)
         steps << 2
-      elsif Quote::STEP_3_FIELDS.include?(field)
+      elsif Quote::INSIGHTLY_FIELDS.map(&without_id).include?(field)
         steps << 3
+      elsif Quote::STEP_4_FIELDS.include?(field)
+        steps << 4
       end
     end
     steps.min

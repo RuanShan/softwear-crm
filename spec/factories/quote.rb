@@ -6,6 +6,7 @@ FactoryGirl.define do
       name 'Test Quote'
       first_name 'test'
       last_name 'mctesterson'
+      company 'Tester Co. Inc. LLC'
       valid_until_date Time.now + 1.day
       shipping '0'
       phone_number '1234569871'

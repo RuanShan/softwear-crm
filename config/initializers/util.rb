@@ -10,3 +10,7 @@ Rails.application.config.to_prepare do
     load file
   end
 end
+
+# To ease insightly testing
+# (not relevant to requiring util directory)
+Insightly2.api_key = ENV['INSIGHTLY_API_KEY'] if Rails.env.development?

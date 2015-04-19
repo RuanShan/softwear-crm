@@ -8,6 +8,13 @@ describe Setting, setting_spec: true do
     it { is_expected.to validate_presence_of(:val) }
   end
 
+  describe '.insightly_api_key', story_513: true do
+    it 'returns the setting with the name "insightly_api_key"' do
+      Setting.create(name: 'insightly_api_key', val: '123insightly', encrypted: false)
+      expect(Setting.insightly_api_key).to eq '123insightly'
+    end
+  end
+
   describe '.get_freshdesk_settings' do
     context 'when setting records are present' do
       it 'sets the freshdesk_hash to its values' do
