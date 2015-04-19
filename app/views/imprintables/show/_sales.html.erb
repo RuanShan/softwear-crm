@@ -61,7 +61,7 @@
       <dt>Categories</dt>
       <dd><%= imprintable.imprintable_categories.empty? ? 'Not Specified' : imprintable.imprintable_categories.map{|x| x.name}.join(', ') %></dd>
       <dt>Coordinates</dt>
-      <dd><%= imprintable.coordinate_imprintables.empty? ? 'Not Specified' :  imprintable.coordinate_imprintables.map{|x| x.name}.join(', ') %></dd>
+      <dd><%= imprintable.coordinates.empty? ? 'Not Specified' :  imprintable.coordinates.map{|x| x.name}.join(', ') %></dd>
       <dt>Sample Locations</dt>
       <dd><%= imprintable.sample_locations.empty? ? 'Not Specified' : imprintable.sample_locations.map{|x| x.name}.join(', ') %></dd>
       <dt>Tags</dt>
