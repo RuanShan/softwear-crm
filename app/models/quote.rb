@@ -245,7 +245,7 @@ class Quote < ActiveRecord::Base
 
   def insightly_opportunity_link
     return if insightly_opportunity_id.nil?
-    "https://annarbortees.insight.ly/Opportunities/details/#{insightly_opportunity_id}"
+    "https://googleapps.insight.ly/Opportunities/details/#{insightly_opportunity_id}"
   end
 
   def description

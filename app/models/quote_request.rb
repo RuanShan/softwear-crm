@@ -59,7 +59,7 @@ class QuoteRequest < ActiveRecord::Base
 
   def insightly_contact_url
     return nil if insightly_contact_id.nil?
-    "https://annarbortees.insight.ly/Contacts/Details/#{insightly_contact_id}"
+    "https://googleapps.insight.ly/Contacts/Details/#{insightly_contact_id}"
   end
 
   def linked_with_insightly?
