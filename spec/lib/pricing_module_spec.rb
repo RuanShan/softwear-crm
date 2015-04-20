@@ -21,7 +21,7 @@ describe PricingModule, prices_spec: true do
                     xxxl_price: BigDecimal.new(imprintable.xxxl_price + 5),
                     xxxxl_price: BigDecimal.new(imprintable.xxxxl_price + 5),
                     xxxxxl_price: BigDecimal.new(imprintable.xxxxxl_price + 5),
-                    xxxxxxl_price: '--'
+                    xxxxxxl_price: 'n/a'
                   }
       expect(get_prices(imprintable, decoration_price)).to eq(resultant)
     end

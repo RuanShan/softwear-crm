@@ -29,7 +29,7 @@ describe 'imprintables namespace' do
     context 'columns L through Q are contracted' do
       it 'should collect tags from the linked google doc' do
         ws = DBStub.new([[nil, 'Good','Gildan', '5000', 'Adult Heavy Cotton Short Sleeve Tee',
-                               'S - 3XL', '$2.50', '$4.50', '$4.50', '--', '--', '--',
+                               'S - 3XL', '$2.50', '$4.50', '$4.50', 'n/a', 'n/a', 'n/a',
                                'SS or Heritage', 'y', 'Adult Unisex', 'Tee Shirt', 'Short Sleeve',
                                'Crewneck', '5.3', '100% Cotton', 'Standard', '63', '5000L, 5000B',
                                '', 'Std Crewneck Tee', 'Tees & Tanks', 'Least Expensive', 'Regular Cotton',
@@ -42,8 +42,8 @@ describe 'imprintables namespace' do
     context 'columns M through Q are not contracted' do
       it 'should collect tags from the linked google doc' do
         ws = DBStub.new([[nil, 'Good','Gildan', '5000', 'Adult Heavy Cotton Short Sleeve Tee',
-                          'S - 3XL', '$2.50', '$4.50', '$4.50', '--', '--', '--',
-                          '$1.78', '$3.18', '$3.18', '--', '--', '--', 'SS or Heritage',
+                          'S - 3XL', '$2.50', '$4.50', '$4.50', 'n/a', 'n/a', 'n/a',
+                          '$1.78', '$3.18', '$3.18', 'n/a', 'n/a', 'n/a', 'SS or Heritage',
                           'y', 'Adult Unisex', 'Tee Shirt', 'Short Sleeve',
                           'Crewneck', '5.3', '100% Cotton', 'Standard', '63', '5000L, 5000B',
                           '', 'Std Crewneck Tee', 'Tees & Tanks', 'Least Expensive', 'Regular Cotton',
