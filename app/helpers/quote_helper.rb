@@ -7,6 +7,7 @@ module QuoteHelper
     new_object.name        = field_hash[:name]
     new_object.description = field_hash[:description]
     new_object.quantity    = field_hash[:quantity]
+    new_object.url         = field_hash[:supplier_link]
 
     if user_fields
       new_object.unit_price  = user_fields['unit_price'] if user_fields['unit_price']

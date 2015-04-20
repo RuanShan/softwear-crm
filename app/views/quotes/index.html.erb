@@ -42,8 +42,8 @@
               </dl>
              </td>
             <td><%= link_to quote.name, quote_path(quote) %></td>
-            <td><%= quote.valid_until_date.strftime('%F') %></td>
-            <td><%= quote.estimated_delivery_date.strftime('%F') %></td>
+            <td><%= display_time quote.valid_until_date %></td>
+            <td><%= display_time quote.estimated_delivery_date %></td>
             <td><%= quote.salesperson.full_name %></td>
             <td><%= quote.store.name %></td>
             <td>

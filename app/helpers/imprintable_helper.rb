@@ -12,4 +12,86 @@ module ImprintableHelper
       "#{imprintable.sizes.first.display_value} - #{imprintable.sizes.last.display_value}"
     end
   end
+
+  def pricing_table_headers_for(pricing_groups)
+    headers = content_tag(:th, 'Item')
+    headers += content_tag(:th, 'Quantity')
+    headers += content_tag(:th, 'Sizes')
+    headers += content_tag(:th, 'Base')
+
+    # Here we assume that all of the pricing_hash keys are
+    # the same for all arrays within the group.
+    reference_pricing_array = pricing_groups.values.first
+    reference_pricing_hash = reference_pricing_array.first
+
+    reference_pricing_hash[:prices].keys.each do |price|
+      x_count = 0
+      price_string = price.to_s.each_char do |c|
+        x_count += 1 if c == 'x'
+      end
+      next if x_count == 0
+
+      headers += content_tag(:th, "#{x_count}XL")
+    end
+
+    headers
+  end
+
+  def pricing_table_data_for(pricing_hash)
+    data = content_tag(:td, link_to(pricing_hash[:name], pricing_hash[:supplier_link]))
+    data += content_tag(:td, pricing_hash[:quantity])
+    data += content_tag(:td, pricing_hash[:sizes])
+
+    pricing_hash[:prices].each do |price, value|
+      if value == 'n/a'
+        data += content_tag(:td, 'n/a')
+      else
+        data += content_tag(:td, number_to_currency(value))
+      end
+    end
+
+    data
+  end
+
+  def omit_unused_prices_from(pricing_groups)
+    # new_pricing_array = pricing_array.map(&:deep_dup)
+    new_pricing_groups = {}
+    pricing_groups.each do |k, v|
+      new_pricing_groups[k] = v.map(&:deep_dup)
+    end
+    all_pricing_hashes = new_pricing_groups.values.flatten
+
+    [
+      :xxxxxxl_price,
+      :xxxxxl_price,
+      :xxxxl_price,
+      :xxxl_price,
+      :xxl_price,
+      :xl_price
+    ]
+      .map do |price|
+        OpenStruct.new(
+          price: price,
+          # prices: new_pricing_array.map do |pricing_hash|
+              # pricing_hash[:prices][price]
+            # end
+          prices: all_pricing_hashes.map do |pricing_hash|
+            pricing_hash[:prices][price]
+          end
+        )
+      end
+      .each do |data|
+        if data.prices.all? { |p| p == 'n/a' }
+          all_pricing_hashes.each do |pricing_hash|
+            pricing_hash[:prices].delete(data.price)
+            pricing_hash[:prices].delete(data.price.to_s)
+          end
+        else
+          return new_pricing_groups
+        end
+      end
+
+    # new_pricing_array
+    new_pricing_groups
+  end
 end

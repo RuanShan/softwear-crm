@@ -30,7 +30,7 @@ describe 'prices/_create.html.erb', prices_spec: true do
     expect(rendered).to have_css('td', text: '13.99')
     expect(rendered).to have_css('td', text: '14.99')
     expect(rendered).to have_css('td', text: '15.99')
-    expect(rendered).to_not have_css('td', text: '--')
+    expect(rendered).to_not have_css('td', text: 'n/a')
   end
 
   it 'displays quantity', story_489: true do
