@@ -44,13 +44,13 @@
       <h2><strong>Quote</strong> Details</h2>
     <dl>
       <dt>Estimated Delivery:</dt>
-      <di><%= display_date @quote.estimated_delivery_date  %></di>
+      <di><%= display_time @quote.estimated_delivery_date  %></di>
 
       <dt>Salesperson</dt>
       <di><%= @quote.salesperson.full_name %></di>
 
       <dt>Valid Until</dt>
-      <di><%= display_date @quote.valid_until_date %></di>
+      <di><%= display_time @quote.valid_until_date %></di>
     </dl>
     </div>
 

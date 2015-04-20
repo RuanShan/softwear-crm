@@ -18,7 +18,7 @@ class QuoteRequest < ActiveRecord::Base
 
   QUOTE_REQUEST_STATUSES = %w(
     assigned pending quoted requested_info could_not_quote
-    referred_to_design_studio
+    referred_to_design_studio duplicate
   )
 
   belongs_to :salesperson, class_name: User

@@ -50,7 +50,7 @@ namespace :quote_requests do
         end
         form_details =  @db_client.query("select * from wp_rg_form where id = #{pending_entry['form_id']}").first
 
-        quantity, date_needed, description, name = nil
+        quantity, date_needed, description, name, phone_number, organization = nil
 
 
         ##############################
@@ -151,7 +151,7 @@ namespace :quote_requests do
         end
         form_details =  @db_client.query("select * from wp_rg_form where id = #{pending_entry['form_id']}").first
 
-        quantity, date_needed, description, name = nil
+        quantity, date_needed, description, name, phone_number, organization = nil
 
 
         ##############################
@@ -256,7 +256,7 @@ namespace :quote_requests do
         end
         form_details =  @db_client.query("select * from wp_rg_form where id = #{pending_entry['form_id']}").first
 
-        quantity, date_needed, description, name = nil
+        quantity, date_needed, description, name, phone_number, organization = nil
 
 
         ##############################

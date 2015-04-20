@@ -132,10 +132,14 @@ updateDelay = 1000
           alert "Something went wrong with the server and
                your changes couldn't be saved."
 
+      $(this).keydown (e) ->
+        if e.which is 13
+          e.preventDefault()
+
       $(this).keyup ->
         self.content = $(this).text()
         # Make sure the field doesn't end up empty (else it disappears)
-        $(this).html '&nbsp' if self.content.length is 0
+        $(this).html '&nbsp;' if self.content.length is 0
 
         # Set the timer so that if there is no keypress after
         # some time, we update the database with the new data.

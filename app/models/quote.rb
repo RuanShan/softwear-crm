@@ -87,6 +87,7 @@ class Quote < ActiveRecord::Base
   after_save :save_nested_line_items_attributes
   after_save :set_quote_request_statuses_to_quoted
   after_create :create_insightly_opportunity
+  before_create :set_default_valid_until_date
   after_initialize  :initialize_time
 
   def all_activities
@@ -332,6 +333,11 @@ class Quote < ActiveRecord::Base
   end
 
   private
+
+  def set_default_valid_until_date
+    return unless valid_until_date.nil?
+    self.valid_until_date = 30.days.from_now
+  end
 
   def yes_or_no(bool)
     bool ? 'Yes' : 'No'

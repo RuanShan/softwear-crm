@@ -86,16 +86,16 @@
 
       <% end %>
 
-        <div class="col-xs-12 quote-line-item-group">
+      <div class="col-xs-12 quote-line-item-group">
 
-          <%= label_tag :line_item_group_name, 'Default Group Name:', id: 'group-name' %>
-          <%= text_field_tag :line_item_group_name, new_quote_hash[:line_item_group_name] || 'Line Items' %>
+        <%= label_tag :line_item_group_name, 'Default Group Name:', id: 'group-name' %>
+        <%= text_field_tag :line_item_group_name, new_quote_hash[:line_item_group_name] || 'Line Items' %>
 
-          <p>
-            <%= link_to_add_fields 'Add Line Item', f, :line_items %>
-          </p>
+        <p>
+          <%= link_to_add_fields 'Add Line Item', f, :line_items %>
+        </p>
 
-        </div>
+      </div>
     </div>
   </section>
 <% end %>
