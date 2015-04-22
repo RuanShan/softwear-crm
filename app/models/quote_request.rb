@@ -76,7 +76,9 @@ class QuoteRequest < ActiveRecord::Base
     begin
       contact = insightly.get_contacts(email: email).first
       if contact.nil?
-        /(?<first_name>^\w+)\s+(?<last_name>.*)/ =~ name
+        unless /(?<first_name>^\w+)\s+(?<last_name>.*)/ =~ name
+          first_name = name
+        end
 
         if organization
           org = insightly.get_organisations
