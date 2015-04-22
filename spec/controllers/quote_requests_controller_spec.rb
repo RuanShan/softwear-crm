@@ -9,7 +9,7 @@ describe QuoteRequestsController, quote_request_spec: true, story_207: true do
   describe 'GET index' do
     it 'assigns @quote_requests and renders index' do
       get :index
-      expect(assigns[:quote_requests]).to eq QuoteRequest.all.page
+      expect(assigns[:quote_requests]).to eq QuoteRequest.of_interest.page
       expect(response).to render_template('index')
     end
   end
