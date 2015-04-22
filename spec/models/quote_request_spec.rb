@@ -27,13 +27,97 @@ describe QuoteRequest, quote_request_spec: true, story_78: true do
     end
   end
 
+  describe 'Freshdesk', story_512: true do
+    context 'when created' do
+      let(:dummy_client) { Object.new }
+      let(:dummy_contact) { { user: { id: 123 } } }
+      let(:dummy_customer) { { customer: { name: 'test org', id: 555 } } }
+
+      context 'and there exists a contact with a matching email on Freshdesk' do
+        before(:each) do
+          expect(dummy_client).to receive(:get_users)
+            .with(query: 'email is test@test.com')
+            .and_return [dummy_contact].to_json
+
+          # expect(dummy_client).to receive(:get_companies)
+            # .with(letter: 't')
+            # .and_return [dummy_customer].to_json
+
+          allow(subject).to receive(:freshdesk).and_return dummy_client
+        end
+
+        it 'finds that contact and assigns its id to freshdesk_contact_id' do
+          subject.approx_quantity = 1
+          subject.date_needed = 2.weeks.from_now
+          subject.source = 'rspec'
+          subject.description = 'PLEASE, SOME SHIRTS'
+          subject.name = 'what'
+
+          subject.email = 'test@test.com'
+          subject.organization = 'test org'
+          subject.salesperson_id = create(:user).id
+          expect(subject.status).to eq 'assigned'
+          subject.save
+          expect(subject).to be_valid
+          expect(subject.reload.freshdesk_contact_id).to eq 123
+        end
+      end
+
+      context 'and there is no matching-email contact on freshdesk' do
+        before(:each) do
+          expect(dummy_client).to receive(:get_users)
+            .and_return [].to_json
+
+          expect(dummy_client).to receive(:get_companies)
+            .with(letter: 't')
+            .and_return [].to_json
+
+          expect(dummy_client).to receive(:post_companies)
+            .with(
+              customer: { name: 'test org' }
+            )
+            .and_return dummy_customer.to_json
+
+          expect(dummy_client).to receive(:post_users)
+            .with(
+              user: {
+                name: 'what',
+                email: 'test@test.com',
+                phone: nil,
+                customer_id: 555
+              }
+            )
+            .and_return dummy_contact.to_json
+
+          allow(subject).to receive(:freshdesk).and_return dummy_client
+        end
+
+        it 'creates one' do
+          subject.approx_quantity = 1
+          subject.date_needed = 2.weeks.from_now
+          subject.source = 'rspec'
+          subject.description = 'PLEASE, SOME SHIRTS'
+          subject.name = 'what'
+
+          subject.email = 'test@test.com'
+          subject.organization = 'test org'
+          subject.salesperson_id = create(:user).id
+          expect(subject.status).to eq 'assigned'
+          subject.save
+          expect(subject).to be_valid
+          expect(subject.reload.freshdesk_contact_id).to eq 123
+        end
+      end
+    end
+  end
+
   describe 'Insightly', story_513: true do
     context 'when created' do
       let(:dummy_contact) { Object.new }
       let(:dummy_client) { Object.new }
       let(:dummy_organisation) { Struct.new(:organisation_name, :organisation_id) }
 
-      context 'and there exists a contact with a matching email on insightly' do
+      context 'and there exists a contact with a matching email on Insightly' do
         before(:each) do
           expect(dummy_client).to receive(:get_contacts)
             .with(email: 'test@test.com')
