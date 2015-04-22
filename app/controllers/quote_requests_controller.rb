@@ -5,7 +5,7 @@ class QuoteRequestsController < InheritedResources::Base
 
   def index
     super do
-      @quote_requests = QuoteRequest.all.page(params[:page])
+      @quote_requests = QuoteRequest.of_interest.page(params[:page])
     end
   end
 

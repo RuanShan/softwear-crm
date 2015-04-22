@@ -32,6 +32,10 @@ class QuoteRequest < ActiveRecord::Base
   before_validation(on: :create) { self.status = 'pending' if status.nil? }
   before_create :link_integrated_crm_contacts
 
+  def self.of_interest
+    where.not status: 'could_not_quote'
+  end
+
   def salesperson_id=(id)
     super
     self.status = 'assigned'
