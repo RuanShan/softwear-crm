@@ -265,7 +265,7 @@ class Quote < ActiveRecord::Base
           opportunity_name: name,
           opportunity_state: 'Open',
           opportunity_details: description,
-          probability: insightly_probability,
+          probability: insightly_probability.to_i,
           bid_currency: 'USD',
           bid_amount: insightly_bid_amount,
           forecast_close_date: (created_at + 3.days).strftime('%F %T'),
