@@ -119,6 +119,27 @@
       </div>
     </div>
 
+    <% if @quote_request.linked_with_insightly? %>
+      <div class='row'>
+        <div class='col-sm-2'>
+          <%= link_to 'Insightly Contact', @quote_request.insightly_contact_url, target: '_blank' %>
+        </div>
+        <div class='col-sm-10'>
+        </div>
+      </div>
+    <% end %>
+
+    <% if @quote_request.linked_with_freshdesk? %>
+      <div class='row'>
+        <div class='col-sm-2'>
+          <%= link_to 'Freshdesk Contact', @quote_request.freshdesk_contact_url, target: '_blank' %>
+        </div>
+        <div class='col-sm-10'>
+        </div>
+      </div>
+    <% end %>
+
+
     <% if @quote_request.quotes.any? %>
         <div class='row'>
           <strong>Quotes:</strong>
@@ -131,14 +152,5 @@
         <% end %>
     <% end %>
 
-    <% if @quote_request.linked_with_insightly? %>
-      <div class='row'>
-        <div class='col-sm-2'>
-          <%= link_to 'Insightly Contact', @quote_request.insightly_contact_url, target: '_blank' %>
-        </div>
-        <div class='col-sm-10'>
-        </div>
-      </div>
-    <% end %>
   </div>
 </div>

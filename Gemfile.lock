@@ -18,7 +18,7 @@ GIT
 
 GIT
   remote: git://github.com/annarbortees/freshdesk-api.git
-  revision: e820d22d39627c6f7ba81a587afbc61506ac8a1c
+  revision: db484283b2dbc5533bc280c1fceb64b428b2da30
   specs:
     freshdesk (0.3.pre.SNAPSHOT)
       nokogiri
@@ -176,6 +176,8 @@ GEM
       thread_safe (~> 0.1)
       warden (~> 1.2.3)
     diff-lcs (1.2.5)
+    domain_name (0.5.24)
+      unf (>= 0.0.5, < 1.0.0)
     email_spec (1.6.0)
       launchy (~> 2.1)
       mail (~> 2.2)
@@ -211,6 +213,8 @@ GEM
     highline (1.6.21)
     hike (1.2.3)
     hirb (0.7.1)
+    http-cookie (1.0.2)
+      domain_name (~> 0.5)
     i18n (0.7.0)
     inherited_resources (1.4.1)
       has_scope (~> 0.6.0.rc)
@@ -317,7 +321,8 @@ GEM
     remotipart (1.2.1)
     responders (1.0.0)
       railties (>= 3.2, < 5)
-    rest-client (1.7.3)
+    rest-client (1.8.0)
+      http-cookie (>= 1.0.2, < 2.0)
       mime-types (>= 1.16, < 3.0)
       netrc (~> 0.7)
     rsolr (1.0.10)
@@ -431,6 +436,9 @@ GEM
     uglifier (2.5.0)
       execjs (>= 0.3.0)
       json (>= 1.8.0)
+    unf (0.1.4)
+      unf_ext
+    unf_ext (0.0.7.1)
     warden (1.2.3)
       rack (>= 1.0)
     websocket (1.0.7)

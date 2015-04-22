@@ -62,6 +62,11 @@ class QuoteRequest < ActiveRecord::Base
     "https://googleapps.insight.ly/Contacts/Details/#{insightly_contact_id}"
   end
 
+  def freshdesk_contact_url
+    return nil if freshdesk_contact_id.nil?
+    "http://annarbortees.freshdesk.com/contacts/#{freshdesk_contact_id}"
+  end
+
   def linked_with_insightly?
     !insightly_contact_id.nil?
   end
@@ -75,8 +80,7 @@ class QuoteRequest < ActiveRecord::Base
 
         if organization
           org = insightly.get_organisations
-            .select { |o| o.organisation_name.downcase == organization.downcase }
-            .first ||
+            .find { |o| o.organisation_name.downcase == organization.downcase } ||
             insightly.create_organisation(
               organisation: {
                 organisation_name: organization
@@ -110,15 +114,82 @@ class QuoteRequest < ActiveRecord::Base
     infos
   end
 
+  def link_with_freshdesk!
+    return if freshdesk.nil?
+    begin
+      user = JSON.parse(freshdesk.get_users(query: "email is #{email}"))
+        .first
+        .try(:[], 'user')
+
+      if user.nil?
+        if organization
+          # NOTE Freshdesk calls them "companies" externally, and
+          # "customers" externally. Awesome, right?
+          comp = JSON.parse(freshdesk.get_companies(
+              letter: organization.each_char.next
+            ))
+            .find { |c| c['customer']['name'].downcase == organization.downcase }
+
+          comp ||= JSON.parse(freshdesk.post_companies(customer: {
+              name: organization
+            }))
+            .try(:[], 'customer')
+
+          freshdesk_company_id = comp.try(:[], 'id')
+        end
+
+        user = JSON.parse(freshdesk.post_users(user: {
+          name: name,
+          email: email,
+          phone: phone_number,
+          customer_id: freshdesk_company_id
+        }))
+          .try(:[], 'user')
+      end
+
+      if user
+        self.freshdesk_contact_id = user['id']
+      end
+
+    rescue Freshdesk::AlreadyExistedError => e
+      logger.error "(QUOTE REQUEST - FRESHDESK) Error adding freshdesk contact"
+      e
+    rescue Freshdesk::ConnectionError => e
+      logger.error "(QUOTE REQUEST - FRESHDESK) #{e.message}"
+      e
+    end
+  end
+
+  def linked_with_freshdesk?
+    !freshdesk_contact_id.nil?
+  end
+
   private
 
   def link_integrated_crm_contacts
     link_with_insightly! unless linked_with_insightly?
+    link_with_freshdesk! unless linked_with_freshdesk?
   end
 
   def insightly
     api_key = Setting.insightly_api_key
     return (@insightly = nil) if api_key.nil? || api_key.empty?
     @insightly ||= Insightly2::Client.new(api_key)
+  end
+
+  def freshdesk
+    @freshdesk ||= (
+      settings = Setting.get_freshdesk_settings
+      if settings.nil?
+        nil
+      else
+        Freshdesk.new(
+          settings[:freshdesk_url],
+          settings[:freshdesk_email],
+          settings[:freshdesk_password]
+        )
+        .tap { |fd| fd.response_format = 'json' }
+      end
+    )
   end
 end
