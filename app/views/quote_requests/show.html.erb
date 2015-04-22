@@ -119,6 +119,16 @@
       </div>
     </div>
 
+    <div class='row'>
+      <div class='col-sm-2'>
+        <strong>Freshdesk Contact ID:</strong>
+      </div>
+      <div class='col-sm-10' id='quote-request-status'>
+        <%= editable @quote_request, :freshdesk_contact_id, type: :text %>
+      </div>
+    </div>
+
+
     <% if @quote_request.linked_with_insightly? %>
       <div class='row'>
         <div class='col-sm-2'>
