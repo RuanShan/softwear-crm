@@ -104,14 +104,6 @@ class Quote < ActiveRecord::Base
     ', *([self.class.name, id] * 2) ).order('activities.created_at DESC')
   end
 
-# TODO: this is broken so don't use it yet lulz
-  # UNTIL NOW ... (TODO)
-  def create_freshdesk_ticket(current_user)
-    # config = FreshdeskModule.get_freshdesk_config(current_user)
-    # client = FreshdeskModule.open_connection(config)
-    # FreshdeskModule.send_ticket(client, config, self)
-  end
-
   def no_ticket_id_entered?
     freshdesk_ticket_id.blank?
   end
@@ -259,11 +251,97 @@ class Quote < ActiveRecord::Base
       .join("\n")
   end
 
+  # TODO This is now deprecated. The idea is now to send an email to a
+  # Freshdesk `support email` for Ticket creation. Inside the description
+  # of that ticket, we will encode the Quote ID so that we can scout it
+  # out. Then, we can change the requester to the correct contact.
+  #
+  # For reference:
+  #   fd.put_tickets id: 73501, helpdesk_ticket: { requester_id: 15659507 }
+  def create_freshdesk_ticket
+    return if freshdesk.nil? || !freshdesk_ticket_id.blank?
+
+    begin
+      # TODO description of quote request show html or something
+      ticket = JSON.parse(freshdesk.post_tickets(
+          helpdesk_ticket: {
+            requester_id: quote_requests.first.try(:freshdesk_contact_id),
+            requester_name: full_name,
+            source: 2,
+            group_id: freshdesk_group_id,
+            ticket_type: 'Lead',
+            subject: 'Created by Softwear-CRM',
+            custom_field: {
+              department_7483: freshdesk_department,
+              softwearcrm_quote_id_7483: id
+            },
+          }
+        ))
+        .try(:[], 'helpdesk_ticket')
+
+      self.freshdesk_ticket_id = ticket.try(:[], 'id')
+      ticket
+
+    rescue Freshdesk::ConnectionError => e
+      logger.error "(QUOTE - FRESHDESK) #{e.message}"
+    end
+  end
+
+  # === BEGIN FRESHDESK SHIT TO MAKE PRIVATE
+  def freshdesk_group_id
+    name = salesperson.store.try(:name).try(:downcase) || ''
+    if name.include? 'ypsi'
+      86317 # Group ID of Sales - Ypsilanti within Freshdesk
+    else
+      86316 # Group ID of Sales - Ann Arbor within Freshdesk
+    end
+  end
+  def freshdesk_department
+    name = salesperson.store.try(:name).try(:downcase) || ''
+    if name.include? 'arbor'
+      'Sales - Ann Arbor'
+    elsif name.include? 'ypsi'
+      'Sales - Ypsilanti'
+    end
+  end
+  # === END FRESHDESK SHIT TO MAKE PRIVATE
+
+  # NOTE so instead of that create freshdesk ticket, here's
+  # how we'll do it:
+  # Assuming we have already sent the initiation email:
+  # (TODO) make initiation email sendable a thing
+  def fetch_freshdesk_ticket
+    begin
+      tickets = JSON.parse(freshdesk.get_tickets(
+        email: 'makeaticket@annarbortees.freshdesk.com',
+        filter_name: 'all_tickets'
+      ))
+      # Only returns a hash on error... better way to check?
+      return if tickets.is_a?(Hash)
+
+      ticket = tickets.find do |ticket|
+        doc = Nokogiri::XML(ticket['description_html'])
+        quote_id = doc.at_css('#softwear_quote_id').text.to_i
+
+        quote_id == id
+      end
+
+      return if ticket.nil?
+
+      self.freshdesk_ticket_id = ticket['display_id']
+
+      # TODO test this method lol
+
+    rescue Freshdesk::ConnectionError => e
+      logger.error "(QUOTE - FRESHDESK) #{e.message}"
+    end
+  end
+
+
   def create_insightly_opportunity
     return if insightly.nil?
 
     begin
-      # TODO resolve unsure fields
       self.insightly_opportunity_id = insightly.create_opportunity(
         opportunity: {
           opportunity_name: name,

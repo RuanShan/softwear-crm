@@ -18,6 +18,7 @@ class EmailsController < InheritedResources::Base
     super do |success, failure|
       success.html do
         send_email
+
         redirect_to send("#{parent.class.to_s.underscore}_path", parent), success: 'Successfully e-mailed customer their quote details'
       end
       failure.html { render :new }

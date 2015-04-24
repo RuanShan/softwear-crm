@@ -295,32 +295,32 @@ describe Quote, quote_spec: true do
       end
     end
 
-    describe '#create_freshdesk_ticket', pending: 'Freshdesk is some shite' do
+    describe '#create_freshdesk_ticket', story_518: true do
       it 'calls Freshdesk.new and post_tickets with the correct args' do
-        freshdesk_info = {
-            requester_id: '12345',
-            requester_name: 'Test Name',
-            group_id: '54321',
-            department: 'Testing'
-        }
-        expect(quote).to receive(:fetch_data_to_h).and_return(freshdesk_info)
+        dummy_quote_request = double('Quote Request', freshdesk_contact_id: 123)
+        allow(quote).to receive(:quote_requests).and_return [dummy_quote_request]
 
-        d = double(post_tickets: 'true')
-        expect(Freshdesk).to receive(:new).and_return(d)
+        allow(quote).to receive(:freshdesk_group_id).and_return 54321
+        allow(quote).to receive(:freshdesk_department).and_return 'Testing'
 
-        post_ticket_args = {
-            email: quote.email,
-            requester_id: '12345',
-            requester_name: 'Test Name',
+        dummy_client = Object.new
+        allow(quote).to receive(:freshdesk).and_return(dummy_client)
+
+        allow(dummy_client).to receive(:post_tickets)
+          .with(helpdesk_ticket: {
+            requester_id: 123,
+            requester_name: quote.full_name,
             source: 2,
-            group_id: '54321',
+            group_id: 54321,
             ticket_type: 'Lead',
             subject: 'Created by Softwear-CRM',
             custom_field: { department_7483: 'Testing' }
-        }
-        expect(d).to receive(:post_tickets).with(post_ticket_args)
+          })
+          .and_return({ helpdesk_ticket: { id: 998 } }.to_json)
 
         quote.create_freshdesk_ticket
+
+        expect(quote.freshdesk_ticket_id).to eq 998
       end
     end
 

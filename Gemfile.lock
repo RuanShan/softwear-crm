@@ -17,14 +17,6 @@ GIT
     funkify (0.0.4)
 
 GIT
-  remote: git://github.com/annarbortees/freshdesk-api.git
-  revision: db484283b2dbc5533bc280c1fceb64b428b2da30
-  specs:
-    freshdesk (0.3.pre.SNAPSHOT)
-      nokogiri
-      rest-client
-
-GIT
   remote: git://github.com/jetthoughts/yaml_db.git
   revision: fb4b6bd7e12de3cffa93e0a298a1e5253d7e92ba
   ref: fb4b6bd7e12de3cffa93e0a298a1e5253d7e92ba
@@ -55,6 +47,13 @@ GIT
   revision: d973380c4c20a16396fe1434f5cea4d57151ec7e
   specs:
     dumpsync (0.0.1)
+
+PATH
+  remote: ~/r/freshdesk-api
+  specs:
+    freshdesk (0.3.pre.SNAPSHOT)
+      nokogiri
+      rest-client
 
 GEM
   remote: https://rubygems.org/
