@@ -1,7 +1,10 @@
 class QuoteRequest < ActiveRecord::Base
   include TrackingHelpers
+  include IntegratedCrms
 
   tracked by_current_user + { parameters: { s: ->(_c, r) { r.track_state_changes } } }
+
+  get_insightly_api_key_from { Setting.insightly_api_key }
 
   default_scope { order('quote_requests.created_at DESC') }
 
@@ -175,27 +178,5 @@ class QuoteRequest < ActiveRecord::Base
   def link_integrated_crm_contacts
     link_with_insightly! unless linked_with_insightly?
     link_with_freshdesk! unless linked_with_freshdesk?
-  end
-
-  def insightly
-    api_key = Setting.insightly_api_key
-    return (@insightly = nil) if api_key.nil? || api_key.empty?
-    @insightly ||= Insightly2::Client.new(api_key)
-  end
-
-  def freshdesk
-    @freshdesk ||= (
-      settings = Setting.get_freshdesk_settings
-      if settings.nil?
-        nil
-      else
-        Freshdesk.new(
-          settings[:freshdesk_url],
-          settings[:freshdesk_email],
-          settings[:freshdesk_password]
-        )
-        .tap { |fd| fd.response_format = 'json' }
-      end
-    )
   end
 end

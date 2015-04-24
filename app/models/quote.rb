@@ -4,9 +4,12 @@ require 'action_view'
 
 class Quote < ActiveRecord::Base
   include TrackingHelpers
+  include IntegratedCrms
+  include ActionView::Helpers::DateHelper
 
   acts_as_paranoid
   tracked by_current_user
+  get_insightly_api_key_from { salesperson.try(:insightly_api_key) }
 
   searchable do
     text :name, :email, :first_name, :last_name,
@@ -102,10 +105,11 @@ class Quote < ActiveRecord::Base
   end
 
 # TODO: this is broken so don't use it yet lulz
+  # UNTIL NOW ... (TODO)
   def create_freshdesk_ticket(current_user)
-    config = FreshdeskModule.get_freshdesk_config(current_user)
-    client = FreshdeskModule.open_connection(config)
-    FreshdeskModule.send_ticket(client, config, self)
+    # config = FreshdeskModule.get_freshdesk_config(current_user)
+    # client = FreshdeskModule.open_connection(config)
+    # FreshdeskModule.send_ticket(client, config, self)
   end
 
   def no_ticket_id_entered?
@@ -405,7 +409,6 @@ class Quote < ActiveRecord::Base
     activity.nil? ? nil : activity.created_at
   end
 
-  include ActionView::Helpers::DateHelper
   def subtract_dates(time_one, time_two)
     return 'An email hasn\'t been sent yet!' unless time_two
     distance_of_time_in_words(time_one, time_two)

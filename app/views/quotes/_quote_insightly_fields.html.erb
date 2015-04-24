@@ -46,3 +46,7 @@
   <%= f.error_for :insightly_bid_tier_id %>
   <%= insightly_select f, :insightly_bid_tier_id, insightly_bid_tiers %>
 </div>
+
+<% if insightly_error? %>
+  <h4>Error accessing Insightly. Is your api key invalid?</h4>
+<% end %>
