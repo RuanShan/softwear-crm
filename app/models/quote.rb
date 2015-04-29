@@ -251,18 +251,16 @@ class Quote < ActiveRecord::Base
       .join("\n")
   end
 
-  # TODO This is now deprecated. The idea is now to send an email to a
+  # NOTE This is now deprecated. The idea is now to send an email to a
   # Freshdesk `support email` for Ticket creation. Inside the description
   # of that ticket, we will encode the Quote ID so that we can scout it
   # out. Then, we can change the requester to the correct contact.
-  #
-  # For reference:
-  #   fd.put_tickets id: 73501, helpdesk_ticket: { requester_id: 15659507 }
+  # (which now can happen)
   def create_freshdesk_ticket
     return if freshdesk.nil? || !freshdesk_ticket_id.blank?
 
     begin
-      # TODO description of quote request show html or something
+      # NOTE description is missing from this (but who cares, right?)
       ticket = JSON.parse(freshdesk.post_tickets(
           helpdesk_ticket: {
             requester_id: quote_requests.first.try(:freshdesk_contact_id),
@@ -287,35 +285,6 @@ class Quote < ActiveRecord::Base
     end
   end
 
-  # === BEGIN FRESHDESK SHIT TO MAKE PRIVATE
-  def freshdesk_group_id
-    name = salesperson.store.try(:name).try(:downcase) || ''
-    if name.include? 'ypsi'
-      86317 # Group ID of Sales - Ypsilanti within Freshdesk
-    else
-      86316 # Group ID of Sales - Ann Arbor within Freshdesk
-    end
-  end
-  def freshdesk_department
-    name = salesperson.store.try(:name).try(:downcase) || ''
-    if name.include? 'arbor'
-      'Sales - Ann Arbor'
-    elsif name.include? 'ypsi'
-      'Sales - Ypsilanti'
-    end
-  end
-
-  def freshdesk_contact_id
-    quote_requests
-      .where("freshdesk_contact_id <> ''")
-      .pluck(:freshdesk_contact_id)
-      .first
-  end
-  # === END FRESHDESK SHIT TO MAKE PRIVATE
-
-  # NOTE so instead of that create freshdesk ticket, here's
-  # how we'll do it:
-  # Assuming we have already sent the initiation email:
   # (TODO) make initiation email sendable a thing
   def fetch_freshdesk_ticket(from_email = 'crm@softwearcrm.com')
     begin
@@ -357,7 +326,13 @@ class Quote < ActiveRecord::Base
       response = freshdesk.put_tickets(
         id: freshdesk_ticket_id,
         helpdesk_ticket: {
-          requester_id: contact_id
+          requester_id: contact_id,
+          source: 2,
+          group_id: freshdesk_group_id,
+          ticket_type: 'Lead',
+          custom_field: {
+            softwearcrm_quote_id_7483: id
+          }
         }
       )
 
@@ -444,6 +419,31 @@ class Quote < ActiveRecord::Base
   end
 
   private
+
+  def freshdesk_group_id
+    name = salesperson.store.try(:name).try(:downcase) || ''
+    if name.include? 'ypsi'
+      86317 # Group ID of Sales - Ypsilanti within Freshdesk
+    else
+      86316 # Group ID of Sales - Ann Arbor within Freshdesk
+    end
+  end
+  def freshdesk_department
+    name = salesperson.store.try(:name).try(:downcase) || ''
+    if name.include? 'arbor'
+      'Sales - Ann Arbor'
+    elsif name.include? 'ypsi'
+      'Sales - Ypsilanti'
+    end
+  end
+
+  def freshdesk_contact_id
+    quote_requests
+      .where("freshdesk_contact_id <> ''")
+      .pluck(:freshdesk_contact_id)
+      .first
+  end
+
 
   def set_default_valid_until_date
     return unless valid_until_date.nil?

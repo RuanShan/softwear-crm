@@ -372,7 +372,18 @@ describe Quote, quote_spec: true do
 
           it "updates its ticket's requester with the first qr's info" do
             expect(dummy_client).to receive(:put_tickets)
-              .with(id: 1233, helpdesk_ticket: { requester_id: 2222 })
+              .with(
+                id: 1233,
+                helpdesk_ticket: {
+                  requester_id: 2222,
+                  source: 2,
+                  group_id: anything,
+                  ticket_type: 'Lead',
+                  custom_field: {
+                    softwearcrm_quote_id_7483: quote.id
+                  }
+                }
+              )
 
             quote.set_freshdesk_ticket_requester
           end
