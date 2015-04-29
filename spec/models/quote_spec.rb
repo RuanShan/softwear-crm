@@ -195,6 +195,7 @@ describe Quote, quote_spec: true do
 
   describe 'instance methods' do
     let!(:quote) { build_stubbed(:valid_quote) }
+    let(:dummy_client) { Object.new }
 
     describe '#all_activities' do
       it 'queries publicactivity' do
@@ -295,7 +296,8 @@ describe Quote, quote_spec: true do
       end
     end
 
-    describe '#create_freshdesk_ticket', story_518: true do
+    describe '#create_freshdesk_ticket', story_518: true,
+     pending: "This is no longer how freshdesk tickets are created" do
       it 'calls Freshdesk.new and post_tickets with the correct args' do
         dummy_quote_request = double('Quote Request', freshdesk_contact_id: 123)
         allow(quote).to receive(:quote_requests).and_return [dummy_quote_request]
@@ -321,6 +323,60 @@ describe Quote, quote_spec: true do
         quote.create_freshdesk_ticket
 
         expect(quote.freshdesk_ticket_id).to eq 998
+      end
+    end
+
+    describe '#fetch_freshdesk_ticket', story_518: true, fd_fetch: true do
+      context 'when there is a ticket with html matching the quote id' do
+        let(:ticket_html) do
+        end
+        let(:dummy_ticket) do
+          {
+            display_id: 1233, email: 'crm@softwearcrm.com',
+            description_html: %(
+              <span id='softwear_quote_id' style='display: none;'>#{quote.id}</span>
+              <div>it's me.</div>
+            )
+          }
+        end
+
+        before(:each) do
+          allow(dummy_client).to receive(:get_tickets)
+            .with(email: 'crm@softwearcrm.com', filter_name: 'all_tickets')
+            .and_return [dummy_ticket].to_json
+
+          allow(quote).to receive(:freshdesk).and_return dummy_client
+        end
+
+        it 'picks it up' do
+          quote.fetch_freshdesk_ticket
+          expect(quote.freshdesk_ticket_id).to eq 1233
+        end
+      end
+    end
+
+    describe '#set_freshdesk_ticket_requester', story_518: true do
+      context 'when the quote has a valid freshdesk ticket' do
+        context 'and quote request with valid freshdesk contact' do
+          let(:quote_request) do
+            create :quote_request, freshdesk_contact_id: 2222
+          end
+
+          before(:each) do
+            quote.quote_requests = [quote_request]
+            quote.freshdesk_ticket_id = 1233
+            quote.save!
+
+            allow(quote).to receive(:freshdesk).and_return dummy_client
+          end
+
+          it "updates its ticket's requester with the first qr's info" do
+            expect(dummy_client).to receive(:put_tickets)
+              .with(id: 1233, helpdesk_ticket: { requester_id: 2222 })
+
+            quote.set_freshdesk_ticket_requester
+          end
+        end
       end
     end
 
