@@ -12,10 +12,11 @@ class QuoteMailer < ActionMailer::Base
   end
 
   def create_freshdesk_ticket(quote)
+    @quote = quote
     mail(
-      from: from,
+      from: 'crm@softwearcrm.com',
       to: 'makeaticket@annarbortees.freshdesk.com',
-      # TODO ...
+      subject: 'Created by Softwear-CRM'
     )
   end
 end

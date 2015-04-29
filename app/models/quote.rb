@@ -304,36 +304,65 @@ class Quote < ActiveRecord::Base
       'Sales - Ypsilanti'
     end
   end
+
+  def freshdesk_contact_id
+    quote_requests
+      .where("freshdesk_contact_id <> ''")
+      .pluck(:freshdesk_contact_id)
+      .first
+  end
   # === END FRESHDESK SHIT TO MAKE PRIVATE
 
   # NOTE so instead of that create freshdesk ticket, here's
   # how we'll do it:
   # Assuming we have already sent the initiation email:
   # (TODO) make initiation email sendable a thing
-  def fetch_freshdesk_ticket
+  def fetch_freshdesk_ticket(from_email = 'crm@softwearcrm.com')
     begin
       tickets = JSON.parse(freshdesk.get_tickets(
-        email: 'makeaticket@annarbortees.freshdesk.com',
+        email: from_email,
         filter_name: 'all_tickets'
       ))
-      # Only returns a hash on error... better way to check?
+      # We only get a hash on error... better way to check?
       return if tickets.is_a?(Hash)
 
       ticket = tickets.find do |ticket|
         doc = Nokogiri::XML(ticket['description_html'])
         quote_id = doc.at_css('#softwear_quote_id').text.to_i
 
-        quote_id == id
+        quote_id == id.to_i
       end
 
-      return if ticket.nil?
+      if ticket.nil?
+        logger.error 'NO SUCH TICKET FOUND'
+        return
+      end
 
       self.freshdesk_ticket_id = ticket['display_id']
 
-      # TODO test this method lol
-
     rescue Freshdesk::ConnectionError => e
       logger.error "(QUOTE - FRESHDESK) #{e.message}"
+    end
+  end
+
+  def set_freshdesk_ticket_requester
+    begin
+      return if freshdesk_ticket_id.blank?
+
+      if (contact_id = freshdesk_contact_id).nil?
+        logger.error "(QUOTE #{id} - FRESHDESK) No quote"
+        return
+      end
+
+      response = freshdesk.put_tickets(
+        id: freshdesk_ticket_id,
+        helpdesk_ticket: {
+          requester_id: contact_id
+        }
+      )
+
+    rescue Freshdesk::ConnectionError => e
+      logger.error "(QUOTE #{id} - FRESHDESK) #{e.message}"
     end
   end
 

@@ -1,0 +1,41 @@
+<span id='softwear_quote_id' style='display: none;'><%= @quote.id %></span>
+<% @quote.quote_requests.each do |qr| %>
+  <table id="quote-request-<%= qr.id %>">
+    <tr>
+      <td><strong>Salesperson:</strong></td>
+      <td><%= qr.salesperson.full_name %></td>
+    </tr>
+    <tr>
+      <td><strong>Name:</strong></td>
+      <td><%= qr.name %></td>
+    </tr>
+    <tr>
+      <td><strong>Email:</strong></td>
+      <td><%= qr.email %></td>
+    </tr>
+    <tr>
+      <td><strong>Phone Number:</strong></td>
+      <td><%= qr.phone_number || 'n/a' %></td>
+    </tr>
+    <tr>
+      <td><strong>Organization:</strong></td>
+      <td><%= qr.organization || 'n/a' %></td>
+    </tr>
+    <tr>
+      <td><strong>Approximate Quantity:</strong></td>
+      <td><%= qr.approx_quantity %></td>
+    </tr>
+    <tr>
+      <td><strong>Date Needed:</strong></td>
+      <td><%= qr.date_needed.strftime("%F") rescue 'n/a' %></td>
+    </tr>
+    <tr>
+      <td><strong>Source:</strong></td>
+      <td><%= qr.source %></td>
+    </tr>
+    <tr>
+      <td><strong>Description:</strong></td>
+      <td><%= qr.description %></td>
+    </tr>
+  </table>
+<% end %>
