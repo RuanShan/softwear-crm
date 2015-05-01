@@ -1,2 +1,3 @@
 $('#email-form-container').html("<%= escape_javascript render('emails/form', quote: @quote, email: @email) %>");
 initializeSummernote();
+$('#freshdesk-copypaste-btn').click(freshdeskCopyBtn);
