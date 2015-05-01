@@ -14,6 +14,13 @@ class ApplicationController < ActionController::Base
   before_action :assign_current_action
   before_action :assign_request_time
 
+  # Quicker way to render to a string using the previous function
+  def render_string(*args)
+    s = nil
+    with_format(:html) { s = render_to_string(*args) }
+    s
+  end
+
   protected
 
   def sanitize_filename(filename)
@@ -75,13 +82,6 @@ class ApplicationController < ActionController::Base
     r = yield
     self.formats = old_formats
     r
-  end
-
-  # Quicker way to render to a string using the previous function
-  def render_string(*args)
-    s = nil
-    with_format(:html) { s = render_to_string(*args) }
-    s
   end
 
   def last_search

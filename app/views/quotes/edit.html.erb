@@ -6,6 +6,12 @@
       <h4>(<%= link_to 'Insightly', @quote.insightly_opportunity_link, target: '_blank' %>)</h4>
     </div>
   <% end %>
+
+  <% unless @quote.freshdesk_ticket_id.blank? %>
+    <div class="pull-left">
+      <h4>(<%= link_to 'Freshdesk', @quote.freshdesk_ticket_link, target: '_blank' %>)</h4>
+    </div>
+  <% end %>
 </div>
 
 <div class="col-ls-6 text-right">

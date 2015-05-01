@@ -300,6 +300,8 @@ describe Quote, quote_spec: true do
       it 'calls Freshdesk.new and post_tickets with the correct args' do
         dummy_quote_request = double('Quote Request', freshdesk_contact_id: 123)
         allow(quote).to receive(:quote_requests).and_return [dummy_quote_request]
+        allow(quote).to receive(:freshdesk_description)
+          .and_return '<div>hi</div>'.html_safe
 
         allow(quote).to receive(:freshdesk_group_id).and_return 54321
         allow(quote).to receive(:freshdesk_department).and_return 'Testing'
@@ -318,7 +320,8 @@ describe Quote, quote_spec: true do
             custom_field: {
               department_7483: 'Testing',
               softwearcrm_quote_id_7483: quote.id
-            }
+            },
+            description_html: anything
           })
           .and_return({ helpdesk_ticket: { id: 998 } }.to_json)
 

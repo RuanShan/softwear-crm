@@ -1,0 +1,45 @@
+<%= qr_t(:table) do %>
+  <%= qr_t(:thead) do %>
+    <th>Quote Request #<%= quote_request.id %></th>
+    <th></th>
+  <% end %>
+
+  <%= qr_t(:tbody) do %>
+    <%= qr_t(:tr) do %>
+      <%= qr_t(:td) do %><strong>Salesperson:</strong><% end %>
+      <%= qr_t(:td) do %><%= quote_request.salesperson.try(:name) || 'Empty' %><% end %>
+    <% end %>
+    <%= qr_t(:tr) do %>
+      <%= qr_t(:td) do %><strong>Name:</strong><% end %>
+      <%= qr_t(:td) do %><%= quote_request.name %><% end %>
+    <% end %>
+    <%= qr_t(:tr) do %>
+      <%= qr_t(:td) do %><strong>Email:</strong><% end %>
+      <%= qr_t(:td) do %><%= quote_request.email %><% end %>
+    <% end %>
+    <%= qr_t(:tr) do %>
+      <%= qr_t(:td) do %><strong>Phone Number:</strong><% end %>
+      <%= qr_t(:td) do %><%= quote_request.phone_number || 'n/a' %><% end %>
+    <% end %>
+    <%= qr_t(:tr) do %>
+      <%= qr_t(:td) do %><strong>Organization:</strong><% end %>
+      <%= qr_t(:td) do %><%= quote_request.organization || 'n/a' %><% end %>
+    <% end %>
+    <%= qr_t(:tr) do %>
+      <%= qr_t(:td) do %><strong>Approximate Quantity:</strong><% end %>
+      <%= qr_t(:td) do %><%= quote_request.approx_quantity %><% end %>
+    <% end %>
+    <%= qr_t(:tr) do %>
+      <%= qr_t(:td) do %><strong>Date Needed:</strong><% end %>
+      <%= qr_t(:td) do %><%= quote_request.date_needed.strftime('%F') %><% end %>
+    <% end %>
+    <%= qr_t(:tr) do %>
+      <%= qr_t(:td) do %><strong>Source:</strong><% end %>
+      <%= qr_t(:td) do %><%= quote_request.source %><% end %>
+    <% end %>
+    <%= qr_t(:tr) do %>
+      <%= qr_t(:td) do %><strong>Description:</strong><% end %>
+      <%= qr_t(:td) do %><%= quote_request.description %><% end %>
+    <% end %>
+  <% end %>
+<% end %>

@@ -244,6 +244,11 @@ class Quote < ActiveRecord::Base
     "https://googleapps.insight.ly/Opportunities/details/#{insightly_opportunity_id}"
   end
 
+  def freshdesk_ticket_link
+    return if freshdesk_ticket_id.blank?
+    "http://annarbortees.freshdesk.com/helpdesk/tickets/#{freshdesk_ticket_id}"
+  end
+
   def description
     quote_requests.map do |qr|
       qr.description
@@ -255,7 +260,6 @@ class Quote < ActiveRecord::Base
     return if freshdesk.nil? || !freshdesk_ticket_id.blank?
 
     begin
-      # NOTE description is missing from this (but who cares, right?) (a: me)
       ticket = JSON.parse(freshdesk.post_tickets(
           helpdesk_ticket: {
             requester_id: quote_requests.first.try(:freshdesk_contact_id),
@@ -268,6 +272,7 @@ class Quote < ActiveRecord::Base
               department_7483: freshdesk_department,
               softwearcrm_quote_id_7483: id
             },
+            description_html: freshdesk_description
           }
         ))
         .try(:[], 'helpdesk_ticket')
@@ -438,6 +443,20 @@ class Quote < ActiveRecord::Base
       .where("freshdesk_contact_id <> ''")
       .pluck(:freshdesk_contact_id)
       .first
+  end
+
+  def freshdesk_description
+    r = ApplicationController.new
+    quote_requests
+      .where("freshdesk_contact_id <> ''")
+      .reduce('') do |description, quote_request|
+        r.render_string(
+          template: nil,
+          partial: 'quote_requests/basic_table',
+          locals: { quote_request: quote_request }
+        )
+      end
+      .html_safe
   end
 
 

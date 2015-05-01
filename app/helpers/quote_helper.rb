@@ -66,4 +66,12 @@ module QuoteHelper
     end
     steps.min
   end
+
+  # NOTE this is used for quote_requests/_basic_table.html.erb
+  # which must be rendered in Freshdesk, and therefore does not
+  # have access to our CSS.
+  def qr_t(*args, &block)
+    args << { style: 'border: 1px solid black;' }
+    content_tag(*args, &block)
+  end
 end
