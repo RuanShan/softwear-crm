@@ -296,8 +296,7 @@ describe Quote, quote_spec: true do
       end
     end
 
-    describe '#create_freshdesk_ticket', story_518: true,
-     pending: "This is no longer how freshdesk tickets are created" do
+    describe '#create_freshdesk_ticket', story_518: true do
       it 'calls Freshdesk.new and post_tickets with the correct args' do
         dummy_quote_request = double('Quote Request', freshdesk_contact_id: 123)
         allow(quote).to receive(:quote_requests).and_return [dummy_quote_request]
@@ -316,7 +315,10 @@ describe Quote, quote_spec: true do
             group_id: 54321,
             ticket_type: 'Lead',
             subject: 'Created by Softwear-CRM',
-            custom_field: { department_7483: 'Testing' }
+            custom_field: {
+              department_7483: 'Testing',
+              softwearcrm_quote_id_7483: quote.id
+            }
           })
           .and_return({ helpdesk_ticket: { id: 998 } }.to_json)
 
@@ -326,7 +328,11 @@ describe Quote, quote_spec: true do
       end
     end
 
-    describe '#fetch_freshdesk_ticket', story_518: true, fd_fetch: true do
+    describe '#fetch_freshdesk_ticket', story_518: true, fd_fetch: true, pending: 'unused! (for now)' do
+      before(:each) do
+        expect("UNUSED").to eq nil
+      end
+
       context 'when there is a ticket with html matching the quote id' do
         let(:ticket_html) do
         end
@@ -355,7 +361,11 @@ describe Quote, quote_spec: true do
       end
     end
 
-    describe '#set_freshdesk_ticket_requester', story_518: true do
+    describe '#set_freshdesk_ticket_requester', story_518: true, pending: 'unused! (for now)' do
+      before(:each) do
+        expect("UNUSED").to eq nil
+      end
+
       context 'when the quote has a valid freshdesk ticket' do
         context 'and quote request with valid freshdesk contact' do
           let(:quote_request) do

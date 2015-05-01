@@ -251,16 +251,11 @@ class Quote < ActiveRecord::Base
       .join("\n")
   end
 
-  # NOTE This is now deprecated. The idea is now to send an email to a
-  # Freshdesk `support email` for Ticket creation. Inside the description
-  # of that ticket, we will encode the Quote ID so that we can scout it
-  # out. Then, we can change the requester to the correct contact.
-  # (which now can happen)
   def create_freshdesk_ticket
     return if freshdesk.nil? || !freshdesk_ticket_id.blank?
 
     begin
-      # NOTE description is missing from this (but who cares, right?)
+      # NOTE description is missing from this (but who cares, right?) (a: me)
       ticket = JSON.parse(freshdesk.post_tickets(
           helpdesk_ticket: {
             requester_id: quote_requests.first.try(:freshdesk_contact_id),
@@ -285,7 +280,7 @@ class Quote < ActiveRecord::Base
     end
   end
 
-  # (TODO) make initiation email sendable a thing
+  # NOTE this is unused (but reserved in case it seems handy)
   def fetch_freshdesk_ticket(from_email = 'crm@softwearcrm.com')
     begin
       tickets = JSON.parse(freshdesk.get_tickets(
@@ -314,6 +309,7 @@ class Quote < ActiveRecord::Base
     end
   end
 
+  # NOTE This is also unused (keeping in case it might be useful)
   def set_freshdesk_ticket_requester
     begin
       return if freshdesk_ticket_id.blank?
