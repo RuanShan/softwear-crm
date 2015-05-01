@@ -1,0 +1,16 @@
+<% if @email.valid? %>
+  setupContentModal(function(modal) {
+    modal.find('.modal-content').addClass('freshdesk-copy-modal');
+  });
+
+  showContentModal({
+    title: 'Send Email Through Freshdesk',
+    body: $("<%=j render 'freshdesk', email: @email %>"),
+    footer: $('<button class="btn btn-info" data-dismiss="modal">Close</button>'),
+    then: function() {
+      SelectText('freshdesk-email-temp');
+    }
+  });
+<% else %>
+  errorModal("email invalid: <%=j @email.errors.full_messages.join(', ').html_safe %>");
+<% end %>

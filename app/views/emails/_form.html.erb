@@ -57,9 +57,19 @@
 
       <div class="form-group">
         <div class="col-sm-offset-2 col-sm-10">
+          <!--
           <button type="submit" class="btn btn-info">
             Send E-mail
           </button>
-        </div>
+          -->
+ 
+          <% unless quote.freshdesk_ticket_id.blank? %>
+            <button id='freshdesk-copypaste-btn' type='button' class='btn btn-info', style='background-color:aqua;' data-quote-id="<%= quote.id %>">
+              Send through Freshdesk
+            </button>
+          <% end %>
+
+       </div>
       </div>
+
 <% end %>

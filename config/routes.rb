@@ -32,7 +32,11 @@ CrmSoftwearcrmCom::Application.routes.draw do
   end
 
   resources :quotes, shallow: true do
-    resource :emails
+    resource :emails do
+      collection do
+        post 'freshdesk'
+      end
+    end
 
     collection do
       get 'quote_select'

@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150420185749) do
+ActiveRecord::Schema.define(version: 20150501153412) do
 
   create_table "activities", force: true do |t|
     t.integer  "trackable_id"
@@ -159,6 +159,7 @@ ActiveRecord::Schema.define(version: 20150420185749) do
     t.datetime "updated_at"
     t.string   "bcc"
     t.text     "plaintext_body"
+    t.boolean  "freshdesk"
   end
 
   create_table "freshdesk_local_contacts", force: true do |t|
@@ -447,8 +448,8 @@ ActiveRecord::Schema.define(version: 20150420185749) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.decimal  "shipping",                         precision: 10, scale: 2
-    t.datetime "initialized_at"
     t.string   "quote_source"
+    t.datetime "initialized_at"
     t.string   "freshdesk_ticket_id"
     t.boolean  "informal"
     t.integer  "insightly_category_id"

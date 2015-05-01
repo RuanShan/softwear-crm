@@ -1,0 +1,19 @@
+<div id='freshdesk-email-temp'>
+  <% if email.body.blank? %>
+    <%= @email.plaintext_body %>
+  <% else %>
+    <%= raw @email.body %>
+  <% end %>
+</div>
+<div>
+  <button type='button' class='btn btn-info' onclick="SelectText('freshdesk-email-temp')">Select</button>
+</div>
+<div>
+  Press Ctrl+C to copy the message.
+</div>
+<div>
+  Then, create a reply and paste it in. (hotkey: Ctrl+V)
+</div>
+<div>
+  <%= link_to 'Freshdesk Ticket', @quote.freshdesk_ticket_link, class: 'btn btn-info', target: '_blank', style: 'background-color: aqua;' %>
+</div>

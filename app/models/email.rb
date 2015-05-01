@@ -3,9 +3,12 @@ class Email < ActiveRecord::Base
 
   belongs_to :emailable, polymorphic: true
 
-  validates :body, :to, :from, :subject, :plaintext_body, :emailable,  presence: true
-  validates :to, :from, name_and_email: true
-  validates :cc, :bcc, allow_blank: true, name_and_email: true
+  validates :emailable,  presence: true
+  validates :to, :from, name_and_email: true, presence: true, unless: :freshdesk?
+  validates :cc, :bcc, allow_blank: true, name_and_email: true, presence: true, unless: :freshdesk?
+  validates :plaintext_body, presence: true, unless: :body
+  validates :body, presence: true, unless: :plaintext_body
+  validates :subject, presence: true, unless: :freshdesk?
 
   def populate_fields_from_template(email_template, records = {})
     drops = {}

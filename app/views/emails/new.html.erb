@@ -2,6 +2,10 @@
   <h1>Email Quote Information <small>Quote #<%= @quote.id %> <i><%= @quote.name %></i></small></h1>
 </div>
 
+<% if @quote.freshdesk_ticket_id.blank? %>
+<span>NOTE: This quote does not have a freshdesk ticket ID</span>
+<% end %>
+
 <div class="box-info">
   <%= render 'shared/modal_errors', object: @email %>
     <div class="form-group">

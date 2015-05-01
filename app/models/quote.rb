@@ -90,6 +90,7 @@ class Quote < ActiveRecord::Base
   after_save :save_nested_line_items_attributes
   after_save :set_quote_request_statuses_to_quoted
   after_create :create_insightly_opportunity
+  after_create :create_freshdesk_ticket
   before_create :set_default_valid_until_date
   after_initialize  :initialize_time
 

@@ -89,6 +89,7 @@ $(document).ready ->
     options.footer = null
 
     $contentModal.modal options
+    options.then() if options.then
   
   if $contentModal.data('open')
     if options.force is true

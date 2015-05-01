@@ -47,7 +47,18 @@
   border: solid 1px #E5E9EC;
   margin: 10px 0 0 0;
   padding: 10px 0;
-  background-color: #ffffff;
+  background-color: #FFFFFF;
 
 }
 
+#freshdesk-email-temp {
+  padding: 10px;
+  border: 1px solid #BBBBBB;
+  background-color: white;
+  overflow-y: scroll;
+  max-height: 200px;
+  margin-bottom: 5px;
+}
+.freshdesk-copy-modal {
+  background-color: #EDFFF9;
+}

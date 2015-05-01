@@ -17,18 +17,25 @@ class EmailsController < InheritedResources::Base
   def create
     super do |success, failure|
       success.html do
-        send_email
+        send_email unless @email.freshdesk?
 
         redirect_to send("#{parent.class.to_s.underscore}_path", parent), success: 'Successfully e-mailed customer their quote details'
       end
-      failure.html { render :new }
+      failure.js { render :new }
     end
+  end
+
+  def freshdesk
+    @quote = Quote.find(params.permit(:quote_id)[:quote_id])
+    @email = Email.new(permitted_params[:email])
+    @email.freshdesk = true
+    @email.emailable = @quote
   end
 
   private
 
   def permitted_params
-    params.permit(email: %i(subject to from cc bcc body plaintext_body))
+    params.permit(email: %i(subject to from cc bcc body plaintext_body freshdesk))
   end
 
   def send_email
