@@ -259,6 +259,7 @@ class Quote < ActiveRecord::Base
 
   def create_freshdesk_ticket
     return if freshdesk.nil? || !freshdesk_ticket_id.blank?
+    return if quote_requests.empty?
 
     begin
       ticket = JSON.parse(freshdesk.post_tickets(
