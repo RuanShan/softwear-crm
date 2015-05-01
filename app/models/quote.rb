@@ -89,8 +89,8 @@ class Quote < ActiveRecord::Base
 
   after_save :save_nested_line_items_attributes
   after_save :set_quote_request_statuses_to_quoted
-  after_create :create_insightly_opportunity
   after_create :create_freshdesk_ticket
+  after_create :create_insightly_opportunity
   before_create :set_default_valid_until_date
   after_initialize  :initialize_time
 
@@ -353,7 +353,7 @@ class Quote < ActiveRecord::Base
         opportunity: {
           opportunity_name: name,
           opportunity_state: 'Open',
-          opportunity_details: description,
+          opportunity_details: insightly_description,
           probability: insightly_probability.to_i,
           bid_currency: 'USD',
           bid_amount: insightly_bid_amount,
@@ -368,6 +368,11 @@ class Quote < ActiveRecord::Base
     rescue Insightly2::Errors::ClientError => _e
       nil
     end
+  end
+
+  def insightly_description
+    return description if freshdesk_ticket_id.blank?
+    "#{description}\n#{freshdesk_ticket_link}"
   end
 
   def insightly_contact_links
