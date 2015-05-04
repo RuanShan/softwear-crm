@@ -98,6 +98,14 @@ class LineItem < ActiveRecord::Base
     imprintable_variant.imprintable.style_name
   end
 
+  def unit_price
+    if imprintable?
+      decoration_price + imprintable_price
+    else
+      super
+    end
+  end
+
   def total_price
     unit_price && quantity ? unit_price * quantity : 'NAN'
   end

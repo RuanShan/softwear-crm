@@ -186,6 +186,35 @@ describe LineItem, line_item_spec: true do
     end
   end
 
+  describe '#unit_price', story_560: true do
+    let!(:line_item) do
+      build_stubbed(
+        :blank_line_item, imprintable_variant_id: nil,
+        unit_price: 10,
+        decoration_price: 7,
+        imprintable_price: 2
+      )
+    end
+    subject { line_item.unit_price }
+
+    context 'when it is imprintable' do
+      before do
+        allow(line_item).to receive(:imprintable?).and_return true
+      end
+
+      # 7 + 2 = 9
+      it { is_expected.to eq 9 }
+    end
+
+    context 'when it is not imprintable' do
+      before do
+        allow(line_item).to receive(:imprintable?).and_return false
+      end
+
+      it { is_expected.to eq 10 }
+    end
+  end
+
   describe '#size_display' do
     let(:line_item) do
       build_stubbed(:blank_line_item,
