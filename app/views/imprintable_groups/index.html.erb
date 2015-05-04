@@ -1,0 +1,11 @@
+<div class="page-heading animated fadeInDownBig col-lg-9">
+  <h1>Imprintable Groups</h1>
+</div>
+
+<div class="col-lg-3 text-right">
+  <%= link_to 'Add a group', new_imprintable_group_path, class: 'btn btn-primary' %>
+</div>
+
+<div class="box-info row clear">
+  <%= render partial: 'table', locals: { imprintable_groups: @imprintable_groups } %>
+</div>

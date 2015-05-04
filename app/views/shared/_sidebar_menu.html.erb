@@ -66,6 +66,10 @@
         <%= content_tag :li, class: ('active' if current_url.include?('sizes')) do %>
           <%= link_to sizes_path, id: 'sizes_list_link' do %><i class="fa fa-angle-right"></i> Sizes<% end %>
         <% end %>
+
+        <%= content_tag :li, class: ('active' if current_url.include?('imprintable_groups')) do %>
+          <%= link_to imprintable_groups_path, id: 'imprintable_groups_list_link' do %><i class="fa fa-angle-right"></i> Groups<% end %>
+        <% end %>
       <% end %>
     <% end %>
 

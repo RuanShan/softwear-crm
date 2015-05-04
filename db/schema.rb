@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150501153412) do
+ActiveRecord::Schema.define(version: 20150504200100) do
 
   create_table "activities", force: true do |t|
     t.integer  "trackable_id"
@@ -196,6 +196,10 @@ ActiveRecord::Schema.define(version: 20150501153412) do
     t.datetime "deleted_at"
     t.datetime "created_at"
     t.datetime "updated_at"
+  end
+
+  create_table "imprintable_groups", force: true do |t|
+    t.string "name"
   end
 
   create_table "imprintable_stores", force: true do |t|
