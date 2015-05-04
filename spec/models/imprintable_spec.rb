@@ -21,6 +21,10 @@ describe Imprintable, imprintable_spec: true do
     it { is_expected.to have_and_belong_to_many(:compatible_imprint_methods) }
     it { is_expected.to have_and_belong_to_many(:sample_locations) }
     it { is_expected.to accept_nested_attributes_for(:imprintable_categories) }
+    context 'story 554', story_554: true do
+      it { is_expected.to have_many(:imprintable_imprintable_groups) }
+      it { is_expected.to have_many(:imprintable_groups).through(:imprintable_imprintable_groups) }
+    end
   end
 
   describe 'Validations' do

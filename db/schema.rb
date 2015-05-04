@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150504200100) do
+ActiveRecord::Schema.define(version: 20150504204013) do
 
   create_table "activities", force: true do |t|
     t.integer  "trackable_id"
@@ -200,6 +200,13 @@ ActiveRecord::Schema.define(version: 20150504200100) do
 
   create_table "imprintable_groups", force: true do |t|
     t.string "name"
+  end
+
+  create_table "imprintable_imprintable_groups", force: true do |t|
+    t.integer "imprintable_id"
+    t.integer "imprintable_group_id"
+    t.integer "tier"
+    t.boolean "default"
   end
 
   create_table "imprintable_stores", force: true do |t|

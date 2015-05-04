@@ -2,6 +2,12 @@ class Imprintable < ActiveRecord::Base
   include PricingModule
   include Retailable
 
+  TIERS = {
+    3 => 'Good',
+    6 => 'Better',
+    9 => 'Best'
+  }
+
   acts_as_paranoid
   acts_as_taggable
 
@@ -57,6 +63,8 @@ class Imprintable < ActiveRecord::Base
            foreign_key: 'coordinate_id'
   has_many :sample_locations, through: :imprintable_stores, source: :store
   has_many :sizes, ->{ uniq }, through: :imprintable_variants
+  has_many :imprintable_imprintable_groups
+  has_many :imprintable_groups, through: :imprintable_imprintable_groups
 
   accepts_nested_attributes_for :imprintable_categories, allow_destroy: true
   accepts_nested_attributes_for :imprintable_variants
