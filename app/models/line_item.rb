@@ -28,8 +28,6 @@ class LineItem < ActiveRecord::Base
   validates :quantity, greater_than_zero: true, unless: :imprintable?
   validates :unit_price, presence: true, price: true
 
-  before_save :join_pending_group
-
   def self.create_imprintables(line_itemable, imprintable, color, options = {})
     new_imprintables(line_itemable, imprintable, color, options)
       .each(&:save)
@@ -110,36 +108,7 @@ class LineItem < ActiveRecord::Base
     unit_price && quantity ? unit_price * quantity : 'NAN'
   end
 
-  def group_name=(group_name)
-    @pending_group_name = group_name
-  end
-
-  def self.load_line_itemable(params)
-    if params[:id]
-      line_item = LineItem.find(params[:id])
-      return line_item.line_itemable_type
-                      .safely_constantize([Job, LineItemGroup])
-                      .find(line_item.line_itemable_id)
-    else
-      klass = [Job, LineItemGroup].detect { |li| params["#{li.name.underscore}_id"] }
-      return klass.find(params["#{klass.name.underscore}_id"])
-    end
-  end
-
   private
-
-  def join_pending_group
-    return unless @pending_group_name
-    return unless line_itemable_type == 'LineItemGroup'
-
-    quote = line_itemable.quote
-    group = LineItemGroup.find_or_create_by(
-      quote_id: quote.id,
-      name: @pending_group_name
-    )
-    @pending_group_name = nil
-    self.line_itemable_id = group.id
-  end
 
   def imprintable_variant_exists
     if ImprintableVariant.where(id: imprintable_variant_id).size < 1

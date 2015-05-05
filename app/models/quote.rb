@@ -65,8 +65,6 @@ class Quote < ActiveRecord::Base
   belongs_to :store
   has_many :email_templates
   has_many :emails, as: :emailable, class_name: Email, dependent: :destroy
-  has_many :line_item_groups
-# has_many :line_items, through: :line_item_groups
   has_many :quote_request_quotes
   has_many :quote_requests, through: :quote_request_quotes
   has_many :order_quotes
@@ -155,15 +153,6 @@ class Quote < ActiveRecord::Base
     !informal?
   end
 
-  def line_items
-    line_item_groups.flat_map(&:line_items).tap do |groups|
-      groups.send(
-        :define_singleton_method,
-        :klass, -> { LineItem }
-      )
-    end
-  end
-
   def line_items_attributes=(attributes)
     @line_item_attributes ||= []
     @line_item_attributes += attributes.values
@@ -193,14 +182,6 @@ class Quote < ActiveRecord::Base
 
   def tax
     0.06
-  end
-
-  def default_group
-    line_item_groups.first ||
-    line_item_groups.create(
-      name: @default_group_name || 'Line Items',
-      description: 'Initial of line items in the quote'
-    )
   end
 
   def response_time
@@ -522,13 +503,6 @@ class Quote < ActiveRecord::Base
         .compact
 
     nil
-  end
-
-  def save_nested_line_items_attributes
-    return if @unsaved_line_items.nil? || @unsaved_line_items.empty?
-
-    @unsaved_line_items.each(&default_group.line_items.method(:<<))
-    @unsaved_line_items = nil
   end
 
   def time_to_first_email
