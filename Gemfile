@@ -38,6 +38,7 @@ gem 'launchy', '~> 2.4.2'
 
 # For token inputs
 gem 'chosen-rails'
+gem 'select2-rails', git: 'git@github.com:argerim/select2-rails'
 
 # use liquid to allow users to make custom templates
 gem 'liquid'

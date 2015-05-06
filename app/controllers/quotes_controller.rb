@@ -29,9 +29,22 @@ class QuotesController < InheritedResources::Base
   end
 
   def index
-    super do
-      @current_action = 'quotes#index'
+    @current_action = 'quotes#index'
+
+    if params[:q]
+      @quotes = Quote.search do
+        fulltext params[:q]
+      end
+        .results
+    else
       @quotes = Quote.all.page(params[:page])
+    end
+
+    respond_to do |format|
+      format.json do
+        render json: @quotes.to_json
+      end
+      format.html
     end
   end
 

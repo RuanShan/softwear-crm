@@ -22,6 +22,7 @@
 //= require wizard/jquery.easyWizard
 //= require jquery/jquery.maskedinput.min.js
 //= require chosen-jquery
+//= require select2
 //= require bigdecimal/bigdecimal-all-last.min.js
 //= require_tree ../../../vendor/assets/javascripts/jquery/.
 //= require lanceng/lanceng

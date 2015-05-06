@@ -1,0 +1,4 @@
+<%= form_for quote_request do |f| %>
+  <%= f.text_field :quote_ids, value: '', class: 'indent-field', data: { values: f.object.quotes.map { |q| {id: q.id, text: q.name} } } %>
+  <%= f.submit class: 'btn btn-submit' %>
+<% end %>

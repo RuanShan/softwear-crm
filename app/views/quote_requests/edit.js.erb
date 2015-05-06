@@ -1,11 +1,45 @@
-$('#quote-request-status').html(
-  "<%=j render 'status_edit', quote_request: @quote_request, custom_cancel: true %>"
-);
+<% if params[:edit_quotes] %>
+  $('#quote-request-quote-stuff').html(
+      "<%=j render 'quotes_form', quote_request: @quote_request %>"
+  );
+  var quoteIds = $('#quote_request_quote_ids');
 
-$('#cancel-quote-request-edit-button')
-  .click(function() {
-    $('#quote-request-status').html(
-      "<%=j render 'status_show', quote_request: @quote_request %>"
-    );
-    return false;
+  quoteIds.select2({
+    minimumInputLength: 2,
+    tokenSeparators: [','],
+    width: '100%',
+    tags: true,
+
+    ajax: {
+      url: Routes.quotes_path(),
+      dataType: 'json',
+      quietMillis: 600,
+
+      data: function(params) {
+        return { q: params };
+      },
+      results: function(data) {
+        return {
+          results: data.map(function(quote) {
+            return { id: quote.id, text: quote.name };
+          })
+        };
+      },
+      cache: true,
+    },
   });
+
+
+<% else %>
+  $('#quote-request-status').html(
+    "<%=j render 'status_edit', quote_request: @quote_request, custom_cancel: true %>"
+  );
+
+  $('#cancel-quote-request-edit-button')
+    .click(function() {
+      $('#quote-request-status').html(
+        "<%=j render 'status_show', quote_request: @quote_request %>"
+      );
+      return false;
+    });
+<% end %>

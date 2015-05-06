@@ -56,6 +56,13 @@ GIT
   specs:
     dumpsync (0.0.1)
 
+GIT
+  remote: git@github.com:argerim/select2-rails
+  revision: 2cf2c1645b02e061f136ecd136d9ee0c2c9d25ae
+  specs:
+    select2-rails (3.5.9.3)
+      thor (~> 0.14)
+
 GEM
   remote: https://rubygems.org/
   specs:
@@ -514,6 +521,7 @@ DEPENDENCIES
   rubinius-debugger
   sass-rails (~> 4.0.2)
   sdoc
+  select2-rails!
   selenium-webdriver
   shoulda-matchers
   sidekiq
