@@ -10,6 +10,7 @@ class RefactorLineItemGroupsIntoJobs < ActiveRecord::Migration
           name: line_item_group['name'],
           description: line_item_group['description'],
           jobbable_id: line_item_group['quote_id'],
+          jobbable_type: 'Quote',
           created_at: line_item_group['created_at'],
           updated_at: line_item_group['updated_at']
       )
