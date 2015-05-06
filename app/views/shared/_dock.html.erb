@@ -8,6 +8,9 @@
               <i class="fa fa-plus"></i>
           <% end %>
 
+          <%= link_to "/undock", data: {remote: true}, class: 'additional-icon', 'data-toggle' => 'close' do  %>
+              <i class="fa fa-times"></i>
+          <% end %>
           <%= link_to '#', id: 'minimize-dock', class: 'additional-icon' do %>
               <i class="fa fa-chevron-down"></i>
           <% end %>
@@ -47,10 +50,10 @@
               <div class="not-actually-additional-btn">
               </div>
                 <p>
-                  Approximate Quantity: <%= docked[:approx_quantity] %>
+                <%= link_to 'Show', quote_request_path(docked[:id]), class: 'qr-dock-show-btn btn btn-info' %>
                 </p>
                 <p>
-                  Name: <%= docked[:name] %>
+                  Approximate Quantity: <%= docked[:approx_quantity] %>
                 </p>
                 <p>
                   <%= docked[:description] %>

@@ -173,6 +173,12 @@ class QuoteRequest < ActiveRecord::Base
     !freshdesk_contact_id.nil?
   end
 
+  def to_dock
+    %i(id name approx_quantity description date_needed)
+      .map{|a| { a => self[a] } }
+      .reduce({}, :merge)
+  end
+
   private
 
   def link_integrated_crm_contacts

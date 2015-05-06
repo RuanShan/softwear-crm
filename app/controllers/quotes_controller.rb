@@ -1,5 +1,6 @@
 class QuotesController < InheritedResources::Base
   before_filter :format_dates, only: [:create, :update]
+  after_filter :dock_associated_quote_requests, only: [:show, :edit]
   before_action :set_current_action
   require 'mail'
 
@@ -118,6 +119,12 @@ class QuotesController < InheritedResources::Base
   end
 
   private
+
+  def dock_associated_quote_requests
+    if @quote
+      session[:docked] = @quote.quote_requests.map(&:to_dock)
+    end
+  end
 
   def add_params_from_docked_quote_request
     docked = session[:docked]

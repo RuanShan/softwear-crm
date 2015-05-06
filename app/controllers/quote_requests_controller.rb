@@ -14,9 +14,7 @@ class QuoteRequestsController < InheritedResources::Base
     unless session[:docked].is_a?(Array)
       session[:docked] = []
     end
-    session[:docked] << %i(id name approx_quantity description date_needed)
-                          .map{|a| { a => quote_request[a] } }
-                          .reduce({}, :merge)
+    session[:docked] << quote_request.to_dock
     redirect_to root_path, notice: "Docked Quote Request #{quote_request.id}"
   end
 
