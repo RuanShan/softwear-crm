@@ -20,10 +20,14 @@ class QuotesController < InheritedResources::Base
   end
 
   def edit
-    super do
-      @current_user = current_user
-      @current_action = 'quotes#edit'
-      @activities = @quote.all_activities
+
+    super do |format|
+      format.html do
+        @current_user = current_user
+        @current_action = 'quotes#edit'
+        @activities = @quote.all_activities
+      end
+      format.js
     end
   end
 

@@ -19,9 +19,6 @@
           <div id="edit-quote-job-<%= job.id %>-tier-<%= number %>" class="row tier-row">
             <div class="col-xs-1">
               <%= name %><br />
-              <%= link_to '#', class: 'btn btn-success btn-sm' do %>
-                + Add to tier
-              <% end %>
             </div>
             <div class="col-xs-11">
               <ul class="edit-quote-line-items sortable-quote-line-items container-fluid">
@@ -34,7 +31,8 @@
       <% end %>
     </div>
 <% end %>
-
-<%= link_to '#', class: 'btn btn-success' do %>
-    + Add a new imprintable group
-<% end %>
+<div class="col-sm-4 col-sm-offset-4">
+  <%= link_to edit_quote_path, class: 'btn btn-success', remote: true do %>
+      <i class="glyphicon glyphicon-plus-sign"></i> Add a new imprintable group
+  <% end %>
+</div>
