@@ -1,7 +1,7 @@
 @imprintMethodSelected = ->
   $this = $(this)
   id = $this.val()
-  
+
   $this.addClass 'editing-imprint'
   # todo: using hardcoded name/number name
   $name_number_container = $this.parent().siblings("div.js-name-number-format-fields")
@@ -59,7 +59,7 @@
       type: 'DELETE'
       url: Routes.imprint_path(imprintId)
       dataType: 'script'
-    
+
     ajax.done eval
 
   false
@@ -89,6 +89,4 @@ $ ->
 
       unless $(e.target).is('.imprint-container *')
         $('.update-imprints').click() if $('.editing-imprint').length isnt 0
-  else
-    console.log 'i dont care lol'
 

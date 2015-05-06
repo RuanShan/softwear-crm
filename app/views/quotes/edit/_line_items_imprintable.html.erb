@@ -1,0 +1,21 @@
+<li class="sortable-quote-line-item row">
+    <div class="col-xs-5">
+      <%= line_item.imprintable.name %><br />
+      <%= line_item.imprintable.description %>
+    </div>
+    <div class="col-xs-2">
+      <h4>Quantity</h4>
+      <%= line_item.quantity %>
+    </div>
+    <div class="col-xs-2">
+      <h4>Pricing</h4>
+      <b>Imprintable</b>
+      <%= number_to_currency line_item.imprintable_price %>
+      <b>Decoration</b>
+      <%= number_to_currency line_item.decoration_price %>
+    </div>
+    <div class="col-xs-1">
+      <h4>Total</h4>
+      <%= number_to_currency line_item.unit_price %>
+    </div>
+</li>

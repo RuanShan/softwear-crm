@@ -106,6 +106,7 @@ GEM
       sass (~> 3.2)
     bootstrap3-datetimepicker-rails (3.0.0.1)
       momentjs-rails (~> 2.5.0)
+    bootstrap_form (2.3.0)
     builder (3.1.4)
     byebug (3.5.1)
       columnize (~> 0.8)
@@ -466,6 +467,7 @@ DEPENDENCIES
   binding_of_caller
   bootstrap-sass
   bootstrap3-datetimepicker-rails (~> 3.0.0)
+  bootstrap_form
   byebug
   capistrano (~> 3.2.0)
   capistrano-bundler

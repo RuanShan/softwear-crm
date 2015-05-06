@@ -1,0 +1,40 @@
+
+<script>
+    $(function() {
+        $( ".edit-quote-line-items" ).sortable({
+            connectWith: ".sortable-quote-line-items"
+        }).disableSelection();
+    });
+</script>
+
+<% quote.jobs.each do |job| %>
+    <div id="edit-quote-job-<%= job.id %> container-fluid">
+      <div class="row">
+        <div class="col-xs-12">
+          <h3><%= job.name %></h3>
+          <p><%= job.description %></p>
+        </div>
+      </div>
+      <% Imprintable::TIERS.each do |number, name| %>
+          <div id="edit-quote-job-<%= job.id %>-tier-<%= number %>" class="row tier-row">
+            <div class="col-xs-1">
+              <%= name %><br />
+              <%= link_to '#', class: 'btn btn-success btn-sm' do %>
+                + Add to tier
+              <% end %>
+            </div>
+            <div class="col-xs-11">
+              <ul class="edit-quote-line-items sortable-quote-line-items container-fluid">
+                <% job.imprintable_line_items_for_tier(number).each do |line_item| %>
+                    <%= render 'quotes/edit/line_items_imprintable', line_item: line_item %>
+                <% end %>
+              </ul>
+            </div>
+          </div>
+      <% end %>
+    </div>
+<% end %>
+
+<%= link_to '#', class: 'btn btn-success' do %>
+    + Add a new imprintable group
+<% end %>

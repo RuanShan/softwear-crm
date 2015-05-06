@@ -29,28 +29,6 @@
   color: red;
 }
 
-.quote-line-item-group {
-  background: #fff;
-  border: solid 1px #E5E9EC;
-  margin-bottom: 10px;
-}
-.quote-line-item-group:hover {
-  background: #fafafa;
-}
-
-.quote-line-item-row{
-  border-bottom: solid 1px #E5E9EC;
-  margin-bottom: 10px;
-}
-
-.editing-line-item {
-  border: solid 1px #E5E9EC;
-  margin: 10px 0 0 0;
-  padding: 10px 0;
-  background-color: #FFFFFF;
-
-}
-
 #freshdesk-email-temp {
   padding: 10px;
   border: 1px solid #BBBBBB;
@@ -61,4 +39,17 @@
 }
 .freshdesk-copy-modal {
   background-color: #EDFFF9;
+}
+
+.sortable-quote-line-items {
+  list-style-type: none;
+  float: left;
+  min-height: 20px;
+//  background-color: #E5E9EC;
+  width: 100%
+}
+
+.sortable-quote-line-item {
+//  background-color: #ffffff;
+  margin: auto 5px;
 }

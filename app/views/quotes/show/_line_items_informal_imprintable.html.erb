@@ -3,6 +3,6 @@
     <%= link_to line_item.imprintable.name, line_item.imprintable.supplier_link %> <span class="pull-right"> <%=pluralize( line_item.quantity, 'piece') %> @ <%= number_to_currency line_item.unit_price %>/each</span>
   </h4>
   <p>
-    <%= line_item.imprintable.description %>
+    <%= raw line_item.imprintable.description %>
   </p>
 </div>
