@@ -8,7 +8,7 @@ describe Quote, quote_spec: true do
     it { is_expected.to belong_to(:salesperson).class_name('User') }
     it { is_expected.to belong_to(:store) }
     it { is_expected.to have_many(:emails) }
-    it { is_expected.to have_many(:line_item_groups) }
+    it { is_expected.to have_many(:jobs) }
     it { is_expected.to have_and_belong_to_many(:quote_requests) }
   end
 
@@ -446,7 +446,7 @@ describe Quote, quote_spec: true do
       context 'a quote without a line item' do
         it 'is invalid' do
           expect{
-            create(:valid_quote, line_item_groups: [])
+            create(:valid_quote)
           }
             .to raise_error ActiveRecord::RecordInvalid
         end
@@ -468,7 +468,7 @@ describe Quote, quote_spec: true do
       let!(:quote) { create(:valid_quote) }
 
       before(:each) do
-        2.times { quote.default_group.line_items << create(:taxable_non_imprintable_line_item) }
+        2.times { quote.default_job.line_items << create(:taxable_non_imprintable_line_item) }
       end
 
       describe '#line_items_subtotal' do

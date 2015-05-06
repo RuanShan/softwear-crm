@@ -2,6 +2,7 @@ require 'spec_helper'
 
 describe '/line_items/_standard_edit_entry.html.erb', line_item_spec: true, story_75: true do
 	let!(:line_item) { create :non_imprintable_line_item }
+
   before(:each) { render partial: '/line_items/standard_edit_entry',
                          locals: {line_item: line_item} }
 

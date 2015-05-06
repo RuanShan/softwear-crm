@@ -7,7 +7,7 @@ describe 'settings/_form.html.erb', setting_spec: true do
         freshdesk_url: build_stubbed(:valid_setting, val: 'url'),
         freshdesk_password: build_stubbed(:valid_setting, val: 'password')
     }
-    render 'form', freshdesk_settings: freshdesk_settings
+    render 'form', freshdesk_settings: freshdesk_settings, insightly_settings: nil
   end
 
   it 'has a form with appropriate fields' do

@@ -69,13 +69,11 @@ class Quote < ActiveRecord::Base
   has_many :quote_requests, through: :quote_request_quotes
   has_many :order_quotes
   has_many :orders, through: :order_quotes
-
-# accepts_nested_attributes_for :line_items, allow_destroy: true
+  has_many :jobs
 
   validates :email, presence: true, email: true
   validates :estimated_delivery_date, presence: true
   validates :first_name, presence: true
-# validate :has_line_items?
   validates :quote_source, presence: true
   validates :salesperson, presence: true
   validates :store, presence: true
@@ -83,9 +81,6 @@ class Quote < ActiveRecord::Base
   validates :shipping, price: true
   validates *INSIGHTLY_FIELDS, presence: true, if: :salesperson_has_insightly?
 
-  validate :prepare_nested_line_items_attributes
-
-  after_save :save_nested_line_items_attributes
   after_save :set_quote_request_statuses_to_quoted
   after_create :create_freshdesk_ticket
   after_create :create_insightly_opportunity
@@ -177,8 +172,6 @@ class Quote < ActiveRecord::Base
   def line_items_total_with_tax
     line_items.map { |l| l.taxable? ? l.total_price * (1 + tax) : l.total_price }.reduce(0, :+) + shipping
   end
-
-  alias_method :standard_line_items, :line_items
 
   def tax
     0.06
@@ -482,27 +475,6 @@ class Quote < ActiveRecord::Base
 
   def initialize_time
     self.initialized_at = Time.now if self.initialized_at.blank?
-  end
-
-  def prepare_nested_line_items_attributes
-    no_attributes = @line_item_attributes.nil? || @line_item_attributes.empty?
-    if no_attributes && line_items.empty?
-      errors.add(:must, 'have at least one line item')
-      return false
-    end
-    return if no_attributes
-
-    @unsaved_line_items = @line_item_attributes.map do |attrs|
-        next if attrs.delete('_destroy') == 'true'
-        line_item = LineItem.new(attrs)
-        next line_item if line_item.valid?
-
-        errors.add(:line_items, line_item.errors.full_messages.join(', '))
-        nil
-      end
-        .compact
-
-    nil
   end
 
   def time_to_first_email

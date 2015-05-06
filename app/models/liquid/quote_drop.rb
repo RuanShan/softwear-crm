@@ -48,8 +48,8 @@ class QuoteDrop < Liquid::Drop
     @quote.shipping
   end
 
-  def line_item_groups
-    @quote.line_item_groups.map{ |lig| LineItemGroupDrop.new(lig) }
+  def jobs
+    @quote.jobs.map{ |job| JobDrop.new(job) }
   end
 
 end

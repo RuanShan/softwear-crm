@@ -2,14 +2,15 @@ class LineItemsController < InheritedResources::Base
   include BatchUpdate
   include LineItemHelper
 
-  before_filter :load_line_itemable, 
-                except: [:select_options, :destroy, :update]
   after_filter :assign_line_itemable, only: [:create]
+
+  before_filter :load_line_itemable,
+                except: [:select_options, :destroy, :update]
 
   def new
     super do |format|
       @line_item = @line_itemable.line_items.new
-      
+
       format.html { render partial: 'create_modal' }
       format.js { render locals: { standard_only: params[:standard_only] } }
     end
@@ -73,7 +74,7 @@ class LineItemsController < InheritedResources::Base
     else
       destroy_single params[:id] do |format, success|
         if @line_itemable.is_a? Quote
-          @line_itemable.create_activity :destroyed_line_item, 
+          @line_itemable.create_activity :destroyed_line_item,
             owner: current_user,
             params: { name: @line_item.name }
         end
@@ -106,10 +107,10 @@ class LineItemsController < InheritedResources::Base
 
   def create
     return create_imprintable if param_okay? :imprintable_id, :color_id
-  
+
     super do |format|
       if @line_itemable.class.name == 'Quote'
-        @line_itemable.create_activity :added_line_item, 
+        @line_itemable.create_activity :added_line_item,
                                         owner:  current_user,
                                         params: { name: @line_item.name }
       end
@@ -138,10 +139,11 @@ class LineItemsController < InheritedResources::Base
     @line_item = LineItem.find params[:id]
   end
 
-private
+  private
+
   def create_json
     return render json: { result: 'success' } if @line_item.valid?
-    
+
     modal_html = render_string(
       partial: 'shared/modal_errors',
       locals: { object: @line_item }
@@ -157,7 +159,8 @@ private
   def create_imprintable
     @line_items = LineItem.new_imprintables(
       @line_itemable,
-      params[:imprintable_id], params[:color_id],
+      params[:imprintable_id],
+      params[:color_id],
       base_unit_price: params[:base_unit_price]
     )
 
@@ -290,10 +293,6 @@ private
     { line_item: @line_item, edit: edit }
   end
 
-  def load_line_itemable
-    @line_itemable = LineItem.load_line_itemable(params)
-  end
-
   def assign_line_itemable
     return unless @line_item && @line_item.line_itemable.nil?
 
@@ -312,4 +311,9 @@ private
       ]
     )
   end
+
+  def assign_line_itemable
+    @line_itemable = @line_item.line_itemable
+  end
+
 end
