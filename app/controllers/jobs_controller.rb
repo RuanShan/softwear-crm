@@ -53,7 +53,11 @@ class JobsController < InheritedResources::Base
   def show
     super do |format|
       format.html do
-        redirect_to order_path(@job.order, anchor: "jobs-#{@job.id}")
+        if @job.jobbable_type == 'Order'
+          redirect_to order_path(@job.order, anchor: "jobs-#{@job.id}")
+        else
+          raise 'How should this work with non-orders?'
+        end
       end
       format.json do
         render json: {

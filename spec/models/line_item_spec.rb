@@ -115,7 +115,7 @@ describe LineItem, line_item_spec: true do
     end
   end
 
-  describe '#group_name=', story_303: true do
+  describe '#group_name=', story_303: true, pending: 'groups are GONE' do
     context 'when the line item is part of a quote' do
       let!(:quote) { create :valid_quote }
       let!(:line_item_attributes) { attributes_for :line_item, name: 'whee', description: 'important' }
