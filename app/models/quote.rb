@@ -349,24 +349,25 @@ class Quote < ActiveRecord::Base
     return if insightly.nil?
 
     begin
-      self.insightly_opportunity_id = insightly.create_opportunity(
+      op = insightly.create_opportunity(
         opportunity: {
           opportunity_name: name,
           opportunity_state: 'Open',
           opportunity_details: insightly_description,
           probability: insightly_probability.to_i,
           bid_currency: 'USD',
-          bid_amount: insightly_bid_amount,
+          bid_amount: insightly_bid_amount.to_i,
           forecast_close_date: (created_at + 3.days).strftime('%F %T'),
           pipeline_id: insightly_pipeline_id,
           customfields: insightly_customfields,
           links: insightly_contact_links,
         }
       )
-        .opportunity_id
+      self.insightly_opportunity_id = op.opportunity_id
       self.save(validate: false)
-    rescue Insightly2::Errors::ClientError => _e
-      nil
+      op
+    rescue Insightly2::Errors::ClientError => e
+      e
     end
   end
 
