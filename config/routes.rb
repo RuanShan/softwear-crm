@@ -24,7 +24,7 @@ CrmSoftwearcrmCom::Application.routes.draw do
 
   get 'tags/:tag', to: 'imprintables#index', as: :tag
 
-  resources :brands, :colors, :users, :artwork_requests, :artworks, :imprintable_groups
+  resources :brands, :colors, :users, :artwork_requests, :artworks
   resources :prices, only: [:create, :new, :destroy, :index] do
     collection do
       get 'destroy_all'
@@ -51,7 +51,7 @@ CrmSoftwearcrmCom::Application.routes.draw do
   get '/logout' => 'users#logout'
 
   scope 'configuration' do
-    resources :shipping_methods, :stores
+    resources :shipping_methods, :stores, :imprintable_groups
     resources :imprint_methods do
       get '/print_locations', to: 'imprint_methods#print_locations', as: :print_locations
     end

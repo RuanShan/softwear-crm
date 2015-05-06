@@ -6,6 +6,6 @@ class ImprintableGroupsController < InheritedResources::Base
   private
 
   def permitted_params
-    params.permit(imprintable_group: [:name])
+    params.permit(imprintable_group: [:name, :description])
   end
 end

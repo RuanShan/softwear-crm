@@ -6,7 +6,7 @@ class Job < ActiveRecord::Base
   searchable do
     text :name, :description
     string :name
-    reference :order
+    reference :jobbable
   end
 
   tracked by_current_user + on_order
@@ -23,7 +23,7 @@ class Job < ActiveRecord::Base
   has_many :line_items, as: :line_itemable
 
   validate :assure_name_and_description, on: :create
-  validates :name, uniqueness: { scope: :order_id }
+  validates :name, uniqueness: { scope: [:jobbable_id, :jobbable_type] }
 
   def imprintable_info
     colors, style_names, style_catalog_nos = [], [], []
@@ -135,7 +135,7 @@ class Job < ActiveRecord::Base
   end
 
   def imprintable_line_items_for_tier(tier)
-    imprintables.joins(:imprintable_imprintable_groups).where(imprintable_imprintable_groups: {tier: tier})
+    line_items.where(tier: tier)
   end
 
   private
@@ -146,7 +146,7 @@ class Job < ActiveRecord::Base
       new_job_name = 'New Job'
       counter = 1
 
-      while Job.where(order_id: self.order_id).where(name: new_job_name).exists?
+      while Job.where(jobbable_id: self.order_id, jobbable_type: 'Order').where(name: new_job_name).exists?
         counter += 1
         new_job_name = "New Job #{counter}"
       end

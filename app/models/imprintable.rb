@@ -8,6 +8,12 @@ class Imprintable < ActiveRecord::Base
     9 => 'Best'
   }
 
+  TIER_DESCRIPTIONS = {
+    3 => 'Good are generally base level shirts, nothing fancy',
+    6 => 'Better are middle of the road',
+    9 => 'Best are premium quality'
+  }
+
   acts_as_paranoid
   acts_as_taggable
 

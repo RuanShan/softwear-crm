@@ -3,21 +3,21 @@
       <h3><%= job.name %> <small><%= job.description %></small></h3>
       <p>This is where print information will go </p>
 
-      <%= Imprintable::TIERS.each do |tier| %>
-        <% next if job.imprintable_line_items_for_tier(tier).empty? %>
+      <% Imprintable::TIERS.each do |tier_number, tier_name| %>
+        <% next if job.imprintable_line_items_for_tier(tier_number).empty? %>
           <div class="row">
-            <div id="quote-show-job-1-<%= tier %>">
+            <div id="quote-show-job-1-<%= tier_name %>">
               <div class="tier-label col-xs-3">
                 <h4>
-                  <%= tier %>
+                  <%= tier_name %>
                 </h4>
                 <p>
-                  Here's a description of what <%= tier %> means
+                  <%= Imprintable::TIER_DESCRIPTIONS[tier_number] %>
                 </p>
               </div>
 
-              <% job.imprintable_line_items_for_tier(tier).each do |line_item| %>
-                  <%= render 'quotes/show/imprintable_line_items', line_item: line_item %>
+              <% job.imprintable_line_items_for_tier(tier_number).each do |line_item| %>
+                  <%= render 'quotes/show/line_items_informal_imprintable', line_item: line_item %>
               <% end %>
 
             </div>
@@ -26,64 +26,38 @@
     </div>
 <% end %>
 
-<div id="quote-show-job-1  container-fluid">
-  <h3>Unisex T-shirts <small>Here's a description of unisex t-shirts</small></h3>
-  <p><b>Standard Screen Print</b> 3-Color Front, 1-Color Back</p>
-
-  <% %w(Good Better Best).each do |tier| %>
-      <div class="row">
-        <div id="quote-show-job-1-<%= tier %>">
-          <div class="tier-label col-xs-3">
-            <h4>
-              <%= tier %>
-            </h4>
-            <p>
-              Here's a description of what <%= tier %> means
-            </p>
+<% unless quote.additional_options_and_markups.empty? %>
+    <div id="quote-additional-upcharges container-fluid">
+      <h3>Additional Options and Markups</h3>
+          <div class="row">
+            <div id="quote-show-options-and-markup">
+              <% quote.additional_options_and_markups.each do |line_item| %>
+              <div class="informal-quote-line-item col-xs-9 pull-right">
+                <h4>
+                  <%= line_item.name %> <span class="pull-right"><%= number_to_currency line_item.unit_price %>/each</span>
+                </h4>
+                <p>
+                  <%= line_item.description %>
+                </p>
+              </div>
+              <% end %>
+            </div>
           </div>
-          <% Random.new.rand(1..3).times do  %>
-              <%= render 'quotes/show/line_items_informal_imprintable' %>
-          <% end %>
-        </div>
-      </div>
-  <% end %>
-</div>
-<div id="quote-additional-upcharges container-fluid">
-  <h3>Additional Options and Markups</h3>
-  <div class="row">
-    <div id="quote-show-options-and-markup">
-      <div class="informal-quote-line-item col-xs-9 pull-right">
-        <h4>
-          Additional Colors (Per Print) <span class="pull-right">$0.70/each</span>
-        </h4>
-        <p>
-          Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore
-          eu fugiat nulla pariatur.
-        </p>
-      </div>
-      <div class="informal-quote-line-item col-xs-9 pull-right">
-        <h4>
-          Custom Names & Numbers <span class="pull-right">$5.00/each</span>
-        </h4>
-        <p>
-          Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore
-          eu fugiat nulla pariatur.
-        </p>
-      </div>
     </div>
-  </div>
-</div>
-</div>
+<% end %>
+
+
+
 <div id="quote-additional-upcharges container-fluid">
   <h3>Notes</h3>
   <div class="row">
-    <div id="quote-show-options-and-markup">
+    <div id="quote-show-notes">
       <div class="informal-quote-line-item col-xs-9 pull-right">
         <h4>
-          Next Price Break
+          Need to add note technology to quotes
         </h4>
         <p>
-          At 150 pieces, the price per unit drops $0.50/each.
+          Just like comments, in fact can be comments, would just have title and body.
         </p>
       </div>
     </div>

@@ -2,6 +2,8 @@ class LineItem < ActiveRecord::Base
   include TrackingHelpers
   extend ParamHelpers
 
+  MARKUP_ITEM_QUANTITY = -999
+
   acts_as_paranoid
 
   searchable do
@@ -25,7 +27,7 @@ class LineItem < ActiveRecord::Base
   validate :imprintable_variant_exists, if: :imprintable?
   validates :name, presence: true, unless: :imprintable?
   validates :quantity, presence: true
-  validates :quantity, greater_than_zero: true, unless: :imprintable?
+  validates :quantity, greater_than_zero: true, if: Proc.new { |x| x.imprintable? || x.quantity != MARKUP_ITEM_QUANTITY }
   validates :unit_price, presence: true, price: true, unless: :imprintable?
   validates :decoration_price, :imprintable_price, presence: true, price: true, if: :imprintable?
 

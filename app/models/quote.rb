@@ -70,6 +70,7 @@ class Quote < ActiveRecord::Base
   has_many :order_quotes
   has_many :orders, through: :order_quotes
   has_many :jobs, as: :jobbable
+  has_many :line_items, through: :jobs
 
   validates :email, presence: true, email: true
   validates :estimated_delivery_date, presence: true
@@ -398,6 +399,10 @@ class Quote < ActiveRecord::Base
       field_value: 'Online - WordPress Quote Request'
     }
     fields
+  end
+
+  def additional_options_and_markups
+    line_items.where(quantity: LineItem::MARKUP_ITEM_QUANTITY)
   end
 
   private
