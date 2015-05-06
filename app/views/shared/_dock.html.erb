@@ -1,36 +1,66 @@
 <% if !session[:docked].nil? %>
-    <% if session[:docked].class == QuoteRequest %>
-    <div id="dock" class="box-info success col-xs-6">
-      <h2>Docked Quote Request</h2>
-      <div class="additional-btn">
-        <%= link_to '/undock', data: {remote: true}, class: 'additional-icon', 'data-toggle' => 'close' do  %>
-            <i class="fa fa-times"></i>
-        <% end %>
-        <%= link_to new_quote_path, class: 'additional-icon', 'data-toggle' => 'close' do  %>
-            <i class="fa fa-plus"></i>
-        <% end %>
+    <% if session[:docked].is_a?(Array) && !session[:docked].empty? %>
+      <div id="dock" role='tabpanel' class="box-info success col-xs-6">
+        <h2>Docked Quote Request<%= session[:docked].size > 1 ? 's' : '' %></h2>
 
-        <%= link_to '#', id: 'minimize-dock', class: 'additional-icon' do %>
-            <i class="fa fa-chevron-down"></i>
-        <% end %>
-        <%= link_to '#', id: 'maximize-dock', class: 'additional-icon' do %>
-            <i class="fa fa-chevron-up"></i>
-        <% end %>
+        <div class="additional-btn">
+          <%= link_to new_quote_path, class: 'additional-icon', 'data-toggle' => 'close' do  %>
+              <i class="fa fa-plus"></i>
+          <% end %>
+
+          <%= link_to '#', id: 'minimize-dock', class: 'additional-icon' do %>
+              <i class="fa fa-chevron-down"></i>
+          <% end %>
+          <%= link_to '#', id: 'maximize-dock', class: 'additional-icon' do %>
+              <i class="fa fa-chevron-up"></i>
+          <% end %>
+        </div>
+        <div id="dock-body" class="collapse in tab-content" >
+
+          <ul class='nav nav-tabs' role='tablist'>
+            <% session[:docked].each do |docked| %>
+              <li role='presentation' id='dock-li-for-<%=docked[:id]%>'>
+                <div>
+                  <%= link_to "/undock/#{docked[:id]}",
+                        data: {remote: true},
+                        class: 'additional-icon close-dock',
+                        'data-toggle' => 'close' do  %>
+                      <i class="fa fa-times"></i>
+                  <% end %>
+                </div>
+
+                <%= link_to docked[:name], "#dock-for-#{docked[:id]}",
+                      'aria-controls' => "dock-for-#{docked[:id]}",
+                      id: "dock-tab-for-#{docked[:id]}",
+                      class: 'dock-tab',
+                      role: 'tab',
+                      data: { toggle: 'tab', 'qr-id' => docked[:id] } %>
+
+              </li>
+            <% end %>
+          </ul>
+
+
+          <% session[:docked].each do |docked| %>
+            <% next unless docked.is_a?(Hash) %>
+            <div id='dock-for-<%= docked[:id] %>' class='tab-pane' role='tabpanel'>
+              <div class="not-actually-additional-btn">
+              </div>
+                <p>
+                  Approximate Quantity: <%= docked[:approx_quantity] %>
+                </p>
+                <p>
+                  Name: <%= docked[:name] %>
+                </p>
+                <p>
+                  <%= docked[:description] %>
+                </p>
+                <p>
+                  Needed By: <%= docked[:date_needed].strftime('%F') rescue 'n/a' %>
+                </p>
+              </div>
+          <% end %>
+        </div>
       </div>
-      <div id="dock-body" class="collapse in">
-        <p>
-          Approximate Quantity: <%= session[:docked].approx_quantity %>
-        </p>
-        <p>
-          Name: <%= session[:docked].name %>
-        </p>
-        <p>
-          <%= session[:docked].description %>
-        </p>
-        <p>
-          Needed By: <%= session[:docked].date_needed.strftime('%F') rescue 'n/a' %>
-        </p>
-      </div>
-    </div>
     <% end %>
 <% end %>

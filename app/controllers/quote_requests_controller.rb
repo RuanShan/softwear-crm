@@ -11,7 +11,12 @@ class QuoteRequestsController < InheritedResources::Base
 
   def dock
     quote_request = QuoteRequest.find(params[:quote_request_id])
-    session[:docked] = quote_request
+    unless session[:docked].is_a?(Array)
+      session[:docked] = []
+    end
+    session[:docked] << %i(id name approx_quantity description date_needed)
+                          .map{|a| { a => quote_request[a] } }
+                          .reduce({}, :merge)
     redirect_to root_path, notice: "Docked Quote Request #{quote_request.id}"
   end
 

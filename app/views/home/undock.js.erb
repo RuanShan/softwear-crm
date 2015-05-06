@@ -1,1 +1,15 @@
-$("#dock").hide();
+<% if @qr_id && session[:docked].is_a?(Array) %>
+  <% if session[:docked].empty? %>
+    $('#dock').hide();
+  <% else %>
+    $('#dock-for-<%=@qr_id%>,#dock-li-for-<%=@qr_id%>').remove();
+    if (localStorage.dockTab == <%= @qr_id %>) {
+      var tab = $('.dock-tab:first')
+      tab.tab('show');
+      localStorage.dockTab = tab.data('qr-id');
+    }
+  <% end %>
+<% else %>
+  $('#dock').hide();
+  console.log('Weird dock data, hmmm...');
+<% end %>

@@ -43,7 +43,17 @@
         <div class="body content rows scroll-y">
             <%= yield %>
             <%= render 'shared/footer'  %>
-            <%= render 'shared/dock' %>
+            <% begin %>
+              <%= render 'shared/dock' %>
+            <% rescue StandardError => e %>
+              <% the_dock = session[:docked] %>
+              <% session[:docked] = '' %>
+              <% if Rails.env.production? %>
+                <% Rails.logger.error "Had to delete dock due to #{e.class.name}: #{e.message}; dock: #{the_dock}"  %>
+              <% else %>
+                <% raise "Had to delete dock due to #{e.class.name}: #{e.message}; dock: #{the_dock}" unless Rails.env.production? %>
+              <% end %>
+            <% end %>
         </div>
 
     </div>
