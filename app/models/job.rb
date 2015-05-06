@@ -25,6 +25,11 @@ class Job < ActiveRecord::Base
   validate :assure_name_and_description, on: :create
   validates :name, uniqueness: { scope: [:jobbable_id, :jobbable_type] }
 
+  # For on_order activity tracking helper
+  def order
+    return jobbable if jobbable_type == 'Order'
+  end
+
   def imprintable_info
     colors, style_names, style_catalog_nos = [], [], []
     sorted_line_items = self.sort_line_items
@@ -141,12 +146,12 @@ class Job < ActiveRecord::Base
   private
 
   def assure_name_and_description
-    # TODO: remove self?
-    if self.name.nil?
+    return unless jobbable_type == 'Order'
+    if name.nil?
       new_job_name = 'New Job'
       counter = 1
 
-      while Job.where(jobbable_id: self.order_id, jobbable_type: 'Order').where(name: new_job_name).exists?
+      while Job.where(jobbable_id: self.jobbable_id, name: new_job_name).exists?
         counter += 1
         new_job_name = "New Job #{counter}"
       end

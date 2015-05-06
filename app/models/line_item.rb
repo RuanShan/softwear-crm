@@ -27,7 +27,7 @@ class LineItem < ActiveRecord::Base
   validate :imprintable_variant_exists, if: :imprintable?
   validates :name, presence: true, unless: :imprintable?
   validates :quantity, presence: true
-  validates :quantity, greater_than_zero: true, if: Proc.new { |x| x.imprintable? || x.quantity != MARKUP_ITEM_QUANTITY }
+  validates :quantity, greater_than_zero: true, if: ->(x){ x.imprintable? || x.quantity != MARKUP_ITEM_QUANTITY }
   validates :unit_price, presence: true, price: true, unless: :imprintable?
   validates :decoration_price, :imprintable_price, presence: true, price: true, if: :imprintable?
 
