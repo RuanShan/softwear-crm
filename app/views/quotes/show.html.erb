@@ -55,7 +55,13 @@
     </div>
 
   <div class="col-xs-12 clear">
-
+    <div id="quote-show-line-items">
+      <% if @quote.formal? %>
+        <%= render 'quotes/show/line_items_formal', quote: @quote %>
+      <% else %>
+          <%= render 'quotes/show/line_items_informal', quote: @quote %>
+      <% end %>
+    </div>
   </div>
 
 </div>

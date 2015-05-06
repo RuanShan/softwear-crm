@@ -69,7 +69,7 @@ class Quote < ActiveRecord::Base
   has_many :quote_requests, through: :quote_request_quotes
   has_many :order_quotes
   has_many :orders, through: :order_quotes
-  has_many :jobs
+  has_many :jobs, as: :jobbable
 
   validates :email, presence: true, email: true
   validates :estimated_delivery_date, presence: true

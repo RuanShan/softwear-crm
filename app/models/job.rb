@@ -13,7 +13,7 @@ class Job < ActiveRecord::Base
 
   before_destroy :check_for_line_items
 
-  belongs_to :order
+  belongs_to :jobbable, polymorphic: true
   has_many :artwork_request_jobs
   has_many :artwork_requests, through: :artwork_request_jobs
   has_many :colors, -> {readonly}, through: :imprintable_variants
@@ -132,6 +132,10 @@ class Job < ActiveRecord::Base
 
   def name_number_imprints
     imprints.includes(:imprint_method).where('imprint_methods.name = "Name/Number"').references(:imprint_methods)
+  end
+
+  def imprintable_line_items_for_tier(tier)
+    imprintables.joins(:imprintable_imprintable_groups).where(imprintable_imprintable_groups: {tier: tier})
   end
 
   private

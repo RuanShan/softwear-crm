@@ -299,11 +299,12 @@ ActiveRecord::Schema.define(version: 20150505174238) do
   create_table "jobs", force: true do |t|
     t.string   "name"
     t.text     "description"
-    t.integer  "order_id"
+    t.integer  "jobbable_id"
     t.datetime "deleted_at"
     t.datetime "created_at"
     t.datetime "updated_at"
     t.boolean  "collapsed"
+    t.string   "jobbable_type"
   end
 
   add_index "jobs", ["deleted_at"], name: "index_jobs_on_deleted_at", using: :btree
