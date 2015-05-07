@@ -2,6 +2,10 @@ class Imprintable < ActiveRecord::Base
   include PricingModule
   include Retailable
 
+  # NOTE do try to keep the number values in these tier constants
+  # consistent with eachother.
+  TIER = OpenStruct.new(good: 3, better: 6, best: 9)
+
   TIERS = {
     3 => 'Good',
     6 => 'Better',

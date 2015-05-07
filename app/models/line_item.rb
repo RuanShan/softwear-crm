@@ -49,7 +49,9 @@ class LineItem < ActiveRecord::Base
                     variant.imprintable.base_price || 0,
         quantity: 0,
         line_itemable_id: line_itemable.id,
-        line_itemable_type: line_itemable.class.name
+        line_itemable_type: line_itemable.class.name,
+        imprintable_price: variant.imprintable.base_price,
+        decoration_price: 0,
       )
     end
   end

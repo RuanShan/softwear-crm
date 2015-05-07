@@ -81,6 +81,7 @@ class Quote < ActiveRecord::Base
   validates :valid_until_date, presence: true
   validates :shipping, price: true
   validates *INSIGHTLY_FIELDS, presence: true, if: :salesperson_has_insightly?
+  validate :no_problem_adding_line_items_from_group
 
   after_save :set_quote_request_statuses_to_quoted
   after_create :create_freshdesk_ticket
@@ -185,6 +186,44 @@ class Quote < ActiveRecord::Base
   def quote_request_ids=(ids)
     super
     @quote_request_ids_assigned = true
+  end
+
+  def line_items_from_group_attributes=(attrs)
+    imprintable_group = ImprintableGroup.find attrs[:imprintable_group_id]
+    quantity          = attrs[:quantity]
+    decoration_price  = attrs[:decoration_price]
+
+    new_line_items = [
+      Imprintable::TIER.good,
+      Imprintable::TIER.better,
+      Imprintable::TIER.best
+    ].map do |tier|
+      imprintable = imprintable_group.default_imprintable_for_tier(tier)
+
+      if imprintable.nil?
+        @line_items_from_group_error =  "Failed to find default imprintable for '#{Imprintable::TIERS[tier]}' tier"
+        return
+      end
+
+      line_item = LineItem.new
+      line_item.quantity = quantity
+      line_item.decoration_price = decoration_price
+      line_item.imprintable_price = imprintable.base_price
+      line_item.imprintable_variant_id =
+        imprintable.imprintable_variants.pluck(:id).first
+
+      line_item
+    end
+
+    new_job = Job.new
+    new_job.name        = imprintable_group.name
+    new_job.description = imprintable_group.description
+    new_job.save!
+
+    new_job.line_items = new_line_items
+
+    self.jobs << new_job
+    self.save!
   end
 
   def salesperson_has_insightly?
@@ -492,5 +531,12 @@ class Quote < ActiveRecord::Base
   def subtract_dates(time_one, time_two)
     return 'An email hasn\'t been sent yet!' unless time_two
     distance_of_time_in_words(time_one, time_two)
+  end
+
+  def no_problem_adding_line_items_from_group
+    if @line_items_from_group_error
+      errors[:line_items] << @line_items_from_group_error
+      @line_items_from_group_error = nil
+    end
   end
 end
