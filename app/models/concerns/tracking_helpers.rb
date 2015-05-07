@@ -1,6 +1,19 @@
 module TrackingHelpers
   extend ActiveSupport::Concern
 
+  class Methods
+    def self.get_order(controller, record)
+      if record.is_a? Order
+        record
+      elsif record.respond_to?(:order) && record.order
+        record.order
+      elsif controller
+        controller.instance_variable_get :@order
+      end
+    end
+  end
+
+
   included do
     include PublicActivity::Model unless ancestors.include? PublicActivity::Model
 
@@ -63,16 +76,5 @@ module TrackingHelpers
       end
     end
 
-    class Methods
-      def self.get_order(controller, record)
-        if record.is_a? Order
-          record
-        elsif record.respond_to?(:order) && record.order
-          record.order
-        elsif controller
-          controller.instance_variable_get :@order
-        end
-      end
-    end
   end
 end

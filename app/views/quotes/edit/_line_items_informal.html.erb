@@ -1,46 +1,32 @@
-<script>
-  function update_job_ids_and_tiers(){
-    $('.edit-quote-line-items').each(function(){
-        var tier = $(this).tier;
-        $(this).children('li').each(function(){
-            $(this).attr('data-tier', tier);
-        })
-    })
-  }
+<%= form_for :line_item, method: :put, url: line_items_update_path, remote: true, builder: BatchFormBuilder do |f| %> 
 
-  $(function() {
-      $( ".edit-quote-line-items" ).sortable({
-          connectWith: ".sortable-quote-line-items",
-          update: function( event, ui ) {
-              update_job_ids_and_tiers()
-          }
-      }).disableSelection();
-  });
-</script>
-
-<% quote.jobs.each do |job| %>
-    <div id="edit-quote-job-<%= job.id %> container-fluid">
-      <div class="row">
-        <div class="col-xs-12">
-          <h3><%= job.name %></h3>
-          <p><%= job.description %></p>
-        </div>
-      </div>
-      <% Imprintable::TIERS.each do |tier_number, tier_name| %>
-          <div id="edit-quote-job-<%= job.id %>-tier-<%= tier_number %>" class="row tier-row">
-            <div class="col-xs-1">
-              <%= tier_name %><br />
-            </div>
-            <div class="col-xs-11">
-              <ul class="edit-quote-line-items sortable-quote-line-items container-fluid" data-tier="<%= tier_number %>"  data-job-id="<%= job.id %>">
-                <% job.imprintable_line_items_for_tier(tier_number).each do |line_item| %>
-                    <%= render 'quotes/edit/line_items_imprintable', line_item: line_item %>
-                <% end %>
-              </ul>
-            </div>
+  <% quote.jobs.each do |job| %>
+      <div id="edit-quote-job-<%= job.id %>" class="quote-job-entry container-fluid" data-job-id='<%=job.id%>'>
+        <div class="row">
+          <div class="col-xs-12">
+            <h3><%= job.name %></h3>
+            <p><%= job.description %></p>
           </div>
-      <% end %>
-    </div>
+        </div>
+        <% Imprintable::TIERS.each do |tier_number, tier_name| %>
+            <div id="edit-quote-job-<%= job.id %>-tier-<%= tier_number %>" class="row tier-row" data-tier=<%= tier_number %>>
+              <div class="col-xs-1">
+                <%= tier_name %><br />
+              </div>
+              <div class="col-xs-11">
+                <ul class="edit-quote-line-items sortable-quote-line-items container-fluid" data-tier="<%= tier_number %>"  data-job-id="<%= job.id %>">
+                  <% job.imprintable_line_items_for_tier(tier_number).each do |line_item| %>
+                      <%= render 'quotes/edit/line_items_imprintable', line_item: line_item %>
+                  <% end %>
+                </ul>
+              </div>
+            </div>
+        <% end %>
+      </div>
+  <% end %>
+
+  <%= f.submit 'Save Changes' %>
+
 <% end %>
 
 <% unless quote.jobs.empty? %>
