@@ -222,6 +222,7 @@ class Quote < ActiveRecord::Base
       line_item.imprintable_price = imprintable.base_price
       line_item.imprintable_variant_id =
         imprintable.imprintable_variants.pluck(:id).first
+      line_item.tier = tier
 
       line_item
     end

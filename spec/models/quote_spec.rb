@@ -276,6 +276,10 @@ describe Quote, quote_spec: true do
         expect(good_li.imprintable_price).to eq good.base_price
         expect(better_li.imprintable_price).to eq better.base_price
         expect(best_li.imprintable_price).to eq best.base_price
+
+        expect(good_li.tier).to eq Imprintable::TIER.good
+        expect(better_li.tier).to eq Imprintable::TIER.better
+        expect(best_li.tier).to eq Imprintable::TIER.best
       end
 
       context 'when there is no default imprintable for any tier' do
