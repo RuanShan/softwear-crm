@@ -44,8 +44,13 @@
     </div>
 <% end %>
 
+<% unless quote.jobs.empty? %>
+    <%= link_to edit_quote_path(imprintable_only: true), class: 'btn btn-success col-sm-3 col-sm-offset-1', remote: true do %>
+        <i class="glyphicon glyphicon-plus-sign"></i> Add an imprintable
+    <% end %>
+<% end %>
 
-  <%= link_to edit_quote_path, class: 'btn btn-success col-sm-3 col-sm-offset-4', remote: true do %>
+  <%= link_to edit_quote_path, class: 'btn btn-success col-sm-3 col-sm-offset-1', remote: true do %>
       <i class="glyphicon glyphicon-plus-sign"></i> Add A New Group
   <% end %>
 
