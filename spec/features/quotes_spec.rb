@@ -9,6 +9,39 @@ feature 'Quotes management', quote_spec: true, js: true do
   given!(:quote) { create(:valid_quote) }
   given!(:imprintable) { create(:valid_imprintable) }
 
+  given(:good_variant) { create(:valid_imprintable_variant) }
+  given(:better_variant) { create(:valid_imprintable_variant) }
+  given(:best_variant) { create(:valid_imprintable_variant) }
+
+  given(:good_imprintable) { good_variant.imprintable }
+  given(:better_imprintable) { better_variant.imprintable }
+  given(:best_imprintable) { best_variant.imprintable }
+
+  given(:imprintable_group) do
+    ImprintableGroup.create(name: 'test group', description: 'yes').tap do |group|
+      iig1 = ImprintableImprintableGroup.new
+      iig1.tier = Imprintable::TIER.good
+      iig1.default = true
+      iig1.imprintable = good_imprintable
+      iig1.imprintable_group = group
+      iig1.save!
+
+      iig2 = ImprintableImprintableGroup.new
+      iig2.tier = Imprintable::TIER.better
+      iig2.default = true
+      iig2.imprintable = better_imprintable
+      iig2.imprintable_group = group
+      iig2.save!
+
+      iig3 = ImprintableImprintableGroup.new
+      iig3.tier = Imprintable::TIER.best
+      iig3.default = true
+      iig3.imprintable = best_imprintable
+      iig3.imprintable_group = group
+      iig3.save!
+    end
+  end
+
   scenario 'A user can see a list of quotes' do
     visit root_path
     unhide_dashboard
@@ -67,6 +100,31 @@ feature 'Quotes management', quote_spec: true, js: true do
 
     expect(current_path).to eq(quote_path quote.id)
     expect(quote.reload.name).to eq('New Quote Name')
+  end
+
+  scenario 'A user can add an imprintable group of line items to a quote', story_567: true do
+    imprintable_group
+    visit edit_quote_path quote
+
+    find('a', text: 'Line Items').click
+
+    click_link 'Add a new imprintable group'
+
+    select imprintable_group.name, from: 'Imprintable group'
+    fill_in 'Quantity', with: 10
+    fill_in 'Decoration price', with: 12.55
+
+    click_button 'Add Group'
+
+    expect(page).to have_content 'Quote was successfully updated.'
+    quote.reload
+
+    expect(quote.jobs.size).to be > 0
+    expect(quote.jobs.where(name: imprintable_group.name)).to exist
+    job = quote.jobs.where(name: imprintable_group.name).first
+    expect(job.line_items.where(imprintable_variant_id: good_variant)).to exist
+    expect(job.line_items.where(imprintable_variant_id: better_variant)).to exist
+    expect(job.line_items.where(imprintable_variant_id: best_variant)).to exist
   end
 
   feature 'Quote emailing' do

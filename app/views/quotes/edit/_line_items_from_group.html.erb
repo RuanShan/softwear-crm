@@ -1,7 +1,7 @@
 <h3>Add a group of imprintables to this group</h3>
 
 <%= form_for quote do |f| %>
-    <%= fields_for :line_items_from_group do |ff| %>
+    <%= f.fields_for :line_items_from_group do |ff| %>
         <%= ff.label :imprintable_group_id %><br />
         <%= ff.select :imprintable_group_id, ImprintableGroup.all.collect{|x| [x.name, x.id] } %><br />
         <%= ff.label :quantity %><br />

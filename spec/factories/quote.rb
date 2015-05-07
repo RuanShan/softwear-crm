@@ -12,6 +12,7 @@ FactoryGirl.define do
       phone_number '1234569871'
       quote_source 'Other'
       estimated_delivery_date Time.now + 1.day
+      informal true
       salesperson { |s| s.association(:user) }
       store { |st| st.association(:valid_store) }
     end

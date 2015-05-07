@@ -188,6 +188,15 @@ class Quote < ActiveRecord::Base
     @quote_request_ids_assigned = true
   end
 
+  # This is accessed by the 'fields_for' view helper
+  def line_items_from_group
+    OpenStruct.new(
+      imprintable_group_id: nil,
+      quantity: nil,
+      decoration_price: nil,
+      persisted: false
+    )
+  end
   def line_items_from_group_attributes=(attrs)
     imprintable_group = ImprintableGroup.find attrs[:imprintable_group_id]
     quantity          = attrs[:quantity]
@@ -198,7 +207,9 @@ class Quote < ActiveRecord::Base
       Imprintable::TIER.better,
       Imprintable::TIER.best
     ].map do |tier|
-      imprintable = imprintable_group.default_imprintable_for_tier(tier)
+      imprintable =
+        imprintable_group.default_imprintable_for_tier(tier) ||
+        imprintable_group.imprintables.first
 
       if imprintable.nil?
         @line_items_from_group_error =  "Failed to find default imprintable for '#{Imprintable::TIERS[tier]}' tier"
@@ -218,16 +229,15 @@ class Quote < ActiveRecord::Base
     new_job = Job.new
     new_job.name        = imprintable_group.name
     new_job.description = imprintable_group.description
-    new_job.save!
-
     new_job.line_items = new_line_items
+    new_job.save!
 
     self.jobs << new_job
     self.save!
   end
 
   def salesperson_has_insightly?
-    !salesperson.insightly_api_key.nil?
+    !salesperson.insightly_api_key.blank?
   end
 
   def insightly_opportunity_profile
