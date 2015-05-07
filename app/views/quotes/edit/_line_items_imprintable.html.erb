@@ -1,7 +1,7 @@
 <li class="sortable-quote-line-item row" data-tier="<%= line_item.tier %>" data-job-id="<%= line_item.line_itemable.id %>"  >
     <div class="col-xs-7">
       <%= line_item.imprintable.name %><br />
-      <%= line_item.imprintable.description %>
+      <%= line_item.imprintable.description.html_safe %>
     </div>
     <div class="col-xs-2">
       <h4>Quantity</h4>

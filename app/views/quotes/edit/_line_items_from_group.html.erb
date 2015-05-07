@@ -3,41 +3,26 @@
 
     <h4>Search for an imprintable</h4>
     <div class="col-sm-12" id="imprintable-add-search">
-      <%= label_tag :search_terms %>
-      <%= text_field_tag :search_imprintables %>
-      <%= button_tag 'Search Imprintables', class: 'btn btn-primary' %>
+      <%= form_tag imprintables_path, method: :get, remote: true do %>
+        <%= hidden_field_tag 'respond_with_partial', 'quotes/edit/imprintable_search.js' %>
+        <%= label_tag :q, 'Search Terms' %>
+        <%= text_field_tag :q %>
+        <%= button_tag 'Search Imprintables', id: 'search-imprintables-btn', class: 'btn btn-primary' %>
+      <% end %>
     </div>
 
     <%= form_for quote do |f| %>
-        <%= f.fields_for :line_item_to_group do |ff| %>
+      <%= f.fields_for :line_item_to_group do |ff| %>
         <h4>Search Results</h4>
         <div class="col-sm-12" id="imprintable-add-search-results">
-          <% Imprintable.where(id: [1,2,27]).each do |imprintable| %>
-            <div class="imprintable-add-search-result row">
-              <div class="col-xs-2">
-                <i><%= 'Standard Offering' if imprintable.standard_offering? %></i>
-              </div>
-                <div class="col-xs-6">
-                  <b><%= imprintable.name %></b><br />
-                  <%= imprintable.description %>
-                </div>
-                  <div class="col-xs-2">
-                    <b>Base Upcharge</b><br />
-                    <%= number_to_currency imprintable.base_price %>
-                  </div>
-                <div class="col-xs-2">
-                  <b>Mark to Add</b><br />
-                  <%= check_box_tag 'imprintables[]', imprintable.id %>
-                </div>
-            </div>
-          <% end %>
+          ...
         </div>
 
         <h4>Line Item Options</h4>
         <div class="row">
             <div class="col-xs-3">
-                <%= ff.label :imprintable_group_id %><br />
-                <%= ff.select :imprintable_group_id, quote.jobs.all.collect{|x| [x.name, x.id] } %><br />
+                <%= ff.label :job_id, 'Group' %><br />
+                <%= ff.select :job_id, quote.jobs.all.map {|x| [x.name, x.id] } %><br />
             </div>
             <div class="col-xs-3">
                 <%= ff.label :tier %><br />
@@ -64,7 +49,7 @@
 
 <% else %>
 
-    <h3>Add a group of imprintables to this group</h3>
+    <h3>Add a group of imprintables to this quote</h3>
 
     <%= form_for quote do |f| %>
         <%= f.fields_for :line_items_from_group do |ff| %>

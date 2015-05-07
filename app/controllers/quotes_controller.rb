@@ -70,7 +70,9 @@ class QuotesController < InheritedResources::Base
 
   def permitted_params
     params.permit(
+      :imprintables,
       quote: [
+        :imprintables,
         :email, :informal, :phone_number, :first_name, :last_name, :company,
         :twitter, :name, :valid_until_date, :estimated_delivery_date,
         :salesperson_id, :store_id, :shipping, :quote_source, :freshdesk_ticket_id,
@@ -83,6 +85,11 @@ class QuotesController < InheritedResources::Base
         ],
         line_items_from_group_attributes: [
           :imprintable_group_id, :quantity, :decoration_price
+        ],
+        line_item_to_group_attributes: [
+          :job_id, :tier, :quantity,
+          :decoration_price, :persisted,
+          imprintables: []
         ],
         emails_attributes: [
             :subject, :body, :sent_to, :sent_from, :cc_emails, :id, :_destroy

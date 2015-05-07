@@ -295,6 +295,44 @@ describe Quote, quote_spec: true do
       end
     end
 
+    describe '#line_item_to_group_attributes=', story_557: true do
+      subject { create(:valid_quote, jobs: [create(:job)]) }
+      let(:job) { subject.jobs.first }
+
+      let!(:variant_1) { create(:valid_imprintable_variant) }
+      let!(:variant_2) { create(:valid_imprintable_variant) }
+      let!(:imprintable_1) { variant_1.imprintable }
+      let!(:imprintable_2) { variant_2.imprintable }
+      let!(:group) { ImprintableGroup.create(name: 'test group', description: 'yeah') }
+
+      let!(:attributes) do
+        {
+          imprintables: [imprintable_1.id.to_s, imprintable_2.id.to_s],
+          job_id: job.id,
+          tier: Imprintable::TIER.better,
+          quantity: 11,
+          decoration_price: 15.30,
+        }
+      end
+
+      it 'adds imprintable line items based on given imprintables' do
+        subject.line_item_to_group_attributes = attributes
+        subject.save!
+
+        expect(job.line_items.size).to eq 2
+        expect(job.line_items.where(imprintable_variant_id: variant_1.id)).to exist
+        expect(job.line_items.where(imprintable_variant_id: variant_2.id)).to exist
+
+        job.line_items.each do |line_item|
+          expect(line_item.quantity).to eq 11
+          expect(line_item.decoration_price).to eq 15.30
+          expect(line_item.tier).to eq Imprintable::TIER.better
+        end
+        expect(job.line_items.where(imprintable_price: imprintable_1.base_price)).to exist
+        expect(job.line_items.where(imprintable_price: imprintable_2.base_price)).to exist
+      end
+    end
+
     describe '#all_activities' do
       it 'queries publicactivity' do
         expect(PublicActivity::Activity).to receive_message_chain(:where, :order)

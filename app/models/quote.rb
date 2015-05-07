@@ -237,6 +237,35 @@ class Quote < ActiveRecord::Base
     self.save!
   end
 
+  def line_item_to_group
+    OpenStruct.new(
+      imprintables: nil,
+      job_id: nil,
+      tier: nil,
+      quantity: nil,
+      decoration_price: nil,
+      persisted: false
+    )
+  end
+  def line_item_to_group_attributes=(attrs)
+    job = jobs.find_by id: attrs[:job_id]
+
+    attrs[:imprintables].map do |imprintable_id|
+      imprintable = Imprintable.find imprintable_id
+
+      line_item = LineItem.new
+      line_item.line_itemable     = job
+      line_item.tier              = attrs[:tier]
+      line_item.quantity          = attrs[:quantity]
+      line_item.decoration_price  = attrs[:decoration_price]
+      line_item.imprintable_price = imprintable.base_price
+      line_item.imprintable_variant_id =
+        imprintable.imprintable_variants.pluck(:id).first
+
+      line_item.save!
+    end
+  end
+
   def salesperson_has_insightly?
     !salesperson.insightly_api_key.blank?
   end
