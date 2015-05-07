@@ -217,6 +217,80 @@ describe Quote, quote_spec: true do
     let!(:quote) { build_stubbed(:valid_quote) }
     let(:dummy_client) { Object.new }
 
+    describe '#line_items_from_group_attributes=', story_567: true do
+      subject { create(:valid_quote) }
+      let!(:group) { ImprintableGroup.create(name: 'test group', description: 'yeah') }
+      let!(:good_iv) { create(:valid_imprintable_variant) }
+      let!(:better_iv) { create(:valid_imprintable_variant) }
+      let!(:best_iv) { create(:valid_imprintable_variant) }
+      let(:good) { good_iv.imprintable }
+      let(:better) { better_iv.imprintable }
+      let(:best) { best_iv.imprintable }
+
+      let(:job) { subject.jobs.find_by(name: group.name) }
+
+      before do
+        allow(group).to receive(:default_imprintable_for_tier) { |tier|
+          case tier
+          when Imprintable::TIER.good then good
+          when Imprintable::TIER.better then better
+          when Imprintable::TIER.best then best
+          end
+        }
+        allow(ImprintableGroup).to receive(:find)
+          .with(group.id)
+          .and_return group
+      end
+
+      let!(:attributes) do
+        {
+          imprintable_group_id: group.id,
+          quantity: 2,
+          decoration_price: 12.55,
+        }
+      end
+
+      it 'generates a "good", "better", and "best" line item' do
+        subject.line_items_from_group_attributes = attributes
+        subject.save!
+
+        expect(subject.jobs.where(name: group.name)).to exist
+        expect(subject.jobs.where(description: group.description)).to exist
+
+        expect(job.line_items.where(imprintable_variant_id: good_iv.id)).to exist
+        expect(job.line_items.where(imprintable_variant_id: better_iv.id)).to exist
+        expect(job.line_items.where(imprintable_variant_id: best_iv.id)).to exist
+
+        good_li = job.line_items.where(imprintable_variant_id: good_iv.id).first
+        better_li = job.line_items.where(imprintable_variant_id: better_iv.id).first
+        best_li = job.line_items.where(imprintable_variant_id: best_iv.id).first
+
+        expect(good_li.quantity).to eq 2
+        expect(better_li.quantity).to eq 2
+        expect(best_li.quantity).to eq 2
+
+        expect(good_li.decoration_price).to eq 12.55
+        expect(better_li.decoration_price).to eq 12.55
+        expect(best_li.decoration_price).to eq 12.55
+
+        expect(good_li.imprintable_price).to eq good.base_price
+        expect(better_li.imprintable_price).to eq better.base_price
+        expect(best_li.imprintable_price).to eq best.base_price
+      end
+
+      context 'when there is no default imprintable for any tier' do
+        before do
+          allow(group).to receive(:default_imprintable_for_tier).and_return nil
+        end
+
+        it 'adds an error to the quote model' do
+          subject.line_items_from_group_attributes = attributes
+          expect(subject.save).to eq false
+          expect(subject.errors[:line_items]).to include "Failed to find default imprintable for 'Good' tier"
+        end
+      end
+    end
+
     describe '#all_activities' do
       it 'queries publicactivity' do
         expect(PublicActivity::Activity).to receive_message_chain(:where, :order)
