@@ -1,14 +1,81 @@
-<h3>Add a group of imprintables to this group</h3>
+<% if params[:imprintable_only] %>
+    <h3>Add a imprintable line items to an existing group</h3>
 
-<%= form_for quote do |f| %>
-    <%= f.fields_for :line_items_from_group do |ff| %>
-        <%= ff.label :imprintable_group_id %><br />
-        <%= ff.select :imprintable_group_id, ImprintableGroup.all.collect{|x| [x.name, x.id] } %><br />
-        <%= ff.label :quantity %><br />
-        <%= ff.text_field :quantity %><br />
-        <%= ff.label :decoration_price %><br />
-        <%= ff.text_field :decoration_price %><br />
-        <%= ff.hidden_field :quote_id, value: quote.id %>
+    <h4>Search for an imprintable</h4>
+    <div class="col-sm-12" id="imprintable-add-search">
+      <%= label_tag :search_terms %>
+      <%= text_field_tag :search_imprintables %>
+      <%= button_tag 'Search Imprintables', class: 'btn btn-primary' %>
+    </div>
+
+    <%= form_for quote do |f| %>
+        <%= f.fields_for :line_item_to_group do |ff| %>
+        <h4>Search Results</h4>
+        <div class="col-sm-12" id="imprintable-add-search-results">
+          <% Imprintable.where(id: [1,2,27]).each do |imprintable| %>
+            <div class="imprintable-add-search-result row">
+              <div class="col-xs-2">
+                <i><%= 'Standard Offering' if imprintable.standard_offering? %></i>
+              </div>
+                <div class="col-xs-6">
+                  <b><%= imprintable.name %></b><br />
+                  <%= imprintable.description %>
+                </div>
+                  <div class="col-xs-2">
+                    <b>Base Upcharge</b><br />
+                    <%= number_to_currency imprintable.base_price %>
+                  </div>
+                <div class="col-xs-2">
+                  <b>Mark to Add</b><br />
+                  <%= check_box_tag 'imprintables[]', imprintable.id %>
+                </div>
+            </div>
+          <% end %>
+        </div>
+
+        <h4>Line Item Options</h4>
+        <div class="row">
+            <div class="col-xs-3">
+                <%= ff.label :imprintable_group_id %><br />
+                <%= ff.select :imprintable_group_id, quote.jobs.all.collect{|x| [x.name, x.id] } %><br />
+            </div>
+            <div class="col-xs-3">
+                <%= ff.label :tier %><br />
+                <%= ff.select :tier, Imprintable::TIERS.map{|number, name| [name, number]} %><br />
+            </div>
+            <div class="col-xs-3">
+                <%= ff.label :quantity %><br />
+                <%= ff.text_field :quantity %><br />
+            </div>
+            <div class="col-xs-3">
+                <%= ff.label :decoration_price %><br />
+                <%= ff.text_field :decoration_price %><br />
+            </div>
+            <%= ff.hidden_field :quote_id, value: quote.id %>
+        <% end %>
+        <br clear="all" />
+        <br clear="all" />
+        <div class="row">
+          <%= f.submit 'Add Imprintable(s)', class: 'btn btn-success col-xs-3 col-xs-offset-4' %>
+        </div>
     <% end %>
-    <%= f.submit 'Add Group' %>
+
+    </div>
+
+<% else %>
+
+    <h3>Add a group of imprintables to this group</h3>
+
+    <%= form_for quote do |f| %>
+        <%= f.fields_for :line_items_from_group do |ff| %>
+            <%= ff.label :imprintable_group_id %><br />
+            <%= ff.select :imprintable_group_id, ImprintableGroup.all.collect{|x| [x.name, x.id] } %><br />
+            <%= ff.label :quantity %><br />
+            <%= ff.text_field :quantity %><br />
+            <%= ff.label :decoration_price %><br />
+            <%= ff.text_field :decoration_price %><br />
+            <%= ff.hidden_field :quote_id, value: quote.id %>
+        <% end %>
+        <%= f.submit 'Add Group', class: 'btn btn-success'  %>
+    <% end %>
 <% end %>

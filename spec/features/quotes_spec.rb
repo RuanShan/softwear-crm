@@ -108,7 +108,7 @@ feature 'Quotes management', quote_spec: true, js: true do
 
     find('a', text: 'Line Items').click
 
-    click_link 'Add a new imprintable group'
+    click_link 'Add A New Group'
 
     select imprintable_group.name, from: 'Imprintable group'
     fill_in 'Quantity', with: 10

@@ -1,8 +1,20 @@
 
 <script>
+  function update_job_ids_and_tiers(){
+    $('.edit-quote-line-items').each(function(){
+        var tier = $(this).tier;
+        $(this).children('li').each(function(){
+            $(this).attr('data-tier', tier);
+        })
+    })
+  }
+
     $(function() {
         $( ".edit-quote-line-items" ).sortable({
-            connectWith: ".sortable-quote-line-items"
+            connectWith: ".sortable-quote-line-items",
+            update: function( event, ui ) {
+                update_job_ids_and_tiers()
+            }
         }).disableSelection();
     });
 </script>
@@ -15,14 +27,14 @@
           <p><%= job.description %></p>
         </div>
       </div>
-      <% Imprintable::TIERS.each do |number, name| %>
-          <div id="edit-quote-job-<%= job.id %>-tier-<%= number %>" class="row tier-row">
+      <% Imprintable::TIERS.each do |tier_number, tier_name| %>
+          <div id="edit-quote-job-<%= job.id %>-tier-<%= tier_number %>" class="row tier-row">
             <div class="col-xs-1">
-              <%= name %><br />
+              <%= tier_name %><br />
             </div>
             <div class="col-xs-11">
-              <ul class="edit-quote-line-items sortable-quote-line-items container-fluid">
-                <% job.imprintable_line_items_for_tier(number).each do |line_item| %>
+              <ul class="edit-quote-line-items sortable-quote-line-items container-fluid" data-tier="<%= tier_number %>"  data-job-id="<%= job.id %>">
+                <% job.imprintable_line_items_for_tier(tier_number).each do |line_item| %>
                     <%= render 'quotes/edit/line_items_imprintable', line_item: line_item %>
                 <% end %>
               </ul>
@@ -31,8 +43,18 @@
       <% end %>
     </div>
 <% end %>
-<div class="col-sm-4 col-sm-offset-4">
-  <%= link_to edit_quote_path, class: 'btn btn-success', remote: true do %>
-      <i class="glyphicon glyphicon-plus-sign"></i> Add a new imprintable group
+
+<% unless quote.jobs.empty? %>
+    <%= link_to edit_quote_path(imprintable_only: true), class: 'btn btn-success col-sm-3 col-sm-offset-1', remote: true do %>
+        <i class="glyphicon glyphicon-plus-sign"></i> Add an imprintable
+    <% end %>
+<% end %>
+
+  <%= link_to edit_quote_path, class: 'btn btn-success col-sm-3 col-sm-offset-1', remote: true do %>
+      <i class="glyphicon glyphicon-plus-sign"></i> Add A New Group
   <% end %>
-</div>
+
+
+<%= link_to edit_quote_path, class: 'btn btn-success col-sm-3 col-sm-offset-1', remote: true do %>
+    <i class="glyphicon glyphicon-plus-sign"></i> Add An Option or Upcharge
+<% end %>
