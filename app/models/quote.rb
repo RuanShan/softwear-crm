@@ -261,6 +261,7 @@ class Quote < ActiveRecord::Base
       line_item.imprintable_price = imprintable.base_price
       line_item.imprintable_variant_id =
         imprintable.imprintable_variants.pluck(:id).first
+      # TODO error out if that imprintable variant id is nil
 
       line_item.save!
     end

@@ -1,5 +1,5 @@
 <% imprintables.each do |imprintable| %>
-  <div class="imprintable-add-search-result row">
+  <div id="imprintable-result-<%=imprintable.id%>" class="imprintable-add-search-result row">
     <div class="col-xs-2">
       <i><%= 'Standard Offering' if imprintable.standard_offering? %></i>
     </div>

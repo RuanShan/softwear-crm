@@ -9,6 +9,14 @@ feature 'Quotes management', quote_spec: true, js: true do
   given!(:quote) { create(:valid_quote) }
   given!(:imprintable) { create(:valid_imprintable) }
 
+  given(:iv1) { create(:valid_imprintable_variant) }
+  given(:iv2) { create(:valid_imprintable_variant) }
+  given(:iv3) { create(:valid_imprintable_variant) }
+
+  given(:imprintable1) { iv1.imprintable }
+  given(:imprintable2) { iv2.imprintable }
+  given(:imprintable3) { iv3.imprintable }
+
   given(:good_variant) { create(:valid_imprintable_variant) }
   given(:better_variant) { create(:valid_imprintable_variant) }
   given(:best_variant) { create(:valid_imprintable_variant) }
@@ -125,6 +133,46 @@ feature 'Quotes management', quote_spec: true, js: true do
     expect(job.line_items.where(imprintable_variant_id: good_variant)).to exist
     expect(job.line_items.where(imprintable_variant_id: better_variant)).to exist
     expect(job.line_items.where(imprintable_variant_id: best_variant)).to exist
+  end
+
+  scenario 'A user can add imprintable line items to an existing job', story_557: true do
+    allow(Imprintable).to receive(:search)
+      .and_return OpenStruct.new(
+        results: [imprintable1, imprintable2, imprintable3]
+      )
+
+    quote.jobs << create(:job)
+    job = quote.jobs.first
+    visit edit_quote_path quote
+
+    find('a', text: 'Line Items').click
+
+    click_link 'Add an imprintable'
+    sleep 1
+    within '#imprintable-add-search' do
+      fill_in 'Search Terms', with: 'some imprintable'
+    end
+    sleep 0.5
+    click_button 'Search Imprintables'
+
+    sleep 0.5
+    find("#imprintable-result-#{imprintable1.id} input[type=checkbox]").click
+    sleep 0.1
+    find("#imprintable-result-#{imprintable3.id} input[type=checkbox]").click
+
+    select quote.jobs.first.name, from: 'Group'
+    select 'Better', from: 'Tier'
+    fill_in 'Quantity', with: '6'
+    fill_in 'Decoration price', with: '19.95'
+
+    click_button 'Add Imprintable(s)'
+
+    expect(page).to have_content 'Quote was successfully updated.'
+
+    job.reload
+    expect(job.line_items.where(imprintable_variant_id: iv1.id)).to exist
+    expect(job.line_items.where(imprintable_variant_id: iv2.id)).to_not exist
+    expect(job.line_items.where(imprintable_variant_id: iv3.id)).to exist
   end
 
   feature 'Quote emailing' do
