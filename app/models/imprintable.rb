@@ -7,15 +7,10 @@ class Imprintable < ActiveRecord::Base
   TIER = OpenStruct.new(good: 3, better: 6, best: 9)
 
   TIERS = {
+    2 => 'Economy',
     3 => 'Good',
     6 => 'Better',
     9 => 'Best'
-  }
-
-  TIER_DESCRIPTIONS = {
-    3 => 'Good are generally base level shirts, nothing fancy',
-    6 => 'Better are middle of the road',
-    9 => 'Best are premium quality'
   }
 
   acts_as_paranoid

@@ -11,9 +11,6 @@
                 <h4>
                   <%= tier_name %>
                 </h4>
-                <p>
-                  <%= Imprintable::TIER_DESCRIPTIONS[tier_number] %>
-                </p>
               </div>
 
               <% job.imprintable_line_items_for_tier(tier_number).each do |line_item| %>
