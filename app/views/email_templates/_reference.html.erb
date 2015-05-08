@@ -5,6 +5,7 @@
     <h4>quote</h4>
     <ul>
       <li>id</li>
+      <li>formal (Boolean)</li>
       <li>name</li>
       <li>customer_first_name</li>
       <li>customer_last_name</li>
@@ -15,7 +16,7 @@
       <li>valid_until_date</li>
       <li>estimated_delivery_date</li>
       <li>shipping_cost</li>
-      <li>jobs (Array)</li>
+      <li>jobs (Array of jobs)</li>
     </ul>
   </div>
 
@@ -24,7 +25,10 @@
     <ul>
       <li>name</li>
       <li>description</li>
-      <li>line_items (Array)</li>
+      <li>line_items (Array of line_items)</li>
+      <li>imprints (Array of imprints)</li>
+      <li>imprintable_tiers (Array of imprintable_tiers)</li>
+      <li>options_and_markups (Array of line_items)</li>
     </ul>
     <h4>salesperson</h4>
     <ul>
@@ -44,7 +48,22 @@
       <li>quantity</li>
       <li>unit_price</li>
     </ul>
+
+    <h4>imprint</h4>
+    <ul>
+      <li>imprint_method</li>
+      <li>imprint_location</li>
+      <li>description</li>
+    </ul>
+
+    <h4>imprintable_tier</h4>
+    <ul>
+      <li>name</li>
+      <li>line_items (Array of line_items)</li>
+    </ul>
+
   </div>
+
 
 
 

@@ -52,5 +52,9 @@ class QuoteDrop < Liquid::Drop
     @quote.jobs.map{ |job| JobDrop.new(job) }
   end
 
+  def formal
+    @quote.formal?
+  end
+
 end
 
