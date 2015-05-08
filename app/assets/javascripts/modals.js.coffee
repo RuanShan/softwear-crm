@@ -116,7 +116,7 @@ $(document).ready ->
 # Opens a modal that looks just like the flash modal when
 # the flash contains a success message.
 @successModal = (titleOrBody, body) ->
-  title = 
+  title =
     if body
       titleOrBody
     else

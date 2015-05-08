@@ -3,8 +3,8 @@ class Imprintable < ActiveRecord::Base
   include Retailable
 
   # NOTE do try to keep the number values in these tier constants
-  # consistent with eachother.
-  TIER = OpenStruct.new(good: 3, better: 6, best: 9)
+  # consistent with the TIERS constant.
+  TIER = OpenStruct.new(economy: 2, good: 3, better: 6, best: 9)
 
   TIERS = {
     2 => 'Economy',

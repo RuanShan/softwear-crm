@@ -1,8 +1,15 @@
-var $imprint = $("<%= j(render partial: 'imprints/imprint',
-                               locals: { job: @job }).html_safe %>");
+<% if @job %>
+  var $imprint = $("<%= j(render partial: 'imprints/imprint',
+                                 locals: { job: @job }).html_safe %>");
 
-$("#job-<%= @job.id %>").find(".imprints-container").append($imprint);
+  $("#job-<%= @job.id %>").find(".imprints-container").append($imprint);
 
-$imprint.find("select").addClass("editing-imprint");
-$imprint.find(".js-delete-imprint-button").click(deleteImprint);
-registerImprintEvents($imprint);
+  $imprint.find("select").addClass("editing-imprint");
+  $imprint.find(".js-delete-imprint-button").click(deleteImprint);
+  registerImprintEvents($imprint);
+<% else %>
+  $('#new-imprints-container').append(
+      "<%=j render 'imprints/imprint', select_tag_name: params[:select_tag_name], description_name: params[:description_name] %>"
+  );
+  registerImprintEvents('#new-imprints-container');
+<% end %>

@@ -20,13 +20,19 @@ class ImprintsController < InheritedResources::Base
   end
 
   def new
-    super do |format|
-      format.html do
-        render partial: 'imprints/imprint', 
-               locals: { job: Job.find(params[:job_id]) }
+    if params[:job_id].nil?
+      respond_to do |format|
+        format.js
       end
+    else
+      super do |format|
+        format.html do
+          render partial: 'imprints/imprint', 
+                 locals: { job: Job.find(params[:job_id]) }
+        end
 
-      format.js
+        format.js
+      end
     end
   end
 
@@ -38,6 +44,7 @@ class ImprintsController < InheritedResources::Base
           anchor: "jobs-#{@imprint.job.id}-imprint-#{@imprint.id}"
         )
       end
+      format.js
     end
   end
 
@@ -62,6 +69,7 @@ private
   def permitted_params
     params.permit(
       :job_id, :id,
+      :select_tag_name, :description_name,
       imprint: [
         :print_location_id, :job_id, :has_name_number,
         :name_format, :number_format,

@@ -10,7 +10,7 @@
       <%= link_to 'Click here', new_imprint_method_path %> to add one.
     </p>
   <% else %>
-      <div class="print-location-container">
+    <div class="print-location-container" <%= "data-select_tag_name=#{select_tag_name}" if local_assigns[:select_tag_name] %>>
         <%= render partial: 'imprint_methods/print_locations_select',
                    locals: { print_locations: if local_assigns[:imprint_method]
                                                 imprint_method.print_locations
@@ -20,6 +20,8 @@
 
                              name: if local_assigns[:imprint].try(:id)
                                      select_field_name_for.(:print_location_id)
+                                   elsif local_assigns[:select_tag_name]
+                                     select_tag_name
                                    else
                                       "imprint[#{id}[print_location_id]]"
                                    end,
@@ -46,6 +48,11 @@
         Please click 'Update' before assigning name and number!
       </div>
       <% end %>
+
+      <div>
+        <%= label_tag :description %>
+        <%= text_area_tag local_assigns[:description_name] || 'imprint[description]', local_assigns[:imprint].try(:description) %>
+      </div>
 
       <div class="full text-right">
         <%= link_to '#', class: 'js-delete-imprint-button' do %>

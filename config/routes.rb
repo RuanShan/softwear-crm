@@ -9,6 +9,8 @@ CrmSoftwearcrmCom::Application.routes.draw do
   put '/users/change_password', to: 'users#update_password', as: :update_password
   get '/users/lock', to: 'users#lock', as: :lock_user
 
+  get 'imprints/new', to: 'imprints#new', as: :new_imprint
+
   resources :imprintables do
     collection do
       resources :brands, :colors

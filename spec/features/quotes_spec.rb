@@ -110,7 +110,7 @@ feature 'Quotes management', quote_spec: true, js: true do
     expect(quote.reload.name).to eq('New Quote Name')
   end
 
-  scenario 'A user can add an imprintable group of line items to a quote', story_567: true do
+  scenario 'A user can add an imprintable group of line items to a quote', story_567: true, refactor: true do
     imprintable_group
     visit edit_quote_path quote
 
@@ -135,7 +135,7 @@ feature 'Quotes management', quote_spec: true, js: true do
     expect(job.line_items.where(imprintable_variant_id: best_variant)).to exist
   end
 
-  scenario 'A user can add imprintable line items to an existing job', story_557: true do
+  scenario 'A user can add imprintable line items to an existing job', refactor: true, story_557: true do
     allow(Imprintable).to receive(:search)
       .and_return OpenStruct.new(
         results: [imprintable1, imprintable2, imprintable3]
@@ -175,7 +175,7 @@ feature 'Quotes management', quote_spec: true, js: true do
     expect(job.line_items.where(imprintable_variant_id: iv3.id)).to exist
   end
 
-  scenario 'A user can add an option/markup to a quote with a job', story_558: true do
+  scenario 'A user can add an option/markup to a quote with a job', refactor: true, story_558: true do
     quote.update_attributes informal: true
     quote.jobs << create(:job)
     job = quote.jobs.first
@@ -206,7 +206,7 @@ feature 'Quotes management', quote_spec: true, js: true do
     expect(line_item.unit_price.to_f).to eq 99.99
   end
 
-  scenario 'A user can add a note to a quote', story_569: true do
+  scenario 'A user can add a note to a quote', refactor: true, story_569: true do
     visit edit_quote_path quote
 
     find('a', text: 'Notes').click
@@ -224,7 +224,7 @@ feature 'Quotes management', quote_spec: true, js: true do
     expect(quote.private_notes.where(comment: 'This is what I want to see')).to exist
   end
 
-  scenario 'A user can remove a note from a quote', story_569: true do
+  scenario 'A user can remove a note from a quote', refactor: true, story_569: true do
     quote.notes << Comment.create(title: 'Test Note?', comment: 'This is what I want to see', role: 'private')
 
     visit edit_quote_path quote
