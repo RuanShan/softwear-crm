@@ -100,6 +100,7 @@ CrmSoftwearcrmCom::Application.routes.draw do
     end
   end
 
+  post 'line_items', to: 'line_items#create'
   get '/line_item/select_options', to: 'line_items#select_options'
   delete 'line_items/*ids',   to: 'line_items#destroy'
   put    'line_items/update', to: 'line_items#update'

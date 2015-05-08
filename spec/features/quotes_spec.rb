@@ -186,6 +186,7 @@ feature 'Quotes management', quote_spec: true, js: true do
     click_link 'Add An Option or Markup'
     sleep 0.5
 
+    select job.name, from: 'Group'
     fill_in 'Name', with: 'Special sauce'
     fill_in 'Description', with: 'improved taste'
     fill_in 'Url', with: 'http://lmgtfy.com/?q=secret+sauce'
@@ -193,7 +194,7 @@ feature 'Quotes management', quote_spec: true, js: true do
 
     click_button 'Add Option or Markup'
 
-    expect(page).to have_content 'Quote was successfully updated.'
+    expect(page).to have_content 'Line item was successfully created.'
 
     job.reload
     expect(job.line_items.size).to eq 1
@@ -202,7 +203,7 @@ feature 'Quotes management', quote_spec: true, js: true do
     expect(line_item.name).to eq 'Special sauce'
     expect(line_item.description).to eq 'improved taste'
     expect(line_item.url).to eq 'http://lmgtfy.com/?q=secret+sauce'
-    expect(line_item.unit_price).to eq 99.99
+    expect(line_item.unit_price.to_f).to eq 99.99
   end
 
   feature 'Quote emailing' do
