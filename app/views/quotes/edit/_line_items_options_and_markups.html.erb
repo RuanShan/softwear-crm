@@ -1,0 +1,10 @@
+<li class="row option-and-markup-line-item">
+  <div class="col-xs-11">
+    <%= link_to line_item.name, line_item.url %><br />
+    <%= raw line_item.description %>
+  </div>
+  <div class="col-xs-1">
+    <h4>Price</h4>
+    <%= number_to_currency line_item.unit_price %>
+  </div>
+</li>
