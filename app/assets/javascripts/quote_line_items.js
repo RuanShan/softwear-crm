@@ -26,25 +26,28 @@ $(function() {
     connectWith: ".sortable-quote-line-items",
 
     update: function( event, ui ) {
-      var element = $(this);
-      var jobId = jobIdFor(element);
-      var tier = tierFor(element);
+      $(this).children('li').each(function() {
+        var element = $(this);
 
-      var jobField = element.find('.job-id-field');
-      var tierField = element.find('.tier-field');
+        var jobId = jobIdFor(element);
+        var tier  = tierFor(element);
 
-      var jobChanged = parseInt(jobField.val()) != parseInt(jobId);
-      // TODO These changed bools are absolutly not getting assigned correctly.
-      var tierChanged = parseInt(tierField.val()) != parseInt(tier);
+        var jobField  = element.find('.job-id-field');
+        var tierField = element.find('.tier-field');
 
-      if (jobId != null && jobChanged)
-        element.find('.job-id-field').val(jobId);
-      if (tier != null && tierChanged)
-        element.find('.tier-field').val(tier);
+        var jobChanged = jobField[0] !== undefined &&
+          parseInt(jobField.val()) != parseInt(jobId);
+        var tierChanged = tierField[0] !== undefined &&
+          parseInt(tierField.val()) != parseInt(tier);
 
-      // element.addClass('editing-line-item');
-      if (tierChanged || jobChanged)
-        element.find('.sortable-quote-line-item').addClass('editing-line-item');
+        if (jobId != null && jobChanged)
+          element.find('.job-id-field').val(jobId);
+        if (tier != null && tierChanged)
+          element.find('.tier-field').val(tier);
+
+        if (tierChanged || jobChanged)
+          element.addClass('editing-line-item');
+      });
     }
   });
 });

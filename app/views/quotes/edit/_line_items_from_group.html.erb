@@ -21,20 +21,20 @@
         <h4>Line Item Options</h4>
         <div class="row">
             <div class="col-xs-3">
-                <%= ff.label :job_id, 'Group' %><br />
-                <%= ff.select :job_id, quote.jobs.all.map {|x| [x.name, x.id] } %><br />
+              <%= ff.label :job_id, 'Group' %><br />
+              <%= ff.select :job_id, quote.jobs.all.map {|x| [x.name, x.id] } %><br />
             </div>
             <div class="col-xs-3">
-                <%= ff.label :tier %><br />
-                <%= ff.select :tier, Imprintable::TIERS.map{|number, name| [name, number]} %><br />
+              <%= ff.label :tier %><br />
+              <%= ff.select :tier, Imprintable::TIERS.map{|number, name| [name, number]} %><br />
             </div>
             <div class="col-xs-3">
-                <%= ff.label :quantity %><br />
-                <%= ff.text_field :quantity %><br />
+              <%= ff.label :quantity %><br />
+              <%= ff.text_field :quantity %><br />
             </div>
             <div class="col-xs-3">
-                <%= ff.label :decoration_price %><br />
-                <%= ff.text_field :decoration_price %><br />
+              <%= ff.label :decoration_price %><br />
+              <%= ff.text_field :decoration_price %><br />
             </div>
             <%= ff.hidden_field :quote_id, value: quote.id %>
         <% end %>
