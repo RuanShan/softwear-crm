@@ -1,0 +1,18 @@
+<ul id='comment-container'>
+  <% quote.all_comments.each do |comment| %>
+    <%= render 'comments/basic', comment: comment %>
+  <% end %>
+</ul>
+
+<%= form_for :comment, id: 'comment-form', url: quote_comments_path(quote), remote: true, builder: LancengFormBuilder do |f| %>
+  <%= f.label :title %>
+  <%= f.text_field :title %>
+
+  <%= f.label :comment %>
+  <%= f.text_area :comment %>
+
+  <%= f.label :public %>
+  <%= f.check_box :public %><br />
+
+  <%= f.submit 'Add Note' %>
+<% end %>

@@ -51,6 +51,11 @@
           </a>
         </li>
         <li>
+          <a href="#notes" data-toggle="tab">
+            <i class="fa fa-bars"></i> Notes
+          </a>
+        </li>
+        <li>
           <a href="#quote_actions" data-toggle="tab">
             <i class="fa fa-cogs"></i> Actions
           </a>
@@ -77,6 +82,10 @@
 
         <div class="tab-pane animated fadeInRight" id="line_items">
             <%= render 'quotes/edit/line_items', quote: @quote %>
+        </div>
+
+        <div class="tab-pane animated  fadeInRight" id="notes">
+          <%= render 'quotes/edit/notes', quote: @quote %>
         </div>
 
         <div class="tab-pane animated fadeInRight" id="quote_actions">

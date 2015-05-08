@@ -38,11 +38,14 @@ CrmSoftwearcrmCom::Application.routes.draw do
       end
     end
 
+    resources :comments
+
     collection do
       get 'quote_select'
       post 'stage_quote'
     end
   end
+  resources :comments
 
   resources :quote_requests do
     get :dock

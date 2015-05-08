@@ -50,16 +50,18 @@
 
 <div id="quote-additional-upcharges container-fluid">
   <h3>Notes</h3>
-  <div class="row">
-    <div id="quote-show-notes">
-      <div class="informal-quote-line-item col-xs-9 pull-right">
-        <h4>
-          Need to add note technology to quotes
-        </h4>
-        <p>
-          Just like comments, in fact can be comments, would just have title and body.
-        </p>
+  <% quote.public_notes.each do |note| %>
+    <div class="row">
+      <div id="quote-show-notes">
+        <div class="informal-quote-line-item col-xs-9 pull-right">
+          <h4>
+            <%= note.title %>
+          </h4>
+          <p>
+            <%= note.comment %>
+          </p>
+        </div>
       </div>
     </div>
-  </div>
+  <% end %>
 </div>

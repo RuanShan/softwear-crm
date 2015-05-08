@@ -206,6 +206,40 @@ feature 'Quotes management', quote_spec: true, js: true do
     expect(line_item.unit_price.to_f).to eq 99.99
   end
 
+  scenario 'A user can add a note to a quote', story_569: true do
+    visit edit_quote_path quote
+
+    find('a', text: 'Notes').click
+
+    fill_in 'Title', with: 'Test Note?'
+    fill_in 'Comment', with: 'This is what I want to see'
+
+    click_button 'Add Note'
+
+    expect(page).to have_content 'Test Note?'
+    expect(page).to have_content 'This is what I want to see'
+
+    quote.reload
+    expect(quote.private_notes.where(title: 'Test Note?')).to exist
+    expect(quote.private_notes.where(comment: 'This is what I want to see')).to exist
+  end
+
+  scenario 'A user can remove a note from a quote', story_569: true do
+    quote.notes << Comment.create(title: 'Test Note?', comment: 'This is what I want to see', role: 'private')
+
+    visit edit_quote_path quote
+
+    find('a', text: 'Notes').click
+
+    sleep 0.5
+    first('.delete-comment').click
+    sleep 0.5
+
+    quote.reload
+    expect(quote.notes.where(title: 'Test Note?')).to_not exist
+    expect(quote.notes.where(comment: 'This is what I want to see')).to_not exist
+  end
+
   feature 'Quote emailing' do
     scenario 'A user can email a quote to the customer' do
       visit edit_quote_path quote.id

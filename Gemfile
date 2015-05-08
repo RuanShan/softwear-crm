@@ -106,6 +106,7 @@ group :test do
   gem 'fakeredis', :require => 'fakeredis/rspec'
 end
 
+gem 'acts_as_commentable'
 gem 'inherited_resources'
 gem 'devise'
 gem 'figaro'

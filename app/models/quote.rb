@@ -8,6 +8,7 @@ class Quote < ActiveRecord::Base
   include ActionView::Helpers::DateHelper
 
   acts_as_paranoid
+  acts_as_commentable :public, :private
   tracked by_current_user
   get_insightly_api_key_from { salesperson.try(:insightly_api_key) }
 
@@ -49,6 +50,9 @@ class Quote < ActiveRecord::Base
   STEP_4_FIELDS = [
     :line_items
   ]
+  STEP_5_FIELD = [
+    :all_comments
+  ]
   INSIGHTLY_FIELDS = [
     :insightly_category_id,
     :insightly_probability,
@@ -88,6 +92,15 @@ class Quote < ActiveRecord::Base
   after_create :create_insightly_opportunity
   before_create :set_default_valid_until_date
   after_initialize  :initialize_time
+
+  alias_method :comments, :all_comments
+  alias_method :comments=, :all_comments=
+  alias_method :notes, :all_comments
+  alias_method :notes=, :all_comments=
+  alias_method :public_notes, :public_comments
+  alias_method :public_notes=, :public_comments=
+  alias_method :private_notes, :private_comments
+  alias_method :private_notes=, :private_comments=
 
   def all_activities
     PublicActivity::Activity.where( '

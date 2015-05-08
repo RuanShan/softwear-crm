@@ -1,0 +1,17 @@
+<li id="comment-<%= comment.id %>" style='border-top: 1px solid black;'>
+  <div class='row'>
+    <div class='col-sm-3'>
+      <h3><%= comment.title %></h3>
+    </div>
+    <div class='col-sm-1'>
+      <%= link_to comment_path(comment), class: 'delete-comment', method: :delete, remote: true do %>
+        <i class="fa fa-2x danger fa-times-circle"></i>
+      <% end %>
+    </div>
+  </div>
+  (<%= comment.role %>)
+
+  <p>
+    <%= comment.comment %>
+  </p>
+</li>

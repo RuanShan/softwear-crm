@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150506190949) do
+ActiveRecord::Schema.define(version: 20150508182831) do
 
   create_table "activities", force: true do |t|
     t.integer  "trackable_id"
@@ -122,6 +122,21 @@ ActiveRecord::Schema.define(version: 20150506190949) do
 
   add_index "colors", ["deleted_at"], name: "index_colors_on_deleted_at", using: :btree
   add_index "colors", ["retail"], name: "index_colors_on_retail", using: :btree
+
+  create_table "comments", force: true do |t|
+    t.string   "title",            limit: 50, default: ""
+    t.text     "comment"
+    t.integer  "commentable_id"
+    t.string   "commentable_type"
+    t.integer  "user_id"
+    t.string   "role",                        default: "comments"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "comments", ["commentable_id"], name: "index_comments_on_commentable_id", using: :btree
+  add_index "comments", ["commentable_type"], name: "index_comments_on_commentable_type", using: :btree
+  add_index "comments", ["user_id"], name: "index_comments_on_user_id", using: :btree
 
   create_table "coordinate_imprintables", force: true do |t|
     t.integer  "coordinate_id"
