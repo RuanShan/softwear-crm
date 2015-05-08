@@ -5,9 +5,9 @@
     <% if line_item.valid? %>
       if ($container.hasClass('editing-line-item')) {
         $container.removeClass('editing-line-item');
-
         shine($container, false);
       }
+
       $container.find('input').each(function() {
         if ($(this).hasClass('editing-line-item')) {
           $(this).removeClass('editing-line-item');
@@ -34,18 +34,29 @@
     <% if line_item.valid? %>    
       var $oldChildren = $row.children();
 
-      $oldChildren.each(function() {
-        $(this).remove();
+      if (!$row.data('no-rerender')) {
+        $oldChildren.each(function() {
+          $(this).remove();
+        });
+
+        $row.append(
+          "<%= j render partial: 'standard_view_entry',
+                        locals: { line_item: line_item } %>"
+        );
+      }
+
+      if ($row.hasClass('editing-line-item')) {
+        $row.removeClass('editing-line-item');
+        shine($row, false);
+      }
+
+      $row.find('input').each(function() {
+        if ($(this).hasClass('editing-line-item')) {
+          $(this).removeClass('editing-line-item');
+          shine($(this), true);
+        }
       });
-
-      $row.append(
-        "<%= j render partial: 'standard_view_entry',
-                      locals: { line_item: line_item } %>"
-      );
-
-      var $inputs = $row.find('input');
-      shine($inputs, true);
-      shine($row, false);
+     
 
     <% else %>
 

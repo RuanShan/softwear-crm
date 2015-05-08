@@ -1,20 +1,27 @@
-<li class="row option-and-markup-line-item">
-  <% if line_item.line_itemable.jobbable.formal? %>
-    <div class="col-xs-9">
-  <% else %>
-      <div class="col-xs-11">
-  <% end %>
-    <%= link_to line_item.name, line_item.url %><br />
-    <%= raw line_item.description %>
-  </div>
-  <% if line_item.line_itemable.jobbable.formal? %>
-      <div class="col-xs-2">
-        <h4>Quantity</h4>
-        <%= line_item.quantity %>
+<%= batch_fields_for line_item do |f| %>
+  <li id="line-item-<%=line_item.id%>" class="row option-and-markup-line-item" data-no-rerender="true">
+    <% if line_item.line_itemable.jobbable.formal? %>
+        <div class="col-xs-8">
+    <% else %>
+        <div class="col-xs-10">
+    <% end %>
+      <%= link_to line_item.name, line_item.url %><br />
+      <%= raw line_item.description %>
+    </div>
+    <% if line_item.line_itemable.jobbable.formal? %>
+        <div class="col-xs-2">
+          <%= f.label :quantity %>
+          <%= f.number_field :quantity, class: 'line-item-edit-field' %>
+        </div>
+    <% end %>
+    <div class="col-xs-2">
+
+      <h4>Price</h4>
+      <div class='input-group'>
+        <span class='input-group-addon'>$</span>
+        <%= f.text_field :unit_price, class: 'line-item-edit-field unit-price' %>
       </div>
-  <% end %>
-  <div class="col-xs-1">
-    <h4>Price</h4>
-    <%= number_to_currency line_item.unit_price %>
-  </div>
-</li>
+
+    </div>
+  </li>
+<% end %>
