@@ -24,8 +24,8 @@ class JobDrop < Liquid::Drop
     Imprintable::TIERS.map{|number, name| ImprintableTierDrop.new(number: number, name: name, job: @job)}
   end
 
-  def ioptions_and_markups
-    @job.options_and_markups.map{|li| LineItemDrop.new(li) }
+  def additional_options_and_markups
+    @job.additional_options_and_markups.map{|li| LineItemDrop.new(li) }
   end
 end
 

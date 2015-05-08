@@ -9,7 +9,7 @@ class ImprintableTierDrop < Liquid::Drop
   end
 
   def line_items
-    @imprintable_tier[:job].imprintable_line_items_for_tier(@imprintable_tier[:number])
+    @imprintable_tier[:job].imprintable_line_items_for_tier(@imprintable_tier[:number]).map{|li| LineItemDrop.new(li)}
   end
 
 end

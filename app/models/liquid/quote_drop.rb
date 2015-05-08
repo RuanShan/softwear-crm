@@ -56,5 +56,9 @@ class QuoteDrop < Liquid::Drop
     @quote.formal?
   end
 
+  def additional_options_and_markups
+    @quote.additional_options_and_markups.map{|li| LineItemDrop.new(li)}
+  end
+
 end
 

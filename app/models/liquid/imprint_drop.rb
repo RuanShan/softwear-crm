@@ -9,7 +9,7 @@ class ImprintDrop < Liquid::Drop
   end
 
   def imprint_location
-    @impint.imprint_location.name
+    @impint.print_location.name
   end
 
   def description
