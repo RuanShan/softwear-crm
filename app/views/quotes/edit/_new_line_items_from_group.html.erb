@@ -1,0 +1,15 @@
+<h3>Add a group of imprintables to this quote</h3>
+
+<%= form_for quote do |f| %>
+    <%= f.fields_for :line_items_from_group do |ff| %>
+        <%= ff.label :imprintable_group_id %><br />
+        <%= ff.select :imprintable_group_id, ImprintableGroup.all.collect{|x| [x.name, x.id] } %><br />
+        <%= ff.label :quantity %><br />
+        <%= ff.text_field :quantity %><br />
+        <%= ff.label :decoration_price %><br />
+        <%= ff.text_field :decoration_price %><br />
+        <%= ff.hidden_field :quote_id, value: quote.id %>
+    <% end %>
+    <%= f.submit 'Add Group', class: 'btn btn-success'  %>
+<% end %>
+

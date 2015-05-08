@@ -116,7 +116,9 @@ class LineItemsController < InheritedResources::Base
 
       format.json(&method(:create_json))
       format.js { render locals: { success: @line_item.valid? } }
-      format.html { redirect_to root_path }
+      format.html do
+        redirect_to params[:done_path] || root_path
+      end
     end
   end
 
@@ -304,7 +306,7 @@ class LineItemsController < InheritedResources::Base
       line_item: [
         :id, :name, :description, :quantity, :url,
         :unit_price, :imprintable_variant_id,
-        :taxable
+        :taxable, :line_itemable_id, :line_itemable_type
       ]
     )
   end

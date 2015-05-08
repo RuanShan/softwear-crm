@@ -1,0 +1,29 @@
+<h3>Add a an option or markup to this quote</h3>
+
+<%= form_for LineItem.new do |f| %>
+  <%= hidden_field_tag :done_path, quote_path(quote.id) %>
+
+  <%= f.hidden_field :line_itemable_type, value: 'Job' %>
+  <%= f.label :line_itemable_id, 'Group' %><br />
+  <%= f.select :line_itemable_id, quote.jobs.map { |x| [x.name, x.id] } %><br />
+
+  <%= f.label :name %><br />
+  <%= f.text_field :name %><br />
+
+  <%= f.label :description %><br />
+  <%= f.text_field :description %><br />
+
+  <%= f.label :url %><br />
+  <%= f.text_field :url %><br />
+
+  <% if quote.formal? %>
+      <%= f.label :quantity %><br />
+      <%= f.text_field :quantity %><br />
+  <% else %>
+    <%= f.hidden_field :quantity, value: LineItem::MARKUP_ITEM_QUANTITY %>
+    <br />
+  <% end %>
+  <%= f.label :unit_price %><br />
+  <%= f.text_field :unit_price %><br />
+  <%= f.submit 'Add Option or Markup', class: 'btn btn-success'  %>
+<% end %>

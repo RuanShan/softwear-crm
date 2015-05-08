@@ -41,16 +41,14 @@
   background-color: #EDFFF9;
 }
 
-.sortable-quote-line-items {
+.sortable-quote-line-items, .option-and-markup-line-items {
   list-style-type: none;
   float: left;
   min-height: 20px;
-//  background-color: #E5E9EC;
   width: 100%
 }
 
-.sortable-quote-line-item {
-//  background-color: #ffffff;
+.sortable-quote-line-item,.option-and-markup-line-item  {
   margin: auto 5px;
 }
 
