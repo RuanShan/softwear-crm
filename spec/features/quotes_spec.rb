@@ -175,6 +175,36 @@ feature 'Quotes management', quote_spec: true, js: true do
     expect(job.line_items.where(imprintable_variant_id: iv3.id)).to exist
   end
 
+  scenario 'A user can add an option/markup to a quote with a job', story_558: true do
+    quote.update_attributes informal: true
+    quote.jobs << create(:job)
+    job = quote.jobs.first
+    visit edit_quote_path quote
+
+    find('a', text: 'Line Items').click
+
+    click_link 'Add An Option or Markup'
+    sleep 0.5
+
+    fill_in 'Name', with: 'Special sauce'
+    fill_in 'Description', with: 'improved taste'
+    fill_in 'Url', with: 'http://lmgtfy.com/?q=secret+sauce'
+    fill_in 'Unit price', with: '99.99'
+
+    click_button 'Add Option or Markup'
+
+    expect(page).to have_content 'Quote was successfully updated.'
+
+    job.reload
+    expect(job.line_items.size).to eq 1
+
+    line_item = job.line_items.first
+    expect(line_item.name).to eq 'Special sauce'
+    expect(line_item.description).to eq 'improved taste'
+    expect(line_item.url).to eq 'http://lmgtfy.com/?q=secret+sauce'
+    expect(line_item.unit_price).to eq 99.99
+  end
+
   feature 'Quote emailing' do
     scenario 'A user can email a quote to the customer' do
       visit edit_quote_path quote.id

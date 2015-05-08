@@ -4,10 +4,13 @@
     <%= f.fields_for :line_items_options_and_markups do |ff| %>
         <%= ff.label :name %><br />
         <%= ff.text_field :name %><br />
-        <%= ff.label :descripton %><br />
-        <%= ff.text_field :descripton %><br />
+
+        <%= ff.label :description %><br />
+        <%= ff.text_field :description %><br />
+
         <%= ff.label :url %><br />
         <%= ff.text_field :url %><br />
+
         <% if quote.formal? %>
             <%= ff.label :quantity %><br />
             <%= ff.text_field :quantity %><br />
