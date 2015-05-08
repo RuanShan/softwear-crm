@@ -13,15 +13,3 @@
     <%= f.submit 'Add Group', class: 'btn btn-success'  %>
 <% end %>
 
-<h3>Add a imprintable line items to an existing group</h3>
-
-<h4>Search for an imprintable</h4>
-<div class="col-sm-12" id="imprintable-add-search">
-  <%= form_tag imprintables_path, method: :get, remote: true do %>
-      <%= hidden_field_tag 'respond_with_partial', 'quotes/edit/imprintable_search.js' %>
-      <%= label_tag :q, 'Search Terms' %>
-      <%= text_field_tag :q %>
-      <%= button_tag 'Search Imprintables', id: 'search-imprintables-btn', class: 'btn btn-primary' %>
-  <% end %>
-</div>
-

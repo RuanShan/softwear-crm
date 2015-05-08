@@ -1,8 +1,18 @@
 <li class="row option-and-markup-line-item">
-  <div class="col-xs-11">
+  <% if line_item.line_itemable.jobbable.formal? %>
+    <div class="col-xs-9">
+  <% else %>
+      <div class="col-xs-11">
+  <% end %>
     <%= link_to line_item.name, line_item.url %><br />
     <%= raw line_item.description %>
   </div>
+  <% if line_item.line_itemable.jobbable.formal? %>
+      <div class="col-xs-2">
+        <h4>Quantity</h4>
+        <%= line_item.quantity %>
+      </div>
+  <% end %>
   <div class="col-xs-1">
     <h4>Price</h4>
     <%= number_to_currency line_item.unit_price %>

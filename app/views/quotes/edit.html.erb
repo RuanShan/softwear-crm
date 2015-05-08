@@ -76,11 +76,7 @@
         </div>
 
         <div class="tab-pane animated fadeInRight" id="line_items">
-          <% if @quote.formal? %>
-            <%= render 'quotes/edit/line_items_formal', quote: @quote %>
-          <% else %>
-            <%= render 'quotes/edit/line_items_informal', quote: @quote %>
-          <% end %>
+            <%= render 'quotes/edit/line_items', quote: @quote %>
         </div>
 
         <div class="tab-pane animated fadeInRight" id="quote_actions">
