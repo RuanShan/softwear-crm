@@ -11,6 +11,12 @@ $(function() {
     return element.closest('.tier-row').data('tier');
   }
 
+  function notifyUnsavedChanges() {
+    window.onbeforeunload = function() {
+      return 'There are unsaved changes to line items. Are you sure you want to leave?'
+    }
+  }
+
   $('.line-item-edit-field').change(function(e) {
     var container = $(this).closest('.sortable-quote-line-item');
     var total = container.find('.line-item-total-price');
@@ -20,6 +26,8 @@ $(function() {
     total.text('$' + (imprintablePrice + decorationPrice).toFixed(2));
 
     $(this).addClass('editing-line-item');
+
+    notifyUnsavedChanges();
   });
 
   $(".edit-quote-line-items").sortable({
@@ -48,6 +56,9 @@ $(function() {
         if (tierChanged || jobChanged)
           element.addClass('editing-line-item');
       });
+
+      if ($(this).children('li').length != 0)
+        notifyUnsavedChanges();
     }
   });
 });

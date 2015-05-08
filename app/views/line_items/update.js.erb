@@ -59,4 +59,5 @@
 
 <% unless @line_items.empty? %>
   <%= update_order_timeline(@line_items.first.line_itemable.try(:order)) %>
+  window.onbeforeunload = undefined;
 <% end %>
