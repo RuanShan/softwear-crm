@@ -6,15 +6,21 @@
       if ($container.hasClass('editing-line-item')) {
         $container.removeClass('editing-line-item');
 
-        var $inputs = $container.find('input');
-        shine($inputs, true);
         shine($container, false);
       }
+      $container.find('input').each(function() {
+        if ($(this).hasClass('editing-line-item')) {
+          $(this).removeClass('editing-line-item');
+          shine($(this), true);
+        }
+      });
 
     <% else %>
 
-      errorHandlerFrom($container, 'line_item', $container, <%= line_item.id %>)
-        .handleErrors(
+      var handler = errorHandlerFrom($container, 'line_item', $container, <%= line_item.id %>);
+      
+      if (handler)
+        handler.handleErrors(
           <%= line_item.errors.messages.to_json.html_safe %>,
           "<%= j render partial: 'shared/modal_errors',
                         locals: { object: line_item } %>"
@@ -43,12 +49,15 @@
 
     <% else %>
 
-      errorHandlerFrom($row, 'line_item', $row, <%= line_item.id %>)
-        .handleErrors(<%= line_item.errors.messages.to_json.html_safe %>);
+      var handler = errorHandlerFrom($row, 'line_item', $row, <%= line_item.id %>);
+      
+      if (handler)
+        handler.handleErrors(<%= line_item.errors.messages.to_json.html_safe %>);
     <% end %>
   <% end %>
 <% end %>
 
 <% unless @line_items.empty? %>
   <%= update_order_timeline(@line_items.first.line_itemable.try(:order)) %>
+  window.onbeforeunload = undefined;
 <% end %>

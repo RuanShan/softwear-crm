@@ -1,21 +1,33 @@
-<li class="sortable-quote-line-item row" data-tier="<%= line_item.tier %>" data-job-id="<%= line_item.line_itemable.id %>"  >
-    <div class="col-xs-7">
-      <%= line_item.imprintable.name %><br />
-      <%= line_item.imprintable.description.html_safe %>
-    </div>
-    <div class="col-xs-2">
-      <h4>Quantity</h4>
-      <%= line_item.quantity %>
-    </div>
-    <div class="col-xs-2">
-      <h4>Pricing</h4>
-      <b>Imprintable</b>
-      <%= number_to_currency line_item.imprintable_price %>
-      <b>Decoration</b>
-      <%= number_to_currency line_item.decoration_price %>
-    </div>
-    <div class="col-xs-1">
-      <h4>Total</h4>
-      <%= number_to_currency line_item.unit_price %>
-    </div>
-</li>
+<li id="edit-line-item-<%= line_item.id %>" class="sortable-quote-line-item row">
+  <%= batch_fields_for line_item do |f| %>
+    <%= f.hidden_field :tier, class: 'tier-field' %>
+    <%= f.hidden_field :line_itemable_id, class: 'job-id-field' %>
+
+      <div class="col-xs-7">
+        <%= line_item.imprintable.name %><br />
+        <%= line_item.imprintable.description.html_safe %>
+      </div>
+      <div class="col-xs-2">
+        <h4>Quantity</h4>
+        <%= f.number_field :quantity, class: 'line-item-edit-field' %>
+      </div>
+      <div class="col-xs-2">
+        <h4>Pricing</h4>
+        <%= f.label :imprintable_price, 'Imprintable' %>
+        <div class='input-group'>
+          <span class='input-group-addon'>$</span>
+          <%= f.text_field :imprintable_price, class: 'line-item-edit-field imprintable-price' %>
+        </div>
+
+        <%= f.label :decoration_price, 'Decoration' %>
+        <div class='input-group'>
+          <span class='input-group-addon'>$</span>
+          <%= f.text_field :decoration_price, class: 'line-item-edit-field decoration-price' %>
+        </div>
+      </div>
+      <div class="col-xs-1">
+        <h4>Total</h4>
+        <span class='line-item-total-price'><%= number_to_currency line_item.unit_price %></span>
+      </div>
+  </li>
+<% end %>

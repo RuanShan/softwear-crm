@@ -4,9 +4,6 @@ class LineItemsController < InheritedResources::Base
 
   after_filter :assign_line_itemable, only: [:create]
 
-  # before_filter :load_line_itemable,
-                # except: [:select_options, :destroy, :update]
-
   def new
     super do |format|
       @line_item = @line_itemable.line_items.new
