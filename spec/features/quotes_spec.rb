@@ -25,6 +25,12 @@ feature 'Quotes management', quote_spec: true, js: true do
   given(:better_imprintable) { better_variant.imprintable }
   given(:best_imprintable) { best_variant.imprintable }
 
+  given(:print_location_1) { create(:valid_print_location) }
+  given(:print_location_2) { create(:valid_print_location) }
+
+  given(:imprint_method_1) { print_location_1.imprint_method }
+  given(:imprint_method_2) { print_location_2.imprint_method }
+
   given(:imprintable_group) do
     ImprintableGroup.create(name: 'test group', description: 'yes').tap do |group|
       iig1 = ImprintableImprintableGroup.new
@@ -110,13 +116,20 @@ feature 'Quotes management', quote_spec: true, js: true do
     expect(quote.reload.name).to eq('New Quote Name')
   end
 
-  scenario 'A user can add an imprintable group of line items to a quote', story_567: true, refactor: true do
-    imprintable_group
+  scenario 'A user can add an imprintable group of line items to a quote', story_567: true, refactor: true, story_570: true do
+    imprintable_group; imprint_method_1; imprint_method_2
     visit edit_quote_path quote
 
     find('a', text: 'Line Items').click
 
     click_link 'Add A New Group'
+
+    click_link 'Add Imprint'
+    sleep 0.5
+    find('select[name=imprint_method]').select imprint_method_2.name
+
+    click_link 'Add Imprint'
+    sleep 0.5
 
     select imprintable_group.name, from: 'Imprintable group'
     fill_in 'Quantity', with: 10
@@ -133,6 +146,7 @@ feature 'Quotes management', quote_spec: true, js: true do
     expect(job.line_items.where(imprintable_variant_id: good_variant)).to exist
     expect(job.line_items.where(imprintable_variant_id: better_variant)).to exist
     expect(job.line_items.where(imprintable_variant_id: best_variant)).to exist
+    expect(job.imprints.size).to eq 2
   end
 
   scenario 'A user can add imprintable line items to an existing job', refactor: true, story_557: true do

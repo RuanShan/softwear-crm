@@ -3,11 +3,6 @@ class QuotesController < InheritedResources::Base
   before_action :set_current_action
   require 'mail'
 
-  def update
-    Rubinius::Debugger.start
-    super
-  end
-
   def new
     add_params_from_docked_quote_request
     super do
