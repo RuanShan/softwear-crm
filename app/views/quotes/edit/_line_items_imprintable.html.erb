@@ -4,15 +4,15 @@
     <%= f.hidden_field :line_itemable_id, class: 'job-id-field' %>
 
       <div class="col-xs-7">
-        <%= line_item.imprintable.name %><br />
-        <%= line_item.imprintable.description.html_safe %>
+        <b><%= line_item.imprintable.name %></b><br />
+        <%= line_item.imprintable.description.html_safe %><br />
+        <%= link_to 'Add Coordinate', '#' %> |  <%= link_to 'Add Similar', '#' %>
       </div>
       <div class="col-xs-2">
-        <h4>Quantity</h4>
+        <%= f.label :decoration_price, 'Quantity' %>
         <%= f.number_field :quantity, class: 'line-item-edit-field' %>
       </div>
       <div class="col-xs-2">
-        <h4>Pricing</h4>
         <%= f.label :imprintable_price, 'Imprintable' %>
         <div class='input-group'>
           <span class='input-group-addon'>$</span>
@@ -26,8 +26,9 @@
         </div>
       </div>
       <div class="col-xs-1">
-        <h4>Total</h4>
+        <b>Price</b>
         <span class='line-item-total-price'><%= number_to_currency line_item.unit_price %></span>
+        <%= link_to 'Remove', '#' %>
       </div>
-  </li>
-<% end %>
+  <% end %>
+</li>

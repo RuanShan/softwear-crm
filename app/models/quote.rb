@@ -495,7 +495,7 @@ class Quote < ActiveRecord::Base
   end
 
   def additional_options_and_markups
-    line_items.where(quantity: LineItem::MARKUP_ITEM_QUANTITY)
+    line_items.where(imprintable_variant_id: nil)
   end
 
   private

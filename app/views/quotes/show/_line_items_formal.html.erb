@@ -17,7 +17,11 @@
         <% job.line_items.each do |li| %>
             <tr class="no-break">
               <td class="col-sm-8">
-                <b><%= li.url.blank? ? (li.name) : (link_to li.name, url_with_protocol(li.url), target: '_blank') %></b><br />
+                <% if li.imprintable? %>
+                    <b><%= li.url.blank? ? (li.imprintable.name) : (link_to li.imprintable.name, url_with_protocol(li.url), target: '_blank') %></b><br />
+              <% else %>
+                    <b><%= li.url.blank? ? (li.name) : (link_to li.name, url_with_protocol(li.url), target: '_blank') %></b><br />
+              <% end %>
                 <%= raw li.description %>
               </td>
               <td class="col-sm-1"><%= number_to_currency(li.unit_price) %></td>
@@ -55,3 +59,23 @@
     </tbody>
   </table>
 </div>
+
+<% unless quote.public_notes.empty? %>
+    <div id="quote-additional-upcharges container-fluid">
+      <h3>Notes</h3>
+      <% quote.public_notes.each do |note| %>
+          <div class="row">
+            <div id="quote-show-notes">
+              <div class="informal-quote-line-item col-xs-9 pull-right">
+                <h4>
+                  <%= note.title %>
+                </h4>
+                <p>
+                  <%= note.comment %>
+                </p>
+              </div>
+            </div>
+          </div>
+      <% end %>
+    </div>
+<% end %>
