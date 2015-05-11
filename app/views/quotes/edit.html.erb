@@ -1,30 +1,37 @@
-<div class="page-heading animated fadeInDownBig col-lg-6">
-  <h1>Edit<strong> Quote</strong></h1>
-
-  <% if @quote.insightly_opportunity_id %>
-    <div class="pull-left">
-      <h4>(<%= link_to 'Insightly', @quote.insightly_opportunity_link, target: '_blank' %>)</h4>
+<div class="row-fluid">
+    <div class="page-heading animated fadeInDownBig pull-left">
+      <h1>Edit<strong> Quote</strong> <%= @quote.id %></h1>
+      <h2><%= @quote.name %></h2>
     </div>
-  <% end %>
 
-  <% unless @quote.freshdesk_ticket_id.blank? %>
-    <div class="pull-left">
-      <h4>(<%= link_to 'Freshdesk', @quote.freshdesk_ticket_link, target: '_blank' %>)</h4>
+    <div class="pull-right text-right">
+
+      <% unless @quote.insightly_opportunity_id.blank? %>
+          <%= link_to  @quote.freshdesk_ticket_link, class: 'btn btn-warning',
+                       'data-action' => 'new', 'data-toggle' => 'tooltip', 'title' => 'Insightly Opportunity' do %>
+              <i class="softwear-icon-insightly-icon"></i> Insightly Opportunity
+          <% end %>
+      <% end %>
+
+      <% unless @quote.freshdesk_ticket_id.blank? %>
+          <%= link_to  @quote.freshdesk_ticket_link, class: 'btn btn-success',
+                      'data-action' => 'new', 'data-toggle' => 'tooltip', 'title' => 'Freshdesk Ticket' do %>
+              <i class="softwear-icon-freshdesk-icon"></i> Freshdesk Ticket
+          <% end %>
+      <% end %>
+
+      <%= link_to new_order_path(quote_id: @quote.id), class: 'btn btn-success',
+                 'data-action' => 'new', 'data-toggle' => 'tooltip', 'title' => 'New Order' do %>
+        <i class="fa fa-plus"></i> Create Order from Quote
+      <% end %>
+
+      <%= link_to quote_path(@quote), class: 'btn btn-primary',
+                  'data-action' => 'show', 'data-toggle' => 'tooltip', 'title' => 'Print' do %>
+          <i class="fa fa-print"></i> Print Quote
+      <% end %>
     </div>
-  <% end %>
 </div>
-
-<div class="col-ls-6 text-right">
-  <%= link_to new_order_path(quote_id: @quote.id), class: 'btn btn-success',
-             'data-action' => 'new', 'data-toggle' => 'tooltip', 'title' => 'New Order' do %>
-    <i class="fa fa-plus"></i> Create Order from Quote
-  <% end %>
-
-  <%= link_to quote_path(@quote), class: 'btn btn-primary',
-              'data-action' => 'show', 'data-toggle' => 'tooltip', 'title' => 'Print' do %>
-      <i class="fa fa-print"></i> Print Quote
-  <% end %>
-</div>
+<br clear="all" />
 
 <div class="row">
   <div class="col-sm-12">
@@ -42,12 +49,12 @@
         </li>
         <li>
           <a href="#insightly" data-toggle="tab">
-            <i class="fa fa-search"></i> Insightly
+            <i class="softwear-icon-insightly-icon"></i> Insightly
           </a>
         </li>
         <li>
           <a href="#line_items" data-toggle="tab">
-            <i class="fa fa-bars"></i> Line Items
+            <i class="softwear-icon-t-shirt"></i> Line Items
           </a>
         </li>
         <li>
@@ -64,15 +71,15 @@
 
       <div class="tab-content">
         <div class="tab-pane animated fadeInRight active" id="timeline">
-          <div class="col-sm-6">
+          <div class="col-sm-4">
             <%= render 'shared/timeline', activities: @activities %>
           </div>
-          <div class="col-sm-6">
+          <div class="col-sm-8">
             <%= render 'shared/freshdesk_ticket', quote: @quote, current_user: @current_user %>
           </div>
         </div>
 
-        <div class="tab-pane animated  fadeInRight" id="details">
+        <div class="tab-pane animated fadeInRight" id="details">
           <%= render 'details', quote: @quote %>
         </div>
 
