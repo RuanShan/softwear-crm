@@ -63,6 +63,8 @@ class Quote < ActiveRecord::Base
     :insightly_bid_tier_id,
   ]
 
+  MARKUPS_AND_OPTIONS_JOB_NAME = '_markupsandoptions_'
+
   default_scope -> { order('quotes.created_at DESC') }
 
   belongs_to :salesperson, class_name: User
@@ -111,6 +113,18 @@ class Quote < ActiveRecord::Base
         activities.trackable_type = ? AND activities.trackable_id = ?
       )
     ', *([self.class.name, id] * 2) ).order('activities.created_at DESC')
+  end
+
+  def markups_and_options_job
+    attrs = {
+      name: MARKUPS_AND_OPTIONS_JOB_NAME,
+      description: 'hidden'
+    }
+    jobs.where(attrs).first or jobs.create(attrs)
+  end
+
+  def imprintable_jobs
+    jobs.where.not(name: MARKUPS_AND_OPTIONS_JOB_NAME)
   end
 
   def no_ticket_id_entered?

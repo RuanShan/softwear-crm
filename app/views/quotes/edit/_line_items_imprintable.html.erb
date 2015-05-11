@@ -1,7 +1,8 @@
 <li id="edit-line-item-<%= line_item.id %>" class="sortable-quote-line-item row">
-  <%= batch_fields_for line_item do |f| %>
-    <%= f.hidden_field :tier, class: 'tier-field' %>
-    <%= f.hidden_field :line_itemable_id, class: 'job-id-field' %>
+  <% # batch_fields_for line_item do |f| %>
+  <%= f.fields_for line_item do |ff| %>
+    <%= ff.hidden_field :tier, class: 'tier-field' %>
+    <%= ff.hidden_field :line_itemable_id, class: 'job-id-field' %>
 
       <div class="col-xs-7">
         <b><%= line_item.imprintable.name %></b><br />
@@ -9,20 +10,20 @@
         <%= link_to 'Add Coordinate', '#' %> |  <%= link_to 'Add Similar', '#' %>
       </div>
       <div class="col-xs-2">
-        <%= f.label :decoration_price, 'Quantity' %>
-        <%= f.number_field :quantity, class: 'line-item-edit-field' %>
+        <%= ff.label :decoration_price, 'Quantity' %>
+        <%= ff.number_field :quantity, class: 'line-item-edit-field' %>
       </div>
       <div class="col-xs-2">
-        <%= f.label :imprintable_price, 'Imprintable' %>
+        <%= ff.label :imprintable_price, 'Imprintable' %>
         <div class='input-group'>
           <span class='input-group-addon'>$</span>
-          <%= f.text_field :imprintable_price, class: 'line-item-edit-field imprintable-price' %>
+          <%= ff.text_field :imprintable_price, class: 'line-item-edit-field imprintable-price' %>
         </div>
 
-        <%= f.label :decoration_price, 'Decoration' %>
+        <%= ff.label :decoration_price, 'Decoration' %>
         <div class='input-group'>
           <span class='input-group-addon'>$</span>
-          <%= f.text_field :decoration_price, class: 'line-item-edit-field decoration-price' %>
+          <%= ff.text_field :decoration_price, class: 'line-item-edit-field decoration-price' %>
         </div>
       </div>
       <div class="col-xs-1">
