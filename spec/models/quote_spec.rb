@@ -282,6 +282,34 @@ describe Quote, quote_spec: true do
         expect(best_li.tier).to eq Imprintable::TIER.best
       end
 
+      context 'when passed print_locations and imprint_descriptions as parralel arrays', story_570: true do
+        let!(:print_location_1) { create(:print_location) }
+        let!(:print_location_2) { create(:print_location) }
+
+        let!(:attributes) do
+          {
+            imprintable_group_id: group.id,
+            quantity: 2,
+            decoration_price: 12.55,
+            print_locations: [print_location_1.id.to_s, print_location_2.id.to_s],
+            imprint_descriptions: ['Test desc for NUMERO UNO', 'Second test description']
+          }
+        end
+
+        it 'generates imprints for the job with the given print location/descriptions' do
+          subject.line_items_from_group_attributes = attributes
+          subject.save!
+
+          expect(job.imprints.size).to eq 2
+
+          expect(job.imprints.first.print_location_id).to eq print_location_1.id
+          expect(job.imprints.last.print_location_id).to eq print_location_2.id
+
+          expect(job.imprints.first.description).to eq 'Test desc for NUMERO UNO'
+          expect(job.imprints.last.description).to eq 'Second test description'
+        end
+      end
+
       context 'when there is no default imprintable for any tier' do
         before do
           allow(group).to receive(:default_imprintable_for_tier).and_return nil

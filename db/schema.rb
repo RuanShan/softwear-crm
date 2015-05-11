@@ -364,21 +364,6 @@ ActiveRecord::Schema.define(version: 20150508201355) do
     t.integer "imprintable_variant_id"
   end
 
-  create_table "notes", force: true do |t|
-    t.string   "title",        limit: 50, default: ""
-    t.text     "body"
-    t.integer  "notable_id"
-    t.string   "notable_type"
-    t.integer  "user_id"
-    t.string   "role",                    default: "notes"
-    t.datetime "created_at"
-    t.datetime "updated_at"
-  end
-
-  add_index "notes", ["notable_id"], name: "index_notes_on_notable_id", using: :btree
-  add_index "notes", ["notable_type"], name: "index_notes_on_notable_type", using: :btree
-  add_index "notes", ["user_id"], name: "index_notes_on_user_id", using: :btree
-
   create_table "order_quotes", force: true do |t|
     t.integer  "order_id"
     t.integer  "quote_id"
@@ -495,8 +480,8 @@ ActiveRecord::Schema.define(version: 20150508201355) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.decimal  "shipping",                         precision: 10, scale: 2
-    t.string   "quote_source"
     t.datetime "initialized_at"
+    t.string   "quote_source"
     t.string   "freshdesk_ticket_id"
     t.boolean  "informal"
     t.integer  "insightly_category_id"

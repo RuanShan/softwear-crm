@@ -243,8 +243,16 @@ class Quote < ActiveRecord::Base
     new_job = Job.new
     new_job.name        = imprintable_group.name
     new_job.description = imprintable_group.description
-    new_job.line_items = new_line_items
+    new_job.line_items  = new_line_items
     new_job.save!
+
+    attrs[:print_locations].try(:each_with_index) do |print_location_id, index|
+      imprint = Imprint.new
+      imprint.print_location_id = print_location_id
+      imprint.description = attrs[:imprint_descriptions][index]
+      imprint.job_id = new_job.id
+      imprint.save!
+    end
 
     self.jobs << new_job
     self.save!

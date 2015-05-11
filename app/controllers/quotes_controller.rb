@@ -89,7 +89,8 @@ class QuotesController < InheritedResources::Base
          :group_name
         ],
         line_items_from_group_attributes: [
-          :imprintable_group_id, :quantity, :decoration_price
+          :imprintable_group_id, :quantity, :decoration_price,
+          print_locations: [], imprint_descriptions: []
         ],
         line_item_to_group_attributes: [
           :job_id, :tier, :quantity,
