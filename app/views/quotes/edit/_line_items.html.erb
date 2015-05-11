@@ -1,4 +1,4 @@
-<%= form_for :line_item, method: :put, url: line_items_update_path, remote: true, builder: BatchFormBuilder do |f| %> 
+<%= form_for :line_item, method: :put, url: line_items_update_path, remote: true, builder: BatchFormBuilder do |f| %>
 
   <% quote.jobs.each do |job| %>
       <div id="edit-quote-job-<%= job.id %>" class="quote-job-entry container-fluid" data-job-id='<%=job.id%>'>
@@ -11,7 +11,7 @@
         <% Imprintable::TIERS.each do |tier_number, tier_name| %>
             <div id="edit-quote-job-<%= job.id %>-tier-<%= tier_number %>" class="row tier-row" data-tier=<%= tier_number %>>
               <div class="col-xs-1">
-                <%= tier_name %><br />
+                <%= tier_name %>
               </div>
               <div class="col-xs-11">
                 <ul class="edit-quote-line-items sortable-quote-line-items container-fluid" data-tier="<%= tier_number %>"  data-job-id="<%= job.id %>">
@@ -25,18 +25,13 @@
       </div>
   <% end %>
 
-  <%= f.submit 'Save Changes' %>
-
-<% end %>
-
-<% unless quote.additional_options_and_markups.empty? %>
+    <% unless quote.additional_options_and_markups.empty? %>
     <div id='edit-quote-additional-options-and-markup'>
       <div class="row">
         <div class="col-xs-12">
           <h3>Additional Options and Markups</h3>
         </div>
       </div>
-      <%= form_for :line_item, method: :put, url: line_items_update_path, remote: true, builder: BatchFormBuilder do |f| %>
 
       <div class="row">
         <div class="col-xs-11 col-xs-offset-1">
@@ -49,23 +44,30 @@
         </div>
       </div>
 
-      <%= f.submit 'Save Changes' %>
+    </div>
+    <% end %>
+
+    <div class="container-fluid">
+      <%= button_tag class: 'btn btn-success col-sm-6 col-sm-offset-3' do %>
+          <i class="glyphicon glyphicon-floppy-save"></i> Save Line Item Changes
       <% end %>
     </div>
 <% end %>
 
+<br clear="all">
+
 <div class="container-fluid">
 
-  <%= link_to edit_quote_path, class: 'btn btn-success col-sm-3 col-sm-offset-1', remote: true do %>
+  <%= link_to edit_quote_path, class: 'btn btn-primary col-sm-3 col-sm-offset-1', remote: true do %>
       <i class="glyphicon glyphicon-plus-sign"></i> Add A New Group
   <% end %>
 
   <% unless quote.jobs.empty? %>
-      <%= link_to edit_quote_path(imprintable_only: true), class: 'btn btn-success col-sm-3 col-sm-offset-1', remote: true do %>
+      <%= link_to edit_quote_path(imprintable_only: true), class: 'btn btn-primary col-sm-3 col-sm-offset-1', remote: true do %>
           <i class="glyphicon glyphicon-plus-sign"></i> Add an imprintable
       <% end %>
 
-      <%= link_to edit_quote_path(options_and_markups: true), class: 'btn btn-success col-sm-3 col-sm-offset-1', remote: true do %>
+      <%= link_to edit_quote_path(options_and_markups: true), class: 'btn btn-primary col-sm-3 col-sm-offset-1', remote: true do %>
           <i class="glyphicon glyphicon-plus-sign"></i> Add An Option or Markup
       <% end %>
   <% end %>

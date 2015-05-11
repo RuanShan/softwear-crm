@@ -45,20 +45,22 @@
 
 
 
-<div id="quote-additional-upcharges container-fluid">
-  <h3>Notes</h3>
-  <% quote.public_notes.each do |note| %>
-    <div class="row">
-      <div id="quote-show-notes">
-        <div class="informal-quote-line-item col-xs-9 pull-right">
-          <h4>
-            <%= note.title %>
-          </h4>
-          <p>
-            <%= note.comment %>
-          </p>
+<% unless quote.public_notes.empty? %>
+    <div id="quote-additional-upcharges container-fluid">
+      <h3>Notes</h3>
+      <% quote.public_notes.each do |note| %>
+        <div class="row">
+          <div id="quote-show-notes">
+            <div class="informal-quote-line-item col-xs-9 pull-right">
+              <h4>
+                <%= note.title %>
+              </h4>
+              <p>
+                <%= note.comment %>
+              </p>
+            </div>
+          </div>
         </div>
-      </div>
+      <% end %>
     </div>
-  <% end %>
-</div>
+<% end %>
