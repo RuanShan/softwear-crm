@@ -1,29 +1,83 @@
-<h3>Add a an option or markup to this quote</h3>
+<div class="container-fluid">
+    <h3>Add a an option or markup to this quote</h3>
+    <p class="help-block">
+      Options & Markups are things like, say, a color upcharge. Or a name & number
+      charge. To keep quote scenarios simple, use these to make note of such things
+    </p>
+    <%= form_for LineItem.new, class: 'horizontal-form' do |f| %>
+        <%= hidden_field_tag :done_path, quote_path(quote.id) %>
+        <%= f.hidden_field :line_itemable_type, value: 'Job' %>
 
-<%= form_for LineItem.new do |f| %>
-  <%= hidden_field_tag :done_path, quote_path(quote.id) %>
 
-  <%= f.hidden_field :line_itemable_type, value: 'Job' %>
-  <%= f.label :line_itemable_id, 'Group' %><br />
-  <%= f.select :line_itemable_id, quote.jobs.map { |x| [x.name, x.id] } %><br />
+        <div class="form-group">
+          <%= f.label :line_itemable_id, 'Group', class: "col-xs-2 control-label" %>
+          <div class="col-xs-10">
+            <%= f.select :line_itemable_id, quote.jobs.map { |x| [x.name, x.id] }, {}, class: 'form-control' %>
+            <p class="help-block">
+              Which imprintable group will this apply to?
+              This only affects the presentation of a formal quote, where these markups will be included in the group.
+              For an informal quote, All markups & options show up at the bottom of the quote.
+            </p>
+          </div>
+      </div>
 
-  <%= f.label :name %><br />
-  <%= f.text_field :name %><br />
+          <div class="form-group">
+            <%= f.label :name, class: 'col-xs-2 control-label' %>
+            <div class="col-xs-10">
+              <%= f.text_field :name, class: 'form-control' %>
+              <p class="help-block">
+                Name the line item
+              </p>
+            </div>
+          </div>
 
-  <%= f.label :description %><br />
-  <%= f.text_field :description %><br />
+          <div class="form-group">
+            <%= f.label :description, class: 'col-xs-2 control-label' %>
+            <div class="col-xs-10">
+              <%= f.text_field :description, class: 'form-control'  %>
+              <p class="help-block">
+                Add a brief description to explain exactly what the upcharge or markup is for
+              </p>
+            </div>
+          </div>
 
-  <%= f.label :url %><br />
-  <%= f.text_field :url %><br />
+          <div class="form-group">
+            <%= f.label :url, class: 'col-xs-2 control-label' %>
+            <div class="col-xs-10">
+              <%= f.text_field :url, class: 'form-control'  %>
+              <p class="help-block">
+                If a landing page with information exists, include the link to it
+              </p>
+            </div>
+          </div>
 
-  <% if quote.formal? %>
-      <%= f.label :quantity %><br />
-      <%= f.text_field :quantity %><br />
-  <% else %>
-    <%= f.hidden_field :quantity, value: LineItem::MARKUP_ITEM_QUANTITY %>
-    <br />
-  <% end %>
-  <%= f.label :unit_price %><br />
-  <%= f.text_field :unit_price %><br />
-  <%= f.submit 'Add Option or Markup', class: 'btn btn-success'  %>
-<% end %>
+          <% if quote.formal? %>
+          <div class="form-group">
+            <%= f.label :quantity, class: 'col-xs-2 control-label' %>
+            <div class="col-xs-10">
+              <%= f.text_field :quantity, class: 'form-control', type: 'number'  %>
+              <p class="help-block">
+                This is a formal quote, so quantity is required
+              </p>
+            </div>
+          </div>
+          <% else %>
+              <%= f.hidden_field :quantity, value: LineItem::MARKUP_ITEM_QUANTITY %>
+          <% end %>
+
+          <div class="form-group">
+            <%= f.label :unit_price, class: 'col-xs-2 control-label' %>
+            <div class="col-xs-10">
+              <%= f.text_field :unit_price, class: 'form-control', type: 'number', step: 'any'  %>
+              <p class="help-block">
+                How much per unit?
+              </p>
+            </div>
+          </div>
+
+      <%= button_tag class: 'btn btn-success col-sm-offset-4 col-xs-4 col-xs-offset-1 col-xs-10' do  %>
+          <i class="glyphicon glyphicon-plus-sign"></i> Add Option or Markup
+      <% end %>
+    <% end %>
+
+</div>
