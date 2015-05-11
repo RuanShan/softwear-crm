@@ -1,39 +1,56 @@
 <h3>Add a imprintable line items to an existing group</h3>
+<p class="help-block">
+    Search for an imprintable,
+</p>
 
 <h4>Search for an imprintable</h4>
 <div class="col-sm-12" id="imprintable-add-search">
   <%= form_tag imprintables_path, method: :get, remote: true do %>
       <%= hidden_field_tag 'respond_with_partial', 'quotes/edit/imprintable_search.js' %>
-      <%= label_tag :q, 'Search Terms' %>
-      <%= text_field_tag :q %>
-      <%= button_tag 'Search Imprintables', id: 'search-imprintables-btn', class: 'btn btn-primary' %>
+
+      <div class="form-group">
+        <%= label_tag :q, 'Terms', class: 'col-xs-1 control-label' %>
+        <div class="col-xs-8">
+          <%= text_field_tag :q, '', class: 'form-control', placeholder: 'Enter search terms here' %>
+        </div>
+        <%= button_tag class: 'btn btn-primary col-xs-2' do  %>
+            <i class="glyphicon glyphicon-search"></i> Search
+        <% end %>
+      </div>
   <% end %>
 </div>
-
-<%= form_for quote do |f| %>
+<br clear="all" />
+<%= form_for quote, builder: LancengFormBuilder do |f| %>
     <%= f.fields_for :line_item_to_group do |ff| %>
-        <h4>Search Results</h4>
+        <h4>Select imprintables from search results</h4>
+
         <div class="col-sm-12" id="imprintable-add-search-results">
-          ...
+          <p class="help-block">
+            enter search terms above and press "Search" above to populate search results
+          </p>
         </div>
 
         <h4>Line Item Options</h4>
+
         <div class="row">
-          <div class="col-xs-3">
+          <div class="col-xs-4">
             <%= ff.label :job_id, 'Group' %><br />
             <%= ff.select :job_id, quote.jobs.all.map {|x| [x.name, x.id] } %><br />
           </div>
-          <div class="col-xs-3">
+          <div class="col-xs-4">
             <%= ff.label :tier %><br />
             <%= ff.select :tier, Imprintable::TIERS.map{|number, name| [name, number]} %><br />
           </div>
-          <div class="col-xs-3">
+          <div class="col-xs-2">
             <%= ff.label :quantity %><br />
-            <%= ff.text_field :quantity %><br />
+            <%= ff.text_field :quantity, type: 'number' %><br />
           </div>
-          <div class="col-xs-3">
+          <div class="col-xs-2">
             <%= ff.label :decoration_price %><br />
-            <%= ff.text_field :decoration_price %><br />
+            <div class="input-group">
+              <span class="input-group-addon">$</span>
+              <%= ff.text_field :decoration_price, type: 'number', step: 'any' %>
+            </div>
           </div>
           <%= ff.hidden_field :quote_id, value: quote.id %>
     <% end %>
