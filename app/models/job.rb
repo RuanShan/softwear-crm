@@ -22,6 +22,8 @@ class Job < ActiveRecord::Base
   has_many :imprintable_variants, -> {readonly}, through: :line_items
   has_many :line_items, as: :line_itemable
 
+  accepts_nested_attributes_for :line_items, :imprints, allow_destroy: true
+
   validate :assure_name_and_description, on: :create
   validates :name, uniqueness: { scope: [:jobbable_id, :jobbable_type] }
 

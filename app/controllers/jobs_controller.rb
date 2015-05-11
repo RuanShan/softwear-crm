@@ -16,6 +16,8 @@ class JobsController < InheritedResources::Base
           modal:  modal_html
         }
       end
+
+      [success, failure].each(&:js)
     end
   end
 
@@ -85,10 +87,23 @@ class JobsController < InheritedResources::Base
 
   def permitted_params
     params.permit(
-        :order_id, :job_id, :ids,
+      :order_id, :job_id, :ids,
 
-        job:     [:id, :name, :description, :collapsed], 
-        imprint: [:print_location_id]
+      job: [
+        :id, :name, :description, :collapsed,
+        line_items_attributes: [
+          :id, :job_id, :tier, :description, :quantity,
+          :unit_price, :imprintable_price, :decoration_price,
+          :_destroy
+        ],
+        imprints_attributes: [
+          :id, :description, :imprint_method_id
+          :_destroy
+        ]
+      ],
+      imprint: [
+        :print_location_id
+      ],
     )
   end
 end
