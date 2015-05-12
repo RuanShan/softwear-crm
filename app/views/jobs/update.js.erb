@@ -34,17 +34,6 @@
     <% if line_item.valid? %>
       var $oldChildren = $row.children();
 
-      if (!$row.data('no-rerender')) {
-        $oldChildren.each(function() {
-          $(this).remove();
-        });
-
-        $row.append(
-          "<%= j render partial: 'standard_view_entry',
-                        locals: { line_item: line_item } %>"
-        );
-      }
-
       if ($row.hasClass('editing-line-item')) {
         $row.removeClass('editing-line-item');
         shine($row, false);

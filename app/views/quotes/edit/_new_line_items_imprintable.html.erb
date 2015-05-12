@@ -21,7 +21,7 @@
         <div class="row">
           <div class="col-xs-3">
             <%= ff.label :job_id, 'Group' %><br />
-            <%= ff.select :job_id, quote.jobs.all.map {|x| [x.name, x.id] } %><br />
+            <%= ff.select :job_id, quote.imprintable_jobs.map {|x| [x.name, x.id] } %><br />
           </div>
           <div class="col-xs-3">
             <%= ff.label :tier %><br />

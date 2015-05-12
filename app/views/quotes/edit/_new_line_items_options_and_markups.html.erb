@@ -7,19 +7,7 @@
     <%= form_for LineItem.new, class: 'horizontal-form' do |f| %>
         <%= hidden_field_tag :done_path, quote_path(quote.id) %>
         <%= f.hidden_field :line_itemable_type, value: 'Job' %>
-
-
-        <div class="form-group">
-          <%= f.label :line_itemable_id, 'Group', class: "col-xs-2 control-label" %>
-          <div class="col-xs-10">
-            <%= f.select :line_itemable_id, quote.jobs.map { |x| [x.name, x.id] }, {}, class: 'form-control' %>
-            <p class="help-block">
-              Which imprintable group will this apply to?
-              This only affects the presentation of a formal quote, where these markups will be included in the group.
-              For an informal quote, All markups & options show up at the bottom of the quote.
-            </p>
-          </div>
-      </div>
+        <%= f.hidden_field :line_itemable_id, value: quote.markups_and_options_job.id %>
 
           <div class="form-group">
             <%= f.label :name, class: 'col-xs-2 control-label' %>

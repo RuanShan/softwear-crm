@@ -28,6 +28,36 @@ describe Job, job_spec: true do
     it { is_expected.to have_many(:imprintable_variants).through(:line_items) }
     it { is_expected.to have_many(:line_items) }
     it { is_expected.to have_and_belong_to_many(:artwork_requests) }
+
+    context 'Tiered line items', story_570: true do
+      subject { create(:job) }
+
+      context 'good_line_items' do
+        before do
+          subject.line_items << create(:imprintable_line_item, tier: Imprintable::TIER.good)
+          subject.line_items << create(:imprintable_line_item, tier: Imprintable::TIER.better)
+          subject.line_items << create(:imprintable_line_item, tier: Imprintable::TIER.best)
+        end
+
+        it 'contains only "good" tiered line items' do
+          expect(subject.good_line_items.size).to eq 1
+          expect(subject.good_line_items.first.tier).to eq Imprintable::TIER.good
+        end
+      end
+
+      context 'better_line_items' do
+        before do
+          subject.line_items << create(:imprintable_line_item, tier: Imprintable::TIER.better)
+          subject.line_items << create(:imprintable_line_item, tier: Imprintable::TIER.good)
+          subject.line_items << create(:imprintable_line_item, tier: Imprintable::TIER.best)
+        end
+
+        it 'contains only "better" tiered line items' do
+          expect(subject.better_line_items.size).to eq 1
+          expect(subject.better_line_items.first.tier).to eq Imprintable::TIER.better
+        end
+      end
+    end
   end
 
   describe 'Validations' do

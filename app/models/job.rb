@@ -24,8 +24,30 @@ class Job < ActiveRecord::Base
 
   accepts_nested_attributes_for :line_items, :imprints, allow_destroy: true
 
+  Imprintable::TIERS.each do |tier_num, tier|
+    tier_line_items = "#{tier.underscore}_line_items".to_sym
+
+    has_many tier_line_items, -> { where tier: tier_num }, as: :line_itemable, class_name: 'LineItem'
+    accepts_nested_attributes_for tier_line_items, allow_destroy: true
+  end
+
   validate :assure_name_and_description, on: :create
   validates :name, uniqueness: { scope: [:jobbable_id, :jobbable_type] }
+
+  def imprintable_line_items_for_tier(tier)
+    send(tier_line_items_sym(tier))
+  end
+
+  def self.tier_line_items_sym(tier)
+    (
+      (tier.is_a?(String) ? tier : Imprintable::TIERS[tier]).underscore +
+      '_line_items'
+    )
+      .to_sym
+  end
+  def tier_line_items_sym(tier)
+    Job.tier_line_items_sym(tier)
+  end
 
   # For on_order activity tracking helper
   def order
@@ -139,10 +161,6 @@ class Job < ActiveRecord::Base
 
   def name_number_imprints
     imprints.includes(:imprint_method).where('imprint_methods.name = "Name/Number"').references(:imprint_methods)
-  end
-
-  def imprintable_line_items_for_tier(tier)
-    line_items.where(tier: tier)
   end
 
   private

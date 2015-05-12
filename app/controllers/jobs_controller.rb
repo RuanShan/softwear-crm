@@ -1,5 +1,5 @@
 class JobsController < InheritedResources::Base
-  belongs_to :order, shallow: true
+  belongs_to :order, optional: true
   respond_to :json
 
   def update
@@ -16,6 +16,8 @@ class JobsController < InheritedResources::Base
           modal:  modal_html
         }
       end
+
+      @line_items = @job.line_items
 
       [success, failure].each(&:js)
     end
@@ -86,20 +88,28 @@ class JobsController < InheritedResources::Base
   private
 
   def permitted_params
+    line_items_attributes = [
+      :id, :job_id, :tier, :description, :quantity,
+      :unit_price, :imprintable_price, :decoration_price,
+      :_destroy
+    ]
+    tiered_line_item_attributes = Imprintable::TIERS.values.reduce({}) do |hash, tier_name|
+      hash.merge("#{Job.tier_line_items_sym(tier_name)}_attributes" => line_items_attributes)
+    end
+
     params.permit(
       :order_id, :job_id, :ids,
 
       job: [
         :id, :name, :description, :collapsed,
-        line_items_attributes: [
-          :id, :job_id, :tier, :description, :quantity,
-          :unit_price, :imprintable_price, :decoration_price,
-          :_destroy
-        ],
-        imprints_attributes: [
-          :id, :description, :imprint_method_id
-          :_destroy
-        ]
+        {
+          line_items_attributes: line_items_attributes,
+          imprints_attributes: [
+            :id, :description, :imprint_method_id,
+            :_destroy
+          ]
+        }
+          .merge(tiered_line_item_attributes)
       ],
       imprint: [
         :print_location_id

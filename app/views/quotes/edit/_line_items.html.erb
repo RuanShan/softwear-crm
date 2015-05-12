@@ -1,7 +1,7 @@
 <% # form_for :line_item, method: :put, url: line_items_update_path, remote: true, builder: BatchFormBuilder do |f| %>
 
   <% quote.imprintable_jobs.each do |job| %>
-    <%= form_for job, remote: true, builder: LancengFormBuilder do |f| %>
+    <%= form_for job, html: { class: 'job-form-to-be-saved' }, remote: true, builder: LancengFormBuilder do |f| %>
 
       <div id="edit-quote-job-<%= job.id %>" class="quote-job-entry container-fluid" data-job-id='<%=job.id%>'>
         <div class="row">
@@ -14,6 +14,7 @@
         <div class="row">
           NOTE: These cannot currently be edited
           <% job.imprints.each do |imprint| %>
+            <% # TODO make imprints/imprint use/work with fields_for? %>
             <%= render 'imprints/imprint', select_tag_name: 'printlocid', description_name: 'desc', imprint: imprint %>
           <% end %>
 
@@ -33,8 +34,8 @@
               </div>
               <div class="col-xs-11">
                 <ul class="edit-quote-line-items sortable-quote-line-items container-fluid" data-tier="<%= tier_number %>"  data-job-id="<%= job.id %>">
-                  <% job.imprintable_line_items_for_tier(tier_number).each do |line_item| %>
-                      <%= render 'quotes/edit/line_items_imprintable', line_item: line_item, f: f %>
+                  <%= f.fields_for job.tier_line_items_sym(tier_name) do |ff| %>
+                    <%= render 'quotes/edit/line_items_imprintable', line_item: ff.object, f: ff %>
                   <% end %>
                 </ul>
               </div>
@@ -45,7 +46,7 @@
   <% end %>
 
     <% unless quote.additional_options_and_markups.empty? %>
-      <%= form_for quote.markups_and_options_job, remote: true, builder: LancengFormBuilder do |f| %>
+      <%= form_for quote.markups_and_options_job, html: { class: 'job-form-to-be-saved' }, remote: true, builder: LancengFormBuilder do |f| %>
         <div id='edit-quote-additional-options-and-markup'>
           <div class="row">
             <div class="col-xs-12">
@@ -57,8 +58,8 @@
             <div class="col-xs-11 col-xs-offset-1">
 
               <ul class="option-and-markup-line-items container-fluid">
-                <% quote.additional_options_and_markups.each do |line_item| %>
-                    <%= render 'quotes/edit/line_items_options_and_markups', line_item: line_item, f: f %>
+                <%= f.fields_for :line_items do |ff| %>
+                    <%= render 'quotes/edit/line_items_options_and_markups', line_item: ff.object, f: ff %>
                 <% end %>
               </ul>
 
@@ -70,7 +71,7 @@
     <% end %>
 
     <div class="container-fluid">
-      <%= button_tag class: 'btn btn-success col-sm-6 col-sm-offset-3' do %>
+      <%= button_tag id: 'save-line-item-changes-btn', class: 'btn btn-success col-sm-6 col-sm-offset-3' do %>
           <i class="glyphicon glyphicon-floppy-save"></i> Save Line Item Changes
       <% end %>
     </div>

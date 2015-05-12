@@ -1,5 +1,3 @@
-<% # batch_fields_for line_item do |f| %>
-<%= f.fields_for line_item do |ff| %>
   <li id="line-item-<%=line_item.id%>" class="row option-and-markup-line-item" data-no-rerender="true">
     <% if line_item.line_itemable.jobbable.formal? %>
         <div class="col-xs-8">
@@ -11,8 +9,8 @@
     </div>
     <% if line_item.line_itemable.jobbable.formal? %>
         <div class="col-xs-2">
-          <%= ff.label :quantity %>
-          <%= ff.number_field :quantity, class: 'line-item-edit-field' %>
+          <%= f.label :quantity %>
+          <%= f.number_field :quantity, class: 'line-item-edit-field' %>
         </div>
     <% end %>
     <div class="col-xs-2">
@@ -20,9 +18,8 @@
       <b>Price</b>
       <div class='input-group'>
         <span class='input-group-addon'>$</span>
-        <%= ff.text_field :unit_price, class: 'line-item-edit-field unit-price' %>
+        <%= f.text_field :unit_price, class: 'line-item-edit-field unit-price' %>
       </div>
 
     </div>
   </li>
-<% end %>

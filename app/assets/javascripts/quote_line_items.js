@@ -4,6 +4,10 @@ function updateLineItemTotal() {
 $(function() {
   if ($('.edit-quote-line-items').length == 0) return;
 
+  $('#save-line-item-changes-btn').click(function(e) {
+    $('.job-form-to-be-saved').submit();
+  });
+
   function jobIdFor(element) {
     return element.closest('.quote-job-entry').data('job-id');
   }
