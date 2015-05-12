@@ -74,4 +74,14 @@ module QuoteHelper
     args << { style: 'border: 1px solid black;' }
     content_tag(*args, &block)
   end
+
+  def get_line_item_modal_title(params)
+    if params[:imprintable_only]
+      return 'Add a imprintable line items to an existing group'
+    elsif params[:options_and_markups]
+      return 'Add a an option or markup to this quote'
+    else
+      return 'Add a group of imprintables to this quote'
+    end
+  end
 end

@@ -1,67 +1,50 @@
 <div class="container-fluid">
-    <h3>Add a an option or markup to this quote</h3>
     <p class="help-block">
       Options & Markups are things like, say, a color upcharge. Or a name & number
       charge. To keep quote scenarios simple, use these to make note of such things
     </p>
-    <%= form_for LineItem.new, class: 'horizontal-form' do |f| %>
+    <%= form_for LineItem.new, builder: LancengFormBuilder, class: 'horizontal-form' do |f| %>
         <%= hidden_field_tag :done_path, quote_path(quote.id) %>
         <%= f.hidden_field :line_itemable_type, value: 'Job' %>
         <%= f.hidden_field :line_itemable_id, value: quote.markups_and_options_job.id %>
 
-          <div class="form-group">
-            <%= f.label :name, class: 'col-xs-2 control-label' %>
-            <div class="col-xs-10">
-              <%= f.text_field :name, class: 'form-control' %>
-              <p class="help-block">
-                Name the line item
-              </p>
-            </div>
-          </div>
+        <%= f.label :name %>
+        <%= f.text_field :name %>
+        <p class="help-block">
+            Name the line item
+        </p>
 
-          <div class="form-group">
-            <%= f.label :description, class: 'col-xs-2 control-label' %>
-            <div class="col-xs-10">
-              <%= f.text_field :description, class: 'form-control'  %>
-              <p class="help-block">
-                Add a brief description to explain exactly what the upcharge or markup is for
-              </p>
-            </div>
-          </div>
+        <%= f.label :description %>
+        <%= f.text_field :description  %>
+        <p class="help-block">
+            Add a brief description to explain exactly what the upcharge or markup is for
+        </p>
 
-          <div class="form-group">
-            <%= f.label :url, class: 'col-xs-2 control-label' %>
-            <div class="col-xs-10">
-              <%= f.text_field :url, class: 'form-control'  %>
-              <p class="help-block">
-                If a landing page with information exists, include the link to it
-              </p>
-            </div>
-          </div>
+        <%= f.label :url%>
+        <%= f.text_field :url %>
+        <p class="help-block">
+            If a landing page with information exists, include the link to it
+        </p>
 
-          <% if quote.formal? %>
-          <div class="form-group">
-            <%= f.label :quantity, class: 'col-xs-2 control-label' %>
-            <div class="col-xs-10">
-              <%= f.text_field :quantity, class: 'form-control', type: 'number'  %>
-              <p class="help-block">
-                This is a formal quote, so quantity is required
-              </p>
-            </div>
-          </div>
-          <% else %>
-              <%= f.hidden_field :quantity, value: LineItem::MARKUP_ITEM_QUANTITY %>
-          <% end %>
 
-          <div class="form-group">
-            <%= f.label :unit_price, class: 'col-xs-2 control-label' %>
-            <div class="col-xs-10">
-              <%= f.text_field :unit_price, class: 'form-control', type: 'number', step: 'any'  %>
-              <p class="help-block">
-                How much per unit?
-              </p>
-            </div>
+      <div class="row">
+        <% if quote.formal? %>
+          <div class="col-xs-2">
+            <%= f.label :quantity %><br />
+            <%= f.text_field :quantity, type: 'number' %>
           </div>
+          <div class="col-xs-2">
+        <% else %>
+          <div class="col-xs-4">
+          <%= f.hidden_field :quantity, value: LineItem::MARKUP_ITEM_QUANTITY %>
+        <% end %>
+          <%= f.label :unit_price %><br />
+          <div class="input-group">
+            <span class="input-group-addon">$</span>
+            <%= f.text_field :unit_price, type: 'number', step: 'any' %>
+          </div>
+        </div>
+
 
       <%= button_tag class: 'btn btn-success col-sm-offset-4 col-xs-4 col-xs-offset-1 col-xs-10' do  %>
           <i class="glyphicon glyphicon-plus-sign"></i> Add Option or Markup

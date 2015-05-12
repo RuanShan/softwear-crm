@@ -1,5 +1,3 @@
-<h3>Add a group of imprintables to this quote</h3>
-
 <div>
   <%= form_for quote, html: { id: 'new-group-form', data: { 'no-editing-class' => true } } do |f| %>
       <%= f.fields_for :line_items_from_group do |ff| %>
