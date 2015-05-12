@@ -369,7 +369,7 @@ class Quote < ActiveRecord::Base
         ))
         .try(:[], 'helpdesk_ticket')
 
-      self.freshdesk_ticket_id = ticket.try(:[], 'id')
+      self.freshdesk_ticket_id = ticket.try(:[], 'display_id')
       ticket
 
     rescue Freshdesk::ConnectionError => e
