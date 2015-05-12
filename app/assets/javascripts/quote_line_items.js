@@ -39,13 +39,13 @@ $(function() {
 
     update: function( event, ui ) {
       $(this).children('li').each(function() {
-        var element = $(this);
+        var li = $(this);
 
-        var jobId = jobIdFor(element);
-        var tier  = tierFor(element);
+        var jobId = jobIdFor(li);
+        var tier  = tierFor(li);
 
-        var jobField  = element.find('.job-id-field');
-        var tierField = element.find('.tier-field');
+        var jobField  = li.find('.job-id-field');
+        var tierField = li.find('.tier-field');
 
         var jobChanged = jobField[0] !== undefined &&
           parseInt(jobField.val()) != parseInt(jobId);
@@ -53,12 +53,33 @@ $(function() {
           parseInt(tierField.val()) != parseInt(tier);
 
         if (jobId != null && jobChanged)
-          element.find('.job-id-field').val(jobId);
+          jobField.val(jobId);
         if (tier != null && tierChanged)
-          element.find('.tier-field').val(tier);
+          tierField.val(tier);
 
-        if (tierChanged || jobChanged)
-          element.addClass('editing-line-item');
+        if (tierChanged || jobChanged) {
+          li.addClass('editing-line-item');
+
+          var lineItemId  = li.data('line-item-id');
+          var indexInName = /job\[\w+_line_items_attributes\]\[((id_)?\d+)\]/;
+
+          li.find('input,textarea,select').each(function() {
+            var input = $(this);
+            var name = input.prop('name');
+
+            // Replace index portion of input names: job[line_items_attributes][0][field]
+            //             -----------------------------------------------------^ that
+            // with id_<line_item.id> to indicate that this is an existing line item joining
+            // from an external job and/or tier.
+            var newName = name.replace(
+                // 1st match should be the whole ((id_)?\d+) group
+              name.match(indexInName)[1],
+              'id_'+lineItemId
+            );
+
+            input.prop('name', newName)
+          });
+        }
       });
 
       if ($(this).children('li').length != 0)

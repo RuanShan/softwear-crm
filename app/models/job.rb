@@ -49,6 +49,58 @@ class Job < ActiveRecord::Base
     Job.tier_line_items_sym(tier)
   end
 
+  # NOTE this works together with javascripts/quote_line_items.js to achieve
+  # dragging and dropping between jobs/tiers easily.
+  #
+  def self.assign_line_items_attributes_proc(tier_num = nil)
+    proc do |attrs|
+      # == first pass ==
+      attrs.each do |key, line_item_attributes|
+        # Default behavior, more or less.
+        if /\d+/ =~ key
+          if tier_num
+            line_items = imprintable_line_items_for_tier(tier_num)
+          else
+            line_items = self.line_items
+          end
+          line_items[key.to_i].update_attributes line_item_attributes
+        end
+      end
+
+      # == second pass ==
+      # We do 2 passes, because this second pass might change the ordering
+      # of our line_items collection, invalidating the indices used during
+      # pass #1.
+      attrs.each do |key, line_item_attributes|
+        # If attributes are indexed as id_#{line_item_id}, it means they're
+        # for an existing line item coming from an external job or tier.
+        if /id_(?<line_item_id>\d+)/ =~ key
+          line_item = LineItem.find(line_item_id)
+
+          line_item.line_itemable_type = 'Job'
+          line_item.line_itemable_id   = id
+          line_item.tier = tier_num if tier_num
+
+          unless line_item.update_attributes(line_item_attributes)
+            raise "line item errors: #{line_item.errors.full_messages}"
+          end
+        end
+      end
+    end
+  end
+
+  Imprintable::TIERS.each do |tier_num, tier_name|
+    # e.g. :good_line_items
+    line_items_sym = tier_line_items_sym(tier_name)
+
+    # e.g. def good_line_items_attributes=(attrs) ...
+    define_method(
+      "#{line_items_sym}_attributes=",
+      &assign_line_items_attributes_proc(tier_num)
+    )
+  end
+  define_method('line_items_attributes=', &assign_line_items_attributes_proc)
+
   # For on_order activity tracking helper
   def order
     return jobbable if jobbable_type == 'Order'

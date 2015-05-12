@@ -1,4 +1,4 @@
-<li id="edit-line-item-<%= line_item.id %>" class="sortable-quote-line-item row">
+<li id="edit-line-item-<%= line_item.id %>" class="sortable-quote-line-item row" data-line-item-id='<%= line_item.id %>'>
   <% # batch_fields_for line_item do |f| %>
     <%= f.hidden_field :tier, class: 'tier-field' %>
     <%= f.hidden_field :line_itemable_id, class: 'job-id-field' %>
