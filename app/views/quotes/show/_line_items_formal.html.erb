@@ -1,7 +1,7 @@
 <div>
   <table class="table table-hover">
     <tbody>
-    <% quote.jobs.each do |job| %>
+    <% quote.imprintable_jobs.each do |job| %>
         <% unless job.line_items.empty? %>
             <tr class="no-break">
               <td colspan="4"><h3><strong><%= job.name || 'Line Items' %></strong></h3></td>

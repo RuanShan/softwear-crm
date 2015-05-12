@@ -164,10 +164,10 @@ feature 'Quotes management', quote_spec: true, js: true do
     click_link 'Add an imprintable'
     sleep 1
     within '#imprintable-add-search' do
-      fill_in 'Search Terms', with: 'some imprintable'
+      fill_in 'Terms', with: 'some imprintable'
     end
     sleep 0.5
-    click_button 'Search Imprintables'
+    click_button 'Search'
 
     sleep 0.5
     find("#imprintable-result-#{imprintable1.id} input[type=checkbox]").click
@@ -189,10 +189,9 @@ feature 'Quotes management', quote_spec: true, js: true do
     expect(job.line_items.where(imprintable_variant_id: iv3.id)).to exist
   end
 
-  scenario 'A user can add an option/markup to a quote with a job', refactor: true, story_558: true do
+  scenario 'A user can add an option/markup to a quote', refactor: true, story_558: true do
     quote.update_attributes informal: true
     quote.jobs << create(:job)
-    job = quote.jobs.first
     visit edit_quote_path quote
 
     find('a', text: 'Line Items').click
@@ -200,7 +199,6 @@ feature 'Quotes management', quote_spec: true, js: true do
     click_link 'Add An Option or Markup'
     sleep 0.5
 
-    select job.name, from: 'Group'
     fill_in 'Name', with: 'Special sauce'
     fill_in 'Description', with: 'improved taste'
     fill_in 'Url', with: 'http://lmgtfy.com/?q=secret+sauce'
@@ -210,7 +208,9 @@ feature 'Quotes management', quote_spec: true, js: true do
 
     expect(page).to have_content 'Line item was successfully created.'
 
+    job = quote.markups_and_options_job
     job.reload
+
     expect(job.line_items.size).to eq 1
 
     line_item = job.line_items.first

@@ -18,6 +18,7 @@ class JobsController < InheritedResources::Base
       end
 
       @line_items = @job.line_items
+      @imprints   = @job.imprints
 
       [success, failure].each(&:js)
     end
@@ -91,6 +92,7 @@ class JobsController < InheritedResources::Base
     line_items_attributes = [
       :id, :job_id, :tier, :description, :quantity,
       :unit_price, :imprintable_price, :decoration_price,
+      :line_itemable_id,
       :_destroy
     ]
     tiered_line_item_attributes = Imprintable::TIERS.values.reduce({}) do |hash, tier_name|
@@ -105,13 +107,13 @@ class JobsController < InheritedResources::Base
         {
           line_items_attributes: line_items_attributes,
           imprints_attributes: [
-            :id, :description, :imprint_method_id,
+            :description, :print_location_id,
             :_destroy
           ]
         }
           .merge(tiered_line_item_attributes)
       ],
-      imprint: [
+      imprints: [
         :print_location_id
       ],
     )

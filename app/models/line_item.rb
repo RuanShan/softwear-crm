@@ -23,7 +23,7 @@ class LineItem < ActiveRecord::Base
   validates :imprintable_variant_id,
             uniqueness: {
               scope: [:line_itemable_id, :line_itemable_type]
-            }, if: :imprintable?
+            }, if: :imprintable_and_in_an_order?
   validate :imprintable_variant_exists, if: :imprintable?
   validates :name, presence: true, unless: :imprintable?
   validates :quantity, presence: true
@@ -60,6 +60,10 @@ class LineItem < ActiveRecord::Base
     define_method(method) do
       imprintable? ? imprintable_variant.send(method) : self[method] rescue ''
     end
+  end
+
+  def imprintable_and_in_an_order?
+    imprintable? && line_itemable.try(:jobbable_type) == 'Order'
   end
 
   def <=>(other)

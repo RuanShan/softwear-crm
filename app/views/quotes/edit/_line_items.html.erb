@@ -1,7 +1,5 @@
-<% # form_for :line_item, method: :put, url: line_items_update_path, remote: true, builder: BatchFormBuilder do |f| %>
-
   <% quote.imprintable_jobs.each do |job| %>
-    <%= form_for job, html: { class: 'job-form-to-be-saved' }, remote: true, builder: LancengFormBuilder do |f| %>
+    <%= form_for job, html: { id: "job-#{job.id}", class: 'job-form-to-be-saved' }, remote: true, builder: LancengFormBuilder do |f| %>
 
       <div id="edit-quote-job-<%= job.id %>" class="quote-job-entry container-fluid" data-job-id='<%=job.id%>'>
         <div class="row">
@@ -11,20 +9,8 @@
           </div>
         </div>
 
-        <div class="row">
-          NOTE: These cannot currently be edited
-          <% job.imprints.each do |imprint| %>
-            <% # TODO make imprints/imprint use/work with fields_for? %>
-            <%= render 'imprints/imprint', select_tag_name: 'printlocid', description_name: 'desc', imprint: imprint %>
-          <% end %>
-
-          <%= link_to new_imprint_path(select_tag_name: 'print_locations[]', description_name: 'imprint_descriptions[]'),
-                      disabled: true,
-                      class: 'btn btn-info add-imprint',
-                      method: :get, remote: true do %>
-            <i class="fa fa-pagelines"></i> Add Imprint
-          <% end %>
-
+        <div class="row imprints-container">
+          <%= render 'quotes/edit/imprints', job: job %>
         </div>
 
         <% Imprintable::TIERS.each do |tier_number, tier_name| %>
