@@ -3,12 +3,19 @@ module TrackingHelpers
 
   class Methods
     def self.get_order(controller, record)
+      begin
       if record.is_a? Order
         record
+      elsif record.respond_to?(:jobbable) && record.jobbable_type == 'Order'
+        record.jobbable
       elsif record.respond_to?(:order) && record.order
         record.order
       elsif controller
         controller.instance_variable_get :@order
+      end
+
+      rescue ActiveRecord::HasManyThroughSourceAssociationNotFoundError => _e
+        nil
       end
     end
   end
