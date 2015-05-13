@@ -1,6 +1,7 @@
 require 'spec_helper'
 include ApplicationHelper
 require 'email_spec'
+require_relative '../../app/controllers/jobs_controller'
 
 feature 'Quotes management', quote_spec: true, js: true do
   given!(:valid_user) { create(:alternate_user) }
@@ -252,6 +253,43 @@ feature 'Quotes management', quote_spec: true, js: true do
     quote.reload
     expect(quote.notes.where(title: 'Test Note?')).to_not exist
     expect(quote.notes.where(comment: 'This is what I want to see')).to_not exist
+  end
+
+  scenario 'A user can remove line items from a quote', story_572: true, refactor: true do
+    job = create(:job, name: 'Some imprintables')
+    job.line_items << create(:imprintable_line_item, tier: Imprintable::TIER.good,   name: 'Good')
+    imprintable_line_item_to_delete = create(:imprintable_line_item, tier: Imprintable::TIER.good, name: 'Bad Good')
+    job.line_items << imprintable_line_item_to_delete
+    job.line_items << create(:imprintable_line_item, tier: Imprintable::TIER.better, name: 'Better')
+    job.line_items << create(:imprintable_line_item, tier: Imprintable::TIER.best,   name: 'Best')
+    quote.jobs << job
+
+    quote.markups_and_options_job.line_items << create(:non_imprintable_line_item)
+    standard_line_item_to_delete = create(:non_imprintable_line_item, name: 'Remove me')
+    quote.markups_and_options_job.line_items << standard_line_item_to_delete
+
+    visit edit_quote_path quote
+
+    find('a', text: 'Line Items').click
+
+    expect(LineItem.where(name: 'Remove me')).to exist
+
+    expect(page).to have_content 'Remove me'
+
+    within("#edit-line-item-#{imprintable_line_item_to_delete.id}") do
+      click_link 'Remove'
+    end
+
+    within("#line-item-#{standard_line_item_to_delete.id}") do
+      click_link 'Remove'
+    end
+
+    click_button 'Save Line Item Changes'
+
+    sleep 1
+
+    expect(LineItem.where(name: 'Remove me')).to_not exist
+    expect(page).to_not have_content 'Remove me'
   end
 
   feature 'Quote emailing' do

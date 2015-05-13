@@ -107,7 +107,7 @@ class JobsController < InheritedResources::Base
         {
           line_items_attributes: line_items_attributes,
           imprints_attributes: [
-            :description, :print_location_id,
+            :id, :job_id, :description, :print_location_id,
             :_destroy
           ]
         }

@@ -1,6 +1,3 @@
-function updateLineItemTotal() {
-}
-
 $(function() {
   if ($('.edit-quote-line-items').length == 0) return;
 
@@ -32,6 +29,46 @@ $(function() {
     $(this).addClass('editing-line-item');
 
     notifyUnsavedChanges();
+  });
+
+  $('.remove-line-item-btn').click(function(e) {
+    e.preventDefault();
+    var button       = $(this);
+    var container    = button.closest('.sortable-quote-line-item,.option-and-markup-line-item');
+    var destroyField = container.find('.line-item-destroy-field');
+    var allFields    = container.find('.line-item-edit-field');
+
+    if (container.length <= 0) {
+      alert('Could not find container of remove button');
+      return;
+    }
+    if (allFields.length <= 0) {
+      alert('No input fields att all???');
+      return;
+    }
+    if (destroyField.length <= 0) {
+      alert('Could not find field with name~="_destroy"');
+      return;
+    }
+
+    if (button.data('removing')) {
+      container.removeClass('removing-line-item');
+      button.data('removing', false);
+      button.text('Remove');
+      destroyField.val('false');
+      destroyField.prop('disabled', 'disabled');
+      allFields.removeProp('disabled');
+    }
+    else {
+      container.addClass('removing-line-item');
+      button.data('removing', true);
+      button.text('Unremove');
+      destroyField.val('true');
+      destroyField.removeProp('disabled');
+      allFields.prop('disabled', 'disabled');
+
+      notifyUnsavedChanges();
+    }
   });
 
   $(".edit-quote-line-items").sortable({

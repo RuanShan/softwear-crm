@@ -57,6 +57,8 @@
   <% end %>
 <% end %>
 
+$('.removing-line-item').remove();
+
 <% unless @line_items.empty? %>
   <%= update_order_timeline(@line_items.first.line_itemable.try(:order)) %>
   window.onbeforeunload = undefined;
@@ -90,7 +92,7 @@ var shineEditingIn = function ($container) {
 
 <% unless @job.valid? %>
   errorModal(
-    "<%=j @job.errors.full_messages.html_safe %>"
+    "<%=j @job.errors.full_messages.join("\n").html_safe %>"
   );
 <% end %>
 

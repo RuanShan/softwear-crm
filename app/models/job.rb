@@ -55,6 +55,8 @@ class Job < ActiveRecord::Base
   def self.assign_line_items_attributes_proc(tier_num = nil)
     proc do |attrs|
       # == first pass ==
+      ids_to_destroy = []
+
       attrs.each do |key, line_item_attributes|
         # Default behavior, more or less.
         if /\d+/ =~ key
@@ -63,9 +65,16 @@ class Job < ActiveRecord::Base
           else
             line_items = self.line_items
           end
-          line_items[key.to_i].update_attributes line_item_attributes
+
+          if (d = line_item_attributes[:_destroy]) && !['false', '0'].include?(d)
+            ids_to_destroy << line_items[key.to_i].id
+          else
+            line_items[key.to_i].update_attributes line_item_attributes
+          end
         end
       end
+
+      LineItem.destroy ids_to_destroy unless ids_to_destroy.empty?
 
       # == second pass ==
       # We do 2 passes, because this second pass might change the ordering

@@ -14,6 +14,10 @@ module ImprintHelper
     end
   end
 
+  def imprint_is_for_an_order?(imprint)
+    imprint.try(:jobbable).is_a?(Order)
+  end
+
   def update_name_number_table(job)
     %(
       $("#job-#{job.id}").find('.job-name-number-info')

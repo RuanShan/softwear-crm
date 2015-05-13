@@ -1,5 +1,10 @@
 <% job.imprints.each_with_index do |imprint, index| %>
-  <%= render 'imprints/imprint', select_tag_name: "job[imprints_attributes][#{index}][print_location_id]", description_name: "job[imprints_attributes][#{index}][description]", imprint: imprint %>
+  <%= render 'imprints/imprint',
+    select_tag_name: "job[imprints_attributes][#{index}][print_location_id]",
+    description_name: "job[imprints_attributes][#{index}][description]",
+    id_field_name: "job[imprints_attributes][#{index}][id]",
+
+      imprint: imprint %>
 <% end %>
 
 <%= link_to new_job_imprint_path(job, select_tag_name: "job[imprints_attributes][*time*][print_location_id]", description_name: "job[imprints_attributes][*time*][description]"),
