@@ -201,6 +201,7 @@ feature 'Quotes management', quote_spec: true, js: true do
     sleep 0.5
 
     fill_in 'Name', with: 'Special sauce'
+    sleep 0.05
     fill_in 'Description', with: 'improved taste'
     fill_in 'Url', with: 'http://lmgtfy.com/?q=secret+sauce'
     fill_in 'Unit price', with: '99.99'

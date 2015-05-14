@@ -1,7 +1,11 @@
-<% if params[:imprintable_only] %>
-    <%= render 'quotes/edit/new_line_items_imprintable', quote: quote %>
+<% if params[:imprintable_id] && params[:type] %>
+  <%= render 'quotes/edit/new_similar_or_coordinate', quote: quote,
+    imprintable: Imprintable.find(params[:imprintable_id]),
+    type: params[:type] %>
+<% elsif params[:imprintable_only] %>
+  <%= render 'quotes/edit/new_line_items_imprintable', quote: quote %>
 <% elsif params[:options_and_markups] %>
-    <%= render 'quotes/edit/new_line_items_options_and_markups', quote: quote %>
+  <%= render 'quotes/edit/new_line_items_options_and_markups', quote: quote %>
 <% else %>
-    <%= render 'quotes/edit/new_line_items_from_group', quote: quote %>
+  <%= render 'quotes/edit/new_line_items_from_group', quote: quote %>
 <% end %>

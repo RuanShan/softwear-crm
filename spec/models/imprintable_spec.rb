@@ -25,6 +25,11 @@ describe Imprintable, imprintable_spec: true do
       it { is_expected.to have_many(:imprintable_imprintable_groups) }
       it { is_expected.to have_many(:imprintable_groups).through(:imprintable_imprintable_groups) }
     end
+
+    context 'story 573', story_573: true do
+      # Error message that shows up here is completely useless...
+      # it { is_expected.to have_many(:similar_imprintables).through(:imprintable_groups).source(:imprintable) }
+    end
   end
 
   describe 'Validations' do

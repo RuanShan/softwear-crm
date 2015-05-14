@@ -17,43 +17,17 @@
 <br clear="all" />
 <%= form_for quote, builder: LancengFormBuilder do |f| %>
     <%= f.fields_for :line_item_to_group do |ff| %>
-        <h4>Select imprintables from search results</h4>
+      <h4>Select imprintables from search results</h4>
 
-        <div class="col-sm-12" id="imprintable-add-search-results">
-          <p class="help-block">
-            enter search terms above and press "Search" above to populate search results
-          </p>
-        </div>
+      <div class="col-sm-12" id="imprintable-add-search-results">
+        <p class="help-block">
+          enter search terms above and press "Search" to populate search results
+        </p>
+      </div>
 
-        <h4>Line Item Options</h4>
-
-        <div class="row">
-          <div class="col-xs-4">
-            <%= ff.label :job_id, 'Group' %><br />
-            <%= ff.select :job_id, quote.imprintable_jobs.map {|x| [x.name, x.id] } %><br />
-          </div>
-          <div class="col-xs-4">
-            <%= ff.label :tier %><br />
-            <%= ff.select :tier, Imprintable::TIERS.map{|number, name| [name, number]} %><br />
-          </div>
-          <div class="col-xs-2">
-            <%= ff.label :quantity %><br />
-            <%= ff.text_field :quantity, type: 'number' %><br />
-          </div>
-          <div class="col-xs-2">
-            <%= ff.label :decoration_price %><br />
-            <div class="input-group">
-              <span class="input-group-addon">$</span>
-              <%= ff.text_field :decoration_price, type: 'number', step: 'any' %>
-            </div>
-          </div>
-          <%= ff.hidden_field :quote_id, value: quote.id %>
+      <%= render 'quotes/edit/new_imprintable_common_fields', f: ff, quote: quote %>
     <% end %>
-    <br clear="all" />
-    <br clear="all" />
-    <div class="row">
-      <%= f.submit 'Add Imprintable(s)', class: 'btn btn-success col-xs-3 col-xs-offset-4' %>
-    </div>
+    <%= render 'quotes/edit/add_imprintables_button.html.erb', f: f %>
 <% end %>
 
 </div>

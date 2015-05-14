@@ -5,7 +5,9 @@
     <div class="col-xs-7">
       <b><%= line_item.imprintable.name %></b><br />
       <%= line_item.imprintable.description.html_safe %><br />
-      <%= link_to 'Add Coordinate', '#' %> |  <%= link_to 'Add Similar', '#' %>
+      <%= link_to 'Add Coordinate', edit_quote_path(imprintable_id: line_item.imprintable_id, type: 'coordinates'), remote: true %>
+      |
+      <%= link_to 'Add Similar', edit_quote_path(imprintable_id: line_item.imprintable_id, type: 'similar_imprintables'), remote: true %>
     </div>
     <div class="col-xs-2">
       <%= f.label :decoration_price, 'Quantity' %>

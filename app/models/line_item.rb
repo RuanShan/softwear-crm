@@ -89,6 +89,10 @@ class LineItem < ActiveRecord::Base
     imprintable_variant.imprintable
   end
 
+  def imprintable_id
+    imprintable_variant.try(:imprintable_id)
+  end
+
   def imprintable?
     !imprintable_variant_id.nil?
   end
