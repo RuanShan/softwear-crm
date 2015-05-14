@@ -1,6 +1,10 @@
-<% quotes.each do |quote| %>
-  <div>
-    <% # NOTE the href here is appended with ?add_imprintable=<imprintable id>#line_items by imprintables/quote_search_results.js %>
-    <%= link_to quote.name, edit_quote_path(quote), class: 'add-imprintable-to-quote-link' %>
-  </div>
+<% if quotes.empty? %>
+  None found
+<% else %>
+  <% quotes.each do |quote| %>
+    <div>
+      <% # NOTE the href here is appended with ?add_imprintable=<imprintable id>#line_items by imprintables/quote_search_results.js %>
+      <%= link_to quote.name, edit_quote_path(quote), class: 'add-imprintable-to-quote-link' %>
+    </div>
+  <% end %>
 <% end %>
