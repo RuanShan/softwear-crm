@@ -23,6 +23,7 @@
 //= require jquery/jquery.maskedinput.min.js
 //= require chosen-jquery
 //= require bigdecimal/bigdecimal-all-last.min.js
+//= require select2/select2.full.min.js
 //= require_tree ../../../vendor/assets/javascripts/jquery/.
 //= require lanceng/lanceng
 //= require table-fixed-header/table-fixed-header

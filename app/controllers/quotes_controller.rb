@@ -1,5 +1,6 @@
 class QuotesController < InheritedResources::Base
   before_filter :format_dates, only: [:create, :update]
+  after_filter :dock_associated_quote_requests, only: [:show, :edit]
   before_action :set_current_action
   require 'mail'
 
@@ -27,6 +28,13 @@ class QuotesController < InheritedResources::Base
             render partial: params[:respond_with_partial],
                    locals: { quotes: @quotes }
           end
+        end
+      else
+        respond_to do |format|
+          format.json do
+            render json: @quotes.to_json
+          end
+          format.html
         end
       end
     else
@@ -63,6 +71,12 @@ class QuotesController < InheritedResources::Base
 
 
   private
+
+  def dock_associated_quote_requests
+    if @quote
+      session[:docked] = @quote.quote_requests.map(&:to_dock)
+    end
+  end
 
   def add_params_from_docked_quote_request
     # Todo @quote.assign_from_qoute_request(whatver from session)

@@ -36,7 +36,19 @@
 }
 
 #dock {
- position: fixed;
- bottom: 0;
- right: 0;
+  position: fixed;
+  bottom: 0;
+  right: 0;
+
+  ul.nav-tabs {
+    border: 1px solid white;
+
+    .close-dock {
+      color: white;
+    }
+  }
+
+  .qr-dock-show-btn {
+    margin-top: 10px;
+  }
 }
