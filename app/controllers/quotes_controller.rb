@@ -33,15 +33,16 @@ class QuotesController < InheritedResources::Base
     else
       super do
         @quotes = Quote.all.page(params[:page])
+
+        respond_to do |format|
+          format.json do
+            render json: @quotes.to_json
+          end
+          format.html
+        end
       end
     end
 
-    respond_to do |format|
-      format.json do
-        render json: @quotes.to_json
-      end
-      format.html
-    end
   end
 
   def edit
