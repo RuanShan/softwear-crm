@@ -6,7 +6,7 @@
       <div class="form-group">
         <%= label_tag :q, 'Terms', class: 'col-xs-1 control-label' %>
         <div class="col-xs-8">
-          <%= text_field_tag :q, '', class: 'form-control', placeholder: 'Enter search terms here' %>
+          <%= text_field_tag :q, raw(params[:search_prepopulate] || ''), class: 'form-control', placeholder: 'Enter search terms here' %>
         </div>
         <%= button_tag class: 'btn btn-primary col-xs-2' do  %>
             <i class="glyphicon glyphicon-search"></i> Search
@@ -20,9 +20,15 @@
       <h4>Select imprintables from search results</h4>
 
       <div class="col-sm-12" id="imprintable-add-search-results">
-        <p class="help-block">
-          enter search terms above and press "Search" to populate search results
-        </p>
+        <% if params[:imprintable_id_prepopulate] %>
+          <%= render 'quotes/edit/imprintable_search_results',
+            imprintables: Imprintable.where(id: params[:imprintable_id_prepopulate]),
+            checked: [params[:imprintable_id_prepopulate].to_i] %>
+        <% else %>
+          <p class="help-block">
+            enter search terms above and press "Search" to populate search results
+          </p>
+        <% end %>
       </div>
 
       <%= render 'quotes/edit/new_imprintable_common_fields', f: ff, quote: quote %>

@@ -331,7 +331,7 @@ feature 'Quotes management', quote_spec: true, js: true do
     end
   end
 
-  scenario 'A user can generate a quote from an imprintable pricing dialog', retry: 2, story_489: true do
+  scenario 'A user can generate a quote from an imprintable pricing dialog', retry: 2, story_489: true, pricing_spec: true, pending: 'NO MORE PRICING TABLE' do
     visit imprintables_path
     find('i.fa.fa-dollar').click
     decoration_price = 3.75

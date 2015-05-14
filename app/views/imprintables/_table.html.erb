@@ -25,11 +25,12 @@
             <td><%= raw imprintable.style_description %></td>
             <td>
               <div>
-                <%= link_to new_price_path(id: imprintable.id), class: 'btn-sm btn btn-success btn-fullwidth',
-                            id: "pricing_button_#{imprintable.id}", remote: true,
-                            'data-action' => 'new', 'data-toggle' => 'tooltip', 'title' => 'Price' do %>
-                  <i class="fa fa-dollar"></i> Price
+                <%= link_to imprintable_path(imprintable, search_for_quote: true),
+                            class: 'btn-sm btn btn-success btn-fullwidth',
+                            remote: true do %>
+                  <i class="fa fa-edit"></i> Add to Quote
                 <% end %>
+
                 <br clear="all" />
                 <%= link_to imprintable_path(imprintable), class: 'btn-sm btn btn-primary btn-fullwidth',
                             'data-action' => 'show', 'data-toggle' => 'tooltip', 'title' => 'Show' do %>

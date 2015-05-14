@@ -13,9 +13,26 @@ class QuotesController < InheritedResources::Base
   end
 
   def index
-    super do
-      @current_action = 'quotes#index'
-      @quotes = Quote.all.page(params[:page])
+    @current_action = 'quotes#index'
+
+    if (terms = params[:q])
+      @quotes = Quote.search do
+        fulltext terms
+      end
+        .results
+
+      if params[:respond_with_partial]
+        respond_to do |format|
+          format.js do
+            render partial: params[:respond_with_partial],
+                   locals: { quotes: @quotes }
+          end
+        end
+      end
+    else
+      super do
+        @quotes = Quote.all.page(params[:page])
+      end
     end
   end
 

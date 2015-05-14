@@ -1,0 +1,11 @@
+$(function() {
+  $.ajax({
+    url: Routes.edit_quote_path(<%= quote.id %>),
+    data: {
+      imprintable_only: true,
+      search_prepopulate: "<%= imprintable.name %>",
+      imprintable_id_prepopulate: <%= imprintable.id %>
+    },
+    dataType: 'script'
+  });
+});
