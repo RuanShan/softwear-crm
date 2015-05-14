@@ -26,6 +26,7 @@
             <td>
               <div>
                 <%= link_to imprintable_path(imprintable, search_for_quote: true),
+                            id: "add-#{imprintable.id}-to-quote",
                             class: 'btn-sm btn btn-success btn-fullwidth',
                             remote: true do %>
                   <i class="fa fa-edit"></i> Add to Quote

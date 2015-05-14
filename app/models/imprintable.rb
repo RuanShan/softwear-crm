@@ -168,18 +168,6 @@ class Imprintable < ActiveRecord::Base
     "#{brand.try(:name) || '<no brand>'} - #{style_catalog_no} - #{style_name}"
   end
 
-  def pricing_hash(decoration_price, quantity = 1)
-    sizes_string = determine_sizes(sizes)
-    {
-        name: name,
-        supplier_link: supplier_link,
-        description: self.description,
-        sizes: sizes_string,
-        prices: get_prices(self, decoration_price),
-        quantity: quantity
-    }
-  end
-
   def self.variants(id)
     ImprintableVariant.includes(:size, :color).where(imprintable_id: id)
   end

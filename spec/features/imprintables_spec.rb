@@ -242,19 +242,35 @@ feature 'Imprintables management', imprintable_spec: true, slow: true do
   end
 
   scenario 'A user can add an imprintable to a quote from an index entry', story_561: true, refactor: true, js: true do
+    quote = create(:valid_quote, jobs: [create(:job)])
+    imprintable.imprintable_variants << create(:valid_imprintable_variant)
+
     allow(Quote).to receive(:search)
       .and_return double('Search', results: [quote])
 
     visit imprintables_path
     find_link("add-#{imprintable.id}-to-quote").click
 
-    fill_in 'Quote Search', with: 'A quote'
-    click_button 'Search'
-    click_link quote.name
-
     sleep 0.5
 
-    raise "CONTINUE THIS SPEC"
+    within '#quote-search-form' do
+      find('#quote-search-box').set('A quote')
+      click_button 'Search'
+      sleep 0.5
+    end
+
+    visit edit_quote_path(quote, add_imprintable: imprintable.id, anchor: 'line_items')
+
+    sleep 1
+
+    select quote.jobs.first.name, from: 'Group'
+    select 'Best', from: 'Tier'
+    fill_in 'Quantity', with: '3'
+    fill_in 'Decoration price', with: '25.99'
+
+    click_button 'Add Imprintable(s)'
+
+    expect(page).to have_content 'Quote was successfully updated.'
   end
 
   scenario 'A user can navigate to all tabs of the modal show menu (card #133)', js: true  do

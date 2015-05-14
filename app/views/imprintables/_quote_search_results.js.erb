@@ -1,15 +1,3 @@
 $('#quote-search-results').html(
   "<%=j render 'imprintables/quote_search_results.html', quotes: quotes %>"
 );
-
-var imprintableId = $('#quote-search-results').data('imprintable-id');
-$('.add-imprintable-to-quote-link').each(function() {
-  var link = $(this);
-  var href = link.prop('href');
-
-  var symbol = '?';
-  if (href.contains('?')) symbol = '&';
-
-  // We do this because the server has no access to the imprintable ID anymore at this point.
-  link.prop('href', href + symbol + 'add_imprintable=' + imprintableId + '#line_items');
-});

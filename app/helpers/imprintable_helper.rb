@@ -13,30 +13,6 @@ module ImprintableHelper
     end
   end
 
-  def pricing_table_headers_for(pricing_groups)
-    headers = content_tag(:th, 'Item')
-    headers += content_tag(:th, 'Quantity')
-    headers += content_tag(:th, 'Sizes')
-    headers += content_tag(:th, 'Base')
-
-    # Here we assume that all of the pricing_hash keys are
-    # the same for all arrays within the group.
-    reference_pricing_array = pricing_groups.values.first
-    reference_pricing_hash = reference_pricing_array.first
-
-    reference_pricing_hash[:prices].keys.each do |price|
-      x_count = 0
-      price_string = price.to_s.each_char do |c|
-        x_count += 1 if c == 'x'
-      end
-      next if x_count == 0
-
-      headers += content_tag(:th, "#{x_count}XL")
-    end
-
-    headers
-  end
-
   def pricing_table_data_for(pricing_hash)
     data = content_tag(:td, link_to(pricing_hash[:name], pricing_hash[:supplier_link]))
     data += content_tag(:td, pricing_hash[:quantity])

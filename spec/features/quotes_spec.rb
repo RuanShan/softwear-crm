@@ -331,7 +331,7 @@ feature 'Quotes management', quote_spec: true, js: true do
     end
   end
 
-  scenario 'A user can generate a quote from an imprintable pricing dialog', retry: 2, story_489: true, pricing_spec: true, pending: 'NO MORE PRICING TABLE' do
+  scenario 'A user can generate a quote from an imprintable pricing dialog', story_489: true, pricing_spec: true, pending: 'NO MORE PRICING TABLE' do
     visit imprintables_path
     find('i.fa.fa-dollar').click
     decoration_price = 3.75
@@ -368,7 +368,7 @@ feature 'Quotes management', quote_spec: true, js: true do
     expect(current_path).to eq(quote_path(quote.id + 1))
   end
 
-  scenario 'A user can add a single price from the pricing table to an existing quote', retry: 2 do
+  scenario 'A user can add a single price from the pricing table to an existing quote', pending: 'NO MORE PRICING TABLE' do
     visit imprintables_path
     find("#pricing_button_#{imprintable.id}").click
     fill_in 'decoration_price', with: '3.95'
@@ -421,7 +421,7 @@ feature 'Quotes management', quote_spec: true, js: true do
     expect(page).to have_selector('div.line-item-form textarea', text: 'Line Item Description')
   end
 
-  scenario 'Pricing table prices with > 2 decimal places are rounded', story_491: true do
+  scenario 'Pricing table prices with > 2 decimal places are rounded', story_491: true, pending: 'NO MORE PRICING TABLE' do
     imprintable = build_stubbed :valid_imprintable
     session = {
       pricing_groups: {
@@ -439,7 +439,7 @@ feature 'Quotes management', quote_spec: true, js: true do
     expect(page).to have_selector("input[type='text'][value='0.54']")
   end
 
-  scenario 'Inputting bad data for the quote does not kill line item info', story_491: true do
+  scenario 'Inputting bad data for the quote does not kill line item info', story_491: true, pending: 'NO MORE PRICING TABLE' do
     imprintable = build_stubbed :valid_imprintable
     session = {
       pricing_groups: {
