@@ -1,7 +1,9 @@
 <% quote.imprintable_jobs.each do |job| %>
     <div id="quote-show-job-<%= job.id %>  container-fluid" class="informal-job">
       <h3><%= job.name %> <small><%= job.description %></small></h3>
-      <p>This is where print information will go </p>
+      <p>
+        <%= raw job.imprints.map{ |x| "<b>#{x.name}</b> #{x.description}" }.join(', ') %>
+      </p>
 
       <% Imprintable::TIERS.each do |tier_number, tier_name| %>
         <% next if job.imprintable_line_items_for_tier(tier_number).empty? %>
