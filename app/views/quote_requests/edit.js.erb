@@ -6,19 +6,18 @@
 
   quoteIds.select2({
     minimumInputLength: 2,
-    tokenSeparators: [','],
     width: '100%',
-    tags: true,
+    data: quoteIds.data('values'),
 
     ajax: {
       url: Routes.quotes_path(),
       dataType: 'json',
-      quietMillis: 600,
+      delay: 600,
 
       data: function(params) {
         return { q: params };
       },
-      results: function(data) {
+      processResults: function(data) {
         return {
           results: data.map(function(quote) {
             return { id: quote.id, text: quote.name };

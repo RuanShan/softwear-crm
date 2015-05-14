@@ -29,11 +29,7 @@ class QuotesController < InheritedResources::Base
                    locals: { quotes: @quotes }
           end
         end
-      end
-    else
-      super do
-        @quotes = Quote.all.page(params[:page])
-
+      else
         respond_to do |format|
           format.json do
             render json: @quotes.to_json
@@ -41,8 +37,11 @@ class QuotesController < InheritedResources::Base
           format.html
         end
       end
+    else
+      super do
+        @quotes = Quote.all.page(params[:page])
+      end
     end
-
   end
 
   def edit
