@@ -72,7 +72,7 @@ class Imprintable < ActiveRecord::Base
   has_many :imprintable_groups, through: :imprintable_imprintable_groups
   has_many :similar_imprintables, through: :imprintable_groups, source: :imprintables
 
-  accepts_nested_attributes_for :imprintable_categories, allow_destroy: true
+  accepts_nested_attributes_for :imprintable_categories, :imprintable_imprintable_groups, allow_destroy: true
   accepts_nested_attributes_for :imprintable_variants
 
   validates :brand, presence: true

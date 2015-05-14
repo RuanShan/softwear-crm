@@ -35,6 +35,20 @@
             </div>
           </div>
 
+          <div class="form-group row">
+            <div class='col-sm-1'>
+              <%= f.label :imprintables %>
+            </div>
+
+            <div class='col-sm-11'>
+              <%= f.fields_for :imprintable_imprintable_groups do |ff| %>
+                <%= render 'imprintable_imprintable_group_fields', f: ff %>
+              <% end %>
+
+              <%= link_to_add_fields "<i class='fa fa-plus'></i> Add Imprintable".html_safe, f, :imprintable_imprintable_groups %>
+            </div>
+          </div>
+
           <div class="form-group">
             <div class="col-sm-offset-2 col-sm-10">
               <button type="submit" class="btn btn-info"><%= create_or_edit_text(imprintable_group) %> Imprintable Group</button>
