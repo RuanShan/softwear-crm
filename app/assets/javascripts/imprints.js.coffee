@@ -1,8 +1,8 @@
 @imprintMethodSelected = ->
   $this = $(this)
   id = $this.val()
-  
-  $this.addClass 'editing-imprint'
+
+  $this.addClass 'editing-imprint' unless $this.closest('form').data('no-editing-class')
   # todo: using hardcoded name/number name
   $name_number_container = $this.parent().siblings("div.js-name-number-format-fields")
   if $this.children("option[value='#{ id }']").text() is 'Name/Number'
@@ -12,17 +12,19 @@
     $name_number_container.toggleClass("hidden", true)
     $name_number_container.children("input").toggleClass("editing-imprint", false)
 
-  $imprintContainer = $this.parentsUntil('.imprint-container').parent()
-  $imprintEntry = $this.parentsUntil('.imprint-entry').parent()
+  $imprintContainer = $this.closest('.imprint-container')
+  $imprintEntry = $this.closest('.imprint-entry')
   imprintId = $imprintEntry.data('id')
 
   $printLocationContainer = $imprintContainer.find('.print-location-container')
   # $printLocationContainer.addClass 'editing-imprint'
 
+  customName = $printLocationContainer.data('select_tag_name')
+
   ajax = $.ajax
     type: 'GET'
     url: Routes.imprint_method_print_locations_path(id)
-    data: { name: "imprint[#{imprintId}[print_location_id]]" }
+    data: { name: customName or "imprint[#{imprintId}[print_location_id]]" }
     dataType: 'html'
 
   ajax.done (response) ->
@@ -37,7 +39,7 @@
 @printLocationSelected = ->
   $this = $(this)
   $this.data('error-handler').clear() if $this.data 'handler'
-  $this.addClass 'editing-imprint'
+  $this.addClass 'editing-imprint' unless $this.closest('form').data('no-editing-class')
 
 @registerImprintEvents = ($parent) ->
   $parent.find('.js-delete-imprint-button').click deleteImprint
@@ -59,7 +61,7 @@
       type: 'DELETE'
       url: Routes.imprint_path(imprintId)
       dataType: 'script'
-    
+
     ajax.done eval
 
   false
@@ -89,6 +91,4 @@ $ ->
 
       unless $(e.target).is('.imprint-container *')
         $('.update-imprints').click() if $('.editing-imprint').length isnt 0
-  else
-    console.log 'i dont care lol'
 

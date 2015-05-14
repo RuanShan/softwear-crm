@@ -29,28 +29,6 @@
   color: red;
 }
 
-.quote-line-item-group {
-  background: #fff;
-  border: solid 1px #E5E9EC;
-  margin-bottom: 10px;
-}
-.quote-line-item-group:hover {
-  background: #fafafa;
-}
-
-.quote-line-item-row{
-  border-bottom: solid 1px #E5E9EC;
-  margin-bottom: 10px;
-}
-
-.editing-line-item {
-  border: solid 1px #E5E9EC;
-  margin: 10px 0 0 0;
-  padding: 10px 0;
-  background-color: #FFFFFF;
-
-}
-
 #freshdesk-email-temp {
   padding: 10px;
   border: 1px solid #BBBBBB;
@@ -61,4 +39,41 @@
 }
 .freshdesk-copy-modal {
   background-color: #EDFFF9;
+}
+
+.sortable-quote-line-items, .option-and-markup-line-items {
+  list-style-type: none;
+  float: left;
+  min-height: 50px;
+  width: 100%;
+  background-color: #eee;
+
+}
+
+.sortable-quote-line-item,.option-and-markup-line-item  {
+  margin: 15px 5px;
+  border: solid 1px #cccccc;
+  background-color: #ffffff;
+  border-radius: 10px;
+  padding: 10px;
+}
+
+.editing-line-item {
+  background-color: #FFFEE8;
+}
+
+.removing-line-item {
+  background-color: #FFB5AC;
+}
+
+.pending-line-item-edit {
+  background-color: #E8E7BE;
+}
+
+.quote-line-items-container {
+  padding: 15px;
+}
+
+#comments-list {
+  list-style: none;
 }

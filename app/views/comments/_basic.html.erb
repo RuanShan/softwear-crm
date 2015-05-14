@@ -1,0 +1,10 @@
+
+<li class="the-notes <%= comment_class(comment) %>" id="comment-<%= comment.id %>">
+  <%= link_to comment_path(comment), class: 'delete-comment pull-right', method: :delete, remote: true do %>
+      <i class="fa fa-2x danger fa-times-circle"></i>
+  <% end %>
+  <h4><%= comment.title %> <i><%= comment.role %></i></h4>
+  <p>
+    <%= comment.comment %>
+  </p>
+</li>

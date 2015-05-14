@@ -2,7 +2,12 @@ class Imprintable < ActiveRecord::Base
   include PricingModule
   include Retailable
 
+  # NOTE do try to keep the number values in these tier constants
+  # consistent with the TIERS constant.
+  TIER = OpenStruct.new(economy: 2, good: 3, better: 6, best: 9)
+
   TIERS = {
+    2 => 'Economy',
     3 => 'Good',
     6 => 'Better',
     9 => 'Best'
@@ -65,6 +70,7 @@ class Imprintable < ActiveRecord::Base
   has_many :sizes, ->{ uniq }, through: :imprintable_variants
   has_many :imprintable_imprintable_groups
   has_many :imprintable_groups, through: :imprintable_imprintable_groups
+  has_many :similar_imprintables, through: :imprintable_groups, source: :imprintables
 
   accepts_nested_attributes_for :imprintable_categories, allow_destroy: true
   accepts_nested_attributes_for :imprintable_variants
@@ -160,18 +166,6 @@ class Imprintable < ActiveRecord::Base
 
   def name
     "#{brand.try(:name) || '<no brand>'} - #{style_catalog_no} - #{style_name}"
-  end
-
-  def pricing_hash(decoration_price, quantity = 1)
-    sizes_string = determine_sizes(sizes)
-    {
-        name: name,
-        supplier_link: supplier_link,
-        description: self.description,
-        sizes: sizes_string,
-        prices: get_prices(self, decoration_price),
-        quantity: quantity
-    }
   end
 
   def self.variants(id)

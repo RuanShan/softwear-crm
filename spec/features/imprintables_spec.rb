@@ -234,11 +234,43 @@ feature 'Imprintables management', imprintable_spec: true, slow: true do
     expect(imprintable.reload.destroyed? ).to be_truthy
   end
 
-  scenario 'A user can click a link to open the modal price popup', js: true do
+  scenario 'A user can click a link to open the modal price popup', js: true, pending: 'NO MORE PRICING TABLE' do
     visit imprintables_path
 
     find_link("pricing_button_#{imprintable.id}").click
     expect(page).to have_selector '#contentModal.modal.fade.in'
+  end
+
+  scenario 'A user can add an imprintable to a quote from an index entry', story_561: true, refactor: true, js: true do
+    quote = create(:valid_quote, jobs: [create(:job)])
+    imprintable.imprintable_variants << create(:valid_imprintable_variant)
+
+    allow(Quote).to receive(:search)
+      .and_return double('Search', results: [quote])
+
+    visit imprintables_path
+    find_link("add-#{imprintable.id}-to-quote").click
+
+    sleep 0.5
+
+    within '#quote-search-form' do
+      find('#quote-search-box').set('A quote')
+      click_button 'Search'
+      sleep 0.5
+    end
+
+    visit edit_quote_path(quote, add_imprintable: imprintable.id, anchor: 'line_items')
+
+    sleep 1
+
+    select quote.jobs.first.name, from: 'Group'
+    select 'Best', from: 'Tier'
+    fill_in 'Quantity', with: '3'
+    fill_in 'Decoration price', with: '25.99'
+
+    click_button 'Add Imprintable(s)'
+
+    expect(page).to have_content 'Quote was successfully updated.'
   end
 
   scenario 'A user can navigate to all tabs of the modal show menu (card #133)', js: true  do

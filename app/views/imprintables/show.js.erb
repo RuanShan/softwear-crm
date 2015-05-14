@@ -1,4 +1,14 @@
-$('#contentModal .modal-body').html("<%= j(render(template: 'imprintables/show',
-                                                  formats: [:html])).html_safe %>");
-$('#contentModal .modal-dialog').css('width', '90%');
-$('#contentModal').modal('show');
+<% if params[:search_for_quote] %>
+  setupContentModal(function(modal) {
+    modal.find('.modal-dialog').css('width', '90%');
+  });
+  showContentModal({
+    title: "Search for a quote to add <%= raw @imprintable.name %> to",
+    body: $("<%=j render 'imprintables/search_for_quote', imprintable: @imprintable %>")
+  });
+<% else %>
+  $('#contentModal .modal-body').html("<%= j(render(template: 'imprintables/show',
+                                                    formats: [:html])).html_safe %>");
+  $('#contentModal .modal-dialog').css('width', '90%');
+  $('#contentModal').modal('show');
+<% end %>

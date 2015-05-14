@@ -1,6 +1,7 @@
 require 'spec_helper'
 include ApplicationHelper
 require 'email_spec'
+require_relative '../../app/controllers/jobs_controller'
 
 feature 'Quotes management', quote_spec: true, js: true do
   given!(:valid_user) { create(:alternate_user) }
@@ -8,6 +9,53 @@ feature 'Quotes management', quote_spec: true, js: true do
 
   given!(:quote) { create(:valid_quote) }
   given!(:imprintable) { create(:valid_imprintable) }
+
+  given(:iv1) { create(:valid_imprintable_variant) }
+  given(:iv2) { create(:valid_imprintable_variant) }
+  given(:iv3) { create(:valid_imprintable_variant) }
+
+  given(:imprintable1) { iv1.imprintable }
+  given(:imprintable2) { iv2.imprintable }
+  given(:imprintable3) { iv3.imprintable }
+
+  given(:good_variant) { create(:valid_imprintable_variant) }
+  given(:better_variant) { create(:valid_imprintable_variant) }
+  given(:best_variant) { create(:valid_imprintable_variant) }
+
+  given(:good_imprintable) { good_variant.imprintable }
+  given(:better_imprintable) { better_variant.imprintable }
+  given(:best_imprintable) { best_variant.imprintable }
+
+  given(:print_location_1) { create(:valid_print_location) }
+  given(:print_location_2) { create(:valid_print_location) }
+
+  given(:imprint_method_1) { print_location_1.imprint_method }
+  given(:imprint_method_2) { print_location_2.imprint_method }
+
+  given(:imprintable_group) do
+    ImprintableGroup.create(name: 'test group', description: 'yes').tap do |group|
+      iig1 = ImprintableImprintableGroup.new
+      iig1.tier = Imprintable::TIER.good
+      iig1.default = true
+      iig1.imprintable = good_imprintable
+      iig1.imprintable_group = group
+      iig1.save!
+
+      iig2 = ImprintableImprintableGroup.new
+      iig2.tier = Imprintable::TIER.better
+      iig2.default = true
+      iig2.imprintable = better_imprintable
+      iig2.imprintable_group = group
+      iig2.save!
+
+      iig3 = ImprintableImprintableGroup.new
+      iig3.tier = Imprintable::TIER.best
+      iig3.default = true
+      iig3.imprintable = best_imprintable
+      iig3.imprintable_group = group
+      iig3.save!
+    end
+  end
 
   scenario 'A user can see a list of quotes' do
     visit root_path
@@ -69,6 +117,182 @@ feature 'Quotes management', quote_spec: true, js: true do
     expect(quote.reload.name).to eq('New Quote Name')
   end
 
+  scenario 'A user can add an imprintable group of line items to a quote', story_567: true, refactor: true, story_570: true do
+    imprintable_group; imprint_method_1; imprint_method_2
+    visit edit_quote_path quote
+
+    find('a', text: 'Line Items').click
+
+    click_link 'Add A New Group'
+
+    click_link 'Add Imprint'
+    sleep 0.5
+    find('select[name=imprint_method]').select imprint_method_2.name
+
+    click_link 'Add Imprint'
+    sleep 0.5
+
+    select imprintable_group.name, from: 'Imprintable group'
+    fill_in 'Quantity', with: 10
+    fill_in 'Decoration price', with: 12.55
+
+    click_button 'Add Group'
+
+    expect(page).to have_content 'Quote was successfully updated.'
+    quote.reload
+
+    expect(quote.jobs.size).to be > 0
+    expect(quote.jobs.where(name: imprintable_group.name)).to exist
+    job = quote.jobs.where(name: imprintable_group.name).first
+    expect(job.line_items.where(imprintable_variant_id: good_variant)).to exist
+    expect(job.line_items.where(imprintable_variant_id: better_variant)).to exist
+    expect(job.line_items.where(imprintable_variant_id: best_variant)).to exist
+    expect(job.imprints.size).to eq 2
+  end
+
+  scenario 'A user can add imprintable line items to an existing job', refactor: true, story_557: true do
+    allow(Imprintable).to receive(:search)
+      .and_return OpenStruct.new(
+        results: [imprintable1, imprintable2, imprintable3]
+      )
+
+    quote.jobs << create(:job)
+    job = quote.jobs.first
+    visit edit_quote_path quote
+
+    find('a', text: 'Line Items').click
+
+    click_link 'Add an imprintable'
+    sleep 1
+    within '#imprintable-add-search' do
+      fill_in 'Terms', with: 'some imprintable'
+    end
+    sleep 0.5
+    click_button 'Search'
+
+    sleep 0.5
+    find("#imprintable-result-#{imprintable1.id} input[type=checkbox]").click
+    sleep 0.1
+    find("#imprintable-result-#{imprintable3.id} input[type=checkbox]").click
+
+    select quote.jobs.first.name, from: 'Group'
+    select 'Better', from: 'Tier'
+    fill_in 'Quantity', with: '6'
+    fill_in 'Decoration price', with: '19.95'
+
+    click_button 'Add Imprintable(s)'
+
+    expect(page).to have_content 'Quote was successfully updated.'
+
+    job.reload
+    expect(job.line_items.where(imprintable_variant_id: iv1.id)).to exist
+    expect(job.line_items.where(imprintable_variant_id: iv2.id)).to_not exist
+    expect(job.line_items.where(imprintable_variant_id: iv3.id)).to exist
+  end
+
+  scenario 'A user can add an option/markup to a quote', refactor: true, story_558: true do
+    quote.update_attributes informal: true
+    quote.jobs << create(:job)
+    visit edit_quote_path quote
+
+    find('a', text: 'Line Items').click
+
+    click_link 'Add An Option or Markup'
+    sleep 0.5
+
+    fill_in 'Name', with: 'Special sauce'
+    sleep 0.05
+    fill_in 'Description', with: 'improved taste'
+    fill_in 'Url', with: 'http://lmgtfy.com/?q=secret+sauce'
+    fill_in 'Unit price', with: '99.99'
+
+    click_button 'Add Option or Markup'
+
+    expect(page).to have_content 'Line item was successfully created.'
+
+    job = quote.markups_and_options_job
+    job.reload
+
+    expect(job.line_items.size).to eq 1
+
+    line_item = job.line_items.first
+    expect(line_item.name).to eq 'Special sauce'
+    expect(line_item.description).to eq 'improved taste'
+    expect(line_item.url).to eq 'http://lmgtfy.com/?q=secret+sauce'
+    expect(line_item.unit_price.to_f).to eq 99.99
+  end
+
+  scenario 'A user can add a note to a quote', refactor: true, story_569: true do
+    visit edit_quote_path quote
+
+    find('a', text: 'Notes').click
+
+    fill_in 'Title', with: 'Test Note?'
+    fill_in 'Comment', with: 'This is what I want to see'
+
+    click_button 'Add Note'
+
+    expect(page).to have_content 'Test Note?'
+    expect(page).to have_content 'This is what I want to see'
+
+    quote.reload
+    expect(quote.private_notes.where(title: 'Test Note?')).to exist
+    expect(quote.private_notes.where(comment: 'This is what I want to see')).to exist
+  end
+
+  scenario 'A user can remove a note from a quote', refactor: true, story_569: true do
+    quote.notes << Comment.create(title: 'Test Note?', comment: 'This is what I want to see', role: 'private')
+
+    visit edit_quote_path quote
+
+    find('a', text: 'Notes').click
+
+    sleep 0.5
+    first('.delete-comment').click
+    sleep 0.5
+
+    quote.reload
+    expect(quote.notes.where(title: 'Test Note?')).to_not exist
+    expect(quote.notes.where(comment: 'This is what I want to see')).to_not exist
+  end
+
+  scenario 'A user can remove line items from a quote', story_572: true, refactor: true do
+    job = create(:job, name: 'Some imprintables')
+    job.line_items << create(:imprintable_line_item, tier: Imprintable::TIER.good,   name: 'Good')
+    imprintable_line_item_to_delete = create(:imprintable_line_item, tier: Imprintable::TIER.good, name: 'Bad Good')
+    job.line_items << imprintable_line_item_to_delete
+    job.line_items << create(:imprintable_line_item, tier: Imprintable::TIER.better, name: 'Better')
+    job.line_items << create(:imprintable_line_item, tier: Imprintable::TIER.best,   name: 'Best')
+    quote.jobs << job
+
+    quote.markups_and_options_job.line_items << create(:non_imprintable_line_item)
+    standard_line_item_to_delete = create(:non_imprintable_line_item, name: 'Remove me')
+    quote.markups_and_options_job.line_items << standard_line_item_to_delete
+
+    visit edit_quote_path quote
+
+    find('a', text: 'Line Items').click
+
+    expect(LineItem.where(name: 'Remove me')).to exist
+
+    expect(page).to have_content 'Remove me'
+
+    within("#edit-line-item-#{imprintable_line_item_to_delete.id}") do
+      click_link 'Remove'
+    end
+
+    within("#line-item-#{standard_line_item_to_delete.id}") do
+      click_link 'Remove'
+    end
+
+    click_button 'Save Line Item Changes'
+
+    sleep 1
+
+    expect(LineItem.where(name: 'Remove me')).to_not exist
+    expect(page).to_not have_content 'Remove me'
+  end
+
   feature 'Quote emailing' do
     scenario 'A user can email a quote to the customer' do
       visit edit_quote_path quote.id
@@ -107,7 +331,7 @@ feature 'Quotes management', quote_spec: true, js: true do
     end
   end
 
-  scenario 'A user can generate a quote from an imprintable pricing dialog', retry: 2, story_489: true do
+  scenario 'A user can generate a quote from an imprintable pricing dialog', story_489: true, pricing_spec: true, pending: 'NO MORE PRICING TABLE' do
     visit imprintables_path
     find('i.fa.fa-dollar').click
     decoration_price = 3.75
@@ -144,7 +368,7 @@ feature 'Quotes management', quote_spec: true, js: true do
     expect(current_path).to eq(quote_path(quote.id + 1))
   end
 
-  scenario 'A user can add a single price from the pricing table to an existing quote', retry: 2 do
+  scenario 'A user can add a single price from the pricing table to an existing quote', pending: 'NO MORE PRICING TABLE' do
     visit imprintables_path
     find("#pricing_button_#{imprintable.id}").click
     fill_in 'decoration_price', with: '3.95'
@@ -197,7 +421,7 @@ feature 'Quotes management', quote_spec: true, js: true do
     expect(page).to have_selector('div.line-item-form textarea', text: 'Line Item Description')
   end
 
-  scenario 'Pricing table prices with > 2 decimal places are rounded', story_491: true do
+  scenario 'Pricing table prices with > 2 decimal places are rounded', story_491: true, pending: 'NO MORE PRICING TABLE' do
     imprintable = build_stubbed :valid_imprintable
     session = {
       pricing_groups: {
@@ -215,7 +439,7 @@ feature 'Quotes management', quote_spec: true, js: true do
     expect(page).to have_selector("input[type='text'][value='0.54']")
   end
 
-  scenario 'Inputting bad data for the quote does not kill line item info', story_491: true do
+  scenario 'Inputting bad data for the quote does not kill line item info', story_491: true, pending: 'NO MORE PRICING TABLE' do
     imprintable = build_stubbed :valid_imprintable
     session = {
       pricing_groups: {

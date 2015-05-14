@@ -25,7 +25,7 @@ class LineItemDrop < Liquid::Drop
   end
 
   def unit_price
-    @line_item.unit_price
+    sprintf('%.2f', @line_item.unit_price)
   end
 
   def url

@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150504213310) do
+ActiveRecord::Schema.define(version: 20150508201355) do
 
   create_table "activities", force: true do |t|
     t.integer  "trackable_id"
@@ -123,6 +123,21 @@ ActiveRecord::Schema.define(version: 20150504213310) do
   add_index "colors", ["deleted_at"], name: "index_colors_on_deleted_at", using: :btree
   add_index "colors", ["retail"], name: "index_colors_on_retail", using: :btree
 
+  create_table "comments", force: true do |t|
+    t.string   "title",            limit: 50, default: ""
+    t.text     "comment"
+    t.integer  "commentable_id"
+    t.string   "commentable_type"
+    t.integer  "user_id"
+    t.string   "role",                        default: "comments"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "comments", ["commentable_id"], name: "index_comments_on_commentable_id", using: :btree
+  add_index "comments", ["commentable_type"], name: "index_comments_on_commentable_type", using: :btree
+  add_index "comments", ["user_id"], name: "index_comments_on_user_id", using: :btree
+
   create_table "coordinate_imprintables", force: true do |t|
     t.integer  "coordinate_id"
     t.integer  "imprintable_id"
@@ -200,6 +215,7 @@ ActiveRecord::Schema.define(version: 20150504213310) do
 
   create_table "imprintable_groups", force: true do |t|
     t.string "name"
+    t.text   "description"
   end
 
   create_table "imprintable_imprintable_groups", force: true do |t|
@@ -283,6 +299,7 @@ ActiveRecord::Schema.define(version: 20150504213310) do
     t.integer  "name_number_id"
     t.string   "name_format"
     t.string   "number_format"
+    t.text     "description"
   end
 
   create_table "ink_colors", force: true do |t|
@@ -299,11 +316,12 @@ ActiveRecord::Schema.define(version: 20150504213310) do
   create_table "jobs", force: true do |t|
     t.string   "name"
     t.text     "description"
-    t.integer  "order_id"
+    t.integer  "jobbable_id"
     t.datetime "deleted_at"
     t.datetime "created_at"
     t.datetime "updated_at"
     t.boolean  "collapsed"
+    t.string   "jobbable_type"
   end
 
   add_index "jobs", ["deleted_at"], name: "index_jobs_on_deleted_at", using: :btree
@@ -334,6 +352,7 @@ ActiveRecord::Schema.define(version: 20150504213310) do
     t.string   "url"
     t.decimal  "decoration_price",       precision: 10, scale: 2
     t.decimal  "imprintable_price",      precision: 10, scale: 2
+    t.integer  "tier"
   end
 
   add_index "line_items", ["line_itemable_id", "line_itemable_type"], name: "index_line_items_on_line_itemable_id_and_line_itemable_type", using: :btree
@@ -461,8 +480,8 @@ ActiveRecord::Schema.define(version: 20150504213310) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.decimal  "shipping",                         precision: 10, scale: 2
-    t.string   "quote_source"
     t.datetime "initialized_at"
+    t.string   "quote_source"
     t.string   "freshdesk_ticket_id"
     t.boolean  "informal"
     t.integer  "insightly_category_id"

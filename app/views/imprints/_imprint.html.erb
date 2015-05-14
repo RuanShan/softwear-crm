@@ -10,7 +10,7 @@
       <%= link_to 'Click here', new_imprint_method_path %> to add one.
     </p>
   <% else %>
-      <div class="print-location-container">
+    <div class="print-location-container" <%= "data-select_tag_name=#{select_tag_name}" if local_assigns[:select_tag_name] %>>
         <%= render partial: 'imprint_methods/print_locations_select',
                    locals: { print_locations: if local_assigns[:imprint_method]
                                                 imprint_method.print_locations
@@ -18,7 +18,9 @@
                                                 ImprintMethod.first.print_locations
                                               end,
 
-                             name: if local_assigns[:imprint].try(:id)
+                             name: if local_assigns[:select_tag_name]
+                                     select_tag_name
+                                   elsif imprint_is_for_an_order? local_assigns[:imprint]
                                      select_field_name_for.(:print_location_id)
                                    else
                                       "imprint[#{id}[print_location_id]]"
@@ -42,9 +44,18 @@
       <% if local_assigns[:imprint].try(:id) %>
         <%= render 'imprints/name_number_fields', imprint: imprint, imprint_method_name: imprint.imprint_method.try(:name) || 'n\a' %>
       <% else %>
-      <div class="hidden generic-error-message js-name-number-format-fields">
-        Please click 'Update' before assigning name and number!
+        <div class="hidden generic-error-message js-name-number-format-fields">
+          Please click 'Update' before assigning name and number!
+        </div>
+      <% end %>
+
+      <div>
+        <%= label_tag :description %>
+        <%= text_area_tag local_assigns[:description_name] || 'imprint[description]', local_assigns[:imprint].try(:description) %>
       </div>
+
+      <% if local_assigns[:id_field_name] %>
+        <%= hidden_field_tag id_field_name, local_assigns[:imprint].id %>
       <% end %>
 
       <div class="full text-right">

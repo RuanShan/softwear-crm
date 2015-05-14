@@ -25,6 +25,28 @@ FactoryGirl.define do
         brand = create(:valid_brand)
         imprintable.brand_id = brand.id
       end
+
+      factory :good_imprintable do
+        before(:create) do |i|
+          iig = create(:good)
+          iig.imprintable_groups << ImprintableGroup.find_or_create_by(name: 'test group')
+          i.imprintable_imprintable_groups << iig
+        end
+      end
+      factory :better_imprintable do
+        before(:create) do |i|
+          iig = create(:better)
+          iig.imprintable_groups << ImprintableGroup.find_or_create_by(name: 'test group')
+          i.imprintable_imprintable_groups << iig
+        end
+      end
+      factory :best_imprintable do
+        before(:create) do |i|
+          iig = create(:best)
+          iig.imprintable_groups << ImprintableGroup.find_or_create_by(name: 'test group')
+          i.imprintable_imprintable_groups << iig
+        end
+      end
     end
   end
 

@@ -1,0 +1,18 @@
+<%= form_tag quotes_path, method: :get, remote: true, id: 'quote-search-form' do %>
+  <%= hidden_field_tag 'respond_with_partial', 'imprintables/quote_search_results.js' %>
+
+  <%= label_tag :q, 'Search Quotes', class: 'col-xs-1 control-label' %>
+  <div class="col-xs-8">
+    <%= text_field_tag :q, '', class: 'form-control', id: 'quote-search-box', placeholder: 'Enter search terms here' %>
+  </div>
+  <%= button_tag class: 'btn btn-primary col-xs-2' do  %>
+    <i class="glyphicon glyphicon-search"></i> Search
+  <% end %>
+
+<% end %>
+
+<br clear="all" />
+
+<div id='quote-search-results' data-imprintable-id='<%= imprintable.id %>'>
+  <% # NOTE imprintables/_quote_search_results.html.erb gets rendered in here %>
+</div>

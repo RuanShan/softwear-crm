@@ -9,6 +9,8 @@ CrmSoftwearcrmCom::Application.routes.draw do
   put '/users/change_password', to: 'users#update_password', as: :update_password
   get '/users/lock', to: 'users#lock', as: :lock_user
 
+  get 'imprints/new', to: 'imprints#new', as: :new_imprint
+
   resources :imprintables do
     collection do
       resources :brands, :colors
@@ -24,7 +26,7 @@ CrmSoftwearcrmCom::Application.routes.draw do
 
   get 'tags/:tag', to: 'imprintables#index', as: :tag
 
-  resources :brands, :colors, :users, :artwork_requests, :artworks, :imprintable_groups
+  resources :brands, :colors, :users, :artwork_requests, :artworks
   resources :prices, only: [:create, :new, :destroy, :index] do
     collection do
       get 'destroy_all'
@@ -38,15 +40,14 @@ CrmSoftwearcrmCom::Application.routes.draw do
       end
     end
 
+    resources :comments
+
     collection do
       get 'quote_select'
       post 'stage_quote'
     end
-
-    resources :line_item_groups, shallow: true do
-      resources :line_items, except: [:update]
-    end
   end
+  resources :comments
 
   resources :quote_requests do
     get :dock
@@ -55,7 +56,7 @@ CrmSoftwearcrmCom::Application.routes.draw do
   get '/logout' => 'users#logout'
 
   scope 'configuration' do
-    resources :shipping_methods, :stores
+    resources :shipping_methods, :stores, :imprintable_groups
     resources :imprint_methods do
       get '/print_locations', to: 'imprint_methods#print_locations', as: :print_locations
     end
@@ -104,6 +105,7 @@ CrmSoftwearcrmCom::Application.routes.draw do
     end
   end
 
+  post 'line_items', to: 'line_items#create'
   get '/line_item/select_options', to: 'line_items#select_options'
   delete 'line_items/*ids',   to: 'line_items#destroy'
   put    'line_items/update', to: 'line_items#update'

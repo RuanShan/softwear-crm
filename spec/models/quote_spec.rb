@@ -8,7 +8,7 @@ describe Quote, quote_spec: true do
     it { is_expected.to belong_to(:salesperson).class_name('User') }
     it { is_expected.to belong_to(:store) }
     it { is_expected.to have_many(:emails) }
-    it { is_expected.to have_many(:line_item_groups) }
+    it { is_expected.to have_many(:jobs) }
     it { is_expected.to have_and_belong_to_many(:quote_requests) }
   end
 
@@ -216,6 +216,150 @@ describe Quote, quote_spec: true do
   describe 'instance methods' do
     let!(:quote) { build_stubbed(:valid_quote) }
     let(:dummy_client) { Object.new }
+
+    describe '#line_items_from_group_attributes=', story_567: true do
+      subject { create(:valid_quote) }
+      let!(:group) { ImprintableGroup.create(name: 'test group', description: 'yeah') }
+      let!(:good_iv) { create(:valid_imprintable_variant) }
+      let!(:better_iv) { create(:valid_imprintable_variant) }
+      let!(:best_iv) { create(:valid_imprintable_variant) }
+      let(:good) { good_iv.imprintable }
+      let(:better) { better_iv.imprintable }
+      let(:best) { best_iv.imprintable }
+
+      let(:job) { subject.jobs.find_by(name: group.name) }
+
+      before do
+        allow(group).to receive(:default_imprintable_for_tier) { |tier|
+          case tier
+          when Imprintable::TIER.good then good
+          when Imprintable::TIER.better then better
+          when Imprintable::TIER.best then best
+          end
+        }
+        allow(ImprintableGroup).to receive(:find)
+          .with(group.id)
+          .and_return group
+      end
+
+      let!(:attributes) do
+        {
+          imprintable_group_id: group.id,
+          quantity: 2,
+          decoration_price: 12.55,
+        }
+      end
+
+      it 'generates a "good", "better", and "best" line item' do
+        subject.line_items_from_group_attributes = attributes
+        subject.save!
+
+        expect(subject.jobs.where(name: group.name)).to exist
+        expect(subject.jobs.where(description: group.description)).to exist
+
+        expect(job.line_items.where(imprintable_variant_id: good_iv.id)).to exist
+        expect(job.line_items.where(imprintable_variant_id: better_iv.id)).to exist
+        expect(job.line_items.where(imprintable_variant_id: best_iv.id)).to exist
+
+        good_li = job.line_items.where(imprintable_variant_id: good_iv.id).first
+        better_li = job.line_items.where(imprintable_variant_id: better_iv.id).first
+        best_li = job.line_items.where(imprintable_variant_id: best_iv.id).first
+
+        expect(good_li.quantity).to eq 2
+        expect(better_li.quantity).to eq 2
+        expect(best_li.quantity).to eq 2
+
+        expect(good_li.decoration_price).to eq 12.55
+        expect(better_li.decoration_price).to eq 12.55
+        expect(best_li.decoration_price).to eq 12.55
+
+        expect(good_li.imprintable_price).to eq good.base_price
+        expect(better_li.imprintable_price).to eq better.base_price
+        expect(best_li.imprintable_price).to eq best.base_price
+
+        expect(good_li.tier).to eq Imprintable::TIER.good
+        expect(better_li.tier).to eq Imprintable::TIER.better
+        expect(best_li.tier).to eq Imprintable::TIER.best
+      end
+
+      context 'when passed print_locations and imprint_descriptions as parralel arrays', story_570: true do
+        let!(:print_location_1) { create(:print_location) }
+        let!(:print_location_2) { create(:print_location) }
+
+        let!(:attributes) do
+          {
+            imprintable_group_id: group.id,
+            quantity: 2,
+            decoration_price: 12.55,
+            print_locations: [print_location_1.id.to_s, print_location_2.id.to_s],
+            imprint_descriptions: ['Test desc for NUMERO UNO', 'Second test description']
+          }
+        end
+
+        it 'generates imprints for the job with the given print location/descriptions' do
+          subject.line_items_from_group_attributes = attributes
+          subject.save!
+
+          expect(job.imprints.size).to eq 2
+
+          expect(job.imprints.first.print_location_id).to eq print_location_1.id
+          expect(job.imprints.last.print_location_id).to eq print_location_2.id
+
+          expect(job.imprints.first.description).to eq 'Test desc for NUMERO UNO'
+          expect(job.imprints.last.description).to eq 'Second test description'
+        end
+      end
+
+      context 'when there is no default imprintable for any tier' do
+        before do
+          allow(group).to receive(:default_imprintable_for_tier).and_return nil
+        end
+
+        it 'adds an error to the quote model' do
+          subject.line_items_from_group_attributes = attributes
+          expect(subject.save).to eq false
+          expect(subject.errors[:line_items]).to include "Failed to find default imprintable for 'Good' tier"
+        end
+      end
+    end
+
+    describe '#line_item_to_group_attributes=', story_557: true do
+      subject { create(:valid_quote, jobs: [create(:job)]) }
+      let(:job) { subject.jobs.first }
+
+      let!(:variant_1) { create(:valid_imprintable_variant) }
+      let!(:variant_2) { create(:valid_imprintable_variant) }
+      let!(:imprintable_1) { variant_1.imprintable }
+      let!(:imprintable_2) { variant_2.imprintable }
+      let!(:group) { ImprintableGroup.create(name: 'test group', description: 'yeah') }
+
+      let!(:attributes) do
+        {
+          imprintables: [imprintable_1.id.to_s, imprintable_2.id.to_s],
+          job_id: job.id,
+          tier: Imprintable::TIER.better,
+          quantity: 11,
+          decoration_price: 15.30,
+        }
+      end
+
+      it 'adds imprintable line items based on given imprintables' do
+        subject.line_item_to_group_attributes = attributes
+        subject.save!
+
+        expect(job.line_items.size).to eq 2
+        expect(job.line_items.where(imprintable_variant_id: variant_1.id)).to exist
+        expect(job.line_items.where(imprintable_variant_id: variant_2.id)).to exist
+
+        job.line_items.each do |line_item|
+          expect(line_item.quantity).to eq 11
+          expect(line_item.decoration_price).to eq 15.30
+          expect(line_item.tier).to eq Imprintable::TIER.better
+        end
+        expect(job.line_items.where(imprintable_price: imprintable_1.base_price)).to exist
+        expect(job.line_items.where(imprintable_price: imprintable_2.base_price)).to exist
+      end
+    end
 
     describe '#all_activities' do
       it 'queries publicactivity' do
@@ -446,7 +590,7 @@ describe Quote, quote_spec: true do
       context 'a quote without a line item' do
         it 'is invalid' do
           expect{
-            create(:valid_quote, line_item_groups: [])
+            create(:valid_quote)
           }
             .to raise_error ActiveRecord::RecordInvalid
         end
@@ -468,7 +612,7 @@ describe Quote, quote_spec: true do
       let!(:quote) { create(:valid_quote) }
 
       before(:each) do
-        2.times { quote.default_group.line_items << create(:taxable_non_imprintable_line_item) }
+        2.times { quote.default_job.line_items << create(:taxable_non_imprintable_line_item) }
       end
 
       describe '#line_items_subtotal' do

@@ -1,5 +1,5 @@
 class BatchFormBuilder < LancengFormBuilder
-  %i(text_field password_field text_area number_field check_box)
+  %i(text_field password_field text_area number_field check_box hidden_field)
     .each do |method_name|
 
     class_eval <<-RUBY, __FILE__, __LINE__ + 1

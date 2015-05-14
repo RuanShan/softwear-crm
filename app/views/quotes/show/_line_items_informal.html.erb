@@ -1,0 +1,66 @@
+<% quote.imprintable_jobs.each do |job| %>
+    <div id="quote-show-job-<%= job.id %>  container-fluid" class="informal-job">
+      <h3><%= job.name %> <small><%= job.description %></small></h3>
+      <p>This is where print information will go </p>
+
+      <% Imprintable::TIERS.each do |tier_number, tier_name| %>
+        <% next if job.imprintable_line_items_for_tier(tier_number).empty? %>
+          <div class="row">
+            <div id="quote-show-job-1-<%= tier_name %>">
+              <div class="tier-label col-xs-3">
+                <h4>
+                  <%= tier_name %>
+                </h4>
+              </div>
+
+              <% job.imprintable_line_items_for_tier(tier_number).each do |line_item| %>
+                  <%= render 'quotes/show/line_items_informal_imprintable', line_item: line_item %>
+              <% end %>
+
+            </div>
+          </div>
+      <% end %>
+    </div>
+<% end %>
+
+<% unless quote.additional_options_and_markups.empty? %>
+    <div id="quote-additional-upcharges container-fluid">
+      <h3>Additional Options and Markups</h3>
+          <div class="row">
+            <div id="quote-show-options-and-markup">
+              <% quote.additional_options_and_markups.each do |line_item| %>
+              <div class="informal-quote-line-item col-xs-9 pull-right">
+                <h4>
+                  <%= line_item.name %> <span class="pull-right"><%= number_to_currency line_item.unit_price %>/each</span>
+                </h4>
+                <p>
+                  <%= line_item.description %>
+                </p>
+              </div>
+              <% end %>
+            </div>
+          </div>
+    </div>
+<% end %>
+
+
+
+<% unless quote.public_notes.empty? %>
+    <div id="quote-additional-upcharges container-fluid">
+      <h3>Notes</h3>
+      <% quote.public_notes.each do |note| %>
+        <div class="row">
+          <div id="quote-show-notes">
+            <div class="informal-quote-line-item col-xs-9 pull-right">
+              <h4>
+                <%= note.title %>
+              </h4>
+              <p>
+                <%= note.comment %>
+              </p>
+            </div>
+          </div>
+        </div>
+      <% end %>
+    </div>
+<% end %>

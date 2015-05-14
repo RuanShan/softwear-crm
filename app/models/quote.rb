@@ -8,6 +8,7 @@ class Quote < ActiveRecord::Base
   include ActionView::Helpers::DateHelper
 
   acts_as_paranoid
+  acts_as_commentable :public, :private
   tracked by_current_user
   get_insightly_api_key_from { salesperson.try(:insightly_api_key) }
 
@@ -49,6 +50,9 @@ class Quote < ActiveRecord::Base
   STEP_4_FIELDS = [
     :line_items
   ]
+  STEP_5_FIELD = [
+    :all_comments
+  ]
   INSIGHTLY_FIELDS = [
     :insightly_category_id,
     :insightly_probability,
@@ -59,40 +63,46 @@ class Quote < ActiveRecord::Base
     :insightly_bid_tier_id,
   ]
 
+  MARKUPS_AND_OPTIONS_JOB_NAME = '_markupsandoptions_'
+
   default_scope -> { order('quotes.created_at DESC') }
 
   belongs_to :salesperson, class_name: User
   belongs_to :store
   has_many :email_templates
   has_many :emails, as: :emailable, class_name: Email, dependent: :destroy
-  has_many :line_item_groups
-# has_many :line_items, through: :line_item_groups
   has_many :quote_request_quotes
   has_many :quote_requests, through: :quote_request_quotes
   has_many :order_quotes
   has_many :orders, through: :order_quotes
-
-# accepts_nested_attributes_for :line_items, allow_destroy: true
+  has_many :jobs, as: :jobbable
+  has_many :line_items, through: :jobs
 
   validates :email, presence: true, email: true
   validates :estimated_delivery_date, presence: true
   validates :first_name, presence: true
-# validate :has_line_items?
   validates :quote_source, presence: true
   validates :salesperson, presence: true
   validates :store, presence: true
   validates :valid_until_date, presence: true
   validates :shipping, price: true
   validates *INSIGHTLY_FIELDS, presence: true, if: :salesperson_has_insightly?
+  validate :no_problem_adding_line_items_from_group
 
-  validate :prepare_nested_line_items_attributes
-
-  after_save :save_nested_line_items_attributes
   after_save :set_quote_request_statuses_to_quoted
   after_create :create_freshdesk_ticket
   after_create :create_insightly_opportunity
   before_create :set_default_valid_until_date
   after_initialize  :initialize_time
+
+  alias_method :comments, :all_comments
+  alias_method :comments=, :all_comments=
+  alias_method :notes, :all_comments
+  alias_method :notes=, :all_comments=
+  alias_method :public_notes, :public_comments
+  alias_method :public_notes=, :public_comments=
+  alias_method :private_notes, :private_comments
+  alias_method :private_notes=, :private_comments=
 
   def all_activities
     PublicActivity::Activity.where( '
@@ -103,6 +113,18 @@ class Quote < ActiveRecord::Base
         activities.trackable_type = ? AND activities.trackable_id = ?
       )
     ', *([self.class.name, id] * 2) ).order('activities.created_at DESC')
+  end
+
+  def markups_and_options_job
+    attrs = {
+      name: MARKUPS_AND_OPTIONS_JOB_NAME,
+      description: 'hidden'
+    }
+    jobs.where(attrs).first or jobs.create(attrs)
+  end
+
+  def imprintable_jobs
+    jobs.where.not(name: MARKUPS_AND_OPTIONS_JOB_NAME)
   end
 
   def no_ticket_id_entered?
@@ -155,15 +177,6 @@ class Quote < ActiveRecord::Base
     !informal?
   end
 
-  def line_items
-    line_item_groups.flat_map(&:line_items).tap do |groups|
-      groups.send(
-        :define_singleton_method,
-        :klass, -> { LineItem }
-      )
-    end
-  end
-
   def line_items_attributes=(attributes)
     @line_item_attributes ||= []
     @line_item_attributes += attributes.values
@@ -189,18 +202,8 @@ class Quote < ActiveRecord::Base
     line_items.map { |l| l.taxable? ? l.total_price * (1 + tax) : l.total_price }.reduce(0, :+) + shipping
   end
 
-  alias_method :standard_line_items, :line_items
-
   def tax
     0.06
-  end
-
-  def default_group
-    line_item_groups.first ||
-    line_item_groups.create(
-      name: @default_group_name || 'Line Items',
-      description: 'Initial of line items in the quote'
-    )
   end
 
   def response_time
@@ -212,8 +215,95 @@ class Quote < ActiveRecord::Base
     @quote_request_ids_assigned = true
   end
 
+  # This is accessed by the 'fields_for' view helper
+  def line_items_from_group
+    OpenStruct.new(
+      imprintable_group_id: nil,
+      quantity: nil,
+      decoration_price: nil,
+      persisted: false
+    )
+  end
+  def line_items_from_group_attributes=(attrs)
+    imprintable_group = ImprintableGroup.find attrs[:imprintable_group_id]
+    quantity          = attrs[:quantity]
+    decoration_price  = attrs[:decoration_price]
+
+    new_line_items = [
+      Imprintable::TIER.good,
+      Imprintable::TIER.better,
+      Imprintable::TIER.best
+    ].map do |tier|
+      imprintable =
+        imprintable_group.default_imprintable_for_tier(tier) ||
+        imprintable_group.imprintables.first
+
+      if imprintable.nil?
+        @line_items_from_group_error =  "Failed to find default imprintable for '#{Imprintable::TIERS[tier]}' tier"
+        return
+      end
+
+      line_item = LineItem.new
+      line_item.quantity = quantity
+      line_item.decoration_price = decoration_price
+      line_item.imprintable_price = imprintable.base_price
+      line_item.imprintable_variant_id =
+        imprintable.imprintable_variants.pluck(:id).first
+      line_item.tier = tier
+
+      line_item
+    end
+
+    new_job = Job.new
+    new_job.name        = imprintable_group.name
+    new_job.description = imprintable_group.description
+    new_job.line_items  = new_line_items
+    new_job.save!
+
+    attrs[:print_locations].try(:each_with_index) do |print_location_id, index|
+      imprint = Imprint.new
+      imprint.print_location_id = print_location_id
+      imprint.description = attrs[:imprint_descriptions][index]
+      imprint.job_id = new_job.id
+      imprint.save!
+    end
+
+    self.jobs << new_job
+    self.save!
+  end
+
+  def line_item_to_group
+    OpenStruct.new(
+      imprintables: nil,
+      job_id: nil,
+      tier: nil,
+      quantity: nil,
+      decoration_price: nil,
+      persisted: false
+    )
+  end
+  def line_item_to_group_attributes=(attrs)
+    job = jobs.find_by id: attrs[:job_id]
+
+    attrs[:imprintables].map do |imprintable_id|
+      imprintable = Imprintable.find imprintable_id
+
+      line_item = LineItem.new
+      line_item.line_itemable     = job
+      line_item.tier              = attrs[:tier] || Imprintable::TIER.good
+      line_item.quantity          = attrs[:quantity] || 1
+      line_item.decoration_price  = attrs[:decoration_price] || 0
+      line_item.imprintable_price = imprintable.base_price
+      line_item.imprintable_variant_id =
+        imprintable.imprintable_variants.pluck(:id).first
+      # TODO error out if that imprintable variant id is nil
+
+      line_item.save!
+    end
+  end
+
   def salesperson_has_insightly?
-    !salesperson.insightly_api_key.nil?
+    !salesperson.insightly_api_key.blank?
   end
 
   def insightly_opportunity_profile
@@ -279,7 +369,7 @@ class Quote < ActiveRecord::Base
         ))
         .try(:[], 'helpdesk_ticket')
 
-      self.freshdesk_ticket_id = ticket.try(:[], 'id')
+      self.freshdesk_ticket_id = ticket.try(:[], 'display_id')
       ticket
 
     rescue Freshdesk::ConnectionError => e
@@ -426,6 +516,10 @@ class Quote < ActiveRecord::Base
     fields
   end
 
+  def additional_options_and_markups
+    line_items.where(imprintable_variant_id: nil)
+  end
+
   private
 
   def freshdesk_group_id
@@ -503,34 +597,6 @@ class Quote < ActiveRecord::Base
     self.initialized_at = Time.now if self.initialized_at.blank?
   end
 
-  def prepare_nested_line_items_attributes
-    no_attributes = @line_item_attributes.nil? || @line_item_attributes.empty?
-    if no_attributes && line_items.empty?
-      errors.add(:must, 'have at least one line item')
-      return false
-    end
-    return if no_attributes
-
-    @unsaved_line_items = @line_item_attributes.map do |attrs|
-        next if attrs.delete('_destroy') == 'true'
-        line_item = LineItem.new(attrs)
-        next line_item if line_item.valid?
-
-        errors.add(:line_items, line_item.errors.full_messages.join(', '))
-        nil
-      end
-        .compact
-
-    nil
-  end
-
-  def save_nested_line_items_attributes
-    return if @unsaved_line_items.nil? || @unsaved_line_items.empty?
-
-    @unsaved_line_items.each(&default_group.line_items.method(:<<))
-    @unsaved_line_items = nil
-  end
-
   def time_to_first_email
     activity = PublicActivity::Activity.where(trackable_id: id,
                                               trackable_type: Quote,
@@ -541,5 +607,12 @@ class Quote < ActiveRecord::Base
   def subtract_dates(time_one, time_two)
     return 'An email hasn\'t been sent yet!' unless time_two
     distance_of_time_in_words(time_one, time_two)
+  end
+
+  def no_problem_adding_line_items_from_group
+    if @line_items_from_group_error
+      errors[:line_items] << @line_items_from_group_error
+      @line_items_from_group_error = nil
+    end
   end
 end

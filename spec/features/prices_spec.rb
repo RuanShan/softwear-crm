@@ -1,7 +1,7 @@
 require 'spec_helper'
 include ApplicationHelper
 
-feature 'Pricing management', js: true, prices_spec: true do
+feature 'Pricing management', js: true, prices_spec: true, pending: 'NO MORE PRICING' do
   given!(:valid_user) { create(:alternate_user) }
   background(:each) { login_as(valid_user) }
 

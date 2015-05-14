@@ -107,6 +107,7 @@ group :test do
   gem 'fakeredis', :require => 'fakeredis/rspec'
 end
 
+gem 'acts_as_commentable'
 gem 'inherited_resources'
 gem 'devise'
 gem 'figaro'
@@ -134,6 +135,7 @@ gem 'jquery-fileupload-rails'
 gem 'php-serialize'
 gem 'yaml_db', github: 'jetthoughts/yaml_db', ref: 'fb4b6bd7e12de3cffa93e0a298a1e5253d7e92ba'
 gem 'dumpsync', git: 'git@github.com:AnnArborTees/dumpsync.git'
+gem 'bootstrap_form'
 
 # Use ActiveModel has_secure_password
 # gem 'bcrypt', '~> 3.1.7'

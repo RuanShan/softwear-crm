@@ -13,5 +13,5 @@ describe QuoteDrop, liquid: true do
   it { is_expected.to respond_to(:valid_until_date) }
   it { is_expected.to respond_to(:estimated_delivery_date) }
   it { is_expected.to respond_to(:shipping_cost) }
-  it { is_expected.to respond_to(:line_item_groups) }
+  it { is_expected.to respond_to(:jobs) }
 end

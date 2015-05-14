@@ -49,7 +49,7 @@ describe ImprintableHelper, imprintable_helper_spec: true do
     end
   end
 
-  describe 'pricing table manipulation', story_508: true do
+  describe 'pricing table manipulation', story_508: true, pending: 'NO MORE PRICING TABLE' do
     let!(:imprintable_1) { create :valid_imprintable, xxl_price: nil, xxxxxxl_price: nil, xxxxxl_price: nil }
     let!(:imprintable_2) { create :valid_imprintable, xxxxl_price: nil, xxxxxxl_price: nil, xxxxxl_price: nil }
 
@@ -92,7 +92,7 @@ describe ImprintableHelper, imprintable_helper_spec: true do
       end
     end
 
-    describe '#pricing_table_headers_for' do
+    describe '#pricing_table_headers_for', pending: 'NO MORE PRICING TABLE' do
       it 'returns a th for each size included in the groups' do
         new_groups = omit_unused_prices_from pricing_groups
         headers = pricing_table_headers_for new_groups

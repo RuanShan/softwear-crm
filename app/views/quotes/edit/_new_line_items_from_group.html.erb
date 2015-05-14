@@ -1,0 +1,26 @@
+<div>
+  <%= form_for quote, html: { id: 'new-group-form', data: { 'no-editing-class' => true } } do |f| %>
+      <%= f.fields_for :line_items_from_group do |ff| %>
+
+        <div id='new-imprints-container' class='row'>
+
+            <%= link_to new_imprint_path(select_tag_name: 'quote[line_items_from_group_attributes][print_locations][]', description_name: 'quote[line_items_from_group_attributes][imprint_descriptions][]'),
+                        class: 'btn btn-info btn-lg add-imprint',
+                        method: :get, remote: true do %>
+              <i class="fa fa-pagelines"></i> Add Imprint
+            <% end %>
+
+        </div>
+        <div class='row'>
+          <%= ff.label :imprintable_group_id %><br />
+          <%= ff.select :imprintable_group_id, ImprintableGroup.all.collect{|x| [x.name, x.id] } %><br />
+          <%= ff.label :quantity %><br />
+          <%= ff.text_field :quantity %><br />
+          <%= ff.label :decoration_price %><br />
+          <%= ff.text_field :decoration_price %><br />
+          <%= ff.hidden_field :quote_id, value: quote.id %>
+        </div>
+      <% end %>
+      <%= f.submit 'Add Group', class: 'btn btn-success'  %>
+  <% end %>
+</div>

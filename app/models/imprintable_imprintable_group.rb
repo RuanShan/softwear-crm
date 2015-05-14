@@ -12,4 +12,8 @@ class ImprintableImprintableGroup < ActiveRecord::Base
 
   belongs_to :imprintable_group
   belongs_to :imprintable
+
+  def self.default
+    where(default: true).first
+  end
 end

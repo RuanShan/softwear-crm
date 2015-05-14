@@ -6,14 +6,14 @@ class Job < ActiveRecord::Base
   searchable do
     text :name, :description
     string :name
-    reference :order
+    reference :jobbable
   end
 
   tracked by_current_user + on_order
 
   before_destroy :check_for_line_items
 
-  belongs_to :order
+  belongs_to :jobbable, polymorphic: true
   has_many :artwork_request_jobs
   has_many :artwork_requests, through: :artwork_request_jobs
   has_many :colors, -> {readonly}, through: :imprintable_variants
@@ -22,8 +22,98 @@ class Job < ActiveRecord::Base
   has_many :imprintable_variants, -> {readonly}, through: :line_items
   has_many :line_items, as: :line_itemable
 
+  accepts_nested_attributes_for :line_items, :imprints, allow_destroy: true
+
+  Imprintable::TIERS.each do |tier_num, tier|
+    tier_line_items = "#{tier.underscore}_line_items".to_sym
+
+    has_many tier_line_items, -> { where tier: tier_num }, as: :line_itemable, class_name: 'LineItem'
+    accepts_nested_attributes_for tier_line_items, allow_destroy: true
+  end
+
   validate :assure_name_and_description, on: :create
-  validates :name, uniqueness: { scope: :order_id }
+  validates :name, uniqueness: { scope: [:jobbable_id, :jobbable_type] }
+
+  def imprintable_line_items_for_tier(tier)
+    send(tier_line_items_sym(tier))
+  end
+
+  def self.tier_line_items_sym(tier)
+    (
+      (tier.is_a?(String) ? tier : Imprintable::TIERS[tier]).underscore +
+      '_line_items'
+    )
+      .to_sym
+  end
+  def tier_line_items_sym(tier)
+    Job.tier_line_items_sym(tier)
+  end
+
+  # NOTE this works together with javascripts/quote_line_items.js to achieve
+  # dragging and dropping between jobs/tiers easily.
+  #
+  def self.assign_line_items_attributes_proc(tier_num = nil)
+    proc do |attrs|
+      # == first pass ==
+      ids_to_destroy = []
+
+      attrs.each do |key, line_item_attributes|
+        # Default behavior, more or less.
+        if /\d+/ =~ key
+          if tier_num
+            line_items = imprintable_line_items_for_tier(tier_num)
+          else
+            line_items = self.line_items
+          end
+
+          if (d = line_item_attributes[:_destroy]) && !['false', '0'].include?(d)
+            ids_to_destroy << line_items[key.to_i].id
+          else
+            line_items[key.to_i].update_attributes line_item_attributes
+          end
+        end
+      end
+
+      LineItem.destroy ids_to_destroy unless ids_to_destroy.empty?
+
+      # == second pass ==
+      # We do 2 passes, because this second pass might change the ordering
+      # of our line_items collection, invalidating the indices used during
+      # pass #1.
+      attrs.each do |key, line_item_attributes|
+        # If attributes are indexed as id_#{line_item_id}, it means they're
+        # for an existing line item coming from an external job or tier.
+        if /id_(?<line_item_id>\d+)/ =~ key
+          line_item = LineItem.find(line_item_id)
+
+          line_item.line_itemable_type = 'Job'
+          line_item.line_itemable_id   = id
+          line_item.tier = tier_num if tier_num
+
+          unless line_item.update_attributes(line_item_attributes)
+            raise "line item errors: #{line_item.errors.full_messages}"
+          end
+        end
+      end
+    end
+  end
+
+  Imprintable::TIERS.each do |tier_num, tier_name|
+    # e.g. :good_line_items
+    line_items_sym = tier_line_items_sym(tier_name)
+
+    # e.g. def good_line_items_attributes=(attrs) ...
+    define_method(
+      "#{line_items_sym}_attributes=",
+      &assign_line_items_attributes_proc(tier_num)
+    )
+  end
+  define_method('line_items_attributes=', &assign_line_items_attributes_proc)
+
+  # For on_order activity tracking helper
+  def order
+    return jobbable if jobbable_type == 'Order'
+  end
 
   def imprintable_info
     colors, style_names, style_catalog_nos = [], [], []
@@ -137,12 +227,12 @@ class Job < ActiveRecord::Base
   private
 
   def assure_name_and_description
-    # TODO: remove self?
-    if self.name.nil?
+    return unless jobbable_type == 'Order'
+    if name.nil?
       new_job_name = 'New Job'
       counter = 1
 
-      while Job.where(order_id: self.order_id).where(name: new_job_name).exists?
+      while Job.where(jobbable_id: self.jobbable_id, name: new_job_name).exists?
         counter += 1
         new_job_name = "New Job #{counter}"
       end

@@ -1,0 +1,8 @@
+<div class="informal-quote-line-item col-xs-9 pull-right">
+  <h4>
+    <%= link_to line_item.imprintable.name, line_item.imprintable.supplier_link %> <span class="pull-right"> <%=pluralize( line_item.quantity, 'piece') %> @ <%= number_to_currency line_item.unit_price %>/each</span>
+  </h4>
+  <p>
+    <%= raw line_item.imprintable.description %>
+  </p>
+</div>

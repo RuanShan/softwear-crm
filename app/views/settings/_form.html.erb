@@ -1,31 +1,35 @@
 <div class="box-info">
   <%= form_tag update_integrated_crms_path, method: :put do %>
-    <h2>Freshdesk</h2>
-    <% freshdesk_settings.each do |key, value| %>
-      <%= fields_for 'fd_settings[]', value do |f| %>
-        <div class="form-group">
-          <%= f.label :name, key.to_s.titleize, class: 'col-sm-2 control-label' %>
-          <div class="col-sm-10">
-            <% if key == :password %>
-              <%= f.text_field :val, class: 'form-control', type: 'password' %>
-            <% else %>
-              <%= f.text_field :val, class: 'form-control' %>
-            <% end %>
-          </div>
-        </div>
-      <% end %>
+      <% unless freshdesk_settings.nil? %>
+      <h2>Freshdesk</h2>
+        <% freshdesk_settings.each do |key, value| %>
+          <%= fields_for 'fd_settings[]', value do |f| %>
+            <div class="form-group">
+              <%= f.label :name, key.to_s.titleize, class: 'col-sm-2 control-label' %>
+              <div class="col-sm-10">
+                <% if key == :password %>
+                  <%= f.text_field :val, class: 'form-control', type: 'password' %>
+                <% else %>
+                  <%= f.text_field :val, class: 'form-control' %>
+                <% end %>
+              </div>
+            </div>
+          <% end %>
+        <% end %>
     <% end %>
 
-    <h2>Insightly</h2>
-    <% insightly_settings.each do |key, value| %>
-      <%= fields_for 'in_settings[]', value do |f| %>
-        <div class="form-group">
-          <%= f.label :name, key.to_s.titleize, class: 'col-sm-2 control-label' %>
-          <div class="col-sm-10">
-            <%= f.text_field :val, class: 'form-control', type: 'password' %>
-          </div>
-        </div>
-      <% end %>
+  <% unless insightly_settings.nil? %>
+        <h2>Insightly</h2>
+        <% insightly_settings.each do |key, value| %>
+          <%= fields_for 'in_settings[]', value do |f| %>
+            <div class="form-group">
+              <%= f.label :name, key.to_s.titleize, class: 'col-sm-2 control-label' %>
+              <div class="col-sm-10">
+                <%= f.text_field :val, class: 'form-control', type: 'password' %>
+              </div>
+            </div>
+          <% end %>
+        <% end %>
     <% end %>
 
 
