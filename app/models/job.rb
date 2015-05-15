@@ -12,6 +12,7 @@ class Job < ActiveRecord::Base
   tracked by_current_user + on_order
 
   before_destroy :check_for_line_items
+  after_update :destroy_self_if_line_items_and_imprints_are_empty
 
   belongs_to :jobbable, polymorphic: true
   has_many :artwork_request_jobs
@@ -260,5 +261,11 @@ class Job < ActiveRecord::Base
       [print_location.send("max_#{width_or_height}")]
     )
       .map(&:to_f).min
+  end
+
+  def destroy_self_if_line_items_and_imprints_are_empty
+    return unless jobbable_type == 'Quote'
+    return if name == Quote::MARKUPS_AND_OPTIONS_JOB_NAME
+    destroy if line_items.empty? && imprints.empty?
   end
 end

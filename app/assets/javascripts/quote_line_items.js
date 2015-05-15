@@ -31,6 +31,12 @@ $(function() {
     notifyUnsavedChanges();
   });
 
+  $('.remove-all-line-items-btn').click(function(e) {
+    e.preventDefault();
+    $(this).parent().find('.rdy-to-remove').click();
+  });
+
+  $('.remove-line-item-btn').addClass('rdy-to-remove');
   $('.remove-line-item-btn').click(function(e) {
     e.preventDefault();
     var button       = $(this);
@@ -55,6 +61,7 @@ $(function() {
       container.removeClass('removing-line-item');
       button.data('removing', false);
       button.text('Remove');
+      button.addClass('rdy-to-remove');
       destroyField.val('false');
       destroyField.prop('disabled', 'disabled');
       allFields.removeProp('disabled');
@@ -63,6 +70,7 @@ $(function() {
       container.addClass('removing-line-item');
       button.data('removing', true);
       button.text('Unremove');
+      button.removeClass('rdy-to-remove');
       destroyField.val('true');
       destroyField.removeProp('disabled');
       allFields.prop('disabled', 'disabled');

@@ -65,6 +65,31 @@ describe Job, job_spec: true do
     # it { is_expected.to validate_uniqueness_of(:name).scoped_to(:order_id) }
   end
 
+  describe 'When jobbable is quote' do
+    let!(:line_item) { create(:imprintable_line_item) }
+    let!(:imprint) { create(:valid_imprint) }
+    subject { create(:job, line_items: [line_item], imprints: [imprint]) }
+    let!(:quote) { create(:valid_quote, jobs: [subject]) }
+
+    it 'destroys itself when rid of all line items and imprints', job_suicide: true do
+      expect(subject.line_items).to_not be_empty
+      subject.line_items.destroy_all
+      expect(subject.line_items).to be_empty
+
+      expect(Job.where(id: subject.id)).to exist
+
+      expect(subject.imprints).to_not be_empty
+      subject.imprints.destroy_all
+      expect(subject.imprints).to be_empty
+
+      expect(Job.where(id: subject.id)).to exist
+
+      subject.save
+
+      expect(Job.where(id: subject.id)).to_not exist
+    end
+  end
+
   describe '#imprintable_info', artwork_request_spec: true do
     [:red, :green].each { |c| let!(c) { build_stubbed(:valid_color, name: c) } }
     [:shirt, :hat].each { |s| let!(s) { build_stubbed(:valid_imprintable) } }

@@ -117,7 +117,7 @@ feature 'Quotes management', quote_spec: true, js: true do
     expect(quote.reload.name).to eq('New Quote Name')
   end
 
-  scenario 'A user can add an imprintable group of line items to a quote', story_567: true, refactor: true, story_570: true do
+  scenario 'A user can add an imprintable group of line items to a quote', story_567: true, revamp: true, story_570: true do
     imprintable_group; imprint_method_1; imprint_method_2
     visit edit_quote_path quote
 
@@ -129,14 +129,11 @@ feature 'Quotes management', quote_spec: true, js: true do
     sleep 0.5
     find('select[name=imprint_method]').select imprint_method_2.name
 
-    click_link 'Add Imprint'
-    sleep 0.5
-
     select imprintable_group.name, from: 'Imprintable group'
     fill_in 'Quantity', with: 10
     fill_in 'Decoration price', with: 12.55
 
-    click_button 'Add Group'
+    click_button 'Add Imprintable Group'
 
     expect(page).to have_content 'Quote was successfully updated.'
     quote.reload
@@ -147,7 +144,8 @@ feature 'Quotes management', quote_spec: true, js: true do
     expect(job.line_items.where(imprintable_variant_id: good_variant)).to exist
     expect(job.line_items.where(imprintable_variant_id: better_variant)).to exist
     expect(job.line_items.where(imprintable_variant_id: best_variant)).to exist
-    expect(job.imprints.size).to eq 2
+    expect(job.imprints.size).to eq 1
+    expect(job.imprints.first.imprint_method).to eq imprint_method_2
   end
 
   scenario 'I can add a different imprint right after creating a group with one', bug_fix: true, imprint: true do
@@ -166,7 +164,7 @@ feature 'Quotes management', quote_spec: true, js: true do
     fill_in 'Quantity', with: 10
     fill_in 'Decoration price', with: 12.55
 
-    click_button 'Add Group'
+    click_button 'Add Imprintable Group'
 
     expect(page).to have_content 'Quote was successfully updated.'
 
@@ -175,7 +173,6 @@ feature 'Quotes management', quote_spec: true, js: true do
 
     click_link 'Add Imprint'
     sleep 0.5
-
     within '.imprint-entry[data-id="-1"]' do
       find('select[name=imprint_method]').select imprint_method_2.name
       fill_in 'Description', with: 'Yes second imprint please'
@@ -196,7 +193,7 @@ feature 'Quotes management', quote_spec: true, js: true do
     end
   end
 
-  scenario 'I can add the same group twice', refactor: true, bug_fix: true, twice: true do
+  scenario 'I can add the same group twice', revamp: true, bug_fix: true, twice: true do
     imprintable_group; imprint_method_1; imprint_method_2
 
     visit edit_quote_path quote
@@ -212,7 +209,7 @@ feature 'Quotes management', quote_spec: true, js: true do
       sleep 0.5
       find('select[name=imprint_method]').select imprint_method_2.name
 
-      click_button 'Add Group'
+      click_button 'Add Imprintable Group'
     end
 
     expect(page).to have_content 'Quote was successfully updated.'
@@ -234,7 +231,7 @@ feature 'Quotes management', quote_spec: true, js: true do
       sleep 0.5
       all('select[name=imprint_method]').last.select imprint_method_2.name
 
-      click_button 'Add Group'
+      click_button 'Add Imprintable Group'
     end
 
     expect(page).to have_content 'Quote was successfully updated.'
@@ -250,7 +247,7 @@ feature 'Quotes management', quote_spec: true, js: true do
     expect(quote.jobs.last.line_items.where(imprintable_variant_id: best_variant)).to exist
   end
 
-  scenario 'A user can add an imprintable group that only has one imprintable, properly', refactor: true, bug_fix: true do
+  scenario 'A user can add an imprintable group that only has one imprintable, properly', revamp: true, bug_fix: true do
     imprint_method_1; imprint_method_2; imprintable_group
     imprintable_group.imprintable_imprintable_groups[1].destroy
     imprintable_group.imprintable_imprintable_groups[2].destroy
@@ -265,7 +262,7 @@ feature 'Quotes management', quote_spec: true, js: true do
     fill_in 'Quantity', with: 5
     fill_in 'Decoration price', with: 10.00
 
-    click_button 'Add Group'
+    click_button 'Add Imprintable Group'
 
     expect(page).to have_content 'Quote was successfully updated.'
     quote.reload
@@ -277,13 +274,13 @@ feature 'Quotes management', quote_spec: true, js: true do
     expect(job.line_items.where(imprintable_variant_id: best_variant)).to_not exist
   end
 
-  scenario 'A user can add imprintable line items to an existing job', refactor: true, story_557: true do
+  scenario 'A user can add imprintable line items to an existing job', revamp: true, story_557: true do
     allow(Imprintable).to receive(:search)
       .and_return OpenStruct.new(
         results: [imprintable1, imprintable2, imprintable3]
       )
 
-    quote.jobs << create(:job)
+    quote.jobs << create(:job, line_items: [create(:imprintable_line_item)])
     job = quote.jobs.first
     visit edit_quote_path quote
 
@@ -317,9 +314,9 @@ feature 'Quotes management', quote_spec: true, js: true do
     expect(job.line_items.where(imprintable_variant_id: iv3.id)).to exist
   end
 
-  scenario 'A user can add an option/markup to a quote', refactor: true, story_558: true do
+  scenario 'A user can add an option/markup to a quote', revamp: true, story_558: true do
     quote.update_attributes informal: true
-    quote.jobs << create(:job)
+    quote.jobs << create(:job, line_items: [create(:imprintable_line_item)])
     visit edit_quote_path quote
 
     find('a', text: 'Line Items').click
@@ -349,7 +346,7 @@ feature 'Quotes management', quote_spec: true, js: true do
     expect(line_item.unit_price.to_f).to eq 99.99
   end
 
-  scenario 'A user can add a note to a quote', refactor: true, story_569: true do
+  scenario 'A user can add a note to a quote', revamp: true, story_569: true do
     visit edit_quote_path quote
 
     find('a', text: 'Notes').click
@@ -367,7 +364,7 @@ feature 'Quotes management', quote_spec: true, js: true do
     expect(quote.private_notes.where(comment: 'This is what I want to see')).to exist
   end
 
-  scenario 'A user can remove a note from a quote', refactor: true, story_569: true do
+  scenario 'A user can remove a note from a quote', revamp: true, story_569: true do
     quote.notes << Comment.create(title: 'Test Note?', comment: 'This is what I want to see', role: 'private')
 
     visit edit_quote_path quote
@@ -383,7 +380,7 @@ feature 'Quotes management', quote_spec: true, js: true do
     expect(quote.notes.where(comment: 'This is what I want to see')).to_not exist
   end
 
-  scenario 'A user can remove line items from a quote', story_572: true, refactor: true do
+  scenario 'A user can remove line items from a quote', story_572: true, revamp: true do
     job = create(:job, name: 'Some imprintables')
     job.line_items << create(:imprintable_line_item, tier: Imprintable::TIER.good,   name: 'Good')
     imprintable_line_item_to_delete = create(:imprintable_line_item, tier: Imprintable::TIER.good, name: 'Bad Good')
