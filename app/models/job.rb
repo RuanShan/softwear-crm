@@ -32,7 +32,7 @@ class Job < ActiveRecord::Base
   end
 
   validate :assure_name_and_description, on: :create
-  validates :name, uniqueness: { scope: [:jobbable_id, :jobbable_type] }
+  validates :name, uniqueness: { scope: [:jobbable_id] }, if: -> { jobbable_type == 'Order' }
 
   def imprintable_line_items_for_tier(tier)
     send(tier_line_items_sym(tier))

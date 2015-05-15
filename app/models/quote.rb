@@ -234,11 +234,14 @@ class Quote < ActiveRecord::Base
       next if imprintable.nil?
 
       line_item = LineItem.new
-      line_item.quantity = quantity
-      line_item.decoration_price = decoration_price
+      line_item.quantity          = quantity
+      line_item.decoration_price  = decoration_price
       line_item.imprintable_price = imprintable.base_price
       line_item.imprintable_variant_id =
-        imprintable.imprintable_variants.pluck(:id).first
+        imprintable.imprintable_variants.first.try(:id)
+
+      next if line_item.imprintable_variant_id.nil?
+
       line_item.tier = tier
 
       line_item

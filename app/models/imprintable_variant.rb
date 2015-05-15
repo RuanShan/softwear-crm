@@ -13,6 +13,7 @@ class ImprintableVariant < ActiveRecord::Base
   validates :size, presence: true
 
   # TODO this scope isn't tested in model spec
+  # TRAGIC
   scope :size_variants_for, ->(imprintable, color) do
     where(
       imprintable_id: param_record_id(imprintable),
