@@ -150,6 +150,87 @@ feature 'Quotes management', quote_spec: true, js: true do
     expect(job.imprints.size).to eq 2
   end
 
+  scenario 'I can add the same group twice', refactor: true, bug_fix: true, twice: true do
+    imprintable_group; imprint_method_1; imprint_method_2
+
+    visit edit_quote_path quote
+    find('a', text: 'Line Items').click
+    click_link 'Add A New Group'
+
+    within '#contentModal' do
+      select imprintable_group.name, from: 'Imprintable group'
+      fill_in 'Quantity', with: 10
+      fill_in 'Decoration price', with: 25.55
+
+      click_link 'Add Imprint'
+      sleep 0.5
+      find('select[name=imprint_method]').select imprint_method_2.name
+
+      click_button 'Add Group'
+    end
+
+    expect(page).to have_content 'Quote was successfully updated.'
+
+    visit edit_quote_path quote
+    find('a', text: 'Line Items').click
+    click_link 'Add A New Group'
+
+    within '#contentModal' do
+      select imprintable_group.name, from: 'Imprintable group'
+      fill_in 'Quantity', with: 1
+      fill_in 'Decoration price', with: 5.15
+
+      click_link 'Add Imprint'
+      sleep 0.5
+      first('select[name=imprint_method]').select imprint_method_1.name
+
+      click_link 'Add Imprint'
+      sleep 0.5
+      all('select[name=imprint_method]').last.select imprint_method_2.name
+
+      click_button 'Add Group'
+    end
+
+    expect(page).to have_content 'Quote was successfully updated.'
+
+    expect(quote.jobs.size).to eq 2
+
+    expect(quote.jobs.first.line_items.where(imprintable_variant_id: good_variant)).to exist
+    expect(quote.jobs.first.line_items.where(imprintable_variant_id: better_variant)).to exist
+    expect(quote.jobs.first.line_items.where(imprintable_variant_id: best_variant)).to exist
+
+    expect(quote.jobs.last.line_items.where(imprintable_variant_id: good_variant)).to exist
+    expect(quote.jobs.last.line_items.where(imprintable_variant_id: better_variant)).to exist
+    expect(quote.jobs.last.line_items.where(imprintable_variant_id: best_variant)).to exist
+  end
+
+  scenario 'A user can add an imprintable group that only has one imprintable, properly', refactor: true, bug_fix: true do
+    imprint_method_1; imprint_method_2; imprintable_group
+    imprintable_group.imprintable_imprintable_groups[1].destroy
+    imprintable_group.imprintable_imprintable_groups[2].destroy
+
+    visit edit_quote_path quote
+
+    find('a', text: 'Line Items').click
+
+    click_link 'Add A New Group'
+
+    select imprintable_group.name, from: 'Imprintable group'
+    fill_in 'Quantity', with: 5
+    fill_in 'Decoration price', with: 10.00
+
+    click_button 'Add Group'
+
+    expect(page).to have_content 'Quote was successfully updated.'
+    quote.reload
+
+    expect(quote.jobs.size).to be > 0
+    job = quote.jobs.where(name: imprintable_group.name).first
+    expect(job.line_items.where(imprintable_variant_id: good_variant)).to exist
+    expect(job.line_items.where(imprintable_variant_id: better_variant)).to_not exist
+    expect(job.line_items.where(imprintable_variant_id: best_variant)).to_not exist
+  end
+
   scenario 'A user can add imprintable line items to an existing job', refactor: true, story_557: true do
     allow(Imprintable).to receive(:search)
       .and_return OpenStruct.new(

@@ -9,6 +9,11 @@ class ImprintableGroup < ActiveRecord::Base
     imprintable_imprintable_groups
       .where(tier: tier, default: true)
       .first
+      .try(:imprintable)\
+        or
+    imprintable_imprintable_groups
+      .where(tier: tier)
+      .first
       .try(:imprintable)
   end
 end

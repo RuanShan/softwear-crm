@@ -87,7 +87,6 @@ class Quote < ActiveRecord::Base
   validates :valid_until_date, presence: true
   validates :shipping, price: true
   validates *INSIGHTLY_FIELDS, presence: true, if: :salesperson_has_insightly?
-  validate :no_problem_adding_line_items_from_group
 
   after_save :set_quote_request_statuses_to_quoted
   after_create :create_freshdesk_ticket
@@ -229,19 +228,10 @@ class Quote < ActiveRecord::Base
     quantity          = attrs[:quantity]
     decoration_price  = attrs[:decoration_price]
 
-    new_line_items = [
-      Imprintable::TIER.good,
-      Imprintable::TIER.better,
-      Imprintable::TIER.best
-    ].map do |tier|
-      imprintable =
-        imprintable_group.default_imprintable_for_tier(tier) ||
-        imprintable_group.imprintables.first
+    new_line_items = Imprintable::TIERS.keys.map do |tier|
+      imprintable = imprintable_group.default_imprintable_for_tier(tier)
 
-      if imprintable.nil?
-        @line_items_from_group_error =  "Failed to find default imprintable for '#{Imprintable::TIERS[tier]}' tier"
-        return
-      end
+      next if imprintable.nil?
 
       line_item = LineItem.new
       line_item.quantity = quantity
@@ -253,6 +243,7 @@ class Quote < ActiveRecord::Base
 
       line_item
     end
+      .compact
 
     new_job = Job.new
     new_job.name        = imprintable_group.name
@@ -607,12 +598,5 @@ class Quote < ActiveRecord::Base
   def subtract_dates(time_one, time_two)
     return 'An email hasn\'t been sent yet!' unless time_two
     distance_of_time_in_words(time_one, time_two)
-  end
-
-  def no_problem_adding_line_items_from_group
-    if @line_items_from_group_error
-      errors[:line_items] << @line_items_from_group_error
-      @line_items_from_group_error = nil
-    end
   end
 end
