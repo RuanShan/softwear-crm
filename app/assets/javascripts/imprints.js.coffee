@@ -20,6 +20,8 @@
   # $printLocationContainer.addClass 'editing-imprint'
 
   customName = $printLocationContainer.data('select_tag_name')
+  if $this.val() == ''
+    return
 
   ajax = $.ajax
     type: 'GET'

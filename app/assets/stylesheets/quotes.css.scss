@@ -77,3 +77,18 @@
 #comments-list {
   list-style: none;
 }
+
+.quote-job-entry {
+  .imprints-row-color {
+    background-color: #eee;
+    margin-bottom: 10px;
+    padding-bottom: 10px;
+
+    .imprint-entry {
+      border: solid 1px #cccccc;
+      background-color: #ffffff;
+      border-radius: 10px;
+
+    }
+  }
+}

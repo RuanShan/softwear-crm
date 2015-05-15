@@ -8,11 +8,19 @@
             <p><%= job.description %></p>
           </div>
         </div>
-
-        <div class="row imprints-container">
-          <%= render 'quotes/edit/imprints', job: job %>
+        <div class="row">
+          <div class="col-xs-1">
+            Imprints
+          </div>
+          <div class="col-xs-11 imprints-row">
+            <div class="imprints-row-color container-fluid">
+              <div class="imprints-container">
+                <%= render 'quotes/edit/imprints', job: job %>
+              </div>
+              <br clear="all" />
+            </div>
+          </div>
         </div>
-
         <% Imprintable::TIERS.each do |tier_number, tier_name| %>
             <div id="edit-quote-job-<%= job.id %>-tier-<%= tier_number %>" class="row tier-row" data-tier=<%= tier_number %>>
               <div class="col-xs-1">
