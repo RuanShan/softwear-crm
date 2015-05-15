@@ -35,7 +35,8 @@
                          ImprintMethod.all,
                          :id,
                          :name,
-                         local_assigns[:imprint_method].try(:id)
+                         local_assigns[:imprint_method].try(:id) ||
+                         local_assigns[:imprint].try(:imprint_method).try(:id)
                        ),
                        id: "imprint_method_select_#{ id }",
                        class: 'form-control js-imprint-method-select' %>
@@ -50,7 +51,7 @@
       <% end %>
 
       <div>
-        <%= label_tag :description %>
+        <%= label_tag local_assigns[:description_name] || :description, 'Description' %>
         <%= text_area_tag local_assigns[:description_name] || 'imprint[description]', local_assigns[:imprint].try(:description) %>
       </div>
 

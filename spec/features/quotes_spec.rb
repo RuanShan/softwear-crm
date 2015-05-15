@@ -150,6 +150,52 @@ feature 'Quotes management', quote_spec: true, js: true do
     expect(job.imprints.size).to eq 2
   end
 
+  scenario 'I can add a different imprint right after creating a group with one', bug_fix: true, imprint: true do
+    imprintable_group; imprint_method_1; imprint_method_2
+
+    visit edit_quote_path quote
+    find('a', text: 'Line Items').click
+
+    click_link 'Add A New Group'
+
+    click_link 'Add Imprint'
+    sleep 0.5
+    find('select[name=imprint_method]').select imprint_method_1.name
+
+    select imprintable_group.name, from: 'Imprintable group'
+    fill_in 'Quantity', with: 10
+    fill_in 'Decoration price', with: 12.55
+
+    click_button 'Add Group'
+
+    expect(page).to have_content 'Quote was successfully updated.'
+
+    visit edit_quote_path quote
+    find('a', text: 'Line Items').click
+
+    click_link 'Add Imprint'
+    sleep 0.5
+
+    within '.imprint-entry[data-id="-1"]' do
+      find('select[name=imprint_method]').select imprint_method_2.name
+      fill_in 'Description', with: 'Yes second imprint please'
+    end
+
+    click_button 'Save Line Item Changes'
+    sleep 1
+
+    visit edit_quote_path quote
+    find('a', text: 'Line Items').click
+
+    within ".imprint-entry[data-id='#{imprint_method_1.id}']" do
+      expect(page).to have_content imprint_method_1.name
+    end
+
+    within ".imprint-entry[data-id='#{imprint_method_2.id}']" do
+      expect(page).to have_content imprint_method_2.name
+    end
+  end
+
   scenario 'I can add the same group twice', refactor: true, bug_fix: true, twice: true do
     imprintable_group; imprint_method_1; imprint_method_2
 
