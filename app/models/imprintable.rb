@@ -76,8 +76,8 @@ class Imprintable < ActiveRecord::Base
   accepts_nested_attributes_for :imprintable_variants
 
   validates :brand, presence: true
-  validates :max_imprint_height, numericality: true, presence: true
-  validates :max_imprint_width, numericality: true, presence: true
+ # validates :max_imprint_height, numericality: true, presence: false
+ # validates :max_imprint_width, numericality: true, presence: false
   validates :sizing_category,
              inclusion: { in: SIZING_CATEGORIES, message: 'Invalid sizing category' }
   validates :sku, length: { is: 4 }, if: :is_retail?

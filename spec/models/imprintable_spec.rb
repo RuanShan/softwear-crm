@@ -34,10 +34,10 @@ describe Imprintable, imprintable_spec: true do
 
   describe 'Validations' do
     it { is_expected.to validate_presence_of(:brand) }
-    it { is_expected.to validate_presence_of(:max_imprint_height) }
-    it { is_expected.to validate_numericality_of(:max_imprint_height) }
-    it { is_expected.to validate_presence_of(:max_imprint_width) }
-    it { is_expected.to validate_numericality_of(:max_imprint_width) }
+#    it { is_expected.to validate_presence_of(:max_imprint_height) }
+#    it { is_expected.to validate_numericality_of(:max_imprint_height) }
+#    it { is_expected.to validate_presence_of(:max_imprint_width) }
+#    it { is_expected.to validate_numericality_of(:max_imprint_width) }
     it { is_expected.to ensure_inclusion_of(:sizing_category).in_array Imprintable::SIZING_CATEGORIES }
     it { is_expected.to allow_value('http://www.foo.com', 'http://www.foo.com/shipping').for(:supplier_link) }
     it { is_expected.to_not allow_value('bad_url.com', '').for(:supplier_link).with_message('should be in format http://www.url.com/path') }

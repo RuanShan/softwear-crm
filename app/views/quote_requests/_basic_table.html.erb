@@ -31,7 +31,7 @@
     <% end %>
     <%= qr_t(:tr) do %>
       <%= qr_t(:td) do %><strong>Date Needed:</strong><% end %>
-      <%= qr_t(:td) do %><%= quote_request.date_needed.strftime('%F') %><% end %>
+      <%= qr_t(:td) do %><%= quote_request.date_needed.strftime('%F %-I:%M%p') %><% end %>
     <% end %>
     <%= qr_t(:tr) do %>
       <%= qr_t(:td) do %><strong>Source:</strong><% end %>
