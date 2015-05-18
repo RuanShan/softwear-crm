@@ -116,37 +116,6 @@ $(function() {
 
         if (tierChanged || jobChanged) {
           li.addClass('editing-line-item');
-
-          var lineItemId  = li.data('line-item-id');
-          var indexAndTierInName = /job\[(\w+)_line_items_attributes\]\[((id_)?\d+)\]/;
-
-          li.find('input,textarea,select').each(function() {
-            var input = $(this);
-            var name     = input.prop('name');
-            var tierName = ul.data('tier-name');
-            var match    = name.match(indexAndTierInName);
-
-            // Replace index portion of input names: job[line_items_attributes][0][field]
-            //             -----------------------------------------------------^ that
-            // with id_<line_item.id> to indicate that this is an existing line item joining
-            // from an external job and/or tier.
-            // 
-            // Also the tier name portion: job[good_line_items_attributes][0][field]
-            //             --------------------^^^^ that
-            var newName = name
-              .replace(
-                  // 1st match should be the (\w+) group with the tier name in it
-                match[1],
-                tierName
-              )
-              .replace(
-                  // 2nd match should be the whole ((id_)?\d+) group
-                match[2],
-                'id_'+lineItemId
-              );
-
-            input.prop('name', newName)
-          });
         }
       });
 

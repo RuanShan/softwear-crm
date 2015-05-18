@@ -32,6 +32,7 @@
               </div>
               <div class="col-xs-11">
                 <ul class="edit-quote-line-items sortable-quote-line-items container-fluid" data-tier="<%= tier_number %>" data-tier-name="<%=tier_name.underscore%>"  data-job-id="<%= job.id %>">
+                  <% # NOTE quote_line_items.js assumes that this fields_for is not within a div %>
                   <%= f.fields_for job.tier_line_items_sym(tier_name) do |ff| %>
                     <%= render 'quotes/edit/line_items_imprintable', line_item: ff.object, f: ff %>
                   <% end %>
