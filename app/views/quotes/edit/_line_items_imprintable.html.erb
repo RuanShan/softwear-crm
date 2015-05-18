@@ -2,34 +2,34 @@
   <%= f.hidden_field :tier, class: 'tier-field' %>
   <%= f.hidden_field :line_itemable_id, class: 'job-id-field' %>
 
-    <div class="col-xs-7">
-      <b><%= line_item.imprintable.name %></b><br />
-      <%= line_item.imprintable.description.html_safe %><br />
-      <%= link_to 'Add Coordinate', edit_quote_path(imprintable_id: line_item.imprintable_id, type: 'coordinates'), remote: true %>
-      |
-      <%= link_to 'Add Similar', edit_quote_path(imprintable_id: line_item.imprintable_id, type: 'similar_imprintables'), remote: true %>
+  <div class="col-xs-7">
+    <b><%= line_item.imprintable.name %></b><br />
+    <%= line_item.imprintable.description.html_safe %><br />
+    <%= link_to 'Add Coordinate', edit_quote_path(imprintable_id: line_item.imprintable_id, type: 'coordinates'), remote: true %>
+    |
+    <%= link_to 'Add Similar', edit_quote_path(imprintable_id: line_item.imprintable_id, type: 'similar_imprintables'), remote: true %>
+  </div>
+  <div class="col-xs-2">
+    <%= f.label :decoration_price, 'Quantity' %>
+    <%= f.number_field :quantity, class: 'line-item-edit-field' %>
+  </div>
+  <div class="col-xs-2">
+    <%= f.label :imprintable_price, 'Imprintable' %>
+    <div class='input-group'>
+      <span class='input-group-addon'>$</span>
+      <%= f.text_field :imprintable_price, class: 'line-item-edit-field imprintable-price' %>
     </div>
-    <div class="col-xs-2">
-      <%= f.label :decoration_price, 'Quantity' %>
-      <%= f.number_field :quantity, class: 'line-item-edit-field' %>
-    </div>
-    <div class="col-xs-2">
-      <%= f.label :imprintable_price, 'Imprintable' %>
-      <div class='input-group'>
-        <span class='input-group-addon'>$</span>
-        <%= f.text_field :imprintable_price, class: 'line-item-edit-field imprintable-price' %>
-      </div>
 
-      <%= f.label :decoration_price, 'Decoration' %>
-      <div class='input-group'>
-        <span class='input-group-addon'>$</span>
-        <%= f.text_field :decoration_price, class: 'line-item-edit-field decoration-price' %>
-      </div>
+    <%= f.label :decoration_price, 'Decoration' %>
+    <div class='input-group'>
+      <span class='input-group-addon'>$</span>
+      <%= f.text_field :decoration_price, class: 'line-item-edit-field decoration-price' %>
     </div>
-    <div class="col-xs-1">
-      <b>Price</b>
-      <span class='line-item-total-price'><%= number_to_currency line_item.unit_price %></span>
-      <%= link_to 'Remove', '#', class: 'remove-line-item-btn' %>
-      <%= f.hidden_field :_destroy, disabled: true, class: 'line-item-destroy-field' %>
-    </div>
+  </div>
+  <div class="col-xs-1">
+    <b>Price</b>
+    <span class='line-item-total-price'><%= number_to_currency line_item.unit_price %></span>
+    <%= link_to 'Remove', '#', class: 'remove-line-item-btn' %>
+    <%= f.hidden_field :_destroy, disabled: true, class: 'line-item-destroy-field' %>
+  </div>
 </li>
