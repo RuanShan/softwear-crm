@@ -10,9 +10,21 @@ function maximizeDock(e) {
   $('#dock-body').show();
   $('#minimize-dock').show();
   $('#maximize-dock').hide();
+
+
   localStorage.dockMinimized = false;
   if (e)
     e.preventDefault();
+}
+
+function initDockTabs() {
+  $('.dock-tab').on('click.docktabs', function(e) {
+    var qrId = $(this).data('qr-id');
+    localStorage.dockTab = qrId;
+  });
+
+  if (localStorage.dockTab)
+    $('#dock-tab-for-'+localStorage.dockTab).tab('show');
 }
 
 $(function() {
@@ -20,6 +32,8 @@ $(function() {
     minimizeDock();
   else
     maximizeDock();
+
+  initDockTabs();
 
   $('#minimize-dock').click(minimizeDock);
   $('#maximize-dock').click(maximizeDock);

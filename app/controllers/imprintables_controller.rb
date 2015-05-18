@@ -2,8 +2,24 @@ class ImprintablesController < InheritedResources::Base
   before_action :set_current_action
 
   def index
-    super do
-      @imprintables = params[:tag] ? Imprintable.tagged_with(params[:tag]) : Imprintable.all.page(params[:page])
+    if (query = params[:q])
+      @imprintables = Imprintable.search do
+        fulltext query
+      end
+        .results
+
+      if params[:respond_with_partial]
+        respond_to do |format|
+          format.js do
+            render partial: params[:respond_with_partial],
+                   locals: { imprintables: @imprintables }
+          end
+        end
+      end
+    else
+      super do
+        @imprintables = params[:tag] ? Imprintable.tagged_with(params[:tag]) : Imprintable.all.page(params[:page])
+      end
     end
   end
 
@@ -125,7 +141,9 @@ class ImprintablesController < InheritedResources::Base
 
 
   def permitted_params
-    params.permit(imprintable:
+    params.permit(
+      :q, :respond_with_partial,
+      imprintable:
                     [
                       :flashable, :polyester, :special_considerations,
                       :material, :brand_id, :style_name, :style_catalog_no,

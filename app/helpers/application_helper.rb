@@ -68,4 +68,8 @@ module ApplicationHelper
   def xeditable?(object = nil)
     true
   end
+
+  def comment_class(comment)
+    comment.role == 'public' ? 'info' : 'danger'
+  end
 end

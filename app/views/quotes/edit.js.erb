@@ -1,0 +1,11 @@
+setupContentModal(function(modal) {
+  $('#contentModal .modal-dialog').css('width', '75%');
+});
+showContentModal({
+  body: $("<%=j render('quotes/edit/new_line_item', quote: @quote) %>"),
+  title: "<%= get_line_item_modal_title(params) %>",
+  then: function() {
+    var form = $('#new-group-form');
+    registerImprintEvents(form);
+  }
+});

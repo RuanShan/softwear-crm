@@ -48,7 +48,7 @@ class Order < ActiveRecord::Base
 
   belongs_to :salesperson, class_name: User
   belongs_to :store
-  has_many :jobs
+  has_many :jobs, as: :jobbable
   has_many :artwork_requests, through: :jobs
   has_many :imprints, through: :jobs
   has_many :payments

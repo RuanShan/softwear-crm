@@ -1,0 +1,101 @@
+<% @line_items.each do |line_item| %>
+  <% if line_item.imprintable? %>
+    var $container = $("#edit-line-item-<%= line_item.id %>");
+
+    <% if line_item.valid? %>
+      if ($container.hasClass('editing-line-item')) {
+        $container.removeClass('editing-line-item');
+        shine($container, false);
+      }
+
+      $container.find('input').each(function() {
+        if ($(this).hasClass('editing-line-item')) {
+          $(this).removeClass('editing-line-item');
+          shine($(this), true);
+        }
+      });
+
+    <% else %>
+
+      var handler = errorHandlerFrom($container, 'line_item', $container, <%= line_item.id %>);
+
+      if (handler)
+        handler.handleErrors(
+          <%= line_item.errors.messages.to_json.html_safe %>,
+          "<%= j render partial: 'shared/modal_errors',
+                        locals: { object: line_item } %>"
+        );
+    <% end %>
+
+  <% else %>
+
+    var $row = $("#line-item-<%= line_item.id %>");
+
+    <% if line_item.valid? %>
+      var $oldChildren = $row.children();
+
+      if ($row.hasClass('editing-line-item')) {
+        $row.removeClass('editing-line-item');
+        shine($row, false);
+      }
+
+      $row.find('input').each(function() {
+        if ($(this).hasClass('editing-line-item')) {
+          $(this).removeClass('editing-line-item');
+          shine($(this), true);
+        }
+      });
+
+
+    <% else %>
+
+      var handler = errorHandlerFrom($row, 'line_item', $row, <%= line_item.id %>);
+
+      if (handler)
+        handler.handleErrors(<%= line_item.errors.messages.to_json.html_safe %>);
+    <% end %>
+  <% end %>
+<% end %>
+
+$('.removing-line-item').remove();
+
+<% unless @line_items.empty? %>
+  <%= update_order_timeline(@line_items.first.line_itemable.try(:order)) %>
+  window.onbeforeunload = undefined;
+<% end %>
+
+
+/*
+var handler;
+var shineEditingIn = function ($container) {
+  $editing = $container.find('.editing-imprint');
+
+  if ($editing.length) {
+    $editing.each(function() {
+      $(this).removeClass('editing-imprint');
+      $(this).find('.js-imprint-has-name-number').removeData('original-value');
+      shine($(this), true);
+    });
+  }
+};
+*/
+
+<% if @job.imprints.any? { |i| !i.valid? } %>
+  errorModal(
+    "<%=j @job.imprints.select { |i| !i.valid? }.flat_map { |i| i.errors.full_messages }.join("\n").html_safe %>"
+  );
+<% else %>
+  $('#job-<%= @job.id %> .imprints-container').html(
+    "<%=j render 'quotes/edit/imprints', job: @job %>"
+  );
+<% end %>
+
+<% unless @job.valid? %>
+  errorModal(
+    "<%=j @job.errors.full_messages.join("\n").html_safe %>"
+  );
+<% end %>
+
+<%= update_name_number_table(@job) %>
+
+<%= update_order_timeline(@job.order) if @job.jobbable_type == 'Order' %>

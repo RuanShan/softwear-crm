@@ -1,0 +1,26 @@
+<% if quotes.empty? %>
+  None found
+<% else %>
+  <% quotes.each do |quote| %>
+    <div>
+      <%= link_to quote.name, edit_quote_path(quote), class: 'add-imprintable-to-quote-link' %>
+    </div>
+  <% end %>
+<% end %>
+
+<% # NOTE This used to be a part of quote_search_results.js, but did not work with chrome. %>
+<script type='text/javascript'>
+$(function() {
+  var imprintableId = $('#quote-search-results').data('imprintable-id');
+  $('.add-imprintable-to-quote-link').each(function() {
+    var link = $(this);
+    var href = link.prop('href');
+
+    var symbol = '?';
+    if (href.contains('?')) symbol = '&';
+
+    // We do this because the server has no access to the imprintable ID anymore at this point.
+    link.prop('href', href + symbol + 'add_imprintable=' + imprintableId + '#line_items');
+  });
+});
+</script>

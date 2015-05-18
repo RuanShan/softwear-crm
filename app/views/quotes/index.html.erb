@@ -41,7 +41,7 @@
                 <dd><%= quote.twitter %></dd>
               </dl>
              </td>
-            <td><%= link_to quote.name, quote_path(quote) %></td>
+            <td><%= link_to quote.name, edit_quote_path(quote) %></td>
             <td><%= display_time quote.valid_until_date %></td>
             <td><%= display_time quote.estimated_delivery_date %></td>
             <td><%= quote.salesperson.full_name %></td>

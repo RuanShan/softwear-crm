@@ -1,0 +1,81 @@
+<div>
+  <table class="table table-hover">
+    <tbody>
+    <% quote.imprintable_jobs.each do |job| %>
+        <% unless job.line_items.empty? %>
+            <tr class="no-break">
+              <td colspan="4"><h3><strong><%= job.name || 'Line Items' %></strong></h3></td>
+            </tr>
+            <tr>
+              <th>Item</th>
+              <th>Unit Price</th>
+              <th>Qty</th>
+              <th>Totals</th>
+            </tr>
+        <% end %>
+
+        <% job.line_items.each do |li| %>
+            <tr class="no-break">
+              <td class="col-sm-8">
+                <% if li.imprintable? %>
+                    <b><%= li.url.blank? ? (li.imprintable.name) : (link_to li.imprintable.name, url_with_protocol(li.url), target: '_blank') %></b><br />
+              <% else %>
+                    <b><%= li.url.blank? ? (li.name) : (link_to li.name, url_with_protocol(li.url), target: '_blank') %></b><br />
+              <% end %>
+                <%= raw li.description %>
+              </td>
+              <td class="col-sm-1"><%= number_to_currency(li.unit_price) %></td>
+              <td class="col-sm-1"><%= li.quantity %></td>
+              <td class="col-sm-2"><%= number_to_currency(li.total_price) %></td>
+            </tr>
+        <% end %>
+    <% end %>
+
+
+    <tr id="subtotal">
+      <td colspan='2'>
+      <td><strong>Subtotal:</strong></td>
+      <td><%= number_to_currency(quote.line_items_subtotal) %></td>
+    </tr>
+    <tr id="tax">
+      <td colspan='2'>
+      <td><strong>Tax:</strong></td>
+      <td><%= number_to_currency(quote.line_items_total_tax) %></td>
+    </tr>
+
+    <% unless quote.shipping.zero? %>
+        <tr id="shipping">
+          <td colspan='2'>
+          <td><strong>Shipping:</strong></td>
+          <td><%= number_to_currency(quote.shipping) %></td>
+        </tr>
+    <% end %>
+
+    <tr id="total">
+      <td colspan='2'>
+      <td><strong>Total:</strong></td>
+      <td><%= number_to_currency(quote.line_items_total_with_tax) %></td>
+    </tr>
+    </tbody>
+  </table>
+</div>
+
+<% unless quote.public_notes.empty? %>
+    <div id="quote-additional-upcharges container-fluid">
+      <h3>Notes</h3>
+      <% quote.public_notes.each do |note| %>
+          <div class="row">
+            <div id="quote-show-notes">
+              <div class="informal-quote-line-item col-xs-9 pull-right">
+                <h4>
+                  <%= note.title %>
+                </h4>
+                <p>
+                  <%= note.comment %>
+                </p>
+              </div>
+            </div>
+          </div>
+      <% end %>
+    </div>
+<% end %>

@@ -21,17 +21,73 @@ describe Job, job_spec: true do
   end
 
   describe 'Relationships' do
-    it { is_expected.to belong_to(:order) }
+    it { is_expected.to belong_to(:jobbable) }
     it { is_expected.to have_many(:colors).through(:imprintable_variants) }
     it { is_expected.to have_many(:imprints) }
     it { is_expected.to have_many(:imprintables).through(:imprintable_variants) }
     it { is_expected.to have_many(:imprintable_variants).through(:line_items) }
     it { is_expected.to have_many(:line_items) }
     it { is_expected.to have_and_belong_to_many(:artwork_requests) }
+
+    context 'Tiered line items', story_570: true do
+      subject { create(:job) }
+
+      context 'good_line_items' do
+        before do
+          subject.line_items << create(:imprintable_line_item, tier: Imprintable::TIER.good)
+          subject.line_items << create(:imprintable_line_item, tier: Imprintable::TIER.better)
+          subject.line_items << create(:imprintable_line_item, tier: Imprintable::TIER.best)
+        end
+
+        it 'contains only "good" tiered line items' do
+          expect(subject.good_line_items.size).to eq 1
+          expect(subject.good_line_items.first.tier).to eq Imprintable::TIER.good
+        end
+      end
+
+      context 'better_line_items' do
+        before do
+          subject.line_items << create(:imprintable_line_item, tier: Imprintable::TIER.better)
+          subject.line_items << create(:imprintable_line_item, tier: Imprintable::TIER.good)
+          subject.line_items << create(:imprintable_line_item, tier: Imprintable::TIER.best)
+        end
+
+        it 'contains only "better" tiered line items' do
+          expect(subject.better_line_items.size).to eq 1
+          expect(subject.better_line_items.first.tier).to eq Imprintable::TIER.better
+        end
+      end
+    end
   end
 
   describe 'Validations' do
-    it { is_expected.to validate_uniqueness_of(:name).scoped_to(:order_id) }
+    # It won't listen to a multi-faceted scope
+    # it { is_expected.to validate_uniqueness_of(:name).scoped_to(:order_id) }
+  end
+
+  describe 'When jobbable is quote' do
+    let!(:line_item) { create(:imprintable_line_item) }
+    let!(:imprint) { create(:valid_imprint) }
+    subject { create(:job, line_items: [line_item], imprints: [imprint]) }
+    let!(:quote) { create(:valid_quote, jobs: [subject]) }
+
+    it 'destroys itself when rid of all line items and imprints', job_suicide: true do
+      expect(subject.line_items).to_not be_empty
+      subject.line_items.destroy_all
+      expect(subject.line_items).to be_empty
+
+      expect(Job.where(id: subject.id)).to exist
+
+      expect(subject.imprints).to_not be_empty
+      subject.imprints.destroy_all
+      expect(subject.imprints).to be_empty
+
+      expect(Job.where(id: subject.id)).to exist
+
+      subject.save
+
+      expect(Job.where(id: subject.id)).to_not exist
+    end
   end
 
   describe '#imprintable_info', artwork_request_spec: true do
@@ -263,25 +319,29 @@ describe Job, job_spec: true do
     expect(job2).to be_valid
   end
 
-  it 'subsequent jobs created with a nil name will be named "New Job #"' do
-    job0 = create(:blank_job)
-    job1 = create(:blank_job)
-    job2 = create(:blank_job)
-    expect(job0.name).to eq 'New Job'
-    expect(job1.name).to eq 'New Job 2'
-    expect(job2.name).to eq 'New Job 3'
-  end
+  context 'when jobs are inside orders' do
+    it 'subsequent jobs created with a nil name will be named "New Job #"' do
+      order = create(:order)
+      job0 = create(:blank_job, jobbable: order)
+      job1 = create(:blank_job, jobbable: order)
+      job2 = create(:blank_job, jobbable: order)
+      expect(job0.name).to eq 'New Job'
+      expect(job1.name).to eq 'New Job 2'
+      expect(job2.name).to eq 'New Job 3'
+    end
 
-  it "deleting a job doesn't stop subsequent job name generation from working" do
-    job = create(:blank_job)
-    job.destroy
+    it "deleting a job doesn't stop subsequent job name generation from working" do
+      order = create(:order)
+      job = create(:blank_job, order: order)
+      job.destroy
 
-    job0 = create(:blank_job)
-    job1 = create(:blank_job)
-    job2 = create(:blank_job)
-    expect(job0.name).to eq 'New Job'
-    expect(job1.name).to eq 'New Job 2'
-    expect(job2.name).to eq 'New Job 3'
+      job0 = create(:blank_job, order: order)
+      job1 = create(:blank_job, order: order)
+      job2 = create(:blank_job, order: order)
+      expect(job0.name).to eq 'New Job'
+      expect(job1.name).to eq 'New Job 2'
+      expect(job2.name).to eq 'New Job 3'
+    end
   end
 
   describe '#name_number_csv', n_n_csv: true do

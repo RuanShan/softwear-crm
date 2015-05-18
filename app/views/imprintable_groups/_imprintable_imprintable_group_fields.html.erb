@@ -1,0 +1,32 @@
+<div class="form-group js-removeable">
+
+
+    <div class="col-xs-6">
+        <div class='input-group'>
+            <%= f.label :tier %>
+            <%= f.select :tier, options_for_select(Imprintable::TIERS.to_a.map(&:reverse), f.object.tier), {}, class: 'form-control' %>
+        </div>
+    </div>
+    <div class="col-xs-3">
+        <div class='input-group'>
+            <%= f.label :default %><br />
+            <%= f.check_box :default %>
+        </div>
+    </div>
+    <div class="col-xs-3">
+      <%= f.hidden_field :_destroy %>
+      <%= button_tag  class: 'btn btn-xs btn-danger js-remove-fields pull-right' do  %>
+          <i class="glyphicon glyphicon-remove"></i>
+      <% end %>
+    </div>
+
+    <div class="col-xs-12">
+        <div class='input-group'>
+            <%= f.label :imprintable_id %>
+            <%= f.select :imprintable_id, options_from_collection_for_select(Imprintable.all, :id, :name, f.object.imprintable_id), { include_blank: true }, class: 'select2' %>
+        </div>
+    </div>
+</div>
+<br clear="all" />
+<hr>
+<br clear="all" />

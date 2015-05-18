@@ -3,7 +3,7 @@ module InsightlyHelper
     return nil unless insightly_available?
 
     begin
-      insightly.get_task_categories.map { |t| [t.category_name, t.category_id] }
+      insightly.get_task_categories.sort{|x,y| x.category_name <=> y.category_name }.map { |t| [t.category_name, t.category_id] }
     rescue Insightly2::Errors::ClientError
       @insightly_errored = true
       nil
@@ -14,7 +14,7 @@ module InsightlyHelper
     return nil unless insightly_available?
 
     begin
-      insightly.get_pipelines.map { |t| [t.pipeline_name, t.pipeline_id] }
+      insightly.get_pipelines.sort{|x,y| x.pipeline_name <=> y.pipeline_name }.map { |t| [t.pipeline_name, t.pipeline_id] }
     rescue Insightly2::Errors::ClientError
       @insightly_errored = true
       nil
@@ -27,6 +27,7 @@ module InsightlyHelper
     begin
       insightly.get_custom_field(id: 'OPPORTUNITY_FIELD_12')
         .custom_field_options
+        .sort{|x,y| x['option_value'] <=> y['option_value'] }
         .map { |f| [f['option_value'], f['option_id']] }
     rescue Insightly2::Errors::ClientError
       @insightly_errored = true

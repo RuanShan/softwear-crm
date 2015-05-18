@@ -1,0 +1,24 @@
+<div id="quote-notes" class="container-fluid">
+  <ul id='comments-list' class="col-xs-12">
+    <% quote.all_comments.each do |comment| %>
+        <%= render 'comments/basic', comment: comment %>
+    <% end %>
+  </ul>
+
+  <div class="col-sm-8 col-sm-offset-2">
+
+  <h3>Add A Note to the quote</h3>
+      <p class="help-block">
+        Public notes will show up on the customer's invoice and
+        can be configured to show up in the e-mail templates.
+      </p>
+
+      <%= bootstrap_form_for [quote, Comment.new], id: 'comment-form', remote: true do |f| %>
+        <%= f.text_field :title %>
+        <%= f.text_area :comment %>
+        <%= f.check_box :public %>
+        <%= f.submit 'Add Note', class: 'btn btn-success' %>
+      <% end %>
+  </div>
+
+</div>

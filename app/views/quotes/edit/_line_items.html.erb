@@ -1,0 +1,102 @@
+  <% quote.imprintable_jobs.each do |job| %>
+    <%= form_for job, html: { id: "job-#{job.id}", class: 'job-form-to-be-saved' }, remote: true, builder: LancengFormBuilder do |f| %>
+
+      <div id="edit-quote-job-<%= job.id %>" class="quote-job-entry container-fluid" data-job-id='<%=job.id%>'>
+        <div class="row">
+          <div class="col-xs-12">
+            <h3><%= job.name %></h3>
+            <p><%= job.description %></p>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-xs-1">
+            Imprints
+          </div>
+          <div class="col-xs-11 imprints-row">
+            <div class="imprints-row-color container-fluid">
+              <div class="imprints-container">
+                <%= render 'quotes/edit/imprints', job: job %>
+              </div>
+              <br clear="all" />
+            </div>
+          </div>
+        </div>
+
+        <%= link_to 'Remove all', '#', class: 'remove-all-line-items-btn pull-right' %>
+        <br />
+
+        <% Imprintable::TIERS.each do |tier_number, tier_name| %>
+            <div id="edit-quote-job-<%= job.id %>-tier-<%= tier_number %>" class="row tier-row" data-tier=<%= tier_number %>>
+              <div class="col-xs-1">
+                <%= tier_name %>
+              </div>
+              <div class="col-xs-11">
+                <ul class="edit-quote-line-items sortable-quote-line-items container-fluid" data-tier="<%= tier_number %>"  data-job-id="<%= job.id %>">
+                  <%= f.fields_for job.tier_line_items_sym(tier_name) do |ff| %>
+                    <%= render 'quotes/edit/line_items_imprintable', line_item: ff.object, f: ff %>
+                  <% end %>
+                </ul>
+              </div>
+            </div>
+        <% end %>
+      </div>
+    <% end %>
+  <% end %>
+
+    <% unless quote.additional_options_and_markups.empty? %>
+
+      <%= form_for quote.markups_and_options_job, html: { class: 'job-form-to-be-saved' }, remote: true, builder: LancengFormBuilder do |f| %>
+        <div id='edit-quote-additional-options-and-markup'>
+          <div class="row">
+            <div class="col-xs-12">
+              <h3>Additional Options and Markups</h3>
+            </div>
+          </div>
+        <%= link_to 'Remove all', '#', class: 'remove-all-line-items-btn pull-right' %>
+
+          <div class="row">
+            <div class="col-xs-11 col-xs-offset-1">
+
+              <ul class="option-and-markup-line-items container-fluid">
+                <%= f.fields_for :line_items do |ff| %>
+                    <%= render 'quotes/edit/line_items_options_and_markups', line_item: ff.object, f: ff %>
+                <% end %>
+              </ul>
+
+            </div>
+          </div>
+
+        </div>
+      <% end %>
+    <% end %>
+
+    <div class="container-fluid">
+      <%= button_tag id: 'save-line-item-changes-btn', class: 'btn btn-success col-sm-6 col-sm-offset-3' do %>
+          <i class="glyphicon glyphicon-floppy-save"></i> Save Line Item Changes
+      <% end %>
+    </div>
+<% # end %>
+
+<br clear="all">
+
+<div class="container-fluid">
+
+  <%= link_to edit_quote_path, class: 'btn btn-primary col-sm-3 col-sm-offset-1', remote: true do %>
+      <i class="glyphicon glyphicon-plus-sign"></i> Add A New Group
+  <% end %>
+
+  <% unless quote.jobs.empty? %>
+      <%= link_to edit_quote_path(imprintable_only: true), class: 'btn btn-primary col-sm-3 col-sm-offset-1', remote: true do %>
+          <i class="glyphicon glyphicon-plus-sign"></i> Add an imprintable
+      <% end %>
+
+      <%= link_to edit_quote_path(options_and_markups: true), class: 'btn btn-primary col-sm-3 col-sm-offset-1', remote: true do %>
+          <i class="glyphicon glyphicon-plus-sign"></i> Add An Option or Markup
+      <% end %>
+  <% end %>
+
+  <% if params[:add_imprintable] %>
+    <%= javascript_tag render 'quotes/edit/add_specific_imprintable.js', quote: quote, imprintable: Imprintable.find(params[:add_imprintable]) %>
+  <% end %>
+
+</div>

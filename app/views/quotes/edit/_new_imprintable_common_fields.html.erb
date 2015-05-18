@@ -1,0 +1,24 @@
+<h4>Line Item Options</h4>
+
+<div class="row">
+  <div class="col-xs-4">
+    <%= f.label :job_id, 'Group' %><br />
+    <%= f.select :job_id, quote.imprintable_jobs.map {|x| [x.name, x.id] } %><br />
+  </div>
+  <div class="col-xs-4">
+    <%= f.label :tier %><br />
+    <%= f.select :tier, Imprintable::TIERS.map{|number, name| [name, number]} %><br />
+  </div>
+  <div class="col-xs-2">
+    <%= f.label :quantity %><br />
+    <%= f.text_field :quantity, type: 'number' %><br />
+  </div>
+  <div class="col-xs-2">
+    <%= f.label :decoration_price %><br />
+    <div class="input-group">
+      <span class="input-group-addon">$</span>
+      <%= f.text_field :decoration_price, type: 'number', step: 'any' %>
+    </div>
+  </div>
+  <%= f.hidden_field :quote_id, value: quote.id %>
+</div>

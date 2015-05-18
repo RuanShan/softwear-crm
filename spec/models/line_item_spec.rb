@@ -12,14 +12,13 @@ describe LineItem, line_item_spec: true do
     # it { is_expected.to have_one(:order).through(:job) }
   end
 
-  describe 'Validations' do
+  describe 'Validations', now: true do
     describe 'quantity' do
       it { is_expected.to validate_presence_of :quantity }
       it { is_expected.to allow_value(5).for :quantity }
       it { is_expected.to_not allow_value(0).for :quantity }
       it { is_expected.to_not allow_value(-4).for :quantity }
     end
-    it { is_expected.to validate_presence_of :unit_price }
 
     context 'when imprintable_variant_id is nil' do
       before :each do
@@ -29,6 +28,7 @@ describe LineItem, line_item_spec: true do
       it { is_expected.to validate_presence_of :description }
       it { is_expected.to validate_presence_of :name }
       it { is_expected.to_not validate_presence_of :imprintable_variant }
+      it { is_expected.to validate_presence_of :unit_price }
 
       it 'description returns the description stored in the database' do
         expect(subject.description).to eq subject[:description]
@@ -59,6 +59,9 @@ describe LineItem, line_item_spec: true do
       it { is_expected.to_not validate_presence_of :name }
       it { is_expected.to validate_uniqueness_of(:imprintable_variant_id)
              .scoped_to([:line_itemable_id, :line_itemable_type]) }
+      it { is_expected.to validate_presence_of :decoration_price }
+      it { is_expected.to validate_presence_of :imprintable_price }
+
 
       it 'description should return the imprintable_variant description' do
         expect(subject.description)
@@ -112,7 +115,7 @@ describe LineItem, line_item_spec: true do
     end
   end
 
-  describe '#group_name=', story_303: true do
+  describe '#group_name=', story_303: true, pending: 'groups are GONE' do
     context 'when the line item is part of a quote' do
       let!(:quote) { create :valid_quote }
       let!(:line_item_attributes) { attributes_for :line_item, name: 'whee', description: 'important' }
@@ -183,6 +186,35 @@ describe LineItem, line_item_spec: true do
 
     it 'returns true if imprintable_variant_id is not nil, else false' do
       expect(line_item.imprintable?).to be_falsey
+    end
+  end
+
+  describe '#unit_price', story_560: true do
+    let!(:line_item) do
+      build_stubbed(
+        :blank_line_item, imprintable_variant_id: nil,
+        unit_price: 10,
+        decoration_price: 7,
+        imprintable_price: 2
+      )
+    end
+    subject { line_item.unit_price }
+
+    context 'when it is imprintable' do
+      before do
+        allow(line_item).to receive(:imprintable?).and_return true
+      end
+
+      # 7 + 2 = 9
+      it { is_expected.to eq 9 }
+    end
+
+    context 'when it is not imprintable' do
+      before do
+        allow(line_item).to receive(:imprintable?).and_return false
+      end
+
+      it { is_expected.to eq 10 }
     end
   end
 

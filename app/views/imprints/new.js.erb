@@ -1,8 +1,21 @@
-var $imprint = $("<%= j(render partial: 'imprints/imprint',
-                               locals: { job: @job }).html_safe %>");
+<% timestamp = Time.now.to_i.to_s %>
 
-$("#job-<%= @job.id %>").find(".imprints-container").append($imprint);
+<% if @job %>
+  var $imprint = $("<%=j render 'imprints/imprint',
+                   job: @job,
+                   select_tag_name: params[:select_tag_name].try(:gsub, '*time*', timestamp),
+                   description_name: params[:description_name].try(:gsub, '*time*', timestamp)
+                   %>");
 
-$imprint.find("select").addClass("editing-imprint");
-$imprint.find(".js-delete-imprint-button").click(deleteImprint);
-registerImprintEvents($imprint);
+  $("#job-<%= @job.id %>").find(".imprints-container").append($imprint);
+
+  $imprint.find("select").addClass("editing-imprint");
+  $imprint.find(".js-delete-imprint-button").click(deleteImprint);
+  registerImprintEvents($imprint);
+<% else %>
+
+  $('#new-imprints-container').append(
+      "<%=j render 'imprints/imprint', select_tag_name: params[:select_tag_name].try(:gsub, '*time*', timestamp), description_name: params[:description_name].try(:gsub, '*time*', timestamp) %>"
+  );
+  registerImprintEvents($('#new-imprints-container'));
+<% end %>

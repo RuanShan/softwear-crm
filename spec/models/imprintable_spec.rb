@@ -21,6 +21,15 @@ describe Imprintable, imprintable_spec: true do
     it { is_expected.to have_and_belong_to_many(:compatible_imprint_methods) }
     it { is_expected.to have_and_belong_to_many(:sample_locations) }
     it { is_expected.to accept_nested_attributes_for(:imprintable_categories) }
+    context 'story 554', story_554: true do
+      it { is_expected.to have_many(:imprintable_imprintable_groups) }
+      it { is_expected.to have_many(:imprintable_groups).through(:imprintable_imprintable_groups) }
+    end
+
+    context 'story 573', story_573: true do
+      # Error message that shows up here is completely useless...
+      # it { is_expected.to have_many(:similar_imprintables).through(:imprintable_groups).source(:imprintable) }
+    end
   end
 
   describe 'Validations' do
@@ -184,28 +193,6 @@ describe Imprintable, imprintable_spec: true do
 
     it 'returns a string of the style.brand - style.catalog_no - style.name' do
       expect(imprintable.name).to eq("#{ imprintable.brand.name } - #{ imprintable.style_catalog_no } - #{ imprintable.style_name }")
-    end
-  end
-
-  describe '#pricing_hash' do
-    let!(:imprintable_variant) { create(:valid_imprintable_variant) }
-
-    it 'returns an array of hashes, each containing the imprintable name, sizes, supplier_url and prices as well as a quantity', story_489: true, current: true do
-      decoration_price = 5
-      imprintable = imprintable_variant.imprintable
-      resultant =
-          {
-              name: imprintable.name,
-              sizes: imprintable.sizes.map(&:display_value).join(', '),
-              supplier_link: imprintable.supplier_link,
-              prices: get_prices(imprintable, decoration_price),
-              quantity: 2
-          }
-
-      resultant.each do |key, val|
-        expect(imprintable.pricing_hash(decoration_price, 2)[key]).to eq(val)
-      end
-
     end
   end
 

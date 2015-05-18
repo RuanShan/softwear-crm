@@ -150,17 +150,23 @@
     <% end %>
 
 
-    <% if @quote_request.quotes.any? %>
-        <div class='row'>
-          <strong>Quotes:</strong>
-        </div>
+    <div class='row'>
+      <strong>Quotes:</strong>
+    </div>
 
+    <div id='quote-request-quote-stuff'>
+      <% if @quote_request.quotes.any? %>
         <% @quote_request.quotes.find_each do |quote| %>
-            <div class='indent-field'>
-              <%= link_to quote.name, quote_path(quote) %>
-            </div>
+          <div class='indent-field'>
+            <%= link_to quote.name, quote_path(quote) %>
+          </div>
         <% end %>
-    <% end %>
+      <% end %>
+      <div id='edit-quote-request-quotes-button' class='indent-field'>
+        (this doesn't quite work correctly) <br />
+        <%= link_to 'Assign Quotes', edit_quote_request_path(@quote_request, edit_quotes: true), class: 'btn btn-info', remote: true %>
+      </div>
+    </div>
 
   </div>
 </div>

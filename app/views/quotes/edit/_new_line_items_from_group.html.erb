@@ -1,0 +1,51 @@
+<div class="container-fluid">
+  <p class="help-block">
+    First select your imprint methods and locations.
+  </p>
+  <%= form_for quote, html: { id: 'new-group-form', data: { 'no-editing-class' => true },  class: 'horizontal-form'}, builder: LancengFormBuilder do |f| %>
+      <div class="col-xs-12">
+        <%= link_to new_imprint_path(select_tag_name: 'quote[line_items_from_group_attributes][print_locations][]', description_name: 'quote[line_items_from_group_attributes][imprint_descriptions][]'),
+                    class: 'btn btn-info btn-lg add-imprint',
+                    method: :get, remote: true do %>
+            <i class="fa fa-pagelines"></i> Add Imprint
+        <% end %>
+      </div>
+      <div id='new-imprints-container' class='col-xs-12'>
+
+      </div>
+
+      <p class="help-block col-xs-12">
+        Now determine what group best fits the need of the quote. Then enter quantity, and finally look up the pricing for the
+        imprints described above and the quantity input below and enter that into decoration price.
+      </p>
+
+      <%= f.fields_for :line_items_from_group do |ff| %>
+          <div class="col-xs-6">
+            <%= ff.label :imprintable_group_id %>
+            <%= ff.select :imprintable_group_id, ImprintableGroup.all.collect{|x| [x.name, x.id] } %>
+          </div>
+
+          <div class="col-xs-3">
+            <%= ff.label :quantity %>
+            <%= ff.text_field :quantity %>
+          </div>
+
+          <div class="col-xs-3">
+            <%= ff.label :decoration_price %>
+            <div class="input-group">
+              <span class="input-group-addon">$</span>
+            <%= ff.text_field :decoration_price %>
+            </div>
+            <%= ff.hidden_field :quote_id, value: quote.id %>
+          </div>
+      <% end %>
+      <br clear="all" />
+      <br clear="all" />
+
+      <%= button_tag class: 'btn btn-success col-sm-offset-4 col-xs-4 col-xs-offset-1 col-xs-10' do  %>
+          <i class="glyphicon glyphicon-plus-sign"></i> Add Imprintable Group
+      <% end %>
+
+  <% end %>
+
+</div>

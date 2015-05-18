@@ -4,7 +4,13 @@ FactoryGirl.define do
     factory :job do
       sequence(:name) { |s| "Test Job #{s}" }
       description 'Here is the test job description.'
-      order { |o| o.association(:order) }
+      jobbable { |o| o.association(:order) }
+    end
+
+    factory :quote_job do
+      sequence(:name) { |s| "Test Job #{s}" }
+      description 'Here is the test job description.'
+      jobbable { |o| o.association(:quote) }
     end
   end
 end
