@@ -14,3 +14,5 @@ end
 # To ease insightly testing
 # (not relevant to requiring util directory)
 Insightly2.api_key = ENV['INSIGHTLY_API_KEY'] if Rails.env.development?
+
+Softwear::Lib.fix_sort_argument_error_on_rubinius
