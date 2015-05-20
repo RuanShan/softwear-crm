@@ -435,17 +435,18 @@ class Quote < ActiveRecord::Base
     begin
       op = insightly.create_opportunity(
         opportunity: {
-          opportunity_name: name,
-          opportunity_state: 'Open',
+          opportunity_name:    name,
+          opportunity_state:   'Open',
           opportunity_details: insightly_description,
-          probability: insightly_probability.to_i,
-          bid_currency: 'USD',
-          bid_amount: insightly_bid_amount.to_i,
+          probability:         insightly_probability.to_i,
+          bid_currency:        'USD',
+          bid_amount:          insightly_bid_amount.to_i,
           forecast_close_date: (created_at + 3.days).strftime('%F %T'),
-          pipeline_id: insightly_pipeline_id,
-          stage_id: insightly_stage_id,
-          customfields: insightly_customfields,
-          links: insightly_contact_links,
+          pipeline_id:         insightly_pipeline_id,
+          stage_id:            insightly_stage_id,
+          category_id:         insightly_category_id,
+          customfields:        insightly_customfields,
+          links:               insightly_contact_links,
         }
       )
       self.insightly_opportunity_id = op.opportunity_id

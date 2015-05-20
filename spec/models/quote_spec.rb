@@ -68,6 +68,7 @@ describe Quote, quote_spec: true do
           allow(subject).to receive(:insightly_description).and_return 'desc'
           allow(subject).to receive(:insightly_bid_amount).and_return 15
           allow(subject).to receive(:insightly_stage_id).and_return 1
+          allow(subject).to receive(:insightly_category_id).and_return 3
 
           expect(dummy_insightly).to receive(:create_opportunity)
             .with({
@@ -81,6 +82,7 @@ describe Quote, quote_spec: true do
                 forecast_close_date: (subject.created_at + 3.days).strftime('%F %T'),
                 pipeline_id: 10,
                 stage_id: 1,
+                category_id: 3,
                 customfields: subject.insightly_customfields,
                 links: []
               }
