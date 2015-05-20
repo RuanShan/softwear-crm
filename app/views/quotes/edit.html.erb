@@ -7,7 +7,7 @@
     <div class="pull-right text-right">
 
       <% unless @quote.insightly_opportunity_id.blank? %>
-          <%= link_to  @quote.freshdesk_ticket_link, class: 'btn btn-warning',
+          <%= link_to  @quote.insightly_opportunity_link, class: 'btn btn-warning',
                        'data-action' => 'new', 'data-toggle' => 'tooltip', 'title' => 'Insightly Opportunity' do %>
               <i class="softwear-icon-insightly-icon"></i> Insightly Opportunity
           <% end %>
