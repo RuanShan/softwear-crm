@@ -67,6 +67,28 @@ describe LineItem, line_item_spec: true do
         expect(subject.description)
           .to eq subject.imprintable_variant.imprintable.style_description
       end
+      context 'name', story_610: true do
+        context 'when belonging to a quote job' do
+          before do
+            allow(subject).to receive(:line_itemable)
+             .and_return OpenStruct.new(jobbable_type: 'Quote')
+          end
+
+          it 'should return imprintable (not variant) name' do
+            expect(subject.name).to eq subject.imprintable.name
+          end
+        end
+        context 'when belonging to an order job' do
+          before do
+            allow(subject).to receive(:line_itemable)
+             .and_return OpenStruct.new(jobbable_type: 'Order')
+          end
+
+          it 'should return imprintable variant name' do
+            expect(subject.name).to eq subject.imprintable_variant.name
+          end
+        end
+      end
       it 'name should return the name of its imprintable_variant' do
         expect(subject.name).to eq subject.imprintable_variant.name
       end
