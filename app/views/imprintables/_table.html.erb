@@ -12,18 +12,27 @@
       </thead>
       <tbody>
         <% imprintables.each do |imprintable| %>
-          <tr id="<%= model_table_row_id imprintable %>">
+          <tr id="<%= model_table_row_id imprintable %>" <%= "class=discontinued-imprintable" if imprintable.discontinued? %>>
             <td>
               <% if imprintable.standard_offering? %>
                 <i class="fa fa-check-square"></i>
               <% end %>
             </td>
-            <td><%= imprintable_modal(imprintable) %></td>
-            <td>
-              <%= number_to_currency imprintable.base_price%>
-            </td>
-            <td><%= raw imprintable.style_description %></td>
-            <td>
+            <% if imprintable.discontinued?  %>
+              <td><s><%= imprintable_modal(imprintable) %></s></td>
+              <td>
+                <s> <%= number_to_currency imprintable.base_price%> </s>
+              </td>
+              <td><s><%= raw imprintable.style_description %></s></td>
+              <td>
+            <% else %>
+              <td><%= imprintable_modal(imprintable) %></td>
+              <td>
+                 <%= number_to_currency imprintable.base_price%> 
+              </td>
+              <td><%= raw imprintable.style_description %></td>
+              <td>
+            <%end%>
               <div>
                 <%= link_to imprintable_path(imprintable, search_for_quote: true),
                             id: "add-#{imprintable.id}-to-quote",
@@ -48,6 +57,28 @@
                             'data-action' => 'destroy', 'data-toggle' => 'tooltip', 'title' => 'Destroy' do %>
                   <i class="fa fa-times"></i> Destroy
                 <% end %>
+                <% if imprintable.discontinued == false %>
+                  <%= form_for imprintable do |f| %>
+                    <%= f.hidden_field(:discontinued, value: true) %>
+                    <%= button_tag class: 'btn-sm btn btn-danger btn-fullwidth',
+                      data: { confirm: "Are you sure you would like to discontinue the imprintable? "\
+                              "Please note this will remove the imprintable from the standard offerings "\
+                              "and imprintable groups. If you reinstate, you will have to manually add "\
+                              "this again."},
+                                'data-toggle' => 'tooltip', 'title' => 'Discontinue' do %>
+                      <i class="fa fa-ban"></i> Discontinue
+                    <% end %>
+                  <% end %>
+                <%else%>
+                  <%= form_for imprintable do |f| %>
+                    <%= f.hidden_field(:discontinued, value: false) %>
+                    <%= button_tag class: 'btn-sm btn btn-primary btn-fullwidth',
+                                data: { confirm: 'Are you sure you would like to reinstate the imprintable?' },
+                                'data-toggle' => 'tooltip', 'title' => 'Reinstate' do %>
+                      <i class="fa fa-exclamation-circle"></i> Reinstate
+                    <% end %>
+                  <% end %>
+                <%end%>  
               </div>
             </td>
           </tr>

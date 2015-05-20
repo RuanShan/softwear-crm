@@ -1,11 +1,16 @@
 <% imprintables.each do |imprintable| %>
-  <div id="imprintable-result-<%=imprintable.id%>" class="imprintable-add-search-result row">
+  <div id="imprintable-result-<%=imprintable.id%>" class="imprintable-add-search-result row <%= 'discontinued-imprintable' if imprintable.discontinued? %>">
     <div class="col-xs-2">
       <i><%= 'Standard Offering' if imprintable.standard_offering? %></i>
     </div>
       <div class="col-xs-6">
-        <b><%= imprintable.name %></b><br />
-        <%= raw imprintable.description %>
+        <% if !imprintable.discontinued? %>
+          <b><%= imprintable.name %></b><br />
+          <%= raw imprintable.description %>
+        <% else %>
+          <b><s><%= imprintable.name %></s></b><br />
+          <s> <%= raw imprintable.description %></s>
+        <%end%>
       </div>
         <div class="col-xs-2">
           <b>Base Upcharge</b><br />

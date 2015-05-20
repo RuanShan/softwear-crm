@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150508201355) do
+ActiveRecord::Schema.define(version: 20150519163150) do
 
   create_table "activities", force: true do |t|
     t.integer  "trackable_id"
@@ -282,6 +282,7 @@ ActiveRecord::Schema.define(version: 20150508201355) do
     t.decimal  "xxxxxl_upcharge",        precision: 10, scale: 2
     t.decimal  "xxxxxxl_upcharge",       precision: 10, scale: 2
     t.decimal  "base_upcharge",          precision: 10, scale: 2
+    t.boolean  "discontinued",                                    default: false
   end
 
   add_index "imprintables", ["deleted_at"], name: "index_imprintables_on_deleted_at", using: :btree
