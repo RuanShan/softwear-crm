@@ -60,5 +60,13 @@ class QuoteDrop < Liquid::Drop
     @quote.additional_options_and_markups.map{|li| LineItemDrop.new(li)}
   end
 
+  def notes
+    @quote.comments.map{|c| CommentDrop.new(c)}
+  end
+
+  def comments
+    notes
+  end
+
 end
 
