@@ -1,15 +1,15 @@
 class ImprintDrop < Liquid::Drop
 
-  def initialize(impint)
-    @impint = impint
+  def initialize(imprint)
+    @imprint = imprint
   end
 
   def imprint_method
-    @impint.imprint_method.name
+    @imprint.imprint_method.name
   end
 
   def imprint_location
-    @impint.print_location.name
+    @imprint.print_location.name
   end
 
   def description
