@@ -14,7 +14,7 @@ class Email < ActiveRecord::Base
     drops = {}
 
     records.each do |key, val|
-      class_name = "#{key.to_s.camelize}Drop"
+      class_name = "Liquid::#{key.to_s.camelize}Drop"
       instance = class_name.constantize.new(val)
       drops[key.to_s] = instance
     end

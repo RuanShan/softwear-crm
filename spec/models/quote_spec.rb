@@ -67,6 +67,7 @@ describe Quote, quote_spec: true do
           subject.insightly_pipeline_id = 10
           allow(subject).to receive(:insightly_description).and_return 'desc'
           allow(subject).to receive(:insightly_bid_amount).and_return 15
+          allow(subject).to receive(:insightly_stage_id).and_return 1
 
           expect(dummy_insightly).to receive(:create_opportunity)
             .with({
@@ -79,6 +80,7 @@ describe Quote, quote_spec: true do
                 bid_amount: 15,
                 forecast_close_date: (subject.created_at + 3.days).strftime('%F %T'),
                 pipeline_id: 10,
+                stage_id: 1,
                 customfields: subject.insightly_customfields,
                 links: []
               }
@@ -89,6 +91,25 @@ describe Quote, quote_spec: true do
 
           subject.create_insightly_opportunity
           expect(subject.reload.insightly_opportunity_id).to eq 123
+        end
+
+        context '#insightly_stage_id', story_603: true do
+          subject { create :valid_quote, insightly_pipeline_id: 2 }
+          let!(:dummy_insightly) { Object.new }
+
+          it "returns the stage with an order of 1 and pipeline id matching the quote's" do
+            expect(dummy_insightly).to receive(:get_pipeline_stages)
+              .and_return([
+                OpenStruct.new(stage_id: 1, pipeline_id: 1, stage_order: 1),
+                OpenStruct.new(stage_id: 2, pipeline_id: 2, stage_order: 2),
+                OpenStruct.new(stage_id: 3, pipeline_id: 2, stage_order: 1),
+                OpenStruct.new(stage_id: 4, pipeline_id: 2, stage_order: 3),
+              ])
+
+            allow(subject).to receive(:insightly).and_return dummy_insightly
+
+            expect(subject.insightly_stage_id).to eq 3
+          end
         end
 
         context '#insightly_customfields', story_514: true do

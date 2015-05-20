@@ -443,6 +443,7 @@ class Quote < ActiveRecord::Base
           bid_amount: insightly_bid_amount.to_i,
           forecast_close_date: (created_at + 3.days).strftime('%F %T'),
           pipeline_id: insightly_pipeline_id,
+          stage_id: insightly_stage_id,
           customfields: insightly_customfields,
           links: insightly_contact_links,
         }
@@ -453,6 +454,13 @@ class Quote < ActiveRecord::Base
     rescue Insightly2::Errors::ClientError => e
       e
     end
+  end
+
+  def insightly_stage_id
+    insightly
+      .get_pipeline_stages
+      .find { |s| s.pipeline_id == insightly_pipeline_id && s.stage_order == 1 }
+      .stage_id
   end
 
   def insightly_description
