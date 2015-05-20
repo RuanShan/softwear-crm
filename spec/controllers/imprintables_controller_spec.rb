@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe ImprintablesController, imprintable_spec: true do
+describe ImprintablesController, imprintable_spec: true, type: :controller do
 	let!(:valid_user) { create :alternate_user }
   let!(:imprintable) { create(:valid_imprintable) }
   before(:each) { sign_in valid_user }

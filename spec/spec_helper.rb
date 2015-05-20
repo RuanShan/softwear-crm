@@ -73,6 +73,16 @@ RSpec.configure do |config|
     Capybara::Selenium::Driver.new(app, :browser => :chrome)
   end
 
+  config.define_derived_metadata(file_path: %r(/spec/controllers/)) do |meta|
+    meta[:type] = :controller
+  end
+  config.define_derived_metadata(file_path: %r(/spec/views/)) do |meta|
+    meta[:type] = :view
+  end
+  config.define_derived_metadata(file_path: %r(/spec/models/)) do |meta|
+    meta[:type] = :model
+  end
+
   # If you're not using ActiveRecord, or you'd prefer not to run each of your
   # examples within a transaction, remove the following line or assign false
   # instead of true.
