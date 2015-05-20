@@ -8,6 +8,7 @@ require 'public_activity/testing'
 require 'email_spec'
 require 'sidekiq/testing'
 require 'fakeredis'
+require 'softwear/lib'
 
 # explicitly use fakeredis with sidekiq
 redis_opts = { url: 'redis://127.0.0.1:6379/1', namespace: 'cms_queue' }
@@ -51,6 +52,7 @@ RSpec.configure do |config|
   config.include EmailSpec::Helpers
   config.include EmailSpec::Matchers
   config.include FormBuilderHelpers
+  config.include Softwear::Lib::Spec
 
   PublicActivity.enabled = false
 

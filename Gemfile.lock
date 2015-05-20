@@ -559,7 +559,7 @@ DEPENDENCIES
   rspec-rails (~> 3.2.0)
   rspec-retry
   rubinius-debugger
-  sass-rails (~> 4.0.2)
+  sass-rails
   sdoc
   selenium-webdriver
   shoulda-matchers
