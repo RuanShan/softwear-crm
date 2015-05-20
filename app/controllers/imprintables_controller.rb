@@ -142,7 +142,7 @@ class ImprintablesController < InheritedResources::Base
 
   def permitted_params
     params.permit(
-      :q, :respond_with_partial,
+      :q, :respond_with_partial, :id,
       imprintable:
                     [
                       :flashable, :polyester, :special_considerations,
@@ -155,7 +155,7 @@ class ImprintablesController < InheritedResources::Base
                       :base_upcharge,
                       :xxxxxxl_price, :xxl_upcharge, :xxxl_upcharge, :xxxxl_upcharge,
                       :xxxxxl_upcharge, :xxxxxxl_upcharge, :tag_list, :standard_offering,
-                      :proofing_template_name, :sizing_category, :common_name,
+                      :proofing_template_name, :sizing_category, :common_name, :discontinued,
                       sample_location_ids: [],
                       coordinate_ids: [],
                       compatible_imprint_method_ids: [],

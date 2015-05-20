@@ -19,7 +19,9 @@ class Imprintable < ActiveRecord::Base
   default_scope { eager_load(:brand)
                     .order('brands.name, imprintables.style_catalog_no')
                     .joins(:brand)
-                    .readonly(false) }
+                    .readonly(false)
+                    }
+
 
   paginates_per 50
 
@@ -39,6 +41,7 @@ class Imprintable < ActiveRecord::Base
     boolean :flashable
     boolean :standard_offering
     boolean :retail
+    boolean :discontinued
   end
 
   SIZING_CATEGORIES = [
@@ -90,6 +93,12 @@ class Imprintable < ActiveRecord::Base
                         message: 'should be in format http://www.url.com/path'
                      },
              allow_blank: true
+
+  before_save :discontinue_imprintable, if: :discontinued? 
+
+  def self.find(param)
+    unscoped.where(deleted_at: nil).find(param)
+  end
 
   def compatible_print_methods
     compatible_imprint_methods.pluck(:name).join ' '
@@ -233,4 +242,13 @@ class Imprintable < ActiveRecord::Base
       end
     end
   end
+
+  private
+  
+  def discontinue_imprintable 
+    self.imprintable_imprintable_groups.destroy_all     
+    self.standard_offering = false
+    true
+  end  
+
 end
