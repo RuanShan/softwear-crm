@@ -59,6 +59,22 @@ describe Imprintable, imprintable_spec: true do
     end
   end
 
+  describe 'Discontinue', story_595: :true do
+    context 'when discontinued is set to true' do
+      let!(:imprintable) { create(:valid_imprintable) }
+      let!(:imprintable_group) { ImprintableGroup.create(name: "tig") }
+      before{ create(:good, imprintable_id: imprintable.id, imprintable_group_id: imprintable_group.id) }
+      it "is removed from all imprintable groups" do
+        imprintable_group.reload
+        expect(imprintable_group.imprintables).to include(imprintable)
+        imprintable.discontinued = true
+        imprintable.save
+        imprintable_group.reload
+        expect(imprintable_group.imprintables).not_to include(imprintable)
+      end
+    end
+  end
+
   describe 'Scopes' do
     context 'there are two sizes, colors and variants' do
       let!(:color_one) { create(:valid_color) }

@@ -20,7 +20,7 @@ class Imprintable < ActiveRecord::Base
                     .order('brands.name, imprintables.style_catalog_no')
                     .joins(:brand)
                     .readonly(false)
-                    .where.not(discontinued: true) }
+                    }
 
 
   paginates_per 50
@@ -93,6 +93,8 @@ class Imprintable < ActiveRecord::Base
                         message: 'should be in format http://www.url.com/path'
                      },
              allow_blank: true
+
+  before_save :discontinue_imprintable, if: :discontinued? 
 
   def self.find(param)
     unscoped.where(deleted_at: nil).find(param)
@@ -240,4 +242,13 @@ class Imprintable < ActiveRecord::Base
       end
     end
   end
+
+  private
+  
+  def discontinue_imprintable 
+    self.imprintable_imprintable_groups.destroy_all     
+    self.standard_offering = false
+    true
+  end  
+
 end

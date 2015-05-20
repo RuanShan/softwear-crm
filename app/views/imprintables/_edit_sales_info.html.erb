@@ -9,12 +9,6 @@
       </div>
 
       <div class="form-group">
-        <%= f.label :discontinued, 'Discontinued?', class: 'control-label' %>
-        <%= f.error_for :discontinued %>
-        <%= f.check_box  :discontinued, { class: 'checkbox' }, 'true', 'false' %>
-      </div>
-
-      <div class="form-group">
         <%= f.label :main_supplier, class: 'control-label' %>
         <%= f.error_for :main_supplier %>
         <%= f.text_field :main_supplier, class: 'form-control' %>

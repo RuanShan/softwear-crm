@@ -142,7 +142,7 @@ class ImprintablesController < InheritedResources::Base
 
   def permitted_params
     params.permit(
-      :q, :respond_with_partial,
+      :q, :respond_with_partial, :id,
       imprintable:
                     [
                       :flashable, :polyester, :special_considerations,
