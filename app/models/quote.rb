@@ -61,6 +61,7 @@ class Quote < ActiveRecord::Base
     :insightly_opportunity_profile_id,
     :insightly_bid_amount,
     :insightly_bid_tier_id,
+    :insightly_opportunity_id
   ]
 
   MARKUPS_AND_OPTIONS_JOB_NAME = '_markupsandoptions_'
@@ -86,7 +87,7 @@ class Quote < ActiveRecord::Base
   validates :store, presence: true
   validates :valid_until_date, presence: true
   validates :shipping, price: true
-  validates *INSIGHTLY_FIELDS, presence: true, if: :salesperson_has_insightly?
+  validates *(INSIGHTLY_FIELDS - [:insightly_opportunity_id]), presence: true, if: :salesperson_has_insightly?
 
   after_save :set_quote_request_statuses_to_quoted
   after_create :create_freshdesk_ticket
@@ -341,6 +342,25 @@ class Quote < ActiveRecord::Base
       .join("\n")
   end
 
+  def assign_from_quote_request(quote_request)
+    if /(?<qr_first>\w+)\s+(?<qr_last>\w+)/ =~ quote_request.name
+      self.first_name = qr_first
+      self.last_name  = qr_last
+    else
+      self.first_name = quote_request.name
+    end
+
+    self.email            ||= quote_request.email
+    self.qty              ||= quote_request.approx_quantity
+    self.phone_number     ||= quote_request.phone_number if quote_request.phone_number
+    self.company          ||= quote_request.organization if quote_request.organization
+    self.quote_source     ||= 'Online Form'
+    if quote_request.date_needed
+      self.deadline_is_specified = true
+      self.valid_until_date = quote_request.date_needed
+    end
+  end
+
   def create_freshdesk_ticket
     return if freshdesk.nil? || !freshdesk_ticket_id.blank?
     return if quote_requests.empty?
@@ -353,7 +373,7 @@ class Quote < ActiveRecord::Base
             source: 2,
             group_id: freshdesk_group_id,
             ticket_type: 'Lead',
-            subject: 'Created by Softwear-CRM',
+            subject: "Your Quote (##{quote.name}) from the Ann Arbor T-shirt Company",
             custom_field: {
               department_7483: freshdesk_department,
               softwearcrm_quote_id_7483: id
