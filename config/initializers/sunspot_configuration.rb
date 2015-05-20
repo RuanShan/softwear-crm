@@ -43,7 +43,7 @@ require Rails.root + 'lib/util/generic_decorators.rb'
 # Eager load all the models so that the search data is readily available
 require Rails.root + 'app/models/search.rb'
 Dir[Rails.root + 'app/models/**/*.rb'].each do |file|
-  next if file.include? '/concerns/' || file.include? '/freshdesk_local/'
+  next if file.include?('/concerns/') || file.include?('/freshdesk_local/')
 
   if file.include? '/liquid/'
     require file
