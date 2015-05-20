@@ -5,7 +5,7 @@ class CommentDrop < Liquid::Drop
   end
 
   def title
-    @comment.name
+    @comment.title
   end
 
   def comment
