@@ -61,6 +61,18 @@ class LineItem < ActiveRecord::Base
       imprintable? ? imprintable_variant.send(method) : self[method] rescue ''
     end
   end
+  def name
+    return super unless imprintable?
+
+    if line_itemable.try(:jobbable_type) == 'Order'
+      imprintable_variant.name
+    else
+      imprintable.name
+    end
+  end
+  def description
+    imprintable? ? imprintable.description : super rescue ''
+  end
 
   def imprintable_and_in_an_order?
     imprintable? && line_itemable.try(:jobbable_type) == 'Order'

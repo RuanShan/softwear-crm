@@ -19,7 +19,6 @@
  *= require font-awesome/font-awesome
  *= require icheck/skins/minimal/grey
  *= require bootstrap-datetimepicker
- *= require font-awesome
  *= require summernote
  *= require jquery-ui
  *= require chosen
@@ -89,3 +88,5 @@ dl.left-right-pretty {
 }
 
 
+@import "font-awesome-sprockets";
+@import "font-awesome";

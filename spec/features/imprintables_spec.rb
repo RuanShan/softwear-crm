@@ -311,4 +311,30 @@ feature 'Imprintables management', imprintable_spec: true, slow: true do
       expect(find('#contentModal div.modal-body').text).to_not eq ('')
     end
   end
+
+  context 'Discontinuation', story_595: :true do
+
+    scenario 'A user can discontinue and reinstate an imprintable' do
+      visit imprintables_path
+      click_button('Discontinue') 
+     # page.driver.browser.switch_to.alert.accept
+      visit imprintables_path
+      imprintable.reload
+      expect(imprintable).to be_discontinued
+      expect(page).to have_content('Reinstate')
+      expect(page).to have_css('.discontinued-imprintable')
+      expect(page).to have_css('.discontinued-imprintable s')
+
+      visit imprintables_path
+      click_button('Reinstate') 
+     # page.driver.browser.switch_to.alert.accept
+      visit imprintables_path
+      imprintable.reload
+      expect(imprintable).not_to be_discontinued
+      expect(page).to have_content('Discontinue')
+      expect(page).not_to have_css('.discontinued-imprintable')
+      expect(page).not_to have_css('.discontinued-imprintable s')
+    end
+  end
+
 end

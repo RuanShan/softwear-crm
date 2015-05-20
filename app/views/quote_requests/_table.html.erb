@@ -15,7 +15,7 @@
       <% quote_requests.each do |quote_request| %>
           <tr>
             <td>
-              <%= quote_request.created_at.strftime("%F") %>
+              <%= quote_request.created_at.strftime("%F %-I:%M%p") %>
             </td>
             <td>
               <dl>

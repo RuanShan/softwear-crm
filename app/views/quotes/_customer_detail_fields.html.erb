@@ -18,7 +18,16 @@
 
   <%= f.error_for :phone_number %>
 
-  <%= f.text_field :phone_number, class: 'format-phone' %>
+  <% phone_number_fill =
+                     if !local_assigns[:phone_number].nil?
+                       { value: local_assigns[:phone_number] }
+                     elsif !quote.nil?
+                       { value: quote.phone_number }
+                     else
+                       {}
+                     end
+  %>
+  <%= f.text_field :phone_number, { class: 'format-phone' }.merge(phone_number_fill) %>
 </div>
 
 <div class="form-group">

@@ -4,9 +4,6 @@
         <h2>Docked Quote Request<%= session[:docked].size > 1 ? 's' : '' %></h2>
 
         <div class="additional-btn">
-          <%= link_to new_quote_path, class: 'additional-icon', 'data-toggle' => 'close' do  %>
-              <i class="fa fa-plus"></i>
-          <% end %>
 
           <%= link_to "/undock", data: {remote: true}, class: 'additional-icon', 'data-toggle' => 'close' do  %>
               <i class="fa fa-times"></i>
@@ -30,6 +27,11 @@
                         'data-toggle' => 'close' do  %>
                       <i class="fa fa-times"></i>
                   <% end %>
+
+                  <%= link_to new_quote_path(quote_request_id: docked[:id]), class: 'additional-icon close-dock', 'data-toggle' => 'close', style: 'margin-left: 5px;' do  %>
+                      <i class="fa fa-plus"></i>
+                  <% end %>
+
                 </div>
 
                 <%= link_to docked[:name], "#dock-for-#{docked[:id]}",
@@ -50,7 +52,8 @@
               <div class="not-actually-additional-btn">
               </div>
                 <p>
-                <%= link_to 'Show', quote_request_path(docked[:id]), class: 'qr-dock-show-btn btn btn-info' %>
+                  <%= link_to 'Show', quote_request_path(docked[:id]), class: 'qr-dock-show-btn btn btn-info' %>
+                  <%= link_to 'Create Quote', new_quote_path(quote_request_id: docked[:id]), class: 'qr-dock-show-btn btn btn-info' %>
                 </p>
                 <p>
                   Approximate Quantity: <%= docked[:approx_quantity] %>

@@ -126,7 +126,7 @@ feature 'Quotes management', quote_spec: true, js: true do
     click_link 'Add A New Group'
 
     click_link 'Add Imprint'
-    sleep 0.5
+    wait_for_ajax
     find('select[name=imprint_method]').select imprint_method_2.name
 
     select imprintable_group.name, from: 'Imprintable group'
@@ -157,7 +157,7 @@ feature 'Quotes management', quote_spec: true, js: true do
     click_link 'Add A New Group'
 
     click_link 'Add Imprint'
-    sleep 0.5
+    wait_for_ajax
     find('select[name=imprint_method]').select imprint_method_1.name
 
     select imprintable_group.name, from: 'Imprintable group'
@@ -172,14 +172,14 @@ feature 'Quotes management', quote_spec: true, js: true do
     find('a', text: 'Line Items').click
 
     click_link 'Add Imprint'
-    sleep 0.5
+    wait_for_ajax
     within '.imprint-entry[data-id="-1"]' do
       find('select[name=imprint_method]').select imprint_method_2.name
       fill_in 'Description', with: 'Yes second imprint please'
     end
 
     click_button 'Save Line Item Changes'
-    sleep 1
+    wait_for_ajax
 
     visit edit_quote_path quote
     find('a', text: 'Line Items').click

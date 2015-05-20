@@ -11,7 +11,7 @@
     <div class="row">
       <div class="col-sm-6">
         <div class="form-group">
-          <%= render 'customer_detail_fields', f: f, quote: quote, name: params[:name].try(:split, " ") || nil, email: params[:email] %>
+          <%= render 'customer_detail_fields', f: f, quote: quote, name: params[:name].try(:split, " ") || nil, email: params[:email], phone_number: params[:phone_number] %>
         </div>
       </div>
 

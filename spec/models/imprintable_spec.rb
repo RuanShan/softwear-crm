@@ -34,10 +34,10 @@ describe Imprintable, imprintable_spec: true do
 
   describe 'Validations' do
     it { is_expected.to validate_presence_of(:brand) }
-    it { is_expected.to validate_presence_of(:max_imprint_height) }
-    it { is_expected.to validate_numericality_of(:max_imprint_height) }
-    it { is_expected.to validate_presence_of(:max_imprint_width) }
-    it { is_expected.to validate_numericality_of(:max_imprint_width) }
+#    it { is_expected.to validate_presence_of(:max_imprint_height) }
+#    it { is_expected.to validate_numericality_of(:max_imprint_height) }
+#    it { is_expected.to validate_presence_of(:max_imprint_width) }
+#    it { is_expected.to validate_numericality_of(:max_imprint_width) }
     it { is_expected.to ensure_inclusion_of(:sizing_category).in_array Imprintable::SIZING_CATEGORIES }
     it { is_expected.to allow_value('http://www.foo.com', 'http://www.foo.com/shipping').for(:supplier_link) }
     it { is_expected.to_not allow_value('bad_url.com', '').for(:supplier_link).with_message('should be in format http://www.url.com/path') }
@@ -56,6 +56,22 @@ describe Imprintable, imprintable_spec: true do
       before { allow(subject).to receive_message_chain(:is_retail?).and_return(false) }
 
       it { is_expected.to_not ensure_length_of(:sku).is_equal_to(4) }
+    end
+  end
+
+  describe 'Discontinue', story_595: :true do
+    context 'when discontinued is set to true' do
+      let!(:imprintable) { create(:valid_imprintable) }
+      let!(:imprintable_group) { ImprintableGroup.create(name: "tig") }
+      before{ create(:good, imprintable_id: imprintable.id, imprintable_group_id: imprintable_group.id) }
+      it "is removed from all imprintable groups" do
+        imprintable_group.reload
+        expect(imprintable_group.imprintables).to include(imprintable)
+        imprintable.discontinued = true
+        imprintable.save
+        imprintable_group.reload
+        expect(imprintable_group.imprintables).not_to include(imprintable)
+      end
     end
   end
 
