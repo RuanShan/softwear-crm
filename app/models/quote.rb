@@ -61,6 +61,7 @@ class Quote < ActiveRecord::Base
     :insightly_opportunity_profile_id,
     :insightly_bid_amount,
     :insightly_bid_tier_id,
+    :insightly_opportunity_id
   ]
 
   MARKUPS_AND_OPTIONS_JOB_NAME = '_markupsandoptions_'
@@ -86,7 +87,7 @@ class Quote < ActiveRecord::Base
   validates :store, presence: true
   validates :valid_until_date, presence: true
   validates :shipping, price: true
-  validates *INSIGHTLY_FIELDS, presence: true, if: :salesperson_has_insightly?
+  validates *(INSIGHTLY_FIELDS - [:insightly_opportunity_id]), presence: true, if: :salesperson_has_insightly?
 
   after_save :set_quote_request_statuses_to_quoted
   after_create :create_freshdesk_ticket
