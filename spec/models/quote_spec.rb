@@ -503,7 +503,7 @@ describe Quote, quote_spec: true do
             source: 2,
             group_id: 54321,
             ticket_type: 'Lead',
-            subject: 'Created by Softwear-CRM',
+            subject: "Your Quote (##{quote.name}) from the Ann Arbor T-shirt Company",
             custom_field: {
               department_7483: 'Testing',
               softwearcrm_quote_id_7483: quote.id
