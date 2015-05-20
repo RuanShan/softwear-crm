@@ -25,6 +25,8 @@ function initDockTabs() {
 
   if (localStorage.dockTab)
     $('#dock-tab-for-'+localStorage.dockTab).tab('show');
+  else if ($('.dock-tab').length == 1)
+    $('.dock-tab').tab('show');
 }
 
 $(function() {

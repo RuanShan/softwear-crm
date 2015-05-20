@@ -342,6 +342,25 @@ class Quote < ActiveRecord::Base
       .join("\n")
   end
 
+  def assign_from_quote_request(quote_request)
+    if /(?<qr_first>\w+)\s+(?<qr_last>\w+)/ =~ quote_request.name
+      self.first_name = qr_first
+      self.last_name  = qr_last
+    else
+      self.first_name = quote_request.name
+    end
+
+    self.email            ||= quote_request.email
+    self.qty              ||= quote_request.approx_quantity
+    self.phone_number     ||= quote_request.phone_number if quote_request.phone_number
+    self.company          ||= quote_request.organization if quote_request.organization
+    self.quote_source     ||= 'Online Form'
+    if quote_request.date_needed
+      self.deadline_is_specified = true
+      self.valid_until_date = quote_request.date_needed
+    end
+  end
+
   def create_freshdesk_ticket
     return if freshdesk.nil? || !freshdesk_ticket_id.blank?
     return if quote_requests.empty?
