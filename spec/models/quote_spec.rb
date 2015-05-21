@@ -483,38 +483,68 @@ describe Quote, quote_spec: true do
       end
     end
 
-    describe '#create_freshdesk_ticket', story_518: true do
-      it 'calls Freshdesk.new and post_tickets with the correct args' do
-        dummy_quote_request = double('Quote Request', freshdesk_contact_id: 123)
-        allow(quote).to receive(:quote_requests).and_return [dummy_quote_request]
+    describe '#create_freshdesk_ticket', story_518: true, freshdesk: true do
+      before(:each) do
         allow(quote).to receive(:freshdesk_description)
           .and_return '<div>hi</div>'.html_safe
 
         allow(quote).to receive(:freshdesk_group_id).and_return 54321
         allow(quote).to receive(:freshdesk_department).and_return 'Testing'
+      end
 
-        dummy_client = Object.new
-        allow(quote).to receive(:freshdesk).and_return(dummy_client)
+      context 'when the quote has a quote request' do
+        it 'creates a ticket with its requester id' do
+          dummy_quote_request = double('Quote Request', freshdesk_contact_id: 123)
+          allow(quote).to receive(:quote_requests).and_return [dummy_quote_request]
 
-        allow(dummy_client).to receive(:post_tickets)
-          .with(helpdesk_ticket: {
-            requester_id: 123,
-            requester_name: quote.full_name,
-            source: 2,
-            group_id: 54321,
-            ticket_type: 'Lead',
-            subject: "Your Quote (##{quote.name}) from the Ann Arbor T-shirt Company",
-            custom_field: {
-              department_7483: 'Testing',
-              softwearcrm_quote_id_7483: quote.id
-            },
-            description_html: anything
-          })
-          .and_return({ helpdesk_ticket: { id: 998 } }.to_json)
+          dummy_client = Object.new
+          allow(quote).to receive(:freshdesk).and_return(dummy_client)
 
-        quote.create_freshdesk_ticket
+          expect(dummy_client).to receive(:post_tickets)
+            .with(helpdesk_ticket: {
+              source: 2,
+              group_id: 54321,
+              ticket_type: 'Lead',
+              subject: "Your Quote (##{quote.name}) from the Ann Arbor T-shirt Company",
+              custom_field: {
+                department_7483: 'Testing',
+                softwearcrm_quote_id_7483: quote.id
+              },
+              description_html: anything,
+              requester_id: 123
+            })
+            .and_return({ helpdesk_ticket: { display_id: 998 } }.to_json)
 
-        expect(quote.freshdesk_ticket_id).to eq 998
+          quote.create_freshdesk_ticket
+          expect(quote.freshdesk_ticket_id).to eq '998'
+        end
+      end
+
+      context 'when the quote lacks a quote request' do
+        it 'creates a ticket through its email, phone and full name', story_610: true do
+          dummy_client = Object.new
+          allow(quote).to receive(:freshdesk).and_return(dummy_client)
+
+          expect(dummy_client).to receive(:post_tickets)
+            .with(helpdesk_ticket: {
+              source: 2,
+              group_id: 54321,
+              ticket_type: 'Lead',
+              subject: "Your Quote (##{quote.name}) from the Ann Arbor T-shirt Company",
+              custom_field: {
+                department_7483: 'Testing',
+                softwearcrm_quote_id_7483: quote.id
+              },
+              description_html: anything,
+              email: quote.email,
+              phone: quote.phone_number,
+              name: quote.full_name
+            })
+            .and_return({ helpdesk_ticket: { display_id: 2981 } }.to_json)
+
+          quote.create_freshdesk_ticket
+          expect(quote.freshdesk_ticket_id).to eq '2981'
+        end
       end
     end
 

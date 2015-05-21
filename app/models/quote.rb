@@ -363,23 +363,33 @@ class Quote < ActiveRecord::Base
 
   def create_freshdesk_ticket
     return if freshdesk.nil? || !freshdesk_ticket_id.blank?
-    return if quote_requests.empty?
 
     begin
+      if quote_requests.empty?
+        requester_info = {
+          email: email,
+          phone: phone_number,
+          name: full_name
+        }
+      else
+        requester_info = {
+          requester_id: quote_requests.first.try(:freshdesk_contact_id),
+        }
+      end
+
       ticket = JSON.parse(freshdesk.post_tickets(
           helpdesk_ticket: {
-            requester_id: quote_requests.first.try(:freshdesk_contact_id),
-            requester_name: full_name,
             source: 2,
             group_id: freshdesk_group_id,
             ticket_type: 'Lead',
-            subject: "Your Quote (##{quote.name}) from the Ann Arbor T-shirt Company",
+            subject: "Your Quote (##{name}) from the Ann Arbor T-shirt Company",
             custom_field: {
               department_7483: freshdesk_department,
               softwearcrm_quote_id_7483: id
             },
             description_html: freshdesk_description
           }
+           .merge(requester_info)
         ))
         .try(:[], 'helpdesk_ticket')
 
