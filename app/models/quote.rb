@@ -500,15 +500,19 @@ class Quote < ActiveRecord::Base
   end
 
   def insightly_contact_links
-    quote_requests.flat_map do |qr|
-      c = []
-      c << { contact_id: qr.insightly_contact_id }
-      if qr.insightly_organisation_id
-        c << { organisation_id: qr.insightly_organisation_id }
+    if quote_requests.empty?
+
+    else
+      quote_requests.flat_map do |qr|
+        c = []
+        c << { contact_id: qr.insightly_contact_id }
+        if qr.insightly_organisation_id
+          c << { organisation_id: qr.insightly_organisation_id }
+        end
+        c
       end
-      c
+        .uniq
     end
-      .uniq
   end
 
   def insightly_customfields
