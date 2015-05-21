@@ -13,7 +13,8 @@
 <div class="form-group">
   <%= f.label :informal, 'Informal quote?' %>
   <%= f.error_for :informal %>
-  <%= f.check_box :informal, checked: (f.object.persisted? ? f.object.informal : true ) %>
+  <%= f.select :informal,
+    options_for_select({"Yes" => true, "No" => false}, f.object.informal) %>
 </div>
 
 <div class="form-group">
@@ -33,7 +34,7 @@
 </div>
 
 <div class="form-group">
-  <%= f.label :valid_until_date, 'Valid Until Date' %>
+  <%= f.label :valid_until_date, 'Quote Valid Until Date' %>
   <%= f.error_for :valid_until_date %>
 
   <div class="input-group date js-datetimepicker">
@@ -48,7 +49,25 @@
 </div>
 
 <div class="form-group">
-  <%= f.label :estimated_delivery_date, 'Estimated Delivery Date' %>
+  <%= f.label :deadline_is_specified, 'Did the Customer Request a Specific Deadline?' %>
+  <%= f.error_for :deadline_is_specified %>
+  <%= f.select :deadline_is_specified,
+    options_for_select({"Yes" => true, "No" => false}, f.object.deadline_is_specified) %>
+</div>
+
+<div class="form-group">
+  <%= f.label :is_rushed, 'Is this a rush job?' %>
+  <%= f.error_for :is_rushed %>
+  <%= f.select :is_rushed,
+    options_for_select({"No" => false, "Yes" => true}, f.object.is_rushed) %>
+</div>
+
+<div class="form-group">
+  <% if f.object.deadline_is_specified? %>
+    <%= f.label :estimated_delivery_date, 'Delivery Date' %>
+  <% else %>
+    <%= f.label :estimated_delivery_date, 'Estimated Delivery Date' %>
+  <% end %>
   <%= f.error_for :estimated_delivery_date %>
 
   <div class="input-group date js-datetimepicker">
@@ -78,23 +97,13 @@
                                    quote.id ? quote.store_id : current_user.store_id ) %>
 </div>
 
-<div class="form-group">
-  <%= f.label :is_rushed, 'Rushed?' %>
-  <%= f.error_for :is_rushed %>
-  <%= f.check_box :is_rushed %>
-</div>
 
 <div class="form-group">
-  <%= f.label :qty %>
+  <%= f.label :qty, 'Estimated Quantity of Pieces' %>
   <%= f.error_for :qty %>
   <%= f.number_field :qty %>
 </div>
 
-<div class="form-group">
-  <%= f.label :deadline_is_specified %>
-  <%= f.error_for :deadline_is_specified %>
-  <%= f.check_box :deadline_is_specified %>
-</div>
 
 <div class="form-group">
   <%= f.label :freshdesk_ticket_id, 'Freshdesk Ticket ID' %>

@@ -9,15 +9,21 @@
 </div>
 
 <div class="form-group">
-  <%= f.label :insightly_probability, 'Probability' %>
+  <%= f.label :insightly_probability, 'Probability of closing order' %>
   <%= f.error_for :insightly_probability %>
-  <%= insightly_field f, :text, :insightly_probability %>
+  <div class="input-group">
+    <%= insightly_field f, :text, :insightly_probability %>
+    <span class="input-group-addon">%</span>
+  </div>
 </div>
 
 <div class="form-group">
-  <%= f.label :insightly_value, 'Value' %>
+  <%= f.label :insightly_value, 'Estimated Quote Value' %>
   <%= f.error_for :insightly_value %>
-  <%= insightly_field f, :text, :insightly_value %>
+  <div class="input-group">
+    <span class="input-group-addon">$</span>
+    <%= insightly_field f, :text, :insightly_value%>
+  </div>
 </div>
 
 <div class="form-group">
@@ -27,7 +33,7 @@
 </div>
 
 <div class="form-group">
-  <%= f.label :insightly_opportunity_profile_id, 'Profile' %>
+  <%= f.label :insightly_opportunity_profile_id, 'Customer Profile' %>
   <%= f.error_for :insightly_opportunity_profile_id %>
   <%= insightly_select f, :insightly_opportunity_profile_id, insightly_opportunity_profiles %>
 </div>
