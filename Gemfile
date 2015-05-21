@@ -1,6 +1,7 @@
 source 'https://rubygems.org'
 
 gem 'softwear-lib'
+raise "OK. HERE ARE LOAD PATHS: #{$LOAD_PATH.empty? ? "None!" : $LOAD_PATH.join(', ')}"
 require 'softwear/lib'
 Softwear::Lib.common_gems(self)
 

@@ -10,7 +10,7 @@ role :db,  %w{ubuntu@50.17.187.22}
 
 set :branch, 'develop'
 set :linked_files, fetch(:linked_files) + %w{config/remote_database.yml}
-set :bundle_flags, '--deployment' # Without --quiet
+set :bundle_flags, '--deployment' # No --quiet for staging
 
 # Extended Server Syntax
 # ======================
