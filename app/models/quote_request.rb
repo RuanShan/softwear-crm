@@ -133,7 +133,7 @@ class QuoteRequest < ActiveRecord::Base
       if user.nil?
         if organization
           # NOTE Freshdesk calls them "companies" externally, and
-          # "customers" externally. Awesome, right?
+          # "customers" internally. Awesome, right?
           comp = JSON.parse(freshdesk.get_companies(
               letter: organization.each_char.next
             ))
