@@ -1,5 +1,6 @@
 source 'https://rubygems.org'
 
+gem 'softwear-lib'
 require 'softwear/lib'
 Softwear::Lib.common_gems(self)
 
