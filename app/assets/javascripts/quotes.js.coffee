@@ -1,14 +1,20 @@
-jQuery ->
-  $('.js-datetimepicker').datetimepicker()
+jQuery -> 
+  $('#quote_deadline_is_specified').change ->
+    if $(this).val() == 'true'
+      $("label[for='quote_estimated_delivery_date']").text("Delivery Date")
+    else
+      $("label[for='quote_estimated_delivery_date']").text("Estimated Delivery Date") 
+ 
   $(document).on('click', '#print-button', ->
     printPage()
   )
+  
   if document.URL.match(/print=true/)
     window.print()
     return false
 
-
-
+  $('.js-datetimepicker').datetimepicker()
+  
 @invalidMsg = (textbox) ->
   if textbox.validity.patternMismatch
     textbox.setCustomValidity('Please format like so "Example Email <example@email.com>, Example Two <example@two.com>"')
