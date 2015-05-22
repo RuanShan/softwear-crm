@@ -1,7 +1,7 @@
 root = exports ? this
 
 jQuery ->
-
+ 
   # this function is modified from an example hosted publicly at
   # http://www.mredkj.com/tutorials/tableaddcolumn.html
   addColumn = (tableId, size, size_id) ->

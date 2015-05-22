@@ -1,9 +1,30 @@
-jQuery -> 
+jQuery ->
+
+  #This function checks if an Insightly bid estimate is in a certain tier
+  $('#quote_insightly_value').change ->
+    dollar = $('#quote_insightly_value').val()
+    $('#quote_insightly_bid_tier_id').children().each ->
+      tier = $(this).text()
+      if tier != 'unassigned'
+        array = tier.split(" ")
+        low = array[3]
+        low = low.substr(2)
+        high = array[5]
+        high = high.substr(1, high.lastIndexOf(')')-1)
+        min = parseInt(low,10)
+        if isNaN(parseInt(high, 10)) == true
+          max = Infinity
+        else
+          max = parseInt(high,10)
+        if dollar <= max && dollar >= min
+          $("#quote_insightly_bid_tier_id" ).val($(this).val())
+          $("#quote_insightly_bid_amount").val(dollar)
+
   $('#quote_deadline_is_specified').change ->
     if $(this).val() == 'true'
       $("label[for='quote_estimated_delivery_date']").text("Delivery Date")
     else
-      $("label[for='quote_estimated_delivery_date']").text("Estimated Delivery Date") 
+      $("label[for='quote_estimated_delivery_date']").text("Estimated Delivery Date")
  
   $(document).on('click', '#print-button', ->
     printPage()
