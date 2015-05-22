@@ -1,10 +1,10 @@
 <div class="container-fluid">
     <p class="help-block">
-      Options & Markups are things like, say, a color upcharge. Or a name & number
+      Options &amp; Markups are things like, say, a color upcharge. Or a name &amp; number
       charge. To keep quote scenarios simple, use these to make note of such things
     </p>
-    <%= form_for LineItem.new, builder: LancengFormBuilder, class: 'horizontal-form' do |f| %>
-        <%= hidden_field_tag :done_path, quote_path(quote.id) %>
+    <%= form_for LineItem.new, builder: LancengFormBuilder, remote: true, class: 'horizontal-form' do |f| %>
+        <%= hidden_field_tag :quote_update, quote.id %>
         <%= f.hidden_field :line_itemable_type, value: 'Job' %>
         <%= f.hidden_field :line_itemable_id, value: quote.markups_and_options_job.id %>
 

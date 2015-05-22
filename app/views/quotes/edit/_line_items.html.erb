@@ -82,16 +82,16 @@
 
 <div class="container-fluid">
 
-  <%= link_to edit_quote_path, class: 'btn btn-primary col-sm-3 col-sm-offset-1', remote: true do %>
+  <%= link_to edit_quote_path(@quote), class: 'btn btn-primary col-sm-3 col-sm-offset-1', remote: true do %>
       <i class="glyphicon glyphicon-plus-sign"></i> Add A New Group
   <% end %>
 
   <% unless quote.jobs.empty? %>
-      <%= link_to edit_quote_path(imprintable_only: true), class: 'btn btn-primary col-sm-3 col-sm-offset-1', remote: true do %>
+      <%= link_to edit_quote_path(@quote, imprintable_only: true), class: 'btn btn-primary col-sm-3 col-sm-offset-1', remote: true do %>
           <i class="glyphicon glyphicon-plus-sign"></i> Add an imprintable
       <% end %>
 
-      <%= link_to edit_quote_path(options_and_markups: true), class: 'btn btn-primary col-sm-3 col-sm-offset-1', remote: true do %>
+      <%= link_to edit_quote_path(@quote, options_and_markups: true), class: 'btn btn-primary col-sm-3 col-sm-offset-1', remote: true do %>
           <i class="glyphicon glyphicon-plus-sign"></i> Add An Option or Markup
       <% end %>
   <% end %>

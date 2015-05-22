@@ -102,7 +102,7 @@ class LineItem < ActiveRecord::Base
   end
 
   def imprintable
-    imprintable_variant.imprintable
+    imprintable_variant.try(:imprintable)
   end
 
   def imprintable_id

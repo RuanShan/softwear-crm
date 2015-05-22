@@ -70,6 +70,13 @@ class QuotesController < InheritedResources::Base
     end
   end
 
+  def update
+    super do |format|
+      format.js
+      format.html { redirect_to action: :edit }
+    end
+  end
+
 
   private
 

@@ -140,9 +140,9 @@ feature 'Quotes management', quote_spec: true, js: true do
   scenario 'A users options are properly saved', edit: true do
     visit edit_quote_path quote.id
     find('a', text: 'Details').click
-    select 'No', :from => "Informal quote?" 
-    select 'No', :from => "Did the Customer Request a Specific Deadline?" 
-    select 'Yes', :from => "Is this a rush job?" 
+    select 'No', :from => "Informal quote?"
+    select 'No', :from => "Did the Customer Request a Specific Deadline?"
+    select 'Yes', :from => "Is this a rush job?"
     click_button 'Save'
     visit current_path
     click_link 'Edit'
@@ -165,6 +165,7 @@ feature 'Quotes management', quote_spec: true, js: true do
     find('select[name=imprint_method]').select imprint_method_2.name
 
     select imprintable_group.name, from: 'Imprintable group'
+    sleep 0.5
     fill_in 'Quantity', with: 10
     fill_in 'Decoration price', with: 12.55
 
@@ -367,7 +368,7 @@ feature 'Quotes management', quote_spec: true, js: true do
 
     click_button 'Add Option or Markup'
 
-    expect(page).to have_content 'Line item was successfully created.'
+    expect(page).to have_content 'Quote was successfully updated.'
 
     job = quote.markups_and_options_job
     job.reload
