@@ -1,7 +1,8 @@
 class ImprintableGroup < ActiveRecord::Base
-  validates :name, uniqueness: true, presence: true
   has_many :imprintable_imprintable_groups
   has_many :imprintables, through: :imprintable_imprintable_groups
+
+  validates :name, uniqueness: true, presence: true
 
   accepts_nested_attributes_for :imprintable_imprintable_groups, allow_destroy: true
 
