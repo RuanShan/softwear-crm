@@ -123,6 +123,10 @@ class Quote < ActiveRecord::Base
     jobs.where(attrs).first or jobs.create(attrs)
   end
 
+  def standard_line_items
+    markups_and_options_job.line_items
+  end
+
   def imprintable_jobs
     jobs.where.not(name: MARKUPS_AND_OPTIONS_JOB_NAME)
   end
@@ -279,6 +283,15 @@ class Quote < ActiveRecord::Base
   end
   def line_item_to_group_attributes=(attrs)
     job = jobs.find_by id: attrs[:job_id]
+    # NOTE I don't think this actually happens in the field, but in tests
+    # I can't query off of `jobs` at all... And this happens to do it.
+    if job.nil?
+      job = jobs.find { |j| j.id == attrs[:job_id].to_i }
+    end
+
+    # NOTE it is assumed that the job passed is valid. (The interface shouldn't
+    # allow an invaild one.)
+    return if job.nil?
 
     attrs[:imprintables].map do |imprintable_id|
       imprintable = Imprintable.find imprintable_id
@@ -298,7 +311,7 @@ class Quote < ActiveRecord::Base
   end
 
   def salesperson_has_insightly?
-    !salesperson.insightly_api_key.blank?
+    !salesperson.try(:insightly_api_key).blank?
   end
 
   def insightly_opportunity_profile
