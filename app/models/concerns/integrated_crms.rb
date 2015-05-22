@@ -33,7 +33,7 @@ module IntegratedCrms
 
   def create_insightly_contact(attrs_or_object)
     if attrs_or_object.is_a?(Hash)
-      missing_keys = attrs.keys - [:first_name, :email, :phone_number]
+      missing_keys = [:first_name, :email, :phone_number] - attrs_or_object.keys
       unless missing_keys.empty?
         raise "Missing keys for insightly contact: #{missing_keys.join(', ')}"
       end
@@ -53,12 +53,11 @@ module IntegratedCrms
                 organisation_name: object.organization
               }
             )
-          insightly_organisation_id = org.try(:organisation_id)
         end
 
         contact = insightly.create_contact(contact: {
           first_name:   object.first_name,
-          last_name:    object.last_name,
+          last_name:    object.try(:last_name),
           contactinfos: insightly_contactinfos(object),
           links: [({ organisation_id: org.organisation_id } if org)].compact
         })

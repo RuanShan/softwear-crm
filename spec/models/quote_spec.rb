@@ -52,6 +52,68 @@ describe Quote, quote_spec: true do
         end
       end
 
+      describe '#insightly_contact_links', story_610: true do
+        context 'when the quote has quote requests' do
+          let!(:quote_request_1) { create(:valid_quote_request_with_salesperson, insightly_contact_id: 123) }
+          let!(:quote_request_2) do
+            create(
+              :valid_quote_request_with_salesperson,
+              insightly_contact_id: 456,
+              insightly_organisation_id: 789
+            )
+          end
+          before { subject.quote_requests = [quote_request_1, quote_request_2] }
+
+          it 'adds its contact and organisation ids' do
+            expect(subject.insightly_contact_links).to eq [
+              { contact_id: 123 },
+              { contact_id: 456 },
+              { organisation_id: 789 },
+            ]
+          end
+        end
+
+        context 'when the quote has no quote requests' do
+          subject { create(:valid_quote, company: 'test company') }
+          before { subject.update_attribute :company, 'test company' }
+
+          it 'creates an insightly contact and organisation from its company' do
+            dummy_insightly = Object.new
+            expect(dummy_insightly).to receive(:get_contacts).and_return []
+            expect(dummy_insightly).to receive(:get_organisations).and_return []
+            expect(dummy_insightly).to receive(:create_organisation)
+              .with(organisation: { organisation_name: 'test company' })
+              .and_return(double('Organisation', organisation_id: 1))
+
+            expect(dummy_insightly).to receive(:create_contact)
+              .with(
+                contact: {
+                  first_name: subject.first_name,
+                  last_name: subject.last_name,
+                  contactinfos: [
+                    { type: 'EMAIL', detail: subject.email },
+                    { type: 'PHONE', detail: subject.phone_number }
+                  ],
+                  links: [{ organisation_id: 1 }]
+                }
+              )
+              .and_return(
+                double('Contact',
+                  contact_id: 2,
+                  links: [{ 'organisation_id' => 1 }]
+                )
+              )
+
+            allow(subject).to receive(:insightly).and_return dummy_insightly
+
+            expect(subject.insightly_contact_links).to eq [
+              { contact_id: 2 },
+              { organisation_id: 1 },
+            ]
+          end
+        end
+      end
+
       context 'when salesperson has an insightly api key' do
         before(:each) do
           allow(subject).to receive(:salesperson_has_insightly?).and_return true
@@ -87,7 +149,7 @@ describe Quote, quote_spec: true do
                 links: []
               }
             })
-            .and_return(OpenStruct.new(opportunity_id: 123))
+            .and_return(double('Opportunity', opportunity_id: 123))
 
           allow(subject).to receive(:insightly).and_return dummy_insightly
 

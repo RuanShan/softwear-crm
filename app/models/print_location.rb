@@ -7,4 +7,6 @@ class PrintLocation < ActiveRecord::Base
   validates :max_height, numericality: true, presence: true
   validates :max_width, numericality: true, presence: true
   validates :name, presence: true, uniqueness: { scope: :imprint_method }
+
+  default_scope { order(:name) }
 end

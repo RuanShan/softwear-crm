@@ -501,7 +501,24 @@ class Quote < ActiveRecord::Base
 
   def insightly_contact_links
     if quote_requests.empty?
+      contact = create_insightly_contact(
+        first_name:   first_name,
+        last_name:    last_name,
+        email:        email,
+        phone_number: phone_number,
+        organization: company
+      )
 
+      if contact
+        c = []
+        c << { contact_id: contact.contact_id }
+        contact.links.select{ |l| l.key?('organisation_id') }.each do |l|
+          c << { organisation_id: l['organisation_id'] } 
+        end
+        c
+      else
+        []
+      end
     else
       quote_requests.flat_map do |qr|
         c = []

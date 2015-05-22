@@ -93,6 +93,14 @@ class QuoteRequest < ActiveRecord::Base
     contact = create_insightly_contact(self)
     if contact
       self.insightly_contact_id = contact.contact_id
+
+      contact.links.each do |link|
+        if link.key?('organisation_id')
+          self.organisation_id = link['organisation_id']
+          break
+        end
+      end
+
       logger.info "Set Quote Request Insightly contact to #{insightly_contact_id}"
     end
   end
