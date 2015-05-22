@@ -4,7 +4,7 @@ require 'email_spec'
 require_relative '../../app/controllers/jobs_controller'
 
 feature 'Quotes management', quote_spec: true, js: true do
-  given!(:valid_user) { create(:alternate_user) }
+  given!(:valid_user) { create(:alternate_user, insightly_api_key: "insight") }
   background(:each) { login_as(valid_user) }
 
   given!(:quote) { create(:valid_quote) }
@@ -106,12 +106,38 @@ feature 'Quotes management', quote_spec: true, js: true do
     find('a', text: 'Details').click
     fill_in 'Quote Name', with: 'New Quote Name'
     click_button 'Save'
-
+    visit current_path
     expect(current_path).to eq(quote_path quote.id)
     expect(quote.reload.name).to eq('New Quote Name')
   end
 
-  scenario 'A users options are properly saved', edit1: true do
+  scenario 'Insightly forms dynamically changed fields', edit1: true do
+    allow_any_instance_of(InsightlyHelper).to receive(:insightly_available?).and_return true
+    allow_any_instance_of(InsightlyHelper).to receive(:insightly_categories).and_return [] 
+    allow_any_instance_of(InsightlyHelper).to receive(:insightly_pipelines).and_return [] 
+    allow_any_instance_of(InsightlyHelper).to receive(:insightly_opportunity_profiles).and_return [] 
+    allow_any_instance_of(InsightlyHelper).to receive(:insightly_bid_tiers).and_return ["unassigned", "Tier 1 ($1 - $249)", "Tier 2 ($250 - $499)", "Tier 3 ($500 - $999)", "Tier 4 ($1000 and up)"] 
+
+    visit new_quote_path
+    click_button 'Next' 
+    click_button 'Next' 
+    expect(page).to have_select('Bid Tier', :selected => "unassigned")
+    fill_in 'Estimated Quote', with: '200'
+    fill_in 'Opportunity ID', with: '1'
+    expect(body).to have_field("Bid Amount", :text => "200") 
+    expect(page).to have_select('Bid Tier', :selected => "Tier 1 ($1 - $249)")
+    fill_in 'Estimated Quote', with:'275'
+    expect(page).to have_field("Bid Amount", value => '275')
+    expect(page).to have_select('Bid Tier', :selected => "Tier 2 ($250 - $499)")
+    fill_in 'Estimated Quote', with:'550'
+    expect(page).to have_field("Bid Amount", value => '550')
+    expect(page).to have_select('Bid Tier', :selected => "Tier 3 ($500 - $999)")
+    fill_in 'Estimated Quote', with:'2000'
+    expect(page).to have_field("Bid Amount", value => '2000')
+    expect(page).to have_select('Bid Tier', :selected => "Tier 4 ($1000 and up)")
+  end
+
+  scenario 'A users options are properly saved', edit: true do
     visit edit_quote_path quote.id
     find('a', text: 'Details').click
     select 'No', :from => "Informal quote?" 
