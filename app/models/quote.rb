@@ -61,6 +61,7 @@ class Quote < ActiveRecord::Base
     :insightly_opportunity_profile_id,
     :insightly_bid_amount,
     :insightly_bid_tier_id,
+    :insightly_opportunity_id
   ]
 
   MARKUPS_AND_OPTIONS_JOB_NAME = '_markupsandoptions_'
@@ -86,7 +87,7 @@ class Quote < ActiveRecord::Base
   validates :store, presence: true
   validates :valid_until_date, presence: true
   validates :shipping, price: true
-  validates *INSIGHTLY_FIELDS, presence: true, if: :salesperson_has_insightly?
+  validates *(INSIGHTLY_FIELDS - [:insightly_opportunity_id]), presence: true, if: :salesperson_has_insightly?
 
   after_save :set_quote_request_statuses_to_quoted
   after_create :create_freshdesk_ticket
@@ -120,6 +121,10 @@ class Quote < ActiveRecord::Base
       description: 'hidden'
     }
     jobs.where(attrs).first or jobs.create(attrs)
+  end
+
+  def standard_line_items
+    markups_and_options_job.line_items
   end
 
   def imprintable_jobs
@@ -278,6 +283,15 @@ class Quote < ActiveRecord::Base
   end
   def line_item_to_group_attributes=(attrs)
     job = jobs.find_by id: attrs[:job_id]
+    # NOTE I don't think this actually happens in the field, but in tests
+    # I can't query off of `jobs` at all... And this happens to do it.
+    if job.nil?
+      job = jobs.find { |j| j.id == attrs[:job_id].to_i }
+    end
+
+    # NOTE it is assumed that the job passed is valid. (The interface shouldn't
+    # allow an invaild one.)
+    return if job.nil?
 
     attrs[:imprintables].map do |imprintable_id|
       imprintable = Imprintable.find imprintable_id
@@ -297,7 +311,7 @@ class Quote < ActiveRecord::Base
   end
 
   def salesperson_has_insightly?
-    !salesperson.insightly_api_key.blank?
+    !salesperson.try(:insightly_api_key).blank?
   end
 
   def insightly_opportunity_profile
@@ -341,25 +355,54 @@ class Quote < ActiveRecord::Base
       .join("\n")
   end
 
+  def assign_from_quote_request(quote_request)
+    if /(?<qr_first>\w+)\s+(?<qr_last>\w+)/ =~ quote_request.name
+      self.first_name = qr_first
+      self.last_name  = qr_last
+    else
+      self.first_name = quote_request.name
+    end
+
+    self.email            ||= quote_request.email
+    self.qty              ||= quote_request.approx_quantity
+    self.phone_number     ||= quote_request.phone_number if quote_request.phone_number
+    self.company          ||= quote_request.organization if quote_request.organization
+    self.quote_source     ||= 'Online Form'
+    if quote_request.date_needed
+      self.deadline_is_specified = true
+      self.valid_until_date = quote_request.date_needed
+    end
+  end
+
   def create_freshdesk_ticket
     return if freshdesk.nil? || !freshdesk_ticket_id.blank?
-    return if quote_requests.empty?
 
     begin
+      if quote_requests.empty?
+        requester_info = {
+          email: email,
+          phone: phone_number,
+          name: full_name
+        }
+      else
+        requester_info = {
+          requester_id: quote_requests.first.try(:freshdesk_contact_id),
+        }
+      end
+
       ticket = JSON.parse(freshdesk.post_tickets(
           helpdesk_ticket: {
-            requester_id: quote_requests.first.try(:freshdesk_contact_id),
-            requester_name: full_name,
             source: 2,
             group_id: freshdesk_group_id,
             ticket_type: 'Lead',
-            subject: 'Created by Softwear-CRM',
+            subject: "Your Quote (##{name}) from the Ann Arbor T-shirt Company",
             custom_field: {
               department_7483: freshdesk_department,
               softwearcrm_quote_id_7483: id
             },
             description_html: freshdesk_description
           }
+           .merge(requester_info)
         ))
         .try(:[], 'helpdesk_ticket')
 
@@ -435,16 +478,18 @@ class Quote < ActiveRecord::Base
     begin
       op = insightly.create_opportunity(
         opportunity: {
-          opportunity_name: name,
-          opportunity_state: 'Open',
+          opportunity_name:    name,
+          opportunity_state:   'Open',
           opportunity_details: insightly_description,
-          probability: insightly_probability.to_i,
-          bid_currency: 'USD',
-          bid_amount: insightly_bid_amount.to_i,
+          probability:         insightly_probability.to_i,
+          bid_currency:        'USD',
+          bid_amount:          insightly_bid_amount.to_i,
           forecast_close_date: (created_at + 3.days).strftime('%F %T'),
-          pipeline_id: insightly_pipeline_id,
-          customfields: insightly_customfields,
-          links: insightly_contact_links,
+          pipeline_id:         insightly_pipeline_id,
+          stage_id:            insightly_stage_id,
+          category_id:         insightly_category_id,
+          customfields:        insightly_customfields,
+          links:               insightly_contact_links,
         }
       )
       self.insightly_opportunity_id = op.opportunity_id
@@ -455,21 +500,49 @@ class Quote < ActiveRecord::Base
     end
   end
 
+  def insightly_stage_id
+    insightly
+      .get_pipeline_stages
+      .find { |s| s.pipeline_id == insightly_pipeline_id && s.stage_order == 1 }
+      .stage_id
+  end
+
   def insightly_description
     return description if freshdesk_ticket_id.blank?
     "#{description}\n#{freshdesk_ticket_link}"
   end
 
   def insightly_contact_links
-    quote_requests.flat_map do |qr|
-      c = []
-      c << { contact_id: qr.insightly_contact_id }
-      if qr.insightly_organisation_id
-        c << { organisation_id: qr.insightly_organisation_id }
+    if quote_requests.empty?
+      contact = create_insightly_contact(
+        first_name:   first_name,
+        last_name:    last_name,
+        email:        email,
+        phone_number: phone_number,
+        organization: company
+      )
+
+      if contact
+        c = []
+        c << { contact_id: contact.contact_id }
+        contact.links.select{ |l| l.key?('organisation_id') }.each do |l|
+          c << { organisation_id: l['organisation_id'] } 
+        end
+        c
+      else
+        []
       end
-      c
+    else
+      quote_requests.flat_map do |qr|
+        c = []
+        c << { contact_id: qr.insightly_contact_id }
+        if qr.insightly_organisation_id
+          c << { organisation_id: qr.insightly_organisation_id }
+        end
+        c
+      end
+        .uniq
     end
-      .uniq
   end
 
   def insightly_customfields

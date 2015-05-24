@@ -2,7 +2,7 @@
   <p class="help-block">
     First select your imprint methods and locations.
   </p>
-  <%= form_for quote, html: { id: 'new-group-form', data: { 'no-editing-class' => true },  class: 'horizontal-form'}, builder: LancengFormBuilder do |f| %>
+  <%= form_for quote, html: { id: 'new-group-form', data: { 'no-editing-class' => true },  class: 'horizontal-form'}, remote: true, builder: LancengFormBuilder do |f| %>
       <div class="col-xs-12">
         <%= link_to new_imprint_path(select_tag_name: 'quote[line_items_from_group_attributes][print_locations][]', description_name: 'quote[line_items_from_group_attributes][imprint_descriptions][]'),
                     class: 'btn btn-info btn-lg add-imprint',

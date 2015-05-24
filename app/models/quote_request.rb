@@ -78,49 +78,31 @@ class QuoteRequest < ActiveRecord::Base
     !insightly_contact_id.nil?
   end
 
-  def link_with_insightly!
-    return if insightly.nil?
-    begin
-      contact = insightly.get_contacts(email: email).first
-      if contact.nil?
-        unless /(?<first_name>^\w+)\s+(?<last_name>.*)/ =~ name
-          first_name = name
-        end
-
-        if organization
-          org = insightly.get_organisations
-            .find { |o| o.organisation_name.downcase == organization.downcase } ||
-            insightly.create_organisation(
-              organisation: {
-                organisation_name: organization
-              }
-            )
-          insightly_organisation_id = org.try(:organisation_id)
-        end
-
-        contact = insightly.create_contact(contact: {
-          first_name:   first_name,
-          last_name:    last_name,
-          contactinfos: insightly_contactinfos,
-          links: [({ organisation_id: org.organisation_id } if org)].compact
-        })
-      end
-
-      if contact
-        self.insightly_contact_id = contact.contact_id
-        logger.info "Set Quote Request Insightly contact to #{insightly_contact_id}"
-      end
-
-    rescue Insightly2::Errors::ClientError
-      logger.error "(QUOTE REQUEST) Bad Insightly API Key in settings"
-    end
+  def first_name
+    /(?<first_name>^\w+)/ =~ name
+    first_name
+  end
+  def last_name
+    /(?<first_name>^\w+)\s+(?<last_name>.*)/ =~ name
+    last_name
   end
 
-  def insightly_contactinfos
-    infos = []
-    infos << { type: 'EMAIL', detail: email }        if email
-    infos << { type: 'PHONE', detail: phone_number } if phone_number
-    infos
+  def link_with_insightly!
+    return if insightly.nil?
+
+    contact = create_insightly_contact(self)
+    if contact
+      self.insightly_contact_id = contact.contact_id
+
+      contact.links.each do |link|
+        if link.key?('organisation_id')
+          self.organisation_id = link['organisation_id']
+          break
+        end
+      end
+
+      logger.info "Set Quote Request Insightly contact to #{insightly_contact_id}"
+    end
   end
 
   def link_with_freshdesk!
@@ -133,7 +115,7 @@ class QuoteRequest < ActiveRecord::Base
       if user.nil?
         if organization
           # NOTE Freshdesk calls them "companies" externally, and
-          # "customers" externally. Awesome, right?
+          # "customers" internally. Awesome, right?
           comp = JSON.parse(freshdesk.get_companies(
               letter: organization.each_char.next
             ))

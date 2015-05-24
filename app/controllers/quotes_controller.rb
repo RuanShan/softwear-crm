@@ -5,9 +5,10 @@ class QuotesController < InheritedResources::Base
   require 'mail'
 
   def new
-    add_params_from_docked_quote_request
     super do
-      @quote_request_id = params[:quote_request_id] if params.has_key?(:quote_request_id)
+      @quote_request_id = params[:quote_request_id]         if params.has_key?(:quote_request_id)
+      @quote_request = QuoteRequest.find(@quote_request_id) if @quote_request_id
+      @quote.assign_from_quote_request(@quote_request)      if @quote_request
       # TODO: this is pretty gross...
       @current_action = 'quotes#new'
     end
@@ -69,6 +70,13 @@ class QuotesController < InheritedResources::Base
     end
   end
 
+  def update
+    super do |format|
+      format.js
+      format.html { redirect_to action: :edit }
+    end
+  end
+
 
   private
 
@@ -76,11 +84,6 @@ class QuotesController < InheritedResources::Base
     if @quote
       session[:docked] = @quote.quote_requests.map(&:to_dock)
     end
-  end
-
-  def add_params_from_docked_quote_request
-    # Todo @quote.assign_from_qoute_request(whatver from session)
-    docked = session[:docked]
   end
 
   def set_current_action
