@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150520210335) do
+ActiveRecord::Schema.define(version: 20150519163150) do
 
   create_table "activities", force: :cascade do |t|
     t.integer  "trackable_id",   limit: 4
@@ -365,6 +365,21 @@ ActiveRecord::Schema.define(version: 20150520210335) do
     t.integer "imprintable_variant_id", limit: 4
   end
 
+  create_table "notes", force: :cascade do |t|
+    t.string   "title",        limit: 50,    default: ""
+    t.text     "body",         limit: 65535
+    t.integer  "notable_id",   limit: 4
+    t.string   "notable_type", limit: 255
+    t.integer  "user_id",      limit: 4
+    t.string   "role",         limit: 255,   default: "notes"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "notes", ["notable_id"], name: "index_notes_on_notable_id", using: :btree
+  add_index "notes", ["notable_type"], name: "index_notes_on_notable_type", using: :btree
+  add_index "notes", ["user_id"], name: "index_notes_on_user_id", using: :btree
+
   create_table "order_quotes", force: :cascade do |t|
     t.integer  "order_id",   limit: 4
     t.integer  "quote_id",   limit: 4
@@ -644,7 +659,6 @@ ActiveRecord::Schema.define(version: 20150520210335) do
   end
 
   add_index "taggings", ["tag_id", "taggable_id", "taggable_type", "context", "tagger_id", "tagger_type"], name: "taggings_idx", unique: true, using: :btree
-  add_index "taggings", ["taggable_id", "taggable_type", "context"], name: "index_taggings_on_taggable_id_and_taggable_type_and_context", using: :btree
 
   create_table "tags", force: :cascade do |t|
     t.string  "name",           limit: 255

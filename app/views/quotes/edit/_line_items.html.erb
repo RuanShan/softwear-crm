@@ -4,8 +4,8 @@
       <div id="edit-quote-job-<%= job.id %>" class="quote-job-entry container-fluid" data-job-id='<%=job.id%>'>
         <div class="row">
           <div class="col-xs-12">
-            <h3><%= job.name %></h3>
-            <p><%= job.description %></p>
+            <h3><%= f.text_field :name, class: 'job-field job-name-field' %></h3>
+            <p><%= f.text_area :description, class: 'job-field' %></p>
           </div>
         </div>
         <div class="row">
@@ -82,16 +82,16 @@
 
 <div class="container-fluid">
 
-  <%= link_to edit_quote_path, class: 'btn btn-primary col-sm-3 col-sm-offset-1', remote: true do %>
+  <%= link_to edit_quote_path(@quote), class: 'btn btn-primary col-sm-3 col-sm-offset-1', remote: true do %>
       <i class="glyphicon glyphicon-plus-sign"></i> Add A New Group
   <% end %>
 
   <% unless quote.jobs.empty? %>
-      <%= link_to edit_quote_path(imprintable_only: true), class: 'btn btn-primary col-sm-3 col-sm-offset-1', remote: true do %>
+      <%= link_to edit_quote_path(@quote, imprintable_only: true), class: 'btn btn-primary col-sm-3 col-sm-offset-1', remote: true do %>
           <i class="glyphicon glyphicon-plus-sign"></i> Add an imprintable
       <% end %>
 
-      <%= link_to edit_quote_path(options_and_markups: true), class: 'btn btn-primary col-sm-3 col-sm-offset-1', remote: true do %>
+      <%= link_to edit_quote_path(@quote, options_and_markups: true), class: 'btn btn-primary col-sm-3 col-sm-offset-1', remote: true do %>
           <i class="glyphicon glyphicon-plus-sign"></i> Add An Option or Markup
       <% end %>
   <% end %>

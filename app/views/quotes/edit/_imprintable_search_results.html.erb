@@ -1,15 +1,15 @@
 <% imprintables.each do |imprintable| %>
-  <div id="imprintable-result-<%=imprintable.id%>" class="imprintable-add-search-result row <%= 'discontinued-imprintable' if imprintable.discontinued? %>">
+  <div id="imprintable-result-<%=imprintable.id%>" class="imprintable-add-search-result row <%= 'discontinued-imprintable' if imprintable.discontinued? || imprintable.base_price.blank? %>">
     <div class="col-xs-2">
       <i><%= 'Standard Offering' if imprintable.standard_offering? %></i>
     </div>
       <div class="col-xs-6">
-        <% if !imprintable.discontinued? %>
-          <b><%= imprintable.name %></b><br />
-          <%= raw imprintable.description %>
-        <% else %>
+        <% if imprintable.discontinued? || imprintable.base_price.blank? %>
           <b><s><%= imprintable.name %></s></b><br />
           <s> <%= raw imprintable.description %></s>
+        <% else %>
+          <b><%= imprintable.name %></b><br />
+          <%= raw imprintable.description %>
         <%end%>
       </div>
         <div class="col-xs-2">
@@ -18,7 +18,11 @@
         </div>
       <div class="col-xs-2">
         <b>Mark to Add</b><br />
-        <%= check_box_tag 'quote[line_item_to_group_attributes][imprintables][]', imprintable.id, local_assigns[:checked].try(:include?, imprintable.id) %>
+        <% if imprintable.base_price.blank? %>
+          Imprintable needs base price
+        <% else %>
+          <%= check_box_tag 'quote[line_item_to_group_attributes][imprintables][]', imprintable.id, local_assigns[:checked].try(:include?, imprintable.id) %>
+        <% end %>
       </div>
   </div>
 <% end %>

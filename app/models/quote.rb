@@ -115,12 +115,20 @@ class Quote < ActiveRecord::Base
     ', *([self.class.name, id] * 2) ).order('activities.created_at DESC')
   end
 
+  def show_quoted_email_text 
+    html_doc = Nokogiri::HTML()
+  end
+
   def markups_and_options_job
     attrs = {
       name: MARKUPS_AND_OPTIONS_JOB_NAME,
       description: 'hidden'
     }
     jobs.where(attrs).first or jobs.create(attrs)
+  end
+
+  def standard_line_items
+    markups_and_options_job.line_items
   end
 
   def imprintable_jobs
@@ -279,6 +287,15 @@ class Quote < ActiveRecord::Base
   end
   def line_item_to_group_attributes=(attrs)
     job = jobs.find_by id: attrs[:job_id]
+    # NOTE I don't think this actually happens in the field, but in tests
+    # I can't query off of `jobs` at all... And this happens to do it.
+    if job.nil?
+      job = jobs.find { |j| j.id == attrs[:job_id].to_i }
+    end
+
+    # NOTE it is assumed that the job passed is valid. (The interface shouldn't
+    # allow an invaild one.)
+    return if job.nil?
 
     attrs[:imprintables].map do |imprintable_id|
       imprintable = Imprintable.find imprintable_id
@@ -298,7 +315,7 @@ class Quote < ActiveRecord::Base
   end
 
   def salesperson_has_insightly?
-    !salesperson.insightly_api_key.blank?
+    !salesperson.try(:insightly_api_key).blank?
   end
 
   def insightly_opportunity_profile
@@ -363,23 +380,33 @@ class Quote < ActiveRecord::Base
 
   def create_freshdesk_ticket
     return if freshdesk.nil? || !freshdesk_ticket_id.blank?
-    return if quote_requests.empty?
 
     begin
+      if quote_requests.empty?
+        requester_info = {
+          email: email,
+          phone: phone_number,
+          name: full_name
+        }
+      else
+        requester_info = {
+          requester_id: quote_requests.first.try(:freshdesk_contact_id),
+        }
+      end
+
       ticket = JSON.parse(freshdesk.post_tickets(
           helpdesk_ticket: {
-            requester_id: quote_requests.first.try(:freshdesk_contact_id),
-            requester_name: full_name,
             source: 2,
             group_id: freshdesk_group_id,
             ticket_type: 'Lead',
-            subject: "Your Quote (##{quote.name}) from the Ann Arbor T-shirt Company",
+            subject: "Your Quote (##{name}) from the Ann Arbor T-shirt Company",
             custom_field: {
               department_7483: freshdesk_department,
               softwearcrm_quote_id_7483: id
             },
             description_html: freshdesk_description
           }
+           .merge(requester_info)
         ))
         .try(:[], 'helpdesk_ticket')
 
@@ -490,15 +517,36 @@ class Quote < ActiveRecord::Base
   end
 
   def insightly_contact_links
-    quote_requests.flat_map do |qr|
-      c = []
-      c << { contact_id: qr.insightly_contact_id }
-      if qr.insightly_organisation_id
-        c << { organisation_id: qr.insightly_organisation_id }
+    if quote_requests.empty?
+      contact = create_insightly_contact(
+        first_name:   first_name,
+        last_name:    last_name,
+        email:        email,
+        phone_number: phone_number,
+        organization: company
+      )
+
+      if contact
+        c = []
+        c << { contact_id: contact.contact_id }
+        contact.links.select{ |l| l.key?('organisation_id') }.each do |l|
+          c << { organisation_id: l['organisation_id'] } 
+        end
+        c
+      else
+        []
       end
-      c
+    else
+      quote_requests.flat_map do |qr|
+        c = []
+        c << { contact_id: qr.insightly_contact_id }
+        if qr.insightly_organisation_id
+          c << { organisation_id: qr.insightly_organisation_id }
+        end
+        c
+      end
+        .uniq
     end
-      .uniq
   end
 
   def insightly_customfields

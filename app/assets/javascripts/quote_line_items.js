@@ -1,6 +1,9 @@
 $(function() {
-  if ($('.edit-quote-line-items').length == 0) return;
+  if ($('.edit-quote-line-items').length != 0)
+    initializeQuoteLineItems();
+});
 
+function initializeQuoteLineItems() {
   $('#save-line-item-changes-btn').click(function(e) {
     $('.job-form-to-be-saved').submit();
   });
@@ -17,6 +20,8 @@ $(function() {
       return 'There are unsaved changes to line items. Are you sure you want to leave?'
     }
   }
+
+  $('.job-field').change(function() { $(this).addClass('editing-job-field'); });
 
   $('.line-item-edit-field').change(function(e) {
     var container = $(this).closest('.sortable-quote-line-item,.option-and-markup-line-item');
@@ -123,4 +128,4 @@ $(function() {
         notifyUnsavedChanges();
     }
   });
-});
+}

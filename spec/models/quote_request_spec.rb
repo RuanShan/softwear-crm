@@ -27,7 +27,7 @@ describe QuoteRequest, quote_request_spec: true, story_78: true do
     end
   end
 
-  describe 'Freshdesk', story_512: true do
+  describe 'Freshdesk', freshdesk: true, story_512: true do
     context 'when created' do
       let(:dummy_client) { Object.new }
       let(:dummy_contact) { { user: { id: 123 } } }
@@ -111,7 +111,7 @@ describe QuoteRequest, quote_request_spec: true, story_78: true do
     end
   end
 
-  describe 'Insightly', story_513: true do
+  describe 'Insightly', insightly: true, story_513: true do
     context 'when created' do
       let(:dummy_contact) { Object.new }
       let(:dummy_client) { Object.new }

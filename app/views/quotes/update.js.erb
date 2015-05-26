@@ -1,0 +1,6 @@
+hideContentModal();
+$('#line_items .quote-line-items-container').html(
+  "<%=j render 'quotes/edit/line_items', quote: @quote %>"
+);
+initializeQuoteLineItems();
+successModal("Quote was successfully updated.");

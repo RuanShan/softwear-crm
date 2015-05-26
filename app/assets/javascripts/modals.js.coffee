@@ -99,6 +99,8 @@ $(document).ready ->
   else
     showIt()
 
+@hideContentModal = -> $('#contentModal').modal 'hide'
+
 # Call this to invoke an error modal, sort of like alert
 # body parameter is optional, title will default to "Error"
 @errorModal = (body, options) ->

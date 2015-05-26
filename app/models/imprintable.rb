@@ -94,6 +94,8 @@ class Imprintable < ActiveRecord::Base
                      },
              allow_blank: true
 
+  validates :base_price, presence: true, unless: proc { imprintable_imprintable_groups.empty? }
+
   before_save :discontinue_imprintable, if: :discontinued? 
 
   def self.find(param)

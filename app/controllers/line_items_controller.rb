@@ -115,7 +115,14 @@ class LineItemsController < InheritedResources::Base
       fire_activity @line_item, :create if @line_item.valid?
 
       format.json(&method(:create_json))
-      format.js { render locals: { success: @line_item.valid? } }
+      format.js do
+        if params[:quote_update]
+          @quote = Quote.find(params[:quote_update])
+          render 'quotes/update'
+        else
+          render locals: { success: @line_item.valid? }
+        end
+      end
       format.html do
         redirect_to params[:done_path] || root_path
       end

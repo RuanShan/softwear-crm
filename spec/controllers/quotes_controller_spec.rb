@@ -138,12 +138,4 @@ describe QuotesController, js: true, quote_spec: true do
     end
   end
 
-  describe 'GET populate_email', story_207: true do
-    let!(:quote) { build_stubbed(:valid_quote) }
-    it 'assigns quote' do
-      expect(Quote).to receive(:find).once.and_return(quote)
-      get :populate_email, quote_id: quote.to_param
-      expect(assigns(:quote)).to eq(quote)
-    end
-  end
 end

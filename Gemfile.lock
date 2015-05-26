@@ -42,7 +42,7 @@ GIT
 
 GIT
   remote: git://github.com/thoughtbot/paperclip.git
-  revision: 52543bde7ac24cd8d052ceb5f73fb2b7d1e0851a
+  revision: f6becd33b9029274a54d2adf0bb36c9aa255109d
   specs:
     paperclip (4.2.1)
       activemodel (>= 3.0.0)
@@ -110,14 +110,14 @@ GEM
       addressable (>= 2.3.1)
       extlib (>= 0.9.15)
       multi_json (>= 1.0.0)
-    aws-sdk (2.0.44)
-      aws-sdk-resources (= 2.0.44)
-    aws-sdk-core (2.0.44)
+    aws-sdk (2.0.45)
+      aws-sdk-resources (= 2.0.45)
+    aws-sdk-core (2.0.45)
       builder (~> 3.0)
       jmespath (~> 1.0)
       multi_json (~> 1.0)
-    aws-sdk-resources (2.0.44)
-      aws-sdk-core (= 2.0.44)
+    aws-sdk-resources (2.0.45)
+      aws-sdk-core (= 2.0.45)
     bcrypt (3.1.10)
     better_errors (2.1.1)
       coderay (>= 1.0.0)
@@ -127,7 +127,7 @@ GEM
       debug_inspector (>= 0.0.1)
     bootstrap-sass (3.2.0.2)
       sass (~> 3.2)
-    bootstrap3-datetimepicker-rails (3.1.3)
+    bootstrap3-datetimepicker-rails (4.7.14)
       momentjs-rails (>= 2.8.1)
     bootstrap_form (2.3.0)
     builder (3.2.2)
@@ -159,13 +159,7 @@ GEM
       timers (~> 4.0.0)
     childprocess (0.5.6)
       ffi (~> 1.0, >= 1.0.11)
-    chosen-rails (1.4.1)
-      coffee-rails (>= 3.2)
-      compass-rails (>= 1.1.2)
-      railties (>= 3.0)
-      sass-rails (>= 3.2)
     chronic (0.10.2)
-    chunky_png (1.3.4)
     climate_control (0.0.3)
       activesupport (>= 3.0)
     cocaine (0.5.7)
@@ -180,28 +174,12 @@ GEM
     coffee-script-source (1.9.1.1)
     colorize (0.7.7)
     columnize (0.9.0)
-    compass (1.0.3)
-      chunky_png (~> 1.2)
-      compass-core (~> 1.0.2)
-      compass-import-once (~> 1.0.5)
-      rb-fsevent (>= 0.9.3)
-      rb-inotify (>= 0.9)
-      sass (>= 3.3.13, < 3.5)
-    compass-core (1.0.3)
-      multi_json (~> 1.0)
-      sass (>= 3.3.0, < 3.5)
-    compass-import-once (1.0.5)
-      sass (>= 3.2, < 3.5)
-    compass-rails (2.0.4)
-      compass (~> 1.0.0)
-      sass-rails (<= 5.0.1)
-      sprockets (< 2.13)
     connection_pool (2.2.0)
     crack (0.4.2)
       safe_yaml (~> 1.0.0)
     database_cleaner (1.4.1)
     debug_inspector (0.0.2)
-    devise (3.4.1)
+    devise (3.5.1)
       bcrypt (~> 3.0)
       orm_adapter (~> 0.1)
       railties (>= 3.2.6, < 5)
@@ -261,7 +239,6 @@ GEM
       actionpack (>= 3.2, < 5)
       activesupport (>= 3.2, < 5)
     highline (1.6.21)
-    hike (1.2.3)
     hirb (0.7.3)
     hitimes (1.2.2)
     http-cookie (1.0.2)
@@ -310,11 +287,11 @@ GEM
     mail (2.6.3)
       mime-types (>= 1.16, < 3)
     memoist (0.12.0)
-    mime-types (2.5)
+    mime-types (2.6.1)
     mimemagic (0.3.0)
     mini_portile (0.6.2)
     minitest (5.6.1)
-    momentjs-rails (2.10.2)
+    momentjs-rails (2.9.0)
       railties (>= 3.1)
     multi_json (1.11.0)
     multi_xml (0.5.5)
@@ -377,9 +354,6 @@ GEM
       rake (>= 0.8.7)
       thor (>= 0.18.1, < 2.0)
     rake (10.4.2)
-    rb-fsevent (0.9.5)
-    rb-inotify (0.9.5)
-      ffi (>= 0.5.0)
     rdoc (4.2.0)
       json (~> 1.4)
     redis (3.2.1)
@@ -417,8 +391,8 @@ GEM
     rubinius-debugger (2.2.1)
     rubyzip (1.1.7)
     safe_yaml (1.0.4)
-    sass (3.4.13)
-    sass-rails (5.0.1)
+    sass (3.4.14)
+    sass-rails (5.0.3)
       railties (>= 4.0.0, < 5.0)
       sass (~> 3.1)
       sprockets (>= 2.8, < 4.0)
@@ -448,9 +422,6 @@ GEM
       faraday (~> 0.9)
       jwt (~> 1.0)
       multi_json (~> 1.10)
-    simple_form (3.1.0)
-      actionpack (~> 4.0)
-      activemodel (~> 4.0)
     simple_token_authentication (1.9.1)
       actionmailer (>= 3.2.6, < 5)
       actionpack (>= 3.2.6, < 5)
@@ -459,13 +430,10 @@ GEM
       rack (~> 1.4)
       rack-protection (~> 1.4)
       tilt (>= 1.3, < 3)
-    softwear-lib (0.0.3)
+    softwear-lib (0.0.5)
       activesupport
-    sprockets (2.12.3)
-      hike (~> 1.2)
-      multi_json (~> 1.0)
+    sprockets (3.1.0)
       rack (~> 1.0)
-      tilt (~> 1.1, != 1.3.0)
     sprockets-rails (2.3.1)
       actionpack (>= 3.0)
       activesupport (>= 3.0)
@@ -527,7 +495,7 @@ DEPENDENCIES
   better_errors (>= 0.3.2)
   binding_of_caller
   bootstrap-sass (~> 3.2.0)
-  bootstrap3-datetimepicker-rails (~> 3.1.3)
+  bootstrap3-datetimepicker-rails (= 4.7.14)
   bootstrap_form
   byebug
   capistrano (~> 3.2.0)
@@ -536,7 +504,6 @@ DEPENDENCIES
   capistrano-rvm
   capybara (~> 2.4)
   capybara-webkit
-  chosen-rails
   coffee-rails (~> 4.0.0)
   database_cleaner
   devise
@@ -560,7 +527,7 @@ DEPENDENCIES
   kaminari
   launchy (~> 2.4.2)
   liquid
-  momentjs-rails (>= 2.8.3)
+  momentjs-rails (~> 2.9.0)
   mysql2
   paperclip!
   paranoia (~> 2.0)
@@ -580,7 +547,6 @@ DEPENDENCIES
   shoulda-matchers
   sidekiq
   sidekiq-status
-  simple_form
   simple_token_authentication
   sinatra
   softwear-lib
