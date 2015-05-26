@@ -18,6 +18,8 @@ function initializeQuoteLineItems() {
     }
   }
 
+  $('.job-field').change(function() { $(this).addClass('editing-job-field'); });
+
   $('.line-item-edit-field').change(function(e) {
     var container = $(this).closest('.sortable-quote-line-item,.option-and-markup-line-item');
     var total = container.find('.line-item-total-price');
