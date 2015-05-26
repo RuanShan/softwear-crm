@@ -53,7 +53,6 @@ $(window).load ->
       window.location.hash = $(this).attr 'href'
 
   # console.log $('select[name="order[quote_ids][]"]').length
-  $('select[name="order[quote_ids][]"]').chosen
     placeholder_text_multiple: 'Select any relevent quotes'
     width: '600px'
 

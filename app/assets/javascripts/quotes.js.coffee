@@ -95,6 +95,5 @@ quoteCollapse = (id, collapsed) ->
   $quoteCollapse.on 'hide.bs.collapse', onQuoteCollapseHide
 
 @initializeQuoteSelectChosen = ->
-  $("#quote_id").chosen
-    no_results_text: "No results matched"
+  $("#quote_id").select2
     width: "400px"

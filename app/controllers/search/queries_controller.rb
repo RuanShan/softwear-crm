@@ -114,10 +114,7 @@ module Search
         locals = permitted_locals_for(models.first)
 
         instance_variable_set "@#{plural}", @search.first.results
-        destination = 
-          Rails
-          .root
-          .join('app', 'views', plural, "index.#{format}.erb").to_s
+        destination = "#{plural}/index.#{format}"
         
         render destination, locals: locals
       else
