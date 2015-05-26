@@ -1,7 +1,6 @@
 @initializeJobsChosen = ->
-  $("#artwork_request_job_ids").chosen
-    placeholder_text_multiple: "Select all jobs for this request"
-    no_results_text: "No results matched"
+  $("#artwork_request_job_ids").select2
+    placeholder: "Select all jobs for this request"
     width: "400px"
 
 $(document).ready ->

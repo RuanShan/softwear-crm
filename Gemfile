@@ -13,9 +13,6 @@ gem 'activerecord-session_store', github: 'rails/activerecord-session_store'
 # Makes it so save_and_open_page automatically opens page
 gem 'launchy', '~> 2.4.2'
 
-# For token inputs
-gem 'chosen-rails'
-
 # use liquid to allow users to make custom templates
 gem 'liquid'
 
