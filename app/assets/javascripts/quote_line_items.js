@@ -1,4 +1,7 @@
-if ($('.edit-quote-line-items').length != 0) $(initializeQuoteLineItems);
+$(function() {
+  if ($('.edit-quote-line-items').length != 0)
+    initializeQuoteLineItems();
+});
 
 function initializeQuoteLineItems() {
   $('#save-line-item-changes-btn').click(function(e) {
