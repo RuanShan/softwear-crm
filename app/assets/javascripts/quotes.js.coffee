@@ -1,5 +1,8 @@
 jQuery ->
 
+  $('.freshdesk-toggle-quoted').click ->
+    $(this).parent().siblings("blockquote").toggle()
+
   #This function checks if an Insightly bid estimate is in a certain tier
   $('#quote_insightly_value').change ->
     dollar = $('#quote_insightly_value').val()
@@ -35,7 +38,7 @@ jQuery ->
     return false
 
   $('.js-datetimepicker').datetimepicker()
-  
+
 @invalidMsg = (textbox) ->
   if textbox.validity.patternMismatch
     textbox.setCustomValidity('Please format like so "Example Email <example@email.com>, Example Two <example@two.com>"')

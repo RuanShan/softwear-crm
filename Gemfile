@@ -51,7 +51,6 @@ group :test do
 end
 
 gem 'acts_as_commentable'
-gem 'simple_form'
 gem 'aws-sdk'
 gem 'google_drive'
 # gem 'api', path: 'engines/api'
