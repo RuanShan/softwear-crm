@@ -152,6 +152,24 @@ feature 'Quotes management', quote_spec: true, js: true do
     expect(page).to have_select('Is this a rush job?', :selected => "Yes")
   end
 
+  scenario 'A user can edit job name and description', story_621: true, revamp: true do
+    quote.jobs << create(:job, line_items: [create(:imprintable_line_item)])
+
+    visit edit_quote_path quote
+    find('a', text: 'Line Items').click
+
+    fill_in 'job_name', with: 'New Job Name!!!'
+    fill_in 'job_description', with: 'New Description!!!'
+
+    click_button 'Save Line Item Changes'
+
+    sleep 1
+
+    expect(Job.where(name: 'New Job Name!!!')).to exist
+    expect(Job.where(description: 'New Description!!!')).to exist
+    expect(Job.where(name: 'New Job Name!!!', description: 'New Description!!!')).to exist
+  end
+
   scenario 'A user can add an imprintable group of line items to a quote', story_567: true, revamp: true, story_570: true do
     imprintable_group; imprint_method_1; imprint_method_2
     visit edit_quote_path quote
@@ -165,7 +183,7 @@ feature 'Quotes management', quote_spec: true, js: true do
     find('select[name=imprint_method]').select imprint_method_2.name
 
     select imprintable_group.name, from: 'Imprintable group'
-    sleep 0.5
+    sleep 1.5
     fill_in 'Quantity', with: 10
     fill_in 'Decoration price', with: 12.55
 
