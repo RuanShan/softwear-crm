@@ -121,9 +121,11 @@ feature 'Quotes management', quote_spec: true, js: true do
     visit new_quote_path
     click_button 'Next' 
     click_button 'Next' 
+   # select "Email", :from => "Category"
     expect(page).to have_select('Bid Tier', :selected => "unassigned")
     fill_in 'Estimated Quote', with: '200'
-    fill_in 'Opportunity ID', with: '1'
+    fill_in 'Opportunity ID', with: '200'
+    byebug
     expect(body).to have_field("Bid Amount", :text => "200") 
     expect(page).to have_select('Bid Tier', :selected => "Tier 1 ($1 - $249)")
     fill_in 'Estimated Quote', with:'275'
