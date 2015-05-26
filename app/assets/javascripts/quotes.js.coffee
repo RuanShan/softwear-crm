@@ -10,9 +10,11 @@ jQuery ->
       tier = $(this).text()
       if tier != 'unassigned'
         array = tier.split(" ")
-        low = array[3]
+        low = array[2]
+        console.log low
         low = low.substr(2)
-        high = array[5]
+        high = array[4]
+        console.log high
         high = high.substr(1, high.lastIndexOf(')')-1)
         min = parseInt(low,10)
         if isNaN(parseInt(high, 10)) == true

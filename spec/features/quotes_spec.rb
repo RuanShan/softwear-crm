@@ -125,26 +125,28 @@ feature 'Quotes management', quote_spec: true, js: true do
     expect(page).to have_select('Bid Tier', :selected => "unassigned")
     fill_in 'Estimated Quote', with: '200'
     fill_in 'Opportunity ID', with: '200'
-    byebug
-    expect(body).to have_field("Bid Amount", :text => "200") 
+    expect(page).to have_field("Bid Amount", :with => "200") 
     expect(page).to have_select('Bid Tier', :selected => "Tier 1 ($1 - $249)")
     fill_in 'Estimated Quote', with:'275'
-    expect(page).to have_field("Bid Amount", value => '275')
+    fill_in 'Opportunity ID', with: '300'
+    expect(page).to have_field("Bid Amount", :with => '275')
     expect(page).to have_select('Bid Tier', :selected => "Tier 2 ($250 - $499)")
     fill_in 'Estimated Quote', with:'550'
-    expect(page).to have_field("Bid Amount", value => '550')
+    fill_in 'Opportunity ID', with: '400'
+    expect(page).to have_field("Bid Amount", :with => '550')
     expect(page).to have_select('Bid Tier', :selected => "Tier 3 ($500 - $999)")
     fill_in 'Estimated Quote', with:'2000'
-    expect(page).to have_field("Bid Amount", value => '2000')
+    fill_in 'Opportunity ID', with: '500'
+    expect(page).to have_field("Bid Amount", :with => '2000')
     expect(page).to have_select('Bid Tier', :selected => "Tier 4 ($1000 and up)")
   end
 
   scenario 'A users options are properly saved', edit: true do
     visit edit_quote_path quote.id
     find('a', text: 'Details').click
-    select 'No', :from => "Informal quote?"
-    select 'No', :from => "Did the Customer Request a Specific Deadline?"
-    select 'Yes', :from => "Is this a rush job?"
+    select 'No', :from => "Informal quote?" 
+    select 'No', :from => "Did the Customer Request a Specific Deadline?" 
+    select 'Yes', :from => "Is this a rush job?" 
     click_button 'Save'
     visit current_path
     click_link 'Edit'
@@ -152,24 +154,6 @@ feature 'Quotes management', quote_spec: true, js: true do
     expect(page).to have_select('Informal quote?', :selected => "No")
     expect(page).to have_select('Did the Customer Request a Specific Deadline?', :selected => "No")
     expect(page).to have_select('Is this a rush job?', :selected => "Yes")
-  end
-
-  scenario 'A user can edit job name and description', story_621: true, revamp: true do
-    quote.jobs << create(:job, line_items: [create(:imprintable_line_item)])
-
-    visit edit_quote_path quote
-    find('a', text: 'Line Items').click
-
-    fill_in 'job_name', with: 'New Job Name!!!'
-    fill_in 'job_description', with: 'New Description!!!'
-
-    click_button 'Save Line Item Changes'
-
-    sleep 1
-
-    expect(Job.where(name: 'New Job Name!!!')).to exist
-    expect(Job.where(description: 'New Description!!!')).to exist
-    expect(Job.where(name: 'New Job Name!!!', description: 'New Description!!!')).to exist
   end
 
   scenario 'A user can add an imprintable group of line items to a quote', story_567: true, revamp: true, story_570: true do
@@ -185,7 +169,6 @@ feature 'Quotes management', quote_spec: true, js: true do
     find('select[name=imprint_method]').select imprint_method_2.name
 
     select imprintable_group.name, from: 'Imprintable group'
-    sleep 1.5
     fill_in 'Quantity', with: 10
     fill_in 'Decoration price', with: 12.55
 
@@ -388,7 +371,7 @@ feature 'Quotes management', quote_spec: true, js: true do
 
     click_button 'Add Option or Markup'
 
-    expect(page).to have_content 'Quote was successfully updated.'
+    expect(page).to have_content 'Line item was successfully created.'
 
     job = quote.markups_and_options_job
     job.reload
