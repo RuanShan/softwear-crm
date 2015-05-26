@@ -115,6 +115,10 @@ class Quote < ActiveRecord::Base
     ', *([self.class.name, id] * 2) ).order('activities.created_at DESC')
   end
 
+  def show_quoted_email_text 
+    html_doc = Nokogiri::HTML()
+  end
+
   def markups_and_options_job
     attrs = {
       name: MARKUPS_AND_OPTIONS_JOB_NAME,

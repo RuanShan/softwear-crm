@@ -448,9 +448,6 @@ GEM
       faraday (~> 0.9)
       jwt (~> 1.0)
       multi_json (~> 1.10)
-    simple_form (3.1.0)
-      actionpack (~> 4.0)
-      activemodel (~> 4.0)
     simple_token_authentication (1.9.1)
       actionmailer (>= 3.2.6, < 5)
       actionpack (>= 3.2.6, < 5)
@@ -580,7 +577,6 @@ DEPENDENCIES
   shoulda-matchers
   sidekiq
   sidekiq-status
-  simple_form
   simple_token_authentication
   sinatra
   softwear-lib
