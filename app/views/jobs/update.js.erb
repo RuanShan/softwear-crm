@@ -1,3 +1,8 @@
+$('.editing-job-field').each(function() {
+  $(this).removeClass('editing-job-field');
+  shine($(this), true);
+});
+
 <% @line_items.each do |line_item| %>
   <% if line_item.imprintable? %>
     var $container = $("#edit-line-item-<%= line_item.id %>");

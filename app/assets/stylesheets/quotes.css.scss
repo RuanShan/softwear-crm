@@ -58,8 +58,13 @@
   padding: 10px;
 }
 
-.editing-line-item {
+.editing-line-item,.editing-job-field {
   background-color: #FFFEE8;
+}
+
+.job-name-field {
+  font-size: 125%;
+  height: 125%;
 }
 
 .removing-line-item {

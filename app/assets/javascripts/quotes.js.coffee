@@ -1,5 +1,8 @@
 jQuery ->
 
+  $('.freshdesk-toggle-quoted').click ->
+    $(this).parent().siblings("blockquote").toggle()
+
   #This function checks if an Insightly bid estimate is in a certain tier
   $('#quote_insightly_value').change ->
     dollar = $('#quote_insightly_value').val()
@@ -7,9 +10,11 @@ jQuery ->
       tier = $(this).text()
       if tier != 'unassigned'
         array = tier.split(" ")
-        low = array[3]
+        low = array[2]
+        console.log low
         low = low.substr(2)
-        high = array[5]
+        high = array[4]
+        console.log high
         high = high.substr(1, high.lastIndexOf(')')-1)
         min = parseInt(low,10)
         if isNaN(parseInt(high, 10)) == true
@@ -35,7 +40,7 @@ jQuery ->
     return false
 
   $('.js-datetimepicker').datetimepicker()
-  
+
 @invalidMsg = (textbox) ->
   if textbox.validity.patternMismatch
     textbox.setCustomValidity('Please format like so "Example Email <example@email.com>, Example Two <example@two.com>"')
@@ -95,6 +100,5 @@ quoteCollapse = (id, collapsed) ->
   $quoteCollapse.on 'hide.bs.collapse', onQuoteCollapseHide
 
 @initializeQuoteSelectChosen = ->
-  $("#quote_id").chosen
-    no_results_text: "No results matched"
+  $("#quote_id").select2
     width: "400px"

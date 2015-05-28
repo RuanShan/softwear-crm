@@ -1,6 +1,9 @@
 root = exports ? this
 
 jQuery ->
+  $('.upcharge-check-box').on 'ifChanged', ->
+    field = $('.upcharge-' + $(this).data('for'))
+    field.prop('disabled', !this.checked)
  
   # this function is modified from an example hosted publicly at
   # http://www.mredkj.com/tutorials/tableaddcolumn.html
@@ -218,7 +221,7 @@ jQuery ->
         size_ids.push($(item).children().first().attr('value'))
     return {color_ids: color_ids, size_ids: size_ids}
 
-  $('.chosen-select').chosen()
+  $('.chosen-select').select2()
 
   get_id = ->
     url_array = document.URL.split('/')
@@ -226,14 +229,16 @@ jQuery ->
     return id
 
   $(document).on('click', '#size_button', ->
-    size = $('#size_select_chosen .chosen-single span').text()
+    sizeId = $('#size-select').val()
+    size = $("#size-select option[value=#{sizeId}]").text()
     if size is 'Select a Size'
       return
     addColumn('imprintable_variants_list', size, root.size_id)
   )
 
   $(document).on('click', '#color_button', ->
-    color = $('#color_select_chosen .chosen-single span').text()
+    colorId = $('#color-select').val()
+    color = $("#color-select option[value=#{colorId}]").text()
     if color is 'Select a Color'
       return
     addRow(color, root.color_id)
@@ -248,12 +253,12 @@ jQuery ->
     change_cell('fa fa-times', $(this))
   )
 
-  $('#color-select').chosen( { width: '200px' }).change( (event) ->
+  $('#color-select').select2().change( (event) ->
     if(event.target == this)
       root.color_id = $(this).val()
   )
 
-  $('#size-select').chosen( { width: '200px' }).change ( (event) ->
+  $('#size-select').select2().change ( (event) ->
     if(event.target == this)
       root.size_id = $(this).val()
   )

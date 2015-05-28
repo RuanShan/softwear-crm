@@ -4,8 +4,8 @@
       <div id="edit-quote-job-<%= job.id %>" class="quote-job-entry container-fluid" data-job-id='<%=job.id%>'>
         <div class="row">
           <div class="col-xs-12">
-            <h3><%= job.name %></h3>
-            <p><%= job.description %></p>
+            <h3><%= f.text_field :name, class: 'job-field job-name-field' %></h3>
+            <p><%= f.text_area :description, class: 'job-field' %></p>
           </div>
         </div>
         <div class="row">
