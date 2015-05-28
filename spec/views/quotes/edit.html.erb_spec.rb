@@ -4,6 +4,7 @@ describe 'quotes/edit.html.erb', quote_spec: true do
   login_user
 
   let!(:quote) { build_stubbed(:valid_quote) }
+  let!(:activity) { create(:quote_activity) }
 
   before(:each) do
     assign(:quote, quote)
@@ -31,4 +32,20 @@ describe 'quotes/edit.html.erb', quote_spec: true do
   it 'should contain a link to create order from quote' do
     expect(rendered).to have_css('a', text: 'Create Order from Quote')
   end
+
+  it 'should have added quote entry in timeline' do
+    expect(activity["first_name"]["new"]["Bob"])
+    expect(activity["is_rushed"]["new"][true])
+  #  expect(rendered).to have_content("Added a quote")
+    expect(rendered).to have_content("Updated quote:")
+    expect(rendered).to have_content("is_rushed was changed from false to true")
+    expect(rendered).to have_content("first_name was changed from Jim to Bob")
+  end
+
+  it 'should have added new group entry in timeline' do
+    expect(rendered).to have_content("with a quantity of 12")  
+    expect(rendered).to have_content("with a decoration price of $6.66")  
+    expect(rendered).to have_content("with an imprintable price of $3.33")  
+  end
+
 end

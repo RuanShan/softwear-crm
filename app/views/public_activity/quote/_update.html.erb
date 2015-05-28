@@ -1,0 +1,25 @@
+<% if activity.trackable_type %>
+  <p>Changed attributes for quote, <% unless activity.trackable.nil? %>
+    <%= link_to activity.trackable.name, activity.trackable %>
+<% else %>
+  which has since been removed
+<% end %>
+  </p>
+
+  <p>The following fields were changed</p>
+  <ul>
+    <% activity.parameters.each do |key, val| %>
+      <b>From:</b> <%= val['old'] %> 
+      <b>To:</b> <%= val['new'] %>
+    <% end %>
+  </ul>
+
+<% else %>
+  Added something...
+<% end %>
+
+<% if activity.recipient && activity.recipient != activity.trackable %>
+  to
+  <%= activity.recipient_type.underscore.humanize.downcase %>
+  <%= link_to activity.recipient.name, activity.recipient %>
+<% end %>
