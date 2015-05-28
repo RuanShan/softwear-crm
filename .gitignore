@@ -63,3 +63,6 @@ Gemfile.lock
 
 # i dont know what this file is lol
 dump.rdb
+
+.DS_Store
+/**/.DS_Store
