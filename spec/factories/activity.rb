@@ -23,6 +23,21 @@ FactoryGirl.define do
         )
     end
 
+    factory :quote_activity_note do
+      parameters(
+        "notes" => {
+          1 => {
+            "title" => "Hello",
+            "comment" => "This is note"
+          },
+          2 => {
+            "title" => "Goodbye",
+            "comment" => "Mr. Note"
+          }
+        }
+      )
+    end
+
     factory :quote_activity_line_item_update do
       parameters(
         "groups" => [
