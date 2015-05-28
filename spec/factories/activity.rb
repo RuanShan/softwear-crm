@@ -23,6 +23,25 @@ FactoryGirl.define do
         )
     end
 
+    factory :quote_activity_markup do
+      parameters(
+        "markups" => {
+          "m1" => {
+            "name" => "Mo Money",
+            "description" => "Mo Problems",
+            "url" => "www.money.com",
+            "unit_price" => 664
+          },
+          "m2" => {
+            "name" => "Austerity Now",
+            "description" => "Less Spending",
+            "url" => "www.budget.com",
+            "unit_price" => 1
+          }
+        }
+      )
+    end
+
     factory :quote_activity_note do
       parameters(
         "notes" => {
