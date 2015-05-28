@@ -56,7 +56,7 @@ FactoryGirl.define do
                 1 => {"old" => "1-blue", "new" => "14-orange"}
               }
             }
-          }
+          
         ]
       )
     end

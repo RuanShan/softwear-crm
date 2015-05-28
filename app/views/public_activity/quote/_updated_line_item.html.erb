@@ -13,7 +13,7 @@
           <b>For the line item: <%= key %></b> 
           <b>From a quantity of: <%= val['quantity']['old'] %> to <%= val['quantity']['new'] %>  </b>
           <b>From a decoration price of: $<%= val['decoration_price']['old'] %> to $<%= val['decoration_price']['new'] %></b>
-          <b>From an imprintable price of: $<%= val['imprintable_price'] %> to $<%= val['imprintable_price']['new'] %></b>
+          <b>From an imprintable price of: $<%= val['imprintable_price']['old'] %> to $<%= val['imprintable_price']['new'] %></b>
         <% end %>
     <p> With the following imprint change(s) </p>
         <% val['imprints'].each do |key, val| %> 
