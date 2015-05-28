@@ -23,6 +23,44 @@ FactoryGirl.define do
         )
     end
 
+    factory :quote_activity_line_item_update do
+      parameters(
+        "groups" => [
+           "group1" => {
+              "imprintables" => {
+                1 => {
+                  "quantity" => {"old" => 12, "new" => 40},
+                  "decoration_price" => {"old" => 5.00, "new" => 10.00},
+                  "imprintable_price" => {"old" => 8.00, "new" => 18.00}
+                },
+                2 => {
+                  "quantity" => {"old" => 22, "new" => 30},
+                  "decoration_price" => {"old" => 4.00, "new" => 17.00},
+                  "imprintable_price" => {"old" => 4.00, "new" => 58.00}
+                }
+              }, 
+              "imprints" => { 
+                1 => {"old" => "1-blue", "new" => "14-orange"},
+                2 => {"old" => "4-green", "new" => "3-red"}
+              }
+            },
+           "group2" => {
+              "imprintables" => {
+                1 => {
+                  "quantity" => {"old" => 12, "new" => 40},
+                  "decoration_price" => {"old" => 5.00, "new" => 10.00},
+                  "imprintable_price" => {"old" => 8.00, "new" => 18.00}
+                }
+              }, 
+              "imprints" => { 
+                1 => {"old" => "1-blue", "new" => "14-orange"}
+              }
+            }
+          }
+        ]
+      )
+    end
+
     factory :quote_activity_line_item do
       parameters(
         "groups" => [

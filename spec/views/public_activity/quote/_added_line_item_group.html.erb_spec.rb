@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-  describe 'public_activity/quote/_added_line_item.html.erb' do
+  describe 'public_activity/quote/_added_line_item_group.html.erb' do
     let!(:activity1) { build_stubbed(:quote_activity_line_item) } 
     
     before(:each) do 
