@@ -1,18 +1,24 @@
-<% if activity.trackable_type %>
-  <p>Added Imprintable(s) <%= activity.parameters['name']%> for quote, <% unless activity.trackable.nil? %>
-    <%= link_to activity.trackable.name, activity.trackable %>
-<% else %>
-  which has since been removed
-<% end %>
-</p>
-  <ul>
-    <b>With a quantity of: </b> <%= activity.parameters['quantity'] %> 
-    <b>With a decoration price of: </b>$<%= activity.parameters['decoration_price'] %>
-    <b>With an imprintable price of: </b>$<%= activity.parameters['imprintable_price'] %>
-  </ul>
+<% activity.parameters['imprintables'].each do |group| %>
+  <% group.each do |key, val| %>
+    <% if activity.trackable_type %>
+      <p>Added Imprintable(s) <%= val['imprintable_id']%> for quote, <% unless activity.trackable.nil? %>
+        <%= link_to activity.trackable.name, activity.trackable %>
+    <% else %>
+      which has since been removed
+    <% end %>
+    </p>
+      <ul>
+        <b>With a quantity of: </b> <%= val['quantity'] %> 
+        <b>With a decoration price of: </b>$<%= val['decoration_price'] %>
+        <b>With an imprintable price of: </b>$<%= val['imprintable_price'] %>
+        <b>Tier: </b><%= val['tier'] %>
+        <b>Group_ID: </b><%= val['group_id'] %>
+      </ul>
 
-<% else %>
-  Added something...
+    <% else %>
+      Added something...
+    <% end %>
+  <% end %>
 <% end %>
 
 <% if activity.recipient && activity.recipient != activity.trackable %>

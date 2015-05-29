@@ -24,11 +24,24 @@ FactoryGirl.define do
 
     factory :quote_activity_add_imprintable do
       parameters(
-          "imprintable_price" => 0.70, 
-          "name" => "group1",
-          "ID" => 1,
-          "quantity" => 100,
-          "decoration_price" => 1.50
+      'imprintables' => [
+        1 =>  {
+            "imprintable_id" => 1,
+            "imprintable_price" => 0.70, 
+            "group_id" => 1, #group_id
+            "tier" => 3,
+            "quantity" => 100,
+            "decoration_price" => 1.50
+          },
+        2 =>  {
+            "imprintable_id" => 4,
+            "imprintable_price" => 0.90, 
+            "group_id" => 3, #group_id
+            "tier" => 1,
+            "quantity" => 130,
+            "decoration_price" => 1.33
+          }
+        ]
       )
     end
 
@@ -51,7 +64,7 @@ FactoryGirl.define do
     factory :quote_activity_line_item_update do
       parameters(
         "groups" => [
-           "group1" => {
+           "group_id" => {
               "imprintables" => {
                 1 => {
                   "quantity" => {"old" => 12, "new" => 40},
@@ -111,8 +124,9 @@ FactoryGirl.define do
         ]
       )
     end
-
-    factory :quote_activity_line_item do
+    
+    # quote_activity_line_item_group
+    factory :quote_activity_line_item_group do
       parameters(
           "imprintables" => {
             1 => 0.10,
@@ -123,7 +137,7 @@ FactoryGirl.define do
             2 => "3-green" 
           },
           "name" => "group1",
-          "ID" => 1,
+          "ID" => 1, #group id aka job id
           "quantity" => 100,
           "decoration_price" => 1.50
       )

@@ -1,7 +1,7 @@
 require 'spec_helper'
 
   describe 'public_activity/quote/_added_line_item_group.html.erb' do
-    let!(:activity1) { build_stubbed(:quote_activity_line_item) } 
+    let!(:activity1) { build_stubbed(:quote_activity_line_item_group) } 
     
     before(:each) do 
         render partial: 'public_activity/quote/added_line_item_group', locals: {activity: activity1 }
