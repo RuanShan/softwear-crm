@@ -6,12 +6,10 @@
 <% end %>
   </p>
   <ul>
-    <% activity.parameters['markups'].each do |key, val| %>
-      <b>Name:</b> <%= val['name'] %> 
-      <b>Description:</b> <%= val['description'] %>
-      <b>URL:</b> <%= val['url'] %> 
-      <b>Unit Price:</b> <%= val['unit_price'] %> 
-    <% end %>
+    <b>Name:</b> <%= activity.parameters['name'] %> 
+    <b>Description:</b> <%= activity.parameters['description'] %>
+    <b>URL:</b> <%= activity.parameters['url'] %> 
+    <b>Unit Price:</b> <%= activity.parameters['unit_price'] %> 
   </ul>
 
 <% else %>

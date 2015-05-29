@@ -17,7 +17,8 @@
         <% end %>
     <p> With the following imprint change(s) </p>
         <% val['imprints'].each do |key, val| %> 
-          <b>From <%= val['old'] %> to <%= val['new'] %> </b>
+          <b>From <%= val['old']['description'] %> to <%= val['new']['description'] %> </b>
+          <b>From location ID: <%= val['old']['imprint_location_id'] %> to <%= val['new']['imprint_location_id'] %> </b>
         <% end %>
       </ul>
 

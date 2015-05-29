@@ -9,7 +9,6 @@ FactoryGirl.define do
   factory :quote_activity, class: PublicActivity::Activity do
     trackable { |q| q.association(:valid_quote) }
     association :owner, factory: :user
-    #User relationship here!!!!
     factory :quote_activity_update do
       parameters(
           "first_name" => {
@@ -23,37 +22,29 @@ FactoryGirl.define do
         )
     end
 
+    factory :quote_activity_add_imprintable do
+      parameters(
+          "imprintable_price" => 0.70, 
+          "name" => "group1",
+          "ID" => 1,
+          "quantity" => 100,
+          "decoration_price" => 1.50
+      )
+    end
+
     factory :quote_activity_markup do
       parameters(
-        "markups" => {
-          "m1" => {
-            "name" => "Mo Money",
-            "description" => "Mo Problems",
-            "url" => "www.money.com",
-            "unit_price" => 664
-          },
-          "m2" => {
-            "name" => "Austerity Now",
-            "description" => "Less Spending",
-            "url" => "www.budget.com",
-            "unit_price" => 1
-          }
-        }
+        "name" => "Mo Money",
+        "description" => "Mo Problems",
+        "url" => "www.money.com",
+        "unit_price" => 664
       )
     end
 
     factory :quote_activity_note do
       parameters(
-        "notes" => {
-          1 => {
-            "title" => "Hello",
-            "comment" => "This is note"
-          },
-          2 => {
-            "title" => "Goodbye",
-            "comment" => "Mr. Note"
-          }
-        }
+        "title" => "Hello",
+        "comment" => "This is note"
       )
     end
 
@@ -73,12 +64,30 @@ FactoryGirl.define do
                   "imprintable_price" => {"old" => 4.00, "new" => 58.00}
                 }
               }, 
-              "imprints" => { 
-                1 => {"old" => "1-blue", "new" => "14-orange"},
-                2 => {"old" => "4-green", "new" => "3-red"}
+              "imprints" => {
+                1 => {
+                  "old" => {
+                    "description" => "1-blue",
+                    "imprint_location_id" => 1
+                  }, 
+                  "new" => {
+                    "description" => "14-orange",
+                    "imprint_location_id" => 2
+                  }
+                },
+                2 => {
+                  "old" => {
+                    "description" => "4-green",
+                    "imprint_location_id" => 3
+                  }, 
+                  "new" => {
+                    "description" => "3-red",
+                    "imprint_location_id" => 4
+                  }
+                }
               }
             },
-           "group2" => {
+            "group2" => {
               "imprintables" => {
                 1 => {
                   "quantity" => {"old" => 12, "new" => 40},
@@ -86,57 +95,37 @@ FactoryGirl.define do
                   "imprintable_price" => {"old" => 8.00, "new" => 18.00}
                 }
               }, 
-              "imprints" => { 
-                1 => {"old" => "1-blue", "new" => "14-orange"}
+              "imprints" => {
+                1 => {
+                  "old" => {
+                    "description" => "1-red",
+                    "imprint_location_id" => 4
+                  }, 
+                  "new" => {
+                    "description" => "11-orange",
+                    "imprint_location_id" => 7
+                  }
+                }
               }
             }
-          
         ]
       )
     end
 
     factory :quote_activity_line_item do
       parameters(
-        "groups" => [
-          { 
-            "group1" => {
-              "imprintables" => {
-                1 => {
-                  "quantity" => 12,
-                  "decoration_price" => 6.66,
-                  "imprintable_price" => 3.33
-                },
-                2 => {
-                  "quantity" => 1,
-                  "decoration_price" => 1.00,
-                  "imprintable_price" => 2.00
-                }
-              }, 
-              "imprints" => { 
-                1 => "1-blue",
-                2 => "3-green" 
-              }
-            }
+          "imprintables" => {
+            1 => 0.10,
+            2 => 0.50
+          }, 
+          "imprints" => { 
+            1 => "1-blue",
+            2 => "3-green" 
           },
-          "group2" => {
-            "imprintables" => {
-              1 => {
-                "quantity" => 100,
-                "decoration_price" => 10.66,
-                "imprintable_price" => 20.33
-              },
-              2 => {
-                "quantity" => 45,
-                "decoration_price" => 6.00,
-                "imprintable_price" => 9.00
-              }
-            }, 
-            "imprints" => { 
-              1 => "5-red",
-              2 => "7-yellow" 
-            }
-          }
-        ]
+          "name" => "group1",
+          "ID" => 1,
+          "quantity" => 100,
+          "decoration_price" => 1.50
       )
     end
   end

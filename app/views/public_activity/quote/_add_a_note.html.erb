@@ -6,11 +6,8 @@
 <% end %>
   </p>
   <ul>
-    <% activity.parameters['notes'].each do |key, val| %>
-      <b>ID:</b> <%= key %> 
-      <b>Title:</b> <%= val['title'] %> 
-      <b>Comment:</b> <%= val['comment'] %>
-    <% end %>
+    <b>Title:</b> <%= activity.parameters['title'] %> 
+    <b>Comment:</b> <%= activity.parameters['comment'] %>
   </ul>
 
 <% else %>

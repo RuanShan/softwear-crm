@@ -7,12 +7,16 @@ require 'spec_helper'
         render partial: 'public_activity/quote/updated_line_item', locals: {activity: activity1 }
     end 
 
-    context 'new line item group added to quote' do 
-      it 'has appropriate fields listed in the timeline' do
+    context 'line item groups added to quote' do 
+      it 'has appropriate fields listed in the timeline:'\
+       " quantity, decoration price, imprintable price, name "\
+      "imprint description, and imprint location ID" do
        expect(rendered).to have_text("From a quantity of: 12 to 40")
        expect(rendered).to have_text("From a decoration price of: $5.0 to $10.0")
        expect(rendered).to have_text("From an imprintable price of: $8.0 to $18.0")
-       expect(rendered).to have_text("From 4-green to 3-red")
+       expect(rendered).to have_text("From location ID: 4 to 7")
+       expect(rendered).to have_text("From 1-blue to 14-orange")
+       expect(rendered).to have_text("From 1-red to 11-orange")
     end
   end
 end
