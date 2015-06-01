@@ -94,10 +94,14 @@ class QuoteRequest < ActiveRecord::Base
     if contact
       self.insightly_contact_id = contact.contact_id
 
-      contact.links.each do |link|
-        if link.key?('organisation_id')
-          self.organisation_id = link['organisation_id']
-          break
+      if contact.try(:links).respond_to?(:each)
+        contact.links.each do |link|
+          if link.key?('organisation_id')
+            # TODO Supposed to query for organisation at this point!
+            # Or something I actually have no idea.
+            # self.organisation_id = link['organisation_id']
+            break
+          end
         end
       end
 
@@ -146,8 +150,10 @@ class QuoteRequest < ActiveRecord::Base
       logger.error "(QUOTE REQUEST - FRESHDESK) Error adding freshdesk contact"
       e
     rescue Freshdesk::ConnectionError => e
-      logger.error "(QUOTE REQUEST - FRESHDESK) #{e.message}"
+      logger.error "(QUOTE REQUEST - FRESHDESK) #{e.class}: #{e.message}"
       e
+    rescue StandardError => e
+      logger.error "(QUOTE REQUEST - FRESHDESK) #{e.class}: #{e.message}"
     end
   end
 

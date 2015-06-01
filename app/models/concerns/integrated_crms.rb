@@ -67,6 +67,9 @@ module IntegratedCrms
     rescue Insightly2::Errors::ClientError
       logger.error "Bad Insightly API Key in settings"
       nil
+    rescue StandardError => e
+      logger.error "ERROR CREATING INSIGHTLY CONTACT: #{e.class}: #{e.message}"
+      nil
     end
   end
 

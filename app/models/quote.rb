@@ -115,7 +115,7 @@ class Quote < ActiveRecord::Base
     ', *([self.class.name, id] * 2) ).order('activities.created_at DESC')
   end
 
-  def show_quoted_email_text 
+  def show_quoted_email_text
     html_doc = Nokogiri::HTML()
   end
 
@@ -413,7 +413,7 @@ class Quote < ActiveRecord::Base
       self.freshdesk_ticket_id = ticket.try(:[], 'display_id')
       ticket
 
-    rescue Freshdesk::ConnectionError => e
+    rescue StandardError => e
       logger.error "(QUOTE - FRESHDESK) #{e.message}"
     end
   end
@@ -499,7 +499,11 @@ class Quote < ActiveRecord::Base
       self.insightly_opportunity_id = op.opportunity_id
       self.save(validate: false)
       op
-    rescue Insightly2::Errors::ClientError => e
+    # rescue Insightly2::Errors::ClientError => e
+      # logger.error "(QUOTE - INSIGHTLY) #{e.class}: #{e.message}"
+      # e
+    rescue StandardError => e
+      logger.error "(QUOTE - INSIGHTLY) #{e.class}: #{e.message}"
       e
     end
   end
@@ -530,7 +534,7 @@ class Quote < ActiveRecord::Base
         c = []
         c << { contact_id: contact.contact_id }
         contact.links.select{ |l| l.key?('organisation_id') }.each do |l|
-          c << { organisation_id: l['organisation_id'] } 
+          c << { organisation_id: l['organisation_id'] }
         end
         c
       else
