@@ -41,6 +41,8 @@ group :doc do
   gem 'sdoc', require: false
 end
 
+gem 'cap-ec2', group: :development
+
 group :test do
   gem 'database_cleaner'
   gem 'sunspot_matchers'
@@ -64,6 +66,7 @@ gem 'simple_token_authentication'
 gem 'sinatra', require: false
 gem 'sidekiq'
 gem 'sidekiq-status'
+gem 'sidekiq-failures'
 gem 'x-editable-rails'
 gem 'jquery-fileupload-rails'
 gem 'php-serialize'

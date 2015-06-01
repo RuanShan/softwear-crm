@@ -90,8 +90,8 @@ class Quote < ActiveRecord::Base
   validates *(INSIGHTLY_FIELDS - [:insightly_opportunity_id]), presence: true, if: :salesperson_has_insightly?
 
   after_save :set_quote_request_statuses_to_quoted
-  after_create :create_freshdesk_ticket
-  after_create :create_insightly_opportunity
+  after_create :enqueue_create_freshdesk_ticket
+  after_create :enqueue_create_insightly_opportunity
   before_create :set_default_valid_until_date
   after_initialize  :initialize_time
 
@@ -378,6 +378,10 @@ class Quote < ActiveRecord::Base
     end
   end
 
+  def enqueue_create_freshdesk_ticket
+    self.delay(queue: 'api').create_freshdesk_ticket
+  end
+
   def create_freshdesk_ticket
     return if freshdesk.nil? || !freshdesk_ticket_id.blank?
 
@@ -475,6 +479,10 @@ class Quote < ActiveRecord::Base
     end
   end
 
+
+  def enqueue_create_insightly_opportunity
+    self.delay(queue: 'api').create_insightly_opportunity
+  end
 
   def create_insightly_opportunity
     return if insightly.nil?

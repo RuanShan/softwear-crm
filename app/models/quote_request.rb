@@ -33,7 +33,7 @@ class QuoteRequest < ActiveRecord::Base
   validates :reason, presence: true, if: :reason_needed?
 
   before_validation(on: :create) { self.status = 'pending' if status.nil? }
-  before_create :link_integrated_crm_contacts
+  before_create :enqueue_link_integrated_crm_contacts
 
   def self.of_interest
     where.not status: 'could_not_quote'
@@ -168,6 +168,10 @@ class QuoteRequest < ActiveRecord::Base
   end
 
   private
+
+  def enqueue_link_integrated_crm_contacts
+    self.delay(queue: 'api').link_integrated_crm_contacts
+  end
 
   def link_integrated_crm_contacts
     link_with_insightly! unless linked_with_insightly?
