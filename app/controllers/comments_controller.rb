@@ -3,6 +3,7 @@ class CommentsController < InheritedResources::Base
 
   def create
     super do |format|
+      byebug
       format.js
     end
   end

@@ -592,6 +592,22 @@ class Quote < ActiveRecord::Base
     line_items.where(imprintable_variant_id: nil)
   end
 
+  def activity_updated_quote_fields_hash 
+    hash = {}
+    changed_attrs = self.attribute_names.select{ | attr| self.send("#{attr}_changed?")} 
+    changed_attrs.each do |attr|
+      hash[attr] = {
+        "old" => self.send("#{attr}_was"), # self.name_was , # self.name_was
+        "new" => self.send("#{attr}")  # self.name
+      }
+    end
+    hash
+  end
+
+  def activity_add_a_group_hash
+    
+  end
+
   private
 
   def freshdesk_group_id

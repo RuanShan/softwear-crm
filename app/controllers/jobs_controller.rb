@@ -4,6 +4,7 @@ class JobsController < InheritedResources::Base
 
   def update
     super do |success, failure|
+      byebug
       success.json { render json: { result: 'success' } }
       failure.json do
         modal_html = 'ERROR'

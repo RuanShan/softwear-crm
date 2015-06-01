@@ -71,9 +71,15 @@ class QuotesController < InheritedResources::Base
   end
 
   def update
+    # for update a quote, it works here
+    
     super do |format|
-      format.js
-      format.html { redirect_to action: :edit }
+      format.js {
+        byebug
+      }
+      format.html { 
+        redirect_to action: :edit
+      }
     end
   end
 
@@ -130,4 +136,29 @@ class QuotesController < InheritedResources::Base
             :subject, :body, :sent_to, :sent_from, :cc_emails, :id, :_destroy
       ]] + Quote::INSIGHTLY_FIELDS)
   end
+
+
+  # This method is actually not going to exist. We are going to make a model class method that we send the params hash to
+  def activity_get_hash_add_a_group
+    controller.send(:activity_get_hash_add_a_group)
+    #  Parameters: {"utf8"=>"✓", "imprint_method"=>"2", 
+    #   "quote"=>{"line_items_from_group_attributes"=>{"print_locations"=>["44"], 
+    #   "imprint_descriptions"=>["2-Color"], "imprintable_group_id"=>"1", 
+    #   "quantity"=>"100", "decoration_price"=>"10", "quote_id"=>"872"}}, "button"=>"", "id"=>"872"}i
+    #
+    # Create a class_method for quote which I send a hash to, and that hash is this params hash. 
+    # test sending 
+    #
+    #
+    # I need a job
+    # I find a job by name and @quote.id
+    #
+    # Find imprintable group! Hooray! let's now iterate imprintables, and each imprintable gives me
+    # an imprintable ID + base_price AKA line_item.  
+    # 
+    #  I need to have my imprint, and I have a print location id
+    #  Find a job with this the job I found above's id and the print_location id
+
+  end
+
 end

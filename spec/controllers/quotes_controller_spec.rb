@@ -138,4 +138,7 @@ describe QuotesController, js: true, quote_spec: true do
     end
   end
 
+  describe 'private#activity_get_hash_add_a_group' do
+    
+  end
 end

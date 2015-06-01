@@ -106,6 +106,7 @@ class LineItemsController < InheritedResources::Base
     return create_imprintable if param_okay? :imprintable_id, :color_id
 
     super do |format|
+      byebug
       if @line_itemable.class.name == 'Quote'
         @line_itemable.create_activity :added_line_item,
                                         owner:  current_user,
