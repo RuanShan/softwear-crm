@@ -13,6 +13,33 @@ class Imprintable < ActiveRecord::Base
     9 => 'Best'
   }
 
+  WATER_RESISTANCE_LEVELS = [
+    'not_water_resistant', 'water_resistant', 'waterproof'
+  ]
+  SLEEVE_TYPES = [
+    '3/4 Sleeve', 'Cap Sleeve', 'Long Sleeve', 'Short Sleeve',
+    'Sleeveless', 'Tanks'
+  ]
+  NECK_STYLES = [
+    'Boat Neck', 'Cowl Neck', 'Crewneck', 'Eyelet', 'Halter',
+    'Henley', 'High Neck', 'Hooded', 'Mock Neck', 'One Shoulder',
+    'Racer Back', 'Scoop Neck', 'Strapless/Tube', 'Turtleneck',
+    'V-Neck'
+  ]
+  FIT_TYPES = [
+    'Loose', 'Overall', 'Regular', 'Relaxed', 'Skinny', 'Slim',
+    'Strech', 'Western'
+  ]
+  FABRIC_WASHES = [
+    'Dark', 'Light', 'Medium'
+  ]
+  DEPARTMENT_NAMES = [
+    'baby-boys', 'baby-girls', 'boys', 'girls', 'mens',
+    'unisex-adult (novelty and luggage only)', 'unisex-baby',
+    'womens'
+  ]
+
+
   acts_as_paranoid
   acts_as_taggable
 
@@ -95,6 +122,13 @@ class Imprintable < ActiveRecord::Base
              allow_blank: true
 
   validates :base_price, presence: true, unless: proc { imprintable_imprintable_groups.empty? }
+
+  validates :water_resistance_level, inclusion: { in: WATER_RESISTANCE_LEVELS, message: "is not 'not_water_resistant', 'water_resistant', or 'waterproof'" }, if: :water_resistance_level
+  validates :sleeve_type, inclusion: { in: SLEEVE_TYPES, message: "is not a valid sleeve type" }, if: :sleeve_type
+  validates :neck_style, inclusion: { in: NECK_STYLES, message: "is not a valid neck style" }, if: :neck_style
+  validates :fit_type, inclusion: { in: FIT_TYPES, message: "is not a valid fit type" }, if: :fit_type
+  validates :fabric_wash, inclusion: { in: FABRIC_WASHES, message: "is not a valid fabric wash" }, if: :fabric_wash
+  validates :department_name, inclusion: { in: DEPARTMENT_NAMES, message: "is not a valid department name" }, if: :department_name
 
   before_save :discontinue_imprintable, if: :discontinued?
 

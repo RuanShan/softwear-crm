@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150519163150) do
+ActiveRecord::Schema.define(version: 20150602213906) do
 
   create_table "activities", force: :cascade do |t|
     t.integer  "trackable_id",   limit: 4
@@ -283,6 +283,20 @@ ActiveRecord::Schema.define(version: 20150519163150) do
     t.decimal  "xxxxxxl_upcharge",                     precision: 10, scale: 2
     t.decimal  "base_upcharge",                        precision: 10, scale: 2
     t.boolean  "discontinued",           limit: 1,                              default: false
+    t.string   "water_resistance_level", limit: 255
+    t.string   "sleeve_type",            limit: 255
+    t.string   "sleeve_length",          limit: 255
+    t.string   "neck_style",             limit: 255
+    t.string   "neck_size",              limit: 255
+    t.string   "fabric_type",            limit: 255
+    t.boolean  "is_stain_resistant",     limit: 1
+    t.string   "fit_type",               limit: 255
+    t.string   "fabric_wash",            limit: 255
+    t.string   "department_name",        limit: 255
+    t.string   "chest_size",             limit: 255
+    t.decimal  "package_height",                       precision: 10
+    t.decimal  "package_width",                        precision: 10
+    t.decimal  "package_length",                       precision: 10
   end
 
   add_index "imprintables", ["deleted_at"], name: "index_imprintables_on_deleted_at", using: :btree

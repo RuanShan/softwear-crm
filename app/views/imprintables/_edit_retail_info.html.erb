@@ -94,5 +94,76 @@
           </table>
       </div>
 
+      <div class='form-group'>
+        <div class='input-group'>
+          <%= f.label :water_resistance_level %>
+          <div>
+            <%= f.select :water_resistance_level, options_from_collection_for_select(Imprintable::WATER_RESISTANCE_LEVELS, :to_s, :humanize), {}, class: 'form-control select2', data: { placeholder: 'water_resistance_level'.humanize, isblank: f.object.water_resistance_level.blank? } %>
+          </div>
+        </div>
+        <div class='input-group'>
+          <%= f.label :sleeve_type %>
+          <div>
+            <%= f.select :sleeve_type, Imprintable::SLEEVE_TYPES, {}, class: 'form-control select2', data: { placeholder: 'sleeve_type'.humanize, isblank: f.object.sleeve_type.blank? } %>
+          </div>
+        </div>
+        <div class='input-group'>
+          <%= f.label :sleeve_length %>
+          <%= f.text_field :sleeve_length, class: 'form-control' %>
+        </div>
+        <div class='input-group'>
+          <%= f.label :neck_style %>
+          <div>
+            <%= f.select :neck_style, Imprintable::NECK_STYLES, {}, class: 'form-control select2', data: { placeholder: 'neck_style'.humanize, isblank: f.object.neck_style.blank? } %>
+          </div>
+        </div>
+        <div class='input-group'>
+          <%= f.label :neck_size %>
+          <%= f.text_field :neck_size, class: 'form-control' %>
+        </div>
+        <div class='input-group'>
+          <%= f.label :fabric_type %>
+          <%= f.text_field :fabric_type, class: 'form-control' %>
+        </div>
+        <div class='input-group'>
+          <%= f.label :is_stain_resistant %>
+          <%= f.check_box :is_stain_resistant, class: 'form-control' %>
+        </div>
+        <div class='input-group'>
+          <%= f.label :fit_type %>
+          <div>
+            <%= f.select :fit_type, Imprintable::FIT_TYPES, {}, class: 'form-control select2', data: { placeholder: 'fit_type'.humanize, isblank: f.object.fit_type.blank? } %>
+          </div>
+        </div>
+        <div class='input-group'>
+          <%= f.label :fabric_wash %>
+          <div>
+            <%= f.select :fabric_wash, Imprintable::FABRIC_WASHES, {}, class: 'form-control select2', data: { placeholder: 'fabric_wash'.humanize, isblank: f.object.fabric_wash.blank? } %>
+          </div>
+        </div>
+        <div class='input-group'>
+          <%= f.label :department_name %>
+          <div>
+            <%= f.select :department_name, Imprintable::DEPARTMENT_NAMES, {}, class: 'form-control select2', data: { placeholder: 'department_name'.humanize, isblank: f.object.department_name.blank? } %>
+          </div>
+        </div>
+        <div class='input-group'>
+          <%= f.label :chest_size %>
+          <%= f.text_field :chest_size, class: 'form-control' %>
+        </div>
+        <div class='input-group'>
+          <%= f.label :package_height %>
+          <%= f.text_field :package_height, class: 'form-control' %>
+        </div>
+        <div class='input-group'>
+          <%= f.label :package_width %>
+          <%= f.text_field :package_width, class: 'form-control' %>
+        </div>
+        <div class='input-group'>
+          <%= f.label :package_length %>
+          <%= f.text_field :package_length, class: 'form-control' %>
+        </div>
+      </div>
+
     </div>
  </div>
