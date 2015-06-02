@@ -87,6 +87,10 @@ module Api
       headers['Access-Control-Allow-Credentials'] = 'true'
     end
 
+    def permitted_attributes
+      resource_class.column_names
+    end
+
     private
   end
 end
