@@ -2,7 +2,18 @@ module Api
   class ImprintablesController < ApiController
     def index
       super do
-        @imprintables = Imprintable.where(retail: true)
+        if params[:q]
+          query = params[:q]
+          ids = Imprintable.search do
+              fulltext query
+              with :retail, true
+            end
+              .results.map(&:id)
+
+          @imprintables = Imprintable.where(id: ids)
+        else
+          @imprintables = Imprintable.where(retail: true)
+        end
       end
     end
 
@@ -15,7 +26,7 @@ module Api
         :xxxxl_upcharge, :xxxxxl_upcharge, :xxxxxxl_upcharge
       ]
     end
-    
+
     def includes
       # [:colors, :sizes, :imprintable_variants]
     end

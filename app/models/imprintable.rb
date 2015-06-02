@@ -96,7 +96,7 @@ class Imprintable < ActiveRecord::Base
 
   validates :base_price, presence: true, unless: proc { imprintable_imprintable_groups.empty? }
 
-  before_save :discontinue_imprintable, if: :discontinued? 
+  before_save :discontinue_imprintable, if: :discontinued?
 
   def self.find(param)
     unscoped.where(deleted_at: nil).find(param)
@@ -246,11 +246,11 @@ class Imprintable < ActiveRecord::Base
   end
 
   private
-  
-  def discontinue_imprintable 
-    self.imprintable_imprintable_groups.destroy_all     
+
+  def discontinue_imprintable
+    self.imprintable_imprintable_groups.destroy_all
     self.standard_offering = false
     true
-  end  
+  end
 
 end

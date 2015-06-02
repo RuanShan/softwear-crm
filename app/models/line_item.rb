@@ -67,7 +67,7 @@ class LineItem < ActiveRecord::Base
     if line_itemable.try(:jobbable_type) == 'Order'
       imprintable_variant.name
     else
-      imprintable.name
+      imprintable.try(:name)
     end
   end
   def description

@@ -9,6 +9,8 @@ module Api
     skip_before_filter :authenticate_user!
     skip_before_filter :verify_authenticity_token
 
+    before_filter :allow_origin
+
     respond_to :json
     self.responder = InheritedResources::Responder
 
@@ -23,7 +25,7 @@ module Api
       end
         .compact
 
-      self.records = resource_class if records.nil?
+      self.records ||= resource_class
       self.records = records.where(Hash[key_values])
 
       respond_to do |format|
@@ -43,12 +45,16 @@ module Api
       end
     end
 
+    def options
+      head(:ok) if request.request_method == 'OPTIONS'
+    end
+
     protected
 
     def render_json(records = nil)
       proc do
         render json: (records || record),
-               methods: [[:id] + permitted_attributes],
+               methods: [:id] + permitted_attributes,
                include: includes
       end
     end
@@ -72,6 +78,13 @@ module Api
 
     def record
       instance_variable_get("@#{self.class.model_name.underscore}")
+    end
+
+    def allow_origin
+      headers['Access-Control-Allow-Origin'] = '*'
+      headers['Access-Control-Allow-Methods'] = 'GET, POST, PUT, PATCH, DELETE'
+      headers['Access-Control-Allow-Headers'] = 'X-Requested-With'
+      headers['Access-Control-Allow-Credentials'] = 'true'
     end
 
     private
