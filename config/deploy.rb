@@ -1,7 +1,7 @@
 # config valid only for Capistrano 3.1
 lock '3.2.1'
 
-set :application, 'softwear_crm'
+set :application, 'softwear-crm'
 set :repo_url, 'git@github.com:annarbortees/softwear-crm.git'
 set :rvm_ruby_string, 'rbx-2.5.2'
 set :whenever_identifier, -> { "#{fetch(:application)}_#{fetch(:stage)}" }
