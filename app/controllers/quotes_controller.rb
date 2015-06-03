@@ -113,9 +113,9 @@ class QuotesController < InheritedResources::Base
         :is_rushed, :qty, :deadline_is_specified,
         quote_request_ids: [],
         line_items_attributes: [
-         :name, :quantity, :taxable, :description, :id,
-         :imprintable_variant_id, :unit_price, :_destroy, :url,
-         :group_name
+          :name, :quantity, :taxable, :description, :id,
+          :imprintable_variant_id, :unit_price, :_destroy, :url,
+          :group_name
         ],
         line_items_from_group_attributes: [
           :imprintable_group_id, :quantity, :decoration_price,

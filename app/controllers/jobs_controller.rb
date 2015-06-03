@@ -108,6 +108,7 @@ class JobsController < InheritedResources::Base
           line_items_attributes: line_items_attributes,
           imprints_attributes: [
             :id, :job_id, :description, :print_location_id,
+            :number_format, :name_format,
             :_destroy
           ]
         }

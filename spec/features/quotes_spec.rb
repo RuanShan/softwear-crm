@@ -113,10 +113,10 @@ feature 'Quotes management', quote_spec: true, js: true do
 
   scenario 'Insightly forms dynamically changed fields', edit1: true do
     allow_any_instance_of(InsightlyHelper).to receive(:insightly_available?).and_return true
-    allow_any_instance_of(InsightlyHelper).to receive(:insightly_categories).and_return [] 
-    allow_any_instance_of(InsightlyHelper).to receive(:insightly_pipelines).and_return [] 
-    allow_any_instance_of(InsightlyHelper).to receive(:insightly_opportunity_profiles).and_return [] 
-    allow_any_instance_of(InsightlyHelper).to receive(:insightly_bid_tiers).and_return ["unassigned", "Tier 1 ($1 - $249)", "Tier 2 ($250 - $499)", "Tier 3 ($500 - $999)", "Tier 4 ($1000 and up)"] 
+    allow_any_instance_of(InsightlyHelper).to receive(:insightly_categories).and_return []
+    allow_any_instance_of(InsightlyHelper).to receive(:insightly_pipelines).and_return []
+    allow_any_instance_of(InsightlyHelper).to receive(:insightly_opportunity_profiles).and_return []
+    allow_any_instance_of(InsightlyHelper).to receive(:insightly_bid_tiers).and_return ["unassigned", "Tier 1 ($1 - $249)", "Tier 2 ($250 - $499)", "Tier 3 ($500 - $999)", "Tier 4 ($1000 and up)"]
 
     visit new_quote_path
     click_button 'Next' 
@@ -185,6 +185,54 @@ feature 'Quotes management', quote_spec: true, js: true do
     expect(job.line_items.where(imprintable_variant_id: best_variant)).to exist
     expect(job.imprints.size).to eq 1
     expect(job.imprints.first.imprint_method).to eq imprint_method_2
+  end
+
+  scenario 'I can add a name/number imprint', bug_fix: true, imprint: true, story_654: true, retry: 2 do
+    imprintable_group; imprint_method_1; imprint_method_2
+    create :imprint_with_name_number
+
+    visit edit_quote_path quote
+    find('a', text: 'Line Items').click
+
+    click_link 'Add A New Group'
+
+    select imprintable_group.name, from: 'Imprintable group'
+    fill_in 'Quantity', with: 10
+    fill_in 'Decoration price', with: 12.55
+
+    click_button 'Add Imprintable Group'
+
+    expect(page).to have_content 'Quote was successfully updated.'
+
+    visit edit_quote_path quote
+    find('a', text: 'Line Items').click
+    sleep 1
+
+    click_link 'Add Imprint'
+    wait_for_ajax
+    sleep 1
+    within '.imprint-entry[data-id="-1"]' do
+      find('select[name=imprint_method]').select 'Name/Number'
+      wait_for_ajax
+      sleep 1
+      fill_in 'Description', with: 'Omg name/number'
+    end
+
+    sleep 1
+    click_button 'Save Line Item Changes'
+    wait_for_ajax
+
+    find('.js-name-format-field').set 'Le name'
+    sleep 1
+    find('.js-number-format-field').set 'Le number'
+    sleep 1
+
+    click_button 'Save Line Item Changes'
+    wait_for_ajax
+
+    visit edit_quote_path quote
+
+    expect(Imprint.where(name_format: 'Le name', number_format: 'Le number')).to exist
   end
 
   scenario 'I can add a different imprint right after creating a group with one', bug_fix: true, imprint: true do

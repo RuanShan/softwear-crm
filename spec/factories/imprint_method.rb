@@ -8,6 +8,10 @@ FactoryGirl.define do
         after(:create) { |im| create(:valid_ink_color, imprint_method_id: im.id) }
         after(:create) { |pl| create(:valid_print_location, imprint_method_id: pl.id) }
       end
+
+      factory :name_number_imprint_method do
+        name 'Name/Number'
+      end
     end
   end
 end

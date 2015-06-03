@@ -14,6 +14,10 @@ FactoryGirl.define do
       factory :valid_print_location do
         imprint_method { |pl| pl.association(:valid_imprint_method) }
       end
+
+      factory :print_location_with_name_number do
+        imprint_method { |i| i.association(:name_number_imprint_method) }
+      end
     end
   end
 end
