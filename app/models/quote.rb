@@ -485,7 +485,7 @@ class Quote < ActiveRecord::Base
   end
 
   def create_insightly_opportunity
-    return if insightly.nil?
+    return if insightly.nil? || !insightly_opportunity_id.blank?
 
     begin
       op = insightly.create_opportunity(
