@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150602213906) do
+ActiveRecord::Schema.define(version: 20150603185400) do
 
   create_table "activities", force: :cascade do |t|
     t.integer  "trackable_id",   limit: 4
@@ -124,7 +124,7 @@ ActiveRecord::Schema.define(version: 20150602213906) do
   add_index "colors", ["retail"], name: "index_colors_on_retail", using: :btree
 
   create_table "comments", force: :cascade do |t|
-    t.string   "title",            limit: 50,    default: ""
+    t.string   "title",            limit: 140,   default: ""
     t.text     "comment",          limit: 65535
     t.integer  "commentable_id",   limit: 4
     t.string   "commentable_type", limit: 255

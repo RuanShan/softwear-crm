@@ -14,8 +14,8 @@
       </p>
 
       <%= bootstrap_form_for [quote, Comment.new], id: 'comment-form', remote: true do |f| %>
-        <%= f.text_field :title %>
-        <%= f.text_area :comment %>
+        <%= f.text_field :title, maxlength: 140 %>
+        <%= f.text_area :comment, maxlength: 65500 %>
         <%= f.check_box :public %>
         <%= f.submit 'Add Note', class: 'btn btn-success' %>
       <% end %>
