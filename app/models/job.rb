@@ -18,10 +18,10 @@ class Job < ActiveRecord::Base
   has_many :artwork_request_jobs
   has_many :artwork_requests, through: :artwork_request_jobs
   has_many :colors, -> {readonly}, through: :imprintable_variants
-  has_many :imprints
+  has_many :imprints, dependent: :destroy
   has_many :imprintables, -> {readonly}, through: :imprintable_variants
   has_many :imprintable_variants, -> {readonly}, through: :line_items
-  has_many :line_items, as: :line_itemable
+  has_many :line_items, as: :line_itemable, dependent: :destroy 
 
   accepts_nested_attributes_for :line_items, :imprints, allow_destroy: true
 

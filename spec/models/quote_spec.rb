@@ -457,61 +457,80 @@ describe Quote, quote_spec: true do
         }
       context 'no change was made' do 
         it 'returns {}' do 
-          expect(quote.activity_updated_quote_fields_hash).to eq({})
+          expect(quote.activity_parameters_hash).to eq({})
         end
       end
 
       it 'analyzes the quote and returns a hash of fields that have changed', story: '600' do
         quote.first_name = 'Jim'
         quote.is_rushed = true        
-        expect(quote.activity_updated_quote_fields_hash).to eq(success_hash)
+        expect(quote.activity_parameters_hash).to eq(success_hash)
       end
     end
 
-    describe '#activity_add_an_imprintable_hash', pending: 'ToDo: Delete', story_600: true do 
-      let(:quote) { create(:valid_quote) }
+    describe '#activity_add_an_imprintable_hash', story_600: true do 
+      let!(:quote) { create(:valid_quote) }
 
       context 'no change was made' do 
         it 'returns {}' do 
-          expect(quote.activity_add_an_imprintable_hash).to eq({})
+          expect(quote.activity_parameters_hash).to eq({})
         end
       end
 
-        context 'two imprintables were added' do 
-          let(:success_hash) {
-          {
-            'imprintables' => [
-            1 =>  {
-                "imprintable_id" => 1,
-                "imprintable_price" => 0.70, 
-                "group_id" => 1, #group_id
-                "tier" => 3,
-                "quantity" => 100,
-                "decoration_price" => 1.50
-              },
-            2 =>  {
-                "imprintable_id" => 4,
-                "imprintable_price" => 0.90, 
-                "group_id" => 3, #group_id
-                "tier" => 1,
-                "quantity" => 130,
-                "decoration_price" => 1.33
-              }
-            ]
+      context 'two imprintables were added' do 
+        let(:success_hash) {
+        {
+          :imprintables => {
+          1 =>  {
+              :imprintable_id => 1,
+              :imprintable_price => 0.70, 
+              :job_id => 1,
+              :tier => 3,
+              :quantity => 3,
+              :decoration_price => 1.50
+            },
+          2 =>  {
+              :imprintable_id => 2,
+              :imprintable_price => 0.90, 
+              :job_id => 1, 
+              :tier => 1,
+              :quantity => 3,
+              :decoration_price => 1.33
+            }
           }
         }
+      }
+    
+      let!(:group) { create(:job, jobbable_id: quote.id, jobbable_type: 'Quote', name: 'A', description: 'b') }
+      let(:iv1) { create(:valid_imprintable_variant) }
+      let(:iv2) { create(:valid_imprintable_variant) }
+      let(:iv3) { create(:valid_imprintable_variant) }
+      let(:line_item_1) { create(:line_item, line_itemable_id: group.id, line_itemable_type: 'Job', imprintable_variant_id: iv1.id, imprintable_price: 0.70, decoration_price: 1.50, tier: 3) }
+      let(:line_item_2) { create(:line_item, line_itemable_id: group.id, line_itemable_type: 'Job', imprintable_variant_id: iv2.id, imprintable_price: 0.90, decoration_price: 1.33, tier: 1) }
       
-        let(:group) {create(:job, jobbable_id: job.id, jobbable_type: 'Quote', name: 'A', description: 'b') }
-        let(:line_item_1) { build(:line_item) }
-        let(:line_item_2) { build(:line_item) }
-        
-        it 'returns a hash with the imprintables added and the details about where they were added' do 
-          quote.jobs.first.line_items << [line_item_1, line_item_2]
-          expect(quote.activity_add_an_imprintable_hash).to eq(success_hash)
-        end
+      it 'returns a hash with the imprintables added and the details about where they were added' do 
+      #  quote.instance_variable_set("@imprintable_line_item_added_ids", [1,2])
+        quote.instance_variable_set("@imprintable_line_item_added_ids", [line_item_1.id, line_item_2.id])
+        expect(quote.activity_parameters_hash).to eq(success_hash)
       end
-      
     end
+    describe '#added_a_line_item_group_hash', story_600: true do
+      let(:success_hash) {
+        "imprintables" => {
+          1 => 0.10,
+          2 => 0.50
+        }, 
+        "imprints" => { 
+          1 => "1-blue",
+          2 => "3-green" 
+        },
+        "name" => "group1",
+        "ID" => 1, #group id aka job id
+        "quantity" => 100,
+        "decoration_price" => 1.50
+      }
+    end
+  end
 
     
 

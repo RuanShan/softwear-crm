@@ -17,7 +17,7 @@ class LineItem < ActiveRecord::Base
   scope :imprintable, -> { where.not imprintable_variant_id: nil }
 
   belongs_to :imprintable_variant
-  belongs_to :line_itemable, polymorphic: true
+  belongs_to :line_itemable, polymorphic: true, touch: true
 
   validates :description, presence: true, unless: :imprintable?
   validates :imprintable_variant_id,

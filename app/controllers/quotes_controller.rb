@@ -74,12 +74,14 @@ class QuotesController < InheritedResources::Base
     # for update a quote, it works here
     
     super do |format|
-      format.js {
-        byebug
-      }
-      format.html { 
-        redirect_to action: :edit
-      }
+      format.js do
+       @quote.create_activity key: @quote.activity_key, owner: current_user, parameters: @quote.activity_parameters   
+      end
+
+      format.html do 
+       @quote.create_activity key: @quote.activity_key, owner: current_user, parameters: @quote.activity_parameters   
+       redirect_to action: :edit
+      end
     end
   end
 

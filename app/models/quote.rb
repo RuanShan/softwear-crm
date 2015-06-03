@@ -296,7 +296,8 @@ class Quote < ActiveRecord::Base
     # NOTE it is assumed that the job passed is valid. (The interface shouldn't
     # allow an invaild one.)
     return if job.nil?
-
+    
+    @imprintable_line_item_added_ids = []
     attrs[:imprintables].map do |imprintable_id|
       imprintable = Imprintable.find imprintable_id
 
@@ -309,8 +310,8 @@ class Quote < ActiveRecord::Base
       line_item.imprintable_variant_id =
         imprintable.imprintable_variants.pluck(:id).first
       # TODO error out if that imprintable variant id is nil
-
       line_item.save!
+      @imprintable_line_item_added_ids << line_item.id
     end
   end
 
@@ -592,8 +593,40 @@ class Quote < ActiveRecord::Base
     line_items.where(imprintable_variant_id: nil)
   end
 
-  def activity_updated_quote_fields_hash 
+  def activity_key 
+   if @group_added_id
+    return 'quote.added_line_item_group'
+   elsif @quote_line_items_or_imprints_changed
+    return 'quote.updated_line_item'
+   elsif @imprintable_line_item_added_ids 
+    return 'quote.added_an_imprintable'
+   else
+    return 'quote.update'
+   end
+  end 
+  
+  def activity_parameters_hash
     hash = {}
+    if @group_added_id
+      # populate hash with ALL the info for the group
+      hash[:imprintables] = {}
+      hash[:imprints] = {}     
+    elsif @quote_line_items_or_imprints_changed
+      # This is the big ass one
+      #
+    elsif @imprintable_line_item_added_ids 
+      hash[:imprintables] = {}
+      @imprintable_line_item_added_ids.each do |li|
+        hash[:imprintables][li] = {}         
+        line_item = LineItem.find(li)
+        hash[:imprintables][li][:tier] = line_item.tier
+        hash[:imprintables][li][:imprintable_price] = line_item.imprintable_price.to_f
+        hash[:imprintables][li][:quantity] = line_item.quantity
+        hash[:imprintables][li][:decoration_price] = line_item.decoration_price.to_f
+        hash[:imprintables][li][:imprintable_id] = line_item.imprintable_id
+        hash[:imprintables][li][:job_id] = line_item.line_itemable_id
+    end 
+   else
     changed_attrs = self.attribute_names.select{ | attr| self.send("#{attr}_changed?")} 
     changed_attrs.each do |attr|
       hash[attr] = {
@@ -601,11 +634,8 @@ class Quote < ActiveRecord::Base
         "new" => self.send("#{attr}")  # self.name
       }
     end
-    hash
-  end
-
-  def activity_add_a_group_hash
-    
+   end
+   hash
   end
 
   private
