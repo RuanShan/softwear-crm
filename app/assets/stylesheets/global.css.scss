@@ -35,6 +35,10 @@
   display: none;
 }
 
+.select2-dropdown--below {
+  z-index: 9999999 !important;
+}
+
 #dock {
   position: fixed;
   bottom: 0;

@@ -1,3 +1,5 @@
+$.fn.modal.Constructor.prototype.enforceFocus = ->
+
 $(window).load ->
   $("#flashModal").modal "show"
   $("#errorsModal").modal "show"
