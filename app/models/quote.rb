@@ -62,6 +62,7 @@ class Quote < ActiveRecord::Base
     :insightly_bid_amount,
     :insightly_bid_tier_id,
     :insightly_opportunity_id
+    #, :insightly_whos_responsible_id
   ]
 
   MARKUPS_AND_OPTIONS_JOB_NAME = '_markupsandoptions_'
@@ -70,6 +71,7 @@ class Quote < ActiveRecord::Base
 
   belongs_to :salesperson, class_name: User
   belongs_to :store
+  belongs_to :insightly_whos_responsible, class_name: User
   has_many :email_templates
   has_many :emails, as: :emailable, class_name: Email, dependent: :destroy
   has_many :quote_request_quotes
@@ -492,6 +494,15 @@ class Quote < ActiveRecord::Base
     return if insightly.nil? || !insightly_opportunity_id.blank?
 
     begin
+      unless insightly_whos_responsible_id.nil?
+        /(?<name_part>[\w\.-]+)@/ =~ insightly_whos_responsible.email
+        unless name_part.nil?
+          responsible_user = insightly.get_users(
+            '$filter' => "startswith(EMAIL_ADDRESS, '#{name_part}')"
+          ).first
+        end
+      end
+
       op = insightly.create_opportunity(
         opportunity: {
           opportunity_name:    name,
@@ -507,6 +518,7 @@ class Quote < ActiveRecord::Base
           customfields:        insightly_customfields,
           links:               insightly_contact_links,
         }
+          .merge(responsible_user ? { responsible_user_id: responsible_user.user_id } : {})
       )
       self.insightly_opportunity_id = op.opportunity_id
       self.save(validate: false)

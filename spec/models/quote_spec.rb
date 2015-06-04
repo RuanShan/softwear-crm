@@ -158,6 +158,32 @@ describe Quote, quote_spec: true do
           expect(subject.reload.insightly_opportunity_id).to eq 123
         end
 
+        context 'given an insightly_whos_responsible_id', story_670: true do
+          let!(:responsible_user) { create(:alternate_user, email: 'testguy@annarbortees.com') }
+
+          it 'adds their insightly user id to the create_opportunity call' do
+            subject = create :valid_quote, insightly_whos_responsible_id: responsible_user.id
+            dummy_insightly = Object.new
+            subject.insightly_pipeline_id = 10
+            allow(subject).to receive(:insightly_description).and_return 'desc'
+            allow(subject).to receive(:insightly_bid_amount).and_return 15
+            allow(subject).to receive(:insightly_stage_id).and_return 1
+            allow(subject).to receive(:insightly_category_id).and_return 3
+
+            expect(dummy_insightly).to receive(:get_users)
+              .with("$filter" => "startswith(EMAIL_ADDRESS, 'testguy')")
+              .and_return [double('insightly user', user_id: 559)]
+
+            expect(dummy_insightly).to receive(:create_opportunity)
+              .with(opportunity: hash_including(responsible_user_id: 559))
+              .and_return(double('Opportunity', opportunity_id: 123))
+
+            allow(subject).to receive(:insightly).and_return dummy_insightly
+
+            subject.create_insightly_opportunity
+          end
+        end
+
         context '#insightly_stage_id', story_603: true do
           subject { create :valid_quote, insightly_pipeline_id: 2 }
           let!(:dummy_insightly) { Object.new }

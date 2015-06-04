@@ -2,6 +2,8 @@
   <h4>You must have a valid Insightly API Key to set these fields.</h4>
 <% end %>
 
+<%= f.hidden_field :insightly_whos_responsible_id, value: current_user.id %>
+
 <div class="form-group">
   <%= f.label :insightly_category_id, 'Category' %>
   <%= f.error_for :insightly_category_id %>

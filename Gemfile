@@ -60,7 +60,7 @@ gem 'remotipart'
 gem 'public_activity', github: 'AnnArborTees/public_activity', branch: 'master'
 gem 'sunspot_solr'
 gem 'progress_bar'
-gem 'insightly2'
+gem 'insightly2', github: 'AnnArborTees/insightly-ruby'
 gem 'freshdesk', github: 'annarbortees/freshdesk-api'
 gem 'simple_token_authentication'
 gem 'sinatra', require: false

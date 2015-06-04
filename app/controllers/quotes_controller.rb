@@ -110,7 +110,7 @@ class QuotesController < InheritedResources::Base
         :email, :informal, :phone_number, :first_name, :last_name, :company,
         :twitter, :name, :valid_until_date, :estimated_delivery_date,
         :salesperson_id, :store_id, :shipping, :quote_source, :freshdesk_ticket_id,
-        :is_rushed, :qty, :deadline_is_specified,
+        :is_rushed, :qty, :deadline_is_specified, :insightly_whos_responsible_id,
         quote_request_ids: [],
         line_items_attributes: [
           :name, :quantity, :taxable, :description, :id,

@@ -1,4 +1,12 @@
 GIT
+  remote: git://github.com/AnnArborTees/insightly-ruby.git
+  revision: 329e2c63c36fc2aee8b6e73382be18bd9fe0e3ac
+  specs:
+    insightly2 (0.1.8)
+      activesupport
+      faraday
+
+GIT
   remote: git://github.com/AnnArborTees/public_activity.git
   revision: aae6d11702991411c49446db4784fcb91376e0a1
   branch: master
@@ -257,9 +265,6 @@ GEM
       has_scope (~> 0.6.0.rc)
       railties (>= 3.2, < 5)
       responders
-    insightly2 (0.1.8)
-      activesupport
-      faraday
     jbuilder (1.5.3)
       activesupport (>= 3.0.0)
       multi_json (>= 1.2.0)
@@ -530,7 +535,7 @@ DEPENDENCIES
   google_drive
   hirb
   inherited_resources
-  insightly2
+  insightly2!
   jbuilder (~> 1.2)
   jquery-fileupload-rails
   jquery-rails
