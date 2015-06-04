@@ -177,7 +177,7 @@ describe Quote, quote_spec: true do
           end
         end
 
-        context '#insightly_customfields', story_514: true do
+        context '#insightly_customfields', story_514: true, customfields: true do
           subject { create :valid_quote }
           def customfields
             subject.insightly_customfields
@@ -233,10 +233,10 @@ describe Quote, quote_spec: true do
             )
           end
 
-          context 'when #is_rushed is true' do
+          context 'when #deadline_is_specified? is true' do
             it 'adds OPPORTUNITY_FIELD_1 with estimated_delivery_date.strftime("%F %T")' do
               subject.estimated_delivery_date = 5.days.from_now
-              subject.is_rushed = true
+              subject.deadline_is_specified = true
               expect(customfields).to include(
                 custom_field_id: 'OPPORTUNITY_FIELD_1',
                 field_value: subject.estimated_delivery_date.strftime('%F %T')
@@ -244,9 +244,9 @@ describe Quote, quote_spec: true do
             end
           end
 
-          context 'when #is_rushed is false' do
+          context 'when #deadline_is_specified? is false' do
             it 'does not add OPPORTUNITY_FIELD_1' do
-              subject.is_rushed = false
+              subject.deadline_is_specified = false
               expect(customfields.flat_map(&:values)).to_not include 'OPPORTUNITY_FIELD_1'
             end
           end

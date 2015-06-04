@@ -565,6 +565,19 @@ class Quote < ActiveRecord::Base
     end
   end
 
+=begin
+ Here are the field names as of june 4 2015:
+
+  OPPORTUNITY_FIELD_3: Did the Customer Request a Specific Deadline? (DROPDOWN)
+  OPPORTUNITY_FIELD_5: Did the Customer Request a Rush Deadline? (DROPDOWN)
+  OPPORTUNITY_FIELD_1: Hard Deadline is... (DATE)
+  OPPORTUNITY_FIELD_2: QTY (TEXT)
+  OPPORTUNITY_FIELD_12: Categories/Profile (Use) (DROPDOWN)
+  OPPORTUNITY_FIELD_10: Source of Lead (DROPDOWN)
+  OPPORTUNITY_FIELD_11: Bid Amount Tier (DROPDOWN)
+
+ Run `bundle exec rake insightly:custom_fields` to generate this list
+=end
   def insightly_customfields
     fields = []
     if insightly_opportunity_profile_id
@@ -587,7 +600,7 @@ class Quote < ActiveRecord::Base
       custom_field_id: 'OPPORTUNITY_FIELD_5',
       field_value: yes_or_no(is_rushed?)
     }
-    if is_rushed?
+    if deadline_is_specified?
       fields << {
         custom_field_id: 'OPPORTUNITY_FIELD_1',
         field_value: estimated_delivery_date.strftime('%F %T')
