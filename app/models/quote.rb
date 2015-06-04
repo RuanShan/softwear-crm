@@ -87,7 +87,7 @@ class Quote < ActiveRecord::Base
   validates :store, presence: true
   validates :valid_until_date, presence: true
   validates :shipping, price: true
-  validates *(INSIGHTLY_FIELDS - [:insightly_opportunity_id]), presence: true, if: :salesperson_has_insightly?
+  validates *(INSIGHTLY_FIELDS - [:insightly_opportunity_id]), presence: true, if: :should_validate_insightly_fields?
 
   after_save :set_quote_request_statuses_to_quoted
   after_create :enqueue_create_freshdesk_ticket
@@ -314,6 +314,10 @@ class Quote < ActiveRecord::Base
     end
   end
 
+  def should_validate_insightly_fields?
+    should_access_third_parties? && salesperson_has_insightly? && insightly_opportunity_id.blank?
+  end
+
   def salesperson_has_insightly?
     !salesperson.try(:insightly_api_key).blank?
   end
@@ -379,7 +383,7 @@ class Quote < ActiveRecord::Base
   end
 
   def enqueue_create_freshdesk_ticket
-    self.delay(queue: 'api').create_freshdesk_ticket
+    self.delay(queue: 'api').create_freshdesk_ticket if should_access_third_parties?
   end
 
   def create_freshdesk_ticket
@@ -481,7 +485,7 @@ class Quote < ActiveRecord::Base
 
 
   def enqueue_create_insightly_opportunity
-    self.delay(queue: 'api').create_insightly_opportunity
+    self.delay(queue: 'api').create_insightly_opportunity if should_access_third_parties?
   end
 
   def create_insightly_opportunity

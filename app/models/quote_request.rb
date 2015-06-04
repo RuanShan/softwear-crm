@@ -170,7 +170,7 @@ class QuoteRequest < ActiveRecord::Base
   private
 
   def enqueue_link_integrated_crm_contacts
-    self.delay(queue: 'api').link_integrated_crm_contacts
+    self.delay(queue: 'api').link_integrated_crm_contacts if should_access_third_parties?
   end
 
   def link_integrated_crm_contacts

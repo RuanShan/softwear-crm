@@ -7,6 +7,10 @@ module IntegratedCrms
     end
   end
 
+  def should_access_third_parties?
+    !Rails.env.development? || Figaro.env.integrated_crms.try(:downcase) == 'true'
+  end
+
   def insightly
     raise "Set insightly api key with `set_insightly_api_key` in class "\
           "definition." if @@insightly_api_key_source.nil?
