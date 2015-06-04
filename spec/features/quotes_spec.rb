@@ -111,7 +111,7 @@ feature 'Quotes management', quote_spec: true, js: true do
     expect(quote.reload.name).to eq('New Quote Name')
   end
 
-  scenario 'Insightly forms dynamically changed fields', edit1: true do
+  scenario 'Insightly forms dynamically changed fields' do
     allow_any_instance_of(InsightlyHelper).to receive(:insightly_available?).and_return true
     allow_any_instance_of(InsightlyHelper).to receive(:insightly_categories).and_return []
     allow_any_instance_of(InsightlyHelper).to receive(:insightly_pipelines).and_return []
@@ -119,13 +119,13 @@ feature 'Quotes management', quote_spec: true, js: true do
     allow_any_instance_of(InsightlyHelper).to receive(:insightly_bid_tiers).and_return ["unassigned", "Tier 1 ($1 - $249)", "Tier 2 ($250 - $499)", "Tier 3 ($500 - $999)", "Tier 4 ($1000 and up)"]
 
     visit new_quote_path
-    click_button 'Next' 
-    click_button 'Next' 
+    click_button 'Next'
+    click_button 'Next'
    # select "Email", :from => "Category"
     expect(page).to have_select('Bid Tier', :selected => "unassigned")
     fill_in 'Estimated Quote', with: '200'
     fill_in 'Opportunity ID', with: '200'
-    expect(page).to have_field("Bid Amount", :with => "200") 
+    expect(page).to have_field("Bid Amount", :with => "200")
     expect(page).to have_select('Bid Tier', :selected => "Tier 1 ($1 - $249)")
     fill_in 'Estimated Quote', with:'275'
     fill_in 'Opportunity ID', with: '300'
@@ -141,12 +141,74 @@ feature 'Quotes management', quote_spec: true, js: true do
     expect(page).to have_select('Bid Tier', :selected => "Tier 4 ($1000 and up)")
   end
 
+  context 'When the quote lacks an insightly opportunity', story_648: true do
+    context 'when the salesperson has insightly configured' do
+      background do
+        allow_any_instance_of(Quote).to receive(:salesperson_has_insightly?).and_return true
+        allow_any_instance_of(Quote).to receive(:create_insightly_opportunity).and_return double('Insightly Opportunity')
+        quote.insightly_category_id = 1
+        quote.insightly_probability = 123
+        quote.insightly_value = 123
+        quote.insightly_pipeline_id = 2
+        quote.insightly_opportunity_profile_id = 2
+        quote.insightly_bid_amount = 2
+        quote.insightly_bid_tier_id = 24
+        quote.insightly_opportunity_id = nil
+
+        quote.save!
+      end
+
+      scenario 'I can generate an opportunity for the quote' do
+        visit edit_quote_path(quote)
+
+        find('a', text: 'Insightly').click
+
+        click_button 'Generate Opportunity'
+        wait_for_ajax
+        expect(page).to have_content 'Successfully created Insightly Opportunity'
+        click_button 'OK'
+      end
+
+      context 'when the opportunity fails to create' do
+        background do
+          allow_any_instance_of(Quote).to receive(:create_insightly_opportunity)
+            .and_return StandardError.new("There was a problem")
+        end
+
+        scenario 'I am warned' do
+          visit edit_quote_path(quote)
+
+          find('a', text: 'Insightly').click
+
+          click_button 'Generate Opportunity'
+          wait_for_ajax
+          expect(page).to have_content 'Failure'
+        end
+      end
+    end
+  end
+
+  context 'When the quote lacks a freshdesk ticket', story_648: true do
+    background do
+      allow_any_instance_of(Quote).to receive(:no_ticket_id_entered).and_return true
+      allow_any_instance_of(Quote).to receive(:create_freshdesk_ticket).and_return double('Freshdesk Ticket')
+    end
+
+    scenario 'I can generate a ticket for the quote' do
+      visit edit_quote_path(quote)
+
+      click_button 'Generate Ticket'
+      wait_for_ajax
+      expect(page).to have_content 'Successfully created Freshdesk Ticket'
+    end
+  end
+
   scenario 'A users options are properly saved', edit: true do
     visit edit_quote_path quote.id
     find('a', text: 'Details').click
-    select 'No', :from => "Informal quote?" 
-    select 'No', :from => "Did the Customer Request a Specific Deadline?" 
-    select 'Yes', :from => "Is this a rush job?" 
+    select 'No', :from => "Informal quote?"
+    select 'No', :from => "Did the Customer Request a Specific Deadline?"
+    select 'Yes', :from => "Is this a rush job?"
     click_button 'Save'
     visit current_path
     click_link 'Edit'

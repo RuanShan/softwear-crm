@@ -77,6 +77,29 @@ class QuotesController < InheritedResources::Base
     end
   end
 
+  def integrate
+    @quote = Quote.find(params[:id])
+    @integrate_with = params[:with]
+
+    @result =
+      case @integrate_with
+      when 'insightly'
+        if @quote.insightly_opportunity_id.nil?
+          @quote.create_insightly_opportunity
+        else
+          StandardError.new("quote already has an Opportunity!")
+        end
+      when 'freshdesk'
+        if @quote.freshdesk_ticket_id.nil?
+          @quote.create_freshdesk_ticket
+        else
+          StandardError.new("quote already has a Freshdesk Ticket!")
+        end
+      else StandardError.new("Unknown integration: #{params[:with] || '(none)'}")
+      end
+
+    respond_to(&:js)
+  end
 
   private
 

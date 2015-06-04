@@ -1,0 +1,32 @@
+<% if @result.kind_of? StandardError %>
+  errorModal(
+    "Error " +
+    <% if @integrate_with == 'insightly' %>
+      "creating opportunity: "
+    <% elsif @integrate_with == 'freshdesk' %>
+      "creating ticket: "
+    <% else %>
+      "doing the thing: "
+    <% end %>
+    + "<%=j @result.message %>",
+    {
+      title: "Failure"
+    }
+  );
+<% else %>
+  // hidden.bs.modal event for reload
+  successModal(
+    "Success",
+    <% if @integrate_with == 'insightly' %>
+      "Successfully created Insightly Opportunity!"
+    <% elsif @integrate_with == 'freshdesk' %>
+      "Successfully created Freshdesk Ticket!"
+    <% else %>
+      "Successfully did whatever the hell that task was!"
+    <% end %>,
+
+    function(contentModal) {
+      contentModal.on('hide.bs.modal', function() { location.reload(); });
+    }
+  );
+<% end %>

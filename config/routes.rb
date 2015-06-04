@@ -34,6 +34,9 @@ CrmSoftwearcrmCom::Application.routes.draw do
   end
 
   resources :quotes, shallow: true do
+    member do
+      put 'integrate', to: 'quotes#integrate'
+    end
     resource :emails do
       collection do
         post 'freshdesk'

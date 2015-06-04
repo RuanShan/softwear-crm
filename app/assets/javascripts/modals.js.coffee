@@ -117,17 +117,18 @@ $(document).ready ->
 
 # Opens a modal that looks just like the flash modal when
 # the flash contains a success message.
-@successModal = (titleOrBody, body) ->
+@successModal = (titleOrBody, body, setup) ->
   title =
     if body
       titleOrBody
     else
       body = titleOrBody
-      "Success!"
+      "Success"
 
   setupContentModal ($contentModal) ->
     $contentModal.find('.modal-content').addClass 'modal-content-success'
     $contentModal.find('.modal-body').addClass 'centered'
+    setup($contentModal) if setup
   showContentModal
     title: title
     body: body

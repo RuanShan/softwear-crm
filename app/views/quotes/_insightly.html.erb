@@ -1,4 +1,15 @@
 <div class='user-profile-content'>
+
+  <% if quote.insightly_opportunity_id.nil? && quote.salesperson_has_insightly? %>
+    <div>
+      <%= quote_integration_button(quote, :insightly) %>
+    </div>
+  <% elsif quote.insightly_opportunity_id.nil? %>
+    <div>
+      (Salesperson does not have insightly configured)
+    </div>
+  <% end %>
+
   <%= form_for quote, builder: LancengFormBuilder do |f| %>
     <div class="row">
       <div class="col-sm-6">

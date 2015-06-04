@@ -425,6 +425,7 @@ class Quote < ActiveRecord::Base
 
     rescue StandardError => e
       logger.error "(QUOTE - FRESHDESK) #{e.message}"
+      e
     end
   end
 
