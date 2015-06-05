@@ -28,7 +28,7 @@ namespace :quote_requests do
     end
 
     pending_entries = @db_client.query("select * from wp_rg_lead where is_read is false and date_created > '2014'")
-    if pending_entries.empty?
+    if pending_entries.size == 0
       print['no new entries']
     end
 
