@@ -22,9 +22,15 @@ namespace :quote_requests do
 
   desc 'Connect to worpress db and add pending quotes to database'
   task import_from_wordpress: :environment do
+    timestamp = Time.now.strftime("%c")
+    print = lambda do |msg|
+      puts "QUOTE REQUESTS #{timestamp} --- #{msg}"
+    end
 
     pending_entries = @db_client.query("select * from wp_rg_lead where is_read is false and date_created > '2014'")
-    puts pending_entries.count
+    if pending_entries.empty?
+      print['no new entries']
+    end
 
     pending_entries.each do |pending_entry|
       begin
@@ -56,13 +62,18 @@ namespace :quote_requests do
         ##############################
         ###### Create AATC Params ####
         ##############################
+        print['Found entry!']
         lead.each do |key, val|
+          puts "(qr) #{key}: #{val}"
+
           if key.downcase.include? 'name'
             name = val
           end
 
           if key.downcase.include? 'quant'
-            quantity = val
+            # Extract number from quantity ("1 shirt".to_i returns 0)
+            /.*(?<q>\d+).*/ =~ val
+            quantity = q
           end
 
           if key.downcase.include? 'needed'
@@ -82,8 +93,8 @@ namespace :quote_requests do
           end
         end
 
-        if quantity.nil? || date_needed.nil? || description.nil? || name.nil?
-          puts "[ERROR] Importing http://www.annarbortees.com/wp-admin/admin.php?page=gf_entries&view=entry&id=#{pending_entry['form_id']}&lid=#{pending_entry['id']}"
+        if quantity.blank? || date_needed.blank? || description.blank? || name.blank?
+          print.call "[ERROR] Importing http://www.annarbortees.com/wp-admin/admin.php?page=gf_entries&view=entry&id=#{pending_entry['form_id']}&lid=#{pending_entry['id']}"
           puts "quantity = #{quantity}\ndate_needed#{date_needed}\ndescription = #{description}\nname = #{name}\n"
         end
 
@@ -109,11 +120,13 @@ namespace :quote_requests do
           qr.created_at = pending_entry['date_created']
           qr.updated_at = pending_entry['date_created']
           qr.save!
+        else
+          print["INVALID: #{qr.inspect} ---- [#{qr.errors.full_messages.join(', ')}]"]
         end
 
 
       rescue Exception => e
-        pp e.message
+        print["#{e.class.name} --- #{e.message}"]
         pp e.backtrace
         puts "[ERROR] Importing http://www.annarbortees.com/wp-admin/admin.php?page=gf_entries&view=entry&id=#{pending_entry['form_id']}&lid=#{pending_entry['id']}"
       end
