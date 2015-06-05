@@ -300,4 +300,5 @@ describe LineItem, line_item_spec: true do
       expect(line_item.total_price).to eq(1)
     end
   end
+
 end

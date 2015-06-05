@@ -615,12 +615,7 @@ describe Quote, quote_spec: true do
 
           expect(quote.activity_parameters_hash_for_job_changes(job)).to eq(success_hash)
         end
-
     end
-
-
-
-
 
   end
 

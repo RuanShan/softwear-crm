@@ -137,6 +137,15 @@ class LineItem < ActiveRecord::Base
     unit_price && quantity ? unit_price * quantity : 'NAN'
   end
 
+  def markup_hash(markup)
+    hash = {}
+    hash[:name] = markup.name
+    hash[:description] = markup.description
+    hash[:url] = markup.url
+    hash[:unit_price] = markup.unit_price
+    hash
+  end
+
   private
 
   def imprintable_variant_exists

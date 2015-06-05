@@ -46,7 +46,6 @@ class QuotesController < InheritedResources::Base
   end
 
   def edit
-
     super do |format|
       format.html do
         @current_user = current_user
@@ -72,15 +71,18 @@ class QuotesController < InheritedResources::Base
 
   def update
     # for update a quote, it works here
-    
     Quote.public_activity_off
     super do |format|
       format.js do
+        Quote.public_activity_on
         @quote.create_activity key: @quote.activity_key, owner: current_user, parameters: @quote.activity_parameters_hash   
+        Quote.public_activity_off
       end
 
       format.html do 
+        Quote.public_activity_on
         @quote.create_activity key: @quote.activity_key, owner: current_user, parameters: @quote.activity_parameters_hash   
+        Quote.public_activity_off
         redirect_to action: :edit
       end
     end

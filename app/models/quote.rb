@@ -111,8 +111,11 @@ class Quote < ActiveRecord::Base
       ) OR
       (
         activities.trackable_type = ? AND activities.trackable_id = ?
+      ) OR
+      (
+        activities.trackable_type = "Comment" AND activities.trackable_id IN (?)
       )
-    ', *([self.class.name, id] * 2) ).order('activities.created_at DESC')
+    ', *([self.class.name, id] * 2 + [comments.map(&:id)]) ).order('activities.created_at DESC')
   end
 
   def show_quoted_email_text 
@@ -602,11 +605,12 @@ class Quote < ActiveRecord::Base
     hash[:group_id] = job.id
 
     job.line_items.each do |li|
-      hash[:imprintables][li.imprintable.id] = {}
+      hash[:imprintables][li.imprintable_id] = {}
       if li.quantity_changed?
         hash[:imprintables][li.imprintable.id][:quantity] = {}
         hash[:imprintables][li.imprintable.id][:quantity][:old] = li.quantity_was
         hash[:imprintables][li.imprintable.id][:quantity][:new] = li.quantity
+        byebug
       end
       if li.decoration_price_changed?
         hash[:imprintables][li.imprintable.id][:decoration_price] = {}
@@ -644,14 +648,15 @@ class Quote < ActiveRecord::Base
       hash[:description][:old] = job.description_was
       hash[:description][:new] = job.description
     end
+   # byebug
     hash
   end
 
   def activity_key 
    if @group_added_id
     return 'quote.added_line_item_group'
-   elsif @quote_line_items_or_imprints_changed
-    return 'quote.updated_line_item'
+  # elsif @quote_line_items_or_imprints_changed
+  #  return 'quote.updated_line_item'
    elsif @imprintable_line_item_added_ids 
     return 'quote.added_an_imprintable'
    else

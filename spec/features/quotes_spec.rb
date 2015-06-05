@@ -188,138 +188,177 @@ feature 'Quotes management', quote_spec: true, js: true do
   end
 
   scenario 'Adding an imprintable is tracked by public activity', story_600: true do
-    allow(Imprintable).to receive(:search)
-      .and_return OpenStruct.new(
-        results: [imprintable1, imprintable2, imprintable3]
-      )
+    PublicActivity.with_tracking do
+      allow(Imprintable).to receive(:search)
+        .and_return OpenStruct.new(
+          results: [imprintable1, imprintable2, imprintable3]
+        )
 
-    quote.jobs << create(:job, line_items: [create(:imprintable_line_item)])
-    job = quote.jobs.first
-    visit edit_quote_path quote
+      quote.jobs << create(:job, line_items: [create(:imprintable_line_item)])
+      job = quote.jobs.first
+      visit edit_quote_path quote
 
-    find('a', text: 'Line Items').click
+      find('a', text: 'Line Items').click
 
-    click_link 'Add an imprintable'
-    sleep 1
-    within '#imprintable-add-search' do
-      fill_in 'Terms', with: 'some imprintable'
+      click_link 'Add an imprintable'
+      sleep 1
+      within '#imprintable-add-search' do
+        fill_in 'Terms', with: 'some imprintable'
+      end
+      sleep 0.5
+      click_button 'Search'
+
+      sleep 0.5
+      find("#imprintable-result-#{imprintable1.id} input[type=checkbox]").click
+      sleep 0.1
+      find("#imprintable-result-#{imprintable3.id} input[type=checkbox]").click
+
+      select quote.jobs.first.name, from: 'Group'
+      select 'Better', from: 'Tier'
+      fill_in 'Quantity', with: '6'
+      fill_in 'Decoration price', with: '19.95'
+
+      click_button 'Add Imprintable(s)'
+      click_button 'OK'
+      click_link 'Timeline'
+      visit edit_quote_path quote
+      
+      expect(page).to have_content '19.95'
+      expect(page).to have_content '6'
     end
-    sleep 0.5
-    click_button 'Search'
-
-    sleep 0.5
-    find("#imprintable-result-#{imprintable1.id} input[type=checkbox]").click
-    sleep 0.1
-    find("#imprintable-result-#{imprintable3.id} input[type=checkbox]").click
-
-    select quote.jobs.first.name, from: 'Group'
-    select 'Better', from: 'Tier'
-    fill_in 'Quantity', with: '6'
-    fill_in 'Decoration price', with: '19.95'
-
-    click_button 'Add Imprintable(s)'
-
-    click_link 'Timeline'
-    
-    expect(page).to have_content '19.95'
-    expect(page).to have_content '6'
 
   end
 
   scenario 'Adding a note is tracked by public activity', story_600: true do 
-    visit edit_quote_path quote
-    click_link 'Notes' 
-    fill_in 'Title', with: 'Hi There' 
-    fill_in 'Comment', with: 'Comment' 
-    click_button 'Add Note'
-    click_link 'Timeline' 
-    expect(page).to have_content 'Hi There'
-    expect(page).to have_content 'Comment' 
+    PublicActivity.with_tracking do
+      visit edit_quote_path quote
+      click_link 'Notes' 
+      fill_in 'Title', with: 'Hi There' 
+      fill_in 'Comment', with: 'Comment' 
+      click_button 'Add Note'
+      wait_for_ajax
+      click_link 'Timeline' 
+      visit edit_quote_path quote
+      expect(page).to have_link 'Hi There'
+    end
   end
     
   scenario 'Adding a markup/upcharge is tracked by public activity', story_600: true do 
-    visit edit_quote_path quote
-    click_link 'Line Items' 
-    click_button "Add An Option or Markup"
-    fill_in 'Name', with: 'Mr. Money' 
-    fill_in 'Description', with: 'Cash' 
-    fill_in 'Url', with: 'www.mrmoney.com' 
-    fill_in 'Unit price', with: '999' 
-    click_button 'Add Option or Markup'
-    click_button 'OK'
-    click_link 'Timeline' 
-    expect(page).to have_content 'Mr. Money'
-    expect(page).to have_content 'Cash' 
-    expect(page).to have_content 'www.mrmoney.com' 
-    expect(page).to have_content '999' 
+    PublicActivity.with_tracking do
+      imprintable_group; imprint_method_1; imprint_method_2
+      visit edit_quote_path quote
+
+      find('a', text: 'Line Items').click
+
+      click_link 'Add A New Group'
+
+      click_link 'Add Imprint'
+      wait_for_ajax
+      find('select[name=imprint_method]').select imprint_method_2.name
+
+      select imprintable_group.name, from: 'Imprintable group'
+      fill_in 'Quantity', with: 10
+      fill_in 'Decoration price', with: 12.55
+
+      click_button 'Add Imprintable Group'
+      click_button 'OK'
+      visit edit_quote_path quote
+      click_link 'Line Items' 
+      click_link "Add An Option or Markup"
+      fill_in 'Name', with: 'Mr. Money' 
+      fill_in 'line_item[description]', with: 'Cash' 
+      fill_in 'Url', with: 'www.mrmoney.com' 
+      fill_in 'Unit price', with: '999' 
+      click_button 'Add Option or Markup'
+      wait_for_ajax
+      click_button 'OK'
+      click_link 'Timeline' 
+      visit edit_quote_path quote
+      expect(page).to have_content 'Mr. Money'
+      expect(page).to have_content 'Cash' 
+      expect(page).to have_content 'www.mrmoney.com' 
+      expect(page).to have_content '999' 
+    end
   end
 
-  scenario 'Adding a line item groups is tracked by public activity', story_600: true do
+  scenario 'Adding a line item groups is tracked by public activity', story_600xx: true do
+    PublicActivity.with_tracking do
+      imprintable_group; imprint_method_1; imprint_method_2
+      visit edit_quote_path quote
 
-    imprintable_group; imprint_method_1; imprint_method_2
-    visit edit_quote_path quote
+      find('a', text: 'Line Items').click
 
-    find('a', text: 'Line Items').click
+      click_link 'Add A New Group'
 
-    click_link 'Add A New Group'
+      click_link 'Add Imprint'
+      wait_for_ajax
+      find('select[name=imprint_method]').select imprint_method_2.name
 
-    click_link 'Add Imprint'
-    wait_for_ajax
-    find('select[name=imprint_method]').select imprint_method_2.name
+      select imprintable_group.name, from: 'Imprintable group'
+      fill_in 'Quantity', with: 10
+      fill_in 'Decoration price', with: 12.55
 
-    select imprintable_group.name, from: 'Imprintable group'
-    fill_in 'Quantity', with: 10
-    fill_in 'Decoration price', with: 12.55
+      click_button 'Add Imprintable Group'
+      wait_for_ajax
+      click_button 'OK'
+      wait_for_ajax
+      sleep 2
+      click_link 'Timeline'
+      visit edit_quote_path quote
 
-    click_button 'Add Imprintable Group'
-
-    click_link 'Timeline'
-
-    expect(page).to have_content imprintable_group.name
-    expect(page).to have_content imprint_method_2.name
-    expect(page).to have_content '10'
-    expect(page).to have_content '12.55'
+      expect(page).to have_content imprintable_group.name
+      expect(page).to have_content imprint_method_2.name
+      expect(page).to have_content '10'
+      expect(page).to have_content '12.55'
+    end
   end
 
   scenario 'Changing existing line items is tracked', story_600: true  do
-    imprintable_group; imprint_method_1; imprint_method_2
+    PublicActivity.with_tracking do
+      imprintable_group; imprint_method_1; imprint_method_2
 
-    visit edit_quote_path quote
-    find('a', text: 'Line Items').click
+      visit edit_quote_path quote
+      find('a', text: 'Line Items').click
 
-    click_link 'Add A New Group'
+      click_link 'Add A New Group'
 
-    click_link 'Add Imprint'
-    wait_for_ajax
-    find('select[name=imprint_method]').select imprint_method_1.name
+      click_link 'Add Imprint'
+      wait_for_ajax
+      find('select[name=imprint_method]').select imprint_method_1.name
 
-    select imprintable_group.name, from: 'Imprintable group'
-    fill_in 'Quantity', with: 10
-    fill_in 'Decoration price', with: 12.55
+      select imprintable_group.name, from: 'Imprintable group'
+      fill_in 'Quantity', with: 10
+      fill_in 'Decoration price', with: 12.55
 
-    click_button 'Add Imprintable Group'
+      click_button 'Add Imprintable Group'
 
-    expect(page).to have_content 'Quote was successfully updated.'
+      expect(page).to have_content 'Quote was successfully updated.'
+      click_button 'OK'
+      visit edit_quote_path quote
+      find('a', text: 'Line Items').click
 
-    visit edit_quote_path quote
-    find('a', text: 'Line Items').click
+      click_link 'Add Imprint'
+      wait_for_ajax
+      within '.imprint-entry[data-id="-1"]' do
+        find('select[name=imprint_method]').select imprint_method_2.name
+        fill_in 'Description', with: 'Yes second imprint please'
+      end
 
-    click_link 'Add Imprint'
-    wait_for_ajax
-    within '.imprint-entry[data-id="-1"]' do
-      find('select[name=imprint_method]').select imprint_method_2.name
-      fill_in 'Description', with: 'Yes second imprint please'
+      click_button 'Save Line Item Changes'
+      wait_for_ajax
+      click_button 'OK'
+
+      select imprintable_group.name, from: 'Imprintable group' 
+      fill_in 'Quantity', with: 15
+      fill_in 'Decoration price', with: 16.12
+      click_button 'Save Line Item Changes' 
+      wait_for_ajax
+      click_button 'OK'
+      click_link 'Timeline'
+      visit edit_quote_path quote
+      expect(page).to have_content '15'
+      expect(page).to have_content '16.12'  
     end
-
-    click_button 'Save Line Item Changes'
-    wait_for_ajax
-
-    select imprintable_group.name, from: 'Imprintable group' 
-    fill_in 'Quantity', with: 15
-    fill_in 'Decoration price', with: 16.12
-    click_button 'Save Line Item Changes' 
-    expect(page).to have_content '15'
-    expect(page).to have_content '16.12'  
   end
 
   scenario 'I can add a different imprint right after creating a group with one', bug_fix: true, imprint: true do

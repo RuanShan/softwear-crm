@@ -5,15 +5,9 @@ class JobsController < InheritedResources::Base
   def update
     Job.public_activity_off
     super do |success, failure|
-      byebug
       success.json do 
         render json: { result: 'success' }
-        @job.create_activity(
-            key: 'quote.updated_line_item', 
-            parameters: @job.jobbable.activity_parameters_hash_for_job_changes(@job)
-        ) if @job.jobbable_type = 'Quote'
     end
-    Job.public_activity_on
       failure.json do
         modal_html = 'ERROR'
         modal_html = render_string(partial: 'shared/modal_errors',
@@ -29,8 +23,19 @@ class JobsController < InheritedResources::Base
       @line_items = @job.line_items
       @imprints   = @job.imprints
 
-      [success, failure].each(&:js)
+      # [success, failure].each(&:js)
+      failure.js
+      success.js do |format|
+        Job.public_activity_on
+        @job.create_activity(
+            key: 'quote.updated_line_item', 
+            parameters: @job.jobbable.activity_parameters_hash_for_job_changes(@job)
+        ) if @job.jobbable_type = 'Quote'
+        Job.public_activity_off
+        format.js
+      end
     end
+    Job.public_activity_on
   end
 
   def create
