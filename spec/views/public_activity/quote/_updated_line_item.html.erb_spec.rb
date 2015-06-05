@@ -14,9 +14,9 @@ require 'spec_helper'
        expect(rendered).to have_text("From a quantity of: 12 to 40")
        expect(rendered).to have_text("From a decoration price of: $5.0 to $10.0")
        expect(rendered).to have_text("From an imprintable price of: $8.0 to $18.0")
-       expect(rendered).to have_text("From location ID: 4 to 7")
+       expect(rendered).to have_text("From location ID: 3 to 4")
        expect(rendered).to have_text("From 1-blue to 14-orange")
-       expect(rendered).to have_text("From 1-red to 11-orange")
+       expect(rendered).to have_text("From 4-green to 3-red")
     end
   end
 end

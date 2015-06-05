@@ -73,16 +73,18 @@ class QuotesController < InheritedResources::Base
   def update
     # for update a quote, it works here
     
+    Quote.public_activity_off
     super do |format|
       format.js do
-       @quote.create_activity key: @quote.activity_key, owner: current_user, parameters: @quote.activity_parameters   
+        @quote.create_activity key: @quote.activity_key, owner: current_user, parameters: @quote.activity_parameters_hash   
       end
 
       format.html do 
-       @quote.create_activity key: @quote.activity_key, owner: current_user, parameters: @quote.activity_parameters   
-       redirect_to action: :edit
+        @quote.create_activity key: @quote.activity_key, owner: current_user, parameters: @quote.activity_parameters_hash   
+        redirect_to action: :edit
       end
     end
+    Quote.public_activity_on
   end
 
 

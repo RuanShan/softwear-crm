@@ -63,65 +63,41 @@ FactoryGirl.define do
 
     factory :quote_activity_line_item_update do
       parameters(
-        "groups" => [
-           "group_id" => {
-              "imprintables" => {
-                1 => {
-                  "quantity" => {"old" => 12, "new" => 40},
-                  "decoration_price" => {"old" => 5.00, "new" => 10.00},
-                  "imprintable_price" => {"old" => 8.00, "new" => 18.00}
-                },
-                2 => {
-                  "quantity" => {"old" => 22, "new" => 30},
-                  "decoration_price" => {"old" => 4.00, "new" => 17.00},
-                  "imprintable_price" => {"old" => 4.00, "new" => 58.00}
-                }
+        "group_id" => 1,  
+        "imprintables" => {
+            1 => {
+              "quantity" => {"old" => 12, "new" => 40},
+              "decoration_price" => {"old" => 5.00, "new" => 10.00},
+              "imprintable_price" => {"old" => 8.00, "new" => 18.00}
+            },
+            2 => {
+              "quantity" => {"old" => 22, "new" => 30},
+              "decoration_price" => {"old" => 4.00, "new" => 17.00},
+              "imprintable_price" => {"old" => 4.00, "new" => 58.00}
+            }
+          }, 
+          "imprints" => {
+            1 => {
+              "old" => {
+                "description" => "1-blue",
+                "imprint_location_id" => 1
               }, 
-              "imprints" => {
-                1 => {
-                  "old" => {
-                    "description" => "1-blue",
-                    "imprint_location_id" => 1
-                  }, 
-                  "new" => {
-                    "description" => "14-orange",
-                    "imprint_location_id" => 2
-                  }
-                },
-                2 => {
-                  "old" => {
-                    "description" => "4-green",
-                    "imprint_location_id" => 3
-                  }, 
-                  "new" => {
-                    "description" => "3-red",
-                    "imprint_location_id" => 4
-                  }
-                }
+              "new" => {
+                "description" => "14-orange",
+                "imprint_location_id" => 2
               }
             },
-            "group2" => {
-              "imprintables" => {
-                1 => {
-                  "quantity" => {"old" => 12, "new" => 40},
-                  "decoration_price" => {"old" => 5.00, "new" => 10.00},
-                  "imprintable_price" => {"old" => 8.00, "new" => 18.00}
-                }
+            2 => {
+              "old" => {
+                "description" => "4-green",
+                "imprint_location_id" => 3
               }, 
-              "imprints" => {
-                1 => {
-                  "old" => {
-                    "description" => "1-red",
-                    "imprint_location_id" => 4
-                  }, 
-                  "new" => {
-                    "description" => "11-orange",
-                    "imprint_location_id" => 7
-                  }
-                }
+              "new" => {
+                "description" => "3-red",
+                "imprint_location_id" => 4
               }
             }
-        ]
+          }
       )
     end
     

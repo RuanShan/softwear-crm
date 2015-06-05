@@ -22,7 +22,7 @@ require 'spec_helper'
        expect(rendered).to have_text("Group_ID: 3")
        expect(rendered).to have_text("Group_ID: 1")
        expect(rendered).to have_text("Added Imprintable(s) 1")
-       expect(rendered).to have_text("Added Imprintable(s) 4")
+       expect(rendered).to have_text("Added Imprintable(s) 2")
     end
   end
 end

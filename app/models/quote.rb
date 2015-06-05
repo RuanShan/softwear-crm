@@ -262,6 +262,7 @@ class Quote < ActiveRecord::Base
     new_job.description = imprintable_group.description
     new_job.line_items  = new_line_items
     new_job.save!
+    @group_added_id = new_job.id
 
     attrs[:print_locations].try(:each_with_index) do |print_location_id, index|
       imprint = Imprint.new
@@ -593,6 +594,59 @@ class Quote < ActiveRecord::Base
     line_items.where(imprintable_variant_id: nil)
   end
 
+  def activity_parameters_hash_for_job_changes(job)
+    # Add your line items to your hash
+    hash = {}
+    hash[:imprintables] = {}  
+    hash[:imprints] = {}
+    hash[:group_id] = job.id
+
+    job.line_items.each do |li|
+      hash[:imprintables][li.imprintable.id] = {}
+      if li.quantity_changed?
+        hash[:imprintables][li.imprintable.id][:quantity] = {}
+        hash[:imprintables][li.imprintable.id][:quantity][:old] = li.quantity_was
+        hash[:imprintables][li.imprintable.id][:quantity][:new] = li.quantity
+      end
+      if li.decoration_price_changed?
+        hash[:imprintables][li.imprintable.id][:decoration_price] = {}
+        hash[:imprintables][li.imprintable.id][:decoration_price][:old] = li.decoration_price_was.to_f
+        hash[:imprintables][li.imprintable.id][:decoration_price][:new] = li.decoration_price.to_f
+      end
+      if li.imprintable_price_changed?
+        hash[:imprintables][li.imprintable.id][:imprintable_price] = {}
+        hash[:imprintables][li.imprintable.id][:imprintable_price][:old] = li.imprintable_price_was.to_f
+        hash[:imprintables][li.imprintable.id][:imprintable_price][:new] = li.imprintable_price.to_f
+      end
+    end
+
+    # add your imprints
+    job.imprints.each do |i|
+      hash[:imprints][i.id] = {:old => {}, :new => {}}
+      if i.description_changed?
+        hash[:imprints][i.id][:old][:description] = i.description_was
+        hash[:imprints][i.id][:new][:description] = i.description
+      end
+      if i.print_location_id_changed?
+        hash[:imprints][i.id][:old][:print_location_id] = i.print_location_id_was
+        hash[:imprints][i.id][:new][:print_location_id] = i.print_location_id
+      end
+    end
+
+    # Did name or description change?
+    if job.name_changed?
+      hash[:name] = {}
+      hash[:name][:old] = job.name_was
+      hash[:name][:new] = job.name
+    end
+    if job.description_changed?
+      hash[:description] = {}
+      hash[:description][:old] = job.description_was
+      hash[:description][:new] = job.description
+    end
+    hash
+  end
+
   def activity_key 
    if @group_added_id
     return 'quote.added_line_item_group'
@@ -610,10 +664,18 @@ class Quote < ActiveRecord::Base
     if @group_added_id
       # populate hash with ALL the info for the group
       hash[:imprintables] = {}
-      hash[:imprints] = {}     
-    elsif @quote_line_items_or_imprints_changed
-      # This is the big ass one
-      #
+      hash[:imprints] = {}
+      job = Job.find(@group_added_id)
+      job.line_items.each do |li|
+        hash[:imprintables][li.id] = li.imprintable.base_price.to_f
+      end
+      job.imprints.each do |im|
+        hash[:imprints][im.id] = im.description
+      end
+      hash[:name] = job.name
+      hash[:id] = job.id
+      hash[:decoration_price] = job.line_items.first.decoration_price.to_f
+      hash[:quantity] = job.line_items.first.quantity
     elsif @imprintable_line_item_added_ids 
       hash[:imprintables] = {}
       @imprintable_line_item_added_ids.each do |li|
@@ -625,16 +687,16 @@ class Quote < ActiveRecord::Base
         hash[:imprintables][li][:decoration_price] = line_item.decoration_price.to_f
         hash[:imprintables][li][:imprintable_id] = line_item.imprintable_id
         hash[:imprintables][li][:job_id] = line_item.line_itemable_id
-    end 
-   else
-    changed_attrs = self.attribute_names.select{ | attr| self.send("#{attr}_changed?")} 
-    changed_attrs.each do |attr|
+      end 
+    else
+      changed_attrs = self.attribute_names.select{ | attr| self.send("#{attr}_changed?")} 
+      changed_attrs.each do |attr|
       hash[attr] = {
         "old" => self.send("#{attr}_was"), # self.name_was , # self.name_was
         "new" => self.send("#{attr}")  # self.name
       }
+      end
     end
-   end
    hash
   end
 

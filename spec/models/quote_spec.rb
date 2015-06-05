@@ -514,22 +514,114 @@ describe Quote, quote_spec: true do
         expect(quote.activity_parameters_hash).to eq(success_hash)
       end
     end
+
     describe '#added_a_line_item_group_hash', story_600: true do
-      let(:success_hash) {
-        "imprintables" => {
-          1 => 0.10,
-          2 => 0.50
-        }, 
-        "imprints" => { 
-          1 => "1-blue",
-          2 => "3-green" 
-        },
-        "name" => "group1",
-        "ID" => 1, #group id aka job id
-        "quantity" => 100,
-        "decoration_price" => 1.50
-      }
+      context 'a job has been added' do
+        let!(:quote) { create(:valid_quote) }
+        let!(:line_item1) { create(:imprintable_line_item) }
+        let!(:line_item2) { create(:imprintable_line_item) }
+        let!(:imprint1) { create(:valid_imprint, description: "n\\a - Front") }
+        let!(:imprint2) { create(:valid_imprint, description: "n\\a - Left Chest") }
+        let!(:job) { create(:quote_job, line_items: [line_item1, line_item2], imprints: [imprint1, imprint2], jobbable: quote, name: "Test Job 1") }
+        let(:success_hash) {
+          {
+            :imprintables => {
+              line_item1.imprintable.id => line_item1.imprintable.base_price.to_f,
+              line_item2.imprintable.id => line_item2.imprintable.base_price.to_f
+            }, 
+            :imprints => { #WIP only print_location_id so far
+              imprint1.id =>   imprint1.description,
+              imprint2.id => imprint2.description 
+            },
+            :name => job.name,
+            :id => job.id, #group id aka job id
+            :quantity => line_item1.quantity,
+            :decoration_price => line_item1.decoration_price.to_f
+          }
+        }
+        it 'returns a hash with information about imprintables, imprints, and other fields regarding the job' do
+          quote.instance_variable_set("@group_added_id", job.id)          
+          expect(quote.activity_parameters_hash).to eq(success_hash)
+        end
+      end
     end
+    
+    describe '#activity_parameters_for_job_changed', story_600: true do
+        let!(:quote) { create(:valid_quote) }
+        let!(:line_item1) { create(:imprintable_line_item) }
+        let!(:line_item2) { create(:imprintable_line_item) }
+        let!(:imprint1) { create(:valid_imprint) }
+        let!(:imprint2) { create(:valid_imprint) }
+        let!(:job) { create(:quote_job, line_items: [line_item1, line_item2], imprints: [imprint1, imprint2], jobbable: quote) }
+        let(:success_hash) {
+          {
+            :group_id => job.id,  
+            :name => { :old => job.name_was, :new => "Wumbo"},
+            :description => { :old => job.description_was, :new => "Wumboism" },
+            :imprintables => {
+                line_item1.imprintable.id => {
+                  :quantity => {:old => line_item1.quantity_was, :new => 40},
+                  :decoration_price => {:old => line_item1.decoration_price_was.to_f, :new => 10.00},
+                  :imprintable_price => {:old => line_item1.imprintable_price_was.to_f, :new => 18.00}
+                },
+                line_item2.imprintable.id => {
+                  :quantity => {:old => line_item2.quantity_was, :new => 30},
+                  :decoration_price => {:old => line_item2.decoration_price_was.to_f, :new => 1.03},
+                  :imprintable_price => {:old => line_item2.imprintable_price_was.to_f, :new => 8.00}
+                }
+              }, 
+              :imprints => {
+                imprint1.id => {
+                  :old => {
+                    :description => imprint1.description_was,
+                    :print_location_id => imprint1.print_location_id_was
+                  }, 
+                  :new => {
+                    :description => "14-orange",
+                    :print_location_id => 2
+                  }
+                },
+                imprint2.id => {
+                  :old => {
+                    :description => imprint2.description_was,
+                    :print_location_id => imprint2.print_location_id_was
+                  }, 
+                  :new => {
+                    :description => "3-red",
+                    :print_location_id => 4
+                  }
+                }
+              }
+          }
+        }
+
+        it 'returns a hash with all updated imprint and imprintable fields for the job' do
+          # make changes to job 
+          # then check for success hash
+          line_item1.quantity = 40
+          line_item2.quantity = 30
+          line_item1.decoration_price = 10
+          line_item2.decoration_price = 1.03
+          line_item2.imprintable_price = 8
+          line_item1.imprintable_price = 18
+
+          imprint1.description = "14-orange"
+          imprint2.description = "3-red"
+          imprint1.print_location_id = "2"
+          imprint2.print_location_id = "4"
+          
+          job.name = "Wumbo"
+          job.description = "Wumboism"
+
+          expect(quote.activity_parameters_hash_for_job_changes(job)).to eq(success_hash)
+        end
+
+    end
+
+
+
+
+
   end
 
     
