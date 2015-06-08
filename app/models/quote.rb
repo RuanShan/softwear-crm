@@ -114,8 +114,11 @@ class Quote < ActiveRecord::Base
       ) OR
       (
         activities.trackable_type = "Comment" AND activities.trackable_id IN (?)
+      ) OR
+      (
+        activities.trackable_type = "Job" AND activities.trackable_id IN (?)
       )
-    ', *([self.class.name, id] * 2 + [comments.map(&:id)]) ).order('activities.created_at DESC')
+    ', *([self.class.name, id] * 2 + [comments.map(&:id), jobs.map(&:id)]) ).order('activities.created_at DESC')
   end
 
   def show_quoted_email_text 
@@ -597,42 +600,51 @@ class Quote < ActiveRecord::Base
     line_items.where(imprintable_variant_id: nil)
   end
 
-  def activity_parameters_hash_for_job_changes(job)
+  def activity_parameters_hash_for_job_changes(job, li_old, imprints_old)
     # Add your line items to your hash
     hash = {}
-    hash[:imprintables] = {}  
+    hash[:line_items] = {}  
     hash[:imprints] = {}
     hash[:group_id] = job.id
 
     job.line_items.each do |li|
-      hash[:imprintables][li.imprintable_id] = {}
-      if li.quantity_changed?
-        hash[:imprintables][li.imprintable.id][:quantity] = {}
-        hash[:imprintables][li.imprintable.id][:quantity][:old] = li.quantity_was
-        hash[:imprintables][li.imprintable.id][:quantity][:new] = li.quantity
+      hash[:line_items][li.id] = {}
+      lo = li_old.try(:find) { |l| l.id == li.id }
+      next if lo.nil?
+      if li.quantity != lo.quantity
+        hash[:line_items][li.id][:quantity] = {}
+        hash[:line_items][li.id][:quantity][:old] = lo.quantity
+        hash[:line_items][li.id][:quantity][:new] = li.quantity
+      end
+      if li.decoration_price != lo.decoration_price
+        hash[:line_items][li.id][:decoration_price] = {}
+        hash[:line_items][li.id][:decoration_price][:old] = lo.decoration_price.to_f
+        hash[:line_items][li.id][:decoration_price][:new] = li.decoration_price.to_f
+      end
+      if li.imprintable_price != lo.imprintable_price
+        hash[:line_items][li.id][:imprintable_price] = {}
+        hash[:line_items][li.id][:imprintable_price][:old] = lo.imprintable_price.to_f
+        hash[:line_items][li.id][:imprintable_price][:new] = li.imprintable_price.to_f
+      end
+      if !li.imprintable? && li.unit_price != lo.unit_price
         byebug
-      end
-      if li.decoration_price_changed?
-        hash[:imprintables][li.imprintable.id][:decoration_price] = {}
-        hash[:imprintables][li.imprintable.id][:decoration_price][:old] = li.decoration_price_was.to_f
-        hash[:imprintables][li.imprintable.id][:decoration_price][:new] = li.decoration_price.to_f
-      end
-      if li.imprintable_price_changed?
-        hash[:imprintables][li.imprintable.id][:imprintable_price] = {}
-        hash[:imprintables][li.imprintable.id][:imprintable_price][:old] = li.imprintable_price_was.to_f
-        hash[:imprintables][li.imprintable.id][:imprintable_price][:new] = li.imprintable_price.to_f
+        hash[:line_items][li.id][:unit_price] = {}
+        hash[:line_items][li.id][:unit_price][:old] = lo.unit_price.to_f
+        hash[:line_items][li.id][:unit_price][:new] = li.unit_price.to_f
       end
     end
 
     # add your imprints
     job.imprints.each do |i|
+      io = imprints_old.try(:find) { |imp| imp.id == i.id } 
+      next if io.nil?
       hash[:imprints][i.id] = {:old => {}, :new => {}}
-      if i.description_changed?
-        hash[:imprints][i.id][:old][:description] = i.description_was
+      if i.description != io.description
+        hash[:imprints][i.id][:old][:description] = io.description
         hash[:imprints][i.id][:new][:description] = i.description
       end
-      if i.print_location_id_changed?
-        hash[:imprints][i.id][:old][:print_location_id] = i.print_location_id_was
+      if i.print_location_id != io.print_location_id
+        hash[:imprints][i.id][:old][:print_location_id] = io.print_location_id
         hash[:imprints][i.id][:new][:print_location_id] = i.print_location_id
       end
     end
@@ -655,8 +667,6 @@ class Quote < ActiveRecord::Base
   def activity_key 
    if @group_added_id
     return 'quote.added_line_item_group'
-  # elsif @quote_line_items_or_imprints_changed
-  #  return 'quote.updated_line_item'
    elsif @imprintable_line_item_added_ids 
     return 'quote.added_an_imprintable'
    else

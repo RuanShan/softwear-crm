@@ -546,25 +546,31 @@ describe Quote, quote_spec: true do
       end
     end
     
-    describe '#activity_parameters_for_job_changed', story_600: true do
+    describe '#activity_parameters_for_job_changed', story_600xx: true do
         let!(:quote) { create(:valid_quote) }
         let!(:line_item1) { create(:imprintable_line_item) }
         let!(:line_item2) { create(:imprintable_line_item) }
         let!(:imprint1) { create(:valid_imprint) }
         let!(:imprint2) { create(:valid_imprint) }
+        let!(:markup1)  { create(:non_imprintable_line_item) }
+        let!(:markup2)  { create(:non_imprintable_line_item) }
         let!(:job) { create(:quote_job, line_items: [line_item1, line_item2], imprints: [imprint1, imprint2], jobbable: quote) }
+        before do
+          quote.markups_and_options_job.line_items += [markup1, markup2]
+        end
+
         let(:success_hash) {
           {
             :group_id => job.id,  
             :name => { :old => job.name_was, :new => "Wumbo"},
             :description => { :old => job.description_was, :new => "Wumboism" },
-            :imprintables => {
-                line_item1.imprintable.id => {
+            :line_items => {
+                line_item1.id => {
                   :quantity => {:old => line_item1.quantity_was, :new => 40},
                   :decoration_price => {:old => line_item1.decoration_price_was.to_f, :new => 10.00},
                   :imprintable_price => {:old => line_item1.imprintable_price_was.to_f, :new => 18.00}
                 },
-                line_item2.imprintable.id => {
+                line_item2.id => {
                   :quantity => {:old => line_item2.quantity_was, :new => 30},
                   :decoration_price => {:old => line_item2.decoration_price_was.to_f, :new => 1.03},
                   :imprintable_price => {:old => line_item2.imprintable_price_was.to_f, :new => 8.00}
@@ -595,9 +601,33 @@ describe Quote, quote_spec: true do
           }
         }
 
+        let(:success_hash_markup) {
+          {
+            :group_id => job.id,  
+            :name => { :old => job.name_was, :new => "Wumbo"},
+            :description => { :old => job.description_was, :new => "Wumboism" },
+            :line_items => {
+                markup1.id => {
+                  :unit_price => {:old => markup1.unit_price_was.to_f, :new => 40},
+                },
+                markup2.id => {
+                  :unit_price => {:old => markup2.unit_price_was.to_f, :new => 10},
+                }
+              } 
+          }
+        }
+
         it 'returns a hash with all updated imprint and imprintable fields for the job' do
           # make changes to job 
           # then check for success hash
+          l1o = LineItem.find(line_item1.id)
+          l2o = LineItem.find(line_item2.id)
+          i1o = Imprint.find(imprint1.id)
+          i2o = Imprint.find(imprint2.id)
+
+          li_old = [ l1o, l2o ]
+          i_old = [ i1o, i2o ] 
+
           line_item1.quantity = 40
           line_item2.quantity = 30
           line_item1.decoration_price = 10
@@ -613,10 +643,21 @@ describe Quote, quote_spec: true do
           job.name = "Wumbo"
           job.description = "Wumboism"
 
-          expect(quote.activity_parameters_hash_for_job_changes(job)).to eq(success_hash)
+          expect(quote.activity_parameters_hash_for_job_changes(job, li_old, i_old)).to eq(success_hash)
+        end
+
+        it 'returns a hash with updated unit price for the markup/upcharge' do
+          markup1.unit_price = 40
+          markup2.unit_price = 10
+          l1o = LineItem.find(line_item1.id)
+          l2o = LineItem.find(line_item2.id)
+          i1o = Imprint.find(imprint1.id)
+          i2o = Imprint.find(imprint2.id)
+          li_old = [ l1o, l2o ]
+          i_old = [ i1o, i2o ] 
+          expect(quote.activity_parameters_hash_for_job_changes(job, li_old, i_old)).to eq(success_hash_markup)
         end
     end
-
   end
 
     

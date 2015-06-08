@@ -3,6 +3,9 @@ class JobsController < InheritedResources::Base
   respond_to :json
 
   def update
+    @job = Job.find(params[:id])
+    @li_old = @job.line_items.to_a
+    @imprint_old = @job.imprints.to_a
     Job.public_activity_off
     super do |success, failure|
       success.json do 
@@ -29,13 +32,12 @@ class JobsController < InheritedResources::Base
         Job.public_activity_on
         @job.create_activity(
             key: 'quote.updated_line_item', 
-            parameters: @job.jobbable.activity_parameters_hash_for_job_changes(@job)
+            parameters: @job.jobbable.activity_parameters_hash_for_job_changes(@job, @li_old, @imprints_old)
         ) if @job.jobbable_type = 'Quote'
         Job.public_activity_off
         format.js
       end
     end
-    Job.public_activity_on
   end
 
   def create

@@ -24,7 +24,7 @@ FactoryGirl.define do
 
     factory :quote_activity_add_imprintable do
       parameters(
-      'imprintables' => [
+      'imprintables' => {
         1 =>  {
             "imprintable_id" => 1,
             "imprintable_price" => 0.70, 
@@ -41,7 +41,7 @@ FactoryGirl.define do
             "quantity" => 130,
             "decoration_price" => 1.33
           }
-        ]
+        }
       )
     end
 
