@@ -1,6 +1,6 @@
-@initializeProofSummernote = ->
-  sHTML = $('.summernote').val();
-  $('.summernote').code(sHTML);
+#@initializeProofSummernote = ->
+#  sHTML = $('.summernote').val();
+#  $('.summernote').code(sHTML);
 
 
 

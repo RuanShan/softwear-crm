@@ -92,9 +92,9 @@ $(document).ajaxStop(->
   $element.css('background-color', '#99ffbb')
   $element.animate {backgroundColor: returnColor}, (duration or 1000), -> $element.css 'background-color', ''
 
-@summernoteSubmit = ->
-  $(".summernote").closest("form").submit ->
-    $(".summernote").val $(".summernote").code()
+#@summernoteSubmit = ->
+#  $(".summernote").closest("form").submit ->
+#    $(".summernote").val $(".summernote").code()
 
 @styleCheckboxes = ->
   $("input").iCheck
