@@ -1,0 +1,21 @@
+<% if activity.trackable_type %>
+  <p>Added note(s) for quote, <% unless activity.trackable.nil? %>
+    <%= link_to activity.trackable.name, activity.trackable %>
+<% else %>
+  which has since been removed
+<% end %>
+  </p>
+  <ul>
+    <b>Title:</b> <%= activity.parameters['title'] %> 
+    <b>Comment:</b> <%= activity.parameters['comment'] %>
+  </ul>
+
+<% else %>
+  Added something...
+<% end %>
+
+<% if activity.recipient && activity.recipient != activity.trackable %>
+  to
+  <%= activity.recipient_type.underscore.humanize.downcase %>
+  <%= link_to activity.recipient.name, activity.recipient %>
+<% end %>

@@ -10,7 +10,7 @@ FactoryGirl.define do
     factory :quote_job do
       sequence(:name) { |s| "Test Job #{s}" }
       description 'Here is the test job description.'
-      jobbable { |o| o.association(:quote) }
+      jobbable { |o| o.association(:valid_quote) }
     end
   end
 end

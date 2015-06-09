@@ -111,21 +111,21 @@ feature 'Quotes management', quote_spec: true, js: true do
     expect(quote.reload.name).to eq('New Quote Name')
   end
 
-  scenario 'Insightly forms dynamically changed fields' do
+  scenario 'Insightly forms dynamically changed fields', edit: true do
     allow_any_instance_of(InsightlyHelper).to receive(:insightly_available?).and_return true
-    allow_any_instance_of(InsightlyHelper).to receive(:insightly_categories).and_return []
-    allow_any_instance_of(InsightlyHelper).to receive(:insightly_pipelines).and_return []
-    allow_any_instance_of(InsightlyHelper).to receive(:insightly_opportunity_profiles).and_return []
-    allow_any_instance_of(InsightlyHelper).to receive(:insightly_bid_tiers).and_return ["unassigned", "Tier 1 ($1 - $249)", "Tier 2 ($250 - $499)", "Tier 3 ($500 - $999)", "Tier 4 ($1000 and up)"]
+    allow_any_instance_of(InsightlyHelper).to receive(:insightly_categories).and_return [] 
+    allow_any_instance_of(InsightlyHelper).to receive(:insightly_pipelines).and_return [] 
+    allow_any_instance_of(InsightlyHelper).to receive(:insightly_opportunity_profiles).and_return [] 
+    allow_any_instance_of(InsightlyHelper).to receive(:insightly_bid_tiers).and_return ["unassigned", "Tier 1 ($1 - $249)", "Tier 2 ($250 - $499)", "Tier 3 ($500 - $999)", "Tier 4 ($1000 and up)"] 
 
     visit new_quote_path
-    click_button 'Next'
-    click_button 'Next'
+    click_button 'Next' 
+    click_button 'Next' 
    # select "Email", :from => "Category"
     expect(page).to have_select('Bid Tier', :selected => "unassigned")
     fill_in 'Estimated Quote', with: '200'
     fill_in 'Opportunity ID', with: '200'
-    expect(page).to have_field("Bid Amount", :with => "200")
+    expect(page).to have_field("Bid Amount", :with => "200") 
     expect(page).to have_select('Bid Tier', :selected => "Tier 1 ($1 - $249)")
     fill_in 'Estimated Quote', with:'275'
     fill_in 'Opportunity ID', with: '300'
@@ -141,74 +141,12 @@ feature 'Quotes management', quote_spec: true, js: true do
     expect(page).to have_select('Bid Tier', :selected => "Tier 4 ($1000 and up)")
   end
 
-  context 'When the quote lacks an insightly opportunity', story_648: true do
-    context 'when the salesperson has insightly configured' do
-      background do
-        allow_any_instance_of(Quote).to receive(:salesperson_has_insightly?).and_return true
-        allow_any_instance_of(Quote).to receive(:create_insightly_opportunity).and_return double('Insightly Opportunity')
-        quote.insightly_category_id = 1
-        quote.insightly_probability = 123
-        quote.insightly_value = 123
-        quote.insightly_pipeline_id = 2
-        quote.insightly_opportunity_profile_id = 2
-        quote.insightly_bid_amount = 2
-        quote.insightly_bid_tier_id = 24
-        quote.insightly_opportunity_id = nil
-
-        quote.save!
-      end
-
-      scenario 'I can generate an opportunity for the quote' do
-        visit edit_quote_path(quote)
-
-        find('a', text: 'Insightly').click
-
-        click_button 'Generate Opportunity'
-        wait_for_ajax
-        expect(page).to have_content 'Successfully created Insightly Opportunity'
-        click_button 'OK'
-      end
-
-      context 'when the opportunity fails to create' do
-        background do
-          allow_any_instance_of(Quote).to receive(:create_insightly_opportunity)
-            .and_return StandardError.new("There was a problem")
-        end
-
-        scenario 'I am warned' do
-          visit edit_quote_path(quote)
-
-          find('a', text: 'Insightly').click
-
-          click_button 'Generate Opportunity'
-          wait_for_ajax
-          expect(page).to have_content 'Failure'
-        end
-      end
-    end
-  end
-
-  context 'When the quote lacks a freshdesk ticket', story_648: true do
-    background do
-      allow_any_instance_of(Quote).to receive(:no_ticket_id_entered).and_return true
-      allow_any_instance_of(Quote).to receive(:create_freshdesk_ticket).and_return double('Freshdesk Ticket')
-    end
-
-    scenario 'I can generate a ticket for the quote' do
-      visit edit_quote_path(quote)
-
-      click_button 'Generate Ticket'
-      wait_for_ajax
-      expect(page).to have_content 'Successfully created Freshdesk Ticket'
-    end
-  end
-
   scenario 'A users options are properly saved', edit: true do
     visit edit_quote_path quote.id
     find('a', text: 'Details').click
-    select 'No', :from => "Informal quote?"
-    select 'No', :from => "Did the Customer Request a Specific Deadline?"
-    select 'Yes', :from => "Is this a rush job?"
+    select 'No', :from => "Informal quote?" 
+    select 'No', :from => "Did the Customer Request a Specific Deadline?" 
+    select 'Yes', :from => "Is this a rush job?" 
     click_button 'Save'
     visit current_path
     click_link 'Edit'
@@ -216,6 +154,26 @@ feature 'Quotes management', quote_spec: true, js: true do
     expect(page).to have_select('Informal quote?', :selected => "No")
     expect(page).to have_select('Did the Customer Request a Specific Deadline?', :selected => "No")
     expect(page).to have_select('Is this a rush job?', :selected => "Yes")
+  end
+
+  scenario 'Phone Numbers are automatically formatted to be valid Freshdesk format', story_646: true, edit: true do
+    visit edit_quote_path quote.id
+    click_button 'Details'
+    fill_in 'Phone Number', with: '+1-734-274-2659'
+    fill_in 'First Name', with: 'Wumblord'
+    expect(page).to have_field('Phone Number', :with => '+1-734-274-2659')
+    fill_in 'Phone Number', with: '17342742659'
+    fill_in 'First Name', with: 'Wumblard'
+    expect(page).to have_field('Phone Number', :with => '+1-734-274-2659')
+    fill_in 'Phone Number', with: '734-274-2659'
+    fill_in 'First Name', with: 'Yumblard'
+    expect(page).to have_field('Phone Number', :with => '+1-734-274-2659')
+    fill_in 'Phone Number', with: '7342742659'
+    fill_in 'First Name', with: 'Yumblare'
+    expect(page).to have_field('Phone Number', :with => '+1-734-274-2659')
+    fill_in 'Phone Number', with: '2742659'
+    fill_in 'First Name', with: 'Yurblare'
+    expect(page).to have_field('Phone Number', :with => '+1-734-274-2659')
   end
 
   scenario 'A user can add an imprintable group of line items to a quote', story_567: true, revamp: true, story_570: true do
@@ -249,52 +207,175 @@ feature 'Quotes management', quote_spec: true, js: true do
     expect(job.imprints.first.imprint_method).to eq imprint_method_2
   end
 
-  scenario 'I can add a name/number imprint', bug_fix: true, imprint: true, story_654: true, retry: 2 do
-    imprintable_group; imprint_method_1; imprint_method_2
-    create :imprint_with_name_number
+  scenario 'Adding an imprintable is tracked by public activity', story_600: true do
+    PublicActivity.with_tracking do
+      allow(Imprintable).to receive(:search)
+        .and_return OpenStruct.new(
+          results: [imprintable1, imprintable2, imprintable3]
+        )
 
-    visit edit_quote_path quote
-    find('a', text: 'Line Items').click
+      quote.jobs << create(:job, line_items: [create(:imprintable_line_item)])
+      job = quote.jobs.first
+      visit edit_quote_path quote
 
-    click_link 'Add A New Group'
+      find('a', text: 'Line Items').click
 
-    select imprintable_group.name, from: 'Imprintable group'
-    fill_in 'Quantity', with: 10
-    fill_in 'Decoration price', with: 12.55
-
-    click_button 'Add Imprintable Group'
-
-    expect(page).to have_content 'Quote was successfully updated.'
-
-    visit edit_quote_path quote
-    find('a', text: 'Line Items').click
-    sleep 1
-
-    click_link 'Add Imprint'
-    wait_for_ajax
-    sleep 1
-    within '.imprint-entry[data-id="-1"]' do
-      find('select[name=imprint_method]').select 'Name/Number'
-      wait_for_ajax
+      click_link 'Add an imprintable'
       sleep 1
-      fill_in 'Description', with: 'Omg name/number'
+      within '#imprintable-add-search' do
+        fill_in 'Terms', with: 'some imprintable'
+      end
+      sleep 0.5
+      click_button 'Search'
+
+      sleep 0.5
+      find("#imprintable-result-#{imprintable1.id} input[type=checkbox]").click
+      sleep 0.1
+      find("#imprintable-result-#{imprintable3.id} input[type=checkbox]").click
+
+      select quote.jobs.first.name, from: 'Group'
+      select 'Better', from: 'Tier'
+      fill_in 'Quantity', with: '6'
+      fill_in 'Decoration price', with: '19.95'
+
+      click_button 'Add Imprintable(s)'
+      click_button 'OK'
+      click_link 'Timeline'
+      visit edit_quote_path quote
+      
+      expect(page).to have_content '19.95'
+      expect(page).to have_content '6'
     end
 
-    sleep 1
-    click_button 'Save Line Item Changes'
-    wait_for_ajax
+  end
 
-    find('.js-name-format-field').set 'Le name'
-    sleep 1
-    find('.js-number-format-field').set 'Le number'
-    sleep 1
+  scenario 'Adding a note is tracked by public activity', story_600: true do 
+    PublicActivity.with_tracking do
+      visit edit_quote_path quote
+      click_link 'Notes' 
+      fill_in 'Title', with: 'Hi There' 
+      fill_in 'Comment', with: 'Comment' 
+      click_button 'Add Note'
+      wait_for_ajax
+      click_link 'Timeline' 
+      visit edit_quote_path quote
+      expect(page).to have_link 'Hi There'
+    end
+  end
+    
+  scenario 'Adding a markup/upcharge is tracked by public activity', story_600: true do 
+    PublicActivity.with_tracking do
+      imprintable_group; imprint_method_1; imprint_method_2
+      visit edit_quote_path quote
 
-    click_button 'Save Line Item Changes'
-    wait_for_ajax
+      find('a', text: 'Line Items').click
 
-    visit edit_quote_path quote
+      click_link 'Add A New Group'
 
-    expect(Imprint.where(name_format: 'Le name', number_format: 'Le number')).to exist
+      click_link 'Add Imprint'
+      wait_for_ajax
+      find('select[name=imprint_method]').select imprint_method_2.name
+
+      select imprintable_group.name, from: 'Imprintable group'
+      fill_in 'Quantity', with: 10
+      fill_in 'Decoration price', with: 12.55
+
+      click_button 'Add Imprintable Group'
+      click_button 'OK'
+      visit edit_quote_path quote
+      click_link 'Line Items' 
+      click_link "Add An Option or Markup"
+      fill_in 'Name', with: 'Mr. Money' 
+      fill_in 'line_item[description]', with: 'Cash' 
+      fill_in 'Url', with: 'www.mrmoney.com' 
+      fill_in 'Unit price', with: '999' 
+      click_button 'Add Option or Markup'
+      wait_for_ajax
+      click_button 'OK'
+      click_link 'Timeline' 
+      visit edit_quote_path quote
+      expect(page).to have_content 'Mr. Money'
+      expect(page).to have_content 'Cash' 
+      expect(page).to have_content 'www.mrmoney.com' 
+      expect(page).to have_content '999' 
+    end
+  end
+
+  scenario 'Adding a line item groups is tracked by public activity', story_600: true do
+    PublicActivity.with_tracking do
+      imprintable_group; imprint_method_1; imprint_method_2
+      visit edit_quote_path quote
+
+      find('a', text: 'Line Items').click
+
+      click_link 'Add A New Group'
+
+      click_link 'Add Imprint'
+      wait_for_ajax
+      find('select[name=imprint_method]').select imprint_method_2.name
+
+      select imprintable_group.name, from: 'Imprintable group'
+      fill_in 'Quantity', with: 10
+      fill_in 'Decoration price', with: 12.55
+
+      click_button 'Add Imprintable Group'
+      wait_for_ajax
+      click_button 'OK'
+      wait_for_ajax
+      visit edit_quote_path quote
+
+      expect(page).to have_content '10'
+      expect(page).to have_content '12.55'
+    end
+  end
+
+  scenario 'Changing existing line items is tracked', pending: "I don't know why this fails", story_600: true  do
+    PublicActivity.with_tracking do
+      imprintable_group; imprint_method_1; imprint_method_2
+
+      visit edit_quote_path quote
+      find('a', text: 'Line Items').click
+
+      click_link 'Add A New Group'
+
+      click_link 'Add Imprint'
+      wait_for_ajax
+      find('select[name=imprint_method]').select imprint_method_1.name
+
+      select imprintable_group.name, from: 'Imprintable group'
+      fill_in 'Quantity', with: 10
+      fill_in 'Decoration price', with: 12.55
+
+      click_button 'Add Imprintable Group'
+
+      expect(page).to have_content 'Quote was successfully updated.'
+      click_button 'OK'
+      visit edit_quote_path quote
+      find('a', text: 'Line Items').click
+
+      click_link 'Add Imprint'
+      wait_for_ajax
+      within '.imprint-entry[data-id="-1"]' do
+        find('select[name=imprint_method]').select imprint_method_2.name
+        fill_in 'Description', with: 'Yes second imprint please'
+      end
+      wait_for_ajax
+      click_button 'Save Line Item Changes'
+      wait_for_ajax
+      click_button 'OK'
+
+      select imprintable_group.name, from: 'Imprintable group' 
+      fill_in 'Quantity', with: 15
+      fill_in 'Decoration price', with: 16.12
+      wait_for_ajax
+      click_button 'Save Line Item Changes' 
+      wait_for_ajax
+      click_button 'OK'
+      visit edit_quote_path quote
+      visit edit_quote_path quote
+      expect(page).to have_content '15'
+      expect(page).to have_content '16.12'  
+    end
   end
 
   scenario 'I can add a different imprint right after creating a group with one', bug_fix: true, imprint: true do

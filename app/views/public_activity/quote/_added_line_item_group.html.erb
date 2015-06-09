@@ -1,0 +1,30 @@
+<% if activity.trackable_type %>
+  <p>Added line item group <%= activity.parameters["name"]  %> for quote, <% unless activity.trackable.nil? %>
+    <%= link_to activity.trackable.name, activity.trackable %>
+<% else %>
+  which has since been removed
+<% end %>
+</p>
+<p> With the following imprintable(s) </p>
+  <ul>
+    <% activity.parameters['imprintables'].each do |key, val| %> 
+      <b>For the line item: <%= key %></b> 
+      <b>With an imprintable price of: </b>$<%= activity.parameters['imprintables'][key]%>
+    <% end %>
+      <b>With a quantity of: </b> <%= activity.parameters['quantity'] %> 
+      <b>With a decoration price of: </b>$<%= activity.parameters['decoration_price'] %>
+<p> With the following imprint(s) </p>
+    <% activity.parameters['imprints'].each do |key, val| %> 
+      <%= activity.parameters['imprints'][key]%> 
+    <% end %>
+  </ul>
+
+<% else %>
+  Added something...
+<% end %>
+
+<% if activity.recipient && activity.recipient != activity.trackable %>
+  to
+  <%= activity.recipient_type.underscore.humanize.downcase %>
+  <%= link_to activity.recipient.name, activity.recipient %>
+<% end %>

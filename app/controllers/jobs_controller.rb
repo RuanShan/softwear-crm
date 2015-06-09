@@ -3,8 +3,14 @@ class JobsController < InheritedResources::Base
   respond_to :json
 
   def update
+    @job = Job.find(params[:id])
+    @li_old = @job.line_items.to_a
+    @imprint_old = @job.imprints.to_a
+    Job.public_activity_off
     super do |success, failure|
-      success.json { render json: { result: 'success' } }
+      success.json do 
+        render json: { result: 'success' }
+    end
       failure.json do
         modal_html = 'ERROR'
         modal_html = render_string(partial: 'shared/modal_errors',
@@ -20,7 +26,17 @@ class JobsController < InheritedResources::Base
       @line_items = @job.line_items
       @imprints   = @job.imprints
 
-      [success, failure].each(&:js)
+      # [success, failure].each(&:js)
+      failure.js
+      success.js do |format|
+        Job.public_activity_on
+        @job.create_activity(
+            key: 'quote.updated_line_item', 
+            parameters: @job.jobbable.activity_parameters_hash_for_job_changes(@job, @li_old, @imprints_old)
+        ) if @job.jobbable_type = 'Quote'
+        Job.public_activity_off
+        format.js
+      end
     end
   end
 
@@ -40,6 +56,7 @@ class JobsController < InheritedResources::Base
         }
       end
     end
+
   end
 
   def destroy
@@ -67,7 +84,7 @@ class JobsController < InheritedResources::Base
       format.json do
         render json: {
           result: 'success',
-          content: render_string(partial: 'job', locals: { job: @job })
+content: render_string(partial: 'job', locals: { job: @job })
         }
       end
     end
