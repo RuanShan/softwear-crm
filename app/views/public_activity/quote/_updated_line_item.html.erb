@@ -6,21 +6,23 @@
 <% end %>
 </p>
 <p> With the following line item change(s) </p>
-  <ul>
-    <% activity.parameters['imprintables'].each do |key, val| %> 
-      <b>For the line item: <%= key %></b> 
-      <% if val['quantity'] %>
-        <b>From a quantity of: <%= val['quantity']['old'] %> to <%= val['quantity']['new'] %>  </b>
-      <%end%>
-      <% if val['decoration_price'] %>
-        <b>From a decoration price of: $<%= val['decoration_price']['old'] %> to $<%= val['decoration_price']['new'] %></b>
-      <%end%>
-      <% if val['imprintable_price'] %>
-        <b>From an imprintable price of: $<%= val['imprintable_price']['old'] %> to $<%= val['imprintable_price']['new'] %></b>
-      <% if val['unit_price'] %>
-        <b>From a unit price of: $<%= val['unit_price']['old'] %> to $<%= val['unit_price']['new'] %>  </b>
-      <%end%>
-      <%end%>
+<ul>
+    <% unless activity.parameters['imprintables'].nil? %>
+      <% activity.parameters['imprintables'].each do |key, val| %> 
+        <b>For the line item: <%= key %></b> 
+        <% if val['quantity'] %>
+          <b>From a quantity of: <%= val['quantity']['old'] %> to <%= val['quantity']['new'] %>  </b>
+        <% end %>
+        <% if val['decoration_price'] %>
+          <b>From a decoration price of: $<%= val['decoration_price']['old'] %> to $<%= val['decoration_price']['new'] %></b>
+        <% end %>
+        <% if val['imprintable_price'] %>
+          <b>From an imprintable price of: $<%= val['imprintable_price']['old'] %> to $<%= val['imprintable_price']['new'] %></b>
+        <% end %>
+        <% if val['unit_price'] %>
+          <b>From a unit price of: $<%= val['unit_price']['old'] %> to $<%= val['unit_price']['new'] %>  </b>
+        <% end %>
+      <% end %>
     <% end %>
 <p> With the following imprint change(s) </p>
     <% activity.parameters['imprints'].each do |key, val| %> 

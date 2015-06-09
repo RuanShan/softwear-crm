@@ -220,6 +220,8 @@ class Job < ActiveRecord::Base
   end
 
   def check_for_line_items
+    return if jobbable_type == 'Quote'
+
     if LineItem.where(line_itemable_id: id, line_itemable_type: 'Job').exists?
       self.errors[:deletion_status] =
         'All line items must be manually removed before a job can be deleted'
