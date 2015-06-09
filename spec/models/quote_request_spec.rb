@@ -27,6 +27,19 @@ describe QuoteRequest, quote_request_spec: true, story_78: true do
     end
   end
 
+  describe 'format_phone(num)', story_646: true do
+    let(:quote_request) { create :quote_request }
+      it 'properly formats phone numbers to the freshdesk required format: +1-734-274-2659' do
+        expect(quote_request.format_phone('+1-734-274-2659')).to eq('+1-734-274-2659')
+        expect(quote_request.format_phone('17342742659')).to eq('+1-734-274-2659')
+        expect(quote_request.format_phone('734-274-2659')).to eq('+1-734-274-2659')
+        expect(quote_request.format_phone('7342742659')).to eq('+1-734-274-2659')
+        expect(quote_request.format_phone('2742659')).to eq('+1-734-274-2659')
+        expect(quote_request.format_phone('12742659')).to eq('+1-734-274-2659')
+        expect(quote_request.format_phone('112742659')).to eq('+1-734-274-2659')
+      end
+  end
+
   describe 'Freshdesk', freshdesk: true, story_512: true do
     context 'when created' do
       let(:dummy_client) { Object.new }

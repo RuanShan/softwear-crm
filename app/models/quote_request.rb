@@ -132,7 +132,7 @@ class QuoteRequest < ActiveRecord::Base
         user = JSON.parse(freshdesk.post_users(user: {
           name: name,
           email: email,
-          phone: phone_number,
+          phone: format_phone(phone_number),
           customer_id: freshdesk_company_id
         }))
           .try(:[], 'user')
@@ -149,6 +149,26 @@ class QuoteRequest < ActiveRecord::Base
       logger.error "(QUOTE REQUEST - FRESHDESK) #{e.message}"
       e
     end
+  end
+
+  def format_phone(num)
+    num.gsub!(/\D/, '')
+
+    if num.length == 11 && num[0] == '1'
+      num
+    elsif num.length == 10
+      num = '1' + num
+    elsif num.length >= 7 && num.length <= 9
+      dif = num.length - 7
+      if dif != 0
+        byebug
+        num = num.slice(dif, 7)
+      end
+      num = '1734' + num
+    end
+
+    ret = '+'
+    num = ret + num.slice(0, 1) + '-' + num.slice(1, 3) + '-' + num.slice(4, 3) + '-' + num.slice(7, 4)
   end
 
   def linked_with_freshdesk?

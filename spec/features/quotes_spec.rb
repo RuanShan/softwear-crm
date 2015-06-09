@@ -111,7 +111,7 @@ feature 'Quotes management', quote_spec: true, js: true do
     expect(quote.reload.name).to eq('New Quote Name')
   end
 
-  scenario 'Insightly forms dynamically changed fields', edit1: true do
+  scenario 'Insightly forms dynamically changed fields', edit: true do
     allow_any_instance_of(InsightlyHelper).to receive(:insightly_available?).and_return true
     allow_any_instance_of(InsightlyHelper).to receive(:insightly_categories).and_return [] 
     allow_any_instance_of(InsightlyHelper).to receive(:insightly_pipelines).and_return [] 
@@ -154,6 +154,26 @@ feature 'Quotes management', quote_spec: true, js: true do
     expect(page).to have_select('Informal quote?', :selected => "No")
     expect(page).to have_select('Did the Customer Request a Specific Deadline?', :selected => "No")
     expect(page).to have_select('Is this a rush job?', :selected => "Yes")
+  end
+
+  scenario 'Phone Numbers are automatically formatted to be valid Freshdesk format', story_646: true, edit: true do
+    visit edit_quote_path quote.id
+    click_button 'Details'
+    fill_in 'Phone Number', with: '+1-734-274-2659'
+    fill_in 'First Name', with: 'Wumblord'
+    expect(page).to have_field('Phone Number', :with => '+1-734-274-2659')
+    fill_in 'Phone Number', with: '17342742659'
+    fill_in 'First Name', with: 'Wumblard'
+    expect(page).to have_field('Phone Number', :with => '+1-734-274-2659')
+    fill_in 'Phone Number', with: '734-274-2659'
+    fill_in 'First Name', with: 'Yumblard'
+    expect(page).to have_field('Phone Number', :with => '+1-734-274-2659')
+    fill_in 'Phone Number', with: '7342742659'
+    fill_in 'First Name', with: 'Yumblare'
+    expect(page).to have_field('Phone Number', :with => '+1-734-274-2659')
+    fill_in 'Phone Number', with: '2742659'
+    fill_in 'First Name', with: 'Yurblare'
+    expect(page).to have_field('Phone Number', :with => '+1-734-274-2659')
   end
 
   scenario 'A user can add an imprintable group of line items to a quote', story_567: true, revamp: true, story_570: true do
