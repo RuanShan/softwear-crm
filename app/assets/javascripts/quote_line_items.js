@@ -39,6 +39,7 @@ function initializeQuoteLineItems() {
   $('.remove-all-line-items-btn').click(function(e) {
     e.preventDefault();
     $(this).parent().find('.rdy-to-remove').click();
+    $(this).parent().find('.js-delete-imprint-button').click();
   });
 
   $('.remove-line-item-btn').addClass('rdy-to-remove');
