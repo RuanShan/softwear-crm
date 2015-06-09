@@ -1,6 +1,9 @@
 root = exports ? this
 
 jQuery ->
+  
+  $("#imprintable_style_description").markItUp(mySettings)
+
   $('.upcharge-check-box').on 'ifChanged', ->
     field = $('.upcharge-' + $(this).data('for'))
     field.prop('disabled', !this.checked)

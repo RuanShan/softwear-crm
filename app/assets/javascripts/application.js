@@ -37,5 +37,7 @@
 //= require jquery-fileupload/vendor/tmpl
 //= require editable/bootstrap-editable
 //= require editable/rails
+//= require markitup
+//= require markitup/sets/xbbcode/set
 
 //= require_tree .
