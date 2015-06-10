@@ -14,7 +14,11 @@
         <%= select_tag :template_type, options_from_collection_for_select(@email_templates, :id, :name, include_blank: true),
                        prompt: 'Select Email Template...',
                        class: 'form-control', id: 'email-template-select',
-                       data: {model: 'quote', 'record-id' => @quote.id} %>
+                       data: {
+                         model: 'quote',
+                         'record-id' => @quote.id,
+                         freshdesk: @freshdesk
+                       } %>
         <br/>
       </div>
     </div>

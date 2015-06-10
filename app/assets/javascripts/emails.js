@@ -20,7 +20,6 @@ function freshdeskCopyBtn(event) {
 
     data.email[name] = item.value;
   });
-  data.email.body = $('#email_body').code();
 
   $.ajax({
     method: 'POST',
@@ -37,7 +36,10 @@ $(function() {
       $.ajax({
         method: 'GET',
         url: "/" + $(this).attr('data-model') + "s/" + $(this).attr('data-record-id') + '/emails/new',
-        data: { email_template_id: $(this).val() },
+        data: {
+          email_template_id: $(this).val(),
+          freshdesk: $(this).data('freshdesk')
+        },
         dataType: 'script'
       });
     }
