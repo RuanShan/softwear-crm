@@ -60,23 +60,18 @@ GIT
       mimemagic (= 0.3.0)
 
 GIT
-  remote: git@github.com:AnnArborTees/dumpsync.git
-  revision: 8244088c7f9c5647b941ae2268c1045ba5e03ac9
-  specs:
-    dumpsync (0.0.1)
-
-PATH
-  remote: ~/r/acts_as_warnable
+  remote: git@github.com:AnnArborTees/acts_as_warnable.git
+  revision: d42c4fe2ee96d159e171f3fd140dc77fc872ac41
   specs:
     acts_as_warnable (0.0.1)
       devise
       rails (~> 4.2.1)
 
-PATH
-  remote: ~/r/softwear-lib
+GIT
+  remote: git@github.com:AnnArborTees/dumpsync.git
+  revision: 8244088c7f9c5647b941ae2268c1045ba5e03ac9
   specs:
-    softwear-lib (0.0.7)
-      activesupport
+    dumpsync (0.0.1)
 
 GEM
   remote: https://rubygems.org/
@@ -582,7 +577,6 @@ DEPENDENCIES
   sidekiq-status
   simple_token_authentication
   sinatra
-  softwear-lib!
   summernote-rails
   sunspot_matchers
   sunspot_rails
