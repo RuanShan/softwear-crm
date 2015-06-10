@@ -432,7 +432,7 @@ class Quote < ActiveRecord::Base
     self.freshdesk_ticket_id = ticket.try(:[], 'display_id')
     ticket
   end
-  warn_on_failure_of :create_freshdesk_ticket
+  warn_on_failure_of :create_freshdesk_ticket, raise_anyway: true
 
   # NOTE this is unused (but reserved in case it seems handy)
   def fetch_freshdesk_ticket(from_email = 'crm@softwearcrm.com')
@@ -530,7 +530,7 @@ class Quote < ActiveRecord::Base
     self.save(validate: false)
     op
   end
-  warn_on_failure_of :create_insightly_opportunity
+  warn_on_failure_of :create_insightly_opportunity, raise_anyway: true
 
   def insightly_stage_id
     insightly
