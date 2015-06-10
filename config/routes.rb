@@ -147,4 +147,6 @@ CrmSoftwearcrmCom::Application.routes.draw do
 
   get '/undock', to: 'home#undock'
   get '/undock/:quote_request_id', to: 'home#undock'
+
+  post '/error-report', to: 'error_reports#email_report'
 end

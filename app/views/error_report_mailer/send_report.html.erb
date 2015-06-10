@@ -1,0 +1,13 @@
+<h1> <%= @user.full_name %>'s report: </h1>
+<p> <%= @user_message %> </p>
+<h1> Error details: </h1>
+<div>
+  <%= @error_class %>: <%= @error_message %>
+</div>
+<div>
+  <ul>
+    <% @backtrace.split("\n").each do |line| %>
+      <li><%= line %></li>
+    <% end %>
+  </ul>
+</div>
