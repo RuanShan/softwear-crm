@@ -1,4 +1,8 @@
   <% quote.imprintable_jobs.each do |job| %>
+    <%= link_to job_path(job.id), method: :delete, remote: true, data: {confirm: "Are you sure? This will permanently delete the job."},class: "btn btn-danger destroy-job-#{job.id}" do %>
+      <i class='fa fa-exclamation-triangle'></i> Remove Group
+    <% end %>
+
     <%= form_for job, html: { id: "job-#{job.id}", class: 'job-form-to-be-saved' }, remote: true, builder: LancengFormBuilder do |f| %>
 
       <div id="edit-quote-job-<%= job.id %>" class="quote-job-entry container-fluid" data-job-id='<%=job.id%>'>
@@ -22,7 +26,6 @@
           </div>
         </div>
 
-        <%= link_to 'Remove all', '#', class: 'remove-all-line-items-btn pull-right' %>
         <br />
 
         <% Imprintable::TIERS.each do |tier_number, tier_name| %>
@@ -53,7 +56,6 @@
               <h3>Additional Options and Markups</h3>
             </div>
           </div>
-        <%= link_to 'Remove all', '#', class: 'remove-all-line-items-btn pull-right' %>
 
           <div class="row">
             <div class="col-xs-11 col-xs-offset-1">

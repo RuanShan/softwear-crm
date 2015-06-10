@@ -1,5 +1,5 @@
 $("#js-email-customer").ready ->
-  initializeSummernote();
-  initializeProofSummernote();
+#  initializeSummernote();
+#  initializeProofSummernote();
   setSubmitTimeout();
-  summernoteSubmit();
+#  summernoteSubmit();

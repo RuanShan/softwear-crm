@@ -51,6 +51,7 @@ group :test do
   gem 'fakeredis', :require => 'fakeredis/rspec'
 end
 
+gem 'markitup-rails'
 gem 'acts_as_commentable'
 gem 'aws-sdk'
 gem 'google_drive'

@@ -1,2 +1,2 @@
-$("#js-populate-email").ready ->
-  initializeSummernote();
+#$("#js-populate-email").ready ->
+#  initializeSummernote();
