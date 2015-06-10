@@ -3,6 +3,7 @@ class QuoteRequest < ActiveRecord::Base
   include IntegratedCrms
 
   tracked by_current_user + { parameters: { s: ->(_c, r) { r.track_state_changes } } }
+  acts_as_warnable
 
   get_insightly_api_key_from { Setting.insightly_api_key }
 
@@ -87,7 +88,7 @@ class QuoteRequest < ActiveRecord::Base
     last_name
   end
 
-  def link_with_insightly!
+  def link_with_insightly
     return if insightly.nil?
 
     contact = create_insightly_contact(self)
@@ -109,7 +110,7 @@ class QuoteRequest < ActiveRecord::Base
     end
   end
 
-  def link_with_freshdesk!
+  def link_with_freshdesk
     return if freshdesk.nil?
     begin
       user = JSON.parse(freshdesk.get_users(query: "email is #{email}"))
@@ -192,9 +193,12 @@ class QuoteRequest < ActiveRecord::Base
   def enqueue_link_integrated_crm_contacts
     self.delay(queue: 'api').link_integrated_crm_contacts if should_access_third_parties?
   end
+  warn_on_failure_of :enqueue_link_integrated_crm_contacts
+  warn_on_failure_of :link_with_insightly
+  warn_on_failure_of :link_with_freshdesk
 
   def link_integrated_crm_contacts
-    link_with_insightly! unless linked_with_insightly?
-    link_with_freshdesk! unless linked_with_freshdesk?
+    link_with_insightly unless linked_with_insightly?
+    link_with_freshdesk unless linked_with_freshdesk?
   end
 end

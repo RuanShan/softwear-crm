@@ -1,0 +1,29 @@
+<h1>Warnings for Quote <%= @quote.id %>: <%= @quote.name %></h1>
+<div>
+  <%= link_to 'Back to quote', edit_quote_path(@quote), class: 'btn btn-info' %>
+
+  <% if params[:active_only] %>
+    <%= link_to "Show dismissed", quote_warnings_path(@quote.id), class: 'btn btn-submit' %>
+  <% else %>
+    <%= link_to "Hide dismissed", quote_warnings_path(@quote.id, active_only: true), class: 'btn btn-submit' %>
+  <% end %>
+</div>
+
+<div>
+  <% if @warnings.empty? %>
+    No warnings!
+  <% else %>
+    <% @warnings.each do |warning| %>
+      <div class='row'>
+        <%= warning.source %>: <%= warning.message %>
+      </div>
+      <div class='row'>
+        <% if warning.dismissed? %>
+          (Dismissed at <%= warning.dismissed_at.strftime("%c") %>)
+        <% else %>
+          <%= button_to_dismiss_warning(warning) %>
+        <% end %>
+      </div>
+    <% end %>
+  <% end %>
+</div>

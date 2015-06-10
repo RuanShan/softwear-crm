@@ -9,6 +9,7 @@ class Quote < ActiveRecord::Base
 
   acts_as_paranoid
   acts_as_commentable :public, :private
+  acts_as_warnable
   tracked by_current_user
   get_insightly_api_key_from { salesperson.try(:insightly_api_key) }
 
@@ -395,47 +396,43 @@ class Quote < ActiveRecord::Base
   def enqueue_create_freshdesk_ticket
     self.delay(queue: 'api').create_freshdesk_ticket if should_access_third_parties?
   end
+  warn_on_failure_of :enqueue_create_freshdesk_ticket
 
   def create_freshdesk_ticket
     return if freshdesk.nil? || !freshdesk_ticket_id.blank?
 
-    begin
-      if quote_requests.empty?
-        requester_info = {
-          email: email,
-          phone: phone_number,
-          name: full_name
-        }
-      else
-        requester_info = {
-          requester_id: quote_requests.first.try(:freshdesk_contact_id),
-        }
-      end
-
-      ticket = JSON.parse(freshdesk.post_tickets(
-          helpdesk_ticket: {
-            source: 2,
-            group_id: freshdesk_group_id,
-            ticket_type: 'Lead',
-            subject: "Your Quote (##{name}) from the Ann Arbor T-shirt Company",
-            custom_field: {
-              department_7483: freshdesk_department,
-              softwearcrm_quote_id_7483: id
-            },
-            description_html: freshdesk_description
-          }
-           .merge(requester_info)
-        ))
-        .try(:[], 'helpdesk_ticket')
-
-      self.freshdesk_ticket_id = ticket.try(:[], 'display_id')
-      ticket
-
-    rescue StandardError => e
-      logger.error "(QUOTE - FRESHDESK) #{e.message}"
-      e
+    if quote_requests.empty?
+      requester_info = {
+        email: email,
+        phone: phone_number,
+        name: full_name
+      }
+    else
+      requester_info = {
+        requester_id: quote_requests.first.try(:freshdesk_contact_id),
+      }
     end
+
+    ticket = JSON.parse(freshdesk.post_tickets(
+        helpdesk_ticket: {
+          source: 2,
+          group_id: freshdesk_group_id,
+          ticket_type: 'Lead',
+          subject: "Your Quote (##{name}) from the Ann Arbor T-shirt Company",
+          custom_field: {
+            department_7483: freshdesk_department,
+            softwearcrm_quote_id_7483: id
+          },
+          description_html: freshdesk_description
+        }
+         .merge(requester_info)
+      ))
+      .try(:[], 'helpdesk_ticket')
+
+    self.freshdesk_ticket_id = ticket.try(:[], 'display_id')
+    ticket
   end
+  warn_on_failure_of :create_freshdesk_ticket
 
   # NOTE this is unused (but reserved in case it seems handy)
   def fetch_freshdesk_ticket(from_email = 'crm@softwearcrm.com')
@@ -498,48 +495,42 @@ class Quote < ActiveRecord::Base
   def enqueue_create_insightly_opportunity
     self.delay(queue: 'api').create_insightly_opportunity if should_access_third_parties?
   end
+  warn_on_failure_of :enqueue_create_insightly_opportunity
 
   def create_insightly_opportunity
     return if insightly.nil? || !insightly_opportunity_id.blank?
 
-    begin
-      unless insightly_whos_responsible_id.nil?
-        /(?<name_part>[\w\.-]+)@/ =~ insightly_whos_responsible.email
-        unless name_part.nil?
-          responsible_user = insightly.get_users(
-            '$filter' => "startswith(EMAIL_ADDRESS, '#{name_part}')"
-          ).first
-        end
+    unless insightly_whos_responsible_id.nil?
+      /(?<name_part>[\w\.-]+)@/ =~ insightly_whos_responsible.email
+      unless name_part.nil?
+        responsible_user = insightly.get_users(
+          '$filter' => "startswith(EMAIL_ADDRESS, '#{name_part}')"
+        ).first
       end
-
-      op = insightly.create_opportunity(
-        opportunity: {
-          opportunity_name:    name,
-          opportunity_state:   'Open',
-          opportunity_details: insightly_description,
-          probability:         insightly_probability.to_i,
-          bid_currency:        'USD',
-          bid_amount:          insightly_bid_amount.to_i,
-          forecast_close_date: (created_at + 3.days).strftime('%F %T'),
-          pipeline_id:         insightly_pipeline_id,
-          stage_id:            insightly_stage_id,
-          category_id:         insightly_category_id,
-          customfields:        insightly_customfields,
-          links:               insightly_contact_links,
-        }
-          .merge(responsible_user ? { responsible_user_id: responsible_user.user_id } : {})
-      )
-      self.insightly_opportunity_id = op.opportunity_id
-      self.save(validate: false)
-      op
-    # rescue Insightly2::Errors::ClientError => e
-      # logger.error "(QUOTE - INSIGHTLY) #{e.class}: #{e.message}"
-      # e
-    rescue StandardError => e
-      logger.error "(QUOTE - INSIGHTLY) #{e.class}: #{e.message}"
-      e
     end
+
+    op = insightly.create_opportunity(
+      opportunity: {
+        opportunity_name:    name,
+        opportunity_state:   'Open',
+        opportunity_details: insightly_description,
+        probability:         insightly_probability.to_i,
+        bid_currency:        'USD',
+        bid_amount:          insightly_bid_amount.to_i,
+        forecast_close_date: (created_at + 3.days).strftime('%F %T'),
+        pipeline_id:         insightly_pipeline_id,
+        stage_id:            insightly_stage_id,
+        category_id:         insightly_category_id,
+        customfields:        insightly_customfields,
+        links:               insightly_contact_links,
+      }
+        .merge(responsible_user ? { responsible_user_id: responsible_user.user_id } : {})
+    )
+    self.insightly_opportunity_id = op.opportunity_id
+    self.save(validate: false)
+    op
   end
+  warn_on_failure_of :create_insightly_opportunity
 
   def insightly_stage_id
     insightly

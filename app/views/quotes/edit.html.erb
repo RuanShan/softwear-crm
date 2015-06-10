@@ -29,6 +29,11 @@
                   'data-action' => 'show', 'data-toggle' => 'tooltip', 'title' => 'Print' do %>
           <i class="fa fa-print"></i> Print Quote
       <% end %>
+
+      <%= link_to quote_warnings_path(@quote.id), class: 'btn btn-warning' do %>
+        <i class="fa fa-exclamation-triangle"></i> Warnings
+        <%= @quote.warnings.active.any? ? "(#{@quote.warnings.active.size})" : '' %>
+      <% end %>
     </div>
 </div>
 <br clear="all" />

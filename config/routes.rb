@@ -2,6 +2,7 @@ require 'sidekiq/web'
 
 CrmSoftwearcrmCom::Application.routes.draw do
   devise_for :users, controllers: { sessions: 'users/sessions' }, skip: 'registration'
+  mount ActsAsWarnable::Engine => '/'
 
   root 'home#index'
 
@@ -51,10 +52,12 @@ CrmSoftwearcrmCom::Application.routes.draw do
     end
   end
   resources :comments
+  warning_paths_for :quotes
 
   resources :quote_requests do
     get :dock
   end
+  warning_paths_for :quote_requests
 
   get '/logout' => 'users#logout'
 

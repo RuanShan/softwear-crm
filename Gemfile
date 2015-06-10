@@ -1,6 +1,7 @@
 source 'https://rubygems.org'
 
-gem 'softwear-lib'
+# TODO DONT COMMIT PATH GEM
+gem 'softwear-lib', path: '~/r/softwear-lib'
 require 'softwear/lib'
 Softwear::Lib.common_gems(self)
 

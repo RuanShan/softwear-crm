@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150604155912) do
+ActiveRecord::Schema.define(version: 20150609183058) do
 
   create_table "activities", force: :cascade do |t|
     t.integer  "trackable_id",   limit: 4
@@ -704,5 +704,14 @@ ActiveRecord::Schema.define(version: 20150604155912) do
   add_index "users", ["email"], name: "index_users_on_email", unique: true, using: :btree
   add_index "users", ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true, using: :btree
   add_index "users", ["unlock_token"], name: "index_users_on_unlock_token", unique: true, using: :btree
+
+  create_table "warnings", force: :cascade do |t|
+    t.integer  "warnable_id",   limit: 4
+    t.string   "warnable_type", limit: 255
+    t.string   "source",        limit: 255
+    t.text     "message",       limit: 65535
+    t.datetime "dismissed_at"
+    t.integer  "dismisser_id",  limit: 4
+  end
 
 end
