@@ -1,10 +1,10 @@
 <% if @email.valid? %>
   setupContentModal(function(modal) {
-    modal.find('.modal-content').addClass('freshdesk-copy-modal');
+    modal.find('.modal-dialog').addClass('modal-lg');
   });
 
   showContentModal({
-    title: 'Send Email Through Freshdesk',
+    title: 'Email Body for Freshdesk',
     body: $("<%=j render 'freshdesk', email: @email %>"),
     footer: $('<button class="btn btn-info" data-dismiss="modal">Close</button>'),
     then: function() {
