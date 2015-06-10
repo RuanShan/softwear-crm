@@ -1,5 +1,5 @@
 <%= form_for [quote, email] do |f| %>
-
+  <% unless @freshdesk == true %>
       <div class="form-group">
         <%= f.label :subject, class: 'col-sm-2 control-label' %>
         <div class="col-sm-10">
@@ -40,21 +40,23 @@
           <br/>
         </div>
       </div>
+    <%end%>
 
       <div class="form-group">
         <%= f.label :body, class: 'col-sm-2 control-label' %>
         <div class="col-sm-10">
-          <%= f.text_area :body, class: 'form-control summernote' %>
+          <%= f.text_area :body, class: 'form-control summernote', rows: 30 %>
         </div>
       </div>
 
+  <% unless @freshdesk == true %>
     <div class="form-group">
       <%= f.label :plaintext_body, class: 'col-sm-2 control-label' %>
       <div class="col-sm-10">
         <%= f.text_area :plaintext_body, class: 'form-control', rows: 30 %>
       </div>
     </div>
-
+  <% end %>
       <div class="form-group">
         <div class="col-sm-offset-2 col-sm-10">
           <!--
@@ -64,7 +66,7 @@
           -->
  
           <% unless quote.freshdesk_ticket_id.blank? %>
-            <button id='freshdesk-copypaste-btn' type='button' class='btn btn-info', style='background-color:aqua;' data-quote-id="<%= quote.id %>">
+            <button id='freshdesk-copypaste-btn' type='button' class='btn btn-warning';' data-quote-id="<%= quote.id %>">
               Prepare for Freshdesk
             </button>
           <% end %>
