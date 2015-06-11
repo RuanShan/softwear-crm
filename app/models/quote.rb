@@ -16,6 +16,13 @@ class Quote < ActiveRecord::Base
   searchable do
     text :name, :email, :first_name, :last_name,
          :company, :twitter
+
+    string :last_name
+    string :salesperson_name
+    string(:store_name) { |q| q.store.try(:name) }
+    string :name
+    time :valid_until_date
+    time :estimated_delivery_date
   end
 
   QUOTE_SOURCES = [
@@ -142,6 +149,10 @@ class Quote < ActiveRecord::Base
 
   def imprintable_jobs
     jobs.where.not(name: MARKUPS_AND_OPTIONS_JOB_NAME)
+  end
+
+  def salesperson_name
+    salesperson.try(:last_name)
   end
 
   def no_ticket_id_entered?
@@ -306,7 +317,7 @@ class Quote < ActiveRecord::Base
     # NOTE it is assumed that the job passed is valid. (The interface shouldn't
     # allow an invaild one.)
     return if job.nil?
-    
+
     @imprintable_line_item_added_ids = []
     attrs[:imprintables].map do |imprintable_id|
       imprintable = Imprintable.find imprintable_id
@@ -636,7 +647,7 @@ class Quote < ActiveRecord::Base
   def activity_parameters_hash_for_job_changes(job, li_old, imprints_old)
     # Add your line items to your hash
     hash = {}
-    hash[:line_items] = {}  
+    hash[:line_items] = {}
     hash[:imprints] = {}
     hash[:group_id] = job.id
 

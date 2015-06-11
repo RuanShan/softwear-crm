@@ -13,7 +13,7 @@ FactoryGirl.define do
         sequence(:email) { |n| "alternate_user_email_#{n}@umich.edu" }
       end
 
-      after(:create) { |u| u.confirm! }
+      after(:create) { |u| u.confirm }
       before(:create) { |u|
         store = FactoryGirl.create(:valid_store)
         u.store = store

@@ -111,6 +111,34 @@ feature 'Quotes management', quote_spec: true, js: true do
     expect(quote.reload.name).to eq('New Quote Name')
   end
 
+  context 'Sorting index results,', solr: true, story_602: true, pending: 'solr tests are problematic :(' do
+    let!(:first_by_name) { create(:valid_quote, name: 'A - first') }
+    let!(:second_by_name) { create(:valid_quote, name: 'B - second') }
+
+    let!(:first_by_valid) { create(:valid_quote, valid_until_date: Time.now, name: 'dtfirst') }
+    let!(:second_by_valid) { create(:valid_quote, valid_until_date: 2.days.ago, name: 'dtsecond') }
+
+    scenario 'A user can sort results by clicking table columns' do
+      visit quotes_path
+
+      find('th', text: 'Name').click
+      expect(page.body).to match /A - first.+B - second/m
+
+      find('th', text: 'Valid Until').click
+      expect(page.body).to match /dtfirst.+dtsecond/m
+    end
+
+    scenario 'A user can sort results, and then click again for ascending' do
+      visit quotes_path
+
+      find('th', text: 'Name').click
+      expect(page.body).to match /A - first.+B - second/m
+
+      find('th', text: 'Name').click
+      expect(page.body).to match /B - second.+A - first/m
+    end
+  end
+
   scenario 'Insightly forms dynamically changed fields', edit: true do
     allow_any_instance_of(InsightlyHelper).to receive(:insightly_available?).and_return true
     allow_any_instance_of(InsightlyHelper).to receive(:insightly_categories).and_return [] 
