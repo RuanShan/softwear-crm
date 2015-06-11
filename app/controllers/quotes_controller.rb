@@ -39,7 +39,17 @@ class QuotesController < InheritedResources::Base
         end
       end
     else
-      super do
+      if params.key?(:sort)
+        sort     = params[:sort]
+        ordering = params[:ordering]
+        page     = params[:page]
+
+        @quotes = Quote.search do
+          paginate page: page if page
+          order_by sort, ordering
+        end
+          .results
+      else
         @quotes = Quote.all.page(params[:page])
       end
     end

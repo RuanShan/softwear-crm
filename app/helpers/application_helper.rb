@@ -72,4 +72,29 @@ module ApplicationHelper
   def comment_class(comment)
     comment.role == 'public' ? 'info' : 'danger'
   end
+
+  def sortable_th(text, sort_by)
+    arrow = {}
+    data  = {}
+    data[:sort_by] = sort_by
+
+    if params[:sort] == sort_by.to_s
+      if params[:ordering] == 'desc'
+        arrow[:class] = 'fa fa-chevron-down'
+        data[:ordering] = 'asc'
+      else
+        arrow[:class] = 'fa fa-chevron-up'
+        data[:ordering] = 'desc'
+      end
+    end
+
+    content_tag(:th, class: 'sort', data: data) do
+      if arrow.empty?
+        text
+      else
+        text + ' ' +content_tag(:i, '', arrow)
+      end
+        .html_safe
+    end
+  end
 end
