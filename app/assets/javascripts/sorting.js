@@ -1,5 +1,8 @@
 function initializeSort() {
-  $('th.sort').click(function() {
+  $('th.sort').css('cursor', 'pointer');
+  $('th.sort').click(function(e) {
+    e.preventDefault();
+
     var sortBy   = $(this).data('sort-by');
     var ordering = $(this).data('ordering');
 

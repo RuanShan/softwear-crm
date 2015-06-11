@@ -80,10 +80,10 @@ module ApplicationHelper
 
     if params[:sort] == sort_by.to_s
       if params[:ordering] == 'desc'
-        arrow[:class] = 'fa fa-chevron-down'
+        arrow[:class] = 'fa fa-caret-down'
         data[:ordering] = 'asc'
       else
-        arrow[:class] = 'fa fa-chevron-up'
+        arrow[:class] = 'fa fa-caret-up'
         data[:ordering] = 'desc'
       end
     end
