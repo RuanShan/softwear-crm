@@ -1,14 +1,22 @@
 <div>In order to escalate the body of this e-mail to FreshDesk, follow these steps:</div>
-<OL> 
-  <LI>
-  <button type='button' class='btn btn-info' onclick="SelectText('freshdesk-email-temp')">Select</button>
- the body of the text by clicking
-  <button type='button' class='btn btn-info' onclick="SelectText('freshdesk-email-temp')">Select</button>
-  <LI>Press Ctrl+C to copy the text
-  <LI>Go to the 
-  <%= link_to 'Freshdesk Ticket', @quote.freshdesk_ticket_link, class: 'btn btn-info', target: '_blank', style: 'background-color: aqua;' %>
-, create a reply, and press Ctrl+V to paste the text in the body of your quote.
-</OL>
+<ol> 
+  <li class="freshdesk-step">
+    <%= link_to "Select", "#", class: 'btn btn-sm btn-primary freshdesk-select' %>
+    the body of the text by clicking
+    <%= link_to "Select", "#", class: 'btn btn-sm btn-primary freshdesk-select' %>
+  </li>
+
+  <li class="freshdesk-step">
+    Press Ctrl+C to copy the text
+  </li>
+
+  <li class="freshdesk-step">
+    Go to the 
+      <%= link_to 'Freshdesk Ticket', @quote.freshdesk_ticket_link, class: 'btn btn-success btn-sm', target: '_blank'  %>
+    , create a reply, and press Ctrl+V to paste the text in the body of your quote.
+  </li>
+</ol>
+
 <div id='freshdesk-email-temp'>
   <% if email.body.blank? %>
     <%= @email.plaintext_body %>
