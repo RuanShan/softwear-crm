@@ -1,15 +1,38 @@
-  <% quote.imprintable_jobs.each do |job| %>
-    <%= link_to job_path(job.id), method: :delete, remote: true, data: {confirm: "Are you sure? This will permanently delete the job."},class: "btn btn-danger destroy-job-#{job.id}" do %>
-      <i class='fa fa-exclamation-triangle'></i> Remove Group
-    <% end %>
+<% quote.imprintable_jobs.each do |job| %>
+
 
     <%= form_for job, html: { id: "job-#{job.id}", class: 'job-form-to-be-saved' }, remote: true, builder: LancengFormBuilder do |f| %>
 
       <div id="edit-quote-job-<%= job.id %>" class="quote-job-entry container-fluid" data-job-id='<%=job.id%>'>
+
+        <div class="col-xs-12 text-right">
+          <%= link_to job_path(job.id), method: :delete, remote: true, data: { confirm: "Are you sure? This will permanently delete the Group." }, class: "destroy-job-#{job.id}" do %>
+              Remove Group
+          <% end %>
+        </div>
+
         <div class="row">
-          <div class="col-xs-12">
-            <h3><%= f.text_field :name, class: 'job-field job-name-field' %></h3>
-            <p><%= f.text_area :description, class: 'job-field' %></p>
+          <div class="col-xs-1">
+            Group Name
+          </div>
+          <div class="col-xs-11 imprints-row">
+            <div class="imprints-row-color container-fluid">
+              <div class="imprints-container">
+                <%= f.text_field :name, class: 'job-field job-name-field' %>
+              </div>
+              <br clear="all" />
+            </div>
+          </div>
+          <div class="col-xs-1">
+            Group Description
+          </div>
+          <div class="col-xs-11 imprints-row">
+            <div class="imprints-row-color container-fluid">
+              <div class="imprints-container">
+                <%= f.text_area :description, class: 'job-field' %>
+              </div>
+              <br clear="all" />
+            </div>
           </div>
         </div>
         <div class="row">
@@ -78,7 +101,6 @@
           <i class="glyphicon glyphicon-floppy-save"></i> Save Line Item Changes
       <% end %>
     </div>
-<% # end %>
 
 <br clear="all">
 
