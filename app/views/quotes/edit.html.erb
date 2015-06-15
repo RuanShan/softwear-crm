@@ -8,14 +8,14 @@
 
       <% unless @quote.insightly_opportunity_id.blank? %>
           <%= link_to  @quote.insightly_opportunity_link, class: 'btn btn-warning',
-                       'data-action' => 'new', 'data-toggle' => 'tooltip', 'title' => 'Insightly Opportunity' do %>
+                       'data-action' => 'new', 'data-toggle' => 'tooltip', 'title' => 'Insightly Opportunity', target: '_blank' do %>
               <i class="softwear-icon-insightly-icon"></i> Insightly Opportunity
           <% end %>
       <% end %>
 
       <% unless @quote.freshdesk_ticket_id.blank? %>
           <%= link_to  @quote.freshdesk_ticket_link, class: 'btn btn-success',
-                      'data-action' => 'new', 'data-toggle' => 'tooltip', 'title' => 'Freshdesk Ticket' do %>
+                      'data-action' => 'new', 'data-toggle' => 'tooltip', 'title' => 'Freshdesk Ticket', target: '_blank' do %>
               <i class="softwear-icon-freshdesk-icon"></i> Freshdesk Ticket
           <% end %>
       <% end %>
