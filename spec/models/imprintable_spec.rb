@@ -38,7 +38,7 @@ describe Imprintable, imprintable_spec: true do
 #    it { is_expected.to validate_numericality_of(:max_imprint_height) }
 #    it { is_expected.to validate_presence_of(:max_imprint_width) }
 #    it { is_expected.to validate_numericality_of(:max_imprint_width) }
-    it { is_expected.to ensure_inclusion_of(:sizing_category).in_array Imprintable::SIZING_CATEGORIES }
+    it { is_expected.to validate_inclusion_of(:sizing_category).in_array Imprintable::SIZING_CATEGORIES }
     it { is_expected.to allow_value('http://www.foo.com', 'http://www.foo.com/shipping').for(:supplier_link) }
     it { is_expected.to_not allow_value('bad_url.com', '').for(:supplier_link).with_message('should be in format http://www.url.com/path') }
     it { is_expected.to validate_presence_of(:style_catalog_no) }
@@ -49,13 +49,13 @@ describe Imprintable, imprintable_spec: true do
     context 'if retail' do
       before { allow(subject).to receive_message_chain(:is_retail?).and_return(true) }
 
-      it { is_expected.to ensure_length_of(:sku).is_equal_to(4) }
+      it { is_expected.to validate_length_of(:sku).is_equal_to(4) }
     end
 
     context 'if not retail' do
       before { allow(subject).to receive_message_chain(:is_retail?).and_return(false) }
 
-      it { is_expected.to_not ensure_length_of(:sku).is_equal_to(4) }
+      it { is_expected.to_not validate_length_of(:sku).is_equal_to(4) }
     end
   end
 
