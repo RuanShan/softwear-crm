@@ -3,7 +3,7 @@ rvm:
   - rbx
 
 before_install:
-  - sudo gem install softwear-lib --no-ri --no-rdoc
-  - sudo gem update --system
+  - gem install softwear-lib --no-ri --no-rdoc
+  - gem update --system
 
 script: bundle exec rspec
