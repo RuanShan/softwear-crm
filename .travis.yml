@@ -4,6 +4,5 @@ rvm:
 
 before_install:
   - gem install softwear-lib --no-ri --no-rdoc
-  - gem update --system
 
 script: bundle exec rspec

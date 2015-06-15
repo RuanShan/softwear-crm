@@ -1,5 +1,7 @@
 source 'https://rubygems.org'
 
+STDERR.puts "HERE IS MY LOAD PATH: #{$LOAD_PATH.join("\n")}"
+
 require 'softwear/lib'
 Softwear::Lib.common_gems(self)
 
