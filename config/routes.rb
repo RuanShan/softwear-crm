@@ -15,6 +15,7 @@ CrmSoftwearcrmCom::Application.routes.draw do
   resources :imprintables do
     collection do
       resources :brands, :colors
+      resources :imprintable_groups
       post 'update_imprintable_variants'
 
       resources :sizes do
@@ -24,6 +25,8 @@ CrmSoftwearcrmCom::Application.routes.draw do
       end
     end
   end
+
+
 
   get 'tags/:tag', to: 'imprintables#index', as: :tag
 
@@ -62,7 +65,7 @@ CrmSoftwearcrmCom::Application.routes.draw do
   get '/logout' => 'users#logout'
 
   scope 'configuration' do
-    resources :shipping_methods, :stores, :imprintable_groups
+    resources :shipping_methods, :stores
     resources :imprint_methods do
       get '/print_locations', to: 'imprint_methods#print_locations', as: :print_locations
     end
