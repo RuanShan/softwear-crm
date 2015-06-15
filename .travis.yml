@@ -2,4 +2,6 @@ language: ruby
 rvm:
   - rbx
 
+before_install: gem install softwear-lib
+
 script: bundle exec rspec
