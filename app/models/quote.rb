@@ -671,7 +671,6 @@ class Quote < ActiveRecord::Base
         hash[:line_items][li.id][:imprintable_price][:new] = li.imprintable_price.to_f
       end
       if !li.imprintable? && li.unit_price != lo.unit_price
-        byebug
         hash[:line_items][li.id][:unit_price] = {}
         hash[:line_items][li.id][:unit_price][:old] = lo.unit_price.to_f
         hash[:line_items][li.id][:unit_price][:new] = li.unit_price.to_f
@@ -680,7 +679,7 @@ class Quote < ActiveRecord::Base
 
     # add your imprints
     job.imprints.each do |i|
-      io = imprints_old.try(:find) { |imp| imp.id == i.id } 
+      io = imprints_old.try(:find) { |imp| imp.id == i.id }
       next if io.nil?
       hash[:imprints][i.id] = {:old => {}, :new => {}}
       if i.description != io.description
@@ -704,20 +703,19 @@ class Quote < ActiveRecord::Base
       hash[:description][:old] = job.description_was
       hash[:description][:new] = job.description
     end
-   # byebug
     hash
   end
 
-  def activity_key 
+  def activity_key
    if @group_added_id
     return 'quote.added_line_item_group'
-   elsif @imprintable_line_item_added_ids 
+   elsif @imprintable_line_item_added_ids
     return 'quote.added_an_imprintable'
    else
     return 'quote.update'
    end
-  end 
-  
+  end
+
   def activity_parameters_hash
     hash = {}
     if @group_added_id
@@ -735,10 +733,10 @@ class Quote < ActiveRecord::Base
       hash[:id] = job.id
       hash[:decoration_price] = job.line_items.first.decoration_price.to_f
       hash[:quantity] = job.line_items.first.quantity
-    elsif @imprintable_line_item_added_ids 
+    elsif @imprintable_line_item_added_ids
       hash[:imprintables] = {}
       @imprintable_line_item_added_ids.each do |li|
-        hash[:imprintables][li] = {}         
+        hash[:imprintables][li] = {}
         line_item = LineItem.find(li)
         hash[:imprintables][li][:tier] = line_item.tier
         hash[:imprintables][li][:imprintable_price] = line_item.imprintable_price.to_f
@@ -746,9 +744,9 @@ class Quote < ActiveRecord::Base
         hash[:imprintables][li][:decoration_price] = line_item.decoration_price.to_f
         hash[:imprintables][li][:imprintable_id] = line_item.imprintable_id
         hash[:imprintables][li][:job_id] = line_item.line_itemable_id
-      end 
+      end
     else
-      changed_attrs = self.attribute_names.select{ | attr| self.send("#{attr}_changed?")} 
+      changed_attrs = self.attribute_names.select{ | attr| self.send("#{attr}_changed?")}
       changed_attrs.each do |attr|
       hash[attr] = {
         "old" => self.send("#{attr}_was"), # self.name_was , # self.name_was
