@@ -45,6 +45,9 @@ module ApplicationHelper
     datetime.strftime('%b %d, %Y, %I:%M %p') unless datetime.blank?
   end
 
+  def value_time(datetime)
+    datetime.strftime('%m/%d/%Y %I:%M %p') unless datetime.blank?
+  end
 
   def display_date(datetime)
     datetime.strftime('%b %d, %Y') unless datetime.blank?
