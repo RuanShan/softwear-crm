@@ -3,7 +3,6 @@ rvm:
   - rbx-2.5.2
 
 before_install:
-  - sudo apt-get install libmysqlclient-dev
-  - gem install -i ~/.rvm/rubies/rbx/gems/gems softwear-lib --no-ri --no-rdoc
+  - gem install --no-ri --no-rdoc
 
 script: bundle exec rspec
