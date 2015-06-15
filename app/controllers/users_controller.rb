@@ -12,7 +12,7 @@ class UsersController < InheritedResources::Base
     end
 
     # TODO perhaps move confirmation elsewhere using skip_confirmation!
-    user.confirm!
+    user.confirm
     user.save
 
     if user_signed_in?
@@ -26,7 +26,7 @@ class UsersController < InheritedResources::Base
     flash[:notice] = t('user_creation', full_name: user.full_name, email: user.email)
     redirect_to users_path
   end
-  
+
   def update_password
     unless @current_user.update_with_password password_params
       flash[:alert] = 'Error changing password'
