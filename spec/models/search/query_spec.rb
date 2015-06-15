@@ -50,7 +50,7 @@ describe Search::Query, search_spec: true do
         name: 'keytwo', 
         firstname: 'keyone' }
 
-      it 'combines all of the search results', solr: true do
+      it 'combines all of the search results', solr: true, pending: "solr" do
         create(:job, name: 'keyone job')
         assure_solr_search(expect: 4) do
           subject.search('keyone').combine
@@ -95,7 +95,7 @@ describe Search::Query, search_spec: true do
           order_model.add_field 'name'
         end
 
-        it 'just searches that field', solr: true, retry: 5 do
+        it 'just searches that field', solr: true, retry: 5, pending: "solr" do
           search = assure_solr_search do
             subject.search 'keywordone'
           end
@@ -134,7 +134,7 @@ describe Search::Query, search_spec: true do
           filter.save
         end
 
-        it 'applies the filter', solr: true do
+        it 'applies the filter', solr: true, pending: "solr" do
           results = assure_solr_search do
             subject.search.first.results
           end
