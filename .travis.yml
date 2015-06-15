@@ -1,0 +1,5 @@
+language: ruby
+rvm:
+  - rbx
+
+script: bundle exec rspec
