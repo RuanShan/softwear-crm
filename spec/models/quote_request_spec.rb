@@ -3,6 +3,13 @@ require 'spec_helper'
 describe QuoteRequest, quote_request_spec: true, story_78: true do
   let(:quote_request) { create :quote_request }
 
+  before do
+    allow_any_instance_of(QuoteRequest).to receive(:enqueue_link_integrated_crm_contacts) { |qr|
+      qr.link_with_insightly
+      qr.link_with_freshdesk
+    }
+  end
+
   describe 'Fields' do
     it { is_expected.to have_db_column(:name).of_type(:string) }
     it { is_expected.to have_db_column(:email).of_type(:string) }
