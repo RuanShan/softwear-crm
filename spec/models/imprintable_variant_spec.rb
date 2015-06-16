@@ -37,7 +37,7 @@ describe ImprintableVariant, imprintable_variant_spec: true do
 
     describe '#name' do
       it 'returns "color.name imprintable.name"' do
-        expect(imprintable_variant.name).to eq("#{ imprintable_variant.color.name } #{ imprintable_variant.imprintable.name }")
+        expect(imprintable_variant.name).to eq("#{ imprintable_variant.imprintable.name }")
       end
     end
 

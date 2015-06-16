@@ -39,7 +39,7 @@ describe 'quotes/show.html.erb', quote_spec: true do
   end
 
   it 'should contain a button to email a customer' do
-    expect(rendered).to have_link('Email Quote')
+    expect(rendered).to have_link('Prepare for FreshDesk')
   end
 
   it 'should contain a link to Quote#Edit' do

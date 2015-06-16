@@ -21,13 +21,13 @@ describe Setting, setting_spec: true do
         expected_hash = {
           freshdesk_email: Setting.create(name: 'freshdesk_email',
                      val: 'test@test.com',
-                     encrypted: false),
+                     encrypted: false).val(),
           freshdesk_url: Setting.create(name: 'freshdesk_url',
                      val: 'freshdesk.com',
-                     encrypted: false),
+                     encrypted: false).val(),
           freshdesk_password: Setting.create(name: 'freshdesk_password',
                      val: 'something',
-                     encrypted: true)
+                     encrypted: true).val()
         }
         expect(Setting.get_freshdesk_settings).to eq expected_hash
       end
@@ -45,9 +45,9 @@ describe Setting, setting_spec: true do
 
           ret_val = Setting.get_freshdesk_settings
 
-          expect(ret_val[:freshdesk_email].val).to eq('aww ye')
-          expect(ret_val[:freshdesk_url].val).to eq('uh')
-          expect(ret_val[:freshdesk_password].val).to eq('yeeee')
+          expect(ret_val[:freshdesk_email]).to eq('aww ye')
+          expect(ret_val[:freshdesk_url]).to eq('uh')
+          expect(ret_val[:freshdesk_password]).to eq('yeeee')
         end
       end
 
@@ -58,9 +58,7 @@ describe Setting, setting_spec: true do
 
           ret_val = Setting.get_freshdesk_settings
 
-          expect(ret_val[:freshdesk_email].val).to eq(nil)
-          expect(ret_val[:freshdesk_url].val).to eq(nil)
-          expect(ret_val[:freshdesk_password].val).to eq(nil)
+          expect(ret_val).to eq(nil)
         end
       end
     end

@@ -57,8 +57,6 @@ describe LineItem, line_item_spec: true do
 
       it { is_expected.to_not validate_presence_of :description }
       it { is_expected.to_not validate_presence_of :name }
-      it { is_expected.to validate_uniqueness_of(:imprintable_variant_id)
-             .scoped_to([:line_itemable_id, :line_itemable_type]) }
       it { is_expected.to validate_presence_of :decoration_price }
       it { is_expected.to validate_presence_of :imprintable_price }
 
@@ -251,7 +249,7 @@ describe LineItem, line_item_spec: true do
       end
 
     it 'returns the size display_value' do
-      expect(line_item.size_display).to eq(1)
+      expect(line_item.size_display).to eq('1')
     end
   end
 

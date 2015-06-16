@@ -429,7 +429,7 @@ class Quote < ActiveRecord::Base
           source: 2,
           group_id: freshdesk_group_id,
           ticket_type: 'Lead',
-          subject: "Your Quote (##{name}) from the Ann Arbor T-shirt Company",
+          subject: "Your Quote \"#{self.name}\" (##{self.id}) from the Ann Arbor T-shirt Company",
           custom_field: {
             department_7483: freshdesk_department,
             softwearcrm_quote_id_7483: id

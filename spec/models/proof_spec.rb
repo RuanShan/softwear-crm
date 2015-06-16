@@ -7,7 +7,7 @@ describe Proof, proof_spec: true do
   describe 'Relationships' do
     it { is_expected.to belong_to(:order) }
     it { is_expected.to have_many(:mockups) }
-    it { is_expected.to have_and_belong_to_many(:artworks) }
+    it { is_expected.to have_many(:artworks) }
     it { is_expected.to accept_nested_attributes_for(:mockups) }
   end
 
