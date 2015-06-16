@@ -21,20 +21,20 @@ feature 'Imprints Management', imprint_spec: true, js: true do
 
   given(:imprint) { create(:blank_imprint, job_id: job.id, print_location_id: print_location1.id) }
 
-  scenario 'user can add a new imprint to a job', retry: 1 do
+  scenario 'user can add a new imprint to a job', busted: true, retry: 1 do
     visit edit_order_path(order.id, anchor: 'jobs')
     wait_for_ajax
 
-    sleep 0.5
+    sleep 1
     first('.add-imprint').click
-    sleep 0.5
+    sleep 1
     find('.js-imprint-method-select').select imprint_method2.name
-    sleep 0.5
+    sleep 1
     find('.js-print-location-select').select print_location2.name
     expect(all('.editing-imprint').count).to be > 1
-    sleep 0.5
+    sleep 1
     find('.update-imprints').click
-    sleep 0.5
+    sleep 1
     expect(Imprint.where(job_id: job.id, print_location_id: print_location2.id)).to exist
   end
 
@@ -56,7 +56,7 @@ feature 'Imprints Management', imprint_spec: true, js: true do
     expect(Imprint.where(job_id: job.id, print_location_id: print_location2.id)).to exist
   end
 
-  scenario 'user can set the print location and print method of an imprint' do
+  scenario 'user can set the print location and print method of an imprint', busted: true do
     imprint
     visit edit_order_path(order.id, anchor: 'jobs')
     wait_for_ajax
@@ -108,7 +108,7 @@ feature 'Imprints Management', imprint_spec: true, js: true do
     expect(Imprint.where(job_id: job.id, print_location_id: print_location1.id)).to_not exist
   end
 
-  scenario 'user sees error when attempting to add 2 imprints with the same location' do
+  scenario 'user sees error when attempting to add 2 imprints with the same location', busted: true do
     imprint
     visit edit_order_path(order.id, anchor: 'jobs')
 
@@ -134,7 +134,7 @@ feature 'Imprints Management', imprint_spec: true, js: true do
     expect(Imprint.where(job_id: job.id)).to_not exist
   end
 
-  scenario 'a user can specify a name and number formats for an imprint', name_number_spec: true, story_189: true do
+  scenario 'a user can specify a name and number formats for an imprint', busted: true, name_number_spec: true, story_189: true do
     imprint
     visit edit_order_path(order.id, anchor: 'jobs')
     wait_for_ajax
