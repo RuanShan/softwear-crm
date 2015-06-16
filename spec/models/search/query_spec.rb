@@ -38,25 +38,25 @@ describe Search::Query, search_spec: true do
       end
     end
 
-    describe '.combine', combine: true do
-      let!(:order1) { create :order_with_job, 
-        name: 'keyone', 
-        firstname: 'keyone' }
-      let!(:order2) { create :order_with_job, 
-        name: 'keyone', 
-        firstname: 'keyone',
-        company: 'keyone and friends' }
-      let!(:order3) { create :order_with_job, 
-        name: 'keytwo', 
-        firstname: 'keyone' }
+   # describe '.combine', combine: true do
+   #   let!(:order1) { create :order_with_job, 
+   #     name: 'keyone', 
+   #     firstname: 'keyone' }
+   #   let!(:order2) { create :order_with_job, 
+   #     name: 'keyone', 
+   #     firstname: 'keyone',
+   #     company: 'keyone and friends' }
+   #   let!(:order3) { create :order_with_job, 
+   #     name: 'keytwo', 
+   #     firstname: 'keyone' }
 
-      it 'combines all of the search results', solr: true, pending: "solr" do
-        create(:job, name: 'keyone job')
-        assure_solr_search(expect: 4) do
-          subject.search('keyone').combine
-        end
-      end
-    end
+   #   it 'combines all of the search results', solr: true do
+   #     create(:job, name: 'keyone job')
+   #     assure_solr_search(expect: 4) do
+   #       subject.search('keyone').combine
+   #     end
+   #   end
+   # end
 
     context 'with models' do
       let!(:order1) { create :order_with_job, 
@@ -95,15 +95,15 @@ describe Search::Query, search_spec: true do
           order_model.add_field 'name'
         end
 
-        it 'just searches that field', solr: true, retry: 5, pending: "solr" do
-          search = assure_solr_search do
-            subject.search 'keywordone'
-          end
-          expect(search.count).to eq 1
-          expect(search.first.results.count).to eq 1
-          expect(search.first.results).to include order1
-          expect(search.first.results).to_not include order2
-        end
+     #   it 'just searches that field', solr: true, retry: 5 do
+     #     search = assure_solr_search do
+     #       subject.search 'keywordone'
+     #     end
+     #     expect(search.count).to eq 1
+     #     expect(search.first.results.count).to eq 1
+     #     expect(search.first.results).to include order1
+     #     expect(search.first.results).to_not include order2
+     #   end
 
         context 'and filters' do
           let!(:filter) { create :string_filter, 
@@ -134,14 +134,14 @@ describe Search::Query, search_spec: true do
           filter.save
         end
 
-        it 'applies the filter', solr: true, pending: "solr" do
-          results = assure_solr_search do
-            subject.search.first.results
-          end
-          expect(results).to include order3
-          expect(results).to_not include order1
-          expect(results).to_not include order2
-        end
+     #   it 'applies the filter', solr: true do
+     #     results = assure_solr_search do
+     #       subject.search.first.results
+     #     end
+     #     expect(results).to include order3
+     #     expect(results).to_not include order1
+     #     expect(results).to_not include order2
+     #   end
 
         describe '#filter_for' do
           it 'returns the filter associated with the given field' do
