@@ -69,7 +69,7 @@ RSpec.configure do |config|
 
   config.alias_it_should_behave_like_to :it_can, 'can'
 
-  Capybara.server_port = 90 if ENV['CI'] == 'true'
+  # Capybara.server_port = 90 if ENV['CI'] == 'true'
   Capybara.register_driver :selenium do |app|
     Capybara::Selenium::Driver.new(app, :browser => :chrome)
   end
