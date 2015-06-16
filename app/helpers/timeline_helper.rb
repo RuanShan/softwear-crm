@@ -1,6 +1,7 @@
 module TimelineHelper
   def update_order_timeline(order = nil)
     return unless order || @order
+    return unless order.class.name == 'Order'
     unless @request_time
       raise "@request_time is required to update the timeline from server side"
     end

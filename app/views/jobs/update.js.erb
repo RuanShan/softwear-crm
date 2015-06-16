@@ -64,26 +64,10 @@ $('.editing-job-field').each(function() {
 
 $('.removing-line-item').remove();
 
+<%= update_order_timeline(@line_items.first.line_itemable.try(:jobbable)) %>
 <% unless @line_items.empty? %>
-  <%= update_order_timeline(@line_items.first.line_itemable.try(:order)) %>
   window.onbeforeunload = undefined;
 <% end %>
-
-
-/*
-var handler;
-var shineEditingIn = function ($container) {
-  $editing = $container.find('.editing-imprint');
-
-  if ($editing.length) {
-    $editing.each(function() {
-      $(this).removeClass('editing-imprint');
-      $(this).find('.js-imprint-has-name-number').removeData('original-value');
-      shine($(this), true);
-    });
-  }
-};
-*/
 
 <% if @job.imprints.any? { |i| !i.valid? } %>
   errorModal(
