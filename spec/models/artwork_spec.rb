@@ -9,7 +9,7 @@ describe Artwork, artwork_spec: true do
     it { is_expected.to belong_to(:artist) }
     it { is_expected.to have_one(:artwork) }
     it { is_expected.to have_one(:preview) }
-    it { is_expected.to have_and_belong_to_many(:artwork_requests) }
+    it { is_expected.to have_many(:artwork_requests) }
     it { is_expected.to accept_nested_attributes_for(:artwork) }
     it { is_expected.to accept_nested_attributes_for(:preview) }
   end

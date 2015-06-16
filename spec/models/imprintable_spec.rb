@@ -18,8 +18,8 @@ describe Imprintable, imprintable_spec: true do
     it { is_expected.to have_many(:mirrored_coordinates).through(:mirrored_coordinate_imprintables) }
     it { is_expected.to have_many(:mirrored_coordinate_imprintables).class_name('CoordinateImprintable') }
     it { is_expected.to have_many(:sizes).through(:imprintable_variants) }
-    it { is_expected.to have_and_belong_to_many(:compatible_imprint_methods) }
-    it { is_expected.to have_and_belong_to_many(:sample_locations) }
+    it { is_expected.to have_many(:compatible_imprint_methods) }
+    it { is_expected.to have_many(:sample_locations) }
     it { is_expected.to accept_nested_attributes_for(:imprintable_categories) }
     context 'story 554', story_554: true do
       it { is_expected.to have_many(:imprintable_imprintable_groups) }
@@ -115,11 +115,10 @@ describe Imprintable, imprintable_spec: true do
   end
 
   describe '#all_categories' do
-    let(:imprintable) { build_stubbed(:blank_imprintable,
-                                       imprintable_categories: [build_stubbed(:blank_imprintable_category, name: 'Category')])}
+    let(:imprintable) { create(:valid_imprintable, imprintable_categories: [create(:blank_imprintable_category, name: 'Jackets')]) }
 
     it 'returns all of the categories for the imprintable' do
-      expect(imprintable.all_categories).to eq('Category')
+      expect(imprintable.all_categories).to eq('Jackets')
     end
   end
 

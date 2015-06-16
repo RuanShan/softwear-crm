@@ -11,9 +11,9 @@ describe ArtworkRequest, artwork_request_spec: true do
     it { is_expected.to belong_to(:print_location) }
     it { is_expected.to belong_to(:salesperson) }
     it { is_expected.to have_many(:assets) }
-    it { is_expected.to have_and_belong_to_many(:artworks) }
-    it { is_expected.to have_and_belong_to_many(:ink_colors) }
-    it { is_expected.to have_and_belong_to_many(:jobs) }
+    it { is_expected.to have_many(:artworks) }
+    it { is_expected.to have_many(:ink_colors) }
+    it { is_expected.to have_many(:jobs) }
     it { is_expected.to accept_nested_attributes_for(:assets) }
   end
 

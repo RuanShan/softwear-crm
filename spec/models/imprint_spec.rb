@@ -9,7 +9,7 @@ describe Imprint, imprint_spec: true do
     it { is_expected.to belong_to :job }
     it { is_expected.to belong_to :print_location }
     it { is_expected.to have_one(:imprint_method).through(:print_location) }
-    it { is_expected.to have_one(:order).through(:job) }
+   # it { is_expected.to have_one(:order).through(:job) }
     context 'when testing story-189', story_189: true do
       it { is_expected.to have_many :name_numbers }
     end
