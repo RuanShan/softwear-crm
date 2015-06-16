@@ -45,31 +45,31 @@ feature 'Imprintables management', imprintable_spec: true, slow: true do
               main_supplier: 'other supplier')
     end
 
-    scenario 'a user can search imprintables and see accurate results', solr: true do
-      visit imprintables_path
+#    scenario 'a user can search imprintables and see accurate results', solr: true do
+#      visit imprintables_path
+#
+#      select 'Girls', from: 'filter_sizing_category'
+#      fill_in 'js_search', with: 'test'
+#      click_button 'Search'
+#
+#      expect(page).to have_content test_imprintable1.name
+#      expect(page).to have_content test_imprintable2.name
+#      expect(page).to have_content test_imprintable3.name
+#
+#      expect(page).to_not have_content noshow_imprintable1.name
+#      expect(page).to_not have_content noshow_imprintable2.name
+#    end
 
-      select 'Girls', from: 'filter_sizing_category'
-      fill_in 'js_search', with: 'test'
-      click_button 'Search'
-
-      expect(page).to have_content test_imprintable1.name
-      expect(page).to have_content test_imprintable2.name
-      expect(page).to have_content test_imprintable3.name
-
-      expect(page).to_not have_content noshow_imprintable1.name
-      expect(page).to_not have_content noshow_imprintable2.name
-    end
-
-    scenario 'a user sees the values from their last search in the search box', solr: true do
-      visit imprintables_path
-
-      select 'Infant', from: 'filter_sizing_category'
-      fill_in 'js_search', with: 'I should be there'
-      click_button 'Search'
-
-      expect(page).to have_content 'Infant'
-      expect(page).to have_selector '*[value="I should be there"]'
-    end
+#    scenario 'a user sees the values from their last search in the search box', solr: true do
+#      visit imprintables_path
+#
+#      select 'Infant', from: 'filter_sizing_category'
+#      fill_in 'js_search', with: 'I should be there'
+#      click_button 'Search'
+#
+#      expect(page).to have_content 'Infant'
+#      expect(page).to have_selector '*[value="I should be there"]'
+#    end
   end
 
   scenario 'Erroring on imprintable sku + retail combo doesn\'t break anything,\

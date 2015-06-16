@@ -168,7 +168,6 @@ class QuoteRequest < ActiveRecord::Base
     elsif num.length >= 7 && num.length <= 9
       dif = num.length - 7
       if dif != 0
-        byebug
         num = num.slice(dif, 7)
       end
       num = '1734' + num

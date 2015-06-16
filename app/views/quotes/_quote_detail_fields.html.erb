@@ -38,8 +38,7 @@
   <%= f.error_for :valid_until_date %>
 
   <div class="input-group date js-datetimepicker">
-    <%= f.text_field :valid_until_date, { value: display_time(f.object.valid_until_date),
-                                          placeholder: display_time(f.object.valid_until_date),
+    <%= f.text_field :valid_until_date, { value: value_time(f.object.valid_until_date),
                                           class: 'form-control' } %>
 
     <span class="input-group-addon">
@@ -71,8 +70,7 @@
   <%= f.error_for :estimated_delivery_date %>
 
   <div class="input-group date js-datetimepicker">
-    <%= f.text_field :estimated_delivery_date, { value: display_time(f.object.estimated_delivery_date),
-                                                 placeholder: display_time(f.object.estimated_delivery_date),
+    <%= f.text_field :estimated_delivery_date, { value: value_time(f.object.estimated_delivery_date),
                                                  class: 'form-control' } %>
 
     <span class="input-group-addon">

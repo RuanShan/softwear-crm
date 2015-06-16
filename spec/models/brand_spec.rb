@@ -15,12 +15,12 @@ describe Brand, brand_spec: true do
 
     context 'if retail' do
       before { allow(subject).to receive_message_chain(:is_retail?).and_return(true) }
-      it { is_expected.to ensure_length_of(:sku).is_equal_to(2) }
+      it { is_expected.to validate_length_of(:sku).is_equal_to(2) }
     end
 
     context 'if not retail' do
       before { allow(subject).to receive_message_chain(:is_retail?).and_return(false) }
-      it { is_expected.to_not ensure_length_of(:sku).is_equal_to(2) }
+      it { is_expected.to_not validate_length_of(:sku).is_equal_to(2) }
     end
   end
 

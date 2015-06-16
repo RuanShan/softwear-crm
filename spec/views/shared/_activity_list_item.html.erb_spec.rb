@@ -1,8 +1,8 @@
 require 'spec_helper'
 
 describe 'shared/_activity_list_item.html.erb' do
-  let!(:activity1) { build_stubbed(:quote_activity_update) } 
-  let!(:activity2) { build_stubbed(:quote_activity_line_item) }   
+  let!(:activity1) { create(:quote_activity_update) } 
+  let!(:activity2) { create(:quote_activity_line_item_update) }   
 
   before(:each) do 
       allow(view).to receive(:render_activity).and_return("")

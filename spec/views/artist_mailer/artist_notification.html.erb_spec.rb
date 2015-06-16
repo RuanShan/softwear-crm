@@ -4,7 +4,7 @@ describe 'artist_mailer/artist_notification.html.erb', artist_mailer_spec: true 
   let!(:salesperson) { build_stubbed(:blank_user) }
   let!(:artwork_request) { build_stubbed(:blank_artwork_request,
                                         jobs: [build_stubbed(:blank_job,
-                                                             order: build_stubbed(:blank_order))],
+                                                             jobbable: build_stubbed(:blank_order))],
                                         imprint_method: build_stubbed(:blank_imprint_method),
                                         print_location: build_stubbed(:blank_print_location),
                                         deadline: DateTime.now) }

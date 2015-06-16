@@ -369,7 +369,6 @@ GEM
       thor (>= 0.18.1, < 2.0)
     rake (10.4.2)
     rdoc (4.2.0)
-      json (~> 1.4)
     redis (3.2.1)
     redis-namespace (1.5.2)
       redis (~> 3.0, >= 3.0.4)
@@ -458,7 +457,7 @@ GEM
       colorize (>= 0.7.0)
       net-scp (>= 1.1.2)
       net-ssh (>= 2.8.0)
-    summernote-rails (0.6.6.0)
+    summernote-rails (0.6.7.0)
       railties (>= 3.1)
     sunspot (2.2.0)
       pr_geohash (~> 1.0)
@@ -582,3 +581,6 @@ DEPENDENCIES
   wkhtmltopdf-binary
   x-editable-rails
   yaml_db!
+
+BUNDLED WITH
+   1.10.3

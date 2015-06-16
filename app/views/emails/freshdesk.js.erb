@@ -1,13 +1,15 @@
 <% if @email.valid? %>
   setupContentModal(function(modal) {
-    modal.find('.modal-dialog').addClass('modal-lg');
+    modal.find('.modal-dialog').css('width', '80%');
   });
-
+  
+  
   showContentModal({
     title: 'Email Body for Freshdesk',
     body: $("<%=j render 'freshdesk', email: @email %>"),
     footer: $('<button class="btn btn-info" data-dismiss="modal">Close</button>'),
     then: function() {
+      prepareFreshdeskSelect();
       SelectText('freshdesk-email-temp');
     }
   });

@@ -18,8 +18,8 @@ describe Imprintable, imprintable_spec: true do
     it { is_expected.to have_many(:mirrored_coordinates).through(:mirrored_coordinate_imprintables) }
     it { is_expected.to have_many(:mirrored_coordinate_imprintables).class_name('CoordinateImprintable') }
     it { is_expected.to have_many(:sizes).through(:imprintable_variants) }
-    it { is_expected.to have_and_belong_to_many(:compatible_imprint_methods) }
-    it { is_expected.to have_and_belong_to_many(:sample_locations) }
+    it { is_expected.to have_many(:compatible_imprint_methods) }
+    it { is_expected.to have_many(:sample_locations) }
     it { is_expected.to accept_nested_attributes_for(:imprintable_categories) }
     context 'story 554', story_554: true do
       it { is_expected.to have_many(:imprintable_imprintable_groups) }
@@ -38,7 +38,7 @@ describe Imprintable, imprintable_spec: true do
 #    it { is_expected.to validate_numericality_of(:max_imprint_height) }
 #    it { is_expected.to validate_presence_of(:max_imprint_width) }
 #    it { is_expected.to validate_numericality_of(:max_imprint_width) }
-    it { is_expected.to ensure_inclusion_of(:sizing_category).in_array Imprintable::SIZING_CATEGORIES }
+    it { is_expected.to validate_inclusion_of(:sizing_category).in_array Imprintable::SIZING_CATEGORIES }
     it { is_expected.to allow_value('http://www.foo.com', 'http://www.foo.com/shipping').for(:supplier_link) }
     it { is_expected.to_not allow_value('bad_url.com', '').for(:supplier_link).with_message('should be in format http://www.url.com/path') }
     it { is_expected.to validate_presence_of(:style_catalog_no) }
@@ -49,13 +49,13 @@ describe Imprintable, imprintable_spec: true do
     context 'if retail' do
       before { allow(subject).to receive_message_chain(:is_retail?).and_return(true) }
 
-      it { is_expected.to ensure_length_of(:sku).is_equal_to(4) }
+      it { is_expected.to validate_length_of(:sku).is_equal_to(4) }
     end
 
     context 'if not retail' do
       before { allow(subject).to receive_message_chain(:is_retail?).and_return(false) }
 
-      it { is_expected.to_not ensure_length_of(:sku).is_equal_to(4) }
+      it { is_expected.to_not validate_length_of(:sku).is_equal_to(4) }
     end
   end
 
@@ -115,11 +115,10 @@ describe Imprintable, imprintable_spec: true do
   end
 
   describe '#all_categories' do
-    let(:imprintable) { build_stubbed(:blank_imprintable,
-                                       imprintable_categories: [build_stubbed(:blank_imprintable_category, name: 'Category')])}
+    let(:imprintable) { create(:valid_imprintable, imprintable_categories: [create(:blank_imprintable_category, name: 'Jackets')]) }
 
     it 'returns all of the categories for the imprintable' do
-      expect(imprintable.all_categories).to eq('Category')
+      expect(imprintable.all_categories).to eq('Jackets')
     end
   end
 

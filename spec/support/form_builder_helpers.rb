@@ -21,7 +21,7 @@ module FormBuilderHelpers
     args = if block_given?
         yield object_name, object, buffer
       else
-        [object_name, object, buffer, {}, nil]
+        [object_name, object, buffer, {}]
       end
     
     builder = builder_class.new(*args)

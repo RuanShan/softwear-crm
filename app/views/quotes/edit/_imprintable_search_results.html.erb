@@ -3,9 +3,15 @@
   <div id="imprintable-result-<%=imprintable.id%>" class="imprintable-add-search-result row <%= 'discontinued-imprintable' if imprintable.discontinued? || imprintable.base_price.blank? %>">
     <div class="col-xs-2">
       <i><%= 'Standard Offering' if imprintable.standard_offering? %></i>
+      <% unless imprintable.imprintable_groups.empty? %>
+      <dl>
+        <dt>Imprintable Groups</dt>
       <% imprintable.imprintable_imprintable_groups.each do |iig| %>
-        <div> <b>Group:</b> <%= iig.imprintable_group.name %></div>
-        <div> <b>Tier:</b> <%= Imprintable::TIERS[iig.tier] %></div>
+        <dd>
+          <%= iig.imprintable_group.name %> (<%= Imprintable::TIERS[iig.tier] %>)
+        </dd>
+      <% end %>
+      </dl>
       <% end %>
     </div>
       <div class="col-xs-6">
