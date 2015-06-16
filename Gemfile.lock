@@ -1,4 +1,18 @@
 GIT
+  remote: git://github.com/AnnArborTees/acts_as_warnable.git
+  revision: 2b3eee8447fae174398d6933513c766555338bb6
+  specs:
+    acts_as_warnable (0.0.1)
+      devise
+      rails (~> 4.2.1)
+
+GIT
+  remote: git://github.com/AnnArborTees/dumpsync.git
+  revision: 8244088c7f9c5647b941ae2268c1045ba5e03ac9
+  specs:
+    dumpsync (0.0.1)
+
+GIT
   remote: git://github.com/AnnArborTees/insightly-ruby.git
   revision: 329e2c63c36fc2aee8b6e73382be18bd9fe0e3ac
   specs:
@@ -47,31 +61,6 @@ GIT
       actionpack (>= 4.0.0, < 5)
       activerecord (>= 4.0.0, < 5)
       railties (>= 4.0.0, < 5)
-
-GIT
-  remote: git://github.com/thoughtbot/paperclip.git
-  revision: 14356d7eccb9175819508d243fb4a92681d11208
-  specs:
-    paperclip (4.2.1)
-      activemodel (>= 3.0.0)
-      activesupport (>= 3.0.0)
-      cocaine (~> 0.5.5)
-      mime-types
-      mimemagic (= 0.3.0)
-
-GIT
-  remote: git@github.com:AnnArborTees/acts_as_warnable.git
-  revision: 2b3eee8447fae174398d6933513c766555338bb6
-  specs:
-    acts_as_warnable (0.0.1)
-      devise
-      rails (~> 4.2.1)
-
-GIT
-  remote: git@github.com:AnnArborTees/dumpsync.git
-  revision: 8244088c7f9c5647b941ae2268c1045ba5e03ac9
-  specs:
-    dumpsync (0.0.1)
 
 GEM
   remote: https://rubygems.org/
@@ -126,14 +115,12 @@ GEM
       addressable (>= 2.3.1)
       extlib (>= 0.9.15)
       multi_json (>= 1.0.0)
-    aws-sdk (2.0.45)
-      aws-sdk-resources (= 2.0.45)
-    aws-sdk-core (2.0.45)
-      builder (~> 3.0)
+    aws-sdk (2.1.0)
+      aws-sdk-resources (= 2.1.0)
+    aws-sdk-core (2.1.0)
       jmespath (~> 1.0)
-      multi_json (~> 1.0)
-    aws-sdk-resources (2.0.47)
-      aws-sdk-core (= 2.0.47)
+    aws-sdk-resources (2.1.0)
+      aws-sdk-core (= 2.1.0)
     aws-sdk-v1 (1.64.0)
       json (~> 1.4)
       nokogiri (>= 1.4.4)
@@ -176,7 +163,7 @@ GEM
       rack (>= 1.0.0)
       rack-test (>= 0.5.4)
       xpath (~> 2.0)
-    capybara-webkit (1.5.1)
+    capybara-webkit (1.5.2)
       capybara (>= 2.3.0, < 2.5.0)
       json
     celluloid (0.16.0)
@@ -273,9 +260,6 @@ GEM
       has_scope (~> 0.6.0.rc)
       railties (>= 3.2, < 5)
       responders
-    insightly2 (0.1.7)
-      activesupport
-      faraday
     jbuilder (1.5.3)
       activesupport (>= 3.0.0)
       multi_json (>= 1.2.0)
@@ -314,7 +298,6 @@ GEM
       rails (>= 3.1)
     memoist (0.12.0)
     mime-types (2.6.1)
-    mimemagic (0.3.0)
     mini_portile (0.6.2)
     minitest (5.7.0)
     momentjs-rails (2.9.0)
@@ -338,6 +321,11 @@ GEM
       rack (~> 1.2)
     options (2.3.2)
     orm_adapter (0.5.0)
+    paperclip (4.2.2)
+      activemodel (>= 3.0.0)
+      activesupport (>= 3.0.0)
+      cocaine (~> 0.5.3)
+      mime-types
     paranoia (2.1.2)
       activerecord (~> 4.0)
     php-serialize (1.1.0)
@@ -381,7 +369,6 @@ GEM
       thor (>= 0.18.1, < 2.0)
     rake (10.4.2)
     rdoc (4.2.0)
-      json (~> 1.4)
     redis (3.2.1)
     redis-namespace (1.5.2)
       redis (~> 3.0, >= 3.0.4)
@@ -403,7 +390,7 @@ GEM
     rspec-mocks (3.2.1)
       diff-lcs (>= 1.2.0, < 2.0)
       rspec-support (~> 3.2.0)
-    rspec-rails (3.2.2)
+    rspec-rails (3.2.3)
       actionpack (>= 3.0, < 4.3)
       activesupport (>= 3.0, < 4.3)
       railties (>= 3.0, < 4.3)
@@ -427,7 +414,7 @@ GEM
     sdoc (0.4.1)
       json (~> 1.7, >= 1.7.7)
       rdoc (~> 4.0)
-    selenium-webdriver (2.45.0)
+    selenium-webdriver (2.46.2)
       childprocess (~> 0.5)
       multi_json (~> 1.0)
       rubyzip (~> 1.0)
@@ -444,13 +431,13 @@ GEM
       sidekiq (>= 2.16.0)
     sidekiq-status (0.5.3)
       sidekiq (>= 2.7, < 3.4)
-    signet (0.6.0)
+    signet (0.6.1)
       addressable (~> 2.3)
       extlib (~> 0.9)
       faraday (~> 0.9)
-      jwt (~> 1.0)
+      jwt (~> 1.5)
       multi_json (~> 1.10)
-    simple_token_authentication (1.9.1)
+    simple_token_authentication (1.10.0)
       actionmailer (>= 3.2.6, < 5)
       actionpack (>= 3.2.6, < 5)
       devise (~> 3.2)
@@ -458,7 +445,7 @@ GEM
       rack (~> 1.4)
       rack-protection (~> 1.4)
       tilt (>= 1.3, < 3)
-    softwear-lib (0.0.7)
+    softwear-lib (0.0.13)
       activesupport
     sprockets (3.2.0)
       rack (~> 1.0)
@@ -470,7 +457,7 @@ GEM
       colorize (>= 0.7.0)
       net-scp (>= 1.1.2)
       net-ssh (>= 2.8.0)
-    summernote-rails (0.6.6.0)
+    summernote-rails (0.6.7.0)
       railties (>= 3.1)
     sunspot (2.2.0)
       pr_geohash (~> 1.0)
@@ -549,7 +536,7 @@ DEPENDENCIES
   google_drive
   hirb
   inherited_resources
-  insightly2
+  insightly2!
   jbuilder (~> 1.2)
   jquery-fileupload-rails
   jquery-rails
@@ -561,7 +548,7 @@ DEPENDENCIES
   markitup-rails
   momentjs-rails (~> 2.9.0)
   mysql2
-  paperclip!
+  paperclip
   paranoia (~> 2.0)
   php-serialize
   progress_bar
@@ -582,7 +569,7 @@ DEPENDENCIES
   sidekiq-status
   simple_token_authentication
   sinatra
-  softwear-lib (= 0.0.7)
+  softwear-lib (= 0.0.13)
   summernote-rails
   sunspot_matchers
   sunspot_rails
@@ -594,3 +581,6 @@ DEPENDENCIES
   wkhtmltopdf-binary
   x-editable-rails
   yaml_db!
+
+BUNDLED WITH
+   1.10.3
