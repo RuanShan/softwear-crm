@@ -101,13 +101,13 @@ feature 'Quotes management', quote_spec: true, js: true do
     expect(current_path).to eq(edit_quote_path quote.id)
   end
 
-  scenario 'A user can edit a quote', edit: true do
+  scenario 'A user can edit a quote', edit: true, story_692: true do
     visit edit_quote_path quote.id
     find('a', text: 'Details').click
     fill_in 'Quote Name', with: 'New Quote Name'
     click_button 'Save'
     visit current_path
-    expect(current_path).to eq(quote_path quote.id)
+    expect(current_path).to eq(edit_quote_path quote.id)
     expect(quote.reload.name).to eq('New Quote Name')
   end
 

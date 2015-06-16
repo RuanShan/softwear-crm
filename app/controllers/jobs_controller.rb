@@ -60,15 +60,23 @@ class JobsController < InheritedResources::Base
   end
 
   def destroy
-    super do |format|
-      format.json do
+    super do |success, failure|
+      success.json do
         render json: {
-          result: @job.destroyed? ? 'success' : 'failure',
-          error: @job.destroyed? ? @job.errors.messages[:deletion_status] : nil
+          result: 'success',
+          error: nil
         }
       end
 
-      format.js
+      failure.json do
+        render json: {
+          result: 'failure',
+          error: @job.errors.messages[:deletion_status]
+        }
+      end
+
+      success.js
+      failure.js
     end
   end
 

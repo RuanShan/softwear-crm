@@ -22,10 +22,6 @@ describe OrdersController, order_spec: true do
         expect(assigns(:order).store_id).to eq(quote.store_id)
       end
 
-      it 'sets @quote_id to params[:quote_id]', story_48: true do
-        get :new, quote_id: quote.id
-        expect(assigns(:quote_id)).to eq quote.id
-      end
     end
   end
 
