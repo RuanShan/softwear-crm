@@ -36,11 +36,6 @@ function initializeQuoteLineItems() {
     notifyUnsavedChanges();
   });
 
-  $('.remove-all-line-items-btn').click(function(e) {
-    e.preventDefault();
-    $(this).parent().find('.rdy-to-remove').click();
-  });
-
   $('.remove-line-item-btn').addClass('rdy-to-remove');
   $('.remove-line-item-btn').click(function(e) {
     e.preventDefault();

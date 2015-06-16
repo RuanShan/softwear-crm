@@ -2,6 +2,7 @@ require 'sidekiq/web'
 
 CrmSoftwearcrmCom::Application.routes.draw do
   devise_for :users, controllers: { sessions: 'users/sessions' }, skip: 'registration'
+  mount ActsAsWarnable::Engine => '/'
 
   root 'home#index'
 
@@ -14,6 +15,7 @@ CrmSoftwearcrmCom::Application.routes.draw do
   resources :imprintables do
     collection do
       resources :brands, :colors
+      resources :imprintable_groups
       post 'update_imprintable_variants'
 
       resources :sizes do
@@ -23,6 +25,8 @@ CrmSoftwearcrmCom::Application.routes.draw do
       end
     end
   end
+
+
 
   get 'tags/:tag', to: 'imprintables#index', as: :tag
 
@@ -34,6 +38,9 @@ CrmSoftwearcrmCom::Application.routes.draw do
   end
 
   resources :quotes, shallow: true do
+    member do
+      put 'integrate', to: 'quotes#integrate'
+    end
     resource :emails do
       collection do
         post 'freshdesk'
@@ -48,15 +55,17 @@ CrmSoftwearcrmCom::Application.routes.draw do
     end
   end
   resources :comments
+  warning_paths_for :quotes
 
   resources :quote_requests do
     get :dock
   end
+  warning_paths_for :quote_requests
 
   get '/logout' => 'users#logout'
 
   scope 'configuration' do
-    resources :shipping_methods, :stores, :imprintable_groups
+    resources :shipping_methods, :stores
     resources :imprint_methods do
       get '/print_locations', to: 'imprint_methods#print_locations', as: :print_locations
     end
@@ -141,4 +150,6 @@ CrmSoftwearcrmCom::Application.routes.draw do
 
   get '/undock', to: 'home#undock'
   get '/undock/:quote_request_id', to: 'home#undock'
+
+  post '/error-report', to: 'error_reports#email_report'
 end

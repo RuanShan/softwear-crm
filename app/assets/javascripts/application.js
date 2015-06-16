@@ -14,8 +14,6 @@
 //= require jquery-ui
 //= require jquery_ujs
 //= require slimscroll/jquery.slimscroll
-//= require summernote/summernote
-//= require summernote/lang-id
 //= require select/bootstrap-select
 //= require input/bootstrap.file-input
 //= require icheck/icheck
@@ -37,5 +35,7 @@
 //= require jquery-fileupload/vendor/tmpl
 //= require editable/bootstrap-editable
 //= require editable/rails
+//= require markitup
+//= require markitup/sets/xbbcode/set
 
 //= require_tree .

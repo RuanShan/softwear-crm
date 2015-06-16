@@ -6,6 +6,11 @@ class EmailsController < InheritedResources::Base
   respond_to :html, :js
 
   def new
+    if params[:freshdesk]
+      @freshdesk = true
+    else
+      @freshdesk = false
+    end
     if params[:email_template_id]
       populate_fields_from_template
       new!

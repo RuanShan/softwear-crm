@@ -1,0 +1,12 @@
+<% if user_signed_in? %>
+
+  <div class="full-content-center animated fadeInDownBig">
+    <div class='box-info'>
+      <h2 class='text-center'>You have encountered an error!</h2>
+      <%= render 'errors/error', error: @error %>
+    </div>
+  </div>
+
+<% else %>
+  500 internal server error
+<% end %>

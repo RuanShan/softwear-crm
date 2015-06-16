@@ -21,7 +21,7 @@ describe Order, order_spec: true do
 
   describe 'Validations' do
     it { is_expected.to validate_presence_of :delivery_method }
-    it { is_expected.to ensure_inclusion_of(:delivery_method)
+    it { is_expected.to validate_inclusion_of(:delivery_method)
            .in_array Order::VALID_DELIVERY_METHODS }
     it { is_expected.to validate_presence_of :email }
     it { is_expected.to allow_value('test@example.com').for :email }

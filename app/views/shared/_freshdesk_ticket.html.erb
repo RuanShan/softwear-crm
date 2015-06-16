@@ -2,12 +2,15 @@
   <h4><i class="softwear-icon-freshdesk-icon"></i> Freshdesk Ticket Timeline</h4>
   <% if quote.no_ticket_id_entered? %>
     <%=t :quote_no_fd_id %>
+    <%= quote_integration_button(quote, :freshdesk) %>
   <% elsif quote.no_fd_login? current_user %>
     <%=t :quote_invalid_fd_id %>
+    <%= quote_integration_button(quote, :freshdesk) %>
   <% elsif quote.has_freshdesk_ticket? current_user %>
     <%= render 'shared/freshdesk_entries', freshdesk_ticket: quote.get_freshdesk_ticket(current_user).helpdesk_ticket %>
   <% else %>
     <%=t :quote_invalid_configuration %>
+    <%= quote_integration_button(quote, :freshdesk) %>
   <% end %>
 
 </div>

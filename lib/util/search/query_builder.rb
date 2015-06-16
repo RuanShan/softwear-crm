@@ -2,7 +2,7 @@ module Search
   # The Query Builder can be used to create search queries with pretty much the
   # same syntax as Sunspot, so you don't have to deal with associating /
   # configuring all the filters manually.
-  # 
+  #
   # Most basic filtering stuff works. Check the QueryBuilder spec for examples.
   class QueryBuilder
     class << self
@@ -41,6 +41,8 @@ module Search
             model.search do
               instance_eval(&block)
               paginate page: options[:page] || 1, per_page: model.default_per_page
+
+              order_by options[:sort], options[:ordering] if options[:sort]
             end
           end
           @searches.flatten.compact
@@ -125,7 +127,7 @@ module Search
           unless type.uses_comparator?
             raise SearchException.new "Must be comparable filter type in order to call #{name}."
           end
-          @group.filters << Filter.new(type, field: @field.name, 
+          @group.filters << Filter.new(type, field: @field.name,
             value: value, comparator: comp, negate: @negate)
         end
       end
@@ -178,7 +180,7 @@ module Search
           return PendingFilter.new(@group, negate, field)
         when 1
           type = FilterType.of field
-          @group.filters << Filter.new(type, field: field.name, 
+          @group.filters << Filter.new(type, field: field.name,
             value: args.first, negate: negate)
         end
       end
@@ -203,12 +205,12 @@ module Search
       @model.default_fulltext = text
       instance_eval(&block) if block_given?
     end
-    # Keywords is used separately from fulltext to associate with 
+    # Keywords is used separately from fulltext to associate with
     # phrase filters.
     def keywords(text, &block)
       phrase = PendingPhrase.new(&block)
       fields = phrase.grab_fields
-      
+
       case fields.size
       when 0
         raise SearchException, "Phrase filters must specify a field"

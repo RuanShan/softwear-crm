@@ -12,6 +12,13 @@
     <%= link_to new_quote_path(name: @quote_request.name, email: @quote_request.email, quote_request_id: @quote_request.id), class: 'btn btn-success' do  %>
         <i class="fa fa-quote-left"></i> Create Quote
     <% end %>
+
+    <% if @quote_request.warnings.any? %>
+      <%= link_to quote_request_warnings_path(@quote_request.id), class: 'btn btn-warning' do %>
+        <i class='fa fa-exclamation-triangle'></i> Warnings
+        <%= "(#{@quote_request.warnings.active.size})" if @quote_request.warnings.active.any? %>
+      <% end %>
+    <% end %>
   </div>
 </div>
 

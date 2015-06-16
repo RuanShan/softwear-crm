@@ -1,0 +1,65 @@
+<%= paginate quotes %>
+
+<div class="box-info row clear">
+  <div class="table-responsive">
+    <table class="table table-hover">
+      <thead>
+        <tr>
+          <%= sortable_th 'Customer', 'last_name' %>
+          <%= sortable_th 'Name', 'name' %>
+          <%= sortable_th 'Valid Until', 'valid_until_date' %>
+          <%= sortable_th 'Est. Delivery Date', 'estimated_delivery_date' %>
+          <%= sortable_th 'Salesperson', 'salesperson_name' %>
+          <%= sortable_th 'Store', 'store_name' %>
+        </tr>
+      </thead>
+
+      <tbody>
+        <% quotes.each do |quote| %>
+          <tr>
+            <td>
+              <dl>
+                <dd><%= quote.full_name %></dd>
+                <dd><%= quote.email %></dd>
+                <dd><%= quote.company %></dd>
+                <dd><%= quote.phone_number %></dd>
+                <dd><%= quote.twitter %></dd>
+              </dl>
+             </td>
+            <td><%= link_to quote.name, edit_quote_path(quote) %></td>
+            <td><%= display_time quote.valid_until_date %></td>
+            <td><%= display_time quote.estimated_delivery_date %></td>
+            <td><%= quote.salesperson.full_name %></td>
+            <td><%= quote.store.name %></td>
+            <td>
+              <div class="btn-group btn-group-s">
+                <%= link_to edit_quote_path(quote),
+                            class: 'btn btn-default', 'data-action' => 'edit',
+                            'data-toggle' => 'tooltip', 'title' => 'Edit' do %>
+                  <i class="fa fa-edit"></i>
+                <% end %>
+
+                <%= link_to quote_path(quote, print: 'true'),
+                            class: 'btn btn-default',
+                           'data-action' => 'show',
+                           'data-toggle' => 'tooltip',
+                           'title' => 'Print' do %>
+                  <i class="fa fa-print"></i>
+                <% end %>
+
+                <%= link_to quote_path(quote), class: 'btn btn-default',
+                            data: { confirm: 'Are you sure you would like to delete the quote?' },
+                            method: :delete, 'data-action' => 'destroy',
+                            'data-toggle' => 'tooltip', 'title' => 'Destroy' do %>
+                  <i class="fa fa-times"></i>
+                <% end %>
+              </div>
+            </td>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<%= paginate quotes %>

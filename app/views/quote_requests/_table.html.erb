@@ -53,6 +53,14 @@
                             'title' => 'Start Quote from Quote Request' do %>
                     <i class="fa fa-quote-left"></i>
                 <% end %>
+
+                <% if quote_request.warnings.active.any? %>
+                  <%= link_to quote_request_warnings_path(quote_request.id, active_only: true),
+                    class: 'btn btn-warning', 'data-action' => 'warnings',
+                    'data-toggle' => 'tooltip', title: "#{quote_request.warnings.active.size} #{'warning'.pluralize(quote_request.warnings.active.size)}"  do %>
+                    <i class='fa fa-exclamation-circle'></i>
+                  <% end %>
+                <% end %>
               </div>
             </td>
           </tr>

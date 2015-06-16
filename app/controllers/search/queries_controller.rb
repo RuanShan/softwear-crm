@@ -14,13 +14,13 @@ module Search
           &compose_search_proc(params[:search])
         )
           .query
-        
+
         @query.update_attributes query_params
 
         raise "Failed to create search query" unless @query.valid?
         flash[:success] = "Successfully saved search query!"
       rescue StandardError => e
-        flash[:error] = 
+        flash[:error] =
           "#{e.message}. #{@query.errors.full_messages.join(', ') if @query}"
       end
 
@@ -61,7 +61,7 @@ module Search
         begin
           assign_search_from_query
         rescue ActiveRecord::RecordNotFound
-          return render text: '404!'
+          return render text: '404!', status: 404
         end
       elsif params[:search]
         assign_search_from_data
@@ -95,7 +95,11 @@ module Search
     def assign_search_from_data
       session[:last_search] = params[:search]
       @search = QueryBuilder.search(
-        { page: params[:page] },
+        {
+          page: params[:page],
+          sort: params[:sort],
+          ordering: params[:ordering]
+        },
         &compose_search_proc(params[:search])
       )
     end
@@ -115,7 +119,7 @@ module Search
 
         instance_variable_set "@#{plural}", @search.first.results
         destination = "#{plural}/index.#{format}"
-        
+
         render destination, locals: locals
       else
         render text: "Implement multi-model search results view plz!"
@@ -124,29 +128,29 @@ module Search
 
     # This is step 1 to transforming hash filter data to valid
     # Sunspot DSL procs.
-    # 
-    # Instead of transfering everything into local variables, 
+    #
+    # Instead of transfering everything into local variables,
     # the strategy used here is to pass the augmented context
     # around as a parameter to our methods. Like so:
-    # 
+    #
     # def search_stuff(num, context)
     #   context.with(:field).greater_than(num)
     # end
     # auto_curry :search_stuff
     # Model.search(&pass_self_to(search_stuff(100)))
-    # 
+    #
     # The reason this works is because of the Funkify gem's auto_curry.
-    # Because we called search_stuff with 1 parameter, it returned a 
+    # Because we called search_stuff with 1 parameter, it returned a
     # proc that's ready to call it again with that parameter + another.
-    # 
+    #
     # pass_self_to is very simple. It takes a proc as a parameter
     # and returns a proc. The returned proc is pretty much this:
-    # 
+    #
     # proc { arg.call(self) }
-    # 
+    #
     # So pass_self_to(search_stuff(100)) will call search_stuff(100, self)
     # inside the context of the search proc if passed as a block parameter.
-    # 
+    #
     # Hopefully that makes sense!
     # If it doesn't, I suggest checking online and hopping into an irb
     # session to play around with procs and instance_eval/currying.
@@ -163,7 +167,7 @@ module Search
           context.on(
             actual_model,
             # Here we are calling initial_process with one less parameter
-            # than it's defined to take. Because it is auto curried, 
+            # than it's defined to take. Because it is auto curried,
             # rather than raising an error, it returns a proc that will
             # take one parameter, and use it as the remaining argument.
             &pass_self_to(initial_process(default_fulltext, model, fields))
@@ -265,13 +269,13 @@ module Search
 
     def field_is_nil?(field_value)
       field_value.nil?     ||
-      field_value == 'nil' || 
+      field_value == 'nil' ||
       (field_value.respond_to?(:empty?) && field_value.empty?)
     end
 
     # Using this with currying, we never have to perform logic
     # inside of another context (i.e. Sunspot's DSL blocks).
-    # 
+    #
     # The tiny proc returned by this method is the only thing that actually
     # happens inside the augmented context.
     def pass_self_to(passed = nil, &block)
@@ -334,7 +338,7 @@ module Search
       unless Rails.env.production?
         raise %{
           Unpermitted local variable passed through search: #{name}.
-          If you actually want to pass it, please include :#{name} in 
+          If you actually want to pass it, please include :#{name} in
           the array returned by #{controller_name}.permitted_search_locals
           (Currently #{Kernel.const_get(controller_name)
             .permitted_search_locals.inspect})

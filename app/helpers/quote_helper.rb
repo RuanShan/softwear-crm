@@ -56,4 +56,18 @@ module QuoteHelper
       return 'Add a group of imprintables to this quote'
     end
   end
+
+  def quote_integration_button(quote, type)
+    button_message =
+      case type.to_sym
+      when :insightly then "Generate Opportunity"
+      when :freshdesk then "Generate Ticket"
+      else raise "Unknown integration type #{type}"
+      end
+
+    form_tag(integrate_quote_path(quote), method: :put, remote: true) do
+      hidden_field_tag('with', type) +
+      button_tag(button_message, class: 'btn btn-success')
+    end
+  end
 end

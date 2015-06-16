@@ -1,6 +1,7 @@
 class ApplicationController < ActionController::Base
   include PublicActivity::StoreController
   include ApplicationHelper
+  include ActsAsWarnable::ApplicationHelper
 
   # Prevent CSRF attacks by raising an exception.
   # For APIs, you may want to use :null_session instead.
@@ -13,6 +14,19 @@ class ApplicationController < ActionController::Base
   before_action :assign_current_url
   before_action :assign_current_action
   before_action :assign_request_time
+
+  rescue_from Exception, StandardError do |error|
+    Rails.logger.error "**** #{error.class.name}: #{error.message} ****\n\n"\
+      "\t#{error.backtrace.join("\n\t")}"
+
+    @error = error
+
+    respond_to do |format|
+      format.html { render 'errors/internal_server_error', status: 500 }
+      format.js   { render 'errors/internal_server_error', status: 500 }
+      format.json { render json: '{}', status: 500 }
+    end
+  end
 
   # Quicker way to render to a string using the previous function
   def render_string(*args)
@@ -69,7 +83,8 @@ class ApplicationController < ActionController::Base
   def fire_activity(record, activity_name, options={})
     options[:key] = record.class.activity_key_for activity_name
     options[:owner] = current_user
-    options[:recipient] = TrackingHelpers::Methods.get_order(self, record)
+    order = TrackingHelpers::Methods.get_order(self, record)
+    options[:recipient] = order if order
     record.create_activity options
   end
 

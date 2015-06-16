@@ -5,7 +5,7 @@ describe Search::NumberFilter, search_spec: true do
 
   it { is_expected.to have_db_column :field }
   it { is_expected.to have_db_column :comparator }
-  it { is_expected.to ensure_inclusion_of(:comparator)
+  it { is_expected.to validate_inclusion_of(:comparator)
                       .in_array ['>', '<', '='] }
   it { is_expected.to have_db_column :negate }
   it { is_expected.to have_db_column :value }

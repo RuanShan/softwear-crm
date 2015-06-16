@@ -9,12 +9,20 @@ class Quote < ActiveRecord::Base
 
   acts_as_paranoid
   acts_as_commentable :public, :private
+  acts_as_warnable
   tracked by_current_user
   get_insightly_api_key_from { salesperson.try(:insightly_api_key) }
 
   searchable do
     text :name, :email, :first_name, :last_name,
          :company, :twitter
+
+    string :last_name
+    string :salesperson_name
+    string(:store_name) { |q| q.store.try(:name) }
+    string :name
+    time :valid_until_date
+    time :estimated_delivery_date
   end
 
   QUOTE_SOURCES = [
@@ -62,6 +70,7 @@ class Quote < ActiveRecord::Base
     :insightly_bid_amount,
     :insightly_bid_tier_id,
     :insightly_opportunity_id
+    #, :insightly_whos_responsible_id
   ]
 
   MARKUPS_AND_OPTIONS_JOB_NAME = '_markupsandoptions_'
@@ -70,6 +79,7 @@ class Quote < ActiveRecord::Base
 
   belongs_to :salesperson, class_name: User
   belongs_to :store
+  belongs_to :insightly_whos_responsible, class_name: User
   has_many :email_templates
   has_many :emails, as: :emailable, class_name: Email, dependent: :destroy
   has_many :quote_request_quotes
@@ -87,7 +97,7 @@ class Quote < ActiveRecord::Base
   validates :store, presence: true
   validates :valid_until_date, presence: true
   validates :shipping, price: true
-  validates *(INSIGHTLY_FIELDS - [:insightly_opportunity_id]), presence: true, if: :salesperson_has_insightly?
+  validates *(INSIGHTLY_FIELDS - [:insightly_opportunity_id]), presence: true, if: :should_validate_insightly_fields?
 
   after_save :set_quote_request_statuses_to_quoted
   after_create :enqueue_create_freshdesk_ticket
@@ -111,8 +121,14 @@ class Quote < ActiveRecord::Base
       ) OR
       (
         activities.trackable_type = ? AND activities.trackable_id = ?
+      ) OR
+      (
+        activities.trackable_type = "Comment" AND activities.trackable_id IN (?)
+      ) OR
+      (
+        activities.trackable_type = "Job" AND activities.trackable_id IN (?)
       )
-    ', *([self.class.name, id] * 2) ).order('activities.created_at DESC')
+    ', *([self.class.name, id] * 2 + [comments.map(&:id), jobs.map(&:id)]) ).order('activities.created_at DESC')
   end
 
   def show_quoted_email_text
@@ -133,6 +149,10 @@ class Quote < ActiveRecord::Base
 
   def imprintable_jobs
     jobs.where.not(name: MARKUPS_AND_OPTIONS_JOB_NAME)
+  end
+
+  def salesperson_name
+    salesperson.try(:last_name)
   end
 
   def no_ticket_id_entered?
@@ -262,6 +282,7 @@ class Quote < ActiveRecord::Base
     new_job.description = imprintable_group.description
     new_job.line_items  = new_line_items
     new_job.save!
+    @group_added_id = new_job.id
 
     attrs[:print_locations].try(:each_with_index) do |print_location_id, index|
       imprint = Imprint.new
@@ -297,6 +318,7 @@ class Quote < ActiveRecord::Base
     # allow an invaild one.)
     return if job.nil?
 
+    @imprintable_line_item_added_ids = []
     attrs[:imprintables].map do |imprintable_id|
       imprintable = Imprintable.find imprintable_id
 
@@ -309,9 +331,13 @@ class Quote < ActiveRecord::Base
       line_item.imprintable_variant_id =
         imprintable.imprintable_variants.pluck(:id).first
       # TODO error out if that imprintable variant id is nil
-
       line_item.save!
+      @imprintable_line_item_added_ids << line_item.id
     end
+  end
+
+  def should_validate_insightly_fields?
+    should_access_third_parties? && salesperson_has_insightly? && insightly_opportunity_id.blank?
   end
 
   def salesperson_has_insightly?
@@ -379,48 +405,45 @@ class Quote < ActiveRecord::Base
   end
 
   def enqueue_create_freshdesk_ticket
-    self.delay(queue: 'api').create_freshdesk_ticket
+    self.delay(queue: 'api').create_freshdesk_ticket if should_access_third_parties?
   end
+  warn_on_failure_of :enqueue_create_freshdesk_ticket
 
   def create_freshdesk_ticket
     return if freshdesk.nil? || !freshdesk_ticket_id.blank?
 
-    begin
-      if quote_requests.empty?
-        requester_info = {
-          email: email,
-          phone: phone_number,
-          name: full_name
-        }
-      else
-        requester_info = {
-          requester_id: quote_requests.first.try(:freshdesk_contact_id),
-        }
-      end
-
-      ticket = JSON.parse(freshdesk.post_tickets(
-          helpdesk_ticket: {
-            source: 2,
-            group_id: freshdesk_group_id,
-            ticket_type: 'Lead',
-            subject: "Your Quote (##{name}) from the Ann Arbor T-shirt Company",
-            custom_field: {
-              department_7483: freshdesk_department,
-              softwearcrm_quote_id_7483: id
-            },
-            description_html: freshdesk_description
-          }
-           .merge(requester_info)
-        ))
-        .try(:[], 'helpdesk_ticket')
-
-      self.freshdesk_ticket_id = ticket.try(:[], 'display_id')
-      ticket
-
-    rescue StandardError => e
-      logger.error "(QUOTE - FRESHDESK) #{e.message}"
+    if quote_requests.empty?
+      requester_info = {
+        email: email,
+        phone: phone_number,
+        name: full_name
+      }
+    else
+      requester_info = {
+        requester_id: quote_requests.first.try(:freshdesk_contact_id),
+      }
     end
+
+    ticket = JSON.parse(freshdesk.post_tickets(
+        helpdesk_ticket: {
+          source: 2,
+          group_id: freshdesk_group_id,
+          ticket_type: 'Lead',
+          subject: "Your Quote (##{name}) from the Ann Arbor T-shirt Company",
+          custom_field: {
+            department_7483: freshdesk_department,
+            softwearcrm_quote_id_7483: id
+          },
+          description_html: freshdesk_description
+        }
+         .merge(requester_info)
+      ))
+      .try(:[], 'helpdesk_ticket')
+
+    self.freshdesk_ticket_id = ticket.try(:[], 'display_id')
+    ticket
   end
+  warn_on_failure_of :create_freshdesk_ticket, raise_anyway: true
 
   # NOTE this is unused (but reserved in case it seems handy)
   def fetch_freshdesk_ticket(from_email = 'crm@softwearcrm.com')
@@ -481,40 +504,44 @@ class Quote < ActiveRecord::Base
 
 
   def enqueue_create_insightly_opportunity
-    self.delay(queue: 'api').create_insightly_opportunity
+    self.delay(queue: 'api').create_insightly_opportunity if should_access_third_parties?
   end
+  warn_on_failure_of :enqueue_create_insightly_opportunity
 
   def create_insightly_opportunity
-    return if insightly.nil?
+    return if insightly.nil? || !insightly_opportunity_id.blank?
 
-    begin
-      op = insightly.create_opportunity(
-        opportunity: {
-          opportunity_name:    name,
-          opportunity_state:   'Open',
-          opportunity_details: insightly_description,
-          probability:         insightly_probability.to_i,
-          bid_currency:        'USD',
-          bid_amount:          insightly_bid_amount.to_i,
-          forecast_close_date: (created_at + 3.days).strftime('%F %T'),
-          pipeline_id:         insightly_pipeline_id,
-          stage_id:            insightly_stage_id,
-          category_id:         insightly_category_id,
-          customfields:        insightly_customfields,
-          links:               insightly_contact_links,
-        }
-      )
-      self.insightly_opportunity_id = op.opportunity_id
-      self.save(validate: false)
-      op
-    # rescue Insightly2::Errors::ClientError => e
-      # logger.error "(QUOTE - INSIGHTLY) #{e.class}: #{e.message}"
-      # e
-    rescue StandardError => e
-      logger.error "(QUOTE - INSIGHTLY) #{e.class}: #{e.message}"
-      e
+    unless insightly_whos_responsible_id.nil?
+      /(?<name_part>[\w\.-]+)@/ =~ insightly_whos_responsible.email
+      unless name_part.nil?
+        responsible_user = insightly.get_users(
+          '$filter' => "startswith(EMAIL_ADDRESS, '#{name_part}')"
+        ).first
+      end
     end
+
+    op = insightly.create_opportunity(
+      opportunity: {
+        opportunity_name:    name,
+        opportunity_state:   'Open',
+        opportunity_details: insightly_description,
+        probability:         insightly_probability.to_i,
+        bid_currency:        'USD',
+        bid_amount:          insightly_bid_amount.to_i,
+        forecast_close_date: (created_at + 3.days).strftime('%F %T'),
+        pipeline_id:         insightly_pipeline_id,
+        stage_id:            insightly_stage_id,
+        category_id:         insightly_category_id,
+        customfields:        insightly_customfields,
+        links:               insightly_contact_links,
+      }
+        .merge(responsible_user ? { responsible_user_id: responsible_user.user_id } : {})
+    )
+    self.insightly_opportunity_id = op.opportunity_id
+    self.save(validate: false)
+    op
   end
+  warn_on_failure_of :create_insightly_opportunity, raise_anyway: true
 
   def insightly_stage_id
     insightly
@@ -561,6 +588,19 @@ class Quote < ActiveRecord::Base
     end
   end
 
+=begin
+ Here are the field names as of june 4 2015:
+
+  OPPORTUNITY_FIELD_3: Did the Customer Request a Specific Deadline? (DROPDOWN)
+  OPPORTUNITY_FIELD_5: Did the Customer Request a Rush Deadline? (DROPDOWN)
+  OPPORTUNITY_FIELD_1: Hard Deadline is... (DATE)
+  OPPORTUNITY_FIELD_2: QTY (TEXT)
+  OPPORTUNITY_FIELD_12: Categories/Profile (Use) (DROPDOWN)
+  OPPORTUNITY_FIELD_10: Source of Lead (DROPDOWN)
+  OPPORTUNITY_FIELD_11: Bid Amount Tier (DROPDOWN)
+
+ Run `bundle exec rake insightly:custom_fields` to generate this list
+=end
   def insightly_customfields
     fields = []
     if insightly_opportunity_profile_id
@@ -583,7 +623,7 @@ class Quote < ActiveRecord::Base
       custom_field_id: 'OPPORTUNITY_FIELD_5',
       field_value: yes_or_no(is_rushed?)
     }
-    if is_rushed?
+    if deadline_is_specified?
       fields << {
         custom_field_id: 'OPPORTUNITY_FIELD_1',
         field_value: estimated_delivery_date.strftime('%F %T')
@@ -602,6 +642,119 @@ class Quote < ActiveRecord::Base
 
   def additional_options_and_markups
     line_items.where(imprintable_variant_id: nil)
+  end
+
+  def activity_parameters_hash_for_job_changes(job, li_old, imprints_old)
+    # Add your line items to your hash
+    hash = {}
+    hash[:line_items] = {}
+    hash[:imprints] = {}
+    hash[:group_id] = job.id
+
+    job.line_items.each do |li|
+      hash[:line_items][li.id] = {}
+      lo = li_old.try(:find) { |l| l.id == li.id }
+      next if lo.nil?
+      if li.quantity != lo.quantity
+        hash[:line_items][li.id][:quantity] = {}
+        hash[:line_items][li.id][:quantity][:old] = lo.quantity
+        hash[:line_items][li.id][:quantity][:new] = li.quantity
+      end
+      if li.decoration_price != lo.decoration_price
+        hash[:line_items][li.id][:decoration_price] = {}
+        hash[:line_items][li.id][:decoration_price][:old] = lo.decoration_price.to_f
+        hash[:line_items][li.id][:decoration_price][:new] = li.decoration_price.to_f
+      end
+      if li.imprintable_price != lo.imprintable_price
+        hash[:line_items][li.id][:imprintable_price] = {}
+        hash[:line_items][li.id][:imprintable_price][:old] = lo.imprintable_price.to_f
+        hash[:line_items][li.id][:imprintable_price][:new] = li.imprintable_price.to_f
+      end
+      if !li.imprintable? && li.unit_price != lo.unit_price
+        hash[:line_items][li.id][:unit_price] = {}
+        hash[:line_items][li.id][:unit_price][:old] = lo.unit_price.to_f
+        hash[:line_items][li.id][:unit_price][:new] = li.unit_price.to_f
+      end
+    end
+
+    # add your imprints
+    job.imprints.each do |i|
+      io = imprints_old.try(:find) { |imp| imp.id == i.id }
+      next if io.nil?
+      hash[:imprints][i.id] = {:old => {}, :new => {}}
+      if i.description != io.description
+        hash[:imprints][i.id][:old][:description] = io.description
+        hash[:imprints][i.id][:new][:description] = i.description
+      end
+      if i.print_location_id != io.print_location_id
+        hash[:imprints][i.id][:old][:print_location_id] = io.print_location_id
+        hash[:imprints][i.id][:new][:print_location_id] = i.print_location_id
+      end
+    end
+
+    # Did name or description change?
+    if job.name_changed?
+      hash[:name] = {}
+      hash[:name][:old] = job.name_was
+      hash[:name][:new] = job.name
+    end
+    if job.description_changed?
+      hash[:description] = {}
+      hash[:description][:old] = job.description_was
+      hash[:description][:new] = job.description
+    end
+    hash
+  end
+
+  def activity_key
+   if @group_added_id
+    return 'quote.added_line_item_group'
+   elsif @imprintable_line_item_added_ids
+    return 'quote.added_an_imprintable'
+   else
+    return 'quote.update'
+   end
+  end
+
+  def activity_parameters_hash
+    hash = {}
+    if @group_added_id
+      # populate hash with ALL the info for the group
+      hash[:imprintables] = {}
+      hash[:imprints] = {}
+      job = Job.find(@group_added_id)
+      job.line_items.each do |li|
+        hash[:imprintables][li.id] = li.imprintable.base_price.to_f
+      end
+      job.imprints.each do |im|
+        hash[:imprints][im.id] = im.description
+      end
+      hash[:name] = job.name
+      hash[:id] = job.id
+      hash[:decoration_price] = job.line_items.first.decoration_price.to_f
+      hash[:quantity] = job.line_items.first.quantity
+    elsif @imprintable_line_item_added_ids
+      hash[:imprintables] = {}
+      @imprintable_line_item_added_ids.each do |li|
+        hash[:imprintables][li] = {}
+        line_item = LineItem.find(li)
+        hash[:imprintables][li][:tier] = line_item.tier
+        hash[:imprintables][li][:imprintable_price] = line_item.imprintable_price.to_f
+        hash[:imprintables][li][:quantity] = line_item.quantity
+        hash[:imprintables][li][:decoration_price] = line_item.decoration_price.to_f
+        hash[:imprintables][li][:imprintable_id] = line_item.imprintable_id
+        hash[:imprintables][li][:job_id] = line_item.line_itemable_id
+      end
+    else
+      changed_attrs = self.attribute_names.select{ | attr| self.send("#{attr}_changed?")}
+      changed_attrs.each do |attr|
+      hash[attr] = {
+        "old" => self.send("#{attr}_was"), # self.name_was , # self.name_was
+        "new" => self.send("#{attr}")  # self.name
+      }
+      end
+    end
+   hash
   end
 
   private

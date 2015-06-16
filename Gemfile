@@ -1,6 +1,5 @@
 source 'https://rubygems.org'
 
-gem 'softwear-lib'
 require 'softwear/lib'
 Softwear::Lib.common_gems(self)
 
@@ -52,6 +51,7 @@ group :test do
   gem 'fakeredis', :require => 'fakeredis/rspec'
 end
 
+gem 'markitup-rails'
 gem 'acts_as_commentable'
 gem 'aws-sdk'
 gem 'google_drive'
@@ -60,7 +60,7 @@ gem 'remotipart'
 gem 'public_activity', github: 'AnnArborTees/public_activity', branch: 'master'
 gem 'sunspot_solr'
 gem 'progress_bar'
-gem 'insightly2'
+gem 'insightly2', github: 'AnnArborTees/insightly-ruby'
 gem 'freshdesk', github: 'annarbortees/freshdesk-api'
 gem 'simple_token_authentication'
 gem 'sinatra', require: false

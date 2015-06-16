@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150602213906) do
+ActiveRecord::Schema.define(version: 20150609183058) do
 
   create_table "activities", force: :cascade do |t|
     t.integer  "trackable_id",   limit: 4
@@ -124,7 +124,7 @@ ActiveRecord::Schema.define(version: 20150602213906) do
   add_index "colors", ["retail"], name: "index_colors_on_retail", using: :btree
 
   create_table "comments", force: :cascade do |t|
-    t.string   "title",            limit: 50,    default: ""
+    t.string   "title",            limit: 140,   default: ""
     t.text     "comment",          limit: 65535
     t.integer  "commentable_id",   limit: 4
     t.string   "commentable_type", limit: 255
@@ -379,21 +379,6 @@ ActiveRecord::Schema.define(version: 20150602213906) do
     t.integer "imprintable_variant_id", limit: 4
   end
 
-  create_table "notes", force: :cascade do |t|
-    t.string   "title",        limit: 50,    default: ""
-    t.text     "body",         limit: 65535
-    t.integer  "notable_id",   limit: 4
-    t.string   "notable_type", limit: 255
-    t.integer  "user_id",      limit: 4
-    t.string   "role",         limit: 255,   default: "notes"
-    t.datetime "created_at"
-    t.datetime "updated_at"
-  end
-
-  add_index "notes", ["notable_id"], name: "index_notes_on_notable_id", using: :btree
-  add_index "notes", ["notable_type"], name: "index_notes_on_notable_type", using: :btree
-  add_index "notes", ["user_id"], name: "index_notes_on_user_id", using: :btree
-
   create_table "order_quotes", force: :cascade do |t|
     t.integer  "order_id",   limit: 4
     t.integer  "quote_id",   limit: 4
@@ -510,8 +495,8 @@ ActiveRecord::Schema.define(version: 20150602213906) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.decimal  "shipping",                                     precision: 10, scale: 2
-    t.string   "quote_source",                     limit: 255
     t.datetime "initialized_at"
+    t.string   "quote_source",                     limit: 255
     t.string   "freshdesk_ticket_id",              limit: 255
     t.boolean  "informal",                         limit: 1
     t.integer  "insightly_category_id",            limit: 4
@@ -525,6 +510,7 @@ ActiveRecord::Schema.define(version: 20150602213906) do
     t.boolean  "deadline_is_specified",            limit: 1
     t.integer  "insightly_opportunity_profile_id", limit: 4
     t.decimal  "insightly_bid_amount",                         precision: 10, scale: 2
+    t.integer  "insightly_whos_responsible_id",    limit: 4
   end
 
   create_table "sample_locations", force: :cascade do |t|
@@ -718,5 +704,14 @@ ActiveRecord::Schema.define(version: 20150602213906) do
   add_index "users", ["email"], name: "index_users_on_email", unique: true, using: :btree
   add_index "users", ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true, using: :btree
   add_index "users", ["unlock_token"], name: "index_users_on_unlock_token", unique: true, using: :btree
+
+  create_table "warnings", force: :cascade do |t|
+    t.integer  "warnable_id",   limit: 4
+    t.string   "warnable_type", limit: 255
+    t.string   "source",        limit: 255
+    t.text     "message",       limit: 65535
+    t.datetime "dismissed_at"
+    t.integer  "dismisser_id",  limit: 4
+  end
 
 end

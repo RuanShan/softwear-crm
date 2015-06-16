@@ -1,4 +1,12 @@
 GIT
+  remote: git://github.com/AnnArborTees/insightly-ruby.git
+  revision: 329e2c63c36fc2aee8b6e73382be18bd9fe0e3ac
+  specs:
+    insightly2 (0.1.8)
+      activesupport
+      faraday
+
+GIT
   remote: git://github.com/AnnArborTees/public_activity.git
   revision: aae6d11702991411c49446db4784fcb91376e0a1
   branch: master
@@ -18,9 +26,9 @@ GIT
 
 GIT
   remote: git://github.com/annarbortees/freshdesk-api.git
-  revision: ce0d738048dc88b6b4e7915e859ed57a7348017f
+  revision: 328a5d2bdeb40a17e97fe60bad048273aa9379e2
   specs:
-    freshdesk (0.3.pre.SNAPSHOT)
+    freshdesk (0.3)
       nokogiri
       rest-client
 
@@ -42,7 +50,7 @@ GIT
 
 GIT
   remote: git://github.com/thoughtbot/paperclip.git
-  revision: f6becd33b9029274a54d2adf0bb36c9aa255109d
+  revision: 14356d7eccb9175819508d243fb4a92681d11208
   specs:
     paperclip (4.2.1)
       activemodel (>= 3.0.0)
@@ -50,6 +58,14 @@ GIT
       cocaine (~> 0.5.5)
       mime-types
       mimemagic (= 0.3.0)
+
+GIT
+  remote: git@github.com:AnnArborTees/acts_as_warnable.git
+  revision: 2b3eee8447fae174398d6933513c766555338bb6
+  specs:
+    acts_as_warnable (0.0.1)
+      devise
+      rails (~> 4.2.1)
 
 GIT
   remote: git@github.com:AnnArborTees/dumpsync.git
@@ -116,8 +132,8 @@ GEM
       builder (~> 3.0)
       jmespath (~> 1.0)
       multi_json (~> 1.0)
-    aws-sdk-resources (2.0.45)
-      aws-sdk-core (= 2.0.45)
+    aws-sdk-resources (2.0.47)
+      aws-sdk-core (= 2.0.47)
     aws-sdk-v1 (1.64.0)
       json (~> 1.4)
       nokogiri (>= 1.4.4)
@@ -285,7 +301,7 @@ GEM
       activesupport (>= 3.0.0)
     launchy (2.4.3)
       addressable (~> 2.3)
-    liquid (3.0.2)
+    liquid (3.0.3)
     little-plugger (1.1.3)
     logging (2.0.0)
       little-plugger (~> 1.1)
@@ -294,6 +310,8 @@ GEM
       nokogiri (>= 1.5.9)
     mail (2.6.3)
       mime-types (>= 1.16, < 3)
+    markitup-rails (1.1.3)
+      rails (>= 3.1)
     memoist (0.12.0)
     mime-types (2.6.1)
     mimemagic (0.3.0)
@@ -385,7 +403,7 @@ GEM
     rspec-mocks (3.2.1)
       diff-lcs (>= 1.2.0, < 2.0)
       rspec-support (~> 3.2.0)
-    rspec-rails (3.2.1)
+    rspec-rails (3.2.2)
       actionpack (>= 3.0, < 4.3)
       activesupport (>= 3.0, < 4.3)
       railties (>= 3.0, < 4.3)
@@ -422,7 +440,7 @@ GEM
       json
       redis (>= 3.0.6)
       redis-namespace (>= 1.3.1)
-    sidekiq-failures (0.4.3)
+    sidekiq-failures (0.4.4)
       sidekiq (>= 2.16.0)
     sidekiq-status (0.5.3)
       sidekiq (>= 2.7, < 3.4)
@@ -440,9 +458,9 @@ GEM
       rack (~> 1.4)
       rack-protection (~> 1.4)
       tilt (>= 1.3, < 3)
-    softwear-lib (0.0.6)
+    softwear-lib (0.0.7)
       activesupport
-    sprockets (3.1.0)
+    sprockets (3.2.0)
       rack (~> 1.0)
     sprockets-rails (2.3.1)
       actionpack (>= 3.0)
@@ -501,6 +519,7 @@ DEPENDENCIES
   activeresource
   acts-as-taggable-on
   acts_as_commentable
+  acts_as_warnable!
   attr_encrypted (~> 1.3.3)
   aws-sdk
   better_errors (>= 0.3.2)
@@ -539,6 +558,7 @@ DEPENDENCIES
   kaminari
   launchy (~> 2.4.2)
   liquid
+  markitup-rails
   momentjs-rails (~> 2.9.0)
   mysql2
   paperclip!
@@ -562,7 +582,7 @@ DEPENDENCIES
   sidekiq-status
   simple_token_authentication
   sinatra
-  softwear-lib
+  softwear-lib (= 0.0.7)
   summernote-rails
   sunspot_matchers
   sunspot_rails

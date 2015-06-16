@@ -39,7 +39,13 @@ jQuery ->
     window.print()
     return false
 
-  $('.js-datetimepicker').datetimepicker()
+  $('.js-datetimepicker').datetimepicker({ 
+    widgetPositioning: {
+      horizontal: 'left',
+      vertical: 'bottom'
+    }
+  });
+
 
 @invalidMsg = (textbox) ->
   if textbox.validity.patternMismatch

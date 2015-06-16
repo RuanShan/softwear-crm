@@ -18,7 +18,6 @@ describe 'quotes/show/_line_items_informal.html.erb_spec.rb', quote_spec: true d
   end
 
   it 'has a div for each job, and each div has the job name and description' do
-    byebug
     expect(rendered).to have_css('.informal-job', count: jobs.count)
 
     quote.jobs.each do |job|

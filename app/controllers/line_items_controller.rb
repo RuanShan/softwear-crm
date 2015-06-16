@@ -111,8 +111,12 @@ class LineItemsController < InheritedResources::Base
                                         owner:  current_user,
                                         params: { name: @line_item.name }
       end
-
-      fire_activity @line_item, :create if @line_item.valid?
+      if @line_item.line_itemable.jobbable.markups_and_options_job == @line_item.line_itemable
+        Quote.public_activity_on
+        quote = @line_item.line_itemable.jobbable
+        quote.create_activity key: "quote.add_a_markup", owner: current_user, parameters: @line_item.markup_hash(@line_item)
+        Quote.public_activity_off
+      end
 
       format.json(&method(:create_json))
       format.js do

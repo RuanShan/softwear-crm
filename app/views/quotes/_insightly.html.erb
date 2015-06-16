@@ -1,9 +1,26 @@
 <div class='user-profile-content'>
+
+  <% if quote.insightly_opportunity_id.nil? && quote.salesperson_has_insightly? %>
+    <div>
+      <%= quote_integration_button(quote, :insightly) %>
+    </div>
+  <% elsif quote.insightly_opportunity_id.nil? %>
+    <div>
+      (Salesperson does not have insightly configured)
+    </div>
+  <% end %>
+
   <%= form_for quote, builder: LancengFormBuilder do |f| %>
     <div class="row">
       <div class="col-sm-6">
           <h3><strong>Insightly</strong> Settings</h3>
           Note: if there is already a linked opportunity, changing these fields will not update it.
+
+          <% unless quote.insightly_whos_responsible_id.nil? %>
+            <div>
+              <label>User responsible:</label> <%= link_to quote.insightly_whos_responsible.full_name, user_path(quote.insightly_whos_responsible.id) %>
+            </div>
+          <% end %>
 
           <%= render 'quote_insightly_fields', f: f, quote: quote, quote_request_id: nil %>
 

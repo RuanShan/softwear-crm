@@ -48,7 +48,7 @@
 
 
       <% if local_assigns[:imprint].try(:id) %>
-        <%= render 'imprints/name_number_fields', imprint: imprint, imprint_method_name: imprint.imprint_method.try(:name) || 'n\a' %>
+        <%= render 'imprints/name_number_fields', imprint: imprint, imprint_method_name: imprint.imprint_method.try(:name) || 'n\a', name_format_name: local_assigns[:name_format_name], number_format_name: local_assigns[:number_format_name] %>
       <% else %>
         <div class="hidden generic-error-message js-name-number-format-fields">
           Please click 'Update' before assigning name and number!

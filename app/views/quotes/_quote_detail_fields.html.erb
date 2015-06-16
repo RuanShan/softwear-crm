@@ -39,7 +39,7 @@
 
   <div class="input-group date js-datetimepicker">
     <%= f.text_field :valid_until_date, { value: display_time(f.object.valid_until_date),
-                                          placeholder: 'Valid Until',
+                                          placeholder: display_time(f.object.valid_until_date),
                                           class: 'form-control' } %>
 
     <span class="input-group-addon">
@@ -72,7 +72,7 @@
 
   <div class="input-group date js-datetimepicker">
     <%= f.text_field :estimated_delivery_date, { value: display_time(f.object.estimated_delivery_date),
-                                                 placeholder: 'Estimated Delivery',
+                                                 placeholder: display_time(f.object.estimated_delivery_date),
                                                  class: 'form-control' } %>
 
     <span class="input-group-addon">

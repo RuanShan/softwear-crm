@@ -1,10 +1,40 @@
 <% if activity.trackable_type %>
-  Updated line item <%= activity.parameters[:name] %> to <%= activity.trackable_type.underscore.humanize.downcase %>
-  <% if activity.trackable %>
+  <p>Updated line item group <%= activity.parameters["name"]  %> for quote, <% unless activity.trackable.nil? %>
     <%= link_to activity.trackable.name, activity.trackable %>
-  <% else %>
-    which has since been removed
-  <% end %>
+<% else %>
+  which has since been removed
+<% end %>
+</p>
+<p> With the following line item change(s) </p>
+<ul>
+    <% unless activity.parameters['imprintables'].nil? %>
+      <% activity.parameters['imprintables'].each do |key, val| %> 
+        <b>For the line item: <%= key %></b> 
+        <% if val['quantity'] %>
+          <b>From a quantity of: <%= val['quantity']['old'] %> to <%= val['quantity']['new'] %>  </b>
+        <% end %>
+        <% if val['decoration_price'] %>
+          <b>From a decoration price of: $<%= val['decoration_price']['old'] %> to $<%= val['decoration_price']['new'] %></b>
+        <% end %>
+        <% if val['imprintable_price'] %>
+          <b>From an imprintable price of: $<%= val['imprintable_price']['old'] %> to $<%= val['imprintable_price']['new'] %></b>
+        <% end %>
+        <% if val['unit_price'] %>
+          <b>From a unit price of: $<%= val['unit_price']['old'] %> to $<%= val['unit_price']['new'] %>  </b>
+        <% end %>
+      <% end %>
+    <% end %>
+<p> With the following imprint change(s) </p>
+    <% activity.parameters['imprints'].each do |key, val| %> 
+      <% if val['old']['description'] %>
+        <b>From <%= val['old']['description'] %> to <%= val['new']['description'] %> </b>
+      <%end%>
+      <% if val['old']['imprint_location_id'] %>
+        <b>From location ID: <%= val['old']['imprint_location_id'] %> to <%= val['new']['imprint_location_id'] %> </b>
+      <%end%>
+    <% end %>
+  </ul>
+
 <% else %>
   Added something...
 <% end %>

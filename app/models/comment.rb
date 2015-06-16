@@ -1,6 +1,9 @@
 class Comment < ActiveRecord::Base
 
   include ActsAsCommentable::Comment
+  include TrackingHelpers
+
+  tracked by_current_user + { recipient: ->(view, comment) { comment.commentable } }
 
   belongs_to :commentable, :polymorphic => true
 
@@ -12,6 +15,10 @@ class Comment < ActiveRecord::Base
 
   # NOTE: Comments belong to a user
   belongs_to :user
+
+  def name
+    title
+  end
 
   def public
     role == 'public'

@@ -17,7 +17,7 @@ class LineItem < ActiveRecord::Base
   scope :imprintable, -> { where.not imprintable_variant_id: nil }
 
   belongs_to :imprintable_variant
-  belongs_to :line_itemable, polymorphic: true
+  belongs_to :line_itemable, polymorphic: true, touch: true
 
   validates :description, presence: true, unless: :imprintable?
   validates :imprintable_variant_id,
@@ -135,6 +135,15 @@ class LineItem < ActiveRecord::Base
 
   def total_price
     unit_price && quantity ? unit_price * quantity : 'NAN'
+  end
+
+  def markup_hash(markup)
+    hash = {}
+    hash[:name] = markup.name
+    hash[:description] = markup.description
+    hash[:url] = markup.url
+    hash[:unit_price] = markup.unit_price
+    hash
   end
 
   private

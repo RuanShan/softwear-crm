@@ -22,7 +22,7 @@
       <%= f.fields_for :line_items_from_group do |ff| %>
           <div class="col-xs-6">
             <%= ff.label :imprintable_group_id %>
-            <%= ff.select :imprintable_group_id, ImprintableGroup.all.collect{|x| [x.name, x.id] } %>
+            <%= ff.select2 :imprintable_group_id, ImprintableGroup.all.collect{|x| [x.name, x.id] }, {}, style: 'width: 100%;' %>
           </div>
 
           <div class="col-xs-3">

@@ -18,10 +18,10 @@ class Job < ActiveRecord::Base
   has_many :artwork_request_jobs
   has_many :artwork_requests, through: :artwork_request_jobs
   has_many :colors, -> {readonly}, through: :imprintable_variants
-  has_many :imprints
+  has_many :imprints, dependent: :destroy
   has_many :imprintables, -> {readonly}, through: :imprintable_variants
   has_many :imprintable_variants, -> {readonly}, through: :line_items
-  has_many :line_items, as: :line_itemable
+  has_many :line_items, as: :line_itemable, dependent: :destroy 
 
   accepts_nested_attributes_for :line_items, :imprints, allow_destroy: true
 
@@ -220,6 +220,8 @@ class Job < ActiveRecord::Base
   end
 
   def check_for_line_items
+    return if jobbable_type == 'Quote'
+
     if LineItem.where(line_itemable_id: id, line_itemable_type: 'Job').exists?
       self.errors[:deletion_status] =
         'All line items must be manually removed before a job can be deleted'
