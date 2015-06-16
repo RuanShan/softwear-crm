@@ -11,14 +11,10 @@ module ApiControllerTests
             .to receive(:permitted_attributes)
             .and_return [:field_1]
 
-          expect(resource_type)
-            .to receive(:where).with(hash_including(field_1: 'value_1'))
-          expect(controller).to receive(:instance_variable_set)
-            .with("@#{resource_name.pluralize}", anything)
-
           begin
             get :index, format: :json, field_1: 'value_1', bad_field: 'dumb_val'
-          rescue ActiveRecord::StatementInvalid
+          rescue ActiveRecord::StatementInvalid => e
+            expect(e.message).to match /Unknown column .+field_1/
           end
         end
       end
@@ -30,14 +26,25 @@ module ApiControllerTests
 
     describe 'POST #create', api_controller_spec: true do
       it 'sets the "Location" header to the resource url' do
-        allow(Kernel.const_get(resource_type))
-          .to receive(:create).and_return mock_model(resource_type, id: 5)
+        allow_any_instance_of(described_class).to receive(:record)
+          .and_return double('record', id: 5)
+
+        dummy_success = double('success')
+        allow(dummy_success).to receive(:json) { |&block|
+          block.call
+        }
+        dummy_failure = double('failure')
+        allow(dummy_failure).to receive(:json)
+
+        allow_any_instance_of(described_class).to receive(:create!) { |&block|
+          block.call dummy_success, dummy_failure
+        }
 
         post :create, format: :json
 
         expect(response.headers.keys).to include 'Location'
         expect(response.headers['Location'])
-          .to eq controller.send(:collection_url, 5)
+          .to eq controller.send(:resource_url, 5)
       end
     end
   end
