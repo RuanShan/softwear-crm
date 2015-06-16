@@ -6,7 +6,8 @@ before_install:
   - sudo apt-get install libmysql-ruby libmysqlclient-dev ruby-dev
   - gem install softwear-lib -i ~/.rvm/rubies/rbx-2.5.2/gems --no-ri --no-rdoc
   - wget http://chromedriver.storage.googleapis.com/2.15/chromedriver_linux64.zip
-  - sudo unzip chromedriver_linux64.zip -d /usr/bin
+  - mkdir ~/chromedriver
+  - unzip chromedriver_linux64.zip -d ~/chromedriver
   - rm chromedriver_linux64.zip
 
 before_script:
@@ -17,6 +18,8 @@ before_script:
         database: crm-test
         username: travis
     END
+  - export PATH=$PATH:~/chromedriver
+  - echo path: $PATH
   - bundle exec rake db:create
   - bundle exec rake db:migrate
 
