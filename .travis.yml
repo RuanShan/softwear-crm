@@ -20,4 +20,4 @@ before_script:
   - bundle exec rake db:create
   - bundle exec rake db:migrate
 
-script: xvfb-start bundle exec rspec -t ~solr
+script: xvfb-run bundle exec rspec -t ~solr
