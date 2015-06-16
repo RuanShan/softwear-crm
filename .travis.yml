@@ -16,7 +16,7 @@ before_script:
         adapter: mysql2
         database: crm-test
         username: travis
-      END
+    END
   - bundle exec rake db:create
   - bundle exec rake db:migrate
 
