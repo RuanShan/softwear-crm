@@ -6,4 +6,15 @@ before_install:
   - sudo apt-get install libmysql-ruby libmysqlclient-dev ruby-dev
   - gem install softwear-lib -i ~/.rvm/rubies/rbx-2.5.2/gems/gems --no-ri --no-rdoc
 
+before_script:
+  - |
+    cat <<END >> config/database.yml
+      test:
+        adapter: mysql2
+        database: crm-test
+        username: travis
+    END
+  - bundle exec rake db:create
+  - bundle exec rake db:migrate
+
 script: bundle exec rspec
