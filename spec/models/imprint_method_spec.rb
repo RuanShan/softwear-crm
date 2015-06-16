@@ -7,7 +7,7 @@ describe ImprintMethod, imprint_method_spec: true do
   describe 'Relationships' do
     it { is_expected.to have_many(:ink_colors) }
     it { is_expected.to have_many(:print_locations) }
-    it { is_expected.to have_and_belong_to_many(:imprintables) }
+    it { is_expected.to have_many(:imprintables) }
 
     it { is_expected.to accept_nested_attributes_for(:ink_colors) }
     it { is_expected.to accept_nested_attributes_for(:print_locations) }

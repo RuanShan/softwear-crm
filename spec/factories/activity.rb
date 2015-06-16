@@ -7,6 +7,7 @@ FactoryGirl.define do
   end
   
   factory :quote_activity, class: PublicActivity::Activity do
+
     trackable { |q| q.association(:valid_quote) }
     association :owner, factory: :user
     factory :quote_activity_update do

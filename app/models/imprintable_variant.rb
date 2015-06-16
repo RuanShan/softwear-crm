@@ -34,7 +34,7 @@ class ImprintableVariant < ActiveRecord::Base
   end
 
   def name
-    "#{color.name} #{imprintable.name}"
+    "#{imprintable.name}"
   end
 
   def style_catalog_no

@@ -12,6 +12,6 @@ describe InkColor do
 
   describe 'Relationships' do
     it { is_expected.to belong_to(:imprint_method) }
-    it { is_expected.to have_and_belong_to_many(:artwork_requests) }
+    it { is_expected.to have_many(:artwork_requests) }
   end
 end

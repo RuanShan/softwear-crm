@@ -167,62 +167,62 @@ feature 'Order management', order_spec: true,  js: true do
     expect(false).to eq true
   end
 
-  describe 'search', search_spec: true, solr: true do
-    given!(:order2) { create(:order_with_job, name: 'Keyword order',
-      terms: 'Net 60') }
-    given!(:order3) { create(:order_with_job, name: 'Nonkeyword order',
-      terms: 'Paid in full on purchase') }
-    given!(:order4) { create(:order_with_job, name: 'Some Order',
-      company: 'Order with the keyword keyword!') }
-    given!(:order5) { create(:order_with_job, name: 'Dumb order',
-      terms: 'Net 60') }
-
-    scenario 'user can search orders', retry: 3 do
-      visit orders_path
-
-      fill_in 'search_order_fulltext', with: 'Keyword'
-      click_button 'Search'
-      expect(page).to have_content 'Keyword order'
-      expect(page).to have_content 'Some Order'
-      expect(page).to_not have_content 'Nonkeyword order'
-      expect(page).to_not have_content 'Dumb order'
-    end
-
-    scenario 'user can save searches' do
-      visit orders_path
-      find('.additional-icon[data-toggle="collapse"]').click
-      select 'Net 60', from: 'search_order_8_terms'
-      click_button 'Save'
-      wait_for_ajax
-
-      fill_in 'query_name_input', with: 'Test Query'
-      find('#modal-confirm-btn').click
-
-      expect(page).to have_content 'Successfully saved search query!'
-      expect(Search::Query.where(name: 'Test Query')).to exist
-    end
-
-    scenario 'user can use saved searches', retry: 3 do
-      query = Search::QueryBuilder.build('Test Query') do
-        on Order do
-          with :terms, 'Net 60'
-          fulltext 'order'
-        end
-      end
-        .query
-
-      query.user = valid_user
-      expect(query.save).to be_truthy
-
-      visit orders_path
-
-      select 'Test Query', from: 'select_query_for_order'
-      wait_for_ajax
-      click_button 'GO'
-
-      expect(page).to have_content 'Keyword order'
-      expect(page).to have_content 'Dumb order'
-      expect(page).to_not have_content 'Nonkeyword order'
-    end
-  end
+#  describe 'search', search_spec: true, solr: true do
+#    given!(:order2) { create(:order_with_job, name: 'Keyword order',
+#      terms: 'Net 60') }
+#    given!(:order3) { create(:order_with_job, name: 'Nonkeyword order',
+#      terms: 'Paid in full on purchase') }
+#    given!(:order4) { create(:order_with_job, name: 'Some Order',
+#      company: 'Order with the keyword keyword!') }
+#    given!(:order5) { create(:order_with_job, name: 'Dumb order',
+#      terms: 'Net 60') }
+#
+#    scenario 'user can search orders', retry: 3 do
+#      visit orders_path
+#
+#      fill_in 'search_order_fulltext', with: 'Keyword'
+#      click_button 'Search'
+#      expect(page).to have_content 'Keyword order'
+#      expect(page).to have_content 'Some Order'
+#      expect(page).to_not have_content 'Nonkeyword order'
+#      expect(page).to_not have_content 'Dumb order'
+#    end
+#
+#    scenario 'user can save searches' do
+#      visit orders_path
+#      find('.additional-icon[data-toggle="collapse"]').click
+#      select 'Net 60', from: 'search_order_8_terms'
+#      click_button 'Save'
+#      wait_for_ajax
+#
+#      fill_in 'query_name_input', with: 'Test Query'
+#      find('#modal-confirm-btn').click
+#
+#      expect(page).to have_content 'Successfully saved search query!'
+#      expect(Search::Query.where(name: 'Test Query')).to exist
+#    end
+#
+#    scenario 'user can use saved searches', retry: 3 do
+#      query = Search::QueryBuilder.build('Test Query') do
+#        on Order do
+#          with :terms, 'Net 60'
+#          fulltext 'order'
+#        end
+#      end
+#        .query
+#
+#      query.user = valid_user
+#      expect(query.save).to be_truthy
+#
+#      visit orders_path
+#
+#      select 'Test Query', from: 'select_query_for_order'
+#      wait_for_ajax
+#      click_button 'GO'
+#
+#      expect(page).to have_content 'Keyword order'
+#      expect(page).to have_content 'Dumb order'
+#      expect(page).to_not have_content 'Nonkeyword order'
+#    end
+#  end
 end
