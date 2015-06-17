@@ -128,10 +128,11 @@ feature 'Imprintables management', imprintable_spec: true, slow: true do
   context 'There is a store available', js: true do
     given!(:store) { create(:valid_store) }
 
-    scenario 'A user can utilize sample location token input field', js: true, story_692: true, pending: true do
+    scenario 'A user can utilize sample location token input field', pending: 'The option is clearly there, but it cannot find it', js: true, story_692: true do
       visit edit_imprintable_path imprintable.id
 
-      select_from_chosen(store.name, from: 'Sample Locations')
+      sleep 1
+      find('#imprintable_sample_location_ids').select store.id
       find_button('Update Imprintable').click
 
       expect(page).to have_selector '.modal-content-success', text: 'Imprintable was successfully updated.'
@@ -196,14 +197,14 @@ feature 'Imprintables management', imprintable_spec: true, slow: true do
   context 'There is an imprint method' do
     given!(:imprint_method) { create(:valid_imprint_method) }
 
-    scenario 'A user can utilize compatible imprint methods token input field', js: true, story_692: true, pending: "Select2" do
+    scenario 'A user can utilize compatible imprint methods token input field', js: true, story_692: true do
       visit edit_imprintable_path imprintable.id
 
-      select2('Compatible Imprint Methods', from: imprint_method.name)
-     # select_from_chosen(imprint_method.name, from: 'Compatible Imprint Methods')
+      sleep 2
+      find('#imprintable_compatible_imprint_method_ids').select imprint_method.id
       find_button('Update Imprintable').click
 
-      expect(page).to have_selector '.modal-content-success', text: 'Imprintable was successfully updated.'
+      expect(page).to have_content 'Imprintable was successfully updated.'
       expect(imprintable.reload.compatible_imprint_method_ids.include? imprint_method.id).to be_truthy
     end
   end
