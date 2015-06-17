@@ -141,7 +141,7 @@ feature 'Imprints Management', imprint_spec: true, js: true do
     expect(Imprint.where(job_id: job.id)).to_not exist
   end
 
-  scenario 'a user can specify a name and number formats for an imprint', busted: true, name_number_spec: true, story_189: true do
+  scenario 'a user can specify a name and number formats for an imprint', name_number_spec: true, story_189: true do
     imprint
     visit edit_order_path(order.id, anchor: 'jobs')
     wait_for_ajax
