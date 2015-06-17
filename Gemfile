@@ -43,7 +43,6 @@ end
 gem 'cap-ec2', group: :development
 
 group :test do
-  gem 'capybara-select2'
   gem 'database_cleaner'
   gem 'sunspot_matchers'
   # for accessing session object in integration tests
