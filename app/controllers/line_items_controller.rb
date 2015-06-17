@@ -2,11 +2,10 @@ class LineItemsController < InheritedResources::Base
   include BatchUpdate
   include LineItemHelper
 
-  after_filter :assign_line_itemable, only: [:create]
-
   def new
     super do |format|
-      @line_item = @line_itemable.line_items.new
+      # @line_item = @line_itemable.line_items.new
+      @line_itemable = Job.find(params[:job_id])
 
       format.html { render partial: 'create_modal' }
       format.js { render locals: { standard_only: params[:standard_only] } }
@@ -103,6 +102,8 @@ class LineItemsController < InheritedResources::Base
   end
 
   def create
+    @line_itemable = Job.find(params[:job_id])
+
     return create_imprintable if param_okay? :imprintable_id, :color_id
 
     super do |format|
@@ -320,10 +321,6 @@ class LineItemsController < InheritedResources::Base
         :taxable, :line_itemable_id, :line_itemable_type
       ]
     )
-  end
-
-  def assign_line_itemable
-    @line_itemable = @line_item.line_itemable
   end
 
 end

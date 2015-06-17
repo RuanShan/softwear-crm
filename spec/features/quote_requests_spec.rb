@@ -104,7 +104,7 @@ feature 'Quote Requests Management', js: true, quote_request_spec: true do
     end
   end
 
-  scenario 'A user can change the status of a quote', story_195: true, current: true do
+  scenario 'A user can change the status of a quote', story_195: true, current: true, story_692: true do
     visit quote_request_path(quote_request)
 
     find(".editable[data-placeholder='Status']").click

@@ -169,39 +169,18 @@ feature 'Quotes management', quote_spec: true, js: true do
     expect(page).to have_select('Bid Tier', :selected => "Tier 4 ($1000 and up)")
   end
 
-  scenario 'A users options are properly saved', edit: true do
+  scenario 'A users options are properly saved', edit: true, story_692: true do
     visit edit_quote_path quote.id
-    find('a', text: 'Details').click
+    click_link 'Details'
     select 'No', :from => "Informal quote?" 
     select 'No', :from => "Did the Customer Request a Specific Deadline?" 
     select 'Yes', :from => "Is this a rush job?" 
     click_button 'Save'
     visit current_path
-    click_link 'Edit'
-    find('a', text: 'Details').click
+    click_link 'Details'
     expect(page).to have_select('Informal quote?', :selected => "No")
     expect(page).to have_select('Did the Customer Request a Specific Deadline?', :selected => "No")
     expect(page).to have_select('Is this a rush job?', :selected => "Yes")
-  end
-
-  scenario 'Phone Numbers are automatically formatted to be valid Freshdesk format', story_646: true, edit: true do
-    visit edit_quote_path quote.id
-    click_button 'Details'
-    fill_in 'Phone Number', with: '+1-734-274-2659'
-    fill_in 'First Name', with: 'Wumblord'
-    expect(page).to have_field('Phone Number', :with => '+1-734-274-2659')
-    fill_in 'Phone Number', with: '17342742659'
-    fill_in 'First Name', with: 'Wumblard'
-    expect(page).to have_field('Phone Number', :with => '+1-734-274-2659')
-    fill_in 'Phone Number', with: '734-274-2659'
-    fill_in 'First Name', with: 'Yumblard'
-    expect(page).to have_field('Phone Number', :with => '+1-734-274-2659')
-    fill_in 'Phone Number', with: '7342742659'
-    fill_in 'First Name', with: 'Yumblare'
-    expect(page).to have_field('Phone Number', :with => '+1-734-274-2659')
-    fill_in 'Phone Number', with: '2742659'
-    fill_in 'First Name', with: 'Yurblare'
-    expect(page).to have_field('Phone Number', :with => '+1-734-274-2659')
   end
 
   scenario 'A user can add an imprintable group of line items to a quote', story_567: true, revamp: true, story_570: true do
@@ -406,7 +385,7 @@ feature 'Quotes management', quote_spec: true, js: true do
     end
   end
 
-  scenario 'I can add a different imprint right after creating a group with one', bug_fix: true, imprint: true do
+  scenario 'I can add a different imprint right after creating a group with one', bug_fix: true, imprint: true, story_692: true, pending: true do
     imprintable_group; imprint_method_1; imprint_method_2
 
     visit edit_quote_path quote
@@ -422,6 +401,8 @@ feature 'Quotes management', quote_spec: true, js: true do
     fill_in 'Quantity', with: 10
     fill_in 'Decoration price', with: 12.55
 
+    wait_for_ajax
+    sleep 1
     click_button 'Add Imprintable Group'
 
     expect(page).to have_content 'Quote was successfully updated.'
@@ -572,7 +553,7 @@ feature 'Quotes management', quote_spec: true, js: true do
     expect(job.line_items.where(imprintable_variant_id: iv3.id)).to exist
   end
 
-  scenario 'A user can add an option/markup to a quote', revamp: true, story_558: true do
+  scenario 'A user can add an option/markup to a quote', revamp: true, story_558: true, story_692: true do
     quote.update_attributes informal: true
     quote.jobs << create(:job, line_items: [create(:imprintable_line_item)])
     visit edit_quote_path quote
@@ -590,7 +571,7 @@ feature 'Quotes management', quote_spec: true, js: true do
 
     click_button 'Add Option or Markup'
 
-    expect(page).to have_content 'Line item was successfully created.'
+    expect(page).to have_content 'Quote was successfully updated.'
 
     job = quote.markups_and_options_job
     job.reload
@@ -675,44 +656,6 @@ feature 'Quotes management', quote_spec: true, js: true do
     expect(page).to_not have_content 'Remove me'
   end
 
-  feature 'Quote emailing' do
-    scenario 'A user can email a quote to the customer' do
-      visit edit_quote_path quote.id
-      find('a[href="#quote_actions"]').click
-      click_link 'Email Quote'
-      sleep 0.5
-      find('input[value="Submit"]').click
-      sleep 0.5
-
-      expect(page).to have_selector '.modal-content-success'
-      expect(current_path).to eq(edit_quote_path quote.id)
-    end
-
-    scenario 'CC\'s current salesperson by default' do
-      visit edit_quote_path quote.id
-      find('a[href="#quote_actions"]').click
-      click_link 'Email Quote'
-      sleep 0.5
-      expect(page).to have_selector "input#cc[value='#{valid_user.full_name} <#{ valid_user.email }>']"
-    end
-
-    feature 'email recipients enforces proper formatting' do
-      scenario 'no email is sent with improper formatting', pending: 'The pattern to validate this field is correct,
-                                                                      but for some reason isn\'t tripping when it should' do
-        visit edit_quote_path quote.id
-        find('a[href="#actions"]').click
-        click_link 'Email Quote'
-        sleep 0.5
-        fill_in 'email_recipients', with: 'this.is.not@formatted.properly.com'
-        find('input[value="Submit"]').click
-        sleep 0.5
-
-        expect(page).to_not have_selector '.modal-content-success'
-        expect(page).to have_content 'Send Quote'
-      end
-    end
-  end
-
   scenario 'A user can generate a quote from an imprintable pricing dialog', story_489: true, pricing_spec: true, pending: 'NO MORE PRICING TABLE' do
     visit imprintables_path
     find('i.fa.fa-dollar').click
@@ -773,36 +716,6 @@ feature 'Quotes management', quote_spec: true, js: true do
     expect(page).to have_content(imprintable.name)
   end
 
-  scenario "Inputting bad data for a line item doesn't remove all line items", story_249: true  do
-    visit new_quote_path
-    fill_in 'Email', with: 'test@testing.com'
-    fill_in 'First Name', with: 'Capy'
-    fill_in 'Last Name', with: 'Bara'
-    click_button 'Next'
-    sleep 0.5
-
-    fill_in 'Quote Name', with: 'Quote Name'
-    fill_in 'Valid Until Date', with: Time.now + 1.day
-    fill_in 'Estimated Delivery Date', with: Time.now + 1.day
-    click_button 'Next'
-    sleep 0.5
-
-    click_link 'Add Line Item'
-    fill_in 'Name', with: 'This Should Still be here!'
-    fill_in 'Description', with: 'Line Item Description'
-    fill_in 'Qty.', with: 2
-    fill_in 'Unit Price', with: 15
-
-    click_link 'Add Line Item'
-    click_button 'Submit'
-    close_error_modal
-    click_button 'Next'
-
-    expect(page).to have_selector('div.line-item-form', count: 2)
-    expect(page).to have_selector("div.line-item-form input[value='This Should Still be here!']")
-    expect(page).to have_selector('div.line-item-form textarea', text: 'Line Item Description')
-  end
-
   scenario 'Error reports turn the page to the first on on which there is an error', story_491: true do
     visit new_quote_path
     fill_in 'Email', with: 'test@testing.com'
@@ -839,79 +752,4 @@ feature 'Quotes management', quote_spec: true, js: true do
 #
 #  end
 
-  feature 'the following actions are tracked:' do
-    scenario 'Quote creation' do
-      visit root_path
-      unhide_dashboard
-      click_link 'quotes_list'
-      click_link 'new_quote_link'
-      expect(current_path).to eq(new_quote_path)
-
-      fill_in 'Email', with: 'test@spec.com'
-      fill_in 'First Name', with: 'Capy'
-      fill_in 'Last Name', with: 'Bara'
-      click_button 'Next'
-      sleep 0.5
-
-      fill_in 'Quote Name', with: 'Quote Name'
-      fill_in 'Valid Until Date', with: Time.now + 1.day
-      fill_in 'Estimated Delivery Date', with: Time.now + 1.day
-      click_button 'Next'
-      sleep 0.5
-
-      click_link 'Add Line Item'
-      sleep 0.5
-
-      fill_in 'Name', with: 'Line Item Name'
-      fill_in 'Description', with: 'Line Item Description'
-      fill_in 'Qty.', with: 2
-      fill_in 'Unit Price', with: 15
-      click_button 'Submit'
-
-      activity = quote.all_activities.to_a.select{ |a| a[:key] = 'quote.create' }
-      expect(activity).to_not be_nil
-    end
-
-    scenario 'A quote being emailed to the customer' do
-      visit edit_quote_path quote.id
-      click_link 'Actions'
-      click_link 'Email Quote'
-      sleep 1
-
-      click_button 'Submit'
-      expect(current_path).to eq(edit_quote_path quote.id)
-      expect(page).to have_selector '.modal-content-success', text: 'Your email was successfully sent!'
-
-      activities_array = quote.all_activities.to_a
-      activity = activities_array.select { |a| a[:key] = 'quote.emailed_customer' }
-      expect(activity).to_not be_nil
-    end
-
-    scenario 'A quote being edited' do
-      visit edit_quote_path quote.id
-      click_link 'Details'
-      fill_in 'Quote Name', with: 'Edited Quote Name'
-      click_button 'Save'
-
-      expect(current_path).to eq(quote_path quote.id)
-      expect(page).to have_selector '.modal-content-success', text: 'Quote was successfully updated.'
-      activity = quote.all_activities.to_a.select{ |a| a[:key] = 'quote.update' }
-      expect(activity).to_not be_nil
-    end
-
-    scenario 'A line item changing' do
-      visit edit_quote_path quote.id
-      click_link 'Line Items'
-      line_item_id = quote.line_items.first.id
-      find("#line-item-#{line_item_id} .line-item-button[title='Edit']").click
-      wait_for_ajax
-
-      find("#line_item_#{line_item_id}_taxable").click
-      find('.btn.update-line-items').click
-      wait_for_ajax
-
-      activity = quote.all_activities.to_a.select{ |a| a[:key] = 'quote.updated_line_item' }
-      expect(activity).to_not be_nil
-    end
-  end
 end

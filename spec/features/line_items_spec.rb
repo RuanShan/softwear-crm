@@ -61,11 +61,10 @@ feature 'Line Items management', line_item_spec: true, js: true do
     expect(page).to have_content "Quantity can't be blank"
   end
 
-  scenario 'user can add a new imprintable line item' do
+  scenario 'user can add a new imprintable line item', story_692: true do
     visit edit_order_path(1, anchor: 'jobs')
     wait_for_ajax
-
-    first('.add-line-item').click
+    click_link 'Add Line Item'
     wait_for_ajax
     expect(page).to have_content 'Add'
 
@@ -85,9 +84,9 @@ feature 'Line Items management', line_item_spec: true, js: true do
     end
 
     wait_for_ajax
+    sleep 1
     find('#line-item-submit').click
-    sleep 3
-
+    sleep 1
     expect(LineItem.where(imprintable_variant_id: white_shirt_s.id)).to exist
     expect(LineItem.where(imprintable_variant_id: white_shirt_m.id)).to exist
     expect(LineItem.where(imprintable_variant_id: white_shirt_l.id)).to exist
