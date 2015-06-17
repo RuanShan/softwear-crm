@@ -22,12 +22,12 @@ feature 'Stores management', store_spec: true do
     expect(page).to have_selector('#flash_notice', text: 'Store was successfully created.')
   end
 
-  scenario 'User deletes an existing store', js: true do
+  scenario 'User deletes an existing store', js: true, story_692: true do
     visit stores_path
     find("tr#store_#{store.id} a[data-action='destroy']").click
     page.driver.browser.switch_to.alert.accept
     wait_for_ajax
-    expect(store.reload.destroyed?).to be_truthy
+    expect(store.reload.deleted_at).not_to eq(nil)
   end
 
   scenario 'User edits an existing store' do

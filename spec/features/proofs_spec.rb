@@ -92,14 +92,14 @@ feature 'Proof Features', js: true, proof_spec: true do
     expect(Proof.find(proof.id).status).to eq('Rejected')
   end
 
-  scenario 'A user can Email a Customer a Proof Approval Request from the Proof List' do
+  scenario 'A user can Email a Customer a Proof Approval Request from the Proof List', story_692: true do
     visit edit_order_path(order.id)
     find("a[href='#proofs']").click
     find("a[href='#{email_customer_order_proofs_path(id: proof.id, order_id: order.id, reminder: 'false')}']").click
     sleep 0.5
     click_button 'Send Email'
     sleep 0.5
-    expect(page).to have_selector('.modal-content-success')
+    expect(page).to have_content "Your email was successfully sent"
     sleep 0.5
     find(:css, 'button.close').click
     expect(Proof.find(proof.id).status).to eq('Emailed Customer')

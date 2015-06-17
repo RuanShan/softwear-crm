@@ -38,11 +38,11 @@ feature 'Imprint Method Features', imprint_method_spec: true do
     expect(page).to have_selector('#flash_notice', text: 'Imprint method was successfully updated.')
   end
 
-  scenario 'A user can delete an imprint method', js: true do
+  scenario 'A user can delete an imprint method', js: true, story_692: true do
     visit imprint_methods_path
     find("tr#imprint_method_#{imprint_method.id} a[data-action='destroy']").click
     page.driver.browser.switch_to.alert.accept
     wait_for_ajax
-    expect(imprint_method.reload.destroyed?).to be_truthy
+    expect(imprint_method.reload.deleted_at).not_to eq(nil)
   end
 end

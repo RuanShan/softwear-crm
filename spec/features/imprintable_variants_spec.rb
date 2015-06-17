@@ -12,10 +12,11 @@ feature 'Imprintable Variant Management', js: true, imprintable_variant_spec: tr
   context 'There are no imprintable variants' do
     given!(:imprintable) { create(:valid_imprintable) }
 
-    scenario 'A user can create an initial size and color' do
+    scenario 'A user can create an initial size and color', story_692: true, pending: "select2" do
       visit edit_imprintable_path imprintable.id
 
-      select_from_chosen(color.id, from: 'color_ids')
+     # select_from_chosen(color.id, from: 'color_ids')
+      select2(color.id, from: '#select2-color-select-container')
       select_from_chosen(size.id, from: 'size_ids')
       find('#submit_button').click
 
@@ -38,7 +39,7 @@ feature 'Imprintable Variant Management', js: true, imprintable_variant_spec: tr
       expect(page).to have_css('#imprintable_variants_list')
     end
 
-    scenario 'A user can add a size column', story_213: true do
+    scenario 'A user can add a size column', story_213: true, story_692: true, pending: "select2" do
       # for some reason using only 1 click wouldn't work, using 2 does ._.
       find('#size_select_chosen').click
       find('#size_select_chosen').click
@@ -51,7 +52,7 @@ feature 'Imprintable Variant Management', js: true, imprintable_variant_spec: tr
       expect(page).to have_selector 'th', text: size.display_value
     end
 
-    scenario 'A user can add a color row', story_213: true do
+    scenario 'A user can add a color row', story_213: true, story_692: true, pending: "select2" do
       find('#color_select_chosen').click
       find('#color_select_chosen').click
       sleep 0.5
