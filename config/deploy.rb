@@ -5,6 +5,7 @@ set :application, 'softwear-crm'
 set :repo_url, 'git@github.com:annarbortees/softwear-crm.git'
 set :rvm_ruby_string, 'rbx-2.5.2'
 set :whenever_identifier, -> { "#{fetch(:application)}_#{fetch(:stage)}" }
+set :assets_role, :web
 
 # Default branch is :master
 ask :branch, proc { `git rev-parse --abbrev-ref HEAD`.chomp }.call
