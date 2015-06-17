@@ -21,7 +21,7 @@ feature 'Imprints Management', imprint_spec: true, js: true do
 
   given(:imprint) { create(:blank_imprint, job_id: job.id, print_location_id: print_location1.id) }
 
-  scenario 'user can add a new imprint to a job', busted: true, retry: 1 do
+  scenario 'user can add a new imprint to a job', retry: 1 do
     visit edit_order_path(order.id, anchor: 'jobs')
     wait_for_ajax
 
@@ -56,7 +56,7 @@ feature 'Imprints Management', imprint_spec: true, js: true do
     expect(Imprint.where(job_id: job.id, print_location_id: print_location2.id)).to exist
   end
 
-  scenario 'user can set the print location and print method of an imprint', busted: true do
+  scenario 'user can set the print location and print method of an imprint' do
     imprint
     visit edit_order_path(order.id, anchor: 'jobs')
     wait_for_ajax
@@ -108,14 +108,21 @@ feature 'Imprints Management', imprint_spec: true, js: true do
     expect(Imprint.where(job_id: job.id, print_location_id: print_location1.id)).to_not exist
   end
 
-  scenario 'user sees error when attempting to add 2 imprints with the same location', busted: true do
+  scenario 'user sees error when attempting to add 2 imprints with the same location' do
     imprint
     visit edit_order_path(order.id, anchor: 'jobs')
 
     sleep 1
     first('.add-imprint').click
-    wait_for_ajax
+    sleep 2
 
+    within '.imprint-entry[data-id="-1"]' do
+      find('.js-imprint-method-select').select 'Digital'
+      sleep 2
+      find('.js-print-location-select').select 'Front'
+    end
+
+    sleep 2
     find('.update-imprints').click
     wait_for_ajax
 
