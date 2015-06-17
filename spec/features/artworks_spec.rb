@@ -46,11 +46,12 @@ feature 'Artwork Features', js: true, artwork_spec: true do
 #    expect(page).to have_css("tr#artwork-row-#{artwork.id}")
 #  end
 
-  scenario 'A user can edit and update an Artwork from the Artwork List' do
+  scenario 'A user can edit and update an Artwork from the Artwork List', story_692: true do
     visit artworks_path
     find("a[href='#{edit_artwork_path(artwork)}']").click
     fill_in 'Name', with: 'Edited Artwork Name'
     click_button 'Update Artwork'
+    wait_for_ajax
     expect(page).to have_selector('.modal-content-success')
     find(:css, 'button.close').click
     expect(page).to have_css("tr#artwork-row-#{artwork.id}")

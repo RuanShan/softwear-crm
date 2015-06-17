@@ -21,7 +21,7 @@ feature 'Payments management', js: true, payment_spec: true do
   end
 
   context 'with a refunded payment' do
-    scenario 'balance is still correctly computed and displayed' do
+    scenario 'balance is still correctly computed and displayed', story_692: true do
       visit (edit_order_path order.id) + '#payments'
       find(:css, '#cash-button').click
       fill_in 'amount_field', with: '20'
@@ -32,28 +32,28 @@ feature 'Payments management', js: true, payment_spec: true do
       fill_in 'Refund Reason', with: 'how do i money?'
       click_button 'Refund Payment'
       page.driver.browser.switch_to.alert.accept
-      expect(page).to have_selector '.modal-content-success', text: 'Payment was successfully updated.'
+      expect(page).to have_content 'Payment was successfully updated.'
       expect(Payment.find(payment.id).is_refunded?).to be_truthy
     end
   end
 
-  scenario 'A salesperson can make a payment' do
+  scenario 'A salesperson can make a payment', story_692: true do
     visit (edit_order_path order.id) + '#payments'
     find(:css, '#cash-button').click
     fill_in 'amount_field', with: '100'
     click_button 'Apply Payment'
     page.driver.browser.switch_to.alert.accept
-    expect(page).to have_selector '.modal-content-success', text: 'Payment was successfully created.'
+    expect(page).to have_content 'Payment was successfully created.'
     expect(Payment.find(2)).to be_truthy
   end
 
-  scenario 'A salesperson can refund a payment' do
+  scenario 'A salesperson can refund a payment', story_692: true do
     visit (edit_order_path order.id) + '#payments'
     find(:css, '.order_payment_refund_link').click
     fill_in 'Refund Reason', with: 'Gaga can\'t handle this shit'
     click_button 'Refund Payment'
     page.driver.browser.switch_to.alert.accept
-    expect(page).to have_selector '.modal-content-success', text: 'Payment was successfully updated.'
+    expect(page).to have_content 'Payment was successfully updated.'
     expect(Payment.find(payment.id).is_refunded?).to be_truthy
   end
 

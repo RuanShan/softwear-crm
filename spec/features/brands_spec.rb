@@ -14,32 +14,32 @@ feature 'Brands management', brand_spec: true do
     expect(page).to have_selector('.box-info')
   end
 
-  scenario 'A user can create a new brand' do
+  scenario 'A user can create a new brand', story_692: true do
     visit brands_path
     click_link('Add a Brand')
     fill_in 'brand_name', with: 'Sample Name'
     fill_in 'brand_sku', with: '42'
     click_button('Create Brand')
-    expect(page).to have_selector '.modal-content-success', text: 'Brand was successfully created.'
+    expect(page).to have_content 'Brand was successfully created.'
     expect(Brand.find_by name: 'Sample Name').to_not be_nil
   end
 
-  scenario 'A user can edit an existing brand'do
+  scenario 'A user can edit an existing brand', story_692: true do
     visit edit_brand_path brand.id
     fill_in 'brand_name', with: 'Edited Brand Name'
     click_button 'Update Brand'
     expect(current_path).to eq(brands_path)
-    expect(page).to have_selector '.modal-content-success', text: 'Brand was successfully updated.'
+    expect(page).to have_content 'Brand was successfully updated.'
     expect(brand.reload.name).to eq('Edited Brand Name')
   end
 
-  scenario 'A user can delete an existing brand', js: true do
+  scenario 'A user can delete an existing brand', js: true, story_692: true do
     visit brands_path
     find("tr#brand_#{brand.id} a[data-action='destroy']").click
     page.driver.browser.switch_to.alert.accept
     wait_for_ajax
     expect(current_path).to eq(brands_path)
-    expect(page).to have_selector '.modal-content-success', text: 'Brand was successfully destroyed.'
+    expect(page).to have_content 'Brand was successfully destroyed.'
     expect(brand.reload.destroyed?).to be_truthy
   end
 end
