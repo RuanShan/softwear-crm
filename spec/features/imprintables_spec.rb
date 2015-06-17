@@ -241,8 +241,10 @@ feature 'Imprintables management', imprintable_spec: true, slow: true do
     expect(page).to have_selector '#contentModal.modal.fade.in'
   end
 
-  scenario 'A user can add an imprintable to a quote from an index entry', story_692: true, refactor: true, js: true, pending: true do
-    quote = create(:valid_quote, jobs: [create(:job)])
+  scenario 'A user can add an imprintable to a quote from an index entry', story_692: true, refactor: true, js: true do
+    quote = create(:valid_quote)
+    job   = create(:job, jobbable: quote)
+
     imprintable.imprintable_variants << create(:valid_imprintable_variant)
 
     allow(Quote).to receive(:search)
