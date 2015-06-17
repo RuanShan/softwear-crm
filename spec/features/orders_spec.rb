@@ -69,7 +69,7 @@ feature 'Order management', order_spec: true,  js: true do
 
       select 'Pick up in Ann Arbor', from: 'Delivery method'
       click_button 'Submit'
-      expect(page).to have_selector '.modal-content-success', text: 'Order was successfully created.'
+      expect(page).to have_content 'Order was successfully created.'
       expect(Order.where(firstname: quote.first_name)).to exist
     end
 
@@ -78,9 +78,10 @@ feature 'Order management', order_spec: true,  js: true do
         expect(OrderQuote.count).to eq(0)
 #       fail the form
         click_button 'Next'
+        sleep 0.5
         click_button 'Submit'
 #       expect failure
-        expect(page).to have_selector '.modal-content-error', text: 'There was an error saving the order'
+        expect(page).to have_content 'There was an error saving the order'
         close_error_modal
         click_button 'Next'
 
@@ -89,7 +90,7 @@ feature 'Order management', order_spec: true,  js: true do
 
         select 'Pick up in Ann Arbor', from: 'order_delivery_method'
         click_button 'Submit'
-        expect(page).to have_selector '.modal-content-success', text: 'Order was successfully created.'
+        expect(page).to have_content 'Order was successfully created.'
         expect(OrderQuote.count).to eq(1)
       end
     end

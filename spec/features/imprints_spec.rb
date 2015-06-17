@@ -25,16 +25,16 @@ feature 'Imprints Management', imprint_spec: true, js: true do
     visit edit_order_path(order.id, anchor: 'jobs')
     wait_for_ajax
 
-    sleep 0.5
+    sleep 1
     first('.add-imprint').click
-    sleep 0.5
+    sleep 1
     find('.js-imprint-method-select').select imprint_method2.name
-    sleep 0.5
+    sleep 1
     find('.js-print-location-select').select print_location2.name
     expect(all('.editing-imprint').count).to be > 1
-    sleep 0.5
+    sleep 1
     find('.update-imprints').click
-    sleep 0.5
+    sleep 1
     expect(Imprint.where(job_id: job.id, print_location_id: print_location2.id)).to exist
   end
 
@@ -114,8 +114,15 @@ feature 'Imprints Management', imprint_spec: true, js: true do
 
     sleep 1
     first('.add-imprint').click
-    wait_for_ajax
+    sleep 2
 
+    within '.imprint-entry[data-id="-1"]' do
+      find('.js-imprint-method-select').select 'Digital'
+      sleep 2
+      find('.js-print-location-select').select 'Front'
+    end
+
+    sleep 2
     find('.update-imprints').click
     wait_for_ajax
 
