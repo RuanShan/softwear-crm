@@ -4,10 +4,6 @@ describe Setting, setting_spec: true do
 
   it { is_expected.to be_paranoid }
 
-  describe 'Validations' do
-    it { is_expected.to validate_presence_of(:val) }
-  end
-
   describe '.insightly_api_key', story_513: true do
     it 'returns the setting with the name "insightly_api_key"' do
       Setting.create(name: 'insightly_api_key', val: '123insightly', encrypted: false)

@@ -9,7 +9,7 @@ feature 'Settings management', setting_spec: true, js: true do
   given!(:quote) { create(:valid_quote) }
   given!(:imprintable) { create(:valid_imprintable) }
 
-  scenario 'A user can configure their crm settings' do
+  scenario 'A user can configure crm settings' do
     visit root_path
     unhide_dashboard
     click_link 'Configuration'

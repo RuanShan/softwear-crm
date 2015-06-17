@@ -2,19 +2,18 @@ class Setting < ActiveRecord::Base
   acts_as_paranoid
 
   attr_encrypted :val, key: 'h4rdc0ded1337ness', if: :encrypted?
-  validates :val, presence: true
 
   def self.insightly_api_key
-    Setting.find_by(name: 'insightly_api_key').try(:val) ||
+    Setting.find_or_create_by(name: 'insightly_api_key').try(:val) ||
       Figaro.env['insightly_api_key'] ||
       create_and_save_insightly_api_key
   end
 
   def self.get_freshdesk_settings
     freshdesk_records = {
-      freshdesk_url: Setting.find_by(name: 'freshdesk_url').try(:val),
-      freshdesk_email: Setting.find_by(name: 'freshdesk_email').try(:val),
-      freshdesk_password: Setting.find_by(name: 'freshdesk_password').try(:val)
+      freshdesk_url: Setting.find_or_create_by(name: 'freshdesk_url').try(:val),
+      freshdesk_email: Setting.find_or_create_by(name: 'freshdesk_email').try(:val),
+      freshdesk_password: Setting.find_or_create_by(name: 'freshdesk_password').try(:val)
     }
     freshdesk_ymls = {
       freshdesk_url: Figaro.env['freshdesk_url'],

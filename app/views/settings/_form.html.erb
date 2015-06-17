@@ -1,8 +1,9 @@
 <div class="box-info">
   <%= form_tag update_integrated_crms_path, method: :put do %>
-      <% unless freshdesk_settings.nil? %>
+    <% unless freshdesk_settings.nil? %>
       <h2>Freshdesk</h2>
         <% freshdesk_settings.each do |key, value| %>
+          <% next if value.nil? %>
           <%= fields_for 'fd_settings[]', value do |f| %>
             <div class="form-group">
               <%= f.label :name, key.to_s.titleize, class: 'col-sm-2 control-label' %>
@@ -18,9 +19,10 @@
         <% end %>
     <% end %>
 
-  <% unless insightly_settings.nil? %>
+    <% unless insightly_settings.nil? %>
         <h2>Insightly</h2>
         <% insightly_settings.each do |key, value| %>
+          <% next if value.nil? %>
           <%= fields_for 'in_settings[]', value do |f| %>
             <div class="form-group">
               <%= f.label :name, key.to_s.titleize, class: 'col-sm-2 control-label' %>
