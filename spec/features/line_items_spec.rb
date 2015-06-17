@@ -22,25 +22,25 @@ feature 'Line Items management', line_item_spec: true, js: true do
 
   given(:non_imprintable) { create(:non_imprintable_line_item, line_itemable_id: job.id, line_itemable_type: 'Job') }
 
-  scenario 'user can add a new non-imprintable line item', retry: 3 do
+  scenario 'user can add a new non-imprintable line item' do
     visit edit_order_path(1, anchor: 'jobs')
-    wait_for_ajax
+    sleep 1
     first('.add-line-item').click
-    wait_for_ajax
+    sleep 1
     expect(page).to have_content 'Add'
 
     within('.line-item-form') do
       choose 'No'
-      wait_for_ajax
+      sleep 1
       fill_in 'Name', with: 'New Item'
       fill_in 'Description', with: 'Insert deeply descriptive text here'
       fill_in 'Quantity', with: '3'
       fill_in 'Unit price', with: '5.00'
     end
 
-    wait_for_ajax
+    sleep 1
     find('#line-item-submit').click
-    sleep 3
+    sleep 1
 
     expect(LineItem.where(name: 'New Item')).to exist
     expect(page).to have_content 'New Item'
@@ -48,14 +48,14 @@ feature 'Line Items management', line_item_spec: true, js: true do
 
   scenario 'user sees errors when inputting bad info for a standard line item' do
     visit edit_order_path(1, anchor: 'jobs')
-    wait_for_ajax
+    sleep 1
 
     first('.add-line-item').click
-    wait_for_ajax
+    sleep 1
     choose 'No'
-    wait_for_ajax
+    sleep 1
     find('#line-item-submit').click
-    wait_for_ajax
+    sleep 1
 
     expect(page).to have_content "Unit price can't be blank"
     expect(page).to have_content "Quantity can't be blank"
@@ -63,9 +63,9 @@ feature 'Line Items management', line_item_spec: true, js: true do
 
   scenario 'user can add a new imprintable line item', story_692: true do
     visit edit_order_path(1, anchor: 'jobs')
-    wait_for_ajax
+    sleep 1
     click_link 'Add Line Item'
-    wait_for_ajax
+    sleep 1
     expect(page).to have_content 'Add'
 
     within('.line-item-form') do
@@ -83,7 +83,7 @@ feature 'Line Items management', line_item_spec: true, js: true do
       fill_in 'base_unit_price', with: '2.30'
     end
 
-    wait_for_ajax
+    sleep 1
     sleep 1
     find('#line-item-submit').click
     sleep 1
@@ -100,10 +100,10 @@ feature 'Line Items management', line_item_spec: true, js: true do
   scenario 'user cannot add duplicate imprintable line items' do
     2.times do
       visit edit_order_path(1, anchor: 'jobs')
-      wait_for_ajax
+      sleep 1
 
       first('.add-line-item').click
-      wait_for_ajax
+      sleep 1
       expect(page).to have_content 'Add'
 
       within('.line-item-form') do
@@ -118,7 +118,7 @@ feature 'Line Items management', line_item_spec: true, js: true do
         sleep 1.5
       end
 
-      wait_for_ajax
+      sleep 1
       find('#line-item-submit').click
       sleep 1.5
     end
@@ -130,18 +130,18 @@ feature 'Line Items management', line_item_spec: true, js: true do
 
   scenario 'user cannot submit an imprintable line item without completing the form' do
     visit edit_order_path(1, anchor: 'jobs')
-    wait_for_ajax
+    sleep 1
 
     first('.add-line-item').click
-    wait_for_ajax
+    sleep 1
     expect(page).to have_content 'Add'
 
     within('.line-item-form') do
       sleep(1)
       choose 'Yes'
-      wait_for_ajax
+      sleep 1
       select brand.name, from: 'Brand'
-      wait_for_ajax
+      sleep 1
     end
 
     find('#line-item-submit').click
@@ -152,20 +152,20 @@ feature 'Line Items management', line_item_spec: true, js: true do
   scenario 'creating an imprintable line item, user can switch a lower-level select and it will reset the higher levels' do
     hat_brand;
     visit edit_order_path(1, anchor: 'jobs')
-    wait_for_ajax
+    sleep 1
 
     first('.add-line-item').click
-    wait_for_ajax
+    sleep 1
     expect(page).to have_content 'Add'
 
     within('.line-item-form') do
       choose 'Yes'
-      wait_for_ajax
+      sleep 1
       select hat_brand.name, from: 'Brand'
-      wait_for_ajax
+      sleep 1
       expect(page).to have_content hat.style_name
       select brand.name, from: 'Brand'
-      wait_for_ajax
+      sleep 1
       expect(page).to_not have_content hat.style_name
       expect(page).to have_content shirt.style_name
     end
@@ -175,15 +175,15 @@ feature 'Line Items management', line_item_spec: true, js: true do
     background(:each) do
       non_imprintable
       visit edit_order_path(1, anchor: 'jobs')
-      wait_for_ajax
+      sleep 1
 
       find('.line-item-button[title="Edit"]').click
-      wait_for_ajax
+      sleep 1
 
       fill_in "line_item[#{non_imprintable.id}[name]]", with: 'New name!'
 
       find('.update-line-items').click
-      wait_for_ajax
+      sleep 1
     end
 
     scenario 'is possible' do
@@ -196,7 +196,7 @@ feature 'Line Items management', line_item_spec: true, js: true do
 
     scenario 'add line item button can still be pressed' do
       first('.add-line-item').click
-      wait_for_ajax
+      sleep 1
       expect(page).to have_content 'New Line Item'
       expect(page).to have_css '#line-item-submit'
     end
@@ -205,14 +205,14 @@ feature 'Line Items management', line_item_spec: true, js: true do
   scenario 'user sees errors when inputting bad data on standard line item edit' do
     non_imprintable
     visit edit_order_path(1, anchor: 'jobs')
-    wait_for_ajax
+    sleep 1
 
     find('.line-item-button[title="Edit"]').click
-    wait_for_ajax
+    sleep 1
     fill_in "line_item[#{non_imprintable.id}[quantity]]", with: ''
 
     first('.update-line-items').click
-    wait_for_ajax
+    sleep 1
 
     expect(page).to have_content "Quantity can't be blank"
   end
@@ -222,12 +222,11 @@ feature 'Line Items management', line_item_spec: true, js: true do
       job.line_items << send("white_shirt_#{s}_item")
     end
     visit edit_order_path(1, anchor: 'jobs')
-    wait_for_ajax
+    sleep 1
 
     expect(page).to have_content shirt.style_name
 
     first('a[title="Delete"]').click
-    wait_for_ajax
     sleep 2
 
     ['s', 'm', 'l'].each do |s|
@@ -240,12 +239,12 @@ feature 'Line Items management', line_item_spec: true, js: true do
   scenario 'user can remove standard line item' do
     non_imprintable
     visit edit_order_path(1, anchor: 'jobs')
-    wait_for_ajax
+    sleep 1
 
     expect(page).to have_content non_imprintable.name
 
     first('.line-item-button[Title="Delete"]').click
-    wait_for_ajax
+    sleep 1
 
     expect(LineItem.where(id: non_imprintable.id)).to_not exist
     expect(page).to_not have_content non_imprintable.name

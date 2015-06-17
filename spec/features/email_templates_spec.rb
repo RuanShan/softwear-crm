@@ -18,7 +18,6 @@ feature 'Email Templates Management', js: true, email_template_spec: true, story
     fill_in 'From', with: email_template.from
     fill_in 'To', with: email_template.to
     fill_in 'Cc', with: email_template.cc
-    # fill_in_summernote('#email_template_body', with: 'Body Goes Here')
     fill_in 'Body', with: 'Body Goes Here'
     fill_in 'Plaintext body', with: 'Body Goes Here'
     click_button 'Create Email Template'
