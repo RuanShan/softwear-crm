@@ -17,13 +17,13 @@ describe Setting, setting_spec: true do
         expected_hash = {
           freshdesk_email: Setting.create(name: 'freshdesk_email',
                      val: 'test@test.com',
-                     encrypted: false).val(),
+                     encrypted: false).val,
           freshdesk_url: Setting.create(name: 'freshdesk_url',
                      val: 'freshdesk.com',
-                     encrypted: false).val(),
+                     encrypted: false).val,
           freshdesk_password: Setting.create(name: 'freshdesk_password',
                      val: 'something',
-                     encrypted: true).val()
+                     encrypted: true).val
         }
         expect(Setting.get_freshdesk_settings).to eq expected_hash
       end
