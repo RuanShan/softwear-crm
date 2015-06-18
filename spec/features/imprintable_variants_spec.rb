@@ -20,11 +20,11 @@ feature 'Imprintable Variant Management', js: true, imprintable_variant_spec: tr
       )
     end
 
-    scenario 'A user can create an initial size and color', story_692: true, pending: "select2" do
+    scenario 'A user can create an initial size and color', story_692: true do
       visit edit_imprintable_path imprintable.id
       sleep 1
-      find('#color-select', visible: false).select color.id
-      find('#size-select', visible: false).select size.id
+      find('#color-select', visible: false).select color.name
+      find('#size-select', visible: false).select "display_value_#{color.name[6]}"
       wait_for_ajax
       find('#submit_button').click
       wait_for_ajax
@@ -53,23 +53,25 @@ feature 'Imprintable Variant Management', js: true, imprintable_variant_spec: tr
       expect(page).to have_css('#imprintable_variants_list')
     end
 
-    scenario 'A user can add a size column', story_213: true, story_692: true, pending: "select2" do
-      find('#color-select').select color.id
+    scenario 'A user can add a size column', story_213: true, story_692: true do
+      find('#color-select').select color.name
       click_link 'Add Color'
-      find('#size-select').select size.id
+      find('#size-select').select "display_value_#{color.name[6]}"
       click_link 'Add a size'
 
-      expect(page).to have_selector 'th', text: size.display_value
+      expect(page).to have_selector 'th', text: "display_value_#{color.name[6]}"
       click_button 'Update Imprintable'
 
-      expect(page).to have_selector 'th', text: size.display_value
+      expect(page).to have_selector 'th', text: "display_value_#{color.name[6]}"
     end
 
     scenario 'A user can add a color row', story_213: true, story_692: true do
-      find('#color-select').select color.id
+      find('#color-select').select color.name
       click_link 'Add Color'
+      wait_for_ajax
       expect(page).to have_selector 'th', text: color.name
       click_button 'Update Imprintable'
+      wait_for_ajax
       expect(page).to have_selector 'th', text: color.name
     end
 

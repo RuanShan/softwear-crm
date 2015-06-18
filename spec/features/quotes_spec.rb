@@ -98,33 +98,38 @@ feature 'Quotes management', quote_spec: true, js: true do
     end
   end
 
-  scenario 'A user can create a quote', edit: true, pending: "I don't know why this fails" do
-    visit root_path
-    unhide_dashboard
+  context 'without an insightly api key' do
+    given!(:user) { create(:alternate_user) }
+    background(:each) { login_as(user) }
 
-    click_link 'quotes_list'
-    click_link 'new_quote_link'
-    expect(current_path).to eq(new_quote_path)
+    scenario 'A user can create a quote', edit: true, wumbo: true do
+      visit root_path
+      unhide_dashboard
 
-    fill_in 'Email', with: 'test@spec.com'
-    fill_in 'First Name', with: 'Capy'
-    fill_in 'Last Name', with: 'Bara'
-    click_button 'Next'
-    sleep 0.5
+      click_link 'quotes_list'
+      click_link 'new_quote_link'
+      expect(current_path).to eq(new_quote_path)
 
-    fill_in 'Quote Name', with: 'Quote Name'
-    find('#quote_quote_source').find("option[value='Other']").click
-    sleep 1
-    fill_in 'Valid Until Date', with: Time.now + 1.day
-    fill_in 'Estimated Delivery Date', with: Time.now + 1.day
-    click_button 'Next'
-    sleep 0.5
+      fill_in 'Email', with: 'test@spec.com'
+      fill_in 'First Name', with: 'Capy'
+      fill_in 'Last Name', with: 'Bara'
+      click_button 'Next'
+      sleep 0.5
 
-    click_button 'Submit'
+      fill_in 'Quote Name', with: 'Quote Name'
+      find('#quote_quote_source').find("option[value='Other']").click
+      sleep 1
+      fill_in 'Quote Valid Until Date', with: (2.days.from_now).strftime('%m/%d/%Y %I:%M %p')
+      fill_in 'Estimated Delivery Date', with: (1.days.from_now).strftime('%m/%d/%Y %I:%M %p')
+      click_button 'Next'
+      sleep 0.5
 
-    wait_for_ajax
-    expect(page).to have_content text: 'Quote was successfully created.'
-    expect(current_path). to eq(quote_path(quote.id + 1))
+      click_button 'Submit'
+
+      wait_for_ajax
+      expect(page).to have_content 'Quote was successfully created.'
+      expect(current_path). to eq(quote_path(quote.id + 1))
+    end
   end
 
   scenario 'A user can visit the edit quote page', edit: true do
