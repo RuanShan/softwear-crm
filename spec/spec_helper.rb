@@ -70,7 +70,12 @@ RSpec.configure do |config|
   config.alias_it_should_behave_like_to :it_can, 'can'
 
   Capybara.register_driver :selenium do |app|
-    Capybara::Selenium::Driver.new(app, :browser => :chrome)
+    if ENV['CI'] == 'true'
+      args = ['--no-default-browser-check', '--no-sandbox', '--no-first-run', '--disable-default-apps']
+    else
+      args = []
+    end
+    Capybara::Selenium::Driver.new(app, :browser => :chrome, args: args)
   end
 
   config.define_derived_metadata(file_path: %r(/spec/controllers/)) do |meta|
