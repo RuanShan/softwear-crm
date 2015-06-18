@@ -26,7 +26,7 @@ feature 'Artwork Request Features', js: true, artwork_request_spec: true do
     expect(page).to have_css('table#artwork-request-table')
   end
 
-  scenario 'A user can add an artwork request', retry: 3 do
+  scenario 'A user can add an artwork request', retry: 3, story_692: true do
     visit "/orders/#{artwork_request.jobs.first.order.id}/edit#artwork"
     find("a[href='#{new_order_artwork_request_path(artwork_request.jobs.first.order)}']").click
     sleep 2

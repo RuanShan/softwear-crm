@@ -42,7 +42,7 @@ feature 'Proof Features', js: true, proof_spec: true do
     expect(Proof.where(id: proof.id)).to exist
   end
 
-  scenario 'A user can edit and update an Proof from the Proof List' do
+  scenario 'A user can edit and update an Proof from the Proof List', story_692: true do
     visit edit_order_path(order.id)
     find("a[href='#proofs']").click
     find("a[href='#{edit_order_proof_path(id: proof.id, order_id: order.id)}']").click

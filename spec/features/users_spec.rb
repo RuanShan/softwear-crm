@@ -3,7 +3,7 @@ require 'spec_helper'
 feature 'Users', user_spec: true, js: true do
   given!(:valid_user) { create(:user) }
 
-  context 'with valid credentials' do
+  context 'with valid credentials', story_692: true do
     scenario 'I can log in' do
       login_through_form_as(valid_user).with('1234567890') do
         expect(page).to have_content 'success'

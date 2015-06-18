@@ -69,7 +69,7 @@ feature 'Quote Requests Management', js: true, quote_request_spec: true do
     end
 
     context 'when a user fails to fill out the quote form correctly' do
-      scenario 'entries are still created in the linker table', story_248: true, story_692: true do
+      scenario 'entries are still created in the linker table', story_248: true, story_699: true do
         expect(QuoteRequestQuote.count).to eq(0)
         click_button 'Next'
         sleep 0.5
@@ -84,8 +84,10 @@ feature 'Quote Requests Management', js: true, quote_request_spec: true do
         fill_in 'Delivery Date', with: (1.days.from_now).strftime('%m/%d/%Y %I:%M %p')
         click_button 'Next'
         wait_for_ajax
+        sleep 1
         click_button 'Submit'
         wait_for_ajax
+        sleep 1
         expect(page).to have_content 'Quote was successfully created.'
         expect(QuoteRequestQuote.count).to eq(1)
       end

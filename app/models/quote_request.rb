@@ -155,10 +155,13 @@ class QuoteRequest < ActiveRecord::Base
       e
     rescue StandardError => e
       logger.error "(QUOTE REQUEST - FRESHDESK) #{e.class}: #{e.message}"
+      e
     end
   end
 
   def format_phone(num)
+    return if num.nil?
+
     num.gsub!(/\D/, '')
 
     if num.length == 11 && num[0] == '1'
