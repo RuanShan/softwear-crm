@@ -11,7 +11,7 @@ class ImprintableCategory < ActiveRecord::Base
     'Fashionable',
     'Youth',
     'Something Different',
-    'What\'s Least Expensive'
+    "What's Least Expensive"
   ]
 
   belongs_to :imprintable

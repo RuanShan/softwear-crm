@@ -52,16 +52,11 @@ feature 'sizes management', size_spec: true do
     expect(size.reload.deleted_at).to be_truthy
   end
 
-  scenario 'A user can reorganize a row', js: true, pending: 'Doesnt work after moving file into vendor' do
+  scenario 'A user can reorganize a row', js: true do
     visit sizes_path
     first_child = find(:css, '.size_row:first-child')
-    page.execute_script '
-      $(document).ready(function() {
-        $.getScript("/home/nick/RubymineProjects/softwear-crm/vendor/assets/javascripts/jquery/jquery.simulate.drag-sortable.js", function() {
-          $(".size_row:first-child").simulateDragSortable({ move: 1});
-        });
-      });
-    '
+    simulate_drag_sortable_on page
+    simulate_drag_sortable(".size_row:first-child", move: 1)
     wait_for_ajax
     expect(find(:css, '.size_row:nth-child(2)')).to eq(first_child)
   end

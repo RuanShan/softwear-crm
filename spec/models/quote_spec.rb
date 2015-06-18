@@ -845,81 +845,6 @@ describe Quote, quote_spec: true do
       end
     end
 
-    describe '#fetch_freshdesk_ticket', story_518: true, fd_fetch: true, pending: 'unused! (for now)' do
-      before(:each) do
-        expect("UNUSED").to eq nil
-      end
-
-      context 'when there is a ticket with html matching the quote id' do
-        let(:ticket_html) do
-        end
-        let(:dummy_ticket) do
-          {
-            display_id: 1233, email: 'crm@softwearcrm.com',
-            description_html: %(
-              <span id='softwear_quote_id' style='display: none;'>#{quote.id}</span>
-              <div>it's me.</div>
-            )
-          }
-        end
-
-        before(:each) do
-          allow(dummy_client).to receive(:get_tickets)
-            .with(email: 'crm@softwearcrm.com', filter_name: 'all_tickets')
-            .and_return [dummy_ticket].to_json
-
-          allow(quote).to receive(:freshdesk).and_return dummy_client
-        end
-
-        it 'picks it up' do
-          quote.fetch_freshdesk_ticket
-          expect(quote.freshdesk_ticket_id).to eq 1233
-        end
-      end
-    end
-
-    describe '#set_freshdesk_ticket_requester', story_518: true, pending: 'unused! (for now)' do
-      before(:each) do
-        expect("UNUSED").to eq nil
-      end
-
-      context 'when the quote has a valid freshdesk ticket' do
-        context 'and quote request with valid freshdesk contact' do
-          let(:quote_request) do
-            create :quote_request, freshdesk_contact_id: 2222
-          end
-
-          before(:each) do
-            quote.quote_requests = [quote_request]
-            quote.freshdesk_ticket_id = 1233
-            quote.save!
-
-            allow(quote).to receive(:freshdesk).and_return dummy_client
-          end
-
-          it "updates its ticket's requester with the first qr's info" do
-            expect(dummy_client).to receive(:put_tickets)
-              .with(
-                id: 1233,
-                helpdesk_ticket: {
-                  requester_id: 2222,
-                  source: 2,
-                  group_id: anything,
-                  ticket_type: 'Lead',
-                  custom_field: {
-                    softwearcrm_quote_id_7483: quote.id
-                  }
-                }
-              )
-
-            quote.set_freshdesk_ticket_requester
-          end
-        end
-      end
-    end
-
-
-
     describe '#formatted_phone_number' do
       let(:quote) { build_stubbed(:blank_quote, phone_number: '7342742659') }
 
@@ -936,7 +861,7 @@ describe Quote, quote_spec: true do
       end
     end
 
-    context 'has 2 taxable and 2 non-taxable line items', wip: true do
+    context 'has 2 taxable and 2 non-taxable line items' do
       let!(:line_item) { create(:taxable_non_imprintable_line_item) }
       let!(:quote) { create(:valid_quote) }
 
@@ -945,9 +870,9 @@ describe Quote, quote_spec: true do
         expect(quote.line_items.size).to eq 2
       end
 
-      describe '#line_items_subtotal', pending: 'Unsure what the deal is' do
+      describe '#line_items_subtotal' do
         it 'returns the sum of each line item\'s price' do
-          expected_price = line_item.total_price * 4
+          expected_price = line_item.total_price * 2
           expect(quote.line_items_subtotal).to eq(expected_price)
         end
       end
@@ -959,10 +884,10 @@ describe Quote, quote_spec: true do
         end
       end
 
-      describe '#line_items_total_with_tax', pending: 'Unsure what the deal is' do
+      describe '#line_items_total_with_tax' do
         it 'returns the total of the line items, including tax' do
-          taxable_portion = (line_item.total_price * 2) * 0.06
-          total_price = line_item.total_price * 4
+          total_price = line_item.total_price * 2
+          taxable_portion = total_price * 0.06
           expect(quote.line_items_total_with_tax).to eq(taxable_portion + total_price)
         end
       end
