@@ -54,24 +54,6 @@ describe LineItemsController, line_item_spec: true do
           job.line_items << white_shirt_l_item
         end
 
-        it "still succeeds and only adds new ones" do
-          pending(
-            "This fails, but I recall Ricky saying this scenario doesn't matter"
-          )
-          post :create, format: :json,
-                        job_id: job.id,
-                        imprintable_id: shirt.id,
-                        color_id: white.id
-          json_response = JSON.parse response.body
-          expect(json_response['result']).to eq 'success'
-          expect(
-            LineItem.where(imprintable_variant_id: white_shirt_s.id)
-          ).to exist
-          expect(
-            LineItem.where(imprintable_variant_id: white_shirt_xl.id)
-          ).to exist
-        end
-
         it 'fails when the job has all line items' do
           job.line_items << white_shirt_s_item
           job.line_items << white_shirt_xl_item

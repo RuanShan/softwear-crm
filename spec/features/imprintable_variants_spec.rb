@@ -54,15 +54,9 @@ feature 'Imprintable Variant Management', js: true, imprintable_variant_spec: tr
     end
 
     scenario 'A user can add a size column', pending: 'select2', story_213: true, story_692: true do
-      # for some reason using only 1 click wouldn't work, using 2 does ._.
       find('#color-select').select color.id
       find('#size-select').select size.id
 
-     # find('#size_select_chosen').click
-     # find('#size_select_chosen').click
-     # sleep 0.5
-     # find('#size_select_chosen li', text: size.display_value).click
-     # find('#size_button').click
       expect(page).to have_selector 'th', text: size.display_value
       click_button 'Update Imprintable'
 

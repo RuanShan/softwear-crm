@@ -54,25 +54,4 @@ describe QuotesController, js: true, quote_spec: true do
       expect(response).to render_template('show')
     end
   end
-
-  describe 'POST create' do
-    context 'current_user is admin' do
-      it 'should not call create_freshdesk_ticket' do
-        expect(quote).to_not receive(:create_freshdesk_ticket)
-        post :create, quote: attributes_for(:valid_quote)
-      end
-    end
-
-    context 'current_user is in production' do
-      before(:each) do
-        allow(Rails).to receive_message_chain(:env, :production?).and_return true
-      end
-
-      it 'should call create_freshdesk_ticket', pending: 'Freshdesk...' do
-        expect_any_instance_of(Quote).to receive(:create_freshdesk_ticket).once
-        post :create, quote: attributes_for(:valid_quote)
-      end
-    end
-  end
-
 end

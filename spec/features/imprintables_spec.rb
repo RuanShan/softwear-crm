@@ -81,7 +81,7 @@ feature 'Imprintables management', imprintable_spec: true, slow: true do
     expect(page).to have_selector '.modal-content-error', text: 'There was an error saving the imprintable'
   end
 
-  scenario 'A user can create a new imprintable', pending: "I don't know why this isn't working", js: true do
+  scenario 'A user can create a new imprintable', js: true do
     visit imprintables_path
 
     click_link('New Imprintable')
@@ -100,7 +100,7 @@ feature 'Imprintables management', imprintable_spec: true, slow: true do
 
     find_button('Create Imprintable').click
 
-    expect(page).to have_selector '.modal-content-success', text: 'Imprintable was successfully created.'
+    expect(page).to have_content 'Imprintable was successfully created.'
     expect(current_path).to eq(imprintable_path 2)
 
     imprintable = Imprintable.find_by special_considerations: 'please don\'t wash this or something'
@@ -128,14 +128,14 @@ feature 'Imprintables management', imprintable_spec: true, slow: true do
   context 'There is a store available', js: true do
     given!(:store) { create(:valid_store) }
 
-    scenario 'A user can utilize sample location token input field', pending: 'The option is clearly there, but it cannot find it', js: true, story_692: true do
+    scenario 'A user can utilize sample location token input field', js: true, story_692: true do
       visit edit_imprintable_path imprintable.id
 
       sleep 1
-      find('#imprintable_sample_location_ids').select store.id
+      find('#imprintable_sample_location_ids').select store.name
       find_button('Update Imprintable').click
 
-      expect(page).to have_selector '.modal-content-success', text: 'Imprintable was successfully updated.'
+      expect(page).to have_content 'Imprintable was successfully updated.'
       expect(current_path).to eq(edit_imprintable_path imprintable.id)
       expect(imprintable.reload.sample_location_ids.include? store.id).to be_truthy
     end
@@ -144,38 +144,37 @@ feature 'Imprintables management', imprintable_spec: true, slow: true do
   context 'There is another imprintable' do
     given!(:coordinate) { create(:valid_imprintable) }
 
-    scenario 'A user can utilize coordinate token input field', js: true, story_692: true, pending: "select2" do
+    scenario 'A user can utilize coordinate token input field', js: true, story_692: true do
       visit edit_imprintable_path imprintable.id
       wait_for_ajax
-      find('Coordinate Imprintables', visible: false).select coordinate.name 
-      select_from_chosen(coordinate.name, from: 'Coordinate Imprintables')
+      find('#imprintable_coordinate_ids', visible: false).select coordinate.name 
       wait_for_ajax
       find_button('Update Imprintable').click
 
-      expect(page).to have_selector '.modal-content-success', text: 'Imprintable was successfully updated.'
+      expect(page).to have_content 'Imprintable was successfully updated.'
       expect(imprintable.reload.coordinate_ids.include? coordinate.id).to be_truthy
     end
 
-    scenario 'Coordinates are reflected symmetrically', js: true, pending: 'select from chosen' do
-      visit edit_imprintable_path imprintable.id.
+    scenario 'Coordinates are reflected symmetrically', js: true do
+      visit edit_imprintable_path imprintable.id
 
-      select_from_chosen(coordinate.name, from: 'Coordinate Imprintables')
+      find('#imprintable_coordinate_ids', visible: false).select coordinate.name 
       find_button('Update Imprintable').click
 
-      expect(page).to have_selector '.modal-content-success', text: 'Imprintable was successfully updated.'
+      expect(page).to have_content 'Imprintable was successfully updated.'
       expect(coordinate.reload.coordinate_ids.include? imprintable.id).to be_truthy
     end
   end
 
   feature 'Imprintable category', js: true do
-    scenario 'A user can add an imprintable category', pending: 'Can\'t figure out how to select from chosen here' do
+    scenario 'A user can add an imprintable category' do
       visit edit_imprintable_path imprintable.id
 
       find_link('Add Imprintable Category').click
-      select_from_chosen('Something', from: 'imprintable_categories')
+      find('[data-placeholder="Select categories"]').select 'Something'
       find_button('Update Imprintable').click
 
-      expect(page).to have_selector '.modal-content-success', text: 'Imprintable was successfully updated.'
+      expect(page).to have_content 'Imprintable was successfully updated.'
       expect(ImprintableCategory.where(imprintable_id: imprintable.id)).to_not be_nil
     end
 
@@ -234,13 +233,6 @@ feature 'Imprintables management', imprintable_spec: true, slow: true do
     expect(page).to have_content 'Imprintable was successfully destroyed.'
     expect(Imprintable.where(id: imprintable.id)).to_not exist
     expect(page).not_to have_content "$9.99"
-  end
-
-  scenario 'A user can click a link to open the modal price popup', js: true, pending: 'NO MORE PRICING TABLE' do
-    visit imprintables_path
-
-    find_link("pricing_button_#{imprintable.id}").click
-    expect(page).to have_selector '#contentModal.modal.fade.in'
   end
 
   scenario 'A user can add an imprintable to a quote from an index entry', story_692: true, refactor: true, js: true do

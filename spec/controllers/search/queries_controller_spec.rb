@@ -266,24 +266,8 @@ describe Search::QueriesController, search_spec: true do
             expect(OrdersController).to have_received(:permitted_search_locals)
           end
 
-          it 'should error out if there is an invalid local', pending: "transform_locals should be responsible for 'permissing' locals" do
-            allow(OrdersController).to receive(:permitted_search_locals)
-              .and_return []
-            allow(OrdersController).to receive(:respond_to?)
-              .and_return true
-
-            expect{get :search, test_params_with_locals}.to raise_error
-          end
-
-          it 'should not error out if there are no invalid locals' do
-            allow(OrdersController).to receive(:permitted_search_locals)
-              .and_return [:test_val]
-
-            expect{get :search, test_params_with_locals}.to_not raise_error
-          end
-
           context 'with custom logic' do
-            it "calls #{}transform_search_locals on the model's controller" do
+            it "calls #transform_search_locals on the model's controller" do
               allow(OrdersController).to receive(:permitted_search_locals)
                 .and_return [:test_val]
               allow(OrdersController).to receive(:transform_search_locals)
