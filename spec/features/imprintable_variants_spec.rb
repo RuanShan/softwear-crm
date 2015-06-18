@@ -65,12 +65,9 @@ feature 'Imprintable Variant Management', js: true, imprintable_variant_spec: tr
       expect(page).to have_selector 'th', text: size.display_value
     end
 
-    scenario 'A user can add a color row', story_213: true, story_692: true, pending: "select2" do
-      find('#color_select_chosen').click
-      find('#color_select_chosen').click
-      sleep 0.5
-      find('#color_select_chosen li', text: color.name).click
-      find('#color_button').click
+    scenario 'A user can add a color row', story_213: true, story_692: true do
+      find('#color-select').select color.id
+      click_link 'Add Color'
       expect(page).to have_selector 'th', text: color.name
       click_button 'Update Imprintable'
       expect(page).to have_selector 'th', text: color.name

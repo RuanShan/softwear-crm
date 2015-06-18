@@ -129,17 +129,5 @@ feature 'Jobs management', js: true, job_spec: true do
 
       expect(page).to have_content "Updated job #{job.name} in order #{job.order.name}"
     end
-
-    scenario 'making a change updates the timeline inline', pending: "this doesn't happen for quotes so I'm gonna leave it until someone decides it'd be useful" do
-      PublicActivity.with_tracking do
-        visit edit_order_path(1, anchor: 'jobs')
-
-        fill_in_inline 'description', with: 'Here is our new job description, ladies and gentlemen.'        
-
-        visit edit_order_path(1)
-
-        expect(page).to have_content "Updated job #{job.name} in order #{job.order.name}"
-      end
-    end
   end
 end

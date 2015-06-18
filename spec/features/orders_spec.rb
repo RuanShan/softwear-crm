@@ -112,7 +112,7 @@ feature 'Order management', order_spec: true,  js: true do
     expect(page).to have_content 'Email is not a valid email address'
   end
 
-  scenario 'phone number field enforces proper format', pending: 'No idea why the phone number format is failing now' do
+  scenario 'phone number field enforces proper format', wtf: true do
     visit root_path
     unhide_dashboard
     click_link 'Orders'

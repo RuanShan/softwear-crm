@@ -7,12 +7,12 @@ feature 'Imprints Management', imprint_spec: true, js: true do
 
   given!(:order) { create :order_with_job }
   given(:job) { order.jobs.first }
-  
+
   -> (t,&b) {b.call(t)}.call(
        [%w(Digital Screen Embroidery Name/Number),
         %w(Front   Lower  Wherever Somewhere)]) do |name|
     4.times do |n|
-      let!("imprint_method#{n+1}") { create(:valid_imprint_method, 
+      let!("imprint_method#{n+1}") { create(:valid_imprint_method,
                           name: name.first[n]) }
       let!("print_location#{n+1}") { create(:valid_print_location, name: name[1][n],
                           imprint_method_id: send("imprint_method#{n+1}").id) }
@@ -38,21 +38,20 @@ feature 'Imprints Management', imprint_spec: true, js: true do
     expect(Imprint.where(job_id: job.id, print_location_id: print_location2.id)).to exist
   end
 
-  scenario 'user can click outside an imprint to update', story_473: true, pending: "spec won't work and not worth debugging" do
+  scenario 'user can click outside an imprint to update', story_473: true do
     visit edit_order_path(order.id, anchor: 'jobs')
     wait_for_ajax
 
-    sleep 0.5
+    sleep 1
     first('.add-imprint').click
-    sleep 0.5
+    sleep 1
     find('.js-imprint-method-select').select imprint_method2.name
-    sleep 0.5
+    sleep 1
     find('.js-print-location-select').select print_location2.name
     expect(all('.editing-imprint').count).to be > 1
-    sleep 0.5
 
-    page.execute_script "$('.imprints-container').mouseup()"
-    sleep 0.5
+    find('.imprints-container').click
+    sleep 1
     expect(Imprint.where(job_id: job.id, print_location_id: print_location2.id)).to exist
   end
 
@@ -75,11 +74,7 @@ feature 'Imprints Management', imprint_spec: true, js: true do
     expect(Imprint.where(job_id: job.id, print_location_id: print_location2.id)).to exist
   end
 
-  scenario 'user can add and edit an imprint method, and update them both',
-     pending: 'WEIRD: This tests neither passes nor fails, unless we randomly click/scroll/resize during the
-              test, also unknown timeline update error on capybara click that isnt seen when user
-              clicks during test' do
-
+  scenario 'user can add and edit an imprint method, and update them both' do
     imprint
     visit edit_order_path(order.id, anchor: 'jobs')
     wait_for_ajax
@@ -100,9 +95,9 @@ feature 'Imprints Management', imprint_spec: true, js: true do
     end
     sleep 1.5
 
-    # page.execute_script("$('#job-#{job.id} .update-imprints').trigger('click');")
-    # This is the line that causes things to get weird
+    page.execute_script("$('#job-#{job.id} .update-imprints').trigger('click');")
 
+    sleep 1.5
     expect(Imprint.where(job_id: job.id, print_location_id: print_location2.id)).to exist
     expect(Imprint.where(job_id: job.id, print_location_id: print_location3.id)).to exist
     expect(Imprint.where(job_id: job.id, print_location_id: print_location1.id)).to_not exist
@@ -129,7 +124,7 @@ feature 'Imprints Management', imprint_spec: true, js: true do
     expect(page).to have_content 'already been taken'
   end
 
-  scenario 'user can delete imprints', wtf: true do
+  scenario 'user can delete imprints' do
     imprint
     visit edit_order_path(order.id, anchor: 'jobs')
     wait_for_ajax
