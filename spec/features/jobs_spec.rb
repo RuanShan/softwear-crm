@@ -120,7 +120,7 @@ feature 'Jobs management', js: true, job_spec: true do
       PublicActivity.enabled = false
     end
 
-    scenario 'job updates are updated on the order timeline' do
+    scenario 'job updates are updated on the order timeline', story_692: true do
       PublicActivity.with_tracking do
         job.description = "New Job Description"
         job.save

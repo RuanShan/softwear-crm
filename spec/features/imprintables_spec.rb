@@ -118,7 +118,7 @@ feature 'Imprintables management', imprintable_spec: true, slow: true do
 
       fill_in 'Tags', with: 'cotton'
       find_button('Update Imprintable').click
-
+      wait_for_ajax
       expect(page).to have_content 'Imprintable was successfully updated.'
       expect(current_path).to eq(edit_imprintable_path imprintable.id)
       expect(imprintable.reload.tag_list.include? 'cotton').to be_truthy
@@ -144,10 +144,12 @@ feature 'Imprintables management', imprintable_spec: true, slow: true do
   context 'There is another imprintable' do
     given!(:coordinate) { create(:valid_imprintable) }
 
-    scenario 'A user can utilize coordinate token input field', js: true, story_692: true, pending: "Select2" do
+    scenario 'A user can utilize coordinate token input field', js: true, story_692: true, pending: "select2" do
       visit edit_imprintable_path imprintable.id
-
+      wait_for_ajax
+      find('Coordinate Imprintables', visible: false).select coordinate.name 
       select_from_chosen(coordinate.name, from: 'Coordinate Imprintables')
+      wait_for_ajax
       find_button('Update Imprintable').click
 
       expect(page).to have_selector '.modal-content-success', text: 'Imprintable was successfully updated.'

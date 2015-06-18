@@ -19,8 +19,7 @@ describe QuoteMailer, quote_spec: true do
       estimated_delivery_date: Time.now + 1.day,
       salesperson_id: user.id,
       store_id: store.id,
-      shipping: 14.50,
-      line_item_groups: [build_stubbed(:line_item_group_with_line_items)]
+      shipping: 14.50
     )
   end
   let(:hash) do

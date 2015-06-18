@@ -25,8 +25,9 @@ feature 'Imprintable Variant Management', js: true, imprintable_variant_spec: tr
       sleep 1
       find('#color-select', visible: false).select color.id
       find('#size-select', visible: false).select size.id
+      wait_for_ajax
       find('#submit_button').click
-
+      wait_for_ajax
       expect(page).to have_content 'Imprintable was successfully updated.'
       expect(ImprintableVariant.where(color_id: color.id)).to_not be_nil
       expect(ImprintableVariant.where(size_id: size.id)).to_not be_nil
@@ -52,9 +53,8 @@ feature 'Imprintable Variant Management', js: true, imprintable_variant_spec: tr
       expect(page).to have_css('#imprintable_variants_list')
     end
 
-    scenario 'A user can add a size column', pending: 'This has no reason to fail', story_213: true, story_692: true do
+    scenario 'A user can add a size column', pending: 'select2', story_213: true, story_692: true do
       # for some reason using only 1 click wouldn't work, using 2 does ._.
-      byebug
       find('#color-select').select color.id
       find('#size-select').select size.id
 
@@ -69,7 +69,7 @@ feature 'Imprintable Variant Management', js: true, imprintable_variant_spec: tr
       expect(page).to have_selector 'th', text: size.display_value
     end
 
-    scenario 'A user can add a color row', story_213: true, story_692: true, pending: "This has no reason to fail" do
+    scenario 'A user can add a color row', story_213: true, story_692: true, pending: "select2" do
       find('#color_select_chosen').click
       find('#color_select_chosen').click
       sleep 0.5

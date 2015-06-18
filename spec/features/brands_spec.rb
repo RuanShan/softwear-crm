@@ -40,6 +40,6 @@ feature 'Brands management', brand_spec: true do
     wait_for_ajax
     expect(current_path).to eq(brands_path)
     expect(page).to have_content 'Brand was successfully destroyed.'
-    expect(brand.reload.destroyed?).to be_truthy
+    expect(brand.reload.deleted_at).not_to eq(nil)
   end
 end
