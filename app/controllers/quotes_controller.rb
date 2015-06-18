@@ -106,13 +106,13 @@ class QuotesController < InheritedResources::Base
     @result =
       case @integrate_with
       when 'insightly'
-        if @quote.insightly_opportunity_id.nil?
+        if @quote.insightly_opportunity_id.blank?
           @quote.create_insightly_opportunity
         else
           StandardError.new("quote already has an Opportunity!")
         end
       when 'freshdesk'
-        if @quote.freshdesk_ticket_id.nil?
+        if @quote.freshdesk_ticket_id.blank?
           @quote.create_freshdesk_ticket
         else
           StandardError.new("quote already has a Freshdesk Ticket!")

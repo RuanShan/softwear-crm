@@ -441,6 +441,7 @@ class Quote < ActiveRecord::Base
       .try(:[], 'helpdesk_ticket')
 
     self.freshdesk_ticket_id = ticket.try(:[], 'display_id')
+    save(validate: false)
     ticket
   end
   warn_on_failure_of :create_freshdesk_ticket, raise_anyway: true
@@ -538,7 +539,7 @@ class Quote < ActiveRecord::Base
         .merge(responsible_user ? { responsible_user_id: responsible_user.user_id } : {})
     )
     self.insightly_opportunity_id = op.opportunity_id
-    self.save(validate: false)
+    save(validate: false)
     op
   end
   warn_on_failure_of :create_insightly_opportunity, raise_anyway: true
