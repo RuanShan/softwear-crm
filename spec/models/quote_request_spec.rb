@@ -47,7 +47,7 @@ describe QuoteRequest, quote_request_spec: true, story_78: true do
       end
   end
 
-  describe 'Freshdesk', freshdesk: true, story_512: true, pending: true do
+  describe 'Freshdesk', freshdesk: true, story_512: true do
     context 'when created' do
       let(:dummy_client) { Object.new }
       let(:dummy_contact) { { user: { id: 123 } } }
@@ -112,7 +112,7 @@ describe QuoteRequest, quote_request_spec: true, story_78: true do
           allow(subject).to receive(:freshdesk).and_return dummy_client
         end
 
-        it 'creates one', pending: true do
+        it 'creates one' do
           subject.approx_quantity = 1
           subject.date_needed = 2.weeks.from_now
           subject.source = 'rspec'
@@ -148,7 +148,7 @@ describe QuoteRequest, quote_request_spec: true, story_78: true do
           allow(subject).to receive(:insightly).and_return dummy_client
         end
 
-        it 'finds that contact and assigns its id to insightly_contact_id', pending: true do
+        it 'finds that contact and assigns its id to insightly_contact_id' do
           subject.approx_quantity = 1
           subject.date_needed = 2.weeks.from_now
           subject.source = 'rspec'
@@ -214,7 +214,7 @@ describe QuoteRequest, quote_request_spec: true, story_78: true do
               .and_return dummy_contact
           end
 
-          it 'creates one and links it', pending: true do
+          it 'creates one and links it' do
             subject.organization = 'test org'
             expect(subject.status).to eq 'assigned'
             subject.save
@@ -265,7 +265,7 @@ describe QuoteRequest, quote_request_spec: true, story_78: true do
               .and_return dummy_contact
           end
 
-          it 'links it', pending: true do
+          it 'links it' do
             subject.organization = 'test org'
             expect(subject.status).to eq 'assigned'
             subject.save

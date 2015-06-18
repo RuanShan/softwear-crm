@@ -66,6 +66,38 @@ feature 'Quotes management', quote_spec: true, js: true do
     expect(current_path).to eq(quotes_path)
   end
 
+  context 'A user can prepare for freshdesk', story_639: true, js: true do
+     given!(:fd_ticket) do   {
+      "created_at" => "Thu, 21 May 2015 15:57:32 EDT -04:00",  
+      "notes" => 
+      [
+        {"note" => {"body_html" => "<p></p><blockquote class=\"freshdesk_quote\">wasabi451</blockquote>", "created_at" => "aba" }} 
+      ]
+     }
+     end
+
+    background(:each) do 
+      allow_any_instance_of(Quote).to receive(:no_ticket_id_entered?).and_return false
+      allow_any_instance_of(Quote).to receive(:no_fd_login?).and_return false
+      allow_any_instance_of(Quote).to receive(:has_freshdesk_ticket?).and_return true
+      allow_any_instance_of(Quote).to receive(:get_freshdesk_ticket).and_return fd_ticket
+      allow(fd_ticket).to receive(:helpdesk_ticket).and_return fd_ticket
+      allow_any_instance_of(ApplicationHelper).to receive(:parse_freshdesk_time).and_return Time.now
+    end
+
+    scenario 'A user can set up an email for freshdesk' do
+      quote.freshdesk_ticket_id = 1
+      quote.save!
+      visit edit_quote_path quote.id
+      click_link 'Actions'
+      click_link 'Prepare for FreshDesk'
+      fill_in 'Body', with: '<div class= "wumbo">Wumbo</div>'
+      sleep 1
+      click_button 'Prepare for Freshdesk'
+      expect(page).to have_css('.wumbo')
+    end
+  end
+
   scenario 'A user can create a quote', edit: true, pending: "I don't know why this fails" do
     visit root_path
     unhide_dashboard
