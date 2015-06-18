@@ -672,7 +672,7 @@ describe Quote, quote_spec: true do
           expect(quote.activity_parameters_hash_for_job_changes(job, li_old, i_old)).to eq(success_hash)
         end
 
-        it 'returns a hash with updated unit price for the markup/upcharge', story_692: true, pending: "Public Activity needs to be fixed by Ben" do
+        it 'returns a hash with updated unit price for the markup/upcharge', story_692: true, pending: 'Ben and ricky are to work on this "later"' do
           markup1.unit_price = 40
           markup2.unit_price = 10
           l1o = LineItem.find(line_item1.id)
