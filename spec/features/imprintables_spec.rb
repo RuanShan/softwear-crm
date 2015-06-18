@@ -224,14 +224,13 @@ feature 'Imprintables management', imprintable_spec: true, slow: true do
 
   end
 
-  scenario 'A user can delete an existing imprintable', js: true, story_692: true do
+  scenario 'A user can delete an existing imprintable', js: true do
     visit imprintables_path
     find("tr#imprintable_#{imprintable.id} a[data-action='destroy']").click
     page.driver.browser.switch_to.alert.accept
     wait_for_ajax
     expect(page).to have_content 'Imprintable was successfully destroyed.'
-    expect(current_path).to eq(imprintables_path)
-   # expect(imprintable.reload.destroyed? ).to be_truthy
+    expect(Imprintable.where(id: imprintable.id)).to_not exist
     expect(page).not_to have_content "$9.99"
   end
 
