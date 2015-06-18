@@ -32,7 +32,7 @@ describe Setting, setting_spec: true do
     context 'when setting are not present' do
       context 'when environment variables are present' do
         it 'sets the freshdesk_hash to the environment variables' do
-          expect(Setting).to receive(:find_by).exactly(3).times.and_return(nil)
+          expect(Setting).to receive(:find_or_create_by).exactly(3).times.and_return(nil)
           expect(Figaro).to receive(:env).exactly(3).times.and_return({
             'freshdesk_email' => 'aww ye',
             'freshdesk_url' => 'uh',
@@ -49,7 +49,7 @@ describe Setting, setting_spec: true do
 
       context 'when environment variables are not present' do
         it 'returns a hash of settings with nil values' do
-          expect(Setting).to receive(:find_by).exactly(3).times.and_return(nil)
+          expect(Setting).to receive(:find_or_create_by).exactly(3).times.and_return(nil)
           expect(Figaro).to receive(:env).exactly(3).times.and_return({})
 
           ret_val = Setting.get_freshdesk_settings

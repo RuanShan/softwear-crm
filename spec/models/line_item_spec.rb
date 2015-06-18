@@ -210,6 +210,8 @@ describe LineItem, line_item_spec: true do
   end
 
   describe '#unit_price', story_560: true do
+    let!(:dummy_job) { double('Job', jobbable_type: 'Quote') }
+
     let!(:line_item) do
       build_stubbed(
         :blank_line_item, imprintable_variant_id: nil,
@@ -220,9 +222,10 @@ describe LineItem, line_item_spec: true do
     end
     subject { line_item.unit_price }
 
-    context 'when it is imprintable' do
+    context 'when it is imprintable and belongs to a quote' do
       before do
         allow(line_item).to receive(:imprintable?).and_return true
+        allow(line_item).to receive(:line_itemable).and_return dummy_job
       end
 
       # 7 + 2 = 9

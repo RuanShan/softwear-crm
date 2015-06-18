@@ -406,7 +406,7 @@ describe Order, order_spec: true do
         ]
       end
 
-      it 'creates jobs for each entry in the top level array', pending: "NIGEL PLEASE FIX THIS" do
+      it 'creates jobs for each entry in the top level array', story_692: true do
         expect(order.jobs).to_not exist
         order.generate_jobs fba_params
 

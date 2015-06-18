@@ -270,7 +270,7 @@ feature 'Quotes management', quote_spec: true, js: true do
     end
   end
     
-  scenario 'Adding a markup/upcharge is tracked by public activity', story_600: true do 
+  scenario 'Adding a markup/upcharge is tracked by public activity', story_600: true, story_692: true do 
     PublicActivity.with_tracking do
       imprintable_group; imprint_method_1; imprint_method_2
       visit edit_quote_path quote
@@ -569,7 +569,7 @@ feature 'Quotes management', quote_spec: true, js: true do
     fill_in 'Unit price', with: '99.99'
 
     click_button 'Add Option or Markup'
-
+    wait_for_ajax
     expect(page).to have_content 'Quote was successfully updated.'
 
     job = quote.markups_and_options_job
