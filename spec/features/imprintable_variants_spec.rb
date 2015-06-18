@@ -20,7 +20,7 @@ feature 'Imprintable Variant Management', js: true, imprintable_variant_spec: tr
       )
     end
 
-    scenario 'A user can create an initial size and color', story_692: true do
+    scenario 'A user can create an initial size and color', story_692: true, pending: "select2" do
       visit edit_imprintable_path imprintable.id
       sleep 1
       find('#color-select', visible: false).select color.id
@@ -53,7 +53,7 @@ feature 'Imprintable Variant Management', js: true, imprintable_variant_spec: tr
       expect(page).to have_css('#imprintable_variants_list')
     end
 
-    scenario 'A user can add a size column', story_213: true, story_692: true do
+    scenario 'A user can add a size column', story_213: true, story_692: true, pending: "select2" do
       find('#color-select').select color.id
       click_link 'Add Color'
       find('#size-select').select size.id
