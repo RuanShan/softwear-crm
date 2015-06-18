@@ -324,9 +324,9 @@ class Quote < ActiveRecord::Base
 
       line_item = LineItem.new
       line_item.line_itemable     = job
-      line_item.tier              = attrs[:tier] || Imprintable::TIER.good
-      line_item.quantity          = attrs[:quantity] || 1
-      line_item.decoration_price  = attrs[:decoration_price] || 0
+      line_item.tier              = attrs[:tier].blank? ? Imprintable::TIER.good : attrs[:tier]
+      line_item.quantity          = attrs[:quantity].blank? ? 1 : attrs[:quantity]
+      line_item.decoration_price  = attrs[:decoration_price].blank? ? 0 : attrs[:decoration_price]
       line_item.imprintable_price = imprintable.base_price
       line_item.imprintable_variant_id =
         imprintable.imprintable_variants.pluck(:id).first
