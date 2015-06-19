@@ -15,7 +15,7 @@ feature 'Artwork Features', js: true, artwork_spec: true do
     expect(page).to have_css("tr#artwork-row-#{artwork.id}")
   end
 
-  scenario 'A user can create an Artwork from the Artwork List' do
+  scenario 'A user can create an Artwork from the Artwork List', retry: 2 do
     visit artworks_path
     find("a[href='/artworks/new']").click
     fill_in 'Name', with: 'Rspec Artwork'
@@ -29,6 +29,7 @@ feature 'Artwork Features', js: true, artwork_spec: true do
     expect(page).to have_selector('.modal-content-success')
     find(:css, 'button.close').click
     expect(page).to have_css("tr#artwork-row-#{artwork.id}")
+    sleep 1 if ci?
     expect(Artwork.where(name: 'Rspec Artwork')).to exist
   end
 

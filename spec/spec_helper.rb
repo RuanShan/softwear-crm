@@ -71,7 +71,7 @@ RSpec.configure do |config|
   config.alias_it_should_behave_like_to :it_can, 'can'
 
   Capybara.register_driver :selenium do |app|
-    if ENV['CI'] == 'true'
+    if ci?
       args = ['--no-default-browser-check', '--no-sandbox', '--no-first-run', '--disable-default-apps']
     else
       args = []

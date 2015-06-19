@@ -198,7 +198,7 @@ feature 'Quotes management', quote_spec: true, js: true, retry: 2 do
     click_link 'Add A New Group'
 
     click_link 'Add Imprint'
-    wait_for_ajax
+    sleep 1
     find('select[name=imprint_method]').select imprint_method_2.name
 
     select imprintable_group.name, from: 'Imprintable group'
@@ -286,7 +286,7 @@ feature 'Quotes management', quote_spec: true, js: true, retry: 2 do
       click_link 'Add A New Group'
 
       click_link 'Add Imprint'
-      wait_for_ajax
+      sleep 1
       find('select[name=imprint_method]').select imprint_method_2.name
 
       select imprintable_group.name, from: 'Imprintable group'
@@ -402,6 +402,7 @@ feature 'Quotes management', quote_spec: true, js: true, retry: 2 do
     sleep 2
     click_button 'Add Imprintable Group'
 
+    sleep 1 if ci?
     expect(page).to have_content 'Quote was successfully updated.'
 
     visit edit_quote_path quote
@@ -448,6 +449,7 @@ feature 'Quotes management', quote_spec: true, js: true, retry: 2 do
       click_button 'Add Imprintable Group'
     end
 
+    sleep 2 if ci?
     expect(page).to have_content 'Quote was successfully updated.'
 
     visit edit_quote_path quote
@@ -608,6 +610,7 @@ feature 'Quotes management', quote_spec: true, js: true, retry: 2 do
     find('a', text: 'Notes').click
 
     sleep 0.5
+    sleep 1 if ci?
     first('.delete-comment').click
     sleep 0.5
 

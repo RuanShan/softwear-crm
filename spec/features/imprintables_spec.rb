@@ -197,7 +197,7 @@ feature 'Imprintables management', imprintable_spec: true, slow: true do
   context 'There is an imprint method' do
     given!(:imprint_method) { create(:valid_imprint_method) }
 
-    scenario 'A user can utilize compatible imprint methods token input field', js: true, story_692: true do
+    scenario 'A user can utilize compatible imprint methods token input field', retry: 2, js: true, story_692: true do
       visit edit_imprintable_path imprintable.id
 
       sleep 2

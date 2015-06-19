@@ -42,13 +42,14 @@ feature 'Proof Features', js: true, proof_spec: true do
     expect(Proof.where(id: proof.id)).to exist
   end
 
-  scenario 'A user can edit and update an Proof from the Proof List', story_692: true do
+  scenario 'A user can edit and update an Proof from the Proof List', retry: 2, story_692: true do
     visit edit_order_path(order.id)
     find("a[href='#proofs']").click
     find("a[href='#{edit_order_proof_path(id: proof.id, order_id: order.id)}']").click
     fill_in 'proof_approve_by', with: '01/23/2012 8:55 PM'
     sleep 0.5
     click_button 'Update Proof'
+    sleep 1 if ci?
     expect(page).to have_selector('.modal-content-success')
     sleep 0.5
     find(:css, 'button.close').click
