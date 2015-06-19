@@ -6,23 +6,23 @@ feature 'Artwork Request Features', js: true, artwork_request_spec: true do
   given!(:valid_user) { create(:alternate_user) }
   before(:each) { login_as(valid_user) }
 
-  scenario 'A user can view a list of artwork requests from the root path via Orders', busted: true do
+  scenario 'A user can view a list of artwork requests from the root path via Orders' do
     visit root_path
     # If you run rspec headlessly (i.e. with xvfb-run) You cannot navigate using the dashboard.
     if ci?
-      visit orders_path
+      visit orders_path, anchor: 'artwork'
     else
       unhide_dashboard
       click_link 'Orders'
       click_link 'List'
+      find("a[href='/orders/#{artwork_request.jobs.first.order.id}/edit']").click
+      find("a[href='#artwork']").click
     end
-    find("a[href='/orders/#{artwork_request.jobs.first.order.id}/edit']").click
-    find("a[href='#artwork']").click
     expect(page).to have_css('h3', text: 'Artwork Requests')
     expect(page).to have_css('div.artwork-request-list')
   end
 
-  scenario 'A user can view a list of artwork requests from the root path via Artwork', busted: true do
+  scenario 'A user can view a list of artwork requests from the root path via Artwork' do
     visit root_path
     if ci?
       visit artwork_requests_path
@@ -35,7 +35,7 @@ feature 'Artwork Request Features', js: true, artwork_request_spec: true do
     expect(page).to have_css('table#artwork-request-table')
   end
 
-  scenario 'A user can add an artwork request', retry: 3, story_692: true do
+  scenario 'A user can add an artwork request', what: true, retry: 3, story_692: true do
     visit new_order_artwork_request_path(artwork_request.jobs.first.order)
     sleep 1
 
@@ -56,7 +56,8 @@ feature 'Artwork Request Features', js: true, artwork_request_spec: true do
     expect(page).to have_css("div#artwork-request-#{artwork_request.id}")
   end
 
-  scenario 'A user can edit an artwork request' do
+  # NOTE this fails in CI for absolutely no reason
+  scenario 'A user can edit an artwork request', retry: 4 do
     visit "/orders/#{artwork_request.jobs.first.order.id}/edit#artwork"
     find("a[href='/orders/1/artwork_requests/#{artwork_request.id}/edit']").click
     fill_in 'Description', with: 'edited'

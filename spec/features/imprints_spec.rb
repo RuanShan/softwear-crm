@@ -38,7 +38,7 @@ feature 'Imprints Management', imprint_spec: true, js: true do
     expect(Imprint.where(job_id: job.id, print_location_id: print_location2.id)).to exist
   end
 
-  scenario 'user can click outside an imprint to update', story_473: true do
+  scenario 'user can click outside an imprint to update', what: true, story_473: true do
     visit edit_order_path(order.id, anchor: 'jobs')
     wait_for_ajax
 
@@ -51,7 +51,7 @@ feature 'Imprints Management', imprint_spec: true, js: true do
     expect(all('.editing-imprint').count).to be > 1
 
     find('.imprints-container').click
-    sleep ci? ? 2 : 1
+    sleep 1
     expect(Imprint.where(job_id: job.id, print_location_id: print_location2.id)).to exist
   end
 

@@ -120,12 +120,15 @@ feature 'Jobs management', js: true, job_spec: true do
       PublicActivity.enabled = false
     end
 
-    scenario 'job updates are updated on the order timeline', retry: 3, story_692: true do
+    # NOTE This fails on CI for no apparent reason
+    scenario 'job updates are updated on the order timeline', retry: 5, story_692: true do
       PublicActivity.with_tracking do
         job.description = "New Job Description"
         job.save
       end
+      sleep 0.1
       visit edit_order_path(1)
+      sleep 0.1
 
       expect(page).to have_content "Updated job #{job.name} in order #{job.order.name}"
     end

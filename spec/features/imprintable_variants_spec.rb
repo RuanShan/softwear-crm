@@ -24,8 +24,8 @@ feature 'Imprintable Variant Management', js: true, imprintable_variant_spec: tr
       visit edit_imprintable_path imprintable.id
       sleep 1
       find('#color-select', visible: false).select color.name
-      sleep 1
-      find('#size-select', visible: false).select "display_value_#{color.name[6]}"
+      size_value = all('#size-select > option')[1].text
+      find('#size-select', visible: false).select size_value
       wait_for_ajax
       find('#submit_button').click
       wait_for_ajax

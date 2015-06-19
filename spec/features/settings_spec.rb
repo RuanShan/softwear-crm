@@ -9,7 +9,7 @@ feature 'Settings management', setting_spec: true, js: true do
   given!(:quote) { create(:valid_quote) }
   given!(:imprintable) { create(:valid_imprintable) }
 
-  scenario 'A user can configure crm settings', busted: true do
+  scenario 'A user can configure crm settings' do
     visit integrated_crms_path
     fill_in 'fd_settings_2_val', with: 'something_random'
     click_button 'Update'

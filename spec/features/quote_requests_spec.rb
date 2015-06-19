@@ -6,7 +6,7 @@ feature 'Quote Requests Management', js: true, quote_request_spec: true do
   given!(:valid_user) { create(:alternate_user) }
   before(:each) { login_as(valid_user) }
 
-  scenario 'A user can view a list of quote requests', busted: true do
+  scenario 'A user can view a list of quote requests' do
     visit quote_requests_path
     expect(page).to have_selector('.box-info')
   end
@@ -33,7 +33,7 @@ feature 'Quote Requests Management', js: true, quote_request_spec: true do
     expect(quote_request.reload.status).to eq 'assigned'
   end
 
-  context 'In escalating a quote request to a quote', busted: true do
+  context 'In escalating a quote request to a quote' do
     background(:each) do
       visit quote_requests_path
       find("a[data-action='quote']").click

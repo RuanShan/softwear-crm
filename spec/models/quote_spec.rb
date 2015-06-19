@@ -319,8 +319,9 @@ describe Quote, quote_spec: true do
       let!(:format) { '%d/%m/%Y %H:%M' }
 
       it 'sets initialized_at to time.now', story_86: true do
-        test_val = Time.now.strftime(format)
-        allow(Time).to receive(:now).and_return test_val
+        time = Time.now
+        allow(Time).to receive(:now).and_return time
+        test_val = time.strftime(format)
         expected_val = Quote.new.initialized_at.strftime(format)
         expect(expected_val).to eq(test_val)
       end

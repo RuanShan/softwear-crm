@@ -6,7 +6,7 @@ feature 'Artwork Features', js: true, artwork_spec: true do
   given!(:valid_user) { create(:alternate_user) }
   before(:each) { login_as(valid_user) }
 
-  scenario 'A user can view a list of Artworks', busted: true do
+  scenario 'A user can view a list of Artworks' do
     if ci?
       visit artworks_path
     else
@@ -19,7 +19,7 @@ feature 'Artwork Features', js: true, artwork_spec: true do
     expect(page).to have_css("tr#artwork-row-#{artwork.id}")
   end
 
-  scenario 'A user can create an Artwork from the Artwork List', busted: true, retry: 2 do
+  scenario 'A user can create an Artwork from the Artwork List', retry: 2 do
     visit artworks_path
     find("a[href='/artworks/new']").click
     fill_in 'Name', with: 'Rspec Artwork'
@@ -31,7 +31,7 @@ feature 'Artwork Features', js: true, artwork_spec: true do
     find(:css, "textarea#artwork_preview_attributes_description").set('description')
     click_button 'Create Artwork'
     sleep 1
-    expect(page).to have_selector('.modal-content-success')
+    expect(page).to have_css('.modal-content-success')
     find(:css, 'button.close').click
     expect(page).to have_css("tr#artwork-row-#{artwork.id}")
     sleep 1 if ci?
@@ -58,7 +58,7 @@ feature 'Artwork Features', js: true, artwork_spec: true do
     fill_in 'Name', with: 'Edited Artwork Name'
     click_button 'Update Artwork'
     wait_for_ajax
-    expect(page).to have_selector('.modal-content-success')
+    expect(page).to have_css('.modal-content-success')
     find(:css, 'button.close').click
     expect(page).to have_css("tr#artwork-row-#{artwork.id}")
     expect(Artwork.where(name: 'Edited Artwork Name')).to exist

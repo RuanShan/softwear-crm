@@ -113,8 +113,7 @@ feature 'Order management', order_spec: true,  js: true do
   end
 
   scenario 'user edits an existing order' do
-    visit orders_path
-    find("a[title='Edit']").click
+    visit edit_order_path order
     wait_for_ajax
     click_link 'Details'
     wait_for_ajax
