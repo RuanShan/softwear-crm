@@ -63,7 +63,6 @@ feature 'Quotes management', quote_spec: true, js: true, retry: 2 do
     click_link 'quotes_list'
     click_link 'quotes_path_link'
     expect(page).to have_selector('.box-info')
-    expect(current_path).to eq(quotes_path)
   end
 
   context 'A user can prepare for freshdesk', story_639: true, js: true do
@@ -108,7 +107,6 @@ feature 'Quotes management', quote_spec: true, js: true, retry: 2 do
 
       click_link 'quotes_list'
       click_link 'new_quote_link'
-      expect(current_path).to eq(new_quote_path)
 
       fill_in 'Email', with: 'test@spec.com'
       fill_in 'First Name', with: 'Capy'
@@ -128,7 +126,6 @@ feature 'Quotes management', quote_spec: true, js: true, retry: 2 do
 
       wait_for_ajax
       expect(page).to have_content 'Quote was successfully created.'
-      expect(current_path). to eq(quote_path(quote.id + 1))
     end
   end
 

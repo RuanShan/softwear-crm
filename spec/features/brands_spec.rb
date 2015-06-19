@@ -10,7 +10,6 @@ feature 'Brands management', brand_spec: true do
   scenario 'A user can see a list of brands' do
     visit root_path
     click_link 'brands_list_link'
-    expect(current_path).to eq(brands_path)
     expect(page).to have_selector('.box-info')
   end
 
@@ -28,7 +27,6 @@ feature 'Brands management', brand_spec: true do
     visit edit_brand_path brand.id
     fill_in 'brand_name', with: 'Edited Brand Name'
     click_button 'Update Brand'
-    expect(current_path).to eq(brands_path)
     expect(page).to have_content 'Brand was successfully updated.'
     expect(brand.reload.name).to eq('Edited Brand Name')
   end
@@ -38,7 +36,6 @@ feature 'Brands management', brand_spec: true do
     find("tr#brand_#{brand.id} a[data-action='destroy']").click
     page.driver.browser.switch_to.alert.accept
     wait_for_ajax
-    expect(current_path).to eq(brands_path)
     expect(page).to have_content 'Brand was successfully destroyed.'
     expect(brand.reload.deleted_at).not_to eq(nil)
   end

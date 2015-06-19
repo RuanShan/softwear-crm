@@ -13,7 +13,6 @@ feature 'Quote Requests Management', js: true, quote_request_spec: true do
     click_link 'quote_requests_link'
     sleep 10
     expect(page).to have_selector('.box-info')
-    expect(current_path).to eq(quote_requests_path)
   end
 
   scenario 'A user can change the assignment of a quote request', story_80: true, story_692: true do

@@ -11,7 +11,6 @@ feature 'Imprintables management', imprintable_spec: true, slow: true do
     visit root_path
     click_link 'imprintables_list_link'
     expect(page).to have_selector('.box-info')
-    expect(current_path).to eq(imprintables_path)
   end
 
   feature 'search', search_spec: true do

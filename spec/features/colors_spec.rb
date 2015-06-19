@@ -10,7 +10,6 @@ feature 'Colors management', color_spec: true do
   scenario 'A user can see a list of colors' do
     visit root_path
     click_link 'colors_list_link'
-    expect(current_path).to eq(colors_path)
     expect(page).to have_selector('.box-info')
   end
 
@@ -28,7 +27,6 @@ feature 'Colors management', color_spec: true do
     visit edit_color_path color.id
     fill_in 'color_name', with: 'Edited Color Name'
     click_button 'Update Color'
-    expect(current_path).to eq(colors_path)
     expect(page).to have_content 'Color was successfully updated.'
     expect(color.reload.name).to eq('Edited Color Name')
   end
@@ -38,7 +36,6 @@ feature 'Colors management', color_spec: true do
     find("tr#color_#{color.id} a[data-action='destroy']").click
     page.driver.browser.switch_to.alert.accept
     wait_for_ajax
-    expect(current_path).to eq(colors_path)
     expect(page).to have_content 'Color was successfully destroyed.'
     expect(color.reload.deleted_at).not_to eq(nil)
   end

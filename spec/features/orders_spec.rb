@@ -112,25 +112,6 @@ feature 'Order management', order_spec: true,  js: true do
     expect(page).to have_content 'Email is not a valid email address'
   end
 
-  scenario 'phone number field enforces proper format', wtf: true do
-    visit root_path
-    unhide_dashboard
-    click_link 'Orders'
-    wait_for_ajax
-    click_link 'New'
-
-    phone_number_field = find_field('order[phone_number]')
-    fill_in 'Phone number', with: '1236547895'
-    wait_for_ajax
-    expect(phone_number_field.value).to eq '123-654-7895'
-
-    visit current_path
-
-    fill_in 'Phone number', with: 'a1b2c3!@5#$-'
-    wait_for_ajax
-    expect(phone_number_field.value).to eq '123-5__-____'
-  end
-
   scenario 'user edits an existing order' do
     visit orders_path
     find("a[title='Edit']").click
