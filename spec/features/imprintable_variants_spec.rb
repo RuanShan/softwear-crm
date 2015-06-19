@@ -20,10 +20,11 @@ feature 'Imprintable Variant Management', js: true, imprintable_variant_spec: tr
       )
     end
 
-    scenario 'A user can create an initial size and color', story_692: true do
+    scenario 'A user can create an initial size and color', retry: 3, story_692: true do
       visit edit_imprintable_path imprintable.id
       sleep 1
       find('#color-select', visible: false).select color.name
+      sleep 3
       find('#size-select', visible: false).select "display_value_#{color.name[6]}"
       wait_for_ajax
       find('#submit_button').click
@@ -48,7 +49,6 @@ feature 'Imprintable Variant Management', js: true, imprintable_variant_spec: tr
 
     before(:each) { visit edit_imprintable_path imprintable_variant.imprintable.id }
 
-
     scenario 'A user can see a grid of imprintable variants' do
       expect(page).to have_css('#imprintable_variants_list')
     end
@@ -56,13 +56,15 @@ feature 'Imprintable Variant Management', js: true, imprintable_variant_spec: tr
     scenario 'A user can add a size column', story_213: true, story_692: true do
       find('#color-select').select color.name
       click_link 'Add Color'
-      find('#size-select').select "display_value_#{color.name[6]}"
+      sleep 1
+      size_value = all('#size-select > option')[1].text
+      find('#size-select').select size_value
       click_link 'Add a size'
 
-      expect(page).to have_selector 'th', text: "display_value_#{color.name[6]}"
+      expect(page).to have_selector 'th', text: size_value
       click_button 'Update Imprintable'
 
-      expect(page).to have_selector 'th', text: "display_value_#{color.name[6]}"
+      expect(page).to have_selector 'th', text: size_value
     end
 
     scenario 'A user can add a color row', story_213: true, story_692: true do
