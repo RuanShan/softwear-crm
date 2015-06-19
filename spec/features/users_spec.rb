@@ -114,6 +114,7 @@ feature 'Users', user_spec: true, js: true do
     scenario 'I can log out' do
       visit root_path
       unhide_dashboard
+      sleep 0.5
       first('a', text: 'Logout').click
       expect(current_path).to eq '/users/sign_in'
     end
