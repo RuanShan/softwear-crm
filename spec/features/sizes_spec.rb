@@ -15,7 +15,6 @@ feature 'sizes management', size_spec: true do
     visit root_path
     click_link 'sizes_list_link'
 
-    expect(current_path).to eq(sizes_path)
     expect(page).to have_selector('.box-info')
   end
 
@@ -36,7 +35,6 @@ feature 'sizes management', size_spec: true do
     fill_in 'size_name', with: 'Edited size Name'
     click_button 'Update Size'
 
-    expect(current_path).to eq(sizes_path)
     expect(page).to have_content 'Size was successfully updated.'
     expect(size.reload.name).to eq('Edited size Name')
   end
@@ -47,7 +45,6 @@ feature 'sizes management', size_spec: true do
     page.driver.browser.switch_to.alert.accept
     wait_for_ajax
 
-    expect(current_path).to eq(sizes_path)
     expect(page).to have_content 'Size was successfully destroyed.'
     expect(size.reload.deleted_at).to be_truthy
   end

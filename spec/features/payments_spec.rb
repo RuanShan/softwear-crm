@@ -2,7 +2,6 @@ require 'spec_helper'
 include ApplicationHelper
 
 feature 'Payments management', js: true, payment_spec: true do
-
   given!(:valid_user) { create(:alternate_user) }
   background(:each) { login_as(valid_user) }
 
@@ -68,8 +67,9 @@ feature 'Payments management', js: true, payment_spec: true do
       expect(activity).to_not be_nil
     end
 
-    scenario 'refunding a payment' do
+    scenario 'refunding a payment', retry: 2 do
       visit (edit_order_path order.id) + '#payments'
+      sleep 0.5
       find(:css, '.order_payment_refund_link').click
       fill_in 'Refund Reason', with: 'Muh spoon is too big'
       click_button 'Refund Payment'
