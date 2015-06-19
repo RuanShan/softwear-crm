@@ -29,6 +29,9 @@ module CrmSoftwearcrmCom
     # add customer validators path
     config.autoload_paths += %W["#{config.root}/app/validators/"]
 
+    # This will be default in Rails 5.
+    config.active_record.raise_in_transactional_callbacks = true
+
     if ENV['action_mailer_delivery_method'] == 'smtp'
       smtp_settings = {}
       config.action_mailer.delivery_method = :smtp
