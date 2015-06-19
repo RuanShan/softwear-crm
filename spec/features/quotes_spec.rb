@@ -3,7 +3,7 @@ include ApplicationHelper
 require 'email_spec'
 require_relative '../../app/controllers/jobs_controller'
 
-feature 'Quotes management', quote_spec: true, js: true do
+feature 'Quotes management', quote_spec: true, js: true, retry: 2 do
   given!(:valid_user) { create(:alternate_user, insightly_api_key: "insight") }
   background(:each) { login_as(valid_user) }
 
@@ -208,6 +208,7 @@ feature 'Quotes management', quote_spec: true, js: true do
     fill_in 'Quantity', with: 10
     fill_in 'Decoration price', with: 12.55
 
+    sleep 1
     click_button 'Add Imprintable Group'
 
     expect(page).to have_content 'Quote was successfully updated.'
@@ -256,7 +257,6 @@ feature 'Quotes management', quote_spec: true, js: true do
 
       click_button 'Add Imprintable(s)'
       click_button 'OK'
-      click_link 'Timeline'
       visit edit_quote_path quote
       
       expect(page).to have_content '19.95'
@@ -296,6 +296,7 @@ feature 'Quotes management', quote_spec: true, js: true do
       fill_in 'Quantity', with: 10
       fill_in 'Decoration price', with: 12.55
 
+      sleep 1
       click_button 'Add Imprintable Group'
       click_button 'OK'
       visit edit_quote_path quote
@@ -306,7 +307,7 @@ feature 'Quotes management', quote_spec: true, js: true do
       fill_in 'Url', with: 'www.mrmoney.com' 
       fill_in 'Unit price', with: '999' 
       click_button 'Add Option or Markup'
-      wait_for_ajax
+      sleep 2
       click_button 'OK'
       click_link 'Timeline' 
       visit edit_quote_path quote
@@ -327,7 +328,7 @@ feature 'Quotes management', quote_spec: true, js: true do
       click_link 'Add A New Group'
 
       click_link 'Add Imprint'
-      wait_for_ajax
+      sleep 1.5
       find('select[name=imprint_method]').select imprint_method_2.name
 
       select imprintable_group.name, from: 'Imprintable group'
@@ -335,9 +336,9 @@ feature 'Quotes management', quote_spec: true, js: true do
       fill_in 'Decoration price', with: 12.55
 
       click_button 'Add Imprintable Group'
-      wait_for_ajax
+      sleep 1.5
       click_button 'OK'
-      wait_for_ajax
+      sleep 1.5
       visit edit_quote_path quote
 
       expect(page).to have_content '10'
@@ -385,7 +386,7 @@ feature 'Quotes management', quote_spec: true, js: true do
     end
   end
 
-  scenario 'I can add a different imprint right after creating a group with one', bug_fix: true, imprint: true, story_692: true do
+  scenario 'I can add a different imprint right after creating a group with one', retry: 2, bug_fix: true, imprint: true, story_692: true do
     imprintable_group; imprint_method_1; imprint_method_2
 
     visit edit_quote_path quote
@@ -401,7 +402,7 @@ feature 'Quotes management', quote_spec: true, js: true do
     fill_in 'Quantity', with: 10
     fill_in 'Decoration price', with: 12.55
 
-    sleep 1
+    sleep 2
     click_button 'Add Imprintable Group'
 
     expect(page).to have_content 'Quote was successfully updated.'
