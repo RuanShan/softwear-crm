@@ -55,7 +55,7 @@ feature 'FBA Order management', fba_spec: true, story_103: true, js: true do
         wait_for_ajax
         attach_file 'packing_slips_', packing_slip_path
 
-        wait_for_ajax
+        sleep 1
 
         expect(page).to have_content 'Job and line items will be generated'
 

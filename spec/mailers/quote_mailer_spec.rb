@@ -55,8 +55,4 @@ describe QuoteMailer, quote_spec: true do
       expect(quote_email).to cc_to('current@user.com')
     end
   end
-
-  describe '#create_freshdesk_ticket', story_518: true do
-    it ''
-  end
 end
