@@ -78,12 +78,12 @@ feature 'Users', user_spec: true, js: true do
       expect(valid_user.reload.insightly_api_key).to eq 'aaaaaaaaaaaaaaah'
     end
 
-    scenario 'I can lock myself' do
+    scenario 'I can lock myself', damn: true do
       visit orders_path
       find('a#account-menu').click
-      wait_for_ajax
+      sleep 0.2
       click_link 'Lock me'
-      wait_for_ajax
+      sleep 0.2
       expect(current_path).to eq '/users/sign_in'
     end
 

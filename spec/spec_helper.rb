@@ -76,7 +76,7 @@ RSpec.configure do |config|
     else
       args = []
     end
-    Capybara::Selenium::Driver.new(app, :browser => :chrome, args: args)
+    Capybara::Selenium::Driver.new(app, browser: :chrome, args: args)
   end
 
   config.define_derived_metadata(file_path: %r(/spec/controllers/)) do |meta|

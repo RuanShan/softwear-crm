@@ -7,11 +7,15 @@ feature 'Email Templates Management', js: true, email_template_spec: true, story
   background(:each) { login_as valid_user }
 
   scenario 'A user can create an e-mail template' do
-    visit root_path
-    unhide_dashboard
-    click_link 'Configuration'
-    click_link 'Email Templates'
-    click_link 'New Email Template'
+    if ci?
+      visit new_email_template_path
+    else
+      visit root_path
+      unhide_dashboard
+      click_link 'Configuration'
+      click_link 'Email Templates'
+      click_link 'New Email Template'
+    end
     fill_in 'Name', with: 'A name'
     select email_template.template_type, from: 'Template type'
     fill_in 'Subject', with: 'Who cares'

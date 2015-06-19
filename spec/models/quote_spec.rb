@@ -316,10 +316,11 @@ describe Quote, quote_spec: true do
     end
 
     context 'when not supplied with a time' do
+      let!(:format) { '%d/%m/%Y %H:%M' }
+
       it 'sets initialized_at to time.now', story_86: true do
         test_val = Time.now.strftime(format)
         allow(Time).to receive(:now).and_return test_val
-        format = '%d/%m/%Y %H:%M'
         expected_val = Quote.new.initialized_at.strftime(format)
         expect(expected_val).to eq(test_val)
       end

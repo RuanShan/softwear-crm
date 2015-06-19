@@ -124,7 +124,7 @@ feature 'Quotes management', quote_spec: true, js: true, retry: 2 do
 
       click_button 'Submit'
 
-      wait_for_ajax
+      sleep 1
       expect(page).to have_content 'Quote was successfully created.'
     end
   end
@@ -208,6 +208,7 @@ feature 'Quotes management', quote_spec: true, js: true, retry: 2 do
     sleep 1
     click_button 'Add Imprintable Group'
 
+    sleep 1 if ci?
     expect(page).to have_content 'Quote was successfully updated.'
     quote.reload
 
@@ -362,6 +363,7 @@ feature 'Quotes management', quote_spec: true, js: true, retry: 2 do
 
       click_button 'Add Imprintable Group'
 
+      sleep 1 if ci?
       expect(page).to have_content 'Quote was successfully updated.'
       click_button 'OK'
       visit edit_quote_path quote
@@ -472,6 +474,7 @@ feature 'Quotes management', quote_spec: true, js: true, retry: 2 do
       click_button 'Add Imprintable Group'
     end
 
+    sleep 2 if ci?
     expect(page).to have_content 'Quote was successfully updated.'
 
     expect(quote.jobs.size).to eq 2
@@ -502,6 +505,7 @@ feature 'Quotes management', quote_spec: true, js: true, retry: 2 do
 
     click_button 'Add Imprintable Group'
 
+    sleep 1 if ci?
     expect(page).to have_content 'Quote was successfully updated.'
     quote.reload
 
@@ -544,6 +548,7 @@ feature 'Quotes management', quote_spec: true, js: true, retry: 2 do
 
     click_button 'Add Imprintable(s)'
 
+    sleep 1 if ci?
     expect(page).to have_content 'Quote was successfully updated.'
 
     job.reload
@@ -569,7 +574,7 @@ feature 'Quotes management', quote_spec: true, js: true, retry: 2 do
     fill_in 'Unit price', with: '99.99'
 
     click_button 'Add Option or Markup'
-    wait_for_ajax
+    sleep 1
     expect(page).to have_content 'Quote was successfully updated.'
 
     job = quote.markups_and_options_job

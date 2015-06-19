@@ -46,7 +46,7 @@ feature 'Payments management', js: true, payment_spec: true do
     expect(Payment.find(2)).to be_truthy
   end
 
-  scenario 'A salesperson can refund a payment', story_692: true do
+  scenario 'A salesperson can refund a payment', retry: 2, story_692: true do
     visit (edit_order_path order.id) + '#payments'
     find(:css, '.order_payment_refund_link').click
     fill_in 'Refund Reason', with: 'Gaga can\'t handle this shit'
