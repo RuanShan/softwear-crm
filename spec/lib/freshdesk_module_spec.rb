@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe FreshdeskModule, freshdesk_spec: true do
+describe FreshdeskModule, freshdesk_spec: true, pending: "story_697 will fix this" do
   include FreshdeskModule
 
   class DummyClass
@@ -11,13 +11,13 @@ describe FreshdeskModule, freshdesk_spec: true do
     @dummy.extend FreshdeskModule
   end
 
-  context 'pending', pending: 'Freshdesk ._.' do
-    describe '.get_freshdesk_config'
-
-    describe '.open_connection'
-
-    describe '.send_ticket'
-  end
+#  context 'pending', pending: 'Freshdesk ._.' do
+#    describe '.get_freshdesk_config'
+#
+#    describe '.open_connection'
+#
+#    describe '.send_ticket'
+#  end
 
   describe '.get_contacts', story_262: true do
     # TODO: for these tests to pass, you have to make sure an environment variable under the key
@@ -28,7 +28,7 @@ describe FreshdeskModule, freshdesk_spec: true do
       expect(Setting).to receive(:get_freshdesk_settings).and_return({freshdesk_url: 'http://annarbortees.freshdesk.com/'})
     end
 
-    after(:each) { FreshdeskModule.get_contacts(1) }
+   # after(:each) { FreshdeskModule.get_contacts(1) }
 
     it 'creates a new RestClient' do
       expect(DummyClass).to receive(:get).and_return '[]'

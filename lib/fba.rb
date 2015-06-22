@@ -238,7 +238,7 @@ class FBA
 
   def check_for_invalid_sizes
     [].tap do |errors|
-      
+
       colors.each do |fba_color|
         valid_size_variants =
           ImprintableVariant.size_variants_for(imprintable, fba_color.color)
@@ -256,7 +256,7 @@ class FBA
           end
         end
 
-        fba_color.sizes -= bad_sizes
+        fba_color.sizes.reject! { |x| bad_sizes.include?(x) }
       end
 
     end

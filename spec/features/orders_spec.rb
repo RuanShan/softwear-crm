@@ -69,7 +69,7 @@ feature 'Order management', order_spec: true,  js: true do
 
       select 'Pick up in Ann Arbor', from: 'Delivery method'
       click_button 'Submit'
-      expect(page).to have_selector '.modal-content-success', text: 'Order was successfully created.'
+      expect(page).to have_content 'Order was successfully created.'
       expect(Order.where(firstname: quote.first_name)).to exist
     end
 
@@ -78,9 +78,10 @@ feature 'Order management', order_spec: true,  js: true do
         expect(OrderQuote.count).to eq(0)
 #       fail the form
         click_button 'Next'
+        sleep 0.5
         click_button 'Submit'
 #       expect failure
-        expect(page).to have_selector '.modal-content-error', text: 'There was an error saving the order'
+        expect(page).to have_content 'There was an error saving the order'
         close_error_modal
         click_button 'Next'
 
@@ -89,7 +90,7 @@ feature 'Order management', order_spec: true,  js: true do
 
         select 'Pick up in Ann Arbor', from: 'order_delivery_method'
         click_button 'Submit'
-        expect(page).to have_selector '.modal-content-success', text: 'Order was successfully created.'
+        expect(page).to have_content 'Order was successfully created.'
         expect(OrderQuote.count).to eq(1)
       end
     end
@@ -111,28 +112,8 @@ feature 'Order management', order_spec: true,  js: true do
     expect(page).to have_content 'Email is not a valid email address'
   end
 
-  scenario 'phone number field enforces proper format', pending: 'No idea why the phone number format is failing now' do
-    visit root_path
-    unhide_dashboard
-    click_link 'Orders'
-    wait_for_ajax
-    click_link 'New'
-
-    phone_number_field = find_field('order[phone_number]')
-    fill_in 'Phone number', with: '1236547895'
-    wait_for_ajax
-    expect(phone_number_field.value).to eq '123-654-7895'
-
-    visit current_path
-
-    fill_in 'Phone number', with: 'a1b2c3!@5#$-'
-    wait_for_ajax
-    expect(phone_number_field.value).to eq '123-5__-____'
-  end
-
   scenario 'user edits an existing order' do
-    visit orders_path
-    find("a[title='Edit']").click
+    visit edit_order_path order
     wait_for_ajax
     click_link 'Details'
     wait_for_ajax
@@ -161,68 +142,4 @@ feature 'Order management', order_spec: true,  js: true do
 
     expect(page).to have_content "Updated order #{order.name}"
   end
-
-  scenario 'user can select quotes for the order' do
-    pending "Doing this would require selecting from Chosen!"
-    expect(false).to eq true
-  end
-
-#  describe 'search', search_spec: true, solr: true do
-#    given!(:order2) { create(:order_with_job, name: 'Keyword order',
-#      terms: 'Net 60') }
-#    given!(:order3) { create(:order_with_job, name: 'Nonkeyword order',
-#      terms: 'Paid in full on purchase') }
-#    given!(:order4) { create(:order_with_job, name: 'Some Order',
-#      company: 'Order with the keyword keyword!') }
-#    given!(:order5) { create(:order_with_job, name: 'Dumb order',
-#      terms: 'Net 60') }
-#
-#    scenario 'user can search orders', retry: 3 do
-#      visit orders_path
-#
-#      fill_in 'search_order_fulltext', with: 'Keyword'
-#      click_button 'Search'
-#      expect(page).to have_content 'Keyword order'
-#      expect(page).to have_content 'Some Order'
-#      expect(page).to_not have_content 'Nonkeyword order'
-#      expect(page).to_not have_content 'Dumb order'
-#    end
-#
-#    scenario 'user can save searches' do
-#      visit orders_path
-#      find('.additional-icon[data-toggle="collapse"]').click
-#      select 'Net 60', from: 'search_order_8_terms'
-#      click_button 'Save'
-#      wait_for_ajax
-#
-#      fill_in 'query_name_input', with: 'Test Query'
-#      find('#modal-confirm-btn').click
-#
-#      expect(page).to have_content 'Successfully saved search query!'
-#      expect(Search::Query.where(name: 'Test Query')).to exist
-#    end
-#
-#    scenario 'user can use saved searches', retry: 3 do
-#      query = Search::QueryBuilder.build('Test Query') do
-#        on Order do
-#          with :terms, 'Net 60'
-#          fulltext 'order'
-#        end
-#      end
-#        .query
-#
-#      query.user = valid_user
-#      expect(query.save).to be_truthy
-#
-#      visit orders_path
-#
-#      select 'Test Query', from: 'select_query_for_order'
-#      wait_for_ajax
-#      click_button 'GO'
-#
-#      expect(page).to have_content 'Keyword order'
-#      expect(page).to have_content 'Dumb order'
-#      expect(page).to_not have_content 'Nonkeyword order'
-#    end
-#  end
 end

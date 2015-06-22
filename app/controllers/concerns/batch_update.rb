@@ -36,7 +36,7 @@ module BatchUpdate
 
     updated_resources = resource_attributes
       .keys
-      .select { |k| k.to_i >= 0 }
+      .select { |k| /[\d\.]+/ =~ k.to_s && k.to_i >= 0 }
       .map(&resource_class.method(:find))
 
     assigned = []
@@ -61,7 +61,7 @@ module BatchUpdate
 
     created_resources = resource_attributes
       .keys
-      .select { |k| k.to_i < 0 }
+      .select { |k| /[\d\.]+/ =~ k.to_s && k.to_i < 0 }
       .map do |k|
           resource = resource_class.new
           attributes = resource_attributes[k]
@@ -99,6 +99,7 @@ module BatchUpdate
 
     resource_attributes.dup.tap do |all_attributes|
       all_attributes.values.each do |attributes|
+        next unless attributes.respond_to?(:merge!)
         attributes.merge!(record_id(parent) => parent.id)
       end
     end
@@ -107,6 +108,8 @@ module BatchUpdate
   def sanitize_booleans(resource_attributes)
     resource_attributes.dup.tap do |all_attributes|
       all_attributes.values.each do |attributes|
+        next unless attributes.respond_to?(:each)
+
         attributes.each do |key, value|
           if resource_class.columns_hash[key].try(:type) == :boolean
             attributes[key] = value == '1' || value == true

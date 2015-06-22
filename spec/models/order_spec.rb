@@ -320,38 +320,6 @@ describe Order, order_spec: true do
     end
   end
 
-  # TODO: refactor this, relation is now has_many, plus csv is still broken lolol
-  describe '#name_number_csv', name_number: true, pending: 'name_number refactor' do
-    let!(:order) { create :order }
-    let!(:job) { create :job, order_id: order.id }
-    let!(:imprint) { build_stubbed :valid_imprint, job_id: job.id, has_name_number: true }
-    let!(:imprint2) { build_stubbed :valid_imprint, job_id: job.id, has_name_number: true }
-
-    let!(:job2) { build_stubbed :job }
-    let!(:imprint3) { build_stubbed :valid_imprint, job_id: job2.id, has_name_number: true }
-    let!(:imprint4) { build_stubbed :valid_imprint, job_id: job2.id, has_name_number: true }
-
-    before :each do
-      imprint.name_number = build_stubbed :name_number, name: 'Test Name', number: 33
-      imprint2.name_number = build_stubbed :name_number, name: 'Other One', number: 2
-
-      imprint3.name_number = build_stubbed :name_number, name: 'Third McThird', number: 3
-      imprint4.name_number = build_stubbed :name_number, name: 'Finale', number: 1
-
-      allow(order)
-        .to receive_message_chain(:imprints, :with_name_number)
-        .and_return [imprint, imprint2, imprint3, imprint4]
-    end
-
-    it 'creates a csv of all imprint name/numbers from all jobs', s_s_csv: true do
-      csv = CSV.parse order.name_number_csv
-
-      expect(csv).to eq [           ['Number', 'Name'],
-                         ['33', 'Test Name'],    ['2', 'Other One'],
-                         ['3', 'Third McThird'], ['1', 'Finale']]
-    end
-  end
-
   describe '#generate_jobs', story_103: true do
     let!(:order) { create :order }
 
@@ -406,7 +374,7 @@ describe Order, order_spec: true do
         ]
       end
 
-      it 'creates jobs for each entry in the top level array', pending: "NIGEL PLEASE FIX THIS" do
+      it 'creates jobs for each entry in the top level array', story_692: true do
         expect(order.jobs).to_not exist
         order.generate_jobs fba_params
 

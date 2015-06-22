@@ -16,7 +16,7 @@ describe Api::ImprintableVariantsController, api_imprintable_variant_spec: true,
         dummy = double('variants')
         expect(dummy)
           .to receive(:where)
-          .with(size: { retail: true })
+          .with(sizes: { retail: true })
           .and_return 'test'
 
         expect(imprintable)

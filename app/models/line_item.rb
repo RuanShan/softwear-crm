@@ -31,9 +31,11 @@ class LineItem < ActiveRecord::Base
   validates :unit_price, presence: true, price: true, unless: :imprintable?
   validates :decoration_price, :imprintable_price, presence: true, price: true, if: :imprintable?
 
+  before_create :set_default_quantity
+
   def self.create_imprintables(line_itemable, imprintable, color, options = {})
     new_imprintables(line_itemable, imprintable, color, options)
-      .each(&:save)
+      .each(&:save!)
   end
 
   def self.new_imprintables(line_itemable, imprintable, color, options = {})
@@ -45,9 +47,8 @@ class LineItem < ActiveRecord::Base
     imprintable_variants.map do |variant|
       LineItem.new(
         imprintable_variant_id: variant.id,
-        unit_price: options[:base_unit_price] ||
-                    variant.imprintable.base_price || 0,
-        quantity: 0,
+        unit_price: options[:base_unit_price].to_f || variant.imprintable.base_price || 0,
+        quantity: 1,
         line_itemable_id: line_itemable.id,
         line_itemable_type: line_itemable.class.name,
         imprintable_price: variant.imprintable.base_price,
@@ -126,7 +127,7 @@ class LineItem < ActiveRecord::Base
   end
 
   def unit_price
-    if imprintable?
+    if imprintable? && line_itemable.try(:jobbable_type) == 'Quote'
       decoration_price + imprintable_price
     else
       super
@@ -152,5 +153,9 @@ class LineItem < ActiveRecord::Base
     if ImprintableVariant.where(id: imprintable_variant_id).size < 1
       errors.add :imprintable_variant, 'does not exist'
     end
+  end
+
+  def set_default_quantity
+    self.quantity = 1 if self.quantity.to_i == 0
   end
 end

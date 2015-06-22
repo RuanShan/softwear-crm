@@ -2,11 +2,12 @@ class LineItemsController < InheritedResources::Base
   include BatchUpdate
   include LineItemHelper
 
-  after_filter :assign_line_itemable, only: [:create]
+  belongs_to :job, optional: true
 
   def new
     super do |format|
-      @line_item = @line_itemable.line_items.new
+      # @line_item = @line_itemable.line_items.new
+      @line_itemable = Job.find(params[:job_id])
 
       format.html { render partial: 'create_modal' }
       format.js { render locals: { standard_only: params[:standard_only] } }
@@ -58,8 +59,8 @@ class LineItemsController < InheritedResources::Base
   end
 
   def destroy
-    if param_okay? :ids
-      destroy_multiple params[:ids] do |format|
+    if params[:id].include? '/'
+      destroy_multiple params[:id] do |format|
         format.json { render json: { result: 'success' } }
         format.js do
           render locals: {
@@ -103,6 +104,8 @@ class LineItemsController < InheritedResources::Base
   end
 
   def create
+    @line_itemable = Job.find(params[:job_id])
+
     return create_imprintable if param_okay? :imprintable_id, :color_id
 
     super do |format|
@@ -111,9 +114,9 @@ class LineItemsController < InheritedResources::Base
                                         owner:  current_user,
                                         params: { name: @line_item.name }
       end
-      if @line_item.line_itemable.jobbable.markups_and_options_job == @line_item.line_itemable
+      if @line_itemable.try(:jobbable).try(:markups_and_options_job) == @line_item.line_itemable
         Quote.public_activity_on
-        quote = @line_item.line_itemable.jobbable
+        quote = @line_itemable.jobbable
         quote.create_activity key: "quote.add_a_markup", owner: current_user, parameters: @line_item.markup_hash(@line_item)
         Quote.public_activity_off
       end
@@ -284,7 +287,7 @@ class LineItemsController < InheritedResources::Base
     @line_item.destroy
 
     respond_to do |format|
-      yield format, @line_item.destroyed?
+      yield format, !@line_item.deleted_at.nil?
     end
   end
 
@@ -320,10 +323,6 @@ class LineItemsController < InheritedResources::Base
         :taxable, :line_itemable_id, :line_itemable_type
       ]
     )
-  end
-
-  def assign_line_itemable
-    @line_itemable = @line_item.line_itemable
   end
 
 end

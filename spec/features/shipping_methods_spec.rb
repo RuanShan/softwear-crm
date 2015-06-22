@@ -26,12 +26,12 @@ feature 'Shipping Methods management' do
     expect(page).to have_selector('#flash_notice', text: 'Shipping method was successfully created.')
   end
 
-  scenario 'User deletes an existing shipping method', js: true do
+  scenario 'User deletes an existing shipping method', js: true, story_692: true do
     visit shipping_methods_path
     find("tr#shipping_method_#{shipping_method.id} a[data-action='destroy']").click
     page.driver.browser.switch_to.alert.accept
     wait_for_ajax
-    expect( shipping_method.reload.destroyed? ).to be_truthy
+    expect( shipping_method.reload.deleted_at ).not_to eq(nil)
   end
 
   scenario 'User edits an existing shipping method' do

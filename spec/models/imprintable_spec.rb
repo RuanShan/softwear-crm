@@ -1,5 +1,4 @@
 require 'spec_helper'
-include PricingModule
 include LineItemHelpers
 
 describe Imprintable, imprintable_spec: true do
@@ -259,14 +258,6 @@ describe Imprintable, imprintable_spec: true do
     it 'returns a string of the style_catalog_no - style_name' do
       expect(imprintable.style_name_and_catalog_no).to eq('5555 - Name')
     end
-  end
-
-  describe '#imprintable_variant_weight_for_size' do
-    it 'returns the maximum imprintable variant weight for a given size (They should be uniform)'
-  end
-
-  describe '#update_weights_for_size' do
-    it 'updates all imprintable variants of given size with weight'
   end
 
   describe '#base_price_ok=', story_205: true do

@@ -15,7 +15,7 @@ module GeneralHelpers
     selector = 'button.button-menu-mobile.show-sidebar'
     return if all(selector).empty?
     find(selector).click
-    wait_for_ajax
+    sleep 1
   end
 
   def queries_after(&block)
