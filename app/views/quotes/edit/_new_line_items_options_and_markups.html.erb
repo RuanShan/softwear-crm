@@ -5,17 +5,16 @@
     </p>
     <%= form_for LineItem.new, builder: LancengFormBuilder, remote: true, class: 'horizontal-form' do |f| %>
         <%= hidden_field_tag :quote_update, quote.id %>
-        <%= f.hidden_field :line_itemable_type, value: 'Job' %>
-        <%= f.hidden_field :line_itemable_id, value: quote.markups_and_options_job.id %>
+        <%= hidden_field_tag :job_id, quote.markups_and_options_job.id %>
 
         <%= f.label :name %>
-        <%= f.text_field :name, maxlength: 255 %>
+        <%= f.text_field :name, maxlength: 255, required: true  %>
         <p class="help-block">
             Name the line item
         </p>
 
         <%= f.label :description %>
-        <%= f.text_field :description, maxlength: 10000  %>
+        <%= f.text_field :description, maxlength: 10000, required: true   %>
         <p class="help-block">
             Add a brief description to explain exactly what the upcharge or markup is for
         </p>
@@ -31,7 +30,7 @@
         <% if quote.formal? %>
           <div class="col-xs-2">
             <%= f.label :quantity %><br />
-            <%= f.text_field :quantity, type: 'number' %>
+            <%= f.text_field :quantity, type: 'number', required: true  %>
           </div>
           <div class="col-xs-2">
         <% else %>
@@ -41,7 +40,7 @@
           <%= f.label :unit_price %><br />
           <div class="input-group">
             <span class="input-group-addon">$</span>
-            <%= f.text_field :unit_price, type: 'number', step: 'any' %>
+            <%= f.text_field :unit_price, type: 'number', step: 'any', required: true  %>
           </div>
         </div>
 

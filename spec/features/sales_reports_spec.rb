@@ -9,7 +9,7 @@ feature 'Sales Reports management', sales_report_spec: true, js: true do
   given!(:quote) { create(:valid_quote) }
   given!(:imprintable) { create(:valid_imprintable) }
 
-  scenario 'A user can view a sales report', story_82: true do
+  scenario 'A user can view a sales report', retry: 2, story_82: true do
     visit root_path
     unhide_dashboard
     click_link 'Reports'

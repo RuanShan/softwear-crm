@@ -52,6 +52,7 @@ RSpec.configure do |config|
   config.include EmailSpec::Helpers
   config.include EmailSpec::Matchers
   config.include FormBuilderHelpers
+  config.include SimulateDragSortable, type: :feature
   config.include Softwear::Lib::Spec
 
   PublicActivity.enabled = false
@@ -70,7 +71,14 @@ RSpec.configure do |config|
   config.alias_it_should_behave_like_to :it_can, 'can'
 
   Capybara.register_driver :selenium do |app|
-    Capybara::Selenium::Driver.new(app, :browser => :chrome)
+    if ci?
+      args = ['--no-default-browser-check', '--no-sandbox', '--no-first-run', '--disable-default-apps']
+    else
+      args = []
+    end
+    client = Selenium::WebDriver::Remote::Http::Default.new
+    client.timeout = 360
+    Capybara::Selenium::Driver.new(app, browser: :chrome, args: args, http_client: client)
   end
 
   config.define_derived_metadata(file_path: %r(/spec/controllers/)) do |meta|

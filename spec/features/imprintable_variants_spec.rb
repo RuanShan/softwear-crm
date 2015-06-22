@@ -10,16 +10,26 @@ feature 'Imprintable Variant Management', js: true, imprintable_variant_spec: tr
   before(:each) { login_as(valid_user) }
 
   context 'There are no imprintable variants' do
-    given!(:imprintable) { create(:valid_imprintable) }
+    given!(:imprintable) do
+      create(
+        :valid_imprintable,
+        imprintable_variants: [
+          create(:valid_imprintable_variant, color: color, size: size),
+          create(:valid_imprintable_variant, size: size)
+        ]
+      )
+    end
 
-    scenario 'A user can create an initial size and color' do
+    scenario 'A user can create an initial size and color', retry: 3, story_692: true do
       visit edit_imprintable_path imprintable.id
-
-      select_from_chosen(color.id, from: 'color_ids')
-      select_from_chosen(size.id, from: 'size_ids')
+      sleep 1
+      find('#color-select', visible: false).select color.name
+      size_value = all('#size-select > option')[1].text
+      find('#size-select', visible: false).select size_value
+      wait_for_ajax
       find('#submit_button').click
-
-      expect(page).to have_selector '.modal-content-success', text: 'Imprintable was successfully updated.'
+      wait_for_ajax
+      expect(page).to have_content 'Imprintable was successfully updated.'
       expect(ImprintableVariant.where(color_id: color.id)).to_not be_nil
       expect(ImprintableVariant.where(size_id: size.id)).to_not be_nil
       expect(ImprintableVariant.where(imprintable_id: imprintable.id)).to_not be_nil
@@ -27,38 +37,43 @@ feature 'Imprintable Variant Management', js: true, imprintable_variant_spec: tr
   end
 
   context 'There is an imprintable variant' do
-    given!(:imprintable_variant) { create(:valid_imprintable_variant) }
     given!(:color) { create(:valid_color) }
     given!(:size) { create(:valid_size) }
 
-    before(:each) { visit edit_imprintable_path imprintable_variant.imprintable.id }
+    given!(:imprintable_variant) do
+      create(
+        :valid_imprintable_variant,
+        color: color, size: size
+      )
+    end
 
+    before(:each) { visit edit_imprintable_path imprintable_variant.imprintable.id }
 
     scenario 'A user can see a grid of imprintable variants' do
       expect(page).to have_css('#imprintable_variants_list')
     end
 
-    scenario 'A user can add a size column', story_213: true do
-      # for some reason using only 1 click wouldn't work, using 2 does ._.
-      find('#size_select_chosen').click
-      find('#size_select_chosen').click
-      sleep 0.5
-      find('#size_select_chosen li', text: size.display_value).click
-      find('#size_button').click
-      expect(page).to have_selector 'th', text: size.display_value
+    scenario 'A user can add a size column', story_213: true, story_692: true do
+      find('#color-select').select color.name
+      click_link 'Add Color'
+      sleep 1
+      size_value = all('#size-select > option')[1].text
+      find('#size-select').select size_value
+      click_link 'Add a size'
+
+      expect(page).to have_selector 'th', text: size_value
       click_button 'Update Imprintable'
 
-      expect(page).to have_selector 'th', text: size.display_value
+      expect(page).to have_selector 'th', text: size_value
     end
 
-    scenario 'A user can add a color row', story_213: true do
-      find('#color_select_chosen').click
-      find('#color_select_chosen').click
-      sleep 0.5
-      find('#color_select_chosen li', text: color.name).click
-      find('#color_button').click
+    scenario 'A user can add a color row', story_213: true, story_692: true do
+      find('#color-select').select color.name
+      click_link 'Add Color'
+      wait_for_ajax
       expect(page).to have_selector 'th', text: color.name
       click_button 'Update Imprintable'
+      wait_for_ajax
       expect(page).to have_selector 'th', text: color.name
     end
 

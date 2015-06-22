@@ -116,7 +116,6 @@ CrmSoftwearcrmCom::Application.routes.draw do
 
   post 'line_items', to: 'line_items#create'
   get '/line_item/select_options', to: 'line_items#select_options'
-  delete 'line_items/*ids',   to: 'line_items#destroy'
   put    'line_items/update', to: 'line_items#update'
   patch  'line_items/update', to: 'line_items#update'
 
@@ -141,7 +140,7 @@ CrmSoftwearcrmCom::Application.routes.draw do
     resources 'imprintable_variants', only: [:index, :show]
     resources 'colors'
     resources 'sizes'
-    resources 'quote_requests', only: [:create, :index]
+    resources 'quote_requests', only: [:create, :index, :show]
   end
 
   authenticate :user do

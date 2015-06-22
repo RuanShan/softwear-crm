@@ -33,24 +33,5 @@ describe 'imprints/_imprint.html.erb', order_spec: true, imprint_spec: true do
       expect(rendered).to have_css 'select[name="imprint_method"]'
       expect(rendered).to have_css 'select[name*="print_location"]'
     end
-
-    it 'should render the local imprint method as the default option' do
-      pending "The version of Nokogiri used by Rspec doesn't support the :checked pseudoclass, "\
-              "so there's no way to test for this outside of feature specs."
-
-      render partial: 'imprints/imprint', locals: { job: job, imprint_method: imprint_method }
-      expect(rendered).to have_css 'option:checked', text: imprint_method.name
-    end
-
-    it 'should render the print location as the default option' do
-      pending "The version of Nokogiri used by Rspec doesn't support the :checked pseudoclass, "\
-              "so there's no way to test for this outside of feature specs."
-
-      print_location; print_location2
-      imprint.print_location = print_location2
-      imprint.save
-      render partial: 'imprints/imprint', locals: { job: job, imprint_method: imprint.imprint_method, imprint_id: imprint.id }
-      expect(rendered).to have_css 'option:checked', text: imprint.print_location.name
-    end
   end
 end

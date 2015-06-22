@@ -3,6 +3,13 @@ require 'spec_helper'
 describe QuoteRequest, quote_request_spec: true, story_78: true do
   let(:quote_request) { create :quote_request }
 
+  before do
+    allow_any_instance_of(QuoteRequest).to receive(:enqueue_link_integrated_crm_contacts) { |qr|
+      qr.link_with_insightly
+      qr.link_with_freshdesk
+    }
+  end
+
   describe 'Fields' do
     it { is_expected.to have_db_column(:name).of_type(:string) }
     it { is_expected.to have_db_column(:email).of_type(:string) }
@@ -40,7 +47,7 @@ describe QuoteRequest, quote_request_spec: true, story_78: true do
       end
   end
 
-  describe 'Freshdesk', freshdesk: true, story_512: true, pending: true do
+  describe 'Freshdesk', freshdesk: true, story_512: true do
     context 'when created' do
       let(:dummy_client) { Object.new }
       let(:dummy_contact) { { user: { id: 123 } } }
@@ -96,7 +103,7 @@ describe QuoteRequest, quote_request_spec: true, story_78: true do
               user: {
                 name: 'what',
                 email: 'test@test.com',
-                phone: nil,
+                phone: anything,
                 customer_id: 555
               }
             )
@@ -105,7 +112,7 @@ describe QuoteRequest, quote_request_spec: true, story_78: true do
           allow(subject).to receive(:freshdesk).and_return dummy_client
         end
 
-        it 'creates one', pending: true do
+        it 'creates one' do
           subject.approx_quantity = 1
           subject.date_needed = 2.weeks.from_now
           subject.source = 'rspec'
@@ -141,7 +148,7 @@ describe QuoteRequest, quote_request_spec: true, story_78: true do
           allow(subject).to receive(:insightly).and_return dummy_client
         end
 
-        it 'finds that contact and assigns its id to insightly_contact_id', pending: true do
+        it 'finds that contact and assigns its id to insightly_contact_id' do
           subject.approx_quantity = 1
           subject.date_needed = 2.weeks.from_now
           subject.source = 'rspec'
@@ -207,7 +214,7 @@ describe QuoteRequest, quote_request_spec: true, story_78: true do
               .and_return dummy_contact
           end
 
-          it 'creates one and links it', pending: true do
+          it 'creates one and links it' do
             subject.organization = 'test org'
             expect(subject.status).to eq 'assigned'
             subject.save
@@ -258,7 +265,7 @@ describe QuoteRequest, quote_request_spec: true, story_78: true do
               .and_return dummy_contact
           end
 
-          it 'links it', pending: true do
+          it 'links it' do
             subject.organization = 'test org'
             expect(subject.status).to eq 'assigned'
             subject.save

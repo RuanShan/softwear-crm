@@ -3,12 +3,12 @@ class SettingsController < InheritedResources::Base
 
   def edit
     @freshdesk_settings = {
-      url:      Setting.find_by(name: 'freshdesk_url'),
-      email:    Setting.find_by(name: 'freshdesk_email'),
-      password: Setting.find_by(name: 'freshdesk_password')
+      url:      Setting.find_or_create_by(name: 'freshdesk_url'),
+      email:    Setting.find_or_create_by(name: 'freshdesk_email'),
+      password: Setting.find_or_create_by(name: 'freshdesk_password')
     }
     @insightly_settings = {
-      api_key: Setting.find_by(name: 'insightly_api_key')
+      api_key: Setting.find_or_create_by(name: 'insightly_api_key')
     }
   end
 

@@ -142,7 +142,7 @@ class Order < ActiveRecord::Base
   end
 
   def subtotal
-    line_items.map(&:total_price).reduce(0, :+)
+    line_items.map(&:total_price).map(&:to_f).reduce(0, :+)
   end
 
   def tax

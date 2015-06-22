@@ -10,6 +10,7 @@ var shineEditingIn = function ($container) {
     });
   }
 };
+
 <% @imprints.each do |imprint| %>
 
   var $container = $(".imprint-entry[data-id='<%= imprint.id %>']");
@@ -55,7 +56,7 @@ var shineEditingIn = function ($container) {
 <% end %>
 
 <% if @imprints.size + @new_imprints.size == 0 %>
-  // Nothing updated
+  raise "What the fuck?"
 <% end %>
 
 <%= update_name_number_table(@job) %>

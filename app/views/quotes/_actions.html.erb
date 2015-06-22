@@ -4,6 +4,19 @@
   <div class="alert alert-info" role="alert">
     <p>
       <span class="glyphicon glyphicon-question-sign" aria-hidden="true"></span>
+      Create a body for a freshdesk response using an e-mail template
+    </p>
+
+    <p class="text-right">
+      <%= link_to new_quote_emails_path(quote, freshdesk: true), class: 'btn btn-info btn-xs' do %>
+          <i class="glyphicon glyphicon-print"></i> Prepare for FreshDesk
+      <% end %>
+    </p>
+  </div>
+
+  <div class="alert alert-info" role="alert">
+    <p>
+      <span class="glyphicon glyphicon-question-sign" aria-hidden="true"></span>
       Creating an order from a quote using this button will associate the order with the quote and populate
       relevant quote fields from the quote information.
     </p>
@@ -24,19 +37,6 @@
     <p class="text-right">
       <%= link_to quote_path(quote), class: 'btn btn-info btn-xs' do %>
           <i class="glyphicon glyphicon-print"></i> Print Quote
-      <% end %>
-    </p>
-  </div>
-
-  <div class="alert alert-info" role="alert">
-    <p>
-      <span class="glyphicon glyphicon-question-sign" aria-hidden="true"></span>
-      Visit the page to create the quote e-mail
-    </p>
-
-    <p class="text-right">
-      <%= link_to new_quote_emails_path(quote, freshdesk: true), class: 'btn btn-info btn-xs' do %>
-          <i class="glyphicon glyphicon-print"></i> Prepare for FreshDesk
       <% end %>
     </p>
   </div>

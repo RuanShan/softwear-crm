@@ -11,13 +11,13 @@
   </div>
   <div class="col-xs-2">
     <%= f.label :quantity %><br />
-    <%= f.text_field :quantity, type: 'number' %><br />
+    <%= f.text_field :quantity, type: 'number', required: true %><br />
   </div>
   <div class="col-xs-2">
     <%= f.label :decoration_price %><br />
     <div class="input-group">
       <span class="input-group-addon">$</span>
-      <%= f.text_field :decoration_price, type: 'number', step: 'any' %>
+      <%= f.text_field :decoration_price, type: 'number', step: 'any', required: true %>
     </div>
   </div>
   <%= f.hidden_field :quote_id, value: quote.id %>

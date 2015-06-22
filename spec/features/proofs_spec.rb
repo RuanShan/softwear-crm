@@ -13,24 +13,28 @@ feature 'Proof Features', js: true, proof_spec: true do
     allow(order).to receive(:artwork_requests).and_return([artwork_request])
   end
 
-  scenario 'A user can view a list of Proofs' do
+  scenario 'A user can view a list of Proofs', ass: true do
     visit root_path
-    unhide_dashboard
-    click_link 'Orders'
-    click_link 'List'
-    find("a[href='/orders/#{order.id}/edit']").click
-    find("a[href='#proofs']").click
+    if ci?
+      visit edit_order_path(order, anchor: 'proofs')
+    else
+      unhide_dashboard
+      click_link 'Orders'
+      click_link 'List'
+      find("a[href='/orders/#{order.id}/edit']").click
+      find("a[href='#proofs']").click
+    end
     expect(page).to have_selector('h3', text: 'Proofs')
     expect(page).to have_css('div.proof-list')
     expect(page).to have_css("div#proof-#{proof.id}")
   end
 
-  scenario 'A user can create a Proof' do
+  scenario 'A user can create a Proof', retry: 3 do
     visit edit_order_path(order.id)
     find("a[href='#proofs']").click
     find("a[href='/orders/#{order.id}/proofs/new']").click
     fill_in 'proof_approve_by', with: '01/23/1992 8:55 PM'
-    sleep 0.5
+    sleep 2
     find(:css, "div.icheckbox_minimal-grey[aria-checked='false']").click
     sleep 0.5
     click_button 'Create Proof'
@@ -42,14 +46,15 @@ feature 'Proof Features', js: true, proof_spec: true do
     expect(Proof.where(id: proof.id)).to exist
   end
 
-  scenario 'A user can edit and update an Proof from the Proof List' do
+  scenario 'A user can edit and update an Proof from the Proof List', retry: 2, story_692: true, no_ci: true do
     visit edit_order_path(order.id)
     find("a[href='#proofs']").click
     find("a[href='#{edit_order_proof_path(id: proof.id, order_id: order.id)}']").click
     fill_in 'proof_approve_by', with: '01/23/2012 8:55 PM'
     sleep 0.5
     click_button 'Update Proof'
-    expect(page).to have_selector('.modal-content-success')
+    sleep 1 if ci?
+    expect(page).to have_content 'Successfuly updated Proof'
     sleep 0.5
     find(:css, 'button.close').click
     expect(page).to have_css("div#proof-#{proof.id}")
@@ -92,14 +97,14 @@ feature 'Proof Features', js: true, proof_spec: true do
     expect(Proof.find(proof.id).status).to eq('Rejected')
   end
 
-  scenario 'A user can Email a Customer a Proof Approval Request from the Proof List' do
+  scenario 'A user can Email a Customer a Proof Approval Request from the Proof List', story_692: true do
     visit edit_order_path(order.id)
     find("a[href='#proofs']").click
     find("a[href='#{email_customer_order_proofs_path(id: proof.id, order_id: order.id, reminder: 'false')}']").click
     sleep 0.5
     click_button 'Send Email'
     sleep 0.5
-    expect(page).to have_selector('.modal-content-success')
+    expect(page).to have_content "Your email was successfully sent"
     sleep 0.5
     find(:css, 'button.close').click
     expect(Proof.find(proof.id).status).to eq('Emailed Customer')
