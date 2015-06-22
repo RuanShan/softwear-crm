@@ -133,15 +133,15 @@ class SearchFormBuilder
 
     @field_count += 1
 
-    span  = @template.method(:content_tag).to_proc.curry(2).(:span)
-    radio = @template.method(:radio_button_tag).to_proc.curry
-              .(input_name_for(field_name))
+    c     = @template.method(:content_tag)
+    radio = @template.method(:radio_button_tag)
+    input_name = input_name_for(field_name)
 
     @template.content_tag(:div, class: 'form-group') do
       process_options(field_name, options) +
-      radio['true',  initial == 'true',  options] + span[yes] +
-      radio['false', initial == 'false', options] + span[no]  +
-      radio['nil',   !initial,           options] + span[either]
+      radio[input_name, 'true',  initial == 'true',  options] + c[:span, yes] +
+      radio[input_name, 'false', initial == 'false', options] + c[:span, no]  +
+      radio[input_name, 'nil',   !initial,           options] + c[:span, either]
     end
   end
 

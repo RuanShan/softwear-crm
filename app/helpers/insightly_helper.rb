@@ -57,6 +57,7 @@ module InsightlyHelper
   end
 
   def insightly_available?
+    return false if Rails.env.test?
     !current_user.insightly_api_key.blank?
   end
 

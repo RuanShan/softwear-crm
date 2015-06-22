@@ -25,30 +25,18 @@ describe Search::NumberFilter, search_spec: true do
   end
 
   describe '#apply' do
+    it 'performs a search based on comparator' do
+      filter.comparator = '='
+      Order.search do
+        filter.apply(self)
+      end
+
+      expect(Sunspot.session).to have_search_params(:with, filter.field, filter.value)
+    end
   end
 
   it 'defaults the comparator to "="' do
     filter = Search::NumberFilter.new
     expect(filter.comparator).to eq '='
   end
-
-#  context 'searching', solr: true, pending: "solr" do
-#    let!(:order1) { create :order_with_job, commission_amount: 10 }
-#    let!(:order2) { create :order_with_job, commission_amount: 5 }
-#    let!(:order3) { create :order_with_job, commission_amount: 1 }
-#
-#    it 'retrieves the correct records', pending: "solr" do
-#      filter.value = 10
-#      filter.comparator = '<'
-#      results = assure_solr_search do
-#        Order.search do
-#          filter.apply(self)
-#        end.results
-#      end
-#
-#      expect(results).to_not include order1
-#      expect(results).to include order2
-#      expect(results).to include order3
-#    end
-#  end
 end

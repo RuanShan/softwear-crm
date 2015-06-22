@@ -19,8 +19,7 @@ describe QuoteMailer, quote_spec: true do
       estimated_delivery_date: Time.now + 1.day,
       salesperson_id: user.id,
       store_id: store.id,
-      shipping: 14.50,
-      line_item_groups: [build_stubbed(:line_item_group_with_line_items)]
+      shipping: 14.50
     )
   end
   let(:hash) do
@@ -55,9 +54,5 @@ describe QuoteMailer, quote_spec: true do
     it "cc's the current user" do
       expect(quote_email).to cc_to('current@user.com')
     end
-  end
-
-  describe '#create_freshdesk_ticket', story_518: true do
-    it ''
   end
 end

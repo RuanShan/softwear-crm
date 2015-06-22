@@ -165,7 +165,7 @@ describe 'SearchFormBuilder', search_spec: true do
       it 'appoints the option of that value as default' do
         result = f.select(:name, options)
 
-        expect(result).to include '<option selected="selected" value="that">'
+        expect(result).to include '<option value="that" selected="selected">'
       end
     end
 
@@ -201,7 +201,7 @@ describe 'SearchFormBuilder', search_spec: true do
 
       {true: 'Yes', false: 'No', nil: 'Either'}.each do |value, display|
         expect(result)
-          .to include %(type="radio" value="#{value}" /><span>#{display}</span>)
+          .to match /[(type="radio".+)(value="#{value}".+)]{2}.+\/><span>#{display}<\/span>/
       end
     end
 
@@ -215,7 +215,7 @@ describe 'SearchFormBuilder', search_spec: true do
 
         {true: 'Totally', false: 'Doubtedly'}.each do |value, display|
           expect(result)
-            .to include %(value="#{value}" /><span>#{display}</span>)
+            .to match /value="#{value}".+<span>#{display}<\/span>/
         end
       end
     end

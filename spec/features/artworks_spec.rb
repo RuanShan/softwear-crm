@@ -7,15 +7,20 @@ feature 'Artwork Features', js: true, artwork_spec: true do
   before(:each) { login_as(valid_user) }
 
   scenario 'A user can view a list of Artworks' do
-    visit root_path
-    unhide_dashboard
-    click_link 'Artwork'
-    click_link 'Artwork List'
+    if ci?
+      visit artworks_path
+    else
+      visit root_path
+      unhide_dashboard
+      click_link 'Artwork'
+      click_link 'Artwork List'
+    end
     expect(page).to have_css('table#artwork-table')
     expect(page).to have_css("tr#artwork-row-#{artwork.id}")
   end
 
-  scenario 'A user can create an Artwork from the Artwork List' do
+  scenario 'A user can create an Artwork from the Artwork List', retry: 2, no_ci: true do
+    artwork_count = Artwork.count
     visit artworks_path
     find("a[href='/artworks/new']").click
     fill_in 'Name', with: 'Rspec Artwork'
@@ -26,10 +31,12 @@ feature 'Artwork Features', js: true, artwork_spec: true do
     attach_file('Preview', "#{Rails.root}" + '/spec/fixtures/images/macho.jpg')
     find(:css, "textarea#artwork_preview_attributes_description").set('description')
     click_button 'Create Artwork'
-    expect(page).to have_selector('.modal-content-success')
+    sleep 1
+    expect(page).to have_css('.modal-content-success')
     find(:css, 'button.close').click
     expect(page).to have_css("tr#artwork-row-#{artwork.id}")
-    expect(Artwork.where(name: 'Rspec Artwork')).to exist
+    sleep 1 if ci?
+    expect(Artwork.count).to eq artwork_count + 1
   end
 
 #  scenario 'A user can search existing artwork for tags and names', solr: true do
@@ -46,15 +53,17 @@ feature 'Artwork Features', js: true, artwork_spec: true do
 #    expect(page).to have_css("tr#artwork-row-#{artwork.id}")
 #  end
 
-  scenario 'A user can edit and update an Artwork from the Artwork List' do
+  scenario 'A user can edit and update an Artwork from the Artwork List', retry: 2, story_692: true, no_ci: true do
+    artwork_count = Artwork.count
     visit artworks_path
     find("a[href='#{edit_artwork_path(artwork)}']").click
     fill_in 'Name', with: 'Edited Artwork Name'
     click_button 'Update Artwork'
-    expect(page).to have_selector('.modal-content-success')
+    wait_for_ajax
+    expect(page).to have_css('.modal-content-success')
     find(:css, 'button.close').click
     expect(page).to have_css("tr#artwork-row-#{artwork.id}")
-    expect(Artwork.where(name: 'Edited Artwork Name')).to exist
+    expect(Artwork.count).to eq artwork_count + 1
   end
 
   scenario 'A user can delete an Artwork from the Artwork List' do

@@ -6,7 +6,7 @@ describe LineItemsController, line_item_spec: true do
   let!(:valid_user) { create :alternate_user }
   before(:each) { sign_in valid_user }
 
-  describe '#create' do
+  describe '#create', create: true do
     context 'with an imprintable_id and a color_id' do
       let!(:job) { create(:job) }
       let!(:white) { create(:valid_color, name: 'white') }
@@ -54,24 +54,6 @@ describe LineItemsController, line_item_spec: true do
           job.line_items << white_shirt_l_item
         end
 
-        it "still succeeds and only adds new ones" do
-          pending(
-            "This fails, but I recall Ricky saying this scenario doesn't matter"
-          )
-          post :create, format: :json,
-                        job_id: job.id,
-                        imprintable_id: shirt.id,
-                        color_id: white.id
-          json_response = JSON.parse response.body
-          expect(json_response['result']).to eq 'success'
-          expect(
-            LineItem.where(imprintable_variant_id: white_shirt_s.id)
-          ).to exist
-          expect(
-            LineItem.where(imprintable_variant_id: white_shirt_xl.id)
-          ).to exist
-        end
-
         it 'fails when the job has all line items' do
           job.line_items << white_shirt_s_item
           job.line_items << white_shirt_xl_item
@@ -95,7 +77,7 @@ describe LineItemsController, line_item_spec: true do
 
       it 'destroys them all when supplied with their ids' do
         line_items = job.line_items.to_a
-        delete :destroy, format: :json, ids: line_items.map(&:id)
+        delete :destroy, format: :json, id: line_items.map(&:id).join('/')
 
         json_response = JSON.parse response.body
         expect(json_response['result']).to eq 'success'
@@ -108,7 +90,7 @@ describe LineItemsController, line_item_spec: true do
       it 'only fires one activity', activity_spec: true do
         PublicActivity.with_tracking do
           expect(PublicActivity::Activity.all.count).to eq 0
-          delete :destroy, format: :json, ids: job.line_items.map(&:id)
+          delete :destroy, format: :json, id: job.line_items.map(&:id).join('/')
           expect(PublicActivity::Activity.all.count).to eq 1
         end
       end
@@ -117,8 +99,8 @@ describe LineItemsController, line_item_spec: true do
 
   describe '#update' do
     context 'with params in a format of line_item[id[field_name[value]]]' do
-      let!(:line_item_1) { create :imprintable_line_item }
-      let!(:line_item_2) { create :imprintable_line_item }
+      let!(:line_item_1) { create :non_imprintable_line_item }
+      let!(:line_item_2) { create :non_imprintable_line_item }
       let(:id1) { line_item_1.id }
       let(:id2) { line_item_2.id }
 

@@ -21,10 +21,14 @@ class ApplicationController < ActionController::Base
 
     @error = error
 
-    respond_to do |format|
-      format.html { render 'errors/internal_server_error', status: 500 }
-      format.js   { render 'errors/internal_server_error', status: 500 }
-      format.json { render json: '{}', status: 500 }
+    begin
+      respond_to do |format|
+        format.html { render 'errors/internal_server_error', status: 500 }
+        format.js   { render 'errors/internal_server_error', status: 500 }
+        format.json { render json: '{}', status: 500 }
+      end
+    rescue AbstractController::DoubleRenderError => e
+      Rails.logger.error "DOUBLE RENDER ERROR IN CONTROLLER ERROR CATCHER!!! #{e.message}"
     end
   end
 

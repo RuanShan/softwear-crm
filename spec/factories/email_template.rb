@@ -7,6 +7,7 @@ FactoryGirl.define do
       body    'Liquid Text Here {{quote.id}}'
       plaintext_body 'Liquid Text Here Plaintext {{quote.id}}'
       from    'No Reply <noreply@test.com>'
+      to      'Me <me@me.com>'
       cc      'Other Customer <other_customer@hotmail.com>'
       bcc     'Dev Team <devteam@annarbortees.com>'
       template_type 'Quote'

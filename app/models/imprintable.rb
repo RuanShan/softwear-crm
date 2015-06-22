@@ -1,5 +1,4 @@
 class Imprintable < ActiveRecord::Base
-  include PricingModule
   include Retailable
 
   # NOTE do try to keep the number values in these tier constants

@@ -5,8 +5,7 @@
     </p>
     <%= form_for LineItem.new, builder: LancengFormBuilder, remote: true, class: 'horizontal-form' do |f| %>
         <%= hidden_field_tag :quote_update, quote.id %>
-        <%= f.hidden_field :line_itemable_type, value: 'Job' %>
-        <%= f.hidden_field :line_itemable_id, value: quote.markups_and_options_job.id %>
+        <%= hidden_field_tag :job_id, quote.markups_and_options_job.id %>
 
         <%= f.label :name %>
         <%= f.text_field :name, maxlength: 255, required: true  %>

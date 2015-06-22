@@ -53,9 +53,9 @@ describe ApplicationHelper, application_helper_spec: true do
   context 'freshdesk time parsing', story_70: true do
     let!(:fd_time) { '2014-10-29T19:00:45-04:00' }
 
-    describe '#display_freshdesk_time', pending: 'blocked on this one, throws a "bad value for range" exception?' do
+    describe '#display_freshdesk_time' do
       it 'returns a nicely formatted date' do
-        expect(display_freshdesk_time(fd_time).to eq('Oct 29, 2014, 07:00 PM'))
+        expect(display_freshdesk_time(fd_time)).to eq('Oct 29, 2014, 07:00 PM')
       end
     end
 

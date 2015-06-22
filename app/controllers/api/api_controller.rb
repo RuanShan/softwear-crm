@@ -45,6 +45,16 @@ module Api
       end
     end
 
+    def create
+      create! do |success, failure|
+        success.json do
+          headers['Location'] = resource_url(record.id)
+          render_json.call
+        end
+        failure.json(&render_json)
+      end
+    end
+
     def options
       head(:ok) if request.request_method == 'OPTIONS'
     end

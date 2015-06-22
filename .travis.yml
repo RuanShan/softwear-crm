@@ -1,0 +1,31 @@
+language: ruby
+rvm:
+  - rbx-2.5.2
+
+before_install:
+  - sudo apt-get install libmysql-ruby libmysqlclient-dev ruby-dev
+  - gem install softwear-lib -i ~/.rvm/rubies/rbx-2.5.2/gems --no-ri --no-rdoc
+  - gem install eventmachine -i ~/.rvm/rubies/rbx-2.5.2/gems -v 1.0.3 --no-ri --no-rdoc
+  - wget http://chromedriver.storage.googleapis.com/2.15/chromedriver_linux64.zip
+  - mkdir ~/chromedriver
+  - unzip chromedriver_linux64.zip -d ~/chromedriver
+  - rm chromedriver_linux64.zip
+  - 'wget -q -O - https://dl-ssl.google.com/linux/linux_signing_key.pub | sudo apt-key add - '
+  - sudo sh -c 'echo "deb http://dl.google.com/linux/chrome/deb/ stable main" >> /etc/apt/sources.list.d/google.list'
+  - sudo apt-get update
+  - sudo apt-get install google-chrome-stable
+
+before_script:
+  - |
+    cat <<END >> config/database.yml
+      test:
+        adapter: mysql2
+        database: crm-test
+        username: travis
+    END
+  - export PATH=$PATH:~/chromedriver
+  - 'echo path: $PATH'
+  - bundle exec rake db:create
+  - bundle exec rake db:migrate
+
+script: xvfb-run --server-args="-screen 0, 1024x768x24" bundle exec rspec -t ~no_ci
