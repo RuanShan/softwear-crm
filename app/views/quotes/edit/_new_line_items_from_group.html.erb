@@ -27,14 +27,14 @@
 
           <div class="col-xs-3">
             <%= ff.label :quantity %>
-            <%= ff.text_field :quantity %>
+            <%= ff.text_field :quantity, required: true  %>
           </div>
 
           <div class="col-xs-3">
             <%= ff.label :decoration_price %>
             <div class="input-group">
               <span class="input-group-addon">$</span>
-            <%= ff.text_field :decoration_price %>
+            <%= ff.text_field :decoration_price, required: true  %>
             </div>
             <%= ff.hidden_field :quote_id, value: quote.id %>
           </div>
