@@ -6,18 +6,13 @@ feature 'Artwork Request Features', js: true, artwork_request_spec: true do
   given!(:valid_user) { create(:alternate_user) }
   before(:each) { login_as(valid_user) }
 
-  scenario 'A user can view a list of artwork requests from the root path via Orders' do
+  scenario 'A user can view a list of artwork requests from the root path via Orders', no_ci: true do
     visit root_path
-    # If you run rspec headlessly (i.e. with xvfb-run) You cannot navigate using the dashboard.
-    if ci?
-      visit orders_path(anchor: 'artwork')
-    else
-      unhide_dashboard
-      click_link 'Orders'
-      click_link 'List'
-      find("a[href='/orders/#{artwork_request.jobs.first.order.id}/edit']").click
-      find("a[href='#artwork']").click
-    end
+    unhide_dashboard
+    click_link 'Orders'
+    click_link 'List'
+    find("a[href='/orders/#{artwork_request.jobs.first.order.id}/edit']").click
+    find("a[href='#artwork']").click
     expect(page).to have_css('h3', text: 'Artwork Requests')
     expect(page).to have_css('div.artwork-request-list')
   end
