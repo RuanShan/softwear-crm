@@ -75,15 +75,13 @@ feature 'Users', user_spec: true, js: true do
 
     # Currently cannot figure out how to interact with the dashboard or header
     # headlessly (for some reason)
-    unless ci?
-      scenario 'I can lock myself', no_ci: true do
-        visit orders_path
-        find('a#account-menu').click
-        sleep 0.2
-        click_link 'Lock me'
-        sleep 0.2
-        expect(current_path).to eq '/users/sign_in'
-      end
+    scenario 'I can lock myself', no_ci: true do
+      visit orders_path
+      find('a#account-menu').click
+      sleep 0.2
+      click_link 'Lock me'
+      sleep 0.2
+      expect(current_path).to eq '/users/sign_in'
     end
 
     scenario 'I am locked out if I idle for too long' do

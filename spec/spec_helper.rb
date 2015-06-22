@@ -76,7 +76,9 @@ RSpec.configure do |config|
     else
       args = []
     end
-    Capybara::Selenium::Driver.new(app, browser: :chrome, args: args)
+    client = Selenium::WebDriver::Remote::Http::Default.new
+    client.timeout = 360
+    Capybara::Selenium::Driver.new(app, browser: :chrome, args: args, http_client: client)
   end
 
   config.define_derived_metadata(file_path: %r(/spec/controllers/)) do |meta|

@@ -10,7 +10,7 @@ feature 'Artwork Request Features', js: true, artwork_request_spec: true do
     visit root_path
     # If you run rspec headlessly (i.e. with xvfb-run) You cannot navigate using the dashboard.
     if ci?
-      visit orders_path, anchor: 'artwork'
+      visit orders_path(anchor: 'artwork')
     else
       unhide_dashboard
       click_link 'Orders'
@@ -39,7 +39,7 @@ feature 'Artwork Request Features', js: true, artwork_request_spec: true do
     visit new_order_artwork_request_path(artwork_request.jobs.first.order)
     sleep 1
 
-    find('#artwork_request_job_ids', visible: false).select artwork_request.jobs.first.id
+    find('#artwork_request_job_ids').select artwork_request.jobs.first.id
 
     find_by_id('artwork_imprint_method_fields').find("option[value='#{artwork_request.imprint_method.id}']").click
     sleep 0.5

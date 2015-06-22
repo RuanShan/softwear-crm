@@ -46,7 +46,7 @@ feature 'Proof Features', js: true, proof_spec: true do
     expect(Proof.where(id: proof.id)).to exist
   end
 
-  scenario 'A user can edit and update an Proof from the Proof List', retry: 2, story_692: true do
+  scenario 'A user can edit and update an Proof from the Proof List', retry: 2, story_692: true, b: true do
     visit edit_order_path(order.id)
     find("a[href='#proofs']").click
     find("a[href='#{edit_order_proof_path(id: proof.id, order_id: order.id)}']").click
@@ -54,7 +54,7 @@ feature 'Proof Features', js: true, proof_spec: true do
     sleep 0.5
     click_button 'Update Proof'
     sleep 1 if ci?
-    expect(page).to have_selector('.modal-content-success')
+    expect(page).to have_content 'Successfuly updated Proof'
     sleep 0.5
     find(:css, 'button.close').click
     expect(page).to have_css("div#proof-#{proof.id}")

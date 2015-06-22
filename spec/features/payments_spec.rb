@@ -8,17 +8,16 @@ feature 'Payments management', js: true, payment_spec: true do
   given!(:order) { create(:order) }
   given!(:payment) { create(:valid_payment, order_id: order.id) }
 
-  unless ci?
-    scenario 'A salesperson can visit the payments tab from root', no_ci: true do
-      visit root_path
-      unhide_dashboard
-      click_link 'Orders'
-      click_link 'List'
-      find(:css, "tr#order_#{order.id} td div.btn-group-xs a[data-action='edit']").click
-      find(:css, "a[href='#payments']").click
-      wait_for_ajax
-      expect(current_url).to match((edit_order_path order.id) + '#payments')
-    end
+  # No ci because interacting with the dashboard appears to not work there.
+  scenario 'A salesperson can visit the payments tab from root', no_ci: true do
+    visit root_path
+    unhide_dashboard
+    click_link 'Orders'
+    click_link 'List'
+    find(:css, "tr#order_#{order.id} td div.btn-group-xs a[data-action='edit']").click
+    find(:css, "a[href='#payments']").click
+    wait_for_ajax
+    expect(current_url).to match((edit_order_path order.id) + '#payments')
   end
 
   context 'with a refunded payment' do

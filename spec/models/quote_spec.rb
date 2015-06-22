@@ -320,10 +320,10 @@ describe Quote, quote_spec: true do
 
       it 'sets initialized_at to time.now', story_86: true do
         time = Time.now
-        allow(Time).to receive(:now).and_return time
-        test_val = time.strftime(format)
-        expected_val = Quote.new.initialized_at.strftime(format)
-        expect(expected_val).to eq(test_val)
+        expect(Time).to receive(:now).and_return time
+        expected = time.strftime(format)
+        test = Quote.new.initialized_at.strftime(format)
+        expect(expected).to eq(test)
       end
     end
   end

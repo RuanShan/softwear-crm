@@ -277,7 +277,7 @@ feature 'Quotes management', quote_spec: true, js: true, retry: 2 do
     end
   end
     
-  scenario 'Adding a markup/upcharge is tracked by public activity', story_600: true, story_692: true do 
+  scenario 'Adding a markup/upcharge is tracked by public activity', retry: true, story_600: true, story_692: true do 
     PublicActivity.with_tracking do
       imprintable_group; imprint_method_1; imprint_method_2
       visit edit_quote_path quote
@@ -307,7 +307,6 @@ feature 'Quotes management', quote_spec: true, js: true, retry: 2 do
       click_button 'Add Option or Markup'
       sleep 2
       click_button 'OK'
-      click_link 'Timeline' 
       visit edit_quote_path quote
       expect(page).to have_content 'Mr. Money'
       expect(page).to have_content 'Cash' 
@@ -432,7 +431,7 @@ feature 'Quotes management', quote_spec: true, js: true, retry: 2 do
     end
   end
 
-  scenario 'I can add the same group twice', revamp: true, bug_fix: true, twice: true do
+  scenario 'I can add the same group twice', retry: 2, revamp: true, bug_fix: true, twice: true do
     imprintable_group; imprint_method_1; imprint_method_2
 
     visit edit_quote_path quote
@@ -464,11 +463,11 @@ feature 'Quotes management', quote_spec: true, js: true, retry: 2 do
       fill_in 'Decoration price', with: 5.15
 
       click_link 'Add Imprint'
-      sleep 0.5
+      sleep 1
       first('select[name=imprint_method]').select imprint_method_1.name
 
       click_link 'Add Imprint'
-      sleep 0.5
+      sleep 1
       all('select[name=imprint_method]').last.select imprint_method_2.name
 
       click_button 'Add Imprintable Group'
