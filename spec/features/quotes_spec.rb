@@ -189,7 +189,7 @@ feature 'Quotes management', quote_spec: true, js: true, retry: 2 do
     expect(page).to have_select('Is this a rush job?', :selected => "Yes")
   end
 
-  scenario 'A user can add an imprintable group of line items to a quote', story_567: true, revamp: true, story_570: true do
+  scenario 'A user can add an imprintable group of line items to a quote', no_ci: true, story_567: true, revamp: true, story_570: true do
     imprintable_group; imprint_method_1; imprint_method_2
     visit edit_quote_path quote
 
@@ -222,7 +222,7 @@ feature 'Quotes management', quote_spec: true, js: true, retry: 2 do
     expect(job.imprints.first.imprint_method).to eq imprint_method_2
   end
 
-  scenario 'Adding an imprintable is tracked by public activity', story_600: true do
+  scenario 'Adding an imprintable is tracked by public activity', no_ci: true, story_600: true do
     PublicActivity.with_tracking do
       allow(Imprintable).to receive(:search)
         .and_return OpenStruct.new(
@@ -277,7 +277,7 @@ feature 'Quotes management', quote_spec: true, js: true, retry: 2 do
     end
   end
     
-  scenario 'Adding a markup/upcharge is tracked by public activity', retry: true, story_600: true, story_692: true do 
+  scenario 'Adding a markup/upcharge is tracked by public activity', no_ci: true, retry: true, story_600: true, story_692: true do 
     PublicActivity.with_tracking do
       imprintable_group; imprint_method_1; imprint_method_2
       visit edit_quote_path quote
@@ -384,7 +384,7 @@ feature 'Quotes management', quote_spec: true, js: true, retry: 2 do
     end
   end
 
-  scenario 'I can add a different imprint right after creating a group with one', retry: 2, bug_fix: true, imprint: true, story_692: true do
+  scenario 'I can add a different imprint right after creating a group with one', no_ci: true, retry: 2, bug_fix: true, imprint: true, story_692: true do
     imprintable_group; imprint_method_1; imprint_method_2
 
     visit edit_quote_path quote
@@ -431,7 +431,7 @@ feature 'Quotes management', quote_spec: true, js: true, retry: 2 do
     end
   end
 
-  scenario 'I can add the same group twice', retry: 2, revamp: true, bug_fix: true, twice: true do
+  scenario 'I can add the same group twice', no_ci: true, retry: 2, revamp: true, bug_fix: true, twice: true do
     imprintable_group; imprint_method_1; imprint_method_2
 
     visit edit_quote_path quote

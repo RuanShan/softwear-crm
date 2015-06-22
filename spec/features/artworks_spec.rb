@@ -53,7 +53,7 @@ feature 'Artwork Features', js: true, artwork_spec: true do
 #    expect(page).to have_css("tr#artwork-row-#{artwork.id}")
 #  end
 
-  scenario 'A user can edit and update an Artwork from the Artwork List', retry: 2, story_692: true, maybe_nogood_for_ci: true do
+  scenario 'A user can edit and update an Artwork from the Artwork List', retry: 2, story_692: true, no_ci: true do
     artwork_count = Artwork.count
     visit artworks_path
     find("a[href='#{edit_artwork_path(artwork)}']").click
