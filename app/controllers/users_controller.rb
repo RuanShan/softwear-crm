@@ -70,7 +70,8 @@ private
         :email, :first_name, :last_name, :store_id,
         :freshdesk_email, :freshdesk_password,
         :insightly_api_key,
-        profile_picture_attributes: [ :file, :id, :description, :_destroy ]
+        profile_picture_attributes: [ :file, :id, :description, :_destroy ],
+        signature_attributes: [ :file, :id, :description, :_destroy ]
       ]
     )
   end

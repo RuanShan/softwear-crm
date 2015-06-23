@@ -20,8 +20,12 @@ class SalespersonDrop < Liquid::Drop
     @user.email
   end
 
-  def profile_picture
+  def profile_picture_path
     @user.try(:profile_picture).try(:file).try(:url, :medium) || ''
+  end
+
+  def signature_path
+    @user.try(:signature).try(:file).try(:url, :signature) || ''
   end
 
 end

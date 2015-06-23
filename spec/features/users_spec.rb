@@ -60,6 +60,25 @@ feature 'Users', user_spec: true, js: true do
       expect(page).to have_css("img[src='#{valid_user.reload.profile_picture.file.url(:medium)}']")
     end
 
+    scenario 'I can upload a signature', story_690: true do
+      visit edit_user_path(valid_user)
+      sleep 2
+      find('#user_signature_attributes_file', visible: false).set("#{Rails.root}/spec/fixtures/images/macho.jpg")
+      click_button 'Update'
+
+      expect(valid_user.reload.signature).to_not be_nil
+    end
+
+    scenario 'When I have a signature, I can see it on the edit page', story_690: true do
+      visit edit_user_path(valid_user)
+      sleep 2
+      find('#user_signature_attributes_file', visible: false).set("#{Rails.root}/spec/fixtures/images/macho.jpg")
+      click_button 'Update'
+
+      visit edit_user_path(valid_user)
+      expect(page).to have_css("img[src='#{valid_user.reload.signature.file.url(:signature)}']")
+    end
+
     scenario 'I can create a new user account' do
       visit users_path
       click_link 'Create new user'
