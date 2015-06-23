@@ -53,7 +53,7 @@ feature 'Artwork Features', js: true, artwork_spec: true do
 #    expect(page).to have_css("tr#artwork-row-#{artwork.id}")
 #  end
 
-  scenario 'A user can edit and update an Artwork from the Artwork List', retry: 2, story_692: true, no_ci: true do
+  scenario 'A user can edit and update an Artwork from the Artwork List', retry: 4, story_692: true do
     artwork_count = Artwork.count
     visit artworks_path
     find("a[href='#{edit_artwork_path(artwork)}']").click
@@ -62,8 +62,9 @@ feature 'Artwork Features', js: true, artwork_spec: true do
     wait_for_ajax
     expect(page).to have_css('.modal-content-success')
     find(:css, 'button.close').click
-    expect(page).to have_css("tr#artwork-row-#{artwork.id}")
-    expect(Artwork.count).to eq artwork_count + 1
+
+    sleep 2
+    expect(Artwork.where(name: 'Edited Artwork Name')).to exist
   end
 
   scenario 'A user can delete an Artwork from the Artwork List' do

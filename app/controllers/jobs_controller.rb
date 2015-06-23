@@ -3,7 +3,7 @@ class JobsController < InheritedResources::Base
   respond_to :json
 
   def update
-    @job = Job.find(params[:id])
+    @job = Job.unscoped.find(params[:id])
     @li_old = @job.line_items.to_a
     @imprint_old = @job.imprints.to_a
     Job.public_activity_off if quote?

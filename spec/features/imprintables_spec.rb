@@ -234,7 +234,7 @@ feature 'Imprintables management', imprintable_spec: true, slow: true do
     expect(page).not_to have_content "$9.99"
   end
 
-  scenario 'A user can add an imprintable to a quote from an index entry', story_692: true, refactor: true, js: true do
+  scenario 'A user can add an imprintable to a quote from an index entry', retry: 3, story_692: true, refactor: true, js: true do
     quote = create(:valid_quote)
     job   = create(:job, jobbable: quote)
 
@@ -264,6 +264,7 @@ feature 'Imprintables management', imprintable_spec: true, slow: true do
 
     click_button 'Add Imprintable(s)'
 
+    sleep 1
     expect(page).to have_content 'Quote was successfully updated.'
   end
 

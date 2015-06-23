@@ -30,11 +30,11 @@ feature 'Artwork Request Features', js: true, artwork_request_spec: true do
     expect(page).to have_css('table#artwork-request-table')
   end
 
-  scenario 'A user can add an artwork request', no_ci: true, what: true, retry: 3, story_692: true do
+  scenario 'A user can add an artwork request', what: true, story_692: true do
     visit new_order_artwork_request_path(artwork_request.jobs.first.order)
     sleep 1
 
-    find('#artwork_request_job_ids').select artwork_request.jobs.first.id
+    find('#artwork_request_job_ids').select artwork_request.jobs.first.name
 
     find_by_id('artwork_imprint_method_fields').find("option[value='#{artwork_request.imprint_method.id}']").click
     sleep 0.5
@@ -48,7 +48,6 @@ feature 'Artwork Request Features', js: true, artwork_request_spec: true do
     expect(page).to have_selector('.modal-content-success')
     find(:css, 'button.close').click
     expect(ArtworkRequest.where(description: 'hello')).to exist
-    expect(page).to have_css("div#artwork-request-#{artwork_request.id}")
   end
 
   # NOTE this fails in CI for absolutely no reason

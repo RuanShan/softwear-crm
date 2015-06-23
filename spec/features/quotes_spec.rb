@@ -384,7 +384,7 @@ feature 'Quotes management', quote_spec: true, js: true, retry: 2 do
     end
   end
 
-  scenario 'I can add a different imprint right after creating a group with one', no_ci: true, retry: 2, bug_fix: true, imprint: true, story_692: true do
+  scenario 'I can add a different imprint right after creating a group with one', no_ci: true, retry: 4, bug_fix: true, imprint: true, story_692: true do
     imprintable_group; imprint_method_1; imprint_method_2
 
     visit edit_quote_path quote
