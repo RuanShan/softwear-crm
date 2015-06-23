@@ -17,6 +17,15 @@
 </div>
 
 <div class='form-group'>
+  <%= f.fields_for :profile_picture, f.object.profile_picture || Asset.new do |ff| %>
+    <%= ff.label :file, 'Profile Picture' %>
+    <%= ff.file_field :file %>
+
+    <%= ff.hidden_field :description, value: 'profile picture' %>
+  <% end %>
+</div>
+
+<div class='form-group'>
   <%= f.label :store_id, 'Store' %>
   <%= f.error_for :store_id %>
   <%= f.select :store_id, Store.order(:name).map{ |s| [s.name, s.id] },
