@@ -315,7 +315,7 @@ feature 'Quotes management', quote_spec: true, js: true, retry: 2 do
     end
   end
 
-  scenario 'Adding a line item groups is tracked by public activity', story_600: true do
+  scenario 'Adding a line item groups is tracked by public activity', no_ci: true, story_600: true do
     PublicActivity.with_tracking do
       imprintable_group; imprint_method_1; imprint_method_2
       visit edit_quote_path quote
