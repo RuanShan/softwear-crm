@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 describe 'artworks/_row.html.erb', artwork_spec: true do
-  let!(:artwork) { build_stubbed(:blank_artwork, artist: build_stubbed(:blank_user)) }
+  let!(:artwork) { create(:valid_artwork, artist: create(:user)) }
 
   context 'given a single artwork and artwork_request is nil' do
     before(:each) do
@@ -17,6 +17,9 @@ describe 'artworks/_row.html.erb', artwork_spec: true do
       expect(rendered).to have_selector('td', text: "#{artwork.description}")
       expect(rendered).to have_selector("tr#artwork-row-#{artwork.id}")
       expect(rendered).to have_selector("img[src='#{artwork.preview.file.url(:thumb)}']")
+
+      expect(artwork.artwork.file.url).to_not be_nil
+
       expect(rendered).to have_selector("a[href='#{artwork.artwork.file.url}']")
       expect(rendered).to have_selector("a[href='#{edit_artwork_path(artwork)}']")
       expect(rendered).to have_selector("a[href='#{artwork_path(artwork)}?disable_buttons=true']")

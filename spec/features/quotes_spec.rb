@@ -343,7 +343,7 @@ feature 'Quotes management', quote_spec: true, js: true, retry: 2 do
     end
   end
 
-  scenario 'Changing existing line items is tracked', story_600: true do
+  scenario 'Changing existing line items is tracked', retry: 3, story_600: true do
     PublicActivity.with_tracking do
       imprintable_group; imprint_method_1; imprint_method_2
 
@@ -353,7 +353,7 @@ feature 'Quotes management', quote_spec: true, js: true, retry: 2 do
       click_link 'Add A New Group'
 
       click_link 'Add Imprint'
-      sleep 1
+      sleep 2
       find('select[name=imprint_method]').select imprint_method_1.name
 
       select imprintable_group.name, from: 'Imprintable group'

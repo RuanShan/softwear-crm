@@ -321,7 +321,7 @@ describe Quote, quote_spec: true do
       # There's a timezone thing going on here.
       it 'sets initialized_at to time.now', story_86: true, no_ci: true do
         time = Time.now
-        expect(Time).to receive(:now).and_return time
+        allow(Time).to receive(:now).and_return time
         expected = time.strftime(format)
         test = Quote.new.initialized_at.strftime(format)
         expect(expected).to eq(test)
@@ -791,6 +791,7 @@ describe Quote, quote_spec: true do
 
         allow(quote).to receive(:freshdesk_group_id).and_return 54321
         allow(quote).to receive(:freshdesk_department).and_return 'Testing'
+        allow(quote).to receive(:save).with validate: false
       end
 
       context 'when the quote has a quote request' do

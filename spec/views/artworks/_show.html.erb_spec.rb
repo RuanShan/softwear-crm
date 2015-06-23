@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 describe 'artworks/_show.html.erb', artwork_spec: true do
-  let!(:artwork) { build_stubbed(:blank_artwork, artist: build_stubbed(:blank_user)) }
+  let!(:artwork) { create(:valid_artwork, artist: create(:user)) }
 
   before(:each) do
     render partial: 'artworks/show', locals: {artwork: artwork}

@@ -8,9 +8,9 @@ describe 'proofs/_proof.html.erb', proof_spec: true do
   end
 
   context 'given a single proof' do
-    let(:proof) { build_stubbed(:blank_proof, artworks: [build_stubbed(:blank_artwork)]) }
+    let(:proof) { create(:valid_proof, mockups: [create(:valid_asset)], artworks: [create(:valid_artwork)]) }
 
-    it 'displays all of the info for a proof, edit, destroy, email customer, approve, and reject buttons, all in a unique div' do
+    it 'displays all of the info for a proof: edit, destroy, email customer, approve, and reject buttons, all in a unique div', broken: true do
       expect(rendered).to have_selector("div#proof-#{proof.id}")
       expect(rendered).to have_selector('div.proof-notes')
       expect(rendered).to have_selector('h4.proof-title')
