@@ -65,9 +65,14 @@ protected
 private
 
   def permitted_params
-    params.permit(user: [:email, :first_name, :last_name, :store_id,
-                         :freshdesk_email, :freshdesk_password,
-                         :insightly_api_key])
+    params.permit(
+      user: [
+        :email, :first_name, :last_name, :store_id,
+        :freshdesk_email, :freshdesk_password,
+        :insightly_api_key,
+        profile_picture_attributes: [ :file, :id, :description, :_destroy ]
+      ]
+    )
   end
 
   def resource_name
