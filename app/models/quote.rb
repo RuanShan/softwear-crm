@@ -412,7 +412,7 @@ class Quote < ActiveRecord::Base
   def create_freshdesk_ticket
     return if freshdesk.nil? || !freshdesk_ticket_id.blank?
 
-    if quote_requests.empty?
+    if quote_requests.where.not(freshdesk_contact_id: nil).empty?
       requester_info = {
         email: email,
         phone: phone_number,
@@ -420,7 +420,7 @@ class Quote < ActiveRecord::Base
       }
     else
       requester_info = {
-        requester_id: quote_requests.first.try(:freshdesk_contact_id),
+        requester_id: quote_requests.where.not(freshdesk_contact_id: nil).first.freshdesk_contact_id
       }
     end
 
