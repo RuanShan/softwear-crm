@@ -796,8 +796,9 @@ describe Quote, quote_spec: true do
 
       context 'when the quote has a quote request' do
         it 'creates a ticket with its requester id' do
-          dummy_quote_request = double('Quote Request', freshdesk_contact_id: 123)
-          allow(quote).to receive(:quote_requests).and_return [dummy_quote_request]
+          dummy_quote_requests = [double('Quote Request', freshdesk_contact_id: 123)]
+          allow(dummy_quote_requests).to receive(:where).and_return dummy_quote_requests
+          allow(quote).to receive(:quote_requests).and_return dummy_quote_requests
 
           dummy_client = Object.new
           allow(quote).to receive(:freshdesk).and_return(dummy_client)

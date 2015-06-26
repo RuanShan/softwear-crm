@@ -37,7 +37,7 @@ feature 'Payments management', js: true, payment_spec: true do
     end
   end
 
-  scenario 'A salesperson can make a payment', story_692: true do
+  scenario 'A salesperson can make a payment', retry: 3, story_692: true do
     visit (edit_order_path order.id) + '#payments'
     find(:css, '#cash-button').click
     fill_in 'amount_field', with: '100'
