@@ -2,6 +2,7 @@ require 'spec_helper'
 
 describe QuoteRequest, quote_request_spec: true, story_78: true do
   let(:quote_request) { create :quote_request }
+  let(:user) { create(:user) }
 
   before do
     allow_any_instance_of(QuoteRequest).to receive(:enqueue_link_integrated_crm_contacts) { |qr|
@@ -294,13 +295,43 @@ describe QuoteRequest, quote_request_spec: true, story_78: true do
     end
   end
 
-  describe '#salesperson_id=', story_195: true do
-    let!(:user) { create(:user) }
+  describe '#salesperson_id=' do
+    let(:delayed_send_assigned_email) { double('delayed task') }
 
-    it 'sets status to "assigned"' do
+    it 'sets status to "assigned"', story_195: true do
       quote_request.salesperson_id = user.id
       quote_request.save
       expect(quote_request.reload.status).to eq 'assigned'
+    end
+
+    it 'delays a task that sends out an email to the new salesperson', story_725: true do
+      expect(delayed_send_assigned_email).to receive(:send_assigned_email).with(user.id)
+      expect(quote_request).to receive(:delay).and_return delayed_send_assigned_email
+
+      quote_request.salesperson_id = user.id
+      quote_request.save
+    end
+  end
+
+  describe '#send_assigned_email', story_725: true do
+    let(:dummy_mail) { double('email', deliver: true) }
+
+    before do
+      quote_request.salesperson_id = user.id and quote_request.save!
+    end
+
+    context "when the given user id doesn't match salesperson_id (indicating another change was made)" do
+      it 'does nothing' do
+        expect(QuoteRequestMailer).to_not receive(:notify_salesperson_of_quote_request_assignment)
+        quote_request.send_assigned_email(user.id + 1)
+      end
+    end
+    context 'when the given user id == salesperson_id' do
+      it 'sends QuoteRequestMailer.notify_salesperson_of_quote_request_assignment' do
+        expect(QuoteRequestMailer).to receive(:notify_salesperson_of_quote_request_assignment)
+          .and_return dummy_mail
+        quote_request.send_assigned_email(user.id)
+      end
     end
   end
 

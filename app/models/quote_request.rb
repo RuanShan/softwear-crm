@@ -35,6 +35,7 @@ class QuoteRequest < ActiveRecord::Base
 
   before_validation(on: :create) { self.status = 'pending' if status.nil? }
   before_create :enqueue_link_integrated_crm_contacts
+  before_save :notify_salesperson_if_assigned
 
   def self.of_interest
     where.not status: 'could_not_quote'
@@ -43,6 +44,11 @@ class QuoteRequest < ActiveRecord::Base
   def salesperson_id=(id)
     super
     self.status = 'assigned'
+  end
+
+  def send_assigned_email(user_id)
+    return if user_id != salesperson_id
+    QuoteRequestMailer.notify_salesperson_of_quote_request_assignment(self).deliver
   end
 
   def reason_needed?
@@ -191,6 +197,10 @@ class QuoteRequest < ActiveRecord::Base
   end
 
   private
+
+  def notify_salesperson_if_assigned
+    self.delay.send_assigned_email(salesperson_id) if salesperson_id_changed?
+  end
 
   def enqueue_link_integrated_crm_contacts
     self.delay(queue: 'api').link_integrated_crm_contacts if should_access_third_parties?
