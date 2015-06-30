@@ -44,31 +44,6 @@ feature 'Imprintables management', imprintable_spec: true, slow: true do
               main_supplier: 'other supplier')
     end
 
-#    scenario 'a user can search imprintables and see accurate results', solr: true do
-#      visit imprintables_path
-#
-#      select 'Girls', from: 'filter_sizing_category'
-#      fill_in 'js_search', with: 'test'
-#      click_button 'Search'
-#
-#      expect(page).to have_content test_imprintable1.name
-#      expect(page).to have_content test_imprintable2.name
-#      expect(page).to have_content test_imprintable3.name
-#
-#      expect(page).to_not have_content noshow_imprintable1.name
-#      expect(page).to_not have_content noshow_imprintable2.name
-#    end
-
-#    scenario 'a user sees the values from their last search in the search box', solr: true do
-#      visit imprintables_path
-#
-#      select 'Infant', from: 'filter_sizing_category'
-#      fill_in 'js_search', with: 'I should be there'
-#      click_button 'Search'
-#
-#      expect(page).to have_content 'Infant'
-#      expect(page).to have_selector '*[value="I should be there"]'
-#    end
   end
 
   scenario 'Erroring on imprintable sku + retail combo doesn\'t break anything,\
@@ -191,6 +166,45 @@ feature 'Imprintables management', imprintable_spec: true, slow: true do
         expect(page).to have_content 'Imprintable was successfully updated.'
         expect(ImprintableCategory.where(imprintable_id: imprintable.id).empty?).to be_truthy
       end
+    end
+  end
+
+  feature 'Imprintable photos', story_717: true, js: true do
+    let!(:variant) { create(:valid_imprintable_variant) }
+    let(:imprintable) { variant.imprintable }
+
+    scenario 'A user can add a photo by uploading a file' do
+      visit edit_imprintable_path imprintable
+
+      click_link 'Add Photo'
+
+      within '.imprintable-photo-form' do
+        find('.photo-asset-file').set("#{Rails.root}/spec/fixtures/images/macho.jpg")
+        select imprintable.colors.first.name, from: 'Color'
+      end
+
+      click_button 'Update Imprintable'
+      expect(page).to have_content 'Imprintable was successfully updated.'
+      imprintable.reload
+      expect(imprintable.imprintable_photos.size).to eq 1
+      expect(imprintable.imprintable_photos.first.asset.file).to_not be_nil
+    end
+
+    scenario 'A user can add a photo by providing a url' do
+      visit edit_imprintable_path imprintable
+
+      click_link 'Add Photo'
+
+      within '.imprintable-photo-form' do
+        fill_in 'Upload by URL', with: 'https://www.google.com/images/srpr/logo11w.png'
+        select imprintable.colors.first.name, from: 'Color'
+      end
+
+      click_button 'Update Imprintable'
+      expect(page).to have_content 'Imprintable was successfully updated.'
+      imprintable.reload
+      expect(imprintable.imprintable_photos.size).to eq 1
+      expect(imprintable.imprintable_photos.first.asset.file).to_not be_nil
     end
   end
 

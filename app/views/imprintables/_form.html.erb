@@ -18,42 +18,42 @@
 <% if !imprintable.new_record? %>
 
 
-        <% if !imprintable.imprintable_variants.empty? %>
-            <div class="box-info">
-              <h2><strong>Imprintable Variant</strong> Weights By Size</h2>
+  <% if !imprintable.imprintable_variants.empty? %>
+      <div class="box-info">
+        <h2><strong>Imprintable Variant</strong> Weights By Size</h2>
 
-              <%= render 'edit_imprintable_weights',
-                         imprintable: imprintable,
-                         variants: imprintable.imprintable_variants,
-                         size_variants: variants_hash[:size_variants],
-                         color_variants: variants_hash[:color_variants],
-                         variants_array: variants_hash[:variants_array],
-                         model_collection_hash: model_collection_hash
-              %>
-            </div>
-        <% end %>
-
-        <div class="box-info">
-        <h2><strong>Size/Color</strong> Availability Information</h2>
-
-
-        <% if imprintable.imprintable_variants.empty? %>
-            <%= render 'variant_select',
-                       imprintable: imprintable,
-                       f: f,
-                       model_collection_hash: model_collection_hash %>
-        <% else %>
-            <%= render 'grid',
-                       imprintable: imprintable,
-                       variants: imprintable.imprintable_variants,
-                       size_variants: variants_hash[:size_variants],
-                       color_variants: variants_hash[:color_variants],
-                       variants_array: variants_hash[:variants_array],
-                       model_collection_hash: model_collection_hash,
-                       f: f
-            %>
-        <% end %>
+        <%= render 'edit_imprintable_weights',
+                   imprintable: imprintable,
+                   variants: imprintable.imprintable_variants,
+                   size_variants: variants_hash[:size_variants],
+                   color_variants: variants_hash[:color_variants],
+                   variants_array: variants_hash[:variants_array],
+                   model_collection_hash: model_collection_hash
+        %>
       </div>
+  <% end %>
+
+  <div class="box-info">
+  <h2><strong>Size/Color</strong> Availability Information</h2>
+
+
+  <% if imprintable.imprintable_variants.empty? %>
+      <%= render 'variant_select',
+                 imprintable: imprintable,
+                 f: f,
+                 model_collection_hash: model_collection_hash %>
+  <% else %>
+      <%= render 'grid',
+                 imprintable: imprintable,
+                 variants: imprintable.imprintable_variants,
+                 size_variants: variants_hash[:size_variants],
+                 color_variants: variants_hash[:color_variants],
+                 variants_array: variants_hash[:variants_array],
+                 model_collection_hash: model_collection_hash,
+                 f: f
+      %>
+  <% end %>
+</div>
 
 <% end %>
 

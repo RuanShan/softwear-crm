@@ -24,4 +24,12 @@ class Asset < ActiveRecord::Base
                     styles: { thumb: ['100x100#'], medium: ['250x250#'], signature: ['300x300>'] }
   validates_attachment_presence :file
   validates_attachment_size :file, less_than: 120.megabytes
+
+  def file_url=(new_file_url)
+    self.file = new_file_url unless new_file_url.blank?
+  end
+
+  def file_url
+    nil
+  end
 end

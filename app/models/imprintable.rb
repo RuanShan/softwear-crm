@@ -101,8 +101,12 @@ class Imprintable < ActiveRecord::Base
   has_many :imprintable_groups, through: :imprintable_imprintable_groups
   has_many :similar_imprintables, through: :imprintable_groups, source: :imprintables
   has_many :imprintable_photos
+  has_many :assets, through: :imprintable_photos
 
-  accepts_nested_attributes_for :imprintable_categories, :imprintable_imprintable_groups, allow_destroy: true
+  accepts_nested_attributes_for :imprintable_categories,
+                                :imprintable_imprintable_groups,
+                                :imprintable_photos,
+                                allow_destroy: true
   accepts_nested_attributes_for :imprintable_variants
 
   validates :brand, presence: true
@@ -134,6 +138,10 @@ class Imprintable < ActiveRecord::Base
 
   def self.find(param)
     unscoped.where(deleted_at: nil).find(param)
+  end
+
+  def photo_urls
+    assets.map { |a| a.file.url(:medium) }
   end
 
   def compatible_print_methods

@@ -7,6 +7,15 @@ class ImprintablePhoto < ActiveRecord::Base
 
   after_save :unset_previous_default
 
+  scope :default, -> { where(default: true).first || first }
+
+  accepts_nested_attributes_for :asset, allow_destroy: true
+
+  def asset_attributes=(attrs)
+    attrs[:description] = "Imprintable #{color.try(:name)} #{imprintable.try(:common_name)} photo"
+    super
+  end
+
   private
 
   def unset_previous_default
