@@ -277,7 +277,7 @@ feature 'Quotes management', quote_spec: true, js: true, retry: 2 do
     end
   end
     
-  scenario 'Adding a markup/upcharge is tracked by public activity', no_ci: true, retry: true, story_600: true, story_692: true do 
+  scenario 'Adding a markup/upcharge is tracked by public activity', no_ci: true, retry: 3, story_600: true, story_692: true do 
     PublicActivity.with_tracking do
       imprintable_group; imprint_method_1; imprint_method_2
       visit edit_quote_path quote

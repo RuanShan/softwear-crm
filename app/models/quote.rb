@@ -739,12 +739,12 @@ class Quote < ActiveRecord::Base
       @imprintable_line_item_added_ids.each do |li|
         hash[:imprintables][li] = {}
         line_item = LineItem.find(li)
-        hash[:imprintables][li][:tier] = line_item.tier
         hash[:imprintables][li][:imprintable_price] = line_item.imprintable_price.to_f
-        hash[:imprintables][li][:quantity] = line_item.quantity
-        hash[:imprintables][li][:decoration_price] = line_item.decoration_price.to_f
         hash[:imprintables][li][:imprintable_id] = line_item.imprintable_id
-        hash[:imprintables][li][:job_id] = line_item.line_itemable_id
+        hash[:decoration_price] = line_item.decoration_price.to_f
+        hash[:quantity] = line_item.quantity
+        hash[:tier] = line_item.tier
+        hash[:group_id] = line_item.line_itemable_id
       end
     else
       changed_attrs = self.attribute_names.select{ | attr| self.send("#{attr}_changed?")}

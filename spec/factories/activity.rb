@@ -27,22 +27,14 @@ FactoryGirl.define do
       parameters(
       'imprintables' => {
         1 =>  {
-            "imprintable_id" => 1,
             "imprintable_price" => 0.70, 
-            "group_id" => 1, #group_id
-            "tier" => 3,
-            "quantity" => 100,
-            "decoration_price" => 1.50
+            "imprintable_id" => 1
           },
-        2 =>  {
-            "imprintable_id" => 4,
-            "imprintable_price" => 0.90, 
-            "group_id" => 3, #group_id
-            "tier" => 1,
-            "quantity" => 130,
-            "decoration_price" => 1.33
-          }
-        }
+        },
+      'group_id' => 1, 
+      'tier' => 3,
+      "quantity" => 130,
+      "decoration_price" => 1.33
       )
     end
 
