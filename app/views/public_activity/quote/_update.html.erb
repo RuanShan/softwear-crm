@@ -1,3 +1,4 @@
+<% begin %>
 <% if activity.trackable_type %>
   <p>Changed attributes for quote, <% unless activity.trackable.nil? %>
     <%= link_to activity.trackable.name, activity.trackable %>
@@ -22,4 +23,7 @@
   to
   <%= activity.recipient_type.underscore.humanize.downcase %>
   <%= link_to activity.recipient.name, activity.recipient %>
+<% end %>
+<% rescue Exception => e %>
+  <p>Something went terribly wrong</p>
 <% end %>

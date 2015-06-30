@@ -513,21 +513,17 @@ describe Quote, quote_spec: true do
           :imprintables => {
           1 =>  {
               :imprintable_id => 1,
-              :imprintable_price => 0.70, 
-              :job_id => 1,
-              :tier => 3,
-              :quantity => 3,
-              :decoration_price => 1.50
+              :imprintable_price => 0.70 
             },
           2 =>  {
               :imprintable_id => 2,
-              :imprintable_price => 0.90, 
-              :job_id => 1, 
-              :tier => 1,
-              :quantity => 3,
-              :decoration_price => 1.33
+              :imprintable_price => 0.90 
             }
-          }
+          }, 
+          :group_id => 1,
+          :tier => 3,
+          :quantity => 3,
+          :decoration_price => 1.50
         }
       }
     
@@ -536,7 +532,7 @@ describe Quote, quote_spec: true do
       let(:iv2) { create(:valid_imprintable_variant) }
       let(:iv3) { create(:valid_imprintable_variant) }
       let(:line_item_1) { create(:line_item, line_itemable_id: group.id, line_itemable_type: 'Job', imprintable_variant_id: iv1.id, imprintable_price: 0.70, decoration_price: 1.50, tier: 3) }
-      let(:line_item_2) { create(:line_item, line_itemable_id: group.id, line_itemable_type: 'Job', imprintable_variant_id: iv2.id, imprintable_price: 0.90, decoration_price: 1.33, tier: 1) }
+      let(:line_item_2) { create(:line_item, line_itemable_id: group.id, line_itemable_type: 'Job', imprintable_variant_id: iv2.id, imprintable_price: 0.90, decoration_price: 1.50, tier: 3) }
       
       it 'returns a hash with the imprintables added and the details about where they were added' do 
       #  quote.instance_variable_set("@imprintable_line_item_added_ids", [1,2])

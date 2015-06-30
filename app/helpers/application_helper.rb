@@ -1,4 +1,9 @@
 module ApplicationHelper
+  def trackable_link_or_unavailable(activity, attribute=:name)
+    return "Which has since been removed" if activity.trackable.nil?
+    return link_to activity.trackable.send(attribute), activity.trackable
+  end
+
   def link_to_add_fields(name, f, association)
     new_object = f.object.send(association).new
 
