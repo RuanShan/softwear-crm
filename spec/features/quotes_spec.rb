@@ -145,6 +145,19 @@ feature 'Quotes management', quote_spec: true, js: true, retry: 2 do
     expect(quote.reload.name).to eq('New Quote Name')
   end
 
+  scenario 'A user can change the shipping cost', story_711: true do
+    visit edit_quote_path quote
+    find('a', text: 'Details').click
+    fill_in 'Shipping', with: '12'
+    click_button 'Save'
+
+    expect(quote.reload.shipping).to eq(12.00)
+
+    visit edit_quote_path quote
+    find('a', text: 'Details').click
+    expect(page).to have_css('#quote_shipping[value="12.0"]')
+  end
+
   scenario 'Insightly forms dynamically changed fields', edit: true do
     allow_any_instance_of(InsightlyHelper).to receive(:insightly_available?).and_return true
     allow_any_instance_of(InsightlyHelper).to receive(:insightly_categories).and_return [] 

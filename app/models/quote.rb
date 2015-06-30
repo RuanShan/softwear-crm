@@ -96,7 +96,6 @@ class Quote < ActiveRecord::Base
   validates :salesperson, presence: true
   validates :store, presence: true
   validates :valid_until_date, presence: true
-  validates :shipping, price: true
   validates *(INSIGHTLY_FIELDS - [:insightly_opportunity_id]), presence: true, if: :should_validate_insightly_fields?
 
   after_save :set_quote_request_statuses_to_quoted
