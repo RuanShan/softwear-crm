@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150623174623) do
+ActiveRecord::Schema.define(version: 20150630181559) do
 
   create_table "activities", force: :cascade do |t|
     t.integer  "trackable_id",   limit: 4
@@ -223,6 +223,14 @@ ActiveRecord::Schema.define(version: 20150623174623) do
     t.integer "imprintable_group_id", limit: 4
     t.integer "tier",                 limit: 4
     t.boolean "default",              limit: 1
+  end
+
+  create_table "imprintable_photos", force: :cascade do |t|
+    t.integer  "color_id",       limit: 4
+    t.integer  "imprintable_id", limit: 4
+    t.boolean  "default",        limit: 1
+    t.datetime "created_at",               null: false
+    t.datetime "updated_at",               null: false
   end
 
   create_table "imprintable_stores", force: :cascade do |t|
