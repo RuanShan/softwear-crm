@@ -36,6 +36,52 @@ feature 'Users', user_spec: true, js: true do
       expect(User.where(last_name: 'Newlast_name')).to exist
     end
 
+    # Of course, these don't work on the CI...
+    context 'Profile pictures', no_ci: true do
+      scenario 'I can add a profile picture to be displayed instead of Tom Cruise', story_689: true do
+        visit edit_user_path(valid_user)
+        sleep 2
+        find('#user_profile_picture_attributes_file', visible: false).set("#{Rails.root}/spec/fixtures/images/macho.jpg")
+        click_button 'Update'
+
+        visit root_path
+        unhide_dashboard
+        expect(page).to have_css("img[src='#{valid_user.reload.profile_picture.file.url(:medium)}']")
+      end
+
+      scenario 'I can add a profile picture, then edit other fields without losing the image', story_689: true do
+        visit edit_user_path(valid_user)
+        find('#user_profile_picture_attributes_file', visible: false).set("#{Rails.root}/spec/fixtures/images/macho.jpg")
+        click_button 'Update'
+
+        visit edit_user_path(valid_user)
+        click_button 'Update'
+
+        visit root_path
+        unhide_dashboard
+        expect(page).to have_css("img[src='#{valid_user.reload.profile_picture.file.url(:medium)}']")
+      end
+
+      scenario 'I can upload a signature', story_690: true do
+        visit edit_user_path(valid_user)
+        sleep 2
+        find('#user_signature_attributes_file', visible: false).set("#{Rails.root}/spec/fixtures/images/macho.jpg")
+        click_button 'Update'
+
+        expect(valid_user.reload.signature).to_not be_nil
+      end
+
+      scenario 'When I have a signature, I can see it on the edit page', story_690: true do
+        visit edit_user_path(valid_user)
+        sleep 2
+        find('#user_signature_attributes_file', visible: false).set("#{Rails.root}/spec/fixtures/images/macho.jpg")
+        click_button 'Update'
+
+        visit edit_user_path(valid_user)
+        expect(page).to have_css("img[src='#{valid_user.reload.signature.file.url(:signature)}']")
+      end
+    end
+
     scenario 'I can create a new user account' do
       visit users_path
       click_link 'Create new user'

@@ -1,30 +1,41 @@
-<% if activity.trackable_type %>
-  <p>Added line item group <%= activity.parameters["name"]  %> for quote, <% unless activity.trackable.nil? %>
-    <%= link_to activity.trackable.name, activity.trackable %>
-<% else %>
-  which has since been removed
-<% end %>
-</p>
-<p> With the following imprintable(s) </p>
-  <ul>
-    <% activity.parameters['imprintables'].each do |key, val| %> 
-      <b>For the line item: <%= key %></b> 
-      <b>With an imprintable price of: </b>$<%= activity.parameters['imprintables'][key]%>
+<% begin %>
+  <% if activity.trackable.jobs.exists?(id: activity.parameters["id"]) %>
+    <p>Added a line item group, <%= activity.parameters["name"] %></p>
+  <% else %>
+    <p>Added a line item group, which has since been removed, called <%= activity.parameters["name"] %></p>
+  <% end %>
+  <dl>
+    <dt>Details</dt>
+    <dd>Quantity: <%= activity.parameters["quantity"] %></dd>
+    <dd>Decoration Price: <%= number_to_currency activity.parameters["decoration_price"] %></dd>
+  </dl>
+  <dl>
+    <dt>Imprints</dt>
+    <% activity.parameters["imprints"].each do |id, description| %>
+      <% if activity.trackable.imprints.exists?(id: id) %>
+        <% imprint = Imprint.find(id) %>
+        <dd><%= imprint.name %></dd>
+        <dd><%= imprint.description %></dd>
+      <% else %>
+        <dd>Imprint has been removed</dd>
+      <% end %>
     <% end %>
-      <b>With a quantity of: </b> <%= activity.parameters['quantity'] %> 
-      <b>With a decoration price of: </b>$<%= activity.parameters['decoration_price'] %>
-<p> With the following imprint(s) </p>
-    <% activity.parameters['imprints'].each do |key, val| %> 
-      <%= activity.parameters['imprints'][key]%> 
+  </dl>
+  <dl>
+    <dt>Imprintables</dt>
+    <% activity.parameters["imprintables"].each do |id, price| %>
+      <% if ImprintableVariant.exists?(id: id) %>
+        <% imprintable = ImprintableVariant.find(id).imprintable %>
+        <dd><%= imprintable.name %></dd>
+        <dd>Price: <%= number_to_currency( price + activity.parameters["decoration_price"] ) %></dd>
+      <% else %>
+        <dt>Imprintable has been removed</dt>
+      <% end %>
     <% end %>
-  </ul>
-
-<% else %>
-  Added something...
+  </dl>
+<% rescue Exception => e %>
+  <p>
+    Something went horribly wrong with this activity. 
+  </p>
 <% end %>
 
-<% if activity.recipient && activity.recipient != activity.trackable %>
-  to
-  <%= activity.recipient_type.underscore.humanize.downcase %>
-  <%= link_to activity.recipient.name, activity.recipient %>
-<% end %>

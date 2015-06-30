@@ -1,5 +1,7 @@
 <% if activities %>
   <% activities.each do |activity| %>
-    <%= render partial: 'shared/activity_list_item', locals: { activity: activity } %>
+    <% cache("activity_#{activity.id}") do  %>
+      <%= render partial: 'shared/activity_list_item', locals: { activity: activity } %>
+    <% end %>
   <% end %>
 <% end %>

@@ -29,7 +29,7 @@ feature 'Proof Features', js: true, proof_spec: true do
     expect(page).to have_css("div#proof-#{proof.id}")
   end
 
-  scenario 'A user can create a Proof', retry: 3 do
+  scenario 'A user can create a Proof', no_ci: true, retry: 3 do
     visit edit_order_path(order.id)
     find("a[href='#proofs']").click
     find("a[href='/orders/#{order.id}/proofs/new']").click
@@ -46,12 +46,13 @@ feature 'Proof Features', js: true, proof_spec: true do
     expect(Proof.where(id: proof.id)).to exist
   end
 
-  scenario 'A user can edit and update an Proof from the Proof List', retry: 2, story_692: true, no_ci: true do
+  scenario 'A user can edit and update an Proof from the Proof List', retry: 2, story_692: true do
     visit edit_order_path(order.id)
     find("a[href='#proofs']").click
     find("a[href='#{edit_order_proof_path(id: proof.id, order_id: order.id)}']").click
+    sleep 1
     fill_in 'proof_approve_by', with: '01/23/2012 8:55 PM'
-    sleep 0.5
+    sleep 1
     click_button 'Update Proof'
     sleep 1 if ci?
     expect(page).to have_content 'Successfuly updated Proof'

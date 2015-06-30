@@ -1,6 +1,6 @@
 <div class="media">
   <a class="pull-left" href="#fakelink">
-    <%= image_tag 'avatar/masarie.jpg', class: 'media-object img-circle', alt: 'Avatar' %>
+    <%= image_tag @current_user.try(:profile_picture).try(:file).try(:url, :medium) || 'avatar/masarie.jpg', class: 'media-object img-circle', alt: 'Avatar' %>
   </a>
 
   <div class="media-body">
