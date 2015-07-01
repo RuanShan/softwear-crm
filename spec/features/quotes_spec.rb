@@ -569,6 +569,26 @@ feature 'Quotes management', quote_spec: true, js: true, retry: 2 do
     expect(job.line_items.where(imprintable_variant_id: iv3.id)).to exist
   end
 
+  scenario 'A user cannot submit adding an imprintable without selecting anything', revamp: true, story_730: true do
+    quote.jobs << create(:job, line_items: [create(:imprintable_line_item)])
+    job = quote.jobs.first
+    visit edit_quote_path quote
+
+    find('a', text: 'Line Items').click
+
+    click_link 'Add an imprintable'
+    sleep 1
+
+    select quote.jobs.first.name, from: 'Group'
+    select 'Better', from: 'Tier'
+    fill_in 'Quantity', with: '6'
+    fill_in 'Decoration price', with: '19.95'
+
+    click_button 'Add Imprintable(s)'
+
+    expect(page).to have_content 'Please mark one or more imprintables to be added.'
+  end
+
   scenario 'A user can add an option/markup to a quote', revamp: true, story_558: true, story_692: true do
     quote.update_attributes informal: true
     quote.jobs << create(:job, line_items: [create(:imprintable_line_item)])

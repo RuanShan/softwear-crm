@@ -317,6 +317,7 @@ class Quote < ActiveRecord::Base
     return if job.nil?
 
     @imprintable_line_item_added_ids = []
+    # TODO error or something if attrs[:imprintables] is nil
     attrs[:imprintables].map do |imprintable_id|
       imprintable = Imprintable.find imprintable_id
 
