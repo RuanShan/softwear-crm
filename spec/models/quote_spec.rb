@@ -760,7 +760,6 @@ describe Quote, quote_spec: true do
     end
 
     describe '#has_freshdesk_ticket?', story_70: true do
-      # used for stubbing
       class BogusClass; end
 
       context 'when get_freshdesk_ticket returns a valid ticket' do
@@ -791,7 +790,7 @@ describe Quote, quote_spec: true do
       end
 
       context 'when the quote has a quote request' do
-        it 'creates a ticket with its requester id', plz: true do
+        it 'creates a ticket with its requester id' do
           dummy_quote_requests = [double('Quote Request', freshdesk_contact_id: 123)]
           allow(dummy_quote_requests).to receive(:where).and_return dummy_quote_requests
           allow(dummy_quote_requests).to receive(:not).and_return dummy_quote_requests

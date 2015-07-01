@@ -49,11 +49,43 @@ describe QuoteRequest, quote_request_spec: true, story_78: true do
   end
 
   describe 'Freshdesk', freshdesk: true, story_512: true do
-    context 'when created' do
-      let(:dummy_client) { Object.new }
-      let(:dummy_contact) { { user: { id: 123 } } }
-      let(:dummy_customer) { { customer: { name: 'test org', id: 555 } } }
+    let(:dummy_client) { Object.new }
+    let(:dummy_contact) { { user: { id: 123 } } }
+    let(:dummy_customer) { { customer: { name: 'test org', id: 555 } } }
 
+    describe '#create_freshdesk_ticket', story_726: true do
+      before do
+        allow(quote_request).to receive(:freshdesk_description)
+          .and_return '<div>hi</div>'.html_safe
+
+        allow(quote_request).to receive(:freshdesk).and_return dummy_client
+        allow(quote_request).to receive(:freshdesk_group_id).and_return 54321
+        allow(quote_request).to receive(:freshdesk_department).and_return 'Testing'
+        allow(quote_request).to receive(:save).with validate: false
+        allow(quote_request).to receive(:freshdesk_contact_id).and_return 123
+      end
+
+      it 'creates a freshdesk ticket without a quote id and assigns freshdesk_ticket_id' do
+        expect(dummy_client).to receive(:post_tickets)
+          .with(helpdesk_ticket: {
+            source: 2,
+            group_id: 54321,
+            ticket_type: 'Lead',
+            subject: "Information regarding your quote request (##{quote_request.id}) from the Ann Arbor T-shirt Company",
+            custom_field: {
+              department_7483: 'Testing'
+            },
+            description_html: anything,
+            requester_id: 123
+          })
+          .and_return({ helpdesk_ticket: { display_id: 998 } }.to_json)
+
+        quote_request.create_freshdesk_ticket
+        expect(quote_request.freshdesk_ticket_id).to eq '998'
+      end
+    end
+
+    context 'when created' do
       context 'and there exists a contact with a matching email on Freshdesk' do
         before(:each) do
           expect(dummy_client).to receive(:get_users)

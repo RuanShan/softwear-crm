@@ -392,11 +392,13 @@ class Quote < ActiveRecord::Base
       self.first_name = quote_request.name
     end
 
-    self.email            ||= quote_request.email
-    self.qty              ||= quote_request.approx_quantity
-    self.phone_number     ||= quote_request.phone_number if quote_request.phone_number
-    self.company          ||= quote_request.organization if quote_request.organization
-    self.quote_source     ||= 'Online Form'
+    self.email               ||= quote_request.email
+    self.qty                 ||= quote_request.approx_quantity
+    self.phone_number        ||= quote_request.phone_number if quote_request.phone_number
+    self.company             ||= quote_request.organization if quote_request.organization
+    self.quote_source        ||= 'Online Form'
+    self.freshdesk_ticket_id ||= quote_request.freshdesk_ticket_id
+
     if quote_request.date_needed
       self.deadline_is_specified = true
       self.valid_until_date = quote_request.date_needed
@@ -426,14 +428,14 @@ class Quote < ActiveRecord::Base
     ticket = JSON.parse(freshdesk.post_tickets(
         helpdesk_ticket: {
           source: 2,
-          group_id: freshdesk_group_id,
+          group_id: freshdesk_group_id(salesperson),
           ticket_type: 'Lead',
           subject: "Your Quote \"#{self.name}\" (##{self.id}) from the Ann Arbor T-shirt Company",
           custom_field: {
-            department_7483: freshdesk_department,
-            softwearcrm_quote_id_7483: id
+            FD_DEPARTMENT_FIELD => freshdesk_department(salesperson),
+            FD_QUOTE_ID_FIELD => id
           },
-          description_html: freshdesk_description
+          description_html: freshdesk_description(quote_requests.where("freshdesk_contact_id <> ''"))
         }
          .merge(requester_info)
       ))
@@ -489,7 +491,7 @@ class Quote < ActiveRecord::Base
         helpdesk_ticket: {
           requester_id: contact_id,
           source: 2,
-          group_id: freshdesk_group_id,
+          group_id: freshdesk_group_id(salesperson),
           ticket_type: 'Lead',
           custom_field: {
             softwearcrm_quote_id_7483: id
@@ -759,44 +761,12 @@ class Quote < ActiveRecord::Base
 
   private
 
-  def freshdesk_group_id
-    name = salesperson.store.try(:name).try(:downcase) || ''
-    if name.include? 'ypsi'
-      86317 # Group ID of Sales - Ypsilanti within Freshdesk
-    else
-      86316 # Group ID of Sales - Ann Arbor within Freshdesk
-    end
-  end
-  def freshdesk_department
-    name = salesperson.store.try(:name).try(:downcase) || ''
-    if name.include? 'arbor'
-      'Sales - Ann Arbor'
-    elsif name.include? 'ypsi'
-      'Sales - Ypsilanti'
-    end
-  end
-
   def freshdesk_contact_id
     quote_requests
       .where("freshdesk_contact_id <> ''")
       .pluck(:freshdesk_contact_id)
       .first
   end
-
-  def freshdesk_description
-    r = ApplicationController.new
-    quote_requests
-      .where("freshdesk_contact_id <> ''")
-      .reduce('') do |description, quote_request|
-        r.render_string(
-          template: nil,
-          partial: 'quote_requests/basic_table',
-          locals: { quote_request: quote_request }
-        )
-      end
-      .html_safe
-  end
-
 
   def set_default_valid_until_date
     return unless valid_until_date.nil?

@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150630181559) do
+ActiveRecord::Schema.define(version: 20150701144113) do
 
   create_table "activities", force: :cascade do |t|
     t.integer  "trackable_id",   limit: 4
@@ -485,6 +485,7 @@ ActiveRecord::Schema.define(version: 20150630181559) do
     t.integer  "insightly_contact_id",      limit: 4
     t.integer  "insightly_organisation_id", limit: 4
     t.integer  "freshdesk_contact_id",      limit: 4
+    t.string   "freshdesk_ticket_id",       limit: 255
   end
 
   create_table "quotes", force: :cascade do |t|
@@ -704,8 +705,6 @@ ActiveRecord::Schema.define(version: 20150630181559) do
     t.string   "freshdesk_password",           limit: 255
     t.string   "encrypted_freshdesk_password", limit: 255
     t.string   "insightly_api_key",            limit: 255
-    t.integer  "profile_picture_id",           limit: 4
-    t.integer  "signature_id",                 limit: 4
   end
 
   add_index "users", ["authentication_token"], name: "index_users_on_authentication_token", using: :btree

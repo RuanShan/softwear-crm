@@ -165,6 +165,42 @@ class QuoteRequest < ActiveRecord::Base
     end
   end
 
+  def create_freshdesk_ticket
+    return if freshdesk.nil? || !freshdesk_ticket_id.blank?
+
+    if freshdesk_contact_id.blank?
+      requester_info = {
+        name: name,
+        email: email,
+        phone: format_phone(phone_number)
+      }
+    else
+      requester_info = {
+        requester_id: freshdesk_contact_id
+      }
+    end
+
+    ticket = JSON.parse(freshdesk.post_tickets(
+        helpdesk_ticket: {
+          source: 2,
+          group_id: freshdesk_group_id(salesperson),
+          ticket_type: 'Lead',
+          subject: "Information regarding your quote request (##{id}) from the Ann Arbor T-shirt Company",
+          custom_field: {
+            FD_DEPARTMENT_FIELD => freshdesk_department(salesperson)
+          },
+          description_html: freshdesk_description(self)
+        }
+          .merge(requester_info)
+      ))
+      .try(:[], 'helpdesk_ticket')
+
+    self.freshdesk_ticket_id = ticket['display_id']
+    save(validate: false)
+    ticket
+  end
+  warn_on_failure_of :create_freshdesk_ticket unless Rails.env.test?
+
   def format_phone(num)
     return if num.nil?
 
@@ -182,8 +218,7 @@ class QuoteRequest < ActiveRecord::Base
       num = '1734' + num
     end
 
-    ret = '+'
-    num = ret + num.slice(0, 1) + '-' + num.slice(1, 3) + '-' + num.slice(4, 3) + '-' + num.slice(7, 4)
+    "+#{num.slice(0, 1)}-#{num.slice(1, 3)}-#{num.slice(4, 3)}-#{num.slice(7, 4)}"
   end
 
   def linked_with_freshdesk?
