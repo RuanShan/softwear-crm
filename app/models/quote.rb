@@ -70,7 +70,6 @@ class Quote < ActiveRecord::Base
     :insightly_bid_amount,
     :insightly_bid_tier_id,
     :insightly_opportunity_id
-    #, :insightly_whos_responsible_id
   ]
 
   MARKUPS_AND_OPTIONS_JOB_NAME = '_markupsandoptions_'
@@ -81,7 +80,7 @@ class Quote < ActiveRecord::Base
   belongs_to :store
   belongs_to :insightly_whos_responsible, class_name: User
   has_many :email_templates
-  has_many :emails, as: :emailable, class_name: Email, dependent: :destroy
+  has_many :emails, as: :emailable, dependent: :destroy
   has_many :quote_request_quotes
   has_many :quote_requests, through: :quote_request_quotes
   has_many :order_quotes
@@ -370,11 +369,6 @@ class Quote < ActiveRecord::Base
   def insightly_opportunity_link
     return if insightly_opportunity_id.nil?
     "https://googleapps.insight.ly/Opportunities/details/#{insightly_opportunity_id}"
-  end
-
-  def freshdesk_ticket_link
-    return if freshdesk_ticket_id.blank?
-    "http://annarbortees.freshdesk.com/helpdesk/tickets/#{freshdesk_ticket_id}"
   end
 
   def description

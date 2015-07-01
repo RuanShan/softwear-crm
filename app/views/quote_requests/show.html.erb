@@ -9,6 +9,11 @@
     <%= link_to quote_request_dock_path(@quote_request), class: 'btn btn-warning dock' do  %>
         <i class="fa fa-toggle-down"></i> Dock
     <% end %>
+    <% if @quote_request.freshdesk_ticket_id.blank? && (@quote_request.quotes.empty? || @quote_request.quotes.pluck(:freshdesk_ticket_id).any?(&:blank?)) %>
+      <%= link_to quote_request_create_freshdesk_ticket_path(@quote_request.id), method: :post, class: 'btn btn-success' do  %>
+          <i class="softwear-icon-freshdesk-icon"></i> Create Freshdesk Ticket
+      <% end %>
+    <% end %>
     <%= link_to new_quote_path(name: @quote_request.name, email: @quote_request.email, quote_request_id: @quote_request.id), class: 'btn btn-success' do  %>
         <i class="fa fa-quote-left"></i> Create Quote
     <% end %>
@@ -156,6 +161,20 @@
       </div>
     <% end %>
 
+    <% unless @quote_request.freshdesk_ticket_id.blank? %>
+      <div class='row'>
+        <div class='col-sm-2'>
+          <%= link_to @quote_request.freshdesk_ticket_link, class: '',
+                      'data-action' => 'new', 'data-toggle' => 'tooltip', 'title' => 'Freshdesk Ticket', target: '_blank' do %>
+              <i class="softwear-icon-freshdesk-icon"></i> Freshdesk Ticket
+          <% end %>
+        </div>
+        <div class='col-sm-10'>
+          <%= link_to 'Prepare for Freshdesk', new_quote_request_emails_path(@quote_request, freshdesk: true) %>
+        </div>
+      </div>
+    <% end %>
+
 
     <div class='row'>
       <strong>Quotes:</strong>
@@ -170,8 +189,7 @@
         <% end %>
       <% end %>
       <div id='edit-quote-request-quotes-button' class='indent-field'>
-        (this doesn't quite work correctly) <br />
-        <%= link_to 'Assign Quotes', edit_quote_request_path(@quote_request, edit_quotes: true), class: 'btn btn-info', remote: true %>
+        <%= link_to 'Assign Quotes', edit_quote_request_path(@quote_request, edit_quotes: true), class: 'btn btn-info', remote: true, disabled: true %>
       </div>
     </div>
 

@@ -41,11 +41,7 @@ CrmSoftwearcrmCom::Application.routes.draw do
     member do
       put 'integrate', to: 'quotes#integrate'
     end
-    resource :emails do
-      collection do
-        post 'freshdesk'
-      end
-    end
+    resource :emails
 
     resources :comments
 
@@ -54,11 +50,14 @@ CrmSoftwearcrmCom::Application.routes.draw do
       post 'stage_quote'
     end
   end
+  post 'email/freshdesk', to: 'emails#freshdesk'
   resources :comments
   warning_paths_for :quotes
 
   resources :quote_requests do
     get :dock
+    post :create_freshdesk_ticket
+    resource :emails
   end
   warning_paths_for :quote_requests
 

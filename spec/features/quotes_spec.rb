@@ -65,7 +65,7 @@ feature 'Quotes management', quote_spec: true, js: true, retry: 2 do
     expect(page).to have_selector('.box-info')
   end
 
-  context 'A user can prepare for freshdesk', story_639: true, js: true do
+  context 'Freshdesk', story_639: true, js: true do
      given!(:fd_ticket) do   {
       "created_at" => "Thu, 21 May 2015 15:57:32 EDT -04:00",  
       "notes" => 

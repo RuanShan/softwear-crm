@@ -123,4 +123,10 @@ module IntegratedCrms
       end
       .html_safe
   end
+
+  def freshdesk_ticket_link(obj = nil)
+    obj ||= self
+    return if obj.try(:freshdesk_ticket_id).blank?
+    "http://annarbortees.freshdesk.com/helpdesk/tickets/#{freshdesk_ticket_id}"
+  end
 end

@@ -29,6 +29,7 @@ class QuoteRequest < ActiveRecord::Base
   has_many :quote_request_quotes
   has_many :quotes, through: :quote_request_quotes
   has_many :orders, through: :quotes
+  has_many :emails, as: :emailable, dependent: :destroy
 
   validates :name, :email, :description, :source, presence: true
   validates :reason, presence: true, if: :reason_needed?
@@ -199,7 +200,7 @@ class QuoteRequest < ActiveRecord::Base
     save(validate: false)
     ticket
   end
-  warn_on_failure_of :create_freshdesk_ticket unless Rails.env.test?
+  warn_on_failure_of :create_freshdesk_ticket, raise_anyway: true unless Rails.env.test?
 
   def format_phone(num)
     return if num.nil?

@@ -18,7 +18,7 @@
       <div class="form-group">
         <%= f.label :template_type, class: 'col-sm-2 control-label' %>
         <div class="col-sm-10">
-          <%= f.select :template_type, EmailTemplate::TEMPLATE_TYPES, {}, class: 'form-control' %>
+          <%= f.select :template_type, EmailTemplate::TEMPLATE_TYPES, {}, class: 'form-control template-type-select' %>
           <br/>
         </div>
       </div>
@@ -63,7 +63,7 @@
         </div>
       </div>
 
-      <%= render 'email_templates/reference' %>
+      <%= render 'email_templates/reference', email_template: email_template %>
 
     <div class="form-group">
       <%= f.label :body, class: 'col-sm-2 control-label' %>

@@ -113,4 +113,29 @@ feature 'Quote Requests Management', js: true, quote_request_spec: true do
       expect(page).to have_content new_salesperson.full_name
     end
   end
+
+  context 'Freshdesk' do
+    scenario 'A user can create a freshdesk ticket', story_726: true do
+      allow_any_instance_of(QuoteRequest).to receive(:create_freshdesk_ticket)
+
+      visit quote_request_path(quote_request)
+      click_link 'Create Freshdesk Ticket'
+
+      expect(page).to have_content "Freshdesk ticket created!"
+    end
+
+    scenario 'A user can set up an email for freshdesk', story_726: true do
+      quote_request.update_attributes!(
+        freshdesk_ticket_id: 123
+      )
+
+      visit quote_request_path(quote_request)
+      click_link 'Prepare for Freshdesk'
+
+      fill_in 'Body', with: '<div class="spec726">Hey there</div>'
+      sleep 1
+      click_button 'Prepare for Freshdesk'
+      expect(page).to have_css('.spec726', text: 'Hey there')
+    end
+  end
 end
