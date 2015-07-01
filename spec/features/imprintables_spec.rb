@@ -169,7 +169,8 @@ feature 'Imprintables management', imprintable_spec: true, slow: true do
     end
   end
 
-  feature 'Imprintable photos', story_717: true, js: true do
+  # CI won't do file upload related stuff
+  feature 'Imprintable photos', story_717: true, js: true, no_ci: true do
     let!(:variant) { create(:valid_imprintable_variant) }
     let(:imprintable) { variant.imprintable }
 
