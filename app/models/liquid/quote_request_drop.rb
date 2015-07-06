@@ -12,7 +12,7 @@ class QuoteRequestDrop < Liquid::Drop
       end
     end
   rescue ActiveRecord::StatementInvalid => _e
-    logger.warn "Either something's wrong with Quote Requests, or you're running migrations right now."
+    Rails.logger.warn "Either something's wrong with Quote Requests, or you're running migrations right now."
   end
 
   def salesperson_first_name
