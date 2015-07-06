@@ -56,6 +56,14 @@ class UsersController < InheritedResources::Base
     redirect_to users_path
   end
 
+  def update
+    super do |format|
+      format.json { render json: @user.to_json }
+      format.html
+      format.js
+    end
+  end
+
 protected
 
   def set_current_action

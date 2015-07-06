@@ -92,5 +92,15 @@ blockquote.freshdesk_quote {
   display: none
 }
 
+#my-store {
+  margin-left: 15px;
+
+  .editable-click {
+    color: #8B91A0;
+  }
+  dt {
+    color: white;
+  }
+}
 @import "font-awesome-sprockets";
 @import "font-awesome";

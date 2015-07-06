@@ -1,3 +1,9 @@
+<dl id='my-store'>
+  <dt>My Store</dt>
+  <dd>
+    <%= editable @current_user, :store_id, type: :select, data: { source: Store.all.map { |s| { s.id => s.name } } } %>
+  </dd>
+</dl>
 <div id="search">
   <%= search_field placeholder: 'Search here...' do %>
     <i class="fa fa-search"></i>
