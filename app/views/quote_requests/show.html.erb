@@ -140,6 +140,19 @@
       </div>
     </div>
 
+    <% unless @quote_request.customer_uploads.empty? %>
+      <div class='row'>
+        <div class='col-sm-2'>
+          <strong>Uploaded Files:</strong>
+        </div>
+        <div class='col-sm-10' id='quote-request-files'>
+          <% @quote_request.customer_uploads.each do |upload| %>
+            <% # TODO make that url configurable!!!!! %>
+            <%= link_to upload.filename, "http://www.annarbortees.com#{upload.url}" %>
+          <% end %>
+        </div>
+      </div>
+    <% end %>
 
     <% if @quote_request.linked_with_insightly? %>
       <div class='row'>

@@ -30,6 +30,9 @@ class QuoteRequest < ActiveRecord::Base
   has_many :quotes, through: :quote_request_quotes
   has_many :orders, through: :quotes
   has_many :emails, as: :emailable, dependent: :destroy
+  has_many :customer_uploads, dependent: :destroy
+
+  accepts_nested_attributes_for :customer_uploads
 
   validates :name, :email, :description, :source, presence: true
   validates :reason, presence: true, if: :reason_needed?
@@ -230,6 +233,9 @@ class QuoteRequest < ActiveRecord::Base
     %i(id name approx_quantity description date_needed)
       .map{|a| { a => self[a] } }
       .reduce({}, :merge)
+  end
+
+  def uploaded_file_urls
   end
 
   private
