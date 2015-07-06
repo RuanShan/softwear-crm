@@ -15,7 +15,7 @@
   <% end %>
 </div>
 <br clear="all" />
-<%= form_for quote, html: { id: 'imprintables-from-search-results-form' }, remote: true, builder: LancengFormBuilder do |f| %>
+<%= form_for quote, html: { id: 'imprintables-from-search-results-form', class: 'check-for-imprintables' }, remote: true, builder: LancengFormBuilder do |f| %>
     <%= f.fields_for :line_item_to_group do |ff| %>
       <h4>Select imprintables from search results</h4>
 

@@ -3,6 +3,23 @@ $(function() {
     initializeQuoteLineItems();
 });
 
+function initializeQuoteNewLineItems() {
+  $('.check-for-imprintables').submit(function(event) {
+    var fields = $(this).serializeArray();
+    var hasImprintables = false;
+
+    fields.forEach(function(field) {
+      if (field.name.match(/\[imprintables\]/g)) hasImprintables = true;
+    })
+
+    if (!hasImprintables) {
+      $('.error-space').text("Please mark at least one imprintable to be added.");
+      shine('.error-space', false, 1000, '#D97185');
+      return false;
+    }
+  });
+}
+
 function initializeQuoteLineItems() {
   $('#save-line-item-changes-btn').click(function(e) {
     $('.job-form-to-be-saved').submit();

@@ -121,6 +121,48 @@ describe Imprintable, imprintable_spec: true do
     end
   end
 
+  describe '#cant_be_added_to_quote_reason', story_712: true do
+    let(:dummy_view) { double('view context') }
+    let!(:variant) { create(:valid_imprintable_variant) }
+    let!(:imprintable) { variant.imprintable }
+    subject { imprintable.cant_be_added_to_quote_reason }
+
+    context 'when the imprintable is discontinued' do
+      before { allow(imprintable).to receive(:discontinued?).and_return true }
+
+      it { is_expected.to eq "Discontinued" }
+    end
+    context "when the imprintable's base price is blank" do
+      before { allow(imprintable).to receive(:base_price).and_return nil }
+
+      it { is_expected.to eq "Imprintable has no base price" }
+
+      context 'and passed a view' do
+        it 'includes a link to imprintables/edit' do
+          expect(dummy_view).to receive(:link_to)
+          expect(dummy_view).to receive(:edit_imprintable_path).with(imprintable) 
+          imprintable.cant_be_added_to_quote_reason(dummy_view)
+        end
+      end
+    end
+    context 'when the imprintable has no imprintable variants' do
+      before { allow(imprintable).to receive(:imprintable_variants).and_return [] }
+
+      it { is_expected.to eq "Imprintable has no imprintable variants" }
+
+      context 'and passed a view' do
+        it 'includes a link to imprintables/edit' do
+          expect(dummy_view).to receive(:link_to)
+          expect(dummy_view).to receive(:edit_imprintable_path).with(imprintable) 
+          imprintable.cant_be_added_to_quote_reason(dummy_view)
+        end
+      end
+    end
+    context 'when nothing is wrong' do
+      it { is_expected.to be_nil }
+    end
+  end
+
   describe '#create_imprintable_variants' do
     let(:sizes) { [create(:valid_size), create(:valid_size), create(:valid_size)] }
     let(:colors) { [create(:valid_color), create(:valid_color)] }

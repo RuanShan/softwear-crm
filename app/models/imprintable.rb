@@ -125,7 +125,7 @@ class Imprintable < ActiveRecord::Base
                      },
              allow_blank: true
 
-  validates :base_price, presence: true, unless: proc { imprintable_imprintable_groups.empty? }
+  validates :imprintable_variants, :base_price, presence: true, unless: proc { imprintable_imprintable_groups.empty? }
 
   validates :water_resistance_level, inclusion: { in: WATER_RESISTANCE_LEVELS, message: "is not 'not_water_resistant', 'water_resistant', or 'waterproof'" }, if: :water_resistance_level
   validates :sleeve_type, inclusion: { in: SLEEVE_TYPES, message: "is not a valid sleeve type" }, if: :sleeve_type
@@ -248,6 +248,26 @@ class Imprintable < ActiveRecord::Base
       }
     end
     max_imprint_sizes
+  end
+
+  def cant_be_added_to_quote_reason(view = nil)
+    if discontinued?
+      "Discontinued"
+    elsif base_price.blank?
+      msg = "Imprintable has no base price"
+      if view
+        msg + " #{view.link_to '(edit)', view.edit_imprintable_path(self), target: :_blank}"
+      else
+        msg
+      end
+    elsif imprintable_variants.empty?
+      msg = "Imprintable has no imprintable variants"
+      if view
+        msg + " #{view.link_to '(edit)', view.edit_imprintable_path(self), target: :_blank}"
+      else
+        msg
+      end
+    end
   end
 
   %i(base xxl xxxl xxxxl xxxxxl xxxxxxl).each do |pre|

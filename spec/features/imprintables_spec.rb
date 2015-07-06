@@ -283,30 +283,6 @@ feature 'Imprintables management', imprintable_spec: true, slow: true do
     expect(page).to have_content 'Quote was successfully updated.'
   end
 
-#  scenario 'A user can navigate to all tabs of the modal show menu (card #133)', js: true, story_692: true  do
-#    visit imprintables_path
-#
-#    find(:css, "#imprintable_#{imprintable.id} td a.imprintable_modal_link").click
-#    expect(page).to have_selector "#basic_info_#{imprintable.id}.active"
-#    expect(page).to have_selector '.nav.nav-tabs.nav-justified li:nth-child(1).active'
-#
-#    find(:css, '.nav.nav-tabs.nav-justified li:nth-child(2)').click
-#    expect(page).to have_selector "#size_color_availability_#{imprintable.id}.active"
-#    expect(page).to have_selector '.nav.nav-tabs.nav-justified li:nth-child(2).active'
-#
-#    find(:css, '.nav.nav-tabs.nav-justified li:nth-child(3)').click
-#    expect(page).to have_selector "#imprint_details_#{imprintable.id}.active"
-#    expect(page).to have_selector '.nav.nav-tabs.nav-justified li:nth-child(3).active'
-#
-#    find(:css, '.nav.nav-tabs.nav-justified li:nth-child(4)').click
-#    expect(page).to have_selector "#supplier_information_#{imprintable.id}.active"
-#    expect(page).to have_selector '.nav.nav-tabs.nav-justified li:nth-child(4).active'
-#
-#    find(:css, '.nav.nav-tabs.nav-justified li:nth-child(1)').click
-#    expect(page).to have_selector "#basic_info_#{imprintable.id}.active"
-#    expect(page).to have_selector '.nav.nav-tabs.nav-justified li:nth-child(1).active'
-#  end
-
   context 'There are 2 different imprintables', js: true do
     given!(:imprintable_two) { create(:valid_imprintable) }
 
@@ -321,6 +297,7 @@ feature 'Imprintables management', imprintable_spec: true, slow: true do
       expect(find('#contentModal div.modal-body').text).to_not eq ('')
     end
   end
+
 
   context 'Discontinuation', story_595: :true do
 
