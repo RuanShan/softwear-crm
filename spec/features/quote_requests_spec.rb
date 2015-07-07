@@ -13,9 +13,9 @@ feature 'Quote Requests Management', js: true, quote_request_spec: true do
 
   scenario 'A user can change the assignment of a quote request', story_80: true, story_692: true do
     visit quote_requests_path
-    page.find('span.editable').click
-    page.find('div.editable-input').find("option[value='#{valid_user.id}']").click
-    page.find('button.editable-submit').click
+    all('span.editable').last.click
+    find('div.editable-input').find("option[value='#{valid_user.id}']").click
+    find('button.editable-submit').click
     wait_for_ajax
     expect(QuoteRequest.where(salesperson_id: valid_user.id)).to exist
   end
@@ -24,7 +24,7 @@ feature 'Quote Requests Management', js: true, quote_request_spec: true do
     quote_request.salesperson_id = nil
     quote_request.save
     visit quote_requests_path
-    page.find('span.editable').click
+    all('span.editable').last.click
     page.find('div.editable-input').find("option[value='#{valid_user.id}']").click
     sleep 0.5
     page.find('button.editable-submit').click
@@ -116,10 +116,12 @@ feature 'Quote Requests Management', js: true, quote_request_spec: true do
 
   context 'Freshdesk' do
     scenario 'A user can create a freshdesk ticket', story_726: true do
-      allow_any_instance_of(QuoteRequest).to receive(:create_freshdesk_ticket)
+      expect_any_instance_of(QuoteRequest).to receive(:create_freshdesk_ticket)
 
       visit quote_request_path(quote_request)
       click_link 'Create Freshdesk Ticket'
+
+      sleep 1
 
       expect(page).to have_content "Freshdesk ticket created!"
     end
