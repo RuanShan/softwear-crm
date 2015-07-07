@@ -586,7 +586,7 @@ feature 'Quotes management', quote_spec: true, js: true, retry: 2 do
 
     click_button 'Add Imprintable(s)'
 
-    expect(page).to have_content 'Please mark one or more imprintables to be added.'
+    expect(page).to have_content 'Please mark at least one imprintable to be added.'
   end
 
   scenario 'A user can add an option/markup to a quote', revamp: true, story_558: true, story_692: true do

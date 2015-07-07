@@ -109,13 +109,17 @@ class QuotesController < InheritedResources::Base
         if @quote.insightly_opportunity_id.blank?
           @quote.create_insightly_opportunity
         else
-          StandardError.new("quote already has an Opportunity!")
+          StandardError.new("Quote already has an Opportunity!")
         end
       when 'freshdesk'
         if @quote.freshdesk_ticket_id.blank?
-          @quote.create_freshdesk_ticket
+          begin
+            @quote.create_freshdesk_ticket
+          rescue RestClient::NotAcceptable => e
+            StandardError.new("There was an issue connecting to Freshdesk. Try again in a few minutes.")
+          end
         else
-          StandardError.new("quote already has a Freshdesk Ticket!")
+          StandardError.new("Quote already has a Freshdesk Ticket!")
         end
       else StandardError.new("Unknown integration: #{params[:with] || '(none)'}")
       end
