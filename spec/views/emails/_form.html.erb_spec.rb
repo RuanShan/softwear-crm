@@ -5,7 +5,7 @@ describe 'emails/_form.html.erb' do
   let!(:email) { Email.new(emailable: quote, emailable_type: 'Quote') }
 
   it 'has all fields visible' do
-    render 'emails/form', quote: quote, email: email
+    render 'emails/form', object: quote, email: email
     expect(rendered).to have_content("Subject")
     expect(rendered).to have_content("To")
     expect(rendered).to have_content("From")
@@ -16,7 +16,7 @@ describe 'emails/_form.html.erb' do
 
   it 'has only body and template visible when freshdesk=true' do
     assign(:freshdesk, true)
-    render 'emails/form', quote: quote, email: email
+    render 'emails/form', object: quote, email: email
     expect(rendered).not_to have_content("Subject")
     expect(rendered).not_to have_content("To")
     expect(rendered).not_to have_content("From")

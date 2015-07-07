@@ -60,14 +60,16 @@ describe Imprintable, imprintable_spec: true do
 
   describe 'Discontinue', story_595: :true do
     context 'when discontinued is set to true' do
-      let!(:imprintable) { create(:valid_imprintable) }
+      let!(:variant) { create(:valid_imprintable_variant) }
+      let!(:imprintable) { variant.imprintable }
       let!(:imprintable_group) { ImprintableGroup.create(name: "tig") }
       before{ create(:good, imprintable_id: imprintable.id, imprintable_group_id: imprintable_group.id) }
-      it "is removed from all imprintable groups" do
+
+      it "is removed from all imprintable groups", failed_on_ci: true do
         imprintable_group.reload
         expect(imprintable_group.imprintables).to include(imprintable)
         imprintable.discontinued = true
-        imprintable.save
+        imprintable.save!
         imprintable_group.reload
         expect(imprintable_group.imprintables).not_to include(imprintable)
       end
@@ -140,7 +142,7 @@ describe Imprintable, imprintable_spec: true do
       context 'and passed a view' do
         it 'includes a link to imprintables/edit' do
           expect(dummy_view).to receive(:link_to)
-          expect(dummy_view).to receive(:edit_imprintable_path).with(imprintable) 
+          expect(dummy_view).to receive(:edit_imprintable_path).with(imprintable)
           imprintable.cant_be_added_to_quote_reason(dummy_view)
         end
       end
@@ -153,7 +155,7 @@ describe Imprintable, imprintable_spec: true do
       context 'and passed a view' do
         it 'includes a link to imprintables/edit' do
           expect(dummy_view).to receive(:link_to)
-          expect(dummy_view).to receive(:edit_imprintable_path).with(imprintable) 
+          expect(dummy_view).to receive(:edit_imprintable_path).with(imprintable)
           imprintable.cant_be_added_to_quote_reason(dummy_view)
         end
       end
