@@ -147,8 +147,7 @@
         </div>
         <div class='col-sm-10' id='quote-request-files'>
           <% @quote_request.customer_uploads.each do |upload| %>
-            <% # TODO make that url configurable!!!!! %>
-            <%= link_to upload.filename, "http://www.annarbortees.com#{upload.url}" %>
+            <%= link_to upload.filename, "http://#{upload.full_url}", target: :_blank %>
           <% end %>
         </div>
       </div>

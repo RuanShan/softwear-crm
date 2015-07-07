@@ -98,6 +98,10 @@ class QuoteRequest < ActiveRecord::Base
     last_name
   end
 
+  def activity_source
+    "Quote Request"
+  end
+
   def link_with_insightly
     return if insightly.nil?
 
