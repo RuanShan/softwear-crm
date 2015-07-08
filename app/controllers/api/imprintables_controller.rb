@@ -33,7 +33,7 @@ module Api
         :common_name,
         :base_upcharge,  :xxl_upcharge,    :xxxl_upcharge,
         :xxxxl_upcharge, :xxxxxl_upcharge, :xxxxxxl_upcharge,
-        :photo_urls
+        :photo_urls, :supplier_link
       ]
     end
 

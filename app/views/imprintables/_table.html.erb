@@ -4,6 +4,7 @@
       <thead>
         <tr>
           <th>Standard Offering</th>
+          <th>ID</th>
           <th>Imprintable</th>
           <th>Upcharge</th>
           <th>Description</th>
@@ -19,6 +20,7 @@
               <% end %>
             </td>
             <% if imprintable.discontinued?  %>
+              <td><s><%= imprintable.id %></s></td>
               <td><s><%= imprintable_modal(imprintable) %></s></td>
               <td>
                 <s> <%= number_to_currency imprintable.base_price%> </s>
@@ -26,6 +28,7 @@
               <td><s><%= raw imprintable.style_description %></s></td>
               <td>
             <% else %>
+              <td><%= imprintable.id %></td>
               <td><%= imprintable_modal(imprintable) %></td>
               <td>
                  <%= number_to_currency imprintable.base_price%> 
