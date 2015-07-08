@@ -4,6 +4,13 @@ class QuotesController < InheritedResources::Base
   before_action :set_current_action
   require 'mail'
 
+  def create
+    super do |success, failure|
+      success.html { redirect_to edit_quote_path(@quote) }
+      failure.html { render 'new' }
+    end
+  end
+
   def new
     super do
       @quote_request_id = params[:quote_request_id]         if params.has_key?(:quote_request_id)
