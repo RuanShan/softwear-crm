@@ -115,7 +115,7 @@ feature 'Quote Requests Management', js: true, quote_request_spec: true do
   end
 
   context 'Freshdesk' do
-    scenario 'A user can create a freshdesk ticket', retry: 3, story_726: true do
+    scenario 'A user can create a freshdesk ticket', retry: 6, story_726: true do
       expect_any_instance_of(QuoteRequest).to receive(:create_freshdesk_ticket)
 
       visit quote_request_path(quote_request)

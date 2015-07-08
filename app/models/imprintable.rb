@@ -1,16 +1,14 @@
 class Imprintable < ActiveRecord::Base
   include Retailable
 
-  # NOTE do try to keep the number values in these tier constants
-  # consistent with the TIERS constant.
-  TIER = OpenStruct.new(economy: 2, good: 3, better: 6, best: 9)
-
   TIERS = {
     2 => 'Economy',
     3 => 'Good',
     6 => 'Better',
     9 => 'Best'
   }
+
+  TIER = OpenStruct.new(Hash[TIERS.to_a.map { |t| t.reverse.map { |x| x.is_a?(String) ? x.underscore : x } }])
 
   WATER_RESISTANCE_LEVELS = [
     'not_water_resistant', 'water_resistant', 'waterproof'
