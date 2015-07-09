@@ -142,6 +142,18 @@ class Imprintable < ActiveRecord::Base
     assets.map { |a| a.file.url(:medium) }
   end
 
+  def default_photo_url
+    imprintable_photos.default.try(:asset).try(:file).try(:url, :medium)
+  end
+
+  def brand_name
+    brand.name
+  end
+
+  def imprintable_category_names
+    imprintable_categories.pluck(:name)
+  end
+
   def compatible_print_methods
     compatible_imprint_methods.pluck(:name).join ' '
   end
