@@ -139,11 +139,11 @@ class Imprintable < ActiveRecord::Base
   end
 
   def photo_urls
-    assets.map { |a| a.file.url(:medium) }
+    assets.map { |a| { medium: a.file.url(:medium), original: a.file.url(:original), thumb: a.file.url(:thumb)} }
   end
 
   def default_photo_url
-    imprintable_photos.default.try(:asset).try(:file).try(:url, :medium)
+    { thumb: imprintable_photos.default.try(:asset).try(:file).try(:url, :thumb), medium: imprintable_photos.default.try(:asset).try(:file).try(:url, :medium), original: imprintable_photos.default.try(:asset).try(:file).try(:url, :thumb) } rescue {}
   end
 
   def brand_name

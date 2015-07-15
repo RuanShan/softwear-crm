@@ -54,7 +54,7 @@ end
 
 gem 'markitup-rails'
 gem 'acts_as_commentable'
-gem 'aws-sdk'
+gem 'aws-sdk', '< 2.0'
 gem 'google_drive'
 # gem 'api', path: 'engines/api'
 gem 'remotipart'
