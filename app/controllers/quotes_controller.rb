@@ -122,8 +122,12 @@ class QuotesController < InheritedResources::Base
         if @quote.freshdesk_ticket_id.blank?
           begin
             @quote.create_freshdesk_ticket
-          rescue RestClient::NotAcceptable => e
+          rescue RestClient::NotAcceptable => _e
             StandardError.new("There was an issue connecting to Freshdesk. Try again in a few minutes.")
+
+          rescue Freshdesk::ConnectionError => _e
+            StandardError.new("Connection to Freshdesk server failed. Hopefully they'll be back up soon.")
+
           end
         else
           StandardError.new("Quote already has a Freshdesk Ticket!")
