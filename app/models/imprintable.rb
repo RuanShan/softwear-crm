@@ -80,10 +80,11 @@ class Imprintable < ActiveRecord::Base
 
   belongs_to :brand
   has_many :colors, ->{ uniq }, through: :imprintable_variants
-  has_many :compatible_imprint_methods, through: :imprint_method_imprintables, source: :imprint_method
   has_many :coordinates, through: :coordinate_imprintables
   has_many :coordinate_imprintables
-  has_many :imprint_method_imprintables
+  has_many :print_location_imprintables
+  has_many :print_locations, through: :print_location_imprintables, source: :print_location
+  has_many :compatible_imprint_methods, -> { uniq }, through: :print_locations
   has_many :imprintable_categories
   has_many :imprintable_stores
   has_many :imprintable_variants, dependent: :destroy
