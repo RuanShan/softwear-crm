@@ -21,7 +21,7 @@ class Asset < ActiveRecord::Base
   has_attached_file :file,
                     path: path,
                     url: url,
-                    styles: { thumb: ['100x100#'], medium: ['250x250#'], signature: ['300x300>'] }
+                    styles: { icon: ['100x100#'], thumb: ['200x200>'], medium: ['250x250>'], large: ['500x500>'], signature: ['300x300>'] }
   validates_attachment_presence :file
   validates_attachment_size :file, less_than: 120.megabytes
 

@@ -34,7 +34,7 @@ module Api
         :base_upcharge,  :xxl_upcharge,    :xxxl_upcharge,
         :xxxxl_upcharge, :xxxxxl_upcharge, :xxxxxxl_upcharge,
         :default_photo_url, :photo_urls, :supplier_link, :brand_name,
-        :coordinate_imprintable_ids, :similar_imprintable_ids,
+        :coordinate_ids, :similar_imprintable_ids,
         :imprintable_category_names,
       ]
     end
