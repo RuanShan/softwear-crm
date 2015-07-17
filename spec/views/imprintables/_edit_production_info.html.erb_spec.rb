@@ -25,7 +25,6 @@ describe 'imprintables/_edit_production_info.html.erb', imprintable_spec: true d
       expect(rendered).to have_field_for :flashable
       expect(rendered).to have_field_for :proofing_template_name
       expect(rendered).to have_field_for :special_considerations
-      expect(rendered).to have_field_for :compatible_imprint_method_ids
     end
   end
 end
