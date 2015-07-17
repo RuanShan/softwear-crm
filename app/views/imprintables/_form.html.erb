@@ -1,6 +1,4 @@
-
-
-<%= nested_form_for imprintable, builder: LancengFormBuilder do |f| %>
+<%= form_for imprintable, builder: LancengFormBuilder do |f| %>
 
 <%= render 'shared/modal_errors', object: imprintable %>
 
@@ -12,10 +10,6 @@
 <div class="row">
   <%= render 'imprintables/edit_retail_info', object: imprintable, f: f %>
   <%= render 'imprintables/edit_production_info', object: imprintable, f: f, model_collection_hash: model_collection_hash  %>
-</div>
-
-<div class="row">
-  <%= render 'imprintables/compatible_print_locations', imprintable: imprintable, f: f %>
 </div>
 
 <% if !imprintable.new_record? %>

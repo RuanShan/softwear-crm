@@ -225,6 +225,14 @@ jQuery ->
 
   $('.chosen-select').select2()
 
+  # NOTE when this is uncommented, selecting from an added compatible print location
+  # causes other select2 fields to empty out.
+  ###
+  initSelect2_100 = -> $('.select2-100').select2 width: '100%'
+  initSelect2_100()
+  $('.js-add-fields').click initSelect2_100
+  ###
+
   get_id = ->
     url_array = document.URL.split('/')
     id = url_array[url_array.length - 2]

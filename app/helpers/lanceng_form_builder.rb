@@ -1,5 +1,6 @@
 class LancengFormBuilder < ActionView::Helpers::FormBuilder
   include FormHelper
+  include NestedForm::BuilderMixin
 
   class MethodChain
     def initialize(builder)

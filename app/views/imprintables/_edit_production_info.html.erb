@@ -58,25 +58,13 @@
       </div>
 
       <div class="form-group">
-        <% # TODO remove this section %>
+        <div><%= label_tag 'Compatible print methods and locations' %></div>
+        <%= f.fields_for :print_location_imprintables %>
+        <%= link_to_add_fields 'Add Compatible Crint', f, :print_location_imprintables %>
 
-        <%= select_tag options_from_collection_for_select(ImprintMethod.all, :id, :name), class: 'form-control', multiple: true %>
-
-          <%= f.collection_select :compatible_imprint_method_ids,
-                                  model_collection_hash[:imprint_method_collection],
-                                  :id,
-                                  :name,
-                                  {},
-                                  {
-                                          class: 'chosen-select',
-                                          data: { placeholder: 'Select compatible imprint methods' },
-                                          multiple: true
-                                  } %>
-
-
-          <p class="help-block">
-            What imprint methods and locations work with the imprintable
-          </p>
+        <p class="help-block">
+          What imprint methods and locations work with the imprintable
+        </p>
       </div>
 
       <div class="form-group">

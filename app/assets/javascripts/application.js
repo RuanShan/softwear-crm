@@ -20,7 +20,7 @@
 //= require wizard/jquery.easyWizard
 //= require jquery/jquery.maskedinput.min.js
 //= require bigdecimal/bigdecimal-all-last.min.js
-//= require select2/select2.full.min.js
+//= require select2/select2.full.js
 //= require_tree ../../../vendor/assets/javascripts/jquery/.
 //= require lanceng/lanceng
 //= require table-fixed-header/table-fixed-header
