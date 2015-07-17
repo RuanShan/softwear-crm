@@ -4,6 +4,7 @@ include ApplicationHelper
 feature 'Imprintables management', imprintable_spec: true, slow: true do
   given!(:valid_user) { create(:alternate_user) }
   given!(:imprintable) { create(:valid_imprintable) }
+  given!(:print_location) { create(:valid_print_location) }
 
   background(:each) { login_as(valid_user) }
 
@@ -69,8 +70,10 @@ feature 'Imprintables management', imprintable_spec: true, slow: true do
     fill_in 'Common Name', with: 'Super dooper imprintable'
 
     fill_in 'Sku', with: '99'
-    # fill_in 'Max imprint width', with:  '5.5'
-    # fill_in 'Max imprint height', with: '5.5'
+    click_link 'Add Compatible Print'
+    first('.select-print-location').select(print_location.qualified_name)
+    fill_in 'Max imprint width', with: '12'
+    fill_in 'Max imprint height', with: '10'
 
     find_button('Create Imprintable').click
 
@@ -81,6 +84,7 @@ feature 'Imprintables management', imprintable_spec: true, slow: true do
     expect(imprintable).to_not be_nil
     expect(imprintable.style_name).to eq('Sample Name')
     expect(imprintable.common_name).to eq('Super dooper imprintable')
+    expect(imprintable.print_locations).to include print_location
   end
 
   feature 'Tagging', js: true do
@@ -206,21 +210,6 @@ feature 'Imprintables management', imprintable_spec: true, slow: true do
       imprintable.reload
       expect(imprintable.imprintable_photos.size).to eq 1
       expect(imprintable.imprintable_photos.first.asset.file).to_not be_nil
-    end
-  end
-
-  context 'There is an imprint method' do
-    given!(:imprint_method) { create(:valid_imprint_method) }
-
-    scenario 'A user can utilize compatible imprint methods token input field', busted: true, retry: 2, js: true, story_692: true do
-      visit edit_imprintable_path imprintable.id
-
-      sleep 2
-      find('#imprintable_compatible_imprint_method_ids').select imprint_method.name
-      find_button('Update Imprintable').click
-
-      expect(page).to have_content 'Imprintable was successfully updated.'
-      expect(imprintable.reload.compatible_imprint_method_ids.include? imprint_method.id).to be_truthy
     end
   end
 

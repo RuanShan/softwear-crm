@@ -23,7 +23,7 @@ module FormBuilderHelpers
       else
         [object_name, object, buffer, {}]
       end
-    
+
     builder = builder_class.new(*args)
   end
 end
