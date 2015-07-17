@@ -9,8 +9,8 @@ class CreatePrintLocationImprintables < ActiveRecord::Migration
       t.timestamps null: false
     end
 
-    Imprintable.find_each do |imprintable|
-      ImprintMethodImprintable.where(imprintable_id: imprintable.id).find_each do |join|
+    Imprintable.unscoped.find_each do |imprintable|
+      ImprintMethodImprintable.unscoped.where(imprintable_id: imprintable.id).find_each do |join|
         next if join.imprint_method.nil?
         print_location_id = join.imprint_method.print_locations.pluck(:id).first
 

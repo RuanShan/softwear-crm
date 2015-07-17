@@ -84,7 +84,7 @@ class Imprintable < ActiveRecord::Base
   has_many :coordinate_imprintables
   has_many :print_location_imprintables
   has_many :print_locations, through: :print_location_imprintables, source: :print_location
-  has_many :compatible_imprint_methods, -> { uniq }, through: :print_locations
+  has_many :compatible_imprint_methods, -> { uniq }, through: :print_locations, source: :imprint_method
   has_many :imprintable_categories
   has_many :imprintable_stores
   has_many :imprintable_variants, dependent: :destroy
@@ -105,7 +105,9 @@ class Imprintable < ActiveRecord::Base
   accepts_nested_attributes_for :imprintable_categories,
                                 :imprintable_imprintable_groups,
                                 :imprintable_photos,
+                                :print_location_imprintables,
                                 allow_destroy: true
+
   accepts_nested_attributes_for :imprintable_variants
 
   validates :brand, presence: true

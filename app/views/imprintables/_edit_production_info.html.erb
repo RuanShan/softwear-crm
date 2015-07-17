@@ -23,28 +23,6 @@
         <p class="help-block">The material weight</p>
       </div>
 
-        <div class="form-group">
-            <%= f.label :max_imprint_width, class: 'control-label' %>
-            <div class="input-group">
-                <%= f.error_for :max_imprint_width %>
-                <%= f.text_field :max_imprint_width,
-                                 class: 'form-control',
-                                 placeholder: 'Width (0.00) in inches' %>
-                <span class='input-group-addon'>inches</span>
-            </div>
-        </div>
-
-      <div class="form-group">
-        <%= f.label :max_imprint_height, class: 'control-label' %>
-          <div class="input-group">
-            <%= f.error_for :max_imprint_height %>
-            <%= f.text_field :max_imprint_height,
-                             class: 'form-control',
-                             placeholder: 'Height (0.00) in inches' %>
-            <span class='input-group-addon'>inches</span>
-          </div>
-      </div>
-
       <div class="form-group">
         <%= f.label :sizing_category, 'Sizing Category',
                     class: 'control-label' %>
@@ -80,10 +58,9 @@
       </div>
 
       <div class="form-group">
-        <%= f.label :compatible_imprint_method_ids, 'Compatible Imprint Methods',
-                    class: 'control-label' %>
+        <% # TODO remove this section %>
 
-        <%= f.error_for :compatible_imprint_method_ids %>
+        <%= select_tag options_from_collection_for_select(ImprintMethod.all, :id, :name), class: 'form-control', multiple: true %>
 
           <%= f.collection_select :compatible_imprint_method_ids,
                                   model_collection_hash[:imprint_method_collection],
@@ -96,8 +73,9 @@
                                           multiple: true
                                   } %>
 
+
           <p class="help-block">
-            What imprint methods work with the imprintable
+            What imprint methods and locations work with the imprintable
           </p>
       </div>
 

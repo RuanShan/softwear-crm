@@ -21,8 +21,6 @@ describe 'imprintables/_edit_production_info.html.erb', imprintable_spec: true d
       expect(rendered).to have_field_for :polyester
       expect(rendered).to have_field_for :material
       expect(rendered).to have_field_for :weight
-      expect(rendered).to have_field_for :max_imprint_width
-      expect(rendered).to have_field_for :max_imprint_height
       expect(rendered).to have_field_for :sizing_category
       expect(rendered).to have_field_for :flashable
       expect(rendered).to have_field_for :proofing_template_name

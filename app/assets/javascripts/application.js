@@ -37,5 +37,6 @@
 //= require editable/rails
 //= require markitup
 //= require markitup/sets/xbbcode/set
+//= require jquery_nested_form
 
 //= require_tree .
