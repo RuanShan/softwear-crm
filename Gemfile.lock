@@ -557,7 +557,7 @@ DEPENDENCIES
   progress_bar
   public_activity!
   rack_session_access
-  rails (= 4.2.1)
+  rails (~> 4.2.1)
   remotipart
   rspec-activemodel-mocks
   rspec-mocks
