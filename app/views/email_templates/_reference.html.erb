@@ -2,23 +2,33 @@
 <div class="row">
   <h3 class="col-sm-offset-2">Template Reference for Quotes</h3>
   <div class="col-sm-3 col-sm-offset-2">
-    <h4>quote</h4>
-    <ul>
-      <li>id</li>
-      <li>formal (Boolean)</li>
-      <li>name</li>
-      <li>customer_first_name</li>
-      <li>customer_last_name</li>
-      <li>customer_full_name</li>
-      <li>customer_email</li>
-      <li>customer_company</li>
-      <li>customer_phone_number</li>
-      <li>valid_until_date</li>
-      <li>estimated_delivery_date</li>
-      <li>shipping_cost</li>
-      <li>jobs (Array of jobs)</li>
-      <li>additional_options_and_markups (Array of line_items)</li>
-    </ul>
+    <div class='type-ref quote-request-ref'>
+      <h4>quote request</h4>
+      <ul>
+        <% QuoteRequestDrop.instance_methods(false).each do |field| %>
+          <%= content_tag(:li, field) %>
+        <% end %>
+      </ul>
+    </div>
+    <div class='type-ref quote-ref'>
+      <h4>quote</h4>
+      <ul>
+        <li>id</li>
+        <li>formal (Boolean)</li>
+        <li>name</li>
+        <li>customer_first_name</li>
+        <li>customer_last_name</li>
+        <li>customer_full_name</li>
+        <li>customer_email</li>
+        <li>customer_company</li>
+        <li>customer_phone_number</li>
+        <li>valid_until_date</li>
+        <li>estimated_delivery_date</li>
+        <li>shipping_cost</li>
+        <li>jobs (Array of jobs)</li>
+        <li>additional_options_and_markups (Array of line_items)</li>
+      </ul>
+    </div>
   </div>
 
   <div class="col-sm-3">

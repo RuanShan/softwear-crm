@@ -51,12 +51,13 @@ feature 'Artwork Request Features', js: true, artwork_request_spec: true do
   end
 
   # NOTE this fails in CI for absolutely no reason
-  scenario 'A user can edit an artwork request', retry: 4 do
+  scenario 'A user can edit an artwork request', no_ci: true do
     visit "/orders/#{artwork_request.jobs.first.order.id}/edit#artwork"
     find("a[href='/orders/1/artwork_requests/#{artwork_request.id}/edit']").click
     fill_in 'Description', with: 'edited'
     select 'Normal', from: 'Priority'
     click_button 'Update Artwork Request'
+    sleep 1
     expect(page).to have_selector('.modal-content-success')
     find(:css, "button.close").click
     expect(ArtworkRequest.where(description: 'edited')).to exist

@@ -24,8 +24,6 @@ describe 'imprintables/_form.html.erb', imprintable_spec: true do
       expect(rendered).to have_field_for :special_considerations
       expect(rendered).to have_field_for :material
       expect(rendered).to have_field_for :weight
-      expect(rendered).to have_field_for :max_imprint_width
-      expect(rendered).to have_field_for :max_imprint_height
       expect(rendered).to have_field_for :proofing_template_name
       expect(rendered).to have_field_for :standard_offering
       expect(rendered).to have_field_for :flashable
@@ -34,7 +32,6 @@ describe 'imprintables/_form.html.erb', imprintable_spec: true do
       expect(rendered).to have_field_for :tag_list
       expect(rendered).to have_field_for :sample_location_ids
       expect(rendered).to have_field_for :coordinate_ids
-      expect(rendered).to have_field_for :compatible_imprint_method_ids
       expect(rendered).to have_field_for :main_supplier
       expect(rendered).to have_field_for :supplier_link
       expect(rendered).to have_field_for :base_price

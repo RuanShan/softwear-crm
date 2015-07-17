@@ -21,6 +21,32 @@ feature 'Users', user_spec: true, js: true do
       expect(page).to have_content "Welcome, #{valid_user.first_name} #{valid_user.last_name[0,1]}."
     end
 
+    context 'I see my current store on the dashboard', story_708: true do
+      let!(:store_1) { create(:valid_store, name: 'Store One') }
+      let!(:store_2) { create(:valid_store, name: 'Store Two') }
+
+      background do
+        valid_user.store = store_1
+        valid_user.save!
+      end
+
+      scenario 'and change it' do
+        visit root_path
+        unhide_dashboard
+
+        expect(page).to have_content 'My Store'
+        expect(page).to have_content 'Store One'
+        find('span[data-placeholder=Store]').click
+        find('.editable-input > select').select store_2.name
+        find('.editable-submit').click
+
+        sleep 1
+
+        expect(page).to have_content 'Store Two'
+        expect(page).to_not have_content 'Store One'
+      end
+    end
+
     scenario 'I can view a list of users' do
       visit users_path
       expect(page).to have_css "tr#user_#{valid_user.id} > td", text: valid_user.full_name

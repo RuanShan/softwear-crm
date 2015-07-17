@@ -1,6 +1,9 @@
 module IntegratedCrms
   extend ActiveSupport::Concern
 
+  FD_DEPARTMENT_FIELD = :department_7483
+  FD_QUOTE_ID_FIELD = :softwearcrm_quote_id_7483
+
   included do
     def self.get_insightly_api_key_from(&block)
       @@insightly_api_key_source = block
@@ -82,5 +85,48 @@ module IntegratedCrms
     infos << { type: 'EMAIL', detail: obj.email }        if obj.try(:email)
     infos << { type: 'PHONE', detail: obj.phone_number } if obj.try(:phone_number)
     infos
+  end
+
+  def freshdesk_group_id(user)
+    store_name = user.store.try(:name).try(:downcase) || ''
+    if store_name.include? 'ypsi'
+      86317 # Group ID of Sales - Ypsilanti within Freshdesk
+    else
+      86316 # Group ID of Sales - Ann Arbor within Freshdesk
+    end
+  end
+
+  def freshdesk_department(user)
+    store_name = user.store.try(:name).try(:downcase) || ''
+    if store_name.include? 'arbor'
+      'Sales - Ann Arbor'
+    elsif store_name.include? 'ypsi'
+      'Sales - Ypsilanti'
+    end
+  end
+
+  def freshdesk_description(quote_request)
+    if quote_request.respond_to?(:reduce)
+      quote_requests = quote_request
+    else
+      quote_requests = [quote_request]
+    end
+
+    r = ApplicationController.new
+    quote_requests
+      .reduce('') do |description, quote_request|
+        r.render_string(
+          template: nil,
+          partial: 'quote_requests/basic_table',
+          locals: { quote_request: quote_request }
+        )
+      end
+      .html_safe
+  end
+
+  def freshdesk_ticket_link(obj = nil)
+    obj ||= self
+    return if obj.try(:freshdesk_ticket_id).blank?
+    "http://annarbortees.freshdesk.com/helpdesk/tickets/#{freshdesk_ticket_id}"
   end
 end

@@ -4,6 +4,13 @@ class QuotesController < InheritedResources::Base
   before_action :set_current_action
   require 'mail'
 
+  def create
+    super do |success, failure|
+      success.html { redirect_to edit_quote_path(@quote) }
+      failure.html { render 'new' }
+    end
+  end
+
   def new
     super do
       @quote_request_id = params[:quote_request_id]         if params.has_key?(:quote_request_id)
@@ -109,13 +116,21 @@ class QuotesController < InheritedResources::Base
         if @quote.insightly_opportunity_id.blank?
           @quote.create_insightly_opportunity
         else
-          StandardError.new("quote already has an Opportunity!")
+          StandardError.new("Quote already has an Opportunity!")
         end
       when 'freshdesk'
         if @quote.freshdesk_ticket_id.blank?
-          @quote.create_freshdesk_ticket
+          begin
+            @quote.create_freshdesk_ticket
+          rescue RestClient::NotAcceptable => _e
+            StandardError.new("There was an issue connecting to Freshdesk. Try again in a few minutes.")
+
+          rescue Freshdesk::ConnectionError => _e
+            StandardError.new("Connection to Freshdesk server failed. Hopefully they'll be back up soon.")
+
+          end
         else
-          StandardError.new("quote already has a Freshdesk Ticket!")
+          StandardError.new("Quote already has a Freshdesk Ticket!")
         end
       else StandardError.new("Unknown integration: #{params[:with] || '(none)'}")
       end

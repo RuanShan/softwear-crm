@@ -12,6 +12,7 @@ describe 'quote_requests/show.html.erb', quote_request_spec: true, story_78: tru
       end
     end
 
+    allow(quotes).to receive(:pluck) { |x| quotes.map(&x) }
     allow(quote_request).to receive(:quotes).and_return quotes
     quotes.each_with_index do |quote, i|
       allow(quote).to receive(:id).and_return i

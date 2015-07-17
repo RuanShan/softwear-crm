@@ -1,16 +1,14 @@
 class Imprintable < ActiveRecord::Base
   include Retailable
 
-  # NOTE do try to keep the number values in these tier constants
-  # consistent with the TIERS constant.
-  TIER = OpenStruct.new(economy: 2, good: 3, better: 6, best: 9)
-
   TIERS = {
     2 => 'Economy',
     3 => 'Good',
     6 => 'Better',
     9 => 'Best'
   }
+
+  TIER = OpenStruct.new(Hash[TIERS.to_a.map { |t| t.reverse.map { |x| x.is_a?(String) ? x.underscore : x } }])
 
   WATER_RESISTANCE_LEVELS = [
     'not_water_resistant', 'water_resistant', 'waterproof'
@@ -82,10 +80,11 @@ class Imprintable < ActiveRecord::Base
 
   belongs_to :brand
   has_many :colors, ->{ uniq }, through: :imprintable_variants
-  has_many :compatible_imprint_methods, through: :imprint_method_imprintables, source: :imprint_method
   has_many :coordinates, through: :coordinate_imprintables
   has_many :coordinate_imprintables
-  has_many :imprint_method_imprintables
+  has_many :print_location_imprintables
+  has_many :print_locations, through: :print_location_imprintables, source: :print_location
+  has_many :compatible_imprint_methods, -> { uniq }, through: :print_locations, source: :imprint_method
   has_many :imprintable_categories
   has_many :imprintable_stores
   has_many :imprintable_variants, dependent: :destroy
@@ -100,8 +99,15 @@ class Imprintable < ActiveRecord::Base
   has_many :imprintable_imprintable_groups
   has_many :imprintable_groups, through: :imprintable_imprintable_groups
   has_many :similar_imprintables, through: :imprintable_groups, source: :imprintables
+  has_many :imprintable_photos
+  has_many :assets, through: :imprintable_photos
 
-  accepts_nested_attributes_for :imprintable_categories, :imprintable_imprintable_groups, allow_destroy: true
+  accepts_nested_attributes_for :imprintable_categories,
+                                :imprintable_imprintable_groups,
+                                :imprintable_photos,
+                                :print_location_imprintables,
+                                allow_destroy: true
+
   accepts_nested_attributes_for :imprintable_variants
 
   validates :brand, presence: true
@@ -120,7 +126,7 @@ class Imprintable < ActiveRecord::Base
                      },
              allow_blank: true
 
-  validates :base_price, presence: true, unless: proc { imprintable_imprintable_groups.empty? }
+  validates :imprintable_variants, :base_price, presence: true, unless: proc { imprintable_imprintable_groups.empty? }
 
   validates :water_resistance_level, inclusion: { in: WATER_RESISTANCE_LEVELS, message: "is not 'not_water_resistant', 'water_resistant', or 'waterproof'" }, if: :water_resistance_level
   validates :sleeve_type, inclusion: { in: SLEEVE_TYPES, message: "is not a valid sleeve type" }, if: :sleeve_type
@@ -133,6 +139,22 @@ class Imprintable < ActiveRecord::Base
 
   def self.find(param)
     unscoped.where(deleted_at: nil).find(param)
+  end
+
+  def photo_urls
+    assets.map { |a| { medium: a.file.url(:medium), original: a.file.url(:original), thumb: a.file.url(:thumb)} }
+  end
+
+  def default_photo_url
+    { thumb: imprintable_photos.default.try(:asset).try(:file).try(:url, :thumb), medium: imprintable_photos.default.try(:asset).try(:file).try(:url, :medium), original: imprintable_photos.default.try(:asset).try(:file).try(:url, :original) } rescue {}
+  end
+
+  def brand_name
+    brand.name
+  end
+
+  def imprintable_category_names
+    imprintable_categories.pluck(:name)
   end
 
   def compatible_print_methods
@@ -239,6 +261,26 @@ class Imprintable < ActiveRecord::Base
       }
     end
     max_imprint_sizes
+  end
+
+  def cant_be_added_to_quote_reason(view = nil)
+    if discontinued?
+      "Discontinued"
+    elsif base_price.blank?
+      msg = "Imprintable has no base price"
+      if view
+        msg + " #{view.link_to '(edit)', view.edit_imprintable_path(self), target: :_blank}"
+      else
+        msg
+      end
+    elsif imprintable_variants.empty?
+      msg = "Imprintable has no imprintable variants"
+      if view
+        msg + " #{view.link_to '(edit)', view.edit_imprintable_path(self), target: :_blank}"
+      else
+        msg
+      end
+    end
   end
 
   %i(base xxl xxxl xxxxl xxxxxl xxxxxxl).each do |pre|

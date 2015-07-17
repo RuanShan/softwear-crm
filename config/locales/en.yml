@@ -100,7 +100,7 @@ en:
                             you will be contacted by a salesperson so that alternate options may be discussed.</p>"
 
   quote_no_fd_id: "You don't have a ticket id entered for this quote. Please enter a ticket
-                   ID from freshdesk in the details tab to continue."
+                   ID from freshdesk in the details tab or press the button to create a new ticket."
 
   quote_invalid_fd_id: "Could not find the freshdesk ticket for the ticket ID entered.
                             Please double check ticket ID is correct."

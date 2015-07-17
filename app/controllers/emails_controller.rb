@@ -1,16 +1,13 @@
 class EmailsController < InheritedResources::Base
-  belongs_to :quote, :order, :polymorphic => true
+  belongs_to :quote, :order, :quote_request, :polymorphic => true
 
+  before_filter :assign_info, only: [:new, :create]
   before_filter :find_email_templates, only: [:new, :create]
 
   respond_to :html, :js
 
   def new
-    if params[:freshdesk]
-      @freshdesk = true
-    else
-      @freshdesk = false
-    end
+    @freshdesk = !params[:freshdesk].blank?
     if params[:email_template_id]
       populate_fields_from_template
       new!
@@ -31,16 +28,16 @@ class EmailsController < InheritedResources::Base
   end
 
   def freshdesk
-    @quote = Quote.find(params.permit(:quote_id)[:quote_id])
     @email = Email.new(permitted_params[:email])
     @email.freshdesk = true
-    @email.emailable = @quote
   end
 
   private
 
   def permitted_params
-    params.permit(email: %i(subject to from cc bcc body plaintext_body freshdesk))
+    params.permit(
+      email: %i(subject to from cc bcc body plaintext_body freshdesk emailable_type emailable_id)
+    )
   end
 
   def send_email
@@ -48,14 +45,20 @@ class EmailsController < InheritedResources::Base
   end
 
   def find_email_templates
-    @email_templates = EmailTemplate.where(template_type: parent.class.to_s)
+    @email_templates = EmailTemplate.where(template_type: parent.class.name)
   end
 
   def populate_fields_from_template
     @email_template = EmailTemplate.find(params[:email_template_id])
     @email = Email.new if @email.nil?
-    @quote = Quote.find(params[:quote_id])
-    @email.populate_fields_from_template(@email_template, quote: @quote, salesperson: current_user)
+
+    @email.populate_fields_from_template(@email_template, @object_model => @object, salesperson: current_user)
+  end
+
+  def assign_info
+    @object_model = parent.class.name.underscore
+    @object_type = parent.class.name.underscore.humanize
+    @object = @quote || @quote_request || @order
   end
 
 end

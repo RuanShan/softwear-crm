@@ -23,28 +23,6 @@
         <p class="help-block">The material weight</p>
       </div>
 
-        <div class="form-group">
-            <%= f.label :max_imprint_width, class: 'control-label' %>
-            <div class="input-group">
-                <%= f.error_for :max_imprint_width %>
-                <%= f.text_field :max_imprint_width,
-                                 class: 'form-control',
-                                 placeholder: 'Width (0.00) in inches' %>
-                <span class='input-group-addon'>inches</span>
-            </div>
-        </div>
-
-      <div class="form-group">
-        <%= f.label :max_imprint_height, class: 'control-label' %>
-          <div class="input-group">
-            <%= f.error_for :max_imprint_height %>
-            <%= f.text_field :max_imprint_height,
-                             class: 'form-control',
-                             placeholder: 'Height (0.00) in inches' %>
-            <span class='input-group-addon'>inches</span>
-          </div>
-      </div>
-
       <div class="form-group">
         <%= f.label :sizing_category, 'Sizing Category',
                     class: 'control-label' %>
@@ -80,25 +58,13 @@
       </div>
 
       <div class="form-group">
-        <%= f.label :compatible_imprint_method_ids, 'Compatible Imprint Methods',
-                    class: 'control-label' %>
+        <div><%= label_tag 'Compatible print methods and locations' %></div>
+        <%= f.fields_for :print_location_imprintables %>
+        <%= link_to_add_fields 'Add Compatible Print', f, :print_location_imprintables %>
 
-        <%= f.error_for :compatible_imprint_method_ids %>
-
-          <%= f.collection_select :compatible_imprint_method_ids,
-                                  model_collection_hash[:imprint_method_collection],
-                                  :id,
-                                  :name,
-                                  {},
-                                  {
-                                          class: 'chosen-select',
-                                          data: { placeholder: 'Select compatible imprint methods' },
-                                          multiple: true
-                                  } %>
-
-          <p class="help-block">
-            What imprint methods work with the imprintable
-          </p>
+        <p class="help-block">
+          What imprint methods and locations work with the imprintable
+        </p>
       </div>
 
       <div class="form-group">
@@ -109,5 +75,9 @@
           <%= f.text_area :special_considerations, class: 'form-control' %>
       </div>
 
+    </div>
+
+    <div class='box-info'>
+      <%= render 'edit_photos', f: f %>
     </div>
 </div>

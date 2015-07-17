@@ -1,25 +1,29 @@
-<% activity.parameters['imprintables'].each do |key, val| %>
-  <% if activity.trackable_type %>
-    <p>Added Imprintable(s) <%= key %> for quote, <% unless activity.trackable.nil? %>
-      <%= link_to activity.trackable.name, activity.trackable %>
-  <% else %>
-    which has since been removed
-  <% end %>
-  </p>
-    <ul>
-      <b>With a quantity of: </b> <%= val['quantity'] %> 
-      <b>With a decoration price of: </b>$<%= val['decoration_price'] %>
-      <b>With an imprintable price of: </b>$<%= val['imprintable_price'] %>
-      <b>Tier: </b><%= val['tier'] %>
-      <b>Group_ID: </b><%= val['group_id'] %>
-    </ul>
-  <% else %>
-    Added something...
-  <% end %>
-<% end %>
+<% begin %>
+  <p>Added imprintable(s) to quote, <%= trackable_link_or_unavailable(activity) %><p>
+  <dl>
+    <% p = activity.parameters %>
+    <% p['imprintables'].each do |li_id, val| %>
+      <% if ImprintableVariant.exists?(val['imprintable_id']) %>
+        <dt><%= ImprintableVariant.find(val['imprintable_id']).imprintable.name %></dt>
+      <% else %>
+        <dt>Imprintable No Longer Exists</dt>
+      <% end %>
+      <dd><b>Quantity:</b> <%= val['quantity'] %></dd>
+      <dd><b>Imp. Price:</b> <%= number_to_currency val['imprintable_price'] %></dd>
+      <dd><b>Total Price:</b> <%= number_to_currency(val['imprintable_price']+ p['decoration_price']) rescue 'n/a' %></dd>
+    <% end %>
 
-<% if activity.recipient && activity.recipient != activity.trackable %>
-  to
-  <%= activity.recipient_type.underscore.humanize.downcase %>
-  <%= link_to activity.recipient.name, activity.recipient %>
+    <dd><b>Group:</b>
+      <% if Job.exists?(id: p['group_id']) %> 
+        <%= Job.find(p['group_id']).name %>
+      <% else %>
+        Has Been Removed
+      <% end %>
+    </dd>
+    <dd><b>Tier:</b> <%= Imprintable::TIERS[p['tier']] %></dd>
+    <dd><b>Quantity:</b> <%= p['quantity'] %></dd>
+    <dd><b>Decoration:</b> <%= number_to_currency(p['decoration_price']) %></dd>    
+  </dl>
+<% rescue Exception => e %>
+  <p>Something went terribly wrong</p>
 <% end %>

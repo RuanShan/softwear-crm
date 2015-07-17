@@ -1,8 +1,8 @@
 <% begin %>
   <% if activity.trackable.jobs.exists?(id: activity.parameters["id"]) %>
-    <p>Added a line item group, <%= activity.parameters["name"] %></p>
+    <p>Added a line item group, <%= activity.parameters["name"] %> to quote <%= trackable_link_or_unavailable(activity) %></p>
   <% else %>
-    <p>Added a line item group, which has since been removed, called <%= activity.parameters["name"] %></p>
+    <p>Added a line item group, which has since been removed, called <%= activity.parameters["name"] %>, on quote <%= trackable_link_or_unavailable(activity) %></p>
   <% end %>
   <dl>
     <dt>Details</dt>

@@ -13,9 +13,9 @@ feature 'Quote Requests Management', js: true, quote_request_spec: true do
 
   scenario 'A user can change the assignment of a quote request', story_80: true, story_692: true do
     visit quote_requests_path
-    page.find('span.editable').click
-    page.find('div.editable-input').find("option[value='#{valid_user.id}']").click
-    page.find('button.editable-submit').click
+    all('span.editable').last.click
+    find('div.editable-input').find("option[value='#{valid_user.id}']").click
+    find('button.editable-submit').click
     wait_for_ajax
     expect(QuoteRequest.where(salesperson_id: valid_user.id)).to exist
   end
@@ -24,7 +24,7 @@ feature 'Quote Requests Management', js: true, quote_request_spec: true do
     quote_request.salesperson_id = nil
     quote_request.save
     visit quote_requests_path
-    page.find('span.editable').click
+    all('span.editable').last.click
     page.find('div.editable-input').find("option[value='#{valid_user.id}']").click
     sleep 0.5
     page.find('button.editable-submit').click
@@ -111,6 +111,33 @@ feature 'Quote Requests Management', js: true, quote_request_spec: true do
       find("div.editable-input select option[value='#{new_salesperson.id}']").click
       find("div.editable-buttons button[type='submit']").click
       expect(page).to have_content new_salesperson.full_name
+    end
+  end
+
+  context 'Freshdesk' do
+    scenario 'A user can create a freshdesk ticket', retry: 6, story_726: true do
+      expect_any_instance_of(QuoteRequest).to receive(:create_freshdesk_ticket)
+
+      visit quote_request_path(quote_request)
+      click_link 'Create Freshdesk Ticket'
+
+      sleep 2
+
+      expect(page).to have_content "Freshdesk ticket created!"
+    end
+
+    scenario 'A user can set up an email for freshdesk', story_726: true do
+      quote_request.update_attributes!(
+        freshdesk_ticket_id: 123
+      )
+
+      visit quote_request_path(quote_request)
+      click_link 'Prepare for Freshdesk'
+
+      fill_in 'Body', with: '<div class="spec726">Hey there</div>'
+      sleep 1
+      click_button 'Prepare for Freshdesk'
+      expect(page).to have_css('.spec726', text: 'Hey there')
     end
   end
 end

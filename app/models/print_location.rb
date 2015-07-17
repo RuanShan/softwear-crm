@@ -9,4 +9,8 @@ class PrintLocation < ActiveRecord::Base
   validates :name, presence: true, uniqueness: { scope: :imprint_method }
 
   default_scope { order(:name) }
+
+  def qualified_name
+    "#{name} (#{imprint_method.name})"
+  end
 end

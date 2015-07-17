@@ -32,12 +32,23 @@ module Api
       [
         :common_name,
         :base_upcharge,  :xxl_upcharge,    :xxxl_upcharge,
-        :xxxxl_upcharge, :xxxxxl_upcharge, :xxxxxxl_upcharge
+        :xxxxl_upcharge, :xxxxxl_upcharge, :xxxxxxl_upcharge,
+        :default_photo_url, :photo_urls, :supplier_link, :brand_name,
+        :coordinate_ids, :similar_imprintable_ids,
+        :imprintable_category_names,
       ]
     end
 
     def includes
-      # [:colors, :sizes, :imprintable_variants]
+      [
+        :colors, :sizes,
+        imprintable_variants: {
+          include: {
+            color: { only: [:name, :hexcode] },
+            size: { only: [:name, :display_value, :sort_order] }
+          }
+        }
+      ]
     end
   end
 end

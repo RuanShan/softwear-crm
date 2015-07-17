@@ -1,16 +1,10 @@
 function freshdeskCopyBtn(event) {
   event.preventDefault();
 
-  var quoteId = $(this).data('quote-id');
   var serialized = $('form.new_email').serializeArray();
   var data = {email: {}};
 
   serialized.forEach(function(item) {
-    if (item.name == 'quote_id') {
-      data.quote_id = item.value;
-      return;
-    }
-
     var name = item.name.match(/\[\w+\]/g);
     if (!name) return;
     name = name[0];
@@ -23,7 +17,7 @@ function freshdeskCopyBtn(event) {
 
   $.ajax({
     method: 'POST',
-    url: Routes.freshdesk_quote_emails_path(quoteId),
+    url: Routes.email_freshdesk_path(),
 
     data: data,
     dataType: 'script'

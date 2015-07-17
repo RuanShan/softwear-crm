@@ -143,46 +143,51 @@ class ImprintablesController < InheritedResources::Base
   def permitted_params
     params.permit(
       :q, :respond_with_partial, :id,
-      imprintable:
-        [
+      imprintable: [
+        :water_resistance_level,
+        :sleeve_type,
+        :sleeve_length,
+        :neck_style,
+        :neck_size,
+        :fabric_type,
+        :is_stain_resistant,
+        :fit_type,
+        :fabric_wash,
+        :department_name,
+        :chest_size,
+        :package_height,
+        :package_width,
+        :package_length,
 
-    :water_resistance_level,
-    :sleeve_type,
-    :sleeve_length,
-    :neck_style,
-    :neck_size,
-    :fabric_type,
-    :is_stain_resistant,
-    :fit_type,
-    :fabric_wash,
-    :department_name,
-    :chest_size,
-    :package_height,
-    :package_width,
-    :package_length,
-
-          :flashable, :polyester, :special_considerations,
-          :material, :brand_id, :style_name, :style_catalog_no,
-          :style_description, :sku, :retail, :color_check,
-          :size_check, :max_imprint_width, :max_imprint_height,
-          :weight, :supplier_link, :main_supplier,
-          :base_price, :xxl_price, :xxxl_price, :xxxxl_price, :xxxxxl_price,
-          :base_price_ok, :xxl_price_ok, :xxxl_price_ok, :xxxxl_price_ok, :xxxxxl_price_ok, :xxxxxxl_price_ok,
-          :base_upcharge,
-          :xxxxxxl_price, :xxl_upcharge, :xxxl_upcharge, :xxxxl_upcharge,
-          :xxxxxl_upcharge, :xxxxxxl_upcharge, :tag_list, :standard_offering,
-          :proofing_template_name, :sizing_category, :common_name, :discontinued,
-          sample_location_ids: [],
-          coordinate_ids: [],
-          compatible_imprint_method_ids: [],
-          imprintable_categories_attributes:
-            [
-              :name, :imprintable_id, :id, :_destroy
-            ],
-          imprintable_variants_attributes:
-            [
-              :weight, :imprintable_id, :id
-            ]
+        :flashable, :polyester, :special_considerations,
+        :material, :brand_id, :style_name, :style_catalog_no,
+        :style_description, :sku, :retail, :color_check,
+        :size_check, :max_imprint_width, :max_imprint_height,
+        :weight, :supplier_link, :main_supplier,
+        :base_price, :xxl_price, :xxxl_price, :xxxxl_price, :xxxxxl_price,
+        :base_price_ok, :xxl_price_ok, :xxxl_price_ok, :xxxxl_price_ok, :xxxxxl_price_ok,
+        :xxxxxxl_price_ok, :base_upcharge,
+        :xxxxxxl_price, :xxl_upcharge, :xxxl_upcharge, :xxxxl_upcharge,
+        :xxxxxl_upcharge, :xxxxxxl_upcharge, :tag_list, :standard_offering,
+        :proofing_template_name, :sizing_category, :common_name, :discontinued,
+        sample_location_ids: [],
+        coordinate_ids: [],
+        compatible_imprint_method_ids: [],
+        imprintable_categories_attributes: [
+          :name, :imprintable_id, :id, :_destroy
+        ],
+        imprintable_variants_attributes: [
+          :weight, :imprintable_id, :id
+        ],
+        imprintable_photos_attributes: [
+          :id, :default, :color_id, :_destroy,
+          asset_attributes: [
+            :id, :file, :file_url, :_destroy,
+          ]
+        ],
+        print_location_imprintables_attributes: [
+          :id, :print_location_id, :max_imprint_width, :max_imprint_height, :_destroy
+        ]
       ]
     )
   end

@@ -65,17 +65,17 @@ feature 'Quotes management', quote_spec: true, js: true, retry: 2 do
     expect(page).to have_selector('.box-info')
   end
 
-  context 'A user can prepare for freshdesk', story_639: true, js: true do
+  context 'Freshdesk', story_639: true, js: true do
      given!(:fd_ticket) do   {
-      "created_at" => "Thu, 21 May 2015 15:57:32 EDT -04:00",  
-      "notes" => 
+      "created_at" => "Thu, 21 May 2015 15:57:32 EDT -04:00",
+      "notes" =>
       [
-        {"note" => {"body_html" => "<p></p><blockquote class=\"freshdesk_quote\">wasabi451</blockquote>", "created_at" => "aba" }} 
+        {"note" => {"body_html" => "<p></p><blockquote class=\"freshdesk_quote\">wasabi451</blockquote>", "created_at" => "aba" }}
       ]
      }
      end
 
-    background(:each) do 
+    background(:each) do
       allow_any_instance_of(Quote).to receive(:no_ticket_id_entered?).and_return false
       allow_any_instance_of(Quote).to receive(:no_fd_login?).and_return false
       allow_any_instance_of(Quote).to receive(:has_freshdesk_ticket?).and_return true
@@ -145,21 +145,34 @@ feature 'Quotes management', quote_spec: true, js: true, retry: 2 do
     expect(quote.reload.name).to eq('New Quote Name')
   end
 
+  scenario 'A user can change the shipping cost', story_711: true do
+    visit edit_quote_path quote
+    find('a', text: 'Details').click
+    fill_in 'Shipping', with: '12'
+    click_button 'Save'
+
+    expect(quote.reload.shipping).to eq(12.00)
+
+    visit edit_quote_path quote
+    find('a', text: 'Details').click
+    expect(page).to have_css('#quote_shipping[value="12.0"]')
+  end
+
   scenario 'Insightly forms dynamically changed fields', edit: true do
     allow_any_instance_of(InsightlyHelper).to receive(:insightly_available?).and_return true
-    allow_any_instance_of(InsightlyHelper).to receive(:insightly_categories).and_return [] 
-    allow_any_instance_of(InsightlyHelper).to receive(:insightly_pipelines).and_return [] 
-    allow_any_instance_of(InsightlyHelper).to receive(:insightly_opportunity_profiles).and_return [] 
-    allow_any_instance_of(InsightlyHelper).to receive(:insightly_bid_tiers).and_return ["unassigned", "Tier 1 ($1 - $249)", "Tier 2 ($250 - $499)", "Tier 3 ($500 - $999)", "Tier 4 ($1000 and up)"] 
+    allow_any_instance_of(InsightlyHelper).to receive(:insightly_categories).and_return []
+    allow_any_instance_of(InsightlyHelper).to receive(:insightly_pipelines).and_return []
+    allow_any_instance_of(InsightlyHelper).to receive(:insightly_opportunity_profiles).and_return []
+    allow_any_instance_of(InsightlyHelper).to receive(:insightly_bid_tiers).and_return ["unassigned", "Tier 1 ($1 - $249)", "Tier 2 ($250 - $499)", "Tier 3 ($500 - $999)", "Tier 4 ($1000 and up)"]
 
     visit new_quote_path
-    click_button 'Next' 
-    click_button 'Next' 
+    click_button 'Next'
+    click_button 'Next'
    # select "Email", :from => "Category"
     expect(page).to have_select('Bid Tier', :selected => "unassigned")
     fill_in 'Estimated Quote', with: '200'
     fill_in 'Opportunity ID', with: '200'
-    expect(page).to have_field("Bid Amount", :with => "200") 
+    expect(page).to have_field("Bid Amount", :with => "200")
     expect(page).to have_select('Bid Tier', :selected => "Tier 1 ($1 - $249)")
     fill_in 'Estimated Quote', with:'275'
     fill_in 'Opportunity ID', with: '300'
@@ -178,9 +191,9 @@ feature 'Quotes management', quote_spec: true, js: true, retry: 2 do
   scenario 'A users options are properly saved', edit: true, story_692: true do
     visit edit_quote_path quote.id
     click_link 'Details'
-    select 'No', :from => "Informal quote?" 
-    select 'No', :from => "Did the Customer Request a Specific Deadline?" 
-    select 'Yes', :from => "Is this a rush job?" 
+    select 'No', :from => "Informal quote?"
+    select 'No', :from => "Did the Customer Request a Specific Deadline?"
+    select 'Yes', :from => "Is this a rush job?"
     click_button 'Save'
     visit current_path
     click_link 'Details'
@@ -256,28 +269,28 @@ feature 'Quotes management', quote_spec: true, js: true, retry: 2 do
       click_button 'Add Imprintable(s)'
       click_button 'OK'
       visit edit_quote_path quote
-      
+
       expect(page).to have_content '19.95'
       expect(page).to have_content '6'
     end
 
   end
 
-  scenario 'Adding a note is tracked by public activity', story_600: true do 
+  scenario 'Adding a note is tracked by public activity', story_600: true do
     PublicActivity.with_tracking do
       visit edit_quote_path quote
-      click_link 'Notes' 
-      fill_in 'Title', with: 'Hi There' 
-      fill_in 'Comment', with: 'Comment' 
+      click_link 'Notes'
+      fill_in 'Title', with: 'Hi There'
+      fill_in 'Comment', with: 'Comment'
       click_button 'Add Note'
       wait_for_ajax
-      click_link 'Timeline' 
+      click_link 'Timeline'
       visit edit_quote_path quote
       expect(page).to have_link 'Hi There'
     end
   end
-    
-  scenario 'Adding a markup/upcharge is tracked by public activity', no_ci: true, retry: true, story_600: true, story_692: true do 
+
+  scenario 'Adding a markup/upcharge is tracked by public activity', no_ci: true, retry: 3, story_600: true, story_692: true do
     PublicActivity.with_tracking do
       imprintable_group; imprint_method_1; imprint_method_2
       visit edit_quote_path quote
@@ -298,20 +311,20 @@ feature 'Quotes management', quote_spec: true, js: true, retry: 2 do
       click_button 'Add Imprintable Group'
       click_button 'OK'
       visit edit_quote_path quote
-      click_link 'Line Items' 
+      click_link 'Line Items'
       click_link "Add An Option or Markup"
-      fill_in 'Name', with: 'Mr. Money' 
-      fill_in 'line_item[description]', with: 'Cash' 
-      fill_in 'Url', with: 'www.mrmoney.com' 
-      fill_in 'Unit price', with: '999' 
+      fill_in 'Name', with: 'Mr. Money'
+      fill_in 'line_item[description]', with: 'Cash'
+      fill_in 'Url', with: 'www.mrmoney.com'
+      fill_in 'Unit price', with: '999'
       click_button 'Add Option or Markup'
       sleep 2
       click_button 'OK'
       visit edit_quote_path quote
       expect(page).to have_content 'Mr. Money'
-      expect(page).to have_content 'Cash' 
-      expect(page).to have_content 'www.mrmoney.com' 
-      expect(page).to have_content '999' 
+      expect(page).to have_content 'Cash'
+      expect(page).to have_content 'www.mrmoney.com'
+      expect(page).to have_content '999'
     end
   end
 
@@ -554,6 +567,26 @@ feature 'Quotes management', quote_spec: true, js: true, retry: 2 do
     expect(job.line_items.where(imprintable_variant_id: iv1.id)).to exist
     expect(job.line_items.where(imprintable_variant_id: iv2.id)).to_not exist
     expect(job.line_items.where(imprintable_variant_id: iv3.id)).to exist
+  end
+
+  scenario 'A user cannot submit adding an imprintable without selecting anything', revamp: true, story_730: true do
+    quote.jobs << create(:job, line_items: [create(:imprintable_line_item)])
+    job = quote.jobs.first
+    visit edit_quote_path quote
+
+    find('a', text: 'Line Items').click
+
+    click_link 'Add an imprintable'
+    sleep 1
+
+    select quote.jobs.first.name, from: 'Group'
+    select 'Better', from: 'Tier'
+    fill_in 'Quantity', with: '6'
+    fill_in 'Decoration price', with: '19.95'
+
+    click_button 'Add Imprintable(s)'
+
+    expect(page).to have_content 'Please mark at least one imprintable to be added.'
   end
 
   scenario 'A user can add an option/markup to a quote', revamp: true, story_558: true, story_692: true do

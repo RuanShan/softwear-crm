@@ -5,9 +5,11 @@
   <% end %>
 
   <%= qr_t(:tbody) do %>
-    <%= qr_t(:tr) do %>
-      <%= qr_t(:td) do %><strong>Salesperson:</strong><% end %>
-      <%= qr_t(:td) do %><%= quote_request.salesperson.try(:name) || 'Empty' %><% end %>
+    <% unless local_assigns[:no_salesperson] %>
+      <%= qr_t(:tr) do %>
+        <%= qr_t(:td) do %><strong>Salesperson:</strong><% end %>
+        <%= qr_t(:td) do %><%= quote_request.salesperson.try(:name) || 'Empty' %><% end %>
+      <% end %>
     <% end %>
     <%= qr_t(:tr) do %>
       <%= qr_t(:td) do %><strong>Name:</strong><% end %>
@@ -31,7 +33,7 @@
     <% end %>
     <%= qr_t(:tr) do %>
       <%= qr_t(:td) do %><strong>Date Needed:</strong><% end %>
-      <%= qr_t(:td) do %><%= quote_request.date_needed.strftime('%F %-I:%M%p') %><% end %>
+      <%= qr_t(:td) do %><%= quote_request.date_needed.try(:strftime, '%F %-I:%M%p') || 'Not specified' %><% end %>
     <% end %>
     <%= qr_t(:tr) do %>
       <%= qr_t(:td) do %><strong>Source:</strong><% end %>

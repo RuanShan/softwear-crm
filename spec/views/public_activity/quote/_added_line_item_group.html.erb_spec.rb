@@ -30,7 +30,6 @@ require 'spec_helper'
       end
     end
 
-
    context 'new line item group has multiple imprintables' do 
     it 'displays both imprintable prices' do
        expect(rendered).to have_text("Price: $2.00")

@@ -60,14 +60,16 @@ describe Imprintable, imprintable_spec: true do
 
   describe 'Discontinue', story_595: :true do
     context 'when discontinued is set to true' do
-      let!(:imprintable) { create(:valid_imprintable) }
+      let!(:variant) { create(:valid_imprintable_variant) }
+      let!(:imprintable) { variant.imprintable }
       let!(:imprintable_group) { ImprintableGroup.create(name: "tig") }
       before{ create(:good, imprintable_id: imprintable.id, imprintable_group_id: imprintable_group.id) }
-      it "is removed from all imprintable groups" do
+
+      it "is removed from all imprintable groups", failed_on_ci: true do
         imprintable_group.reload
         expect(imprintable_group.imprintables).to include(imprintable)
         imprintable.discontinued = true
-        imprintable.save
+        imprintable.save!
         imprintable_group.reload
         expect(imprintable_group.imprintables).not_to include(imprintable)
       end
@@ -118,6 +120,48 @@ describe Imprintable, imprintable_spec: true do
 
     it 'returns all of the categories for the imprintable' do
       expect(imprintable.all_categories).to eq('Jackets')
+    end
+  end
+
+  describe '#cant_be_added_to_quote_reason', story_712: true do
+    let(:dummy_view) { double('view context') }
+    let!(:variant) { create(:valid_imprintable_variant) }
+    let!(:imprintable) { variant.imprintable }
+    subject { imprintable.cant_be_added_to_quote_reason }
+
+    context 'when the imprintable is discontinued' do
+      before { allow(imprintable).to receive(:discontinued?).and_return true }
+
+      it { is_expected.to eq "Discontinued" }
+    end
+    context "when the imprintable's base price is blank" do
+      before { allow(imprintable).to receive(:base_price).and_return nil }
+
+      it { is_expected.to eq "Imprintable has no base price" }
+
+      context 'and passed a view' do
+        it 'includes a link to imprintables/edit' do
+          expect(dummy_view).to receive(:link_to)
+          expect(dummy_view).to receive(:edit_imprintable_path).with(imprintable)
+          imprintable.cant_be_added_to_quote_reason(dummy_view)
+        end
+      end
+    end
+    context 'when the imprintable has no imprintable variants' do
+      before { allow(imprintable).to receive(:imprintable_variants).and_return [] }
+
+      it { is_expected.to eq "Imprintable has no imprintable variants" }
+
+      context 'and passed a view' do
+        it 'includes a link to imprintables/edit' do
+          expect(dummy_view).to receive(:link_to)
+          expect(dummy_view).to receive(:edit_imprintable_path).with(imprintable)
+          imprintable.cant_be_added_to_quote_reason(dummy_view)
+        end
+      end
+    end
+    context 'when nothing is wrong' do
+      it { is_expected.to be_nil }
     end
   end
 

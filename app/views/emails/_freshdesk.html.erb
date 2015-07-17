@@ -12,15 +12,15 @@
 
   <li class="freshdesk-step">
     Go to the 
-      <%= link_to 'Freshdesk Ticket', @quote.freshdesk_ticket_link, class: 'btn btn-success btn-sm', target: '_blank'  %>
+      <%= link_to 'Freshdesk Ticket', email.emailable.freshdesk_ticket_link, class: 'btn btn-success btn-sm', target: '_blank'  %>
     , create a reply, and press Ctrl+V to paste the text in the body of your quote.
   </li>
 </ol>
 
 <div id='freshdesk-email-temp'>
   <% if email.body.blank? %>
-    <%= @email.plaintext_body %>
+    <%= email.plaintext_body %>
   <% else %>
-    <%= raw @email.body %>
+    <%= raw email.body %>
   <% end %>
 </div>

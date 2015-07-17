@@ -1,0 +1,20 @@
+<div class='col-sm-12'>
+<%= f.select :print_location_id, option_groups_from_collection_for_select(ImprintMethod.joins(:print_locations).uniq, :print_locations, :name, :id, :qualified_name, f.object.print_location_id), {}, class: 'select2 select-print-location' %>
+
+  <div class='col-sm-6'>
+    <%= f.label :max_imprint_width %>:
+  </div>
+  <div class='col-sm-6'>
+    <%= f.text_field :max_imprint_width %>
+  </div>
+
+  <div class='col-sm-6'>
+    <%= f.label :max_imprint_height %>:
+  </div>
+  <div class='col-sm-6'>
+    <%= f.text_field :max_imprint_height %>
+  </div>
+
+  <%= f.try(:link_to_remove, 'Remove', class: 'btn btn-danger') %>
+  <hr />
+</div>

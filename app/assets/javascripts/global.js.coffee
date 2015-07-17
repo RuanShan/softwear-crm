@@ -84,12 +84,12 @@ $(document).ajaxStop(->
     $add.attr 'disabled', 'disabled'
     setTimeout (-> $add.removeAttr 'disabled'), 5000
 
-@shine = (element, returnDefault, duration) ->
+@shine = (element, returnDefault, duration, color) ->
   returnDefault = false if returnDefault is null
   $element = $(element)
   returnColor = 'default'
   returnColor = $element.css('background-color') unless returnDefault
-  $element.css('background-color', '#99ffbb')
+  $element.css('background-color', (color or '#99ffbb'))
   $element.animate {backgroundColor: returnColor}, (duration or 1000), -> $element.css 'background-color', ''
 
 #@summernoteSubmit = ->

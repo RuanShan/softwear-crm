@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150623174623) do
+ActiveRecord::Schema.define(version: 20150716204310) do
 
   create_table "activities", force: :cascade do |t|
     t.integer  "trackable_id",   limit: 4
@@ -104,7 +104,7 @@ ActiveRecord::Schema.define(version: 20150623174623) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.datetime "deleted_at"
-    t.boolean  "retail",     limit: 1,   default: false
+    t.boolean  "retail",                 default: false
   end
 
   add_index "brands", ["deleted_at"], name: "index_brands_on_deleted_at", using: :btree
@@ -116,7 +116,7 @@ ActiveRecord::Schema.define(version: 20150623174623) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.datetime "deleted_at"
-    t.boolean  "retail",     limit: 1,   default: false
+    t.boolean  "retail",                 default: false
     t.string   "hexcode",    limit: 255
   end
 
@@ -148,6 +148,14 @@ ActiveRecord::Schema.define(version: 20150623174623) do
 
   add_index "coordinate_imprintables", ["coordinate_id", "imprintable_id"], name: "coordinate_imprintable_index", using: :btree
 
+  create_table "customer_uploads", force: :cascade do |t|
+    t.string   "filename",         limit: 255
+    t.string   "url",              limit: 255
+    t.integer  "quote_request_id", limit: 4
+    t.datetime "created_at",                   null: false
+    t.datetime "updated_at",                   null: false
+  end
+
   create_table "email_templates", force: :cascade do |t|
     t.string   "subject",        limit: 255
     t.string   "from",           limit: 255
@@ -174,7 +182,7 @@ ActiveRecord::Schema.define(version: 20150623174623) do
     t.datetime "updated_at"
     t.string   "bcc",            limit: 255
     t.text     "plaintext_body", limit: 65535
-    t.boolean  "freshdesk",      limit: 1
+    t.boolean  "freshdesk"
   end
 
   create_table "freshdesk_local_contacts", force: :cascade do |t|
@@ -200,7 +208,7 @@ ActiveRecord::Schema.define(version: 20150623174623) do
     t.datetime "deleted_at"
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.boolean  "deletable",  limit: 1,   default: true
+    t.boolean  "deletable",              default: true
   end
 
   add_index "imprint_methods", ["deleted_at"], name: "index_imprint_methods_on_deleted_at", using: :btree
@@ -222,7 +230,15 @@ ActiveRecord::Schema.define(version: 20150623174623) do
     t.integer "imprintable_id",       limit: 4
     t.integer "imprintable_group_id", limit: 4
     t.integer "tier",                 limit: 4
-    t.boolean "default",              limit: 1
+    t.boolean "default"
+  end
+
+  create_table "imprintable_photos", force: :cascade do |t|
+    t.integer  "color_id",       limit: 4
+    t.integer  "imprintable_id", limit: 4
+    t.boolean  "default"
+    t.datetime "created_at",               null: false
+    t.datetime "updated_at",               null: false
   end
 
   create_table "imprintable_stores", force: :cascade do |t|
@@ -250,14 +266,14 @@ ActiveRecord::Schema.define(version: 20150623174623) do
   create_table "imprintables", force: :cascade do |t|
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.boolean  "flashable",              limit: 1
+    t.boolean  "flashable"
     t.text     "special_considerations", limit: 65535
-    t.boolean  "polyester",              limit: 1
+    t.boolean  "polyester"
     t.string   "sizing_category",        limit: 255
     t.datetime "deleted_at"
     t.text     "proofing_template_name", limit: 65535
     t.string   "material",               limit: 255
-    t.boolean  "standard_offering",      limit: 1
+    t.boolean  "standard_offering"
     t.string   "main_supplier",          limit: 255
     t.string   "supplier_link",          limit: 255
     t.string   "weight",                 limit: 255
@@ -271,7 +287,7 @@ ActiveRecord::Schema.define(version: 20150623174623) do
     t.string   "style_catalog_no",       limit: 255
     t.text     "style_description",      limit: 65535
     t.string   "sku",                    limit: 255
-    t.boolean  "retail",                 limit: 1,                              default: false
+    t.boolean  "retail",                                                        default: false
     t.integer  "brand_id",               limit: 4
     t.decimal  "max_imprint_width",                    precision: 8,  scale: 2
     t.decimal  "max_imprint_height",                   precision: 8,  scale: 2
@@ -282,14 +298,14 @@ ActiveRecord::Schema.define(version: 20150623174623) do
     t.decimal  "xxxxxl_upcharge",                      precision: 10, scale: 2
     t.decimal  "xxxxxxl_upcharge",                     precision: 10, scale: 2
     t.decimal  "base_upcharge",                        precision: 10, scale: 2
-    t.boolean  "discontinued",           limit: 1,                              default: false
+    t.boolean  "discontinued",                                                  default: false
     t.string   "water_resistance_level", limit: 255
     t.string   "sleeve_type",            limit: 255
     t.string   "sleeve_length",          limit: 255
     t.string   "neck_style",             limit: 255
     t.string   "neck_size",              limit: 255
     t.string   "fabric_type",            limit: 255
-    t.boolean  "is_stain_resistant",     limit: 1
+    t.boolean  "is_stain_resistant"
     t.string   "fit_type",               limit: 255
     t.string   "fabric_wash",            limit: 255
     t.string   "department_name",        limit: 255
@@ -310,7 +326,7 @@ ActiveRecord::Schema.define(version: 20150623174623) do
     t.datetime "deleted_at"
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.boolean  "has_name_number",   limit: 1
+    t.boolean  "has_name_number"
     t.integer  "name_number_id",    limit: 4
     t.string   "name_format",       limit: 255
     t.string   "number_format",     limit: 255
@@ -335,7 +351,7 @@ ActiveRecord::Schema.define(version: 20150623174623) do
     t.datetime "deleted_at"
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.boolean  "collapsed",     limit: 1
+    t.boolean  "collapsed"
     t.string   "jobbable_type", limit: 255
   end
 
@@ -355,7 +371,7 @@ ActiveRecord::Schema.define(version: 20150623174623) do
   create_table "line_items", force: :cascade do |t|
     t.string   "name",                   limit: 255
     t.integer  "quantity",               limit: 4
-    t.boolean  "taxable",                limit: 1,                              default: true
+    t.boolean  "taxable",                                                       default: true
     t.text     "description",            limit: 65535
     t.integer  "imprintable_variant_id", limit: 4
     t.datetime "deleted_at"
@@ -397,7 +413,7 @@ ActiveRecord::Schema.define(version: 20150623174623) do
     t.string   "po",                limit: 255
     t.datetime "in_hand_by"
     t.string   "terms",             limit: 255
-    t.boolean  "tax_exempt",        limit: 1
+    t.boolean  "tax_exempt"
     t.string   "tax_id_number",     limit: 255
     t.string   "delivery_method",   limit: 255
     t.datetime "deleted_at"
@@ -415,7 +431,7 @@ ActiveRecord::Schema.define(version: 20150623174623) do
     t.integer  "order_id",          limit: 4
     t.integer  "salesperson_id",    limit: 4
     t.integer  "store_id",          limit: 4
-    t.boolean  "refunded",          limit: 1
+    t.boolean  "refunded"
     t.decimal  "amount",                          precision: 10, scale: 2
     t.text     "refund_reason",     limit: 65535
     t.datetime "deleted_at"
@@ -427,6 +443,15 @@ ActiveRecord::Schema.define(version: 20150623174623) do
     t.integer  "payment_method",    limit: 4
     t.datetime "created_at"
     t.datetime "updated_at"
+  end
+
+  create_table "print_location_imprintables", force: :cascade do |t|
+    t.integer  "imprintable_id",     limit: 4
+    t.integer  "print_location_id",  limit: 4
+    t.decimal  "max_imprint_width",            precision: 10
+    t.decimal  "max_imprint_height",           precision: 10
+    t.datetime "created_at",                                  null: false
+    t.datetime "updated_at",                                  null: false
   end
 
   create_table "print_locations", force: :cascade do |t|
@@ -477,6 +502,7 @@ ActiveRecord::Schema.define(version: 20150623174623) do
     t.integer  "insightly_contact_id",      limit: 4
     t.integer  "insightly_organisation_id", limit: 4
     t.integer  "freshdesk_contact_id",      limit: 4
+    t.string   "freshdesk_ticket_id",       limit: 255
   end
 
   create_table "quotes", force: :cascade do |t|
@@ -495,19 +521,19 @@ ActiveRecord::Schema.define(version: 20150623174623) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.decimal  "shipping",                                     precision: 10, scale: 2
-    t.string   "quote_source",                     limit: 255
     t.datetime "initialized_at"
+    t.string   "quote_source",                     limit: 255
     t.string   "freshdesk_ticket_id",              limit: 255
-    t.boolean  "informal",                         limit: 1
+    t.boolean  "informal"
     t.integer  "insightly_category_id",            limit: 4
     t.integer  "insightly_probability",            limit: 4
     t.decimal  "insightly_value",                              precision: 10, scale: 2
     t.integer  "insightly_pipeline_id",            limit: 4
     t.integer  "insightly_opportunity_id",         limit: 4
     t.integer  "insightly_bid_tier_id",            limit: 4
-    t.boolean  "is_rushed",                        limit: 1
+    t.boolean  "is_rushed"
     t.integer  "qty",                              limit: 4
-    t.boolean  "deadline_is_specified",            limit: 1
+    t.boolean  "deadline_is_specified"
     t.integer  "insightly_opportunity_profile_id", limit: 4
     t.decimal  "insightly_bid_amount",                         precision: 10, scale: 2
     t.integer  "insightly_whos_responsible_id",    limit: 4
@@ -520,19 +546,19 @@ ActiveRecord::Schema.define(version: 20150623174623) do
 
   create_table "search_boolean_filters", force: :cascade do |t|
     t.string  "field",  limit: 255
-    t.boolean "negate", limit: 1
-    t.boolean "value",  limit: 1
+    t.boolean "negate"
+    t.boolean "value"
   end
 
   create_table "search_date_filters", force: :cascade do |t|
     t.string   "field",      limit: 255
-    t.boolean  "negate",     limit: 1
+    t.boolean  "negate"
     t.datetime "value"
     t.string   "comparator", limit: 1
   end
 
   create_table "search_filter_groups", force: :cascade do |t|
-    t.boolean "all", limit: 1
+    t.boolean "all"
   end
 
   create_table "search_filters", force: :cascade do |t|
@@ -544,19 +570,19 @@ ActiveRecord::Schema.define(version: 20150623174623) do
 
   create_table "search_nil_filters", force: :cascade do |t|
     t.string  "field",  limit: 255
-    t.boolean "negate", limit: 1
+    t.boolean "negate"
   end
 
   create_table "search_number_filters", force: :cascade do |t|
     t.string  "field",      limit: 255
-    t.boolean "negate",     limit: 1
+    t.boolean "negate"
     t.decimal "value",                  precision: 10, scale: 2
     t.string  "comparator", limit: 1
   end
 
   create_table "search_phrase_filters", force: :cascade do |t|
     t.string  "field",  limit: 255
-    t.boolean "negate", limit: 1
+    t.boolean "negate"
     t.string  "value",  limit: 255
   end
 
@@ -582,14 +608,14 @@ ActiveRecord::Schema.define(version: 20150623174623) do
 
   create_table "search_reference_filters", force: :cascade do |t|
     t.string  "field",      limit: 255
-    t.boolean "negate",     limit: 1
+    t.boolean "negate"
     t.integer "value_id",   limit: 4
     t.string  "value_type", limit: 255
   end
 
   create_table "search_string_filters", force: :cascade do |t|
     t.string  "field",  limit: 255
-    t.boolean "negate", limit: 1
+    t.boolean "negate"
     t.string  "value",  limit: 255
   end
 
@@ -607,7 +633,7 @@ ActiveRecord::Schema.define(version: 20150623174623) do
     t.string   "name",          limit: 255
     t.string   "val",           limit: 255
     t.string   "encrypted_val", limit: 255
-    t.boolean  "encrypted",     limit: 1
+    t.boolean  "encrypted"
     t.datetime "deleted_at"
     t.datetime "created_at"
     t.datetime "updated_at"
@@ -632,7 +658,7 @@ ActiveRecord::Schema.define(version: 20150623174623) do
     t.datetime "updated_at"
     t.integer  "imprintable_variant_id", limit: 4
     t.datetime "deleted_at"
-    t.boolean  "retail",                 limit: 1,   default: false
+    t.boolean  "retail",                             default: false
   end
 
   add_index "sizes", ["deleted_at"], name: "index_sizes_on_deleted_at", using: :btree

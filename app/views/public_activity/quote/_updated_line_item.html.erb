@@ -1,3 +1,4 @@
+<% begin %>
 <% if activity.trackable_type %>
   <p>Updated line item group <%= activity.parameters["name"]  %> for quote, <% unless activity.trackable.nil? %>
     <%= link_to activity.trackable.name, activity.trackable %>
@@ -38,9 +39,6 @@
 <% else %>
   Added something...
 <% end %>
-
-<% if activity.recipient && activity.recipient != activity.trackable %>
-  to
-  <%= activity.recipient_type.underscore.humanize.downcase %>
-  <%= link_to activity.recipient.name, activity.recipient %>
+<% rescue Exception => e %>
+  <p>Something went terribly wrong</p>
 <% end %>

@@ -23,14 +23,6 @@ describe Quote, quote_spec: true do
     it { is_expected.to validate_presence_of(:store) }
     it { is_expected.to validate_presence_of(:valid_until_date) }
 
-    describe 'shipping' do
-      it { is_expected.to allow_value('123.32').for :shipping }
-      it { is_expected.to allow_value('0').for :shipping }
-      it { is_expected.to allow_value('9').for :shipping }
-      it { is_expected.to allow_value('2.4').for :shipping }
-      it { is_expected.to_not allow_value('21.321').for :shipping }
-    end
-
     describe 'insightly', story_516: true, insightly: true do
       describe '#insightly_description', story_519: true do
         context 'when the quote is already linked with Freshdesk' do
@@ -513,21 +505,17 @@ describe Quote, quote_spec: true do
           :imprintables => {
           1 =>  {
               :imprintable_id => 1,
-              :imprintable_price => 0.70, 
-              :job_id => 1,
-              :tier => 3,
-              :quantity => 3,
-              :decoration_price => 1.50
+              :imprintable_price => 0.70 
             },
           2 =>  {
               :imprintable_id => 2,
-              :imprintable_price => 0.90, 
-              :job_id => 1, 
-              :tier => 1,
-              :quantity => 3,
-              :decoration_price => 1.33
+              :imprintable_price => 0.90 
             }
-          }
+          }, 
+          :group_id => 1,
+          :tier => 3,
+          :quantity => 3,
+          :decoration_price => 1.50
         }
       }
     
@@ -536,7 +524,7 @@ describe Quote, quote_spec: true do
       let(:iv2) { create(:valid_imprintable_variant) }
       let(:iv3) { create(:valid_imprintable_variant) }
       let(:line_item_1) { create(:line_item, line_itemable_id: group.id, line_itemable_type: 'Job', imprintable_variant_id: iv1.id, imprintable_price: 0.70, decoration_price: 1.50, tier: 3) }
-      let(:line_item_2) { create(:line_item, line_itemable_id: group.id, line_itemable_type: 'Job', imprintable_variant_id: iv2.id, imprintable_price: 0.90, decoration_price: 1.33, tier: 1) }
+      let(:line_item_2) { create(:line_item, line_itemable_id: group.id, line_itemable_type: 'Job', imprintable_variant_id: iv2.id, imprintable_price: 0.90, decoration_price: 1.50, tier: 3) }
       
       it 'returns a hash with the imprintables added and the details about where they were added' do 
       #  quote.instance_variable_set("@imprintable_line_item_added_ids", [1,2])
@@ -764,7 +752,6 @@ describe Quote, quote_spec: true do
     end
 
     describe '#has_freshdesk_ticket?', story_70: true do
-      # used for stubbing
       class BogusClass; end
 
       context 'when get_freshdesk_ticket returns a valid ticket' do
@@ -795,7 +782,7 @@ describe Quote, quote_spec: true do
       end
 
       context 'when the quote has a quote request' do
-        it 'creates a ticket with its requester id', plz: true do
+        it 'creates a ticket with its requester id' do
           dummy_quote_requests = [double('Quote Request', freshdesk_contact_id: 123)]
           allow(dummy_quote_requests).to receive(:where).and_return dummy_quote_requests
           allow(dummy_quote_requests).to receive(:not).and_return dummy_quote_requests

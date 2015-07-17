@@ -15,7 +15,7 @@
   <% end %>
 </div>
 <br clear="all" />
-<%= form_for quote, remote: true, builder: LancengFormBuilder do |f| %>
+<%= form_for quote, html: { id: 'imprintables-from-search-results-form', class: 'check-for-imprintables' }, remote: true, builder: LancengFormBuilder do |f| %>
     <%= f.fields_for :line_item_to_group do |ff| %>
       <h4>Select imprintables from search results</h4>
 
@@ -33,6 +33,8 @@
 
       <%= render 'quotes/edit/new_imprintable_common_fields', f: ff, quote: quote %>
     <% end %>
+    <div class='col-xs-3 col-xs-offset-4 error-space text-danger'>
+    </div>
     <%= render 'quotes/edit/add_imprintables_button.html.erb', f: f %>
 <% end %>
 

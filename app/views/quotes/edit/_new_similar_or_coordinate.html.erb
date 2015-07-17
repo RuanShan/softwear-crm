@@ -2,7 +2,7 @@
   <h4>Couldn't find any <%= type.gsub('_imprintables', '').singularize %> imprintables for <%= imprintable.name %></h4>
   <%= link_to 'Close', '#', class: 'btn btn-info', data: { dismiss: 'modal' } %>
 <% else %>
-  <%= form_for quote, builder: LancengFormBuilder do |f| %>
+  <%= form_for quote, html: { class: 'check-for-imprintables' }, remote: true, builder: LancengFormBuilder do |f| %>
       <%= f.fields_for :line_item_to_group do |ff| %>
         <h4>New line item <%= type.gsub('_imprintables', '').singularize %> to <%= imprintable.name %></h4>
 
@@ -12,8 +12,8 @@
 
         <%= render 'quotes/edit/new_imprintable_common_fields', f: ff, quote: quote %>
       <% end %>
+      <div class='col-xs-3 col-xs-offset-4 error-space text-danger'>
+      </div>
       <%= render 'quotes/edit/add_imprintables_button.html.erb', f: f %>
   <% end %>
-
-  </div>
 <% end %>

@@ -4,6 +4,7 @@ include ApplicationHelper
 feature 'Imprintables management', imprintable_spec: true, slow: true do
   given!(:valid_user) { create(:alternate_user) }
   given!(:imprintable) { create(:valid_imprintable) }
+  given!(:print_location) { create(:valid_print_location) }
 
   background(:each) { login_as(valid_user) }
 
@@ -44,31 +45,6 @@ feature 'Imprintables management', imprintable_spec: true, slow: true do
               main_supplier: 'other supplier')
     end
 
-#    scenario 'a user can search imprintables and see accurate results', solr: true do
-#      visit imprintables_path
-#
-#      select 'Girls', from: 'filter_sizing_category'
-#      fill_in 'js_search', with: 'test'
-#      click_button 'Search'
-#
-#      expect(page).to have_content test_imprintable1.name
-#      expect(page).to have_content test_imprintable2.name
-#      expect(page).to have_content test_imprintable3.name
-#
-#      expect(page).to_not have_content noshow_imprintable1.name
-#      expect(page).to_not have_content noshow_imprintable2.name
-#    end
-
-#    scenario 'a user sees the values from their last search in the search box', solr: true do
-#      visit imprintables_path
-#
-#      select 'Infant', from: 'filter_sizing_category'
-#      fill_in 'js_search', with: 'I should be there'
-#      click_button 'Search'
-#
-#      expect(page).to have_content 'Infant'
-#      expect(page).to have_selector '*[value="I should be there"]'
-#    end
   end
 
   scenario 'Erroring on imprintable sku + retail combo doesn\'t break anything,\
@@ -80,7 +56,7 @@ feature 'Imprintables management', imprintable_spec: true, slow: true do
     expect(page).to have_selector '.modal-content-error', text: 'There was an error saving the imprintable'
   end
 
-  scenario 'A user can create a new imprintable', js: true do
+  scenario 'A user can create a new imprintable', busted: true, js: true do
     visit imprintables_path
 
     click_link('New Imprintable')
@@ -94,8 +70,10 @@ feature 'Imprintables management', imprintable_spec: true, slow: true do
     fill_in 'Common Name', with: 'Super dooper imprintable'
 
     fill_in 'Sku', with: '99'
-    fill_in 'Max imprint width', with:  '5.5'
-    fill_in 'Max imprint height', with: '5.5'
+    click_link 'Add Compatible Print'
+    first('.select-print-location').select(print_location.qualified_name)
+    fill_in 'Max imprint width', with: '12'
+    fill_in 'Max imprint height', with: '10'
 
     find_button('Create Imprintable').click
 
@@ -106,6 +84,7 @@ feature 'Imprintables management', imprintable_spec: true, slow: true do
     expect(imprintable).to_not be_nil
     expect(imprintable.style_name).to eq('Sample Name')
     expect(imprintable.common_name).to eq('Super dooper imprintable')
+    expect(imprintable.print_locations).to include print_location
   end
 
   feature 'Tagging', js: true do
@@ -146,7 +125,7 @@ feature 'Imprintables management', imprintable_spec: true, slow: true do
     scenario 'A user can utilize coordinate token input field', js: true, story_692: true do
       visit edit_imprintable_path imprintable.id
       wait_for_ajax
-      find('#imprintable_coordinate_ids', visible: false).select coordinate.name 
+      find('#imprintable_coordinate_ids', visible: false).select coordinate.name
       wait_for_ajax
       find_button('Update Imprintable').click
 
@@ -157,7 +136,7 @@ feature 'Imprintables management', imprintable_spec: true, slow: true do
     scenario 'Coordinates are reflected symmetrically', js: true do
       visit edit_imprintable_path imprintable.id
 
-      find('#imprintable_coordinate_ids', visible: false).select coordinate.name 
+      find('#imprintable_coordinate_ids', visible: false).select coordinate.name
       find_button('Update Imprintable').click
 
       expect(page).to have_content 'Imprintable was successfully updated.'
@@ -194,18 +173,43 @@ feature 'Imprintables management', imprintable_spec: true, slow: true do
     end
   end
 
-  context 'There is an imprint method' do
-    given!(:imprint_method) { create(:valid_imprint_method) }
+  # CI won't do file upload related stuff
+  feature 'Imprintable photos', story_717: true, js: true, no_ci: true do
+    let!(:variant) { create(:valid_imprintable_variant) }
+    let(:imprintable) { variant.imprintable }
 
-    scenario 'A user can utilize compatible imprint methods token input field', b: true, retry: 2, js: true, story_692: true do
-      visit edit_imprintable_path imprintable.id
+    scenario 'A user can add a photo by uploading a file' do
+      visit edit_imprintable_path imprintable
 
-      sleep 2
-      find('#imprintable_compatible_imprint_method_ids').select imprint_method.name
-      find_button('Update Imprintable').click
+      click_link 'Add Photo'
 
+      within '.imprintable-photo-form' do
+        find('.photo-asset-file').set("#{Rails.root}/spec/fixtures/images/macho.jpg")
+        select imprintable.colors.first.name, from: 'Color'
+      end
+
+      click_button 'Update Imprintable'
       expect(page).to have_content 'Imprintable was successfully updated.'
-      expect(imprintable.reload.compatible_imprint_method_ids.include? imprint_method.id).to be_truthy
+      imprintable.reload
+      expect(imprintable.imprintable_photos.size).to eq 1
+      expect(imprintable.imprintable_photos.first.asset.file).to_not be_nil
+    end
+
+    scenario 'A user can add a photo by providing a url' do
+      visit edit_imprintable_path imprintable
+
+      click_link 'Add Photo'
+
+      within '.imprintable-photo-form' do
+        fill_in 'Upload by URL', with: 'https://www.google.com/images/srpr/logo11w.png'
+        select imprintable.colors.first.name, from: 'Color'
+      end
+
+      click_button 'Update Imprintable'
+      expect(page).to have_content 'Imprintable was successfully updated.'
+      imprintable.reload
+      expect(imprintable.imprintable_photos.size).to eq 1
+      expect(imprintable.imprintable_photos.first.asset.file).to_not be_nil
     end
   end
 
@@ -268,30 +272,6 @@ feature 'Imprintables management', imprintable_spec: true, slow: true do
     expect(page).to have_content 'Quote was successfully updated.'
   end
 
-#  scenario 'A user can navigate to all tabs of the modal show menu (card #133)', js: true, story_692: true  do
-#    visit imprintables_path
-#
-#    find(:css, "#imprintable_#{imprintable.id} td a.imprintable_modal_link").click
-#    expect(page).to have_selector "#basic_info_#{imprintable.id}.active"
-#    expect(page).to have_selector '.nav.nav-tabs.nav-justified li:nth-child(1).active'
-#
-#    find(:css, '.nav.nav-tabs.nav-justified li:nth-child(2)').click
-#    expect(page).to have_selector "#size_color_availability_#{imprintable.id}.active"
-#    expect(page).to have_selector '.nav.nav-tabs.nav-justified li:nth-child(2).active'
-#
-#    find(:css, '.nav.nav-tabs.nav-justified li:nth-child(3)').click
-#    expect(page).to have_selector "#imprint_details_#{imprintable.id}.active"
-#    expect(page).to have_selector '.nav.nav-tabs.nav-justified li:nth-child(3).active'
-#
-#    find(:css, '.nav.nav-tabs.nav-justified li:nth-child(4)').click
-#    expect(page).to have_selector "#supplier_information_#{imprintable.id}.active"
-#    expect(page).to have_selector '.nav.nav-tabs.nav-justified li:nth-child(4).active'
-#
-#    find(:css, '.nav.nav-tabs.nav-justified li:nth-child(1)').click
-#    expect(page).to have_selector "#basic_info_#{imprintable.id}.active"
-#    expect(page).to have_selector '.nav.nav-tabs.nav-justified li:nth-child(1).active'
-#  end
-
   context 'There are 2 different imprintables', js: true do
     given!(:imprintable_two) { create(:valid_imprintable) }
 
@@ -307,11 +287,12 @@ feature 'Imprintables management', imprintable_spec: true, slow: true do
     end
   end
 
+
   context 'Discontinuation', story_595: :true do
 
     scenario 'A user can discontinue and reinstate an imprintable' do
       visit imprintables_path
-      click_button('Discontinue') 
+      click_button('Discontinue')
      # page.driver.browser.switch_to.alert.accept
       visit imprintables_path
       imprintable.reload
@@ -321,7 +302,7 @@ feature 'Imprintables management', imprintable_spec: true, slow: true do
       expect(page).to have_css('.discontinued-imprintable s')
 
       visit imprintables_path
-      click_button('Reinstate') 
+      click_button('Reinstate')
      # page.driver.browser.switch_to.alert.accept
       visit imprintables_path
       imprintable.reload

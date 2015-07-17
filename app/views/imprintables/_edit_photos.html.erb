@@ -1,0 +1,5 @@
+<%= f.fields_for :imprintable_photos, f.object.imprintable_photos do |ff| %>
+  <%= image_tag ff.object.asset.file.url(:thumb) if ff.object.asset %>
+  <%= render 'imprintable_photo_fields', f: ff, object: ff.object %>
+<% end %>
+<%= link_to_add_fields 'Add Photo', f, :imprintable_photos %>

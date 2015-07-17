@@ -70,7 +70,6 @@ class Quote < ActiveRecord::Base
     :insightly_bid_amount,
     :insightly_bid_tier_id,
     :insightly_opportunity_id
-    #, :insightly_whos_responsible_id
   ]
 
   MARKUPS_AND_OPTIONS_JOB_NAME = '_markupsandoptions_'
@@ -81,7 +80,7 @@ class Quote < ActiveRecord::Base
   belongs_to :store
   belongs_to :insightly_whos_responsible, class_name: User
   has_many :email_templates
-  has_many :emails, as: :emailable, class_name: Email, dependent: :destroy
+  has_many :emails, as: :emailable, dependent: :destroy
   has_many :quote_request_quotes
   has_many :quote_requests, through: :quote_request_quotes
   has_many :order_quotes
@@ -96,7 +95,6 @@ class Quote < ActiveRecord::Base
   validates :salesperson, presence: true
   validates :store, presence: true
   validates :valid_until_date, presence: true
-  validates :shipping, price: true
   validates *(INSIGHTLY_FIELDS - [:insightly_opportunity_id]), presence: true, if: :should_validate_insightly_fields?
 
   after_save :set_quote_request_statuses_to_quoted
@@ -319,6 +317,7 @@ class Quote < ActiveRecord::Base
     return if job.nil?
 
     @imprintable_line_item_added_ids = []
+    # TODO error or something if attrs[:imprintables] is nil
     attrs[:imprintables].map do |imprintable_id|
       imprintable = Imprintable.find imprintable_id
 
@@ -373,11 +372,6 @@ class Quote < ActiveRecord::Base
     "https://googleapps.insight.ly/Opportunities/details/#{insightly_opportunity_id}"
   end
 
-  def freshdesk_ticket_link
-    return if freshdesk_ticket_id.blank?
-    "http://annarbortees.freshdesk.com/helpdesk/tickets/#{freshdesk_ticket_id}"
-  end
-
   def description
     quote_requests.map do |qr|
       qr.description
@@ -393,11 +387,13 @@ class Quote < ActiveRecord::Base
       self.first_name = quote_request.name
     end
 
-    self.email            ||= quote_request.email
-    self.qty              ||= quote_request.approx_quantity
-    self.phone_number     ||= quote_request.phone_number if quote_request.phone_number
-    self.company          ||= quote_request.organization if quote_request.organization
-    self.quote_source     ||= 'Online Form'
+    self.email               ||= quote_request.email
+    self.qty                 ||= quote_request.approx_quantity
+    self.phone_number        ||= quote_request.phone_number if quote_request.phone_number
+    self.company             ||= quote_request.organization if quote_request.organization
+    self.quote_source        ||= 'Online Form'
+    self.freshdesk_ticket_id ||= quote_request.freshdesk_ticket_id
+
     if quote_request.date_needed
       self.deadline_is_specified = true
       self.valid_until_date = quote_request.date_needed
@@ -427,14 +423,14 @@ class Quote < ActiveRecord::Base
     ticket = JSON.parse(freshdesk.post_tickets(
         helpdesk_ticket: {
           source: 2,
-          group_id: freshdesk_group_id,
+          group_id: freshdesk_group_id(salesperson),
           ticket_type: 'Lead',
           subject: "Your Quote \"#{self.name}\" (##{self.id}) from the Ann Arbor T-shirt Company",
           custom_field: {
-            department_7483: freshdesk_department,
-            softwearcrm_quote_id_7483: id
+            FD_DEPARTMENT_FIELD => freshdesk_department(salesperson),
+            FD_QUOTE_ID_FIELD => id
           },
-          description_html: freshdesk_description
+          description_html: freshdesk_description(quote_requests.where("freshdesk_contact_id <> ''"))
         }
          .merge(requester_info)
       ))
@@ -490,7 +486,7 @@ class Quote < ActiveRecord::Base
         helpdesk_ticket: {
           requester_id: contact_id,
           source: 2,
-          group_id: freshdesk_group_id,
+          group_id: freshdesk_group_id(salesperson),
           ticket_type: 'Lead',
           custom_field: {
             softwearcrm_quote_id_7483: id
@@ -739,12 +735,12 @@ class Quote < ActiveRecord::Base
       @imprintable_line_item_added_ids.each do |li|
         hash[:imprintables][li] = {}
         line_item = LineItem.find(li)
-        hash[:imprintables][li][:tier] = line_item.tier
         hash[:imprintables][li][:imprintable_price] = line_item.imprintable_price.to_f
-        hash[:imprintables][li][:quantity] = line_item.quantity
-        hash[:imprintables][li][:decoration_price] = line_item.decoration_price.to_f
         hash[:imprintables][li][:imprintable_id] = line_item.imprintable_id
-        hash[:imprintables][li][:job_id] = line_item.line_itemable_id
+        hash[:decoration_price] = line_item.decoration_price.to_f
+        hash[:quantity] = line_item.quantity
+        hash[:tier] = line_item.tier
+        hash[:group_id] = line_item.line_itemable_id
       end
     else
       changed_attrs = self.attribute_names.select{ | attr| self.send("#{attr}_changed?")}
@@ -760,44 +756,12 @@ class Quote < ActiveRecord::Base
 
   private
 
-  def freshdesk_group_id
-    name = salesperson.store.try(:name).try(:downcase) || ''
-    if name.include? 'ypsi'
-      86317 # Group ID of Sales - Ypsilanti within Freshdesk
-    else
-      86316 # Group ID of Sales - Ann Arbor within Freshdesk
-    end
-  end
-  def freshdesk_department
-    name = salesperson.store.try(:name).try(:downcase) || ''
-    if name.include? 'arbor'
-      'Sales - Ann Arbor'
-    elsif name.include? 'ypsi'
-      'Sales - Ypsilanti'
-    end
-  end
-
   def freshdesk_contact_id
     quote_requests
       .where("freshdesk_contact_id <> ''")
       .pluck(:freshdesk_contact_id)
       .first
   end
-
-  def freshdesk_description
-    r = ApplicationController.new
-    quote_requests
-      .where("freshdesk_contact_id <> ''")
-      .reduce('') do |description, quote_request|
-        r.render_string(
-          template: nil,
-          partial: 'quote_requests/basic_table',
-          locals: { quote_request: quote_request }
-        )
-      end
-      .html_safe
-  end
-
 
   def set_default_valid_until_date
     return unless valid_until_date.nil?

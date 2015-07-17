@@ -29,12 +29,17 @@ class QuoteRequest < ActiveRecord::Base
   has_many :quote_request_quotes
   has_many :quotes, through: :quote_request_quotes
   has_many :orders, through: :quotes
+  has_many :emails, as: :emailable, dependent: :destroy
+  has_many :customer_uploads, dependent: :destroy
+
+  accepts_nested_attributes_for :customer_uploads
 
   validates :name, :email, :description, :source, presence: true
   validates :reason, presence: true, if: :reason_needed?
 
   before_validation(on: :create) { self.status = 'pending' if status.nil? }
   before_create :enqueue_link_integrated_crm_contacts
+  before_save :notify_salesperson_if_assigned
 
   def self.of_interest
     where.not status: 'could_not_quote'
@@ -43,6 +48,11 @@ class QuoteRequest < ActiveRecord::Base
   def salesperson_id=(id)
     super
     self.status = 'assigned'
+  end
+
+  def send_assigned_email(user_id)
+    return if user_id != salesperson_id
+    QuoteRequestMailer.notify_salesperson_of_quote_request_assignment(self).deliver
   end
 
   def reason_needed?
@@ -86,6 +96,10 @@ class QuoteRequest < ActiveRecord::Base
   def last_name
     /(?<first_name>^\w+)\s+(?<last_name>.*)/ =~ name
     last_name
+  end
+
+  def activity_source
+    "Quote Request"
   end
 
   def link_with_insightly
@@ -159,6 +173,42 @@ class QuoteRequest < ActiveRecord::Base
     end
   end
 
+  def create_freshdesk_ticket
+    return if freshdesk.nil? || !freshdesk_ticket_id.blank?
+
+    if freshdesk_contact_id.blank?
+      requester_info = {
+        name: name,
+        email: email,
+        phone: format_phone(phone_number)
+      }
+    else
+      requester_info = {
+        requester_id: freshdesk_contact_id
+      }
+    end
+
+    ticket = JSON.parse(freshdesk.post_tickets(
+        helpdesk_ticket: {
+          source: 2,
+          group_id: freshdesk_group_id(salesperson),
+          ticket_type: 'Lead',
+          subject: "Information regarding your quote request (##{id}) from the Ann Arbor T-shirt Company",
+          custom_field: {
+            FD_DEPARTMENT_FIELD => freshdesk_department(salesperson)
+          },
+          description_html: freshdesk_description(self)
+        }
+          .merge(requester_info)
+      ))
+      .try(:[], 'helpdesk_ticket')
+
+    self.freshdesk_ticket_id = ticket['display_id']
+    save(validate: false)
+    ticket
+  end
+  warn_on_failure_of :create_freshdesk_ticket, raise_anyway: true unless Rails.env.test?
+
   def format_phone(num)
     return if num.nil?
 
@@ -176,8 +226,7 @@ class QuoteRequest < ActiveRecord::Base
       num = '1734' + num
     end
 
-    ret = '+'
-    num = ret + num.slice(0, 1) + '-' + num.slice(1, 3) + '-' + num.slice(4, 3) + '-' + num.slice(7, 4)
+    "+#{num.slice(0, 1)}-#{num.slice(1, 3)}-#{num.slice(4, 3)}-#{num.slice(7, 4)}"
   end
 
   def linked_with_freshdesk?
@@ -190,7 +239,14 @@ class QuoteRequest < ActiveRecord::Base
       .reduce({}, :merge)
   end
 
+  def uploaded_file_urls
+  end
+
   private
+
+  def notify_salesperson_if_assigned
+    self.delay.send_assigned_email(salesperson_id) if salesperson_id_changed?
+  end
 
   def enqueue_link_integrated_crm_contacts
     self.delay(queue: 'api').link_integrated_crm_contacts if should_access_third_parties?

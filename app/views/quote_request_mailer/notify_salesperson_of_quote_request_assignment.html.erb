@@ -1,0 +1,10 @@
+<p>
+  Hello <%= @salesperson.first_name %>,
+</p>
+
+<p>
+  You've been assigned to quote request #<%= link_to @quote_request.id, "http://crm.softwearcrm.com/quote_requests/#{@quote_request.id}" %>.
+</p>
+<div>
+  <%= render 'quote_requests/basic_table', quote_request: @quote_request, no_salesperson: true %>
+</div>

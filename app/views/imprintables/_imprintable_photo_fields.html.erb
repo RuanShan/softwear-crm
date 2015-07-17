@@ -1,0 +1,27 @@
+<div class="imprintable-photo-form form-group js-removeable">
+  <div class="input-group">
+    <%= f.fields_for :asset, object.try(:asset) || Asset.new(assetable: object) do |ff| %>
+      <%= ff.label :file, 'Photo' %>
+      <%= ff.file_field :file, class: 'photo-asset-file' %>
+      or
+      <%= ff.label :file_url, 'Upload by URL' %>
+      <%= ff.text_field :file_url, class: 'photo-asset-file-url' %>
+    <% end %>
+  </div>
+
+  <div class="input-group">
+    <%= f.label :default %>
+    <%= f.check_box :default, class: 'form-control' %>
+  </div>
+
+  <div class="input-group">
+    <%= f.label :color_id %>
+    <%= f.select :color_id, options_from_collection_for_select(object.try(:imprintable).try(:colors) || [], :id, :name, f.object.color_id), class: 'form-control imprintable-photo-color-id' %>
+  </div>
+
+    <span class="input-group-btn">
+      <%= f.hidden_field :_destroy %>
+
+      <%= link_to 'Remove', '#', class: 'btn btn-danger js-remove-fields' %>
+    </span>
+</div>

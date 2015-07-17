@@ -54,7 +54,7 @@ end
 
 gem 'markitup-rails'
 gem 'acts_as_commentable'
-gem 'aws-sdk'
+gem 'aws-sdk', '< 2.0'
 gem 'google_drive'
 # gem 'api', path: 'engines/api'
 gem 'remotipart'
@@ -72,6 +72,7 @@ gem 'x-editable-rails'
 gem 'jquery-fileupload-rails'
 gem 'php-serialize'
 gem 'yaml_db', github: 'jetthoughts/yaml_db', ref: 'fb4b6bd7e12de3cffa93e0a298a1e5253d7e92ba'
+gem 'nested_form'
 
 # Use ActiveModel has_secure_password
 # gem 'bcrypt', '~> 3.1.7'
