@@ -12,3 +12,4 @@ set :branch, 'master'
 
 set :linked_files, fetch(:linked_files) + %w{config/sidekiq.yml}
 
+set :skip_bundle_check, true
