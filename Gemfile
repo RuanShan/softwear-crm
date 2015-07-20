@@ -1,7 +1,6 @@
 source 'https://rubygems.org'
 
-require 'softwear/lib'
-Softwear::Lib.common_gems(self)
+gem 'softwear-lib', '~> 1.0.0', path: '~/r/softwear-lib'
 
 gem 'font-awesome-sass'
 gem 'summernote-rails'
