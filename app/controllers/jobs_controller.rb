@@ -8,7 +8,7 @@ class JobsController < InheritedResources::Base
     @imprint_old = @job.imprints.to_a
     Job.public_activity_off if quote?
     super do |success, failure|
-      success.json do 
+      success.json do
         render json: { result: 'success' }
     end
       failure.json do
@@ -31,7 +31,7 @@ class JobsController < InheritedResources::Base
       success.js do |format|
         Job.public_activity_on if quote?
         @job.create_activity(
-            key: 'quote.updated_line_item', 
+            key: 'quote.updated_line_item',
             parameters: @job.jobbable.activity_parameters_hash_for_job_changes(@job, @li_old, @imprints_old)
         ) if @job.jobbable_type = 'Quote'
         Job.public_activity_off if quote?

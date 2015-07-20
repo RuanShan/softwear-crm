@@ -64,7 +64,6 @@ $('.editing-job-field').each(function() {
 
 $('.removing-line-item').remove();
 
-<%= update_order_timeline(@line_items.first.line_itemable.try(:jobbable)) %>
 <% unless @line_items.empty? %>
   window.onbeforeunload = undefined;
 <% end %>
