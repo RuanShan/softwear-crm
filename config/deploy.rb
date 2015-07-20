@@ -4,6 +4,8 @@ lock '3.2.1'
 set :application, 'softwear-crm'
 set :repo_url, 'git@github.com:annarbortees/softwear-crm.git'
 set :rvm_ruby_string, 'rbx-2.5.2'
+set :rvm_ruby_version, 'rbx-2.5.2'
+set :rvm_task_ruby_version, 'rbx-2.5.2'
 set :whenever_identifier, -> { "#{fetch(:application)}_#{fetch(:stage)}" }
 set :assets_role, :web
 

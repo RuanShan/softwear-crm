@@ -2,6 +2,61 @@ source 'https://rubygems.org'
 
 gem 'softwear-lib', '~> 1.0.0', path: '~/r/softwear-lib'
 
+# === BEGIN SOFTWEAR LIB GEMS === #
+
+gem 'rails', '~> 4.2.3'
+
+gem 'mysql2'
+gem 'sass-rails'
+gem 'uglifier', '>= 1.3.0'
+gem 'coffee-rails', '~> 4.0.0'
+gem 'bootstrap-sass', '~> 3.2.0'
+gem 'activeresource'
+gem 'jquery-rails'
+gem 'jquery-ui-rails'
+gem 'hirb'
+gem 'momentjs-rails', '~> 2.9.0'
+gem 'bootstrap3-datetimepicker-rails', '4.7.14'
+gem 'js-routes'
+gem 'inherited_resources'
+gem 'devise'
+gem 'figaro'
+gem 'paranoia', '~> 2.0'
+gem 'paperclip'
+gem 'kaminari'
+gem 'whenever'
+gem 'dumpsync', git: 'git://github.com/AnnArborTees/dumpsync.git'
+gem 'bootstrap_form'
+gem 'acts_as_warnable', git: 'git://github.com/AnnArborTees/acts_as_warnable.git'
+
+group :development do
+  gem 'capistrano', '~> 3.2.0'
+  gem 'capistrano-rails'
+  gem 'capistrano-rvm', github: 'AnnArborTees/rvm'
+  gem 'capistrano-bundler', github: 'AnnArborTees/bundler'
+  gem 'better_errors', '>= 0.3.2'
+  gem 'binding_of_caller'
+end
+
+group :development, :test do
+  gem 'byebug', platforms: :mri
+  gem 'rubinius-debugger', platforms: :rbx
+end
+
+group :test do
+  gem "rspec-rails", "~> 3.2.0"
+  gem 'factory_girl_rails', '>= 4.2.0', require: true
+  gem 'capybara', '~> 2.4'
+  gem 'capybara-webkit'
+  gem 'webmock', require: false
+  gem 'rspec-mocks'
+  gem 'rspec-retry'
+  gem 'email_spec'
+  gem 'selenium-webdriver'
+  gem 'shoulda-matchers'
+end
+# === END SOFTWEAR LIB GEMS === #
+
 gem 'font-awesome-sass'
 gem 'summernote-rails'
 
