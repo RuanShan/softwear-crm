@@ -4,9 +4,23 @@ class QuoteRequestsController < InheritedResources::Base
   before_action :set_current_action
 
   def index
-    super do
+    if session[:quote_request_status]
+      set_quote_requests_of_status(session[:quote_request_status])
+    else
       @quote_requests = QuoteRequest.of_interest.page(params[:page])
     end
+  end
+
+  def filter
+    if params[:quote_request_status].blank?
+      session[:quote_request_status] = nil
+      @quote_requests = QuoteRequest.of_interest.page(params[:page])
+    else
+      status = params[:quote_request_status]
+      session[:quote_request_status] = status
+      set_quote_requests_of_status(status)
+    end
+    respond_to(&:js)
   end
 
   def dock
@@ -40,6 +54,17 @@ class QuoteRequestsController < InheritedResources::Base
 
   def set_current_action
     @current_action = 'quote_requests'
+  end
+
+  def set_quote_requests_of_status(status)
+    page = params[:page]
+    desired_status = session[:quote_request_status]
+
+    @quote_requests = QuoteRequest.search do
+      with :status, desired_status
+      paginate page: page.blank? ? 1 : page
+    end
+      .results
   end
 end
 

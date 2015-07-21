@@ -6,10 +6,16 @@
   <%= render partial: 'quote_requests/search' %>
 </div>
 
-<%= paginate @quote_requests %>
-
-<div class="box-info row clear">
-  <%= render partial: 'quote_requests/table', locals: { quote_requests: @quote_requests } %>
+<div>
+  Show only: <%= select_tag :quote_request_status, options_for_select(QuoteRequest::QUOTE_REQUEST_STATUSES.map { |s| [s.humanize, s] }, session[:quote_request_status]), include_blank: true, id: 'quote-request-status-select', class: 'select2', data: { page: params[:page] } %>
 </div>
 
-<%= paginate @quote_requests %>
+<div id="quote-request-list">
+  <%= paginate @quote_requests %>
+
+  <div class="box-info row clear">
+    <%= render partial: 'quote_requests/table', locals: { quote_requests: @quote_requests } %>
+  </div>
+
+  <%= paginate @quote_requests %>
+</div>

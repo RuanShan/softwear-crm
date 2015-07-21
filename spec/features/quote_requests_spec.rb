@@ -3,12 +3,35 @@ include ApplicationHelper
 
 feature 'Quote Requests Management', js: true, quote_request_spec: true do
   given!(:quote_request) { create(:valid_quote_request_with_salesperson) }
+  given(:quote_request_2) { create(:quote_request, name: 'aux') }
   given!(:valid_user) { create(:alternate_user) }
   before(:each) { login_as(valid_user) }
 
   scenario 'A user can view a list of quote requests' do
     visit quote_requests_path
     expect(page).to have_selector('.box-info')
+  end
+
+  scenario 'A user can quickly filter quote requests by status', js: true, story_709: true do
+    quote_request.update_attributes! status: 'assigned'
+    quote_request_2.update_attributes! status: 'pending'
+
+    visit quote_requests_path
+
+    expect(page).to have_content quote_request.name
+    expect(page).to have_content quote_request_2.name
+
+    find('.select2-selection').click
+    find('.select2-results__option', text: 'Assigned').click
+    sleep 2
+
+    expect(Sunspot.session).to be_a_search_for QuoteRequest
+
+    find('.select2-selection').click
+    find('.select2-results__option', text: 'Pending').click
+    sleep 2
+
+    expect(Sunspot.session).to be_a_search_for QuoteRequest
   end
 
   scenario 'A user can change the assignment of a quote request', story_80: true, story_692: true do
