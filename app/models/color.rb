@@ -9,4 +9,8 @@ class Color < ActiveRecord::Base
 
   validates :name, uniqueness: true, presence: true
   validates :sku, length: { is: 3 }, if: :is_retail?
+
+  searchable do
+    text :name, :sku
+  end
 end
