@@ -57,7 +57,7 @@ class Job < ActiveRecord::Base
     proc do |attrs|
       attrs.each do |key, line_item_attributes|
         if line_item_attributes[:id]
-          line_item = LineItem.find(line_item_attributes[:id])
+          line_item = LineItem.unscoped.find(line_item_attributes[:id])
           if (d = line_item_attributes[:_destroy]) && !['false', '0'].include?(d)
             line_item.destroy
           else
