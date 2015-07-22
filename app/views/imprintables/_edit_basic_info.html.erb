@@ -19,7 +19,7 @@
 
       <div class="form-group">
         <%= f.label :tag, 'Shirt Tag Type', class: 'control-label' %>
-        <%= f.select :tag, options_for_select(Imprintable::TAG_TYPES), prompt: 'Choose a tag type' %>
+        <%= f.select :tag, options_for_select(Imprintable::TAG_TYPES, f.object.tag), prompt: 'Choose a tag type' %>
       </div>
 
       <div class="form-group">
