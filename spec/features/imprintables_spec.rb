@@ -96,7 +96,7 @@ feature 'Imprintables management', imprintable_spec: true, slow: true do
 
       fill_in 'Tags', with: 'cotton'
       find_button('Update Imprintable').click
-      wait_for_ajax
+      ci? ? sleep(2) : wait_for_ajax
       expect(page).to have_content 'Imprintable was successfully updated.'
       expect(current_path).to eq(edit_imprintable_path imprintable.id)
       expect(imprintable.reload.tag_list.include? 'cotton').to be_truthy
@@ -113,6 +113,7 @@ feature 'Imprintables management', imprintable_spec: true, slow: true do
       find('#imprintable_sample_location_ids').select store.name
       find_button('Update Imprintable').click
 
+      sleep 2 if ci?
       expect(page).to have_content 'Imprintable was successfully updated.'
       expect(current_path).to eq(edit_imprintable_path imprintable.id)
       expect(imprintable.reload.sample_location_ids.include? store.id).to be_truthy
@@ -152,6 +153,7 @@ feature 'Imprintables management', imprintable_spec: true, slow: true do
       find('[data-placeholder="Select categories"]').select 'Something'
       find_button('Update Imprintable').click
 
+      sleep 2 if ci?
       expect(page).to have_content 'Imprintable was successfully updated.'
       expect(ImprintableCategory.where(imprintable_id: imprintable.id)).to_not be_nil
     end
@@ -167,6 +169,7 @@ feature 'Imprintables management', imprintable_spec: true, slow: true do
         find(:css, '.js-remove-fields').click
         find_button('Update Imprintable').click
 
+        sleep 2 if ci?
         expect(page).to have_content 'Imprintable was successfully updated.'
         expect(ImprintableCategory.where(imprintable_id: imprintable.id).empty?).to be_truthy
       end
@@ -231,6 +234,7 @@ feature 'Imprintables management', imprintable_spec: true, slow: true do
   scenario 'A user can delete an existing imprintable', js: true do
     visit imprintables_path
     find("tr#imprintable_#{imprintable.id} a[data-action='destroy']").click
+    sleep 2 if ci?
     page.driver.browser.switch_to.alert.accept
     wait_for_ajax
     expect(page).to have_content 'Imprintable was successfully destroyed.'

@@ -34,6 +34,7 @@ feature 'Brands management', brand_spec: true do
   scenario 'A user can delete an existing brand', js: true, story_692: true do
     visit brands_path
     find("tr#brand_#{brand.id} a[data-action='destroy']").click
+    sleep 2 if ci?
     page.driver.browser.switch_to.alert.accept
     wait_for_ajax
     expect(page).to have_content 'Brand was successfully destroyed.'

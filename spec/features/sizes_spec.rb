@@ -42,6 +42,7 @@ feature 'sizes management', size_spec: true do
   scenario 'A user can delete an existing size', js: true, story_692: true do
     visit sizes_path
     find("tr#size_#{size.id} a[data-action='destroy']").click
+    sleep 2 if ci?
     page.driver.browser.switch_to.alert.accept
     wait_for_ajax
 

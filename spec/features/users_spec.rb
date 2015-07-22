@@ -185,6 +185,7 @@ feature 'Users', user_spec: true, js: true do
       unhide_dashboard
       sleep 0.5
       first('a', text: 'Logout').click
+      sleep 2 if ci?
       expect(current_path).to eq '/users/sign_in'
     end
   end

@@ -34,6 +34,7 @@ feature 'Colors management', color_spec: true do
   scenario 'A user can delete an existing color', js: true, story_692: true do
     visit colors_path
     find("tr#color_#{color.id} a[data-action='destroy']").click
+    sleep 2 if ci?
     page.driver.browser.switch_to.alert.accept
     wait_for_ajax
     expect(page).to have_content 'Color was successfully destroyed.'

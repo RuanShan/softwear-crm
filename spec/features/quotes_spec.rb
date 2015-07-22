@@ -122,6 +122,7 @@ feature 'Quotes management', quote_spec: true, js: true, retry: 2 do
       click_button 'Next'
       sleep 0.5
 
+      sleep 1.5 if ci?
       click_button 'Submit'
 
       sleep 1
@@ -132,6 +133,7 @@ feature 'Quotes management', quote_spec: true, js: true, retry: 2 do
   scenario 'A user can visit the edit quote page', edit: true do
     visit quotes_path
     find('i.fa.fa-edit').click
+    sleep 2 if ci?
     expect(current_path).to eq(edit_quote_path quote.id)
   end
 
@@ -151,6 +153,7 @@ feature 'Quotes management', quote_spec: true, js: true, retry: 2 do
     fill_in 'Shipping', with: '12'
     click_button 'Save'
 
+    sleep 2 if ci?
     expect(quote.reload.shipping).to eq(12.00)
 
     visit edit_quote_path quote

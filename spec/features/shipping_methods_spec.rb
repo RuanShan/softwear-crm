@@ -29,6 +29,7 @@ feature 'Shipping Methods management' do
   scenario 'User deletes an existing shipping method', js: true, story_692: true do
     visit shipping_methods_path
     find("tr#shipping_method_#{shipping_method.id} a[data-action='destroy']").click
+    sleep 2 if ci?
     page.driver.browser.switch_to.alert.accept
     wait_for_ajax
     expect( shipping_method.reload.deleted_at ).not_to eq(nil)
