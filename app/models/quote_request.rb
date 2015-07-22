@@ -98,8 +98,8 @@ class QuoteRequest < ActiveRecord::Base
     last_name
   end
 
-  def activity_source
-    "Quote Request"
+  def activity_source(activity)
+    "Quote Request" if activity.key.include?('create')
   end
 
   def link_with_insightly

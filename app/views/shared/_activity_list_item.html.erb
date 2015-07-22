@@ -3,7 +3,15 @@
     <span><%= activity.created_at.strftime('%d') %></span>
     <small><%= activity.created_at.strftime('%b') %></small>
   </div>
-  <h4><%= activity.owner ? link_to(activity.owner.full_name, activity.owner) : (activity.trackable.try(:activity_source) || 'Someone') %></h4>
+  <h4>
+    <% if activity.trackable.respond_to?(:activity_source) && source = activity.trackable.activity_source(activity) %>
+      <%= source %>
+    <% elsif activity.owner %>
+      <%= link_to(activity.owner.full_name, activity.owner) %>
+    <% else %>
+      Someone
+    <% end %>
+  </h4>
 
   <p>
     <%= render_activity activity %>
