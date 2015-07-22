@@ -27,4 +27,4 @@ before_script:
   - bundle exec rake db:create
   - bundle exec rake db:schema:load
 
-script: xvfb-run --server-args="-screen 0, 1024x768x24" bundle exec rspec spec/features/payments_spec.rb -t ~no_ci
+script: xvfb-run --server-args="-screen 0, 1024x768x24" bundle exec rspec -t ~no_ci
