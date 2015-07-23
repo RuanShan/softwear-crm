@@ -41,4 +41,5 @@ set :linked_files, %w{config/database.yml config/application.yml
 # Default value for keep_releases is 5
 # set :keep_releases, 5
 
+# NOTE add `set :no_reindex, true` to not reindex solr
 Softwear::Lib.capistrano(self)
