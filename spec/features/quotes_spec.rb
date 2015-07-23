@@ -158,7 +158,7 @@ feature 'Quotes management', quote_spec: true, js: true, retry: 2 do
     expect(page).to have_css('#quote_shipping[value="12.0"]')
   end
 
-  scenario 'Insightly forms dynamically changed fields', edit: true do
+  scenario 'Insightly forms dynamically changed fields', story_598: true do
     allow_any_instance_of(InsightlyHelper).to receive(:insightly_available?).and_return true
     allow_any_instance_of(InsightlyHelper).to receive(:insightly_categories).and_return []
     allow_any_instance_of(InsightlyHelper).to receive(:insightly_pipelines).and_return []

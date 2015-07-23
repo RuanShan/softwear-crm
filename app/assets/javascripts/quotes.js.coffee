@@ -21,7 +21,10 @@ jQuery ->
           max = Infinity
         else
           max = parseInt(high,10)
+
+        console.log("dollar is: " + dollar + " max and min are: " + max + " " + min)
         if dollar <= max && dollar >= min
+          console.log("WUMBOPOLIS")
           $("#quote_insightly_bid_tier_id" ).val($(this).val())
           $("#quote_insightly_bid_amount").val(dollar)
 
