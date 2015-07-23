@@ -477,56 +477,56 @@ describe Quote, quote_spec: true do
             }
           }
         }
-      context 'no change was made' do 
-        it 'returns {}' do 
+      context 'no change was made' do
+        it 'returns {}' do
           expect(quote.activity_parameters_hash).to eq({})
         end
       end
 
       it 'analyzes the quote and returns a hash of fields that have changed', story: '600' do
         quote.first_name = 'Jim'
-        quote.is_rushed = true        
+        quote.is_rushed = true
         expect(quote.activity_parameters_hash).to eq(success_hash)
       end
     end
 
-    describe '#activity_add_an_imprintable_hash', story_600: true do 
+    describe '#activity_add_an_imprintable_hash', story_600: true do
       let!(:quote) { create(:valid_quote) }
 
-      context 'no change was made' do 
-        it 'returns {}' do 
+      context 'no change was made' do
+        it 'returns {}' do
           expect(quote.activity_parameters_hash).to eq({})
         end
       end
 
-      context 'two imprintables were added' do 
+      context 'two imprintables were added' do
         let(:success_hash) {
         {
           :imprintables => {
           1 =>  {
               :imprintable_id => 1,
-              :imprintable_price => 0.70 
+              :imprintable_price => 0.70
             },
           2 =>  {
               :imprintable_id => 2,
-              :imprintable_price => 0.90 
+              :imprintable_price => 0.90
             }
-          }, 
+          },
           :group_id => 1,
           :tier => 3,
           :quantity => 3,
           :decoration_price => 1.50
         }
       }
-    
+
       let!(:group) { create(:job, jobbable_id: quote.id, jobbable_type: 'Quote', name: 'A', description: 'b') }
       let(:iv1) { create(:valid_imprintable_variant) }
       let(:iv2) { create(:valid_imprintable_variant) }
       let(:iv3) { create(:valid_imprintable_variant) }
       let(:line_item_1) { create(:line_item, line_itemable_id: group.id, line_itemable_type: 'Job', imprintable_variant_id: iv1.id, imprintable_price: 0.70, decoration_price: 1.50, tier: 3) }
       let(:line_item_2) { create(:line_item, line_itemable_id: group.id, line_itemable_type: 'Job', imprintable_variant_id: iv2.id, imprintable_price: 0.90, decoration_price: 1.50, tier: 3) }
-      
-      it 'returns a hash with the imprintables added and the details about where they were added' do 
+
+      it 'returns a hash with the imprintables added and the details about where they were added' do
       #  quote.instance_variable_set("@imprintable_line_item_added_ids", [1,2])
         quote.instance_variable_set("@imprintable_line_item_added_ids", [line_item_1.id, line_item_2.id])
         expect(quote.activity_parameters_hash).to eq(success_hash)
@@ -546,10 +546,10 @@ describe Quote, quote_spec: true do
             :imprintables => {
               line_item1.imprintable.id => line_item1.imprintable.base_price.to_f,
               line_item2.imprintable.id => line_item2.imprintable.base_price.to_f
-            }, 
+            },
             :imprints => { #WIP only print_location_id so far
               imprint1.id =>   imprint1.description,
-              imprint2.id => imprint2.description 
+              imprint2.id => imprint2.description
             },
             :name => job.name,
             :id => job.id, #group id aka job id
@@ -558,12 +558,12 @@ describe Quote, quote_spec: true do
           }
         }
         it 'returns a hash with information about imprintables, imprints, and other fields regarding the job' do
-          quote.instance_variable_set("@group_added_id", job.id)          
+          quote.instance_variable_set("@group_added_id", job.id)
           expect(quote.activity_parameters_hash).to eq(success_hash)
         end
       end
     end
-    
+
     describe '#activity_parameters_for_job_changed', story_600xx: true do
         let!(:quote) { create(:valid_quote) }
         let!(:line_item1) { create(:imprintable_line_item) }
@@ -579,7 +579,7 @@ describe Quote, quote_spec: true do
 
         let(:success_hash) {
           {
-            :group_id => job.id,  
+            :group_id => job.id,
             :name => { :old => job.name_was, :new => "Wumbo"},
             :description => { :old => job.description_was, :new => "Wumboism" },
             :line_items => {
@@ -593,13 +593,13 @@ describe Quote, quote_spec: true do
                   :decoration_price => {:old => line_item2.decoration_price_was.to_f, :new => 1.03},
                   :imprintable_price => {:old => line_item2.imprintable_price_was.to_f, :new => 8.00}
                 }
-              }, 
+              },
               :imprints => {
                 imprint1.id => {
                   :old => {
                     :description => imprint1.description_was,
                     :print_location_id => imprint1.print_location_id_was
-                  }, 
+                  },
                   :new => {
                     :description => "14-orange",
                     :print_location_id => 2
@@ -609,7 +609,7 @@ describe Quote, quote_spec: true do
                   :old => {
                     :description => imprint2.description_was,
                     :print_location_id => imprint2.print_location_id_was
-                  }, 
+                  },
                   :new => {
                     :description => "3-red",
                     :print_location_id => 4
@@ -621,7 +621,7 @@ describe Quote, quote_spec: true do
 
         let(:success_hash_markup) {
           {
-            :group_id => job.id,  
+            :group_id => job.id,
             :name => { :old => job.name_was, :new => "Wumbo"},
             :description => { :old => job.description_was, :new => "Wumboism" },
             :line_items => {
@@ -631,12 +631,12 @@ describe Quote, quote_spec: true do
                 markup2.id => {
                   :unit_price => {:old => markup2.unit_price_was.to_f, :new => 10},
                 }
-              } 
+              }
           }
         }
 
         it 'returns a hash with all updated imprint and imprintable fields for the job' do
-          # make changes to job 
+          # make changes to job
           # then check for success hash
           l1o = LineItem.find(line_item1.id)
           l2o = LineItem.find(line_item2.id)
@@ -644,7 +644,7 @@ describe Quote, quote_spec: true do
           i2o = Imprint.find(imprint2.id)
 
           li_old = [ l1o, l2o ]
-          i_old = [ i1o, i2o ] 
+          i_old = [ i1o, i2o ]
 
           line_item1.quantity = 40
           line_item2.quantity = 30
@@ -657,7 +657,7 @@ describe Quote, quote_spec: true do
           imprint2.description = "3-red"
           imprint1.print_location_id = "2"
           imprint2.print_location_id = "4"
-          
+
           job.name = "Wumbo"
           job.description = "Wumboism"
 
@@ -672,13 +672,13 @@ describe Quote, quote_spec: true do
           i1o = Imprint.find(imprint1.id)
           i2o = Imprint.find(imprint2.id)
           li_old = [ l1o, l2o ]
-          i_old = [ i1o, i2o ] 
+          i_old = [ i1o, i2o ]
           expect(quote.activity_parameters_hash_for_job_changes(job, li_old, i_old)).to eq(success_hash_markup)
         end
     end
   end
 
-    
+
 
     describe '#get_freshdesk_ticket', story_70: true do
       # used for stubbing responses and methods
@@ -777,7 +777,6 @@ describe Quote, quote_spec: true do
           .and_return '<div>hi</div>'.html_safe
 
         allow(quote).to receive(:freshdesk_group_id).and_return 54321
-        allow(quote).to receive(:freshdesk_department).and_return 'Testing'
         allow(quote).to receive(:save).with validate: false
       end
 
@@ -798,7 +797,6 @@ describe Quote, quote_spec: true do
               ticket_type: 'Lead',
               subject: "Your Quote \"#{quote.name}\" (##{quote.id}) from the Ann Arbor T-shirt Company",
               custom_field: {
-                department_7483: 'Testing',
                 softwearcrm_quote_id_7483: quote.id
               },
               description_html: anything,
@@ -823,12 +821,11 @@ describe Quote, quote_spec: true do
               ticket_type: 'Lead',
               subject: anything,
               custom_field: {
-                department_7483: 'Testing',
                 softwearcrm_quote_id_7483: quote.id
               },
               description_html: anything,
               email: quote.email,
-              phone: quote.phone_number,
+              phone: quote.format_phone(phone_number),
               name: quote.full_name
             })
             .and_return({ helpdesk_ticket: { display_id: 2981 } }.to_json)

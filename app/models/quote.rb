@@ -411,7 +411,7 @@ class Quote < ActiveRecord::Base
     if quote_requests.where.not(freshdesk_contact_id: nil).empty?
       requester_info = {
         email: email,
-        phone: phone_number,
+        phone: format_phone(phone_number),
         name: full_name
       }
     else
@@ -426,10 +426,7 @@ class Quote < ActiveRecord::Base
           group_id: freshdesk_group_id(salesperson),
           ticket_type: 'Lead',
           subject: "Your Quote \"#{self.name}\" (##{self.id}) from the Ann Arbor T-shirt Company",
-          custom_field: {
-            FD_DEPARTMENT_FIELD => freshdesk_department(salesperson),
-            FD_QUOTE_ID_FIELD => id
-          },
+          custom_field: { FD_QUOTE_ID_FIELD => id },
           description_html: freshdesk_description(quote_requests.where("freshdesk_contact_id <> ''"))
         }
          .merge(requester_info)
