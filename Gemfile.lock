@@ -1,8 +1,8 @@
 GIT
   remote: git://github.com/AnnArborTees/acts_as_warnable.git
-  revision: 2b3eee8447fae174398d6933513c766555338bb6
+  revision: 7709fe55215eb1c7e92f12f6f549249aee0b1ed1
   specs:
-    acts_as_warnable (0.0.1)
+    acts_as_warnable (0.0.2)
       devise
       rails (~> 4.2.1)
 
@@ -439,7 +439,7 @@ GEM
       json (~> 1.0)
       redis (~> 3.2, >= 3.2.1)
       redis-namespace (~> 1.5, >= 1.5.2)
-    sidekiq-failures (0.4.4)
+    sidekiq-failures (0.4.5)
       sidekiq (>= 2.16.0)
     sidekiq-status (0.5.4)
       sidekiq (>= 2.7)
