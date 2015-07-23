@@ -6,7 +6,7 @@ set :application, 'softwear-crm'
 set :repo_url, 'git@github.com:annarbortees/softwear-crm.git'
 set :rvm_ruby_string, 'rbx-2.5.2'
 set :rvm_ruby_version, 'rbx-2.5.2'
-set :rvm_task_ruby_version, 'rbx-2.5.2'
+set :rvm_task_ruby_version, 'ruby-2.1.2'
 set :whenever_identifier, -> { "#{fetch(:application)}_#{fetch(:stage)}" }
 set :assets_role, :web
 
@@ -41,41 +41,5 @@ set :linked_files, %w{config/database.yml config/application.yml
 # Default value for keep_releases is 5
 # set :keep_releases, 5
 
+# NOTE add `set :no_reindex, true` to not reindex solr
 Softwear::Lib.capistrano(self)
-
-namespace :deploy do
-
-  desc 'Restart application'
-  task :restart do
-    on roles([:web, :app]), in: :sequence, wait: 5 do
-      execute :mkdir, '-p', "#{ release_path }/tmp"
-      execute :touch, release_path.join('tmp/restart.txt')
-    end
-  end
-
-
-  after :publishing, :restart
-
-end
-
-namespace :data do
-
-  desc 'Dump data in envrionment into seed files'
-  task :dump do
-    on roles(:db) do
-      within release_path do
-        with rails_env: (fetch(:rails_env) || fetch(:stage)) do
-          execute :rake, 'db:data:dump'
-        end
-      end
-    end
-  end
-
-  desc 'Copy remote data to local server'
-  task :download do
-    run_locally do
-      execute "scp ubuntu@crm.softwearcrm.com:#{release_path}/db/data.yml ./db/data.yml"
-      execute :rake, 'db:data:load'
-    end
-  end
-end

@@ -335,5 +335,16 @@ describe Imprintable, imprintable_spec: true do
     end
   end
 
+  describe 'Shirt Tag Type', story_764: true do
+    let(:imp) { create(:valid_imprintable) }
+    
+    context 'Not Specified' do
+      it 'is not specified by default' do
+        expect(imp.tag).to eq('Not Specified')
+      end
+    end
+
+  end
+  
 end
 
