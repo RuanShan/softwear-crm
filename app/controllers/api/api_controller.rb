@@ -49,7 +49,7 @@ module Api
       create! do |success, failure|
         success.json do
           headers['Location'] = resource_url(record.id)
-          render_json.call
+          render_json(status: 201).call
         end
         failure.json(&render_json)
       end
@@ -61,11 +61,22 @@ module Api
 
     protected
 
-    def render_json(records = nil)
+    def render_json(options = {})
       proc do
-        render json: (records || record),
-               methods: [:id] + permitted_attributes,
-               include: includes
+        if options.is_a?(Hash)
+          records = nil
+        else
+          records = options
+          options = {}
+        end
+        rendering = {
+          json: (records || record),
+          methods: [:id] + permitted_attributes,
+          include: includes
+        }
+          .merge(options)
+
+        render rendering
       end
     end
 
