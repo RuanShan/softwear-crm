@@ -1,8 +1,8 @@
 GIT
   remote: git://github.com/AnnArborTees/acts_as_warnable.git
-  revision: 2b3eee8447fae174398d6933513c766555338bb6
+  revision: 7709fe55215eb1c7e92f12f6f549249aee0b1ed1
   specs:
-    acts_as_warnable (0.0.1)
+    acts_as_warnable (0.0.2)
       devise
       rails (~> 4.2.1)
 
@@ -456,7 +456,7 @@ GEM
       rack (~> 1.4)
       rack-protection (~> 1.4)
       tilt (>= 1.3, < 3)
-    softwear-lib (1.0.1)
+    softwear-lib (1.2.1)
       activesupport
     sprockets (3.2.0)
       rack (~> 1.0)
@@ -582,7 +582,7 @@ DEPENDENCIES
   sidekiq-status
   simple_token_authentication
   sinatra
-  softwear-lib (~> 1.0.0)
+  softwear-lib (~> 1.2.0)
   summernote-rails
   sunspot_matchers
   sunspot_rails
