@@ -2,6 +2,20 @@ $(document).ready(function(){
   $('#start_time').datetimepicker();
   $('#end_time').datetimepicker();
 
+  $('#quote-request-status-select').change(function() {
+    console.log("im page " + $(this).data('page'));
+
+    $.ajax({
+      url:    Routes.filter_quote_requests_path(),
+      method: 'POST',
+      type:   'script',
+      data:   {
+        page: $(this).data('page'),
+        quote_request_status: $(this).val()
+      }
+    });
+  });
+
   var qrStatusEditable = $('#quote-request-status span.editable');
   var qrStatusSpan = $('span[data-name="status"]');
 

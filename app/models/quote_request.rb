@@ -209,26 +209,6 @@ class QuoteRequest < ActiveRecord::Base
   end
   warn_on_failure_of :create_freshdesk_ticket, raise_anyway: true unless Rails.env.test?
 
-  def format_phone(num)
-    return if num.nil?
-
-    num.gsub!(/\D/, '')
-
-    if num.length == 11 && num[0] == '1'
-      num
-    elsif num.length == 10
-      num = '1' + num
-    elsif num.length >= 7 && num.length <= 9
-      dif = num.length - 7
-      if dif != 0
-        num = num.slice(dif, 7)
-      end
-      num = '1734' + num
-    end
-
-    "+#{num.slice(0, 1)}-#{num.slice(1, 3)}-#{num.slice(4, 3)}-#{num.slice(7, 4)}"
-  end
-
   def linked_with_freshdesk?
     !freshdesk_contact_id.nil?
   end

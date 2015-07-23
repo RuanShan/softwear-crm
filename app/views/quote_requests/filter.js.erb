@@ -1,0 +1,6 @@
+var list = $("#quote-request-list");
+list
+  .html("")
+  .append("<%=j paginate @quote_requests %>")
+  .append("<div class='box-info row clear'><%=j render partial: 'quote_requests/table', locals: { quote_requests: @quote_requests } %></div>")
+  .append("<%=j paginate @quote_requests %>");

@@ -1,7 +1,6 @@
 module IntegratedCrms
   extend ActiveSupport::Concern
 
-  FD_DEPARTMENT_FIELD = :department_7483
   FD_QUOTE_ID_FIELD = :softwearcrm_quote_id_7483
 
   included do
@@ -128,5 +127,25 @@ module IntegratedCrms
     obj ||= self
     return if obj.try(:freshdesk_ticket_id).blank?
     "http://annarbortees.freshdesk.com/helpdesk/tickets/#{freshdesk_ticket_id}"
+  end
+
+  def format_phone(num)
+    return if num.nil?
+
+    num.gsub!(/\D/, '')
+
+    if num.length == 11 && num[0] == '1'
+      num
+    elsif num.length == 10
+      num = '1' + num
+    elsif num.length >= 7 && num.length <= 9
+      dif = num.length - 7
+      if dif != 0
+        num = num.slice(dif, 7)
+      end
+      num = '1734' + num
+    end
+
+    "+#{num.slice(0, 1)}-#{num.slice(1, 3)}-#{num.slice(4, 3)}-#{num.slice(7, 4)}"
   end
 end
