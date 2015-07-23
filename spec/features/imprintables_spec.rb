@@ -130,6 +130,7 @@ feature 'Imprintables management', imprintable_spec: true, slow: true do
       wait_for_ajax
       find_button('Update Imprintable').click
 
+      sleep 2 if ci?
       expect(page).to have_content 'Imprintable was successfully updated.'
       expect(imprintable.reload.coordinate_ids.include? coordinate.id).to be_truthy
     end
