@@ -2,18 +2,18 @@ language: ruby
 rvm:
   - rbx-2.5.2
 
-sudo: false
-
-addons:
-  apt:
-    packages:
-      - libmysql-ruby
-      - libmysqlclient-dev
-      - ruby-dev
-
 before_install:
+  - sudo apt-get install libmysql-ruby libmysqlclient-dev ruby-dev
   - gem install softwear-lib -i ~/.rvm/rubies/rbx-2.5.2/gems --no-ri --no-rdoc
   - gem install eventmachine -i ~/.rvm/rubies/rbx-2.5.2/gems -v 1.0.3 --no-ri --no-rdoc
+  - wget http://chromedriver.storage.googleapis.com/2.15/chromedriver_linux64.zip
+  - mkdir ~/chromedriver
+  - unzip chromedriver_linux64.zip -d ~/chromedriver
+  - rm chromedriver_linux64.zip
+  - 'wget -q -O - https://dl-ssl.google.com/linux/linux_signing_key.pub | sudo apt-key add - '
+  - sudo sh -c 'echo "deb http://dl.google.com/linux/chrome/deb/ stable main" >> /etc/apt/sources.list.d/google.list'
+  - sudo apt-get update
+  - sudo apt-get install google-chrome-stable
 
 before_script:
   - |
@@ -23,6 +23,7 @@ before_script:
         database: crm_test
         username: travis
     END
+  - export PATH=$PATH:~/chromedriver
   - bundle exec rake db:create
   - bundle exec rake db:schema:load
 
