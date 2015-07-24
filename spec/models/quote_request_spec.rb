@@ -72,9 +72,6 @@ describe QuoteRequest, quote_request_spec: true, story_78: true do
             group_id: 54321,
             ticket_type: 'Lead',
             subject: "Information regarding your quote request (##{quote_request.id}) from the Ann Arbor T-shirt Company",
-            custom_field: {
-              department_7483: 'Testing'
-            },
             description_html: anything,
             requester_id: 123
           })

@@ -194,9 +194,6 @@ class QuoteRequest < ActiveRecord::Base
           group_id: freshdesk_group_id(salesperson),
           ticket_type: 'Lead',
           subject: "Information regarding your quote request (##{id}) from the Ann Arbor T-shirt Company",
-          custom_field: {
-            FD_DEPARTMENT_FIELD => freshdesk_department(salesperson)
-          },
           description_html: freshdesk_description(self)
         }
           .merge(requester_info)

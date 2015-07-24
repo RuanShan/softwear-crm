@@ -30,19 +30,19 @@
   <%= hidden_field_tag :quote_update, quote.id %>
   <%= hidden_field_tag :job_id, quote.markups_and_options_job.id %>
 
-  <%= f.label :name %>
+  <%= f.label :name, for: 'line-item-name' %>
   <%= f.text_field :name, maxlength: 255, required: true, id: 'line-item-name'  %>
   <p class="help-block">
       Name the line item
   </p>
 
-  <%= f.label :description %>
+  <%= f.label :description, for: 'line-item-description' %>
   <%= f.text_field :description, maxlength: 10000, required: true, id: 'line-item-description' %>
   <p class="help-block">
       Add a brief description to explain exactly what the upcharge or markup is for
   </p>
 
-  <%= f.label :url%>
+  <%= f.label :url, for: 'line-item-url' %>
   <%= f.text_field :url, maxlength: 255, id: 'line-item-url' %>
   <p class="help-block">
       If a landing page with information exists, include the link to it
@@ -60,7 +60,7 @@
       <div class="col-xs-4">
       <%= f.hidden_field :quantity, value: LineItem::MARKUP_ITEM_QUANTITY %>
     <% end %>
-      <%= f.label :unit_price %><br />
+      <%= f.label :unit_price, for: 'line-item-unit-price' %><br />
       <div class="input-group">
         <span class="input-group-addon">$</span>
         <%= f.text_field :unit_price, type: 'number', step: 'any', required: true, id: 'line-item-unit-price'  %>
