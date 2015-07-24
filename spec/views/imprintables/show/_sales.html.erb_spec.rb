@@ -2,7 +2,7 @@ require 'spec_helper'
 
 describe 'imprintables/show/_sales.html.erb', imprintable_spec: true do
 
-  let(:imprintable) { build(:valid_imprintable) }
+  let(:imprintable) { build(:valid_imprintable, tag: "Standard") }
 
   before(:each) do
     allow(imprintable).to receive(:name).and_return('name')
@@ -11,7 +11,7 @@ describe 'imprintables/show/_sales.html.erb', imprintable_spec: true do
     render 'imprintables/show/sales', imprintable: imprintable
   end
 
-  it 'display main supplier, supplier link, name, and pricing' do
+  it 'display main supplier, supplier link, name, pricing, and shirt tag type' do
 
     expect(rendered).to have_css 'dd', text: imprintable.brand.name
     expect(rendered).to have_css 'dd', text: imprintable.style_name
@@ -27,6 +27,8 @@ describe 'imprintables/show/_sales.html.erb', imprintable_spec: true do
 
     expect(rendered).to have_css('dd', text: imprintable.main_supplier)
     expect(rendered).to have_css('dd', text: imprintable.supplier_link)
+    expect(rendered).to have_content "Shirt Tag Type Standard"
 
   end
+
 end
