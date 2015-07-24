@@ -1,0 +1,30 @@
+<div id='actual-line-item-template-results' class='collapse in'>
+  <% if line_item_templates.empty? %>
+    No template found. <%= link_to 'Create one.', new_line_item_template_path, target: :_blank %>
+  <% else %>
+    <% line_item_templates.each do |line_item_template| %>
+      <hr>
+      <div id="line_item_template-result-<%=line_item_template.id%>" class="line_item_template-add-search-result row">
+        <div class='col-sm-5'>
+          <div class='col-sm-5'><strong> Name: </strong></div>
+          <div class='col-sm-7'> <%= line_item_template.name %> </div>
+
+          <div class='col-sm-5'><strong> Unit Price: </strong></div>
+          <div class='col-sm-7'> <%= number_to_currency line_item_template.unit_price %> </div>
+
+          <div class='col-sm-5'><strong> URL: </strong></div>
+          <div class='col-sm-7'> <%= line_item_template.url %> </div>
+        </div>
+        <div class='col-sm-5'>
+          <dl>
+            <dt> Description </dt>
+            <dd> <%= line_item_template.description.html_safe %> </dd>
+          </dl>
+        </div>
+        <div class='col-sm-2'>
+          <%= link_to 'Use', '#', class: 'btn btn-primary use-line-item-template-btn', data: { name: line_item_template.name, description: line_item_template.description, unit_price: line_item_template.unit_price, url: line_item_template.url } %>
+        </div>
+      </div>
+    <% end %>
+  <% end %>
+</div>

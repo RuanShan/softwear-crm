@@ -1,0 +1,12 @@
+$('#line-item-template-search-results').html(
+  "<%=j render 'quotes/edit/line_item_template_search_results', line_item_templates: line_item_templates %>"
+);
+
+$('.use-line-item-template-btn').click(function() {
+  $('#line-item-name').val($(this).data('name'));
+  $('#line-item-description').val($(this).data('description'));
+  $('#line-item-unit-price').val($(this).data('unit-price'));
+  $('#line-item-url').val($(this).data('url'));
+
+  $('#actual-line-item-template-results').collapse();
+});

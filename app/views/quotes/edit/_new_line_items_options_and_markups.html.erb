@@ -1,53 +1,76 @@
-<div class="container-fluid">
-    <p class="help-block">
-      Options &amp; Markups are things like, say, a color upcharge. Or a name &amp; number
-      charge. To keep quote scenarios simple, use these to make note of such things
-    </p>
-    <%= form_for LineItem.new, builder: LancengFormBuilder, remote: true, class: 'horizontal-form' do |f| %>
-        <%= hidden_field_tag :quote_update, quote.id %>
-        <%= hidden_field_tag :job_id, quote.markups_and_options_job.id %>
+<p class="help-block">
+  Options &amp; Markups are things like, say, a color upcharge. Or a name &amp; number
+  charge. To keep quote scenarios simple, use these to make note of such things
+</p>
 
-        <%= f.label :name %>
-        <%= f.text_field :name, maxlength: 255, required: true  %>
-        <p class="help-block">
-            Name the line item
-        </p>
+<div class='col-sm-12'>
+  <%= form_tag line_item_templates_path, method: :get, remote: true do %>
+    <%= hidden_field_tag 'respond_with_partial', 'quotes/edit/line_item_template_search.js' %>
 
-        <%= f.label :description %>
-        <%= f.text_field :description, maxlength: 10000, required: true   %>
-        <p class="help-block">
-            Add a brief description to explain exactly what the upcharge or markup is for
-        </p>
-
-        <%= f.label :url%>
-        <%= f.text_field :url, maxlength: 255 %>
-        <p class="help-block">
-            If a landing page with information exists, include the link to it
-        </p>
-
-
-      <div class="row">
-        <% if quote.formal? %>
-          <div class="col-xs-2">
-            <%= f.label :quantity %><br />
-            <%= f.text_field :quantity, type: 'number', required: true  %>
-          </div>
-          <div class="col-xs-2">
-        <% else %>
-          <div class="col-xs-4">
-          <%= f.hidden_field :quantity, value: LineItem::MARKUP_ITEM_QUANTITY %>
-        <% end %>
-          <%= f.label :unit_price %><br />
-          <div class="input-group">
-            <span class="input-group-addon">$</span>
-            <%= f.text_field :unit_price, type: 'number', step: 'any', required: true  %>
-          </div>
-        </div>
-
-
-      <%= button_tag class: 'btn btn-success col-sm-offset-4 col-xs-4 col-xs-offset-1 col-xs-10' do  %>
-          <i class="glyphicon glyphicon-plus-sign"></i> Add Option or Markup
+    <div class='form-group'>
+      <%= label_tag :q, 'Terms', class: 'col-xs-1 control-label' %>
+      <div class="col-xs-8">
+        <%= text_field_tag :q, '', class: 'form-control', placeholder: 'Search templates', id: 'search-templates' %>
+      </div>
+      <%= button_tag class: 'btn btn-primary col-xs-2' do  %>
+          <i class="glyphicon glyphicon-search"></i> Search
       <% end %>
-    <% end %>
-
+    </div>
+  <% end %>
 </div>
+<br clear="all" />
+
+<div id='line-item-template-search-results'>
+  <% # This'll get populated by _line_item_template_search.js with _line_item_template_search_results.html %>
+</div>
+<br clear="all" />
+<hr />
+
+<%= form_for LineItem.new, builder: LancengFormBuilder, remote: true, class: 'horizontal-form' do |f| %>
+  <%= hidden_field_tag :quote_update, quote.id %>
+  <%= hidden_field_tag :job_id, quote.markups_and_options_job.id %>
+
+  <%= f.label :name %>
+  <%= f.text_field :name, maxlength: 255, required: true, id: 'line-item-name'  %>
+  <p class="help-block">
+      Name the line item
+  </p>
+
+  <%= f.label :description %>
+  <%= f.text_field :description, maxlength: 10000, required: true, id: 'line-item-description' %>
+  <p class="help-block">
+      Add a brief description to explain exactly what the upcharge or markup is for
+  </p>
+
+  <%= f.label :url%>
+  <%= f.text_field :url, maxlength: 255, id: 'line-item-url' %>
+  <p class="help-block">
+      If a landing page with information exists, include the link to it
+  </p>
+
+
+  <div class="row">
+    <% if quote.formal? %>
+      <div class="col-xs-2">
+        <%= f.label :quantity %><br />
+        <%= f.text_field :quantity, type: 'number', required: true  %>
+      </div>
+      <div class="col-xs-2">
+    <% else %>
+      <div class="col-xs-4">
+      <%= f.hidden_field :quantity, value: LineItem::MARKUP_ITEM_QUANTITY %>
+    <% end %>
+      <%= f.label :unit_price %><br />
+      <div class="input-group">
+        <span class="input-group-addon">$</span>
+        <%= f.text_field :unit_price, type: 'number', step: 'any', required: true, id: 'line-item-unit-price'  %>
+      </div>
+    </div>
+
+
+  <div class='row'>
+    <%= button_tag class: 'btn btn-success col-sm-offset-4 col-xs-4 col-xs-offset-1 col-xs-10' do  %>
+        <i class="glyphicon glyphicon-plus-sign"></i> Add Option or Markup
+    <% end %>
+  </div>
+<% end %>

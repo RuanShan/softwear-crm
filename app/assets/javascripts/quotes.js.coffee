@@ -10,18 +10,20 @@ jQuery ->
       tier = $(this).text()
       if tier != 'unassigned'
         array = tier.split(" ")
-        low = array[2]
-        console.log low
+        low = array[3]
         low = low.substr(2)
-        high = array[4]
-        console.log high
+        high = array[5]
         high = high.substr(1, high.lastIndexOf(')')-1)
         min = parseInt(low,10)
         if isNaN(parseInt(high, 10)) == true
           max = Infinity
         else
           max = parseInt(high,10)
+        console.log("tier is: " + tier)
+        console.log("low and high are: " + low + " " + high)
+        console.log("dollar is: " + dollar + " max and min are: " + max + " " + min)
         if dollar <= max && dollar >= min
+          console.log("WUMBOPOLIS")
           $("#quote_insightly_bid_tier_id" ).val($(this).val())
           $("#quote_insightly_bid_amount").val(dollar)
 

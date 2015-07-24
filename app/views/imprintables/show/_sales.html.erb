@@ -9,6 +9,8 @@
     <dd><%= imprintable.style_catalog_no %></dd>
     <dt>Style Description</dt>
     <dd><%= raw imprintable.description %></dd>
+    <dt>Shirt Tag Type</dt>
+    <dd><%= imprintable.tag.blank? ? 'Not Specified' : imprintable.tag %></dd>
   </dl>
 
   <h3>Sizing Pricing</h3>
@@ -66,8 +68,6 @@
       <dd><%= imprintable.sample_locations.empty? ? 'Not Specified' : imprintable.sample_locations.map{|x| x.name}.join(', ') %></dd>
       <dt>Tags</dt>
       <dd><%= imprintable.tags.empty? ? 'Not Specified' : imprintable.tags.map{|x| x.name}.join(', ') %></dd>
-      <dt>Shirt Tag Type</dt>
-      <dd><%= imprintable.tag.blank? ? 'Not Specified' : imprintable.tag %></dd>
     </dl>
 
     <%= render 'imprintables/show/weight_table', imprintable: imprintable %>
