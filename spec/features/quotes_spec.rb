@@ -693,6 +693,36 @@ feature 'Quotes management', quote_spec: true, js: true, retry: 2 do
     expect(page).to_not have_content 'Remove me'
   end
 
+  scenario 'A user can add a line item from a template', story_494: true do
+    template = create(:line_item_template, name: 'nice')
+    allow(LineItemTemplate).to receive(:search)
+      .and_return double(
+        'Line Item Template Search',
+        results: [template]
+      )
+    quote.update_attributes informal: true
+    quote.jobs << create(:job, line_items: [create(:imprintable_line_item)])
+
+    visit edit_quote_path quote
+    find('a', text: 'Line Items').click
+
+    click_link 'Add An Option or Markup'
+    sleep 0.5
+
+    find('#search-templates').set 'nice'
+    click_button 'Search'
+
+    expect(page).to have_content 'nice'
+    expect(page).to have_content template.description
+
+    click_link 'Use'
+
+    click_button 'Add Option or Markup'
+    sleep 1
+    expect(page).to have_content 'Quote was successfully updated.'
+    expect(quote.reload.markups_and_options_job.line_items.where(name: 'nice')).to exist
+  end
+
   scenario 'Error reports turn the page to the first on on which there is an error', story_491: true do
     visit new_quote_path
     fill_in 'Email', with: 'test@testing.com'

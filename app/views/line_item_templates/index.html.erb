@@ -27,7 +27,7 @@
               <td><%= line_item_template.description.truncate(100) %></td>
               <td>
                 <% if line_item_template.url %>
-                  <%= link_to line_item_template.url %>
+                  <%= link_to line_item_template.url, line_item_template.url %>
                 <% else %>
                   &lt;none&gt;
                 <% end %>
