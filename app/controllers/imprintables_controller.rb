@@ -17,9 +17,7 @@ class ImprintablesController < InheritedResources::Base
         end
       end
     else
-      super do
-        @imprintables = params[:tag] ? Imprintable.tagged_with(params[:tag]) : Imprintable.all.page(params[:page])
-      end
+      @imprintables = params[:tag] ? Imprintable.tagged_with(params[:tag]) : Imprintable.all.page(params[:page])
     end
   end
 
