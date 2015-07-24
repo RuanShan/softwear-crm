@@ -589,6 +589,43 @@ feature 'Quotes management', quote_spec: true, js: true, retry: 2 do
     expect(page).to have_content 'Please mark at least one imprintable to be added.'
   end
 
+  scenario 'A user can add an imprintable without specifying quantity or decoration price', story_729: true do
+    allow(Imprintable).to receive(:search)
+      .and_return OpenStruct.new(
+        results: [imprintable1, imprintable2, imprintable3]
+      )
+
+    quote.jobs << create(:job, line_items: [create(:imprintable_line_item, quantity: 20, decoration_price: 10)])
+    job = quote.jobs.first
+    visit edit_quote_path quote
+
+    find('a', text: 'Line Items').click
+
+    click_link 'Add an imprintable'
+    sleep 1
+    within '#imprintable-add-search' do
+      fill_in 'Terms', with: 'some imprintable'
+    end
+    sleep 0.5
+    click_button 'Search'
+
+    sleep 0.5
+    find("#imprintable-result-#{imprintable1.id} input[type=checkbox]").click
+    sleep 0.5
+
+    select quote.jobs.first.name, from: 'Group'
+    select 'Better', from: 'Tier'
+
+    click_button 'Add Imprintable(s)'
+
+    sleep 1 if ci?
+    expect(page).to have_content 'Quote was successfully updated.'
+
+    job.reload
+    expect(job.line_items.where(imprintable_variant_id: iv1.id)).to exist
+    expect(job.line_items.where(imprintable_variant_id: iv1.id, quantity: 20, decoration_price: 10)).to exist
+  end
+
   scenario 'A user can add an option/markup to a quote', revamp: true, story_558: true, story_692: true do
     quote.update_attributes informal: true
     quote.jobs << create(:job, line_items: [create(:imprintable_line_item)])

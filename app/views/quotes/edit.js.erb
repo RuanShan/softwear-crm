@@ -7,6 +7,9 @@ showContentModal({
   then: function() {
     var form = $('#new-group-form');
     registerImprintEvents(form);
+
+    $('#select-existing-group').change(initializeExistingLineItemGroupSelect);
+    initializeExistingLineItemGroupSelect();
   }
 });
 initializeQuoteNewLineItems();
