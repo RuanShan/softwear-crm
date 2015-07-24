@@ -733,7 +733,7 @@ feature 'Quotes management', quote_spec: true, js: true, retry: 2 do
     expect(page).to_not have_content 'Remove me'
   end
 
-  scenario 'A user can add a line item from a template', story_494: true do
+  scenario 'A user can add a line item from a template', no_ci: true, retry: 3, story_494: true do
     template = create(:line_item_template, name: 'nice')
     allow(LineItemTemplate).to receive(:search)
       .and_return double(
@@ -752,15 +752,15 @@ feature 'Quotes management', quote_spec: true, js: true, retry: 2 do
     find('#search-templates').set 'nice'
     click_button 'Search'
 
+    sleep 1
     expect(page).to have_content 'nice'
     expect(page).to have_content template.description
 
     click_link 'Use'
-    sleep 0.5 if ci?
+    sleep 2
 
     click_button 'Add Option or Markup'
-    sleep 1
-    sleep 2 if ci?
+    sleep 2
     expect(page).to have_content 'Quote was successfully updated.'
     expect(quote.reload.markups_and_options_job.line_items.where(name: 'nice')).to exist
   end

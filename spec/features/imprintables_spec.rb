@@ -135,13 +135,12 @@ feature 'Imprintables management', imprintable_spec: true, slow: true do
       expect(imprintable.reload.coordinate_ids.include? coordinate.id).to be_truthy
     end
 
-    scenario 'Coordinates are reflected symmetrically', js: true do
+    scenario 'Coordinates are reflected symmetrically', no_ci: true, js: true do
       visit edit_imprintable_path imprintable.id
 
       find('#imprintable_coordinate_ids', visible: false).select coordinate.name
       find_button('Update Imprintable').click
 
-      sleep 2 if ci?
       expect(page).to have_content 'Imprintable was successfully updated.'
       expect(coordinate.reload.coordinate_ids.include? imprintable.id).to be_truthy
     end
