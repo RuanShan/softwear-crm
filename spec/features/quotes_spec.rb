@@ -163,7 +163,7 @@ feature 'Quotes management', quote_spec: true, js: true, retry: 2 do
     allow_any_instance_of(InsightlyHelper).to receive(:insightly_categories).and_return []
     allow_any_instance_of(InsightlyHelper).to receive(:insightly_pipelines).and_return []
     allow_any_instance_of(InsightlyHelper).to receive(:insightly_opportunity_profiles).and_return []
-    allow_any_instance_of(InsightlyHelper).to receive(:insightly_bid_tiers).and_return ["unassigned", "Tier 1 ($1 - $249)", "Tier 2 ($250 - $499)", "Tier 3 ($500 - $999)", "Tier 4 ($1000 and up)"]
+    allow_any_instance_of(InsightlyHelper).to receive(:insightly_bid_tiers).and_return ["unassigned", "Tier 1  ($1 - $249)", "Tier 2  ($250 - $499)", "Tier 3  ($500 - $999)", "Tier 4  ($1000 and up)"]
 
     visit new_quote_path
     click_button 'Next'
