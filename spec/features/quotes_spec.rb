@@ -756,9 +756,11 @@ feature 'Quotes management', quote_spec: true, js: true, retry: 2 do
     expect(page).to have_content template.description
 
     click_link 'Use'
+    sleep 0.5 if ci?
 
     click_button 'Add Option or Markup'
     sleep 1
+    sleep 2 if ci?
     expect(page).to have_content 'Quote was successfully updated.'
     expect(quote.reload.markups_and_options_job.line_items.where(name: 'nice')).to exist
   end

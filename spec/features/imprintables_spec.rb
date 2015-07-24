@@ -141,6 +141,7 @@ feature 'Imprintables management', imprintable_spec: true, slow: true do
       find('#imprintable_coordinate_ids', visible: false).select coordinate.name
       find_button('Update Imprintable').click
 
+      sleep 2 if ci?
       expect(page).to have_content 'Imprintable was successfully updated.'
       expect(coordinate.reload.coordinate_ids.include? imprintable.id).to be_truthy
     end
