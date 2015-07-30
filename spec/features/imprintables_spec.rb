@@ -91,7 +91,7 @@ feature 'Imprintables management', imprintable_spec: true, slow: true do
     given!(:imprintable_two) { create(:valid_imprintable) }
     given!(:imprintable_three) { create(:valid_imprintable) }
 
-    scenario 'A user can tag an imprintable', story_692: true do
+    scenario 'A user can tag an imprintable', retry: 4, story_692: true do
       visit edit_imprintable_path imprintable.id
 
       fill_in 'Tags', with: 'cotton'
