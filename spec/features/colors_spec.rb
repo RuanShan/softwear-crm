@@ -40,4 +40,16 @@ feature 'Colors management', color_spec: true do
     expect(page).to have_content 'Color was successfully destroyed.'
     expect(color.reload.deleted_at).not_to eq(nil)
   end
+
+  scenario 'A user can set hexcodes using the color picker', js: true, story_756: true do
+    visit edit_color_path color
+    find('#add-hexcode').click
+    find('#color_hexcodes_').click
+    execute_script "$('.minicolors-picker').css({top: '44px', left: '97px'})" # Move the picker
+    first('.minicolors-picker').click
+    first('.box-info').click # Click outside to close the colorpicker
+    click_button 'Update Color'
+    expect(page).to have_content 'Color was successfully updated.'
+    expect(color.reload.hexcode).to eq '5C3EB3'
+  end
 end

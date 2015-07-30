@@ -13,4 +13,11 @@ class Color < ActiveRecord::Base
   searchable do
     text :name, :sku
   end
+
+  def hexcodes
+    (hexcode.try(:split, ',') || []).map { |v| '#'+v }
+  end
+  def hexcodes=(values)
+    self.hexcode = values.map { |v| v.gsub('#', '') }.join(',')
+  end
 end
