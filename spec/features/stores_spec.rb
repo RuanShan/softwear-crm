@@ -25,6 +25,7 @@ feature 'Stores management', store_spec: true do
   scenario 'User deletes an existing store', js: true, story_692: true do
     visit stores_path
     find("tr#store_#{store.id} a[data-action='destroy']").click
+    sleep 2 if ci?
     page.driver.browser.switch_to.alert.accept
     wait_for_ajax
     expect(store.reload.deleted_at).not_to eq(nil)

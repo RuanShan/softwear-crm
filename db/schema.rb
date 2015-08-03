@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150716204310) do
+ActiveRecord::Schema.define(version: 20150723213829) do
 
   create_table "activities", force: :cascade do |t|
     t.integer  "trackable_id",   limit: 4
@@ -313,6 +313,7 @@ ActiveRecord::Schema.define(version: 20150716204310) do
     t.decimal  "package_height",                       precision: 10
     t.decimal  "package_width",                        precision: 10
     t.decimal  "package_length",                       precision: 10
+    t.string   "tag",                    limit: 255,                            default: "Not Specified"
   end
 
   add_index "imprintables", ["deleted_at"], name: "index_imprintables_on_deleted_at", using: :btree
@@ -367,6 +368,15 @@ ActiveRecord::Schema.define(version: 20150716204310) do
   end
 
   add_index "line_item_groups", ["quote_id"], name: "index_line_item_groups_on_quote_id", using: :btree
+
+  create_table "line_item_templates", force: :cascade do |t|
+    t.string   "name",        limit: 255
+    t.text     "description", limit: 65535
+    t.string   "url",         limit: 255
+    t.decimal  "unit_price",                precision: 10
+    t.datetime "created_at",                               null: false
+    t.datetime "updated_at",                               null: false
+  end
 
   create_table "line_items", force: :cascade do |t|
     t.string   "name",                   limit: 255

@@ -122,6 +122,7 @@ feature 'Order management', order_spec: true,  js: true do
 
     click_button 'Save'
 
+    sleep 2 if ci?
     expect(Order.where(name: 'New Title')).to exist
   end
 

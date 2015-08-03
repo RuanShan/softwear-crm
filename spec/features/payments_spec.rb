@@ -26,11 +26,13 @@ feature 'Payments management', js: true, payment_spec: true do
       find(:css, '#cash-button').click
       fill_in 'amount_field', with: '20'
       click_button 'Apply Payment'
+      sleep 2 if ci?
       page.driver.browser.switch_to.alert.accept
       close_flash_modal
       find(:css, "a.order_payment_refund_link[href='/payments/#{payment.id}/edit?order_id=#{order.id}&refund=true']").click
       fill_in 'Refund Reason', with: 'how do i money?'
       click_button 'Refund Payment'
+      sleep 2 if ci?
       page.driver.browser.switch_to.alert.accept
       expect(page).to have_content 'Payment was successfully updated.'
       expect(Payment.find(payment.id).is_refunded?).to be_truthy
@@ -42,6 +44,7 @@ feature 'Payments management', js: true, payment_spec: true do
     find(:css, '#cash-button').click
     fill_in 'amount_field', with: '100'
     click_button 'Apply Payment'
+    sleep 2 if ci?
     page.driver.browser.switch_to.alert.accept
     expect(page).to have_content 'Payment was successfully created.'
     expect(Payment.find(2)).to be_truthy
@@ -52,6 +55,7 @@ feature 'Payments management', js: true, payment_spec: true do
     find(:css, '.order_payment_refund_link').click
     fill_in 'Refund Reason', with: 'Gaga can\'t handle this shit'
     click_button 'Refund Payment'
+    sleep 2 if ci?
     page.driver.browser.switch_to.alert.accept
     expect(page).to have_content 'Payment was successfully updated.'
     expect(Payment.find(payment.id).is_refunded?).to be_truthy
@@ -63,6 +67,7 @@ feature 'Payments management', js: true, payment_spec: true do
       find(:css, '#cash-button').click
       fill_in 'amount_field', with: 20
       click_button 'Apply Payment'
+      sleep 2 if ci?
       page.driver.browser.switch_to.alert.accept
       activity = order.all_activities.to_a.select{ |a| a[:key] = 'payment.applied_payment' }
       expect(activity).to_not be_nil
@@ -74,6 +79,7 @@ feature 'Payments management', js: true, payment_spec: true do
       find(:css, '.order_payment_refund_link').click
       fill_in 'Refund Reason', with: 'Muh spoon is too big'
       click_button 'Refund Payment'
+      sleep 2 if ci?
       page.driver.browser.switch_to.alert.accept
       activity = order.all_activities.to_a.select{ |a| a[:key] = 'payment.refunded_payment' }
       expect(activity).to_not be_nil

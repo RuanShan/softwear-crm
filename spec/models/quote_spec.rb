@@ -825,7 +825,7 @@ describe Quote, quote_spec: true do
               },
               description_html: anything,
               email: quote.email,
-              phone: quote.format_phone(phone_number),
+              phone: quote.format_phone(quote.phone_number),
               name: quote.full_name
             })
             .and_return({ helpdesk_ticket: { display_id: 2981 } }.to_json)

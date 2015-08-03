@@ -122,6 +122,7 @@ feature 'Quotes management', quote_spec: true, js: true, retry: 2 do
       click_button 'Next'
       sleep 0.5
 
+      sleep 1.5 if ci?
       click_button 'Submit'
 
       sleep 1
@@ -132,6 +133,7 @@ feature 'Quotes management', quote_spec: true, js: true, retry: 2 do
   scenario 'A user can visit the edit quote page', edit: true do
     visit quotes_path
     find('i.fa.fa-edit').click
+    sleep 2 if ci?
     expect(current_path).to eq(edit_quote_path quote.id)
   end
 
@@ -151,6 +153,7 @@ feature 'Quotes management', quote_spec: true, js: true, retry: 2 do
     fill_in 'Shipping', with: '12'
     click_button 'Save'
 
+    sleep 2 if ci?
     expect(quote.reload.shipping).to eq(12.00)
 
     visit edit_quote_path quote
@@ -158,12 +161,12 @@ feature 'Quotes management', quote_spec: true, js: true, retry: 2 do
     expect(page).to have_css('#quote_shipping[value="12.0"]')
   end
 
-  scenario 'Insightly forms dynamically changed fields', edit: true do
+  scenario 'Insightly forms dynamically changed fields', story_598: true do
     allow_any_instance_of(InsightlyHelper).to receive(:insightly_available?).and_return true
     allow_any_instance_of(InsightlyHelper).to receive(:insightly_categories).and_return []
     allow_any_instance_of(InsightlyHelper).to receive(:insightly_pipelines).and_return []
     allow_any_instance_of(InsightlyHelper).to receive(:insightly_opportunity_profiles).and_return []
-    allow_any_instance_of(InsightlyHelper).to receive(:insightly_bid_tiers).and_return ["unassigned", "Tier 1 ($1 - $249)", "Tier 2 ($250 - $499)", "Tier 3 ($500 - $999)", "Tier 4 ($1000 and up)"]
+    allow_any_instance_of(InsightlyHelper).to receive(:insightly_bid_tiers).and_return ["unassigned", "Tier 1  ($1 - $249)", "Tier 2  ($250 - $499)", "Tier 3  ($500 - $999)", "Tier 4  ($1000 and up)"]
 
     visit new_quote_path
     click_button 'Next'
@@ -589,6 +592,43 @@ feature 'Quotes management', quote_spec: true, js: true, retry: 2 do
     expect(page).to have_content 'Please mark at least one imprintable to be added.'
   end
 
+  scenario 'A user can add an imprintable without specifying quantity or decoration price', story_729: true do
+    allow(Imprintable).to receive(:search)
+      .and_return OpenStruct.new(
+        results: [imprintable1, imprintable2, imprintable3]
+      )
+
+    quote.jobs << create(:job, line_items: [create(:imprintable_line_item, quantity: 20, decoration_price: 10)])
+    job = quote.jobs.first
+    visit edit_quote_path quote
+
+    find('a', text: 'Line Items').click
+
+    click_link 'Add an imprintable'
+    sleep 1
+    within '#imprintable-add-search' do
+      fill_in 'Terms', with: 'some imprintable'
+    end
+    sleep 0.5
+    click_button 'Search'
+
+    sleep 0.5
+    find("#imprintable-result-#{imprintable1.id} input[type=checkbox]").click
+    sleep 0.5
+
+    select quote.jobs.first.name, from: 'Group'
+    select 'Better', from: 'Tier'
+
+    click_button 'Add Imprintable(s)'
+
+    sleep 1 if ci?
+    expect(page).to have_content 'Quote was successfully updated.'
+
+    job.reload
+    expect(job.line_items.where(imprintable_variant_id: iv1.id)).to exist
+    expect(job.line_items.where(imprintable_variant_id: iv1.id, quantity: 20, decoration_price: 10)).to exist
+  end
+
   scenario 'A user can add an option/markup to a quote', revamp: true, story_558: true, story_692: true do
     quote.update_attributes informal: true
     quote.jobs << create(:job, line_items: [create(:imprintable_line_item)])
@@ -691,6 +731,38 @@ feature 'Quotes management', quote_spec: true, js: true, retry: 2 do
 
     expect(LineItem.where(name: 'Remove me')).to_not exist
     expect(page).to_not have_content 'Remove me'
+  end
+
+  scenario 'A user can add a line item from a template', no_ci: true, retry: 3, story_494: true do
+    template = create(:line_item_template, name: 'nice')
+    allow(LineItemTemplate).to receive(:search)
+      .and_return double(
+        'Line Item Template Search',
+        results: [template]
+      )
+    quote.update_attributes informal: true
+    quote.jobs << create(:job, line_items: [create(:imprintable_line_item)])
+
+    visit edit_quote_path quote
+    find('a', text: 'Line Items').click
+
+    click_link 'Add An Option or Markup'
+    sleep 0.5
+
+    find('#search-templates').set 'nice'
+    click_button 'Search'
+
+    sleep 1
+    expect(page).to have_content 'nice'
+    expect(page).to have_content template.description
+
+    click_link 'Use'
+    sleep 2
+
+    click_button 'Add Option or Markup'
+    sleep 2
+    expect(page).to have_content 'Quote was successfully updated.'
+    expect(quote.reload.markups_and_options_job.line_items.where(name: 'nice')).to exist
   end
 
   scenario 'Error reports turn the page to the first on on which there is an error', story_491: true do

@@ -17,9 +17,7 @@ class ImprintablesController < InheritedResources::Base
         end
       end
     else
-      super do
-        @imprintables = params[:tag] ? Imprintable.tagged_with(params[:tag]) : Imprintable.all.page(params[:page])
-      end
+      @imprintables = params[:tag] ? Imprintable.tagged_with(params[:tag]) : Imprintable.all.page(params[:page])
     end
   end
 
@@ -169,7 +167,7 @@ class ImprintablesController < InheritedResources::Base
         :xxxxxxl_price_ok, :base_upcharge,
         :xxxxxxl_price, :xxl_upcharge, :xxxl_upcharge, :xxxxl_upcharge,
         :xxxxxl_upcharge, :xxxxxxl_upcharge, :tag_list, :standard_offering,
-        :proofing_template_name, :sizing_category, :common_name, :discontinued,
+        :proofing_template_name, :sizing_category, :common_name, :discontinued, :tag,
         sample_location_ids: [],
         coordinate_ids: [],
         compatible_imprint_method_ids: [],

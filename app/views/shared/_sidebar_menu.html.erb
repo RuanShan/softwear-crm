@@ -139,6 +139,10 @@
         <%= content_tag :li, class: ('active' if current_action == 'email_templates') do %>
           <%= link_to email_templates_path do %><i class="fa fa-angle-right"></i> Email Templates <% end %>
         <% end %>
+
+        <%= content_tag :li, class: ('active' if current_action == 'line_item_templates') do %>
+          <%= link_to line_item_templates_path do %><i class="fa fa-angle-right"></i> Line Item Templates <% end %>
+        <% end %>
       <% end %>
     <% end %>
   </ul>

@@ -68,7 +68,7 @@ class ApplicationController < ActionController::Base
     if current_user
       @current_user = current_user
     else
-      @current_user = Struct.new(:full_name).new('Error User')
+      @current_user = User.new(first_name: 'Error', last_name: 'User', email: 'error@error.com')
     end
   end
 

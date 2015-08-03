@@ -241,7 +241,7 @@ class Quote < ActiveRecord::Base
     @quote_request_ids_assigned = true
   end
 
-  # This is accessed by the 'fields_for' view helper
+  # This is needed to trick the 'fields_for' view helper
   def line_items_from_group
     OpenStruct.new(
       imprintable_group_id: nil,

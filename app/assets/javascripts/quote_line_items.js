@@ -3,6 +3,17 @@ $(function() {
     initializeQuoteLineItems();
 });
 
+function initializeExistingLineItemGroupSelect() {
+  var select = $('#select-existing-group');
+  var groupId = select.val();
+  var allFieldValues = select.data('autofill');
+
+  var fieldValues = allFieldValues[groupId];
+
+  $('#line-item-quantity').val(fieldValues.quantity);
+  $('#line-item-decoration-price').val(fieldValues.decoration_price);
+}
+
 function initializeQuoteNewLineItems() {
   $('.check-for-imprintables').submit(function(event) {
     var fields = $(this).serializeArray();

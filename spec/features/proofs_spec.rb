@@ -90,6 +90,7 @@ feature 'Proof Features', js: true, proof_spec: true do
     visit edit_order_path(order.id)
     find("a[href='#proofs']").click
     click_link 'Reject Proof'
+    sleep 2 if ci?
     page.driver.browser.switch_to.alert.accept
     sleep 0.5
     expect(page).to have_selector('.modal-content-success')
@@ -118,6 +119,7 @@ feature 'Proof Features', js: true, proof_spec: true do
     visit edit_order_path(order.id)
     find("a[href='#proofs']").click
     find("a[href='#{email_customer_order_proofs_path(id: proof.id, order_id: order.id, reminder: 'true')}']").click
+    sleep 2 if ci?
     page.driver.browser.switch_to.alert.accept
     sleep 0.5
     expect(Proof.find(proof.id).status).to eq('Emailed Customer')

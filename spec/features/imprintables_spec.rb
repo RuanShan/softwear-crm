@@ -91,12 +91,12 @@ feature 'Imprintables management', imprintable_spec: true, slow: true do
     given!(:imprintable_two) { create(:valid_imprintable) }
     given!(:imprintable_three) { create(:valid_imprintable) }
 
-    scenario 'A user can tag an imprintable', story_692: true do
+    scenario 'A user can tag an imprintable', retry: 4, story_692: true do
       visit edit_imprintable_path imprintable.id
 
       fill_in 'Tags', with: 'cotton'
       find_button('Update Imprintable').click
-      wait_for_ajax
+      ci? ? sleep(2) : wait_for_ajax
       expect(page).to have_content 'Imprintable was successfully updated.'
       expect(current_path).to eq(edit_imprintable_path imprintable.id)
       expect(imprintable.reload.tag_list.include? 'cotton').to be_truthy
@@ -113,6 +113,7 @@ feature 'Imprintables management', imprintable_spec: true, slow: true do
       find('#imprintable_sample_location_ids').select store.name
       find_button('Update Imprintable').click
 
+      sleep 2 if ci?
       expect(page).to have_content 'Imprintable was successfully updated.'
       expect(current_path).to eq(edit_imprintable_path imprintable.id)
       expect(imprintable.reload.sample_location_ids.include? store.id).to be_truthy
@@ -129,11 +130,12 @@ feature 'Imprintables management', imprintable_spec: true, slow: true do
       wait_for_ajax
       find_button('Update Imprintable').click
 
+      sleep 2 if ci?
       expect(page).to have_content 'Imprintable was successfully updated.'
       expect(imprintable.reload.coordinate_ids.include? coordinate.id).to be_truthy
     end
 
-    scenario 'Coordinates are reflected symmetrically', js: true do
+    scenario 'Coordinates are reflected symmetrically', no_ci: true, js: true do
       visit edit_imprintable_path imprintable.id
 
       find('#imprintable_coordinate_ids', visible: false).select coordinate.name
@@ -152,6 +154,7 @@ feature 'Imprintables management', imprintable_spec: true, slow: true do
       find('[data-placeholder="Select categories"]').select 'Something'
       find_button('Update Imprintable').click
 
+      sleep 2 if ci?
       expect(page).to have_content 'Imprintable was successfully updated.'
       expect(ImprintableCategory.where(imprintable_id: imprintable.id)).to_not be_nil
     end
@@ -167,6 +170,7 @@ feature 'Imprintables management', imprintable_spec: true, slow: true do
         find(:css, '.js-remove-fields').click
         find_button('Update Imprintable').click
 
+        sleep 2 if ci?
         expect(page).to have_content 'Imprintable was successfully updated.'
         expect(ImprintableCategory.where(imprintable_id: imprintable.id).empty?).to be_truthy
       end
@@ -231,6 +235,7 @@ feature 'Imprintables management', imprintable_spec: true, slow: true do
   scenario 'A user can delete an existing imprintable', js: true do
     visit imprintables_path
     find("tr#imprintable_#{imprintable.id} a[data-action='destroy']").click
+    sleep 2 if ci?
     page.driver.browser.switch_to.alert.accept
     wait_for_ajax
     expect(page).to have_content 'Imprintable was successfully destroyed.'

@@ -70,4 +70,14 @@ module QuoteHelper
       button_tag(button_message, class: 'btn btn-success')
     end
   end
+
+  def quantities_and_decoration_prices(jobs)
+    jobs.map do |job|
+      ref = job.line_items.first
+      next if ref.nil?
+      { job.id => { quantity: ref.quantity, decoration_price: ref.decoration_price } }
+    end
+      .compact
+      .reduce({}, :merge)
+  end
 end

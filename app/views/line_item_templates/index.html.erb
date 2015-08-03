@@ -1,0 +1,58 @@
+<div class="page-heading animated fadeInDownBig col-lg-9">
+  <h1>Line Item Templates <small>Common markups and upcharges used often in quotes</small></h1>
+</div>
+
+<div class="col-lg-3 text-right">
+  <%= link_to 'New line item template', new_line_item_template_path, class: 'btn btn-primary' %>
+</div>
+
+<div class="box-info row clear">
+  <div class="box-info full">
+    <div class="table-responsive">
+      <table class="table table-hover" id="line_item_templates_list">
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th>Description</th>
+            <th>URL</th>
+            <th>Unit Price</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+
+        <tbody>
+          <% @line_item_templates.each do |line_item_template| %>
+            <tr id="<%= model_table_row_id line_item_template %>">
+              <td><%= line_item_template.name %></td>
+              <td><%= line_item_template.description.truncate(100) %></td>
+              <td>
+                <% if line_item_template.url %>
+                  <%= link_to line_item_template.url, line_item_template.url %>
+                <% else %>
+                  &lt;none&gt;
+                <% end %>
+              </td>
+              <td><%= line_item_template.unit_price %></td>
+              <td>
+                <div class="btn-group btn-group-xs">
+                  <%= link_to edit_line_item_template_path(line_item_template),
+                              class: 'btn btn-default', 'data-action' => 'edit',
+                              'data-toggle' => 'tooltip', 'title' => 'Edit' do %>
+                    <i class="fa fa-edit"></i>
+                  <% end %>
+                  <%= link_to line_item_template_path(line_item_template),
+                              class: 'btn btn-default',
+                              data: {confirm: 'Are you sure you would like to delete the line item template?'},
+                              method: :delete, 'data-action' => 'destroy',
+                              'data-toggle' => 'tooltip', 'title' => 'Destroy' do %>
+                    <i class="fa fa-times"></i>
+                  <% end %>
+                </div>
+              </td>
+            </tr>
+          <% end %>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>

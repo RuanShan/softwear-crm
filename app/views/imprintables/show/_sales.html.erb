@@ -9,6 +9,8 @@
     <dd><%= imprintable.style_catalog_no %></dd>
     <dt>Style Description</dt>
     <dd><%= raw imprintable.description %></dd>
+    <dt>Shirt Tag Type</dt>
+    <dd><%= imprintable.tag.blank? ? 'Not Specified' : imprintable.tag %></dd>
   </dl>
 
   <h3>Sizing Pricing</h3>

@@ -35,6 +35,9 @@ class Imprintable < ActiveRecord::Base
     'unisex-adult (novelty and luggage only)', 'unisex-baby',
     'womens'
   ]
+  TAG_TYPES = [
+    'Not Specified', 'Standard', 'Printed', 'Tearaway'
+  ]
 
 
   acts_as_paranoid

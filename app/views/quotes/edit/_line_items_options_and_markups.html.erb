@@ -1,30 +1,30 @@
-  <li id="line-item-<%=line_item.id%>" class="row option-and-markup-line-item" data-no-rerender="true">
-    <% if line_item.line_itemable.jobbable.formal? %>
-        <div class="col-xs-7">
-    <% else %>
-        <div class="col-xs-9">
-    <% end %>
-      <%= link_to line_item.name, line_item.url %><br />
-      <%= raw line_item.description %>
-    </div>
-    <% if line_item.line_itemable.jobbable.formal? %>
-        <div class="col-xs-2">
-          <%= f.label :quantity %>
-          <%= f.number_field :quantity, class: 'line-item-edit-field', required: true  %>
-        </div>
-    <% end %>
-    <div class="col-xs-2">
-
-      <b>Price</b>
-      <div class='input-group'>
-        <span class='input-group-addon'>$</span>
-        <%= f.text_field :unit_price, class: 'line-item-edit-field unit-price', required: true  %>
+<li id="line-item-<%=line_item.id%>" class="row option-and-markup-line-item" data-no-rerender="true">
+  <% if line_item.line_itemable.jobbable.formal? %>
+      <div class="col-xs-7">
+  <% else %>
+      <div class="col-xs-9">
+  <% end %>
+    <%= link_to line_item.name, line_item.url %><br />
+    <%= raw line_item.description %>
+  </div>
+  <% if line_item.line_itemable.jobbable.formal? %>
+      <div class="col-xs-2">
+        <%= f.label :quantity %>
+        <%= f.number_field :quantity, class: 'line-item-edit-field', required: true  %>
       </div>
+  <% end %>
+  <div class="col-xs-2">
 
+    <b>Price</b>
+    <div class='input-group'>
+      <span class='input-group-addon'>$</span>
+      <%= f.text_field :unit_price, class: 'line-item-edit-field unit-price', required: true  %>
     </div>
 
-    <div class="col-xs-1">
-      <%= link_to 'Remove', '#', class: 'remove-line-item-btn' %>
-      <%= f.hidden_field :_destroy, disabled: true, class: 'line-item-destroy-field', required: true  %>
-    </div>
-  </li>
+  </div>
+
+  <div class="col-xs-1">
+    <%= link_to 'Remove', '#', class: 'remove-line-item-btn' %>
+    <%= f.hidden_field :_destroy, disabled: true, class: 'line-item-destroy-field', required: true  %>
+  </div>
+</li>

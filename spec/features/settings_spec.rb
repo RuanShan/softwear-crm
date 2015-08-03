@@ -13,6 +13,7 @@ feature 'Settings management', setting_spec: true, js: true do
     visit integrated_crms_path
     fill_in 'fd_settings_2_val', with: 'something_random'
     click_button 'Update'
+    sleep 2 if ci?
     expect(Setting.find_by(name: 'freshdesk_email').val).to eq 'something_random'
   end
 end

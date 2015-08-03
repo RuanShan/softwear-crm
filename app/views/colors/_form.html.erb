@@ -23,8 +23,15 @@
       <div class="form-group">
         <%= f.label :hexcode, class: 'col-sm-2 control-label' %>
         <div class="col-sm-10">
-          <%= f.text_field :hexcode, class: 'form-control' %>
-          <p class="help-block">HEX value for the color, with the #omitted. Separate multiple colors with commas. For instance, Red/Black FF0000,000000</p>
+          <div id='color-hexcodes-container' class='row' data-hexcode="<%= escape_once render 'hexcode' %>">
+            <% color.hexcodes.each do |hexcode| %>
+              <%= render 'hexcode', hexcode: hexcode %>
+            <% end %>
+            <div class='col-sm-1 end'>
+              <%= button_tag '<i class="fa fa-plus"></i>'.html_safe, class: 'btn btn-success btn-sm', id: 'add-hexcode' %>
+            </div>
+          </div>
+          <p class="help-block">HEX value(s) for the color</p>
         </div>
       </div>
 

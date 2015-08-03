@@ -1,0 +1,13 @@
+<div class='row'>
+  <div class="page-heading animated fadeInDownBig col-lg-9">
+    <h1>Line Item Templates <small>Create a new line item template</small></h1>
+  </div>
+
+  <div class="col-lg-3 text-right">
+    <%= link_to 'List', line_item_templates_path, class: 'btn btn-primary' %>
+  </div>
+</div>
+
+<div class="row full">
+  <%= render partial: 'form', locals: { line_item_template: @line_item_template } %>
+</div>
