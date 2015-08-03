@@ -111,7 +111,7 @@ function initializeQuoteLineItems() {
     connectWith: ".sortable-quote-line-items",
 
     update: function( event, ui ) {
-      $(this).children('li').each(function() {
+      $(this).find('li').each(function() {
         var li = $(this);
         var ul = li.closest('ul');
 
@@ -136,7 +136,7 @@ function initializeQuoteLineItems() {
         }
       });
 
-      if ($(this).children('li').length != 0)
+      if ($(this).find('li').length != 0)
         notifyUnsavedChanges();
     }
   });
