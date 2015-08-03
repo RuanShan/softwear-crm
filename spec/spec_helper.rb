@@ -81,8 +81,6 @@ RSpec.configure do |config|
     Capybara::Selenium::Driver.new(app, browser: :chrome, args: args, http_client: client)
   end
 
-  Capybara.default_max_wait_time = 5 if ci?
-
   config.define_derived_metadata(file_path: %r(/spec/controllers/)) do |meta|
     meta[:type] = :controller
   end
