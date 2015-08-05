@@ -3,6 +3,13 @@ rvm:
   - rbx-2.5.2
 
 before_install:
+  - openssl aes-256-cbc -K $encrypted_bd442a2c0fdc_key -iv $encrypted_bd442a2c0fdc_iv -in travis-ssh.tar.enc -out travis-ssh.tar -d
+  - tar xvf travis-ssh.tar
+  - sudo chmod 600 SoftWEAR-MockBot.pem
+  - sudo chmod 600 travis_id_rsa
+  - 'eval "$(ssh-agent -s)"'
+  - ssh-add SoftWEAR-MockBot.pem travis_id_rsa
+  - "ssh -T git@github.com || :"
   - sudo apt-get install libmysql-ruby libmysqlclient-dev ruby-dev
   - gem install softwear-lib -i ~/.rvm/rubies/rbx-2.5.2/gems --no-ri --no-rdoc
   - gem install eventmachine -i ~/.rvm/rubies/rbx-2.5.2/gems -v 1.0.3 --no-ri --no-rdoc
