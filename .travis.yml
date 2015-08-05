@@ -39,7 +39,7 @@ before_script:
   - bundle exec rake db:create
   - bundle exec rake db:schema:load
 
-script: xvfb-run --server-args="-screen 0, 1024x768x24" bundle exec rspec -t ~no_ci && bundle exec softwear-deploy
+script: xvfb-run --server-args="-screen 0, 1024x768x24" bundle exec rspec --color -t ~no_ci && bundle exec softwear-deploy
 
 env:
   global:
