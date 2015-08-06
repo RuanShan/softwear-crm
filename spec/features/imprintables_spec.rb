@@ -224,6 +224,7 @@ feature 'Imprintables management', imprintable_spec: true, slow: true do
     fill_in 'Style Name', with: 'Edited Style Name'
     find_button('Update Imprintable').click
 
+    sleep 2 if ci?
     expect(page).to have_content 'Imprintable was successfully updated.'
     expect(current_path).to eq(edit_imprintable_path imprintable.id)
 
