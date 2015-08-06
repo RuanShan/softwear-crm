@@ -6,7 +6,7 @@ setupContentModal(function(modal) {
 });
 showContentModal({
   title: 'You have encountered an error!',
-  body: $("<%=j render 'errors/error', error: @error %>")
+  body: $("<%=j render 'errors/error', error: @error, additional_info: @additional_info %>")
 });
 
 <% else %>

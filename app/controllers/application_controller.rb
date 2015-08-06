@@ -2,6 +2,7 @@ class ApplicationController < ActionController::Base
   include PublicActivity::StoreController
   include ApplicationHelper
   include ActsAsWarnable::ApplicationHelper
+  include ErrorCatcher
 
   # Prevent CSRF attacks by raising an exception.
   # For APIs, you may want to use :null_session instead.
@@ -14,23 +15,6 @@ class ApplicationController < ActionController::Base
   before_action :assign_current_url
   before_action :assign_current_action
   before_action :assign_request_time
-
-  rescue_from Exception, StandardError do |error|
-    Rails.logger.error "**** #{error.class.name}: #{error.message} ****\n\n"\
-      "\t#{error.backtrace.join("\n\t")}"
-
-    @error = error
-
-    begin
-      respond_to do |format|
-        format.html { render 'errors/internal_server_error', status: 500 }
-        format.js   { render 'errors/internal_server_error', status: 500 }
-        format.json { render json: '{}', status: 500 }
-      end
-    rescue AbstractController::DoubleRenderError => e
-      Rails.logger.error "DOUBLE RENDER ERROR IN CONTROLLER ERROR CATCHER!!! #{e.message}"
-    end
-  end
 
   # Quicker way to render to a string using the previous function
   def render_string(*args)

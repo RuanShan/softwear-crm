@@ -5,9 +5,17 @@
   <%= @error_class %>: <%= @error_message %>
 </div>
 <div>
+  <h4>Additional information:</h4>
+  <ul>
+    <% @additional_info.split("|||").each do |info| %>
+      <li><%= info %></li>
+    <% end %>
+  </ul>
+</div>
+<div>
   <ul>
     <% @backtrace.split("\n").each do |line| %>
-      <li><%= line %></li>
+      <li><code><%= line %></code></li>
     <% end %>
   </ul>
 </div>

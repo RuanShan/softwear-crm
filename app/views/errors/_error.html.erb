@@ -17,6 +17,7 @@
   <%= hidden_field_tag 'error_message', error.message %>
   <%= hidden_field_tag 'backtrace', error.backtrace.join("\n") %>
   <%= hidden_field_tag 'user_id', current_user.try(:id) %>
+  <%= hidden_field_tag 'additional_info', additional_info %>
 
   <div class='form-group'>
     <%= label_tag 'user_message', 'Describe how you reached this error.' %>
