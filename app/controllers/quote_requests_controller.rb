@@ -63,6 +63,7 @@ class QuoteRequestsController < InheritedResources::Base
     @quote_requests = QuoteRequest.search do
       with :status, desired_status
       paginate page: page.blank? ? 1 : page
+      order_by :created_at, :desc
     end
       .results
   end
