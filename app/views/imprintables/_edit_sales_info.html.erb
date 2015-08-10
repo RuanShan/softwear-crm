@@ -23,6 +23,11 @@
       </div>
 
       <div class="form-group">
+        <%= f.label :tag, 'Shirt Tag Type', class: 'control-label' %>
+        <%= f.select :tag, options_for_select(Imprintable::TAG_TYPES, f.object.tag), prompt: 'Choose a tag type' %>
+      </div>
+
+      <div class="form-group">
         <%= f.label :imprintable_categories, 'Imprintable Category', class: 'control-label' %>
         <%= f.error_for :imprintable_categories %>
           <%= f.fields_for :imprintable_categories do |ff| %>
