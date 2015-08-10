@@ -80,4 +80,33 @@ module QuoteHelper
       .compact
       .reduce({}, :merge)
   end
+
+  def quote_requests_for(user)
+    quote_requests = user.quote_requests
+
+    if QuoteRequest::QUOTE_REQUEST_STATUSES.include?(session[:quote_request_status])
+      quote_requests = quote_requests.where(status: session[:quote_request_status])
+    end
+
+    quote_requests
+  end
+
+  def filter_quote_requests(salesperson = nil)
+    select_tag(
+      :quote_request_status,
+
+      options_for_select(
+        QuoteRequest::QUOTE_REQUEST_STATUSES.map { |s| [s.humanize, s] },
+        session[:quote_request_status]
+      ),
+
+      include_blank: true,
+      id:            'quote-request-status-select',
+      class:         'select2',
+      data: {
+        page: params[:page],
+        salesperson: salesperson.try(:id)
+      }
+    )
+  end
 end

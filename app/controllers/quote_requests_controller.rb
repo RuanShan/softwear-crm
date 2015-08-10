@@ -59,14 +59,14 @@ class QuoteRequestsController < InheritedResources::Base
   def set_quote_requests_of_status(status)
     page = params[:page]
     desired_status = session[:quote_request_status]
+    salesperson_id = params[:salesperson_id]
 
     @quote_requests = QuoteRequest.search do
       with :status, desired_status
+      with :salesperson_id, salesperson_id unless salesperson_id.blank?
       paginate page: page.blank? ? 1 : page
       order_by :created_at, :desc
     end
       .results
   end
 end
-
-

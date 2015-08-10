@@ -11,7 +11,8 @@ $(document).ready(function(){
       type:   'script',
       data:   {
         page: $(this).data('page'),
-        quote_request_status: $(this).val()
+        quote_request_status: $(this).val(),
+        salesperson_id: $(this).data('salesperson')
       }
     });
   });

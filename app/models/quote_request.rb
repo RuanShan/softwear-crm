@@ -16,6 +16,7 @@ class QuoteRequest < ActiveRecord::Base
     text :salesperson do
       salesperson.try(:name)
     end
+    integer :salesperson_id
 
     string :status
     time :created_at

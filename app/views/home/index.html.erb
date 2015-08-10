@@ -4,8 +4,13 @@
 
 <% if !current_user.pending_quote_requests.empty? %>
     <div class="box-info row clear">
-      <h2 class="heading">Pending Quote Requests Assigned to You</h2>
-      <%= render partial: 'quote_requests/table', locals: { quote_requests: current_user.pending_quote_requests } %>
+      <h2 class='heading'>
+        <%= filter_quote_requests(current_user) %>
+        Quote Requests Assigned to You
+      </h2>
+      <div id='quote-request-list' class='no-pagination'>
+        <%= render partial: 'quote_requests/table', locals: { quote_requests: quote_requests_for(current_user) } %>
+      </div>
     </div>
 <% end %>
 

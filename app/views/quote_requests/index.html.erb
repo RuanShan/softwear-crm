@@ -7,7 +7,7 @@
 </div>
 
 <div>
-  Show only: <%= select_tag :quote_request_status, options_for_select(QuoteRequest::QUOTE_REQUEST_STATUSES.map { |s| [s.humanize, s] }, session[:quote_request_status]), include_blank: true, id: 'quote-request-status-select', class: 'select2', data: { page: params[:page] } %>
+  Show only: <%= filter_quote_requests %>
 </div>
 
 <div id="quote-request-list">
