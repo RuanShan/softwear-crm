@@ -86,13 +86,12 @@ class JobsController < InheritedResources::Base
         if @job.jobbable_type == 'Order'
           redirect_to order_path(@job.order, anchor: "jobs-#{@job.id}")
         else
-          raise 'How should this work with non-orders?'
+          redirect_to edit_quote_path(@job.jobbable, anchor: 'line_items')
         end
       end
       format.json do
         render json: {
-          result: 'success',
-content: render_string(partial: 'job', locals: { job: @job })
+          result: 'success', content: render_string(partial: 'job', locals: { job: @job })
         }
       end
     end
