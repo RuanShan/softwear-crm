@@ -1,6 +1,7 @@
 <% @line_items.each do |line_item| %>
   <% if line_item.imprintable? %>
     var $container = $("#edit-line-item-<%= line_item.id %>");
+    var handler = errorHandlerFrom($container, 'line_item', $container, <%= line_item.id %>);
 
     <% if line_item.valid? %>
       if ($container.hasClass('editing-line-item')) {
@@ -15,9 +16,9 @@
         }
       });
 
-    <% else %>
+      if (handler) handler.clear();
 
-      var handler = errorHandlerFrom($container, 'line_item', $container, <%= line_item.id %>);
+    <% else %>
 
       if (handler)
         handler.handleErrors(
@@ -30,6 +31,7 @@
   <% else %>
 
     var $row = $("#line-item-<%= line_item.id %>");
+    var handler = errorHandlerFrom($row, 'line_item', $row, <%= line_item.id %>);
 
     <% if line_item.valid? %>
       var $oldChildren = $row.children();
@@ -57,13 +59,13 @@
         }
       });
 
+      if (handler) handler.clear();
+
 
     <% else %>
-
-      var handler = errorHandlerFrom($row, 'line_item', $row, <%= line_item.id %>);
-
       if (handler)
         handler.handleErrors(<%= line_item.errors.messages.to_json.html_safe %>);
+
     <% end %>
   <% end %>
 <% end %>

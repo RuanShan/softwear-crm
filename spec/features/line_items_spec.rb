@@ -23,7 +23,7 @@ feature 'Line Items management', line_item_spec: true, js: true do
   given(:non_imprintable) { create(:non_imprintable_line_item, line_itemable_id: job.id, line_itemable_type: 'Job') }
 
   scenario 'user can add a new non-imprintable line item' do
-    visit edit_order_path(1, anchor: 'jobs')
+    visit edit_order_path(order.id, anchor: 'jobs')
     sleep 1
     first('.add-line-item').click
     sleep 1
@@ -47,7 +47,7 @@ feature 'Line Items management', line_item_spec: true, js: true do
   end
 
   scenario 'user sees errors when inputting bad info for a standard line item' do
-    visit edit_order_path(1, anchor: 'jobs')
+    visit edit_order_path(order.id, anchor: 'jobs')
     sleep 1
 
     first('.add-line-item').click
@@ -61,8 +61,34 @@ feature 'Line Items management', line_item_spec: true, js: true do
     expect(page).to have_content "Quantity can't be blank"
   end
 
+  scenario 'user sees errors when inputting bad info for an imprintable line item, and they go away when fixed', story_818: true do
+    line_item = LineItem.create_imprintables(job, shirt, white).sample
+
+    visit edit_order_path(order.id, anchor: 'jobs')
+    sleep 1
+
+    find("#line_item_#{line_item.id}_quantity").set -4
+    sleep 1
+    find('.update-line-items').click
+    sleep 1
+
+    first('[data-dismiss="modal"]').click
+
+    expect(page).to have_content "Quantity cannot be negative"
+    expect(line_item.reload.quantity).to_not eq -4
+
+    find("#line_item_#{line_item.id}_quantity").set 2
+    sleep 1
+    find('.update-line-items').click
+    sleep 1
+
+    expect(page).to_not have_content "Quantity can't be negative"
+
+    expect(line_item.reload.quantity).to eq 2
+  end
+
   scenario 'user can add a new imprintable line item', story_692: true do
-    visit edit_order_path(1, anchor: 'jobs')
+    visit edit_order_path(order.id, anchor: 'jobs')
     sleep 1
     click_link 'Add Line Item'
     sleep 1
@@ -99,7 +125,7 @@ feature 'Line Items management', line_item_spec: true, js: true do
 
   scenario 'user cannot add duplicate imprintable line items' do
     2.times do
-      visit edit_order_path(1, anchor: 'jobs')
+      visit edit_order_path(order.id, anchor: 'jobs')
       sleep 1
 
       first('.add-line-item').click
@@ -129,7 +155,7 @@ feature 'Line Items management', line_item_spec: true, js: true do
   end
 
   scenario 'user cannot submit an imprintable line item without completing the form' do
-    visit edit_order_path(1, anchor: 'jobs')
+    visit edit_order_path(order.id, anchor: 'jobs')
     sleep 1
 
     first('.add-line-item').click
@@ -151,7 +177,7 @@ feature 'Line Items management', line_item_spec: true, js: true do
 
   scenario 'creating an imprintable line item, user can switch a lower-level select and it will reset the higher levels' do
     hat_brand;
-    visit edit_order_path(1, anchor: 'jobs')
+    visit edit_order_path(order.id, anchor: 'jobs')
     sleep 1
 
     first('.add-line-item').click
@@ -174,7 +200,7 @@ feature 'Line Items management', line_item_spec: true, js: true do
   context 'editing a non-imprintable line item' do
     background(:each) do
       non_imprintable
-      visit edit_order_path(1, anchor: 'jobs')
+      visit edit_order_path(order.id, anchor: 'jobs')
       sleep 1
 
       find('.line-item-button[title="Edit"]').click
@@ -204,7 +230,7 @@ feature 'Line Items management', line_item_spec: true, js: true do
 
   scenario 'user sees errors when inputting bad data on standard line item edit' do
     non_imprintable
-    visit edit_order_path(1, anchor: 'jobs')
+    visit edit_order_path(order.id, anchor: 'jobs')
     sleep 1
 
     find('.line-item-button[title="Edit"]').click
@@ -221,7 +247,7 @@ feature 'Line Items management', line_item_spec: true, js: true do
     ['s', 'm', 'l'].each do |s|
       job.line_items << send("white_shirt_#{s}_item")
     end
-    visit edit_order_path(1, anchor: 'jobs')
+    visit edit_order_path(order.id, anchor: 'jobs')
     sleep 1
 
     expect(page).to have_content shirt.style_name
@@ -238,7 +264,7 @@ feature 'Line Items management', line_item_spec: true, js: true do
 
   scenario 'user can remove standard line item' do
     non_imprintable
-    visit edit_order_path(1, anchor: 'jobs')
+    visit edit_order_path(order.id, anchor: 'jobs')
     sleep 1
 
     expect(page).to have_content non_imprintable.name
