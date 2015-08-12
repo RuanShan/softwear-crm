@@ -83,6 +83,7 @@ class Order < ActiveRecord::Base
   validates :store, presence: true
   validates :tax_id_number, presence: true, if: :tax_exempt?
   validates :terms, presence: true
+  validates :in_hand_by, presence: true
 
   scope :fba, -> { where(terms: 'Fulfilled by Amazon') }
 
@@ -111,6 +112,7 @@ class Order < ActiveRecord::Base
     if balance <= 0
       'Payment Complete'
     else
+      self.in_hand_by ||= Time.now
       case terms
       when 'Paid in full on purchase'
           'Awaiting Payment'
