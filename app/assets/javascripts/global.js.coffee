@@ -40,11 +40,11 @@ $(document).ready ->
   $('.editable').editable()
 
 
-$(document).ajaxStart(->
-  $('#js-ajax-loading').modal('show'))
+$(document).ajaxStart ->
+  $('#js-ajax-loading').show()
 
-$(document).ajaxStop(->
-  $('#js-ajax-loading').modal('hide'))
+$(document).ajaxStop ->
+  $('#js-ajax-loading').hide()
 
 @after = (ms, func) ->
   setTimeout(func, ms)

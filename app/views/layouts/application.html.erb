@@ -14,23 +14,6 @@
   </div>
 </div>
 
-<div class="modal fade hidden-print" id="js-ajax-loading" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-  <div class="modal-dialog">
-    <div class="modal-content">
-      <div class="modal-body">
-          <div class="spinner">
-            <div class="cube1"></div>
-            <div class="cube2"></div>
-            <br><br>
-            <p><strong>Loading...</strong></p>
-          </div>
-      </div>
-      <div class="modal-footer">
-      </div>
-    </div>
-  </div>
-</div>
-
 <div class="container">
     <%= render 'shared/sidebar',
                current_url: @current_url,
@@ -41,6 +24,17 @@
         <%= render 'shared/content_header'  %>
 
         <div class="body content rows scroll-y">
+            <div id="js-ajax-loading" tabindex="-1" style="display: none;">
+              <div class="spinner">
+                <div class="cube1"></div>
+                <div class="cube2"></div>
+                <br><br>
+                <p><strong>Loading...</strong></p>
+              </div>
+              <div class='clearfix'></div>
+            </div>
+
+
             <%= yield %>
             <%= render 'shared/footer'  %>
             <% begin %>
