@@ -32,7 +32,7 @@ describe 'LancengFormBuilder', helper_spec: true do
     f.check_box_with_text_field(:do_it, :name).tap do |it|
       expect(it).to include 'class="input-group"'
       expect(it).to include 'type="checkbox"'
-      expect(it).to include '<textarea'
+      expect(it).to include 'type="text"'
     end
     expect(f.datetime :name).to include 'datetime'
   end
