@@ -44,12 +44,24 @@
   $this.addClass 'editing-imprint' unless $this.closest('form').data('no-editing-class')
 
 @registerImprintEvents = ($parent) ->
-  $parent.find('.js-delete-imprint-button').click deleteImprint
-  $parent.find('.js-print-location-select').change printLocationSelected
-  $parent.find('.js-imprint-method-select').change imprintMethodSelected
-  $parent.find('.js-imprint-has-name-number').on 'ifClicked', imprintHasNameNumberChecked
-  $parent.find('.js-name-format-field').change printLocationSelected
-  $parent.find('.js-number-format-field').change printLocationSelected
+  $parent.find('.js-delete-imprint-button').off 'click.imprint'
+  $parent.find('.js-delete-imprint-button').on 'click.imprint', deleteImprint
+
+  $parent.find('.js-print-location-select').off 'change.imprint'
+  $parent.find('.js-print-location-select').on 'change.imprint', printLocationSelected
+
+  $parent.find('.js-imprint-method-select').off 'change.imprint'
+  $parent.find('.js-imprint-method-select').on 'change.imprint', imprintMethodSelected
+
+  $parent.find('.js-imprint-has-name-number').off 'ifClicked.imprint'
+  $parent.find('.js-imprint-has-name-number').on 'ifClicked.imprint', imprintHasNameNumberChecked
+
+  $parent.find('.js-name-format-field').off 'change.imprint'
+  $parent.find('.js-name-format-field').on 'change.imprint', printLocationSelected
+
+  $parent.find('.js-number-format-field').off 'change.imprint'
+  $parent.find('.js-number-format-field').on 'change.imprint', printLocationSelected
+
 
 @deleteImprint = ->
   $btn = $(this)
@@ -89,6 +101,6 @@
 
 $ ->
   $(document).mouseup (e) ->
-    unless $(e.target).is '.imprint-container *'
+    unless $(e.target).is '.update-imprints' or $(e.target).closest('.imprint-container').length > 0
       $('.update-imprints').click() if $('.editing-imprint').length isnt 0
 

@@ -115,7 +115,8 @@
   $lineItemModal.find('#is_imprintable_no').prop('checked', false)
 
 @imprintableEditEntryChanged = ($this) ->
-  $this.parentsUntil(".line_item").parent().addClass("editing-line-item")
+  console.log("LE GASP")
+  $this.addClass("editing-line-item")
 
 jQuery ->
   $('#request_product_id').change ->
