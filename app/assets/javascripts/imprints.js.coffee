@@ -101,6 +101,6 @@
 
 $ ->
   $(document).mouseup (e) ->
-    unless $(e.target).is '.update-imprints' or $(e.target).closest('.imprint-container').length > 0
+    unless $(e.target).is('.update-imprints') or $(e.target).closest('.imprint-container').length > 0
       $('.update-imprints').click() if $('.editing-imprint').length isnt 0
 

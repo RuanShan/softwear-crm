@@ -64,7 +64,7 @@ feature 'Imprints Management', imprint_spec: true, js: true do
     sleep 1.5
     find('.js-print-location-select').select print_location2.name
 
-    expect(all('.editing-imprint').count).to be > 1
+    expect(all('.editing-imprint').size).to be > 1
 
     sleep 1.5
     find('.update-imprints').click

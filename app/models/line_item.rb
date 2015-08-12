@@ -161,10 +161,14 @@ class LineItem < ActiveRecord::Base
   end
 
   def should_validate_quantity?
+    return false if quantity == MARKUP_ITEM_QUANTITY
+
     line_itemable.try(:jobbable_type) == 'Quote' and imprintable? || quantity != MARKUP_ITEM_QUANTITY
   end
 
   def quantity_is_not_negative
+    return if quantity == MARKUP_ITEM_QUANTITY
+
     if !quantity.nil? && quantity < 0
       errors.add :quantity, 'cannot be negative'
     end

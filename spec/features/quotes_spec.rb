@@ -652,6 +652,7 @@ feature 'Quotes management', quote_spec: true, js: true, retry: 2 do
     job = quote.markups_and_options_job
     job.reload
 
+    sleep 1
     expect(job.line_items.size).to eq 1
 
     line_item = job.line_items.first

@@ -65,6 +65,9 @@ feature 'Order management', order_spec: true,  js: true do
 
     scenario 'A user can create an order from a quote' do
       select 'Paid in full on purchase', from: 'Payment terms'
+      date_array = DateTime.current.to_s.split(/\W|T/)
+      fill_in 'In Hand By Date', with:  "#{ (date_array[1].to_i + 1).to_s }/#{ date_array[2] }"\
+                                        "/#{ date_array.first } 4:00 PM"
       click_button 'Next'
 
       select 'Pick up in Ann Arbor', from: 'Delivery method'
@@ -78,6 +81,9 @@ feature 'Order management', order_spec: true,  js: true do
         expect(OrderQuote.count).to eq(0)
 #       fail the form
         click_button 'Next'
+        date_array = DateTime.current.to_s.split(/\W|T/)
+        fill_in 'In Hand By Date', with:  "#{ (date_array[1].to_i + 1).to_s }/#{ date_array[2] }"\
+                                          "/#{ date_array.first } 4:00 PM"
         sleep 0.5
         click_button 'Submit'
 #       expect failure
