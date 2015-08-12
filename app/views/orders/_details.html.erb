@@ -24,10 +24,10 @@
         <%= render partial: 'customer_detail_fields',
                    locals: { f: f, order: order } %>
 
-        <div class='form-group'>
-          <%= f.submit 'Save', class: 'order-details input-group' %>
-        </div>
       </div>
+    </div>
+    <div class='row'>
+        <%= f.submit 'Save', class: 'col-xs-offset-2 col-xs-8' %>
     </div>
   <% end %>
 

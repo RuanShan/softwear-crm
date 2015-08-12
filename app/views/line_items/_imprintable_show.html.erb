@@ -1,0 +1,26 @@
+<div class="row">
+  <% imprintable = line_items.first.imprintable %>
+  <div class="col-lg-5">
+    <h6>
+      <strong><%= imprintable.brand_name %> <%= imprintable.style_catalog_no %></strong> <%= imprintable.style_name %>
+    </h6>
+    <p class="small"><%= imprintable.description %></p>
+  </div>
+  <div class="col-lg-7">
+    <%= content_tag(:div, class: "col-sm-#{9 - line_items.count}") {} %>
+
+    <div class="col-xs-2"> 
+      <label>Size:</label><br />
+      <label>Quantity</label><br />
+      <label>$:</label>
+    </div>
+
+    <% line_items.each do |line_item| %>
+      <div class="col-xs-1">
+        <%= content_tag(:label, line_item.size_display) %>
+        <%= line_item.quantity > 0 ? line_item.quantity : "-" %><br />
+        <%= line_item.quantity > 0 ? number_to_currency(line_item.unit_price) : "-"  %>
+      </div>
+    <% end %>
+  </div>
+</div>

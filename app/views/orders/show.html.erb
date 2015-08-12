@@ -1,0 +1,120 @@
+<div class="page-heading animated fadeInDownBig row">
+  <div class="pull-left">
+    <h1><strong>Ann Arbor T-Shirt Company Order</strong> #<%= @order.id %></h1>
+  </div>
+
+  <div class='pull-right hidden-print'>
+    <%= link_to edit_order_path(@order), class: 'btn btn-primary' do %>
+        <i class="fa fa-edit"></i> Edit
+    <% end %>
+    <%= link_to '#', class: 'btn btn-success', id: 'print-button' do  %>
+        <i class="fa fa-print"></i> Print
+    <% end %>
+  </div>
+</div>
+
+<div class="box-info">
+  <div class="col-xs-4">
+    <h2><strong>Customer</strong> Details</h2>
+    <dl>
+      <dt>Name</dt>
+      <dd><%= @order.full_name %></dd>
+      <% unless @order.company.blank? %>
+        <dt>Company</dt>
+        <dd><%= @order.company %></dd>
+      <% end %>
+      <dt>E-mail</dt>
+      <dd><%= @order.email %></dd>
+      <% unless @order.phone_number.blank? %>
+        <dt>Phone Number</dt>
+        <dd><%= @order.phone_number %></dd>
+      <% end %>
+    </dl>
+  </div>
+
+  <div class="col-xs-4">
+    <h2><strong>Order</strong> Details</h2>
+    <dl>
+      <dt>Name</dt>
+      <dd><%= @order.name %></dd>
+      <dt>In Hand By Date:</dt>
+      <dd><%= display_time @order.in_hand_by  %></dd>
+      <dt>Salesperson</dt>
+      <dd><%= @order.salesperson.full_name %></dd>
+      <% unless @order.po.blank? %>
+        <dt>P.O. Number</dt>
+        <dd><%= @order.po %></dd>
+      <% end %>
+    </dl>
+  </div>
+  <div class="col-xs-4">
+    <h2><strong>Payment and Delivery</strong> Details</h2>
+    <dl>
+      <dt>Payment Terms</dt>
+      <dd><%= @order.terms %></dd>
+      <dt>Payment Status</dt>
+      <dd><%= @order.payment_status %></dd>
+      <dt>Delivery Method</dt>
+      <dd>TODO: How does this work again?</dd>
+    </dl>
+  </div>
+  
+  <div class="col-xs-12">
+    <% @order.jobs.each do |job| %>
+      <h2>
+        <strong><%= job.name %></strong>: 
+        <%= job.imprints.map{|i| "#{i.name} (#{i.description})" }.join(", ") %>
+      </h2>
+
+      
+      <% job.sort_line_items.tap do |sorted_line_items| %>
+        <% unless sorted_line_items.empty? %>
+          <% sorted_line_items.each do |_imprintable_name, by_color| %>
+            <% by_color.each do |color_name, line_items| %>
+              <%= render 'line_items/imprintable_show', line_items: line_items %>
+            <% end # by_color %>
+          <% end #sorted_line_items %>
+        <% end #unless_sorted  %>
+      <% end #sort_line_items %>
+    <% end #jobs.each %>  
+  </div>
+
+    <table class="col-xs-12 table">
+      <tbody>
+      <tr id="subtotal">
+        <td colspan='2'>
+        <td style="width: 100px"><strong>Subtotal:</strong></td>
+        <td style="width: 150px" class="text-right"><%= number_to_currency(@order.subtotal) %></td>
+      </tr>
+      <tr id="tax">
+        <td colspan='2'>
+        <td><strong>Tax:</strong></td>
+        <td class="text-right"><%= number_to_currency(@order.tax) %></td>
+      </tr>
+
+      <% unless false %>
+          <tr id="shipping">
+            <td colspan='2'>
+            <td><strong>Shipping:</strong></td>
+            <td class="text-right">TODO: Add Shipping</td>
+          </tr>
+      <% end %>
+
+      <tr id="total">
+        <td colspan='2'>
+        <td><strong>Total:</strong></td>
+        <td class="text-right"><%= number_to_currency(@order.total) %></td>
+      </tr>
+    </tbody>
+  </table>
+  <div class="col-xs-12 text-center">
+    <h3>Thank you for your business!</h3>
+    <p>
+      The Ann Arbor T-shirt Company<br />
+      2275 S. Industrial Hwy - Ann Arbor MI, 48104, USA<br />
+      734-274-2659 - sales@annarbortees.com
+    </p>
+  </div>
+</div>
+
+

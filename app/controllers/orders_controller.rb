@@ -20,10 +20,6 @@ class OrdersController < InheritedResources::Base
     end
   end
 
-  def show
-    redirect_to action: :edit
-  end
-
   def new
     super do
       @current_action = 'orders#new'

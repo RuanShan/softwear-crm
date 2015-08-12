@@ -127,6 +127,10 @@ class Order < ActiveRecord::Base
     end
   end
 
+  def full_name
+    "#{firstname} #{lastname}"
+  end
+  
   def payment_total
     payments.reduce(0) do |total, p|
       p && !p.is_refunded? ? total + p.amount : total
@@ -146,11 +150,15 @@ class Order < ActiveRecord::Base
   end
 
   def tax
+    tax_rate * subtotal
+  end
+
+  def tax_rate
     0.06
   end
 
   def total
-    subtotal + subtotal * tax
+    subtotal + tax
   end
 
   def name_number_csv
