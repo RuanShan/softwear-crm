@@ -27,7 +27,7 @@ class LineItem < ActiveRecord::Base
   validate :imprintable_variant_exists, if: :imprintable?
   validates :name, presence: true, unless: :imprintable?
   validates :quantity, presence: true
-  validates :quantity, greater_than_zero: true, if: ->(x){ x.imprintable? || x.quantity != MARKUP_ITEM_QUANTITY }
+  validates :quantity, greater_than_zero: true, if: :should_validate_quantity?
   validates :unit_price, presence: true, price: true, unless: :imprintable?
   validates :decoration_price, :imprintable_price, presence: true, price: true, if: :imprintable?
 
@@ -157,5 +157,9 @@ class LineItem < ActiveRecord::Base
 
   def set_default_quantity
     self.quantity = 1 if self.quantity.to_i == 0
+  end
+
+  def should_validate_quantity?
+    line_itemable.try(:jobbable_type) == 'Quote' and imprintable? || quantity != MARKUP_ITEM_QUANTITY
   end
 end
