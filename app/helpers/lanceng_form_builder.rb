@@ -69,7 +69,7 @@ class LancengFormBuilder < ActionView::Helpers::FormBuilder
     @template.inline_field_tag(@object, method, default_or_options, options)
   end
 
-  def check_box_with_text_field(check_method, text_method, options = {})
+  def check_box_with_text_area(check_method, text_method, options = {})
     @template.content_tag(:div, class: 'input-group') do
       add_class options, 'form-control'
 
@@ -78,6 +78,20 @@ class LancengFormBuilder < ActionView::Helpers::FormBuilder
       end
 
       text_field = @template.text_area(@object_name, text_method, options)
+
+      check_box + text_field
+    end
+  end
+  
+  def check_box_with_text_field(check_method, text_method, options = {})
+    @template.content_tag(:div, class: 'input-group') do
+      add_class options, 'form-control'
+
+      check_box = @template.content_tag(:span, class: 'input-group-addon') do
+        @template.check_box @object_name, check_method
+      end
+
+      text_field = @template.text_field(@object_name, text_method, options)
 
       check_box + text_field
     end
