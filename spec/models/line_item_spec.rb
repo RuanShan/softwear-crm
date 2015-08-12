@@ -14,6 +14,13 @@ describe LineItem, line_item_spec: true do
 
   describe 'Validations', now: true do
     describe 'quantity' do
+      before do
+        allow(subject)
+          .to receive_message_chain(:line_itemable, :try) #(jobbable_type)
+          .with(:jobbable_type)
+          .and_return 'Quote'
+      end
+
       it { is_expected.to validate_presence_of :quantity }
       it { is_expected.to allow_value(5).for :quantity }
       it { is_expected.to_not allow_value(0).for :quantity }
