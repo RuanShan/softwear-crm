@@ -1,3 +1,5 @@
+<% # If you're here to fix a bug, I'm sorry. %>
+
 <% select_field_name_for = method(:imprint_select_field_name_for).to_proc.curry.(local_assigns[:imprint]) %>
 <% id = local_assigns[:imprint].try(:id) || increment_new_imprint_counter %>
 
@@ -40,7 +42,7 @@
                                    elsif imprint_is_for_an_order? local_assigns[:imprint]
                                      select_field_name_for.(:print_location_id)
                                    else
-                                      "imprint[#{id}[print_location_id]]"
+                                      "imprint[#{id}][print_location_id]"
                                    end,
                              default: local_assigns[:imprint].try(:print_location).try(:id) } %>
       </div>
@@ -57,7 +59,7 @@
 
       <div>
         <%= label_tag local_assigns[:description_name] || :description, 'Description' %><br />
-        <%= text_area_tag local_assigns[:description_name] || 'imprint[description]', local_assigns[:imprint].try(:description), class: 'form-control' %>
+        <%= text_area_tag local_assigns[:description_name] || "imprint[#{id}][description]", local_assigns[:imprint].try(:description), class: 'form-control js-imprint-description' %>
       </div>
 
       <% if local_assigns[:id_field_name] %>

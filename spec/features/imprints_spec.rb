@@ -38,6 +38,25 @@ feature 'Imprints Management', imprint_spec: true, js: true do
     expect(Imprint.where(job_id: job.id, print_location_id: print_location2.id)).to exist
   end
 
+  scenario 'user can add an imprint with a description', story_853: true, retry: 1 do
+    visit edit_order_path(order.id, anchor: 'jobs')
+    wait_for_ajax
+
+    sleep 1
+    first('.add-imprint').click
+    sleep 1
+    find('.js-imprint-method-select').select imprint_method2.name
+    sleep 1
+    find('.js-print-location-select').select print_location2.name
+    sleep 1
+    find('.js-imprint-description').set 'Here ye here ye'
+    expect(all('.editing-imprint').count).to be > 1
+    sleep 1
+    find('.update-imprints').click
+    sleep 1
+    expect(Imprint.where(description: 'Here ye here ye')).to exist
+  end
+
   scenario 'user can click outside an imprint to update', what: true, story_473: true do
     visit edit_order_path(order.id, anchor: 'jobs')
     wait_for_ajax

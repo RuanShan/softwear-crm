@@ -62,6 +62,9 @@
   $parent.find('.js-number-format-field').off 'change.imprint'
   $parent.find('.js-number-format-field').on 'change.imprint', printLocationSelected
 
+  $parent.find('.js-imprint-description').off 'change.imprint'
+  $parent.find('.js-imprint-description').on 'change.imprint', printLocationSelected
+
 
 @deleteImprint = ->
   $btn = $(this)
