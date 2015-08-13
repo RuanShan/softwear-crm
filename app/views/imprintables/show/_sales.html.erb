@@ -71,4 +71,18 @@
     </dl>
 
     <%= render 'imprintables/show/weight_table', imprintable: imprintable %>
+
+  <h3>Groups</h3>
+  <% if imprintable.imprintable_imprintable_groups.empty? %>
+    Not a part of any imprintable group.
+  <% else %>
+    <ul>
+      <% imprintable.imprintable_imprintable_groups.each do |info| %>
+        <li>
+          <h5><%= info.imprintable_group.name %></h5> - <%= info.tier_name %>
+          <% if info.default? %> <em>default</em> <% end %>
+        </li>
+      <% end %>
+    </ul>
+  <% end %>
 </div>

@@ -39,6 +39,16 @@
       </div>
 
       <div class="form-group">
+        <%= f.label :imprintable_imprintable_groups, 'Imprintable Groups', class: 'control-label' %>
+        <%= f.error_for :imprintable_imprintable_groups %>
+        <%= f.fields_for :imprintable_imprintable_groups do |ff| %>
+          <%= render 'imprintable_imprintable_group_fields', f: ff %>
+        <% end %>
+
+        <%= link_to_add_fields "<i class='fa fa-plus'></i> Add Imprintable Group".html_safe, f, :imprintable_imprintable_groups %>
+      </div>
+
+      <div class="form-group">
         <%= f.label :coordinate_ids, 'Coordinate Imprintables', class: 'control-label' %>
         <%= f.error_for :coordinate_ids %>
          <%= f.collection_select :coordinate_ids,

@@ -16,4 +16,8 @@ class ImprintableImprintableGroup < ActiveRecord::Base
   def self.default
     where(default: true).first
   end
+
+  def tier_name
+    Imprintable::TIERS[tier]
+  end
 end

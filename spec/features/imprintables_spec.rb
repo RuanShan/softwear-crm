@@ -233,6 +233,23 @@ feature 'Imprintables management', imprintable_spec: true, slow: true do
 
   end
 
+  scenario 'A user can add the imprintable to a group', js: true, story_713: true  do
+    group = ImprintableGroup.create!(name: 'The Group')
+    imp = create(:valid_imprintable_variant).imprintable
+
+    visit edit_imprintable_path imp.id
+
+    click_link 'Add Imprintable Group'
+    select 'The Group', from: 'Group'
+    click_button 'Update Imprintable'
+
+    sleep 2 if ci?
+    expect(page).to have_content 'Imprintable was successfully updated.'
+    expect(current_path).to eq(edit_imprintable_path imp.id)
+
+    expect(imp.reload.imprintable_groups).to include group
+  end
+
   scenario 'A user can delete an existing imprintable', js: true do
     visit imprintables_path
     find("tr#imprintable_#{imprintable.id} a[data-action='destroy']").click

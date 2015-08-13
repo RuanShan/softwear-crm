@@ -185,6 +185,9 @@ class ImprintablesController < InheritedResources::Base
         ],
         print_location_imprintables_attributes: [
           :id, :print_location_id, :max_imprint_width, :max_imprint_height, :_destroy
+        ],
+        imprintable_imprintable_groups_attributes: [
+          :id, :default, :tier, :imprintable_group_id, :imprintable_id
         ]
       ]
     )

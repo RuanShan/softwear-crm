@@ -15,7 +15,7 @@ $(document).ready ->
     time = new Date().getTime()
     regexp = new RegExp($(this).data('id'), 'g')
     $(this).before($(this).data('fields').replace(regexp, time))
-    $('.select2').select2()
+    $(this).closest('.form-group').find('.select2').select2()
     event.preventDefault()
 
   $('.format-phone').mask("999-999-9999")
