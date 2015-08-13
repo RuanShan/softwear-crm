@@ -48,9 +48,8 @@
 
         <%= f.text_field :cc_batch_no %>
       </div>
-    <% end %>
 
-    <% if payment_method == '3' %>
+    <% elsif payment_method == '3' %>
       <div class="form-group">
         <%= f.label :check_dl_no, 'Drivers License Number' %>
 
@@ -62,13 +61,50 @@
 
         <%= f.text_field :check_phone_no %>
       </div>
-    <% end %>
 
-    <% if payment_method == '4' %>
+    <% elsif payment_method == '4' %>
       <div class="form-group">
         <%= f.label :pp_transaction_id, 'PayPal Transaction ID' %>
 
         <%= f.text_field :pp_transaction_id %>
+      </div>
+
+    <% elsif payment_method == '5' %>
+      <div class='form-group'>
+        <%= f.label :t_name, 'Name' %>
+
+        <%= f.text_field :t_name %>
+      </div>
+
+      <div class='form-group'>
+        <%= f.label :t_company_name, 'Company Name' %>
+
+        <%= f.text_field :t_company_name %>
+      </div>
+
+      <div class='form-group'>
+        <%= f.label :tf_number, 'Trade First Number' %>
+
+        <%= f.text_field :tf_number %>
+      </div>
+
+    <% elsif payment_method == '6' %>
+      <div class='form-group'>
+        <%= f.label :t_description, 'Trade Description' %>
+
+        <%= f.text_area :t_description %>
+      </div>
+
+      <div class='form-group'>
+        <%= f.label :t_name, 'Name' %>
+
+        <%= f.text_field :t_name %>
+      </div>
+
+      <div class='form-group'>
+        <%= f.label :t_company_name, 'Company Name' %>
+
+        <%= f.text_field :t_company_name %>
       </div>
     <% end %>
 

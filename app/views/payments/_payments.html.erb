@@ -58,6 +58,18 @@
               remote: true, 'data-target' => '#payment-form', id: 'wire-button' } do %>
         <i class="fa fa-code-fork"></i> Wire Transfer
       <% end %>
+
+      <%= button_to new_order_payment_path(params[:id]) + '?payment_method=5', {
+              class: 'additional-icon btn btn-default payment-button', method: :get,
+              remote: true, 'data-target' => '#payment-form', id: 'trade-first-button' } do %>
+        <i class="fa fa-asterisk"></i> Trade First
+      <% end %>
+
+      <%= button_to new_order_payment_path(params[:id]) + '?payment_method=6', {
+              class: 'additional-icon btn btn-default payment-button', method: :get,
+              remote: true, 'data-target' => '#payment-form', id: 'trade-button' } do %>
+        <i class="fa fa-exchange"></i> Trade
+      <% end %>
     </div>
 
     <div id="payment-form" class="collapse"></div>
