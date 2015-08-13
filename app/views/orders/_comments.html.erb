@@ -1,0 +1,25 @@
+<div id="order-comments" class="container-fluid">
+  <ul id='comments-list' class="col-xs-12">
+    <% order.all_comments.each do |comment| %>
+        <%= render 'comments/basic', comment: comment %>
+    <% end %>
+  </ul>
+
+  <div class="col-sm-8 col-sm-offset-2">
+
+  <h3>Comment on this order</h3>
+      <p class="help-block">
+        I have no idea what the difference between public and private is here.
+      </p>
+
+      <%= bootstrap_form_for [order, Comment.new], id: 'comment-form', remote: true do |f| %>
+        <%= f.hidden_field :commentable_type, value: 'Order' %>
+        <%= f.hidden_field :commentable_id, value: order.id %>
+        <%= f.text_field :title, maxlength: 140 %>
+        <%= f.text_area :comment, maxlength: 65500 %>
+        <%= f.check_box :public %>
+        <%= f.submit 'Submit', class: 'btn btn-success' %>
+      <% end %>
+  </div>
+
+</div>

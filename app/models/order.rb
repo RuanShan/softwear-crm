@@ -2,6 +2,7 @@ class Order < ActiveRecord::Base
   include TrackingHelpers
 
   acts_as_paranoid
+  acts_as_commentable :public, :private
 
   is_activity_recipient
 
@@ -84,6 +85,9 @@ class Order < ActiveRecord::Base
   validates :tax_id_number, presence: true, if: :tax_exempt?
   validates :terms, presence: true
   validates :in_hand_by, presence: true
+
+  alias_method :comments, :all_comments
+  alias_method :comments=, :all_comments=
 
   scope :fba, -> { where(terms: 'Fulfilled by Amazon') }
 

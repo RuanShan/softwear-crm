@@ -1,2 +1,6 @@
-$('#comments-list').append("<%=j render 'comments/basic', comment: @comment %>");
-$('#comment-form').find('input:not([type="hidden"])').val('');
+<% if @failed %>
+  errorModal("<%= @comment.errors.full_messages.join(', ') %>");
+<% else %>
+  $('#comments-list').append("<%=j render 'comments/basic', comment: @comment %>");
+  $('#comment-form').find('textarea,select,input:not([type="hidden"])').val('');
+<% end %>

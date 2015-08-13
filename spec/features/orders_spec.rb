@@ -102,6 +102,42 @@ feature 'Order management', order_spec: true,  js: true do
     end
   end
 
+  scenario 'A user can add a comment to an order', add_comment: true, story_842: true do
+    visit edit_order_path order
+
+    find('a', text: 'Comments').click
+
+    fill_in 'Title', with: 'Test?'
+    fill_in 'Comment', with: 'This is what I want to see'
+
+    click_button 'Submit'
+
+    expect(page).to have_content 'Test?'
+    expect(page).to have_content 'This is what I want to see'
+
+    order.reload
+    expect(order.private_comments.where(title: 'Test?')).to exist
+    expect(order.private_comments.where(comment: 'This is what I want to see')).to exist
+  end
+
+  scenario 'A user can remove a comment from an order', remove_comment: true, story_842: true do
+    order.comments << Comment.create(title: 'Test Note?', comment: 'This is what I want to see', role: 'private')
+
+    visit edit_order_path order
+
+    find('a', text: 'Comments').click
+
+    sleep 0.5
+    sleep 1 if ci?
+    first('.delete-comment').click
+    sleep 0.5
+
+    order.reload
+    expect(order.comments.where(title: 'Test Note?')).to_not exist
+    expect(order.comments.where(comment: 'This is what I want to see')).to_not exist
+  end
+
+
   scenario 'user sees an error message when submitting invalid information' do
     visit root_path
     unhide_dashboard
