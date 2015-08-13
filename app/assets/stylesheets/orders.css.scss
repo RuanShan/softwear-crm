@@ -23,4 +23,21 @@
 
 .big-submit-button {
   font-size: 500%;
+ }
+
+.box-info table.non-imprintables, .box-info table.imprintable-line-item, .box-info table.order-totals {
+  td, th, tr {
+    padding-left: 2px;
+    padding-right: 2px;
+    border: none;
+  }
+}
+
+table.imprintable-line-item {
+  border-bottom: solid 1px #ddd;
+}
+
+h2.invoice-job-name {
+  border: solid 1px #ddd;
+  padding-top: 15px;
 }

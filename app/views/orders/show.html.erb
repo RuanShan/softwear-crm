@@ -1,6 +1,6 @@
 <div class="page-heading animated fadeInDownBig row">
   <div class="pull-left">
-    <h1><strong>Ann Arbor T-Shirt Company Order</strong> #<%= @order.id %></h1>
+    <h1><strong>Invoice</strong> #<%= @order.id %></h1>
   </div>
 
   <div class='pull-right hidden-print'>
@@ -61,12 +61,11 @@
   
   <div class="col-xs-12">
     <% @order.jobs.each do |job| %>
-      <h2>
+      <h2 class="invoice-job-name">
         <strong><%= job.name %></strong>: 
         <%= job.imprints.map{|i| "#{i.name} (#{i.description})" }.join(", ") %>
       </h2>
 
-      
       <% job.sort_line_items.tap do |sorted_line_items| %>
         <% unless sorted_line_items.empty? %>
           <% sorted_line_items.each do |_imprintable_name, by_color| %>
@@ -76,11 +75,56 @@
           <% end #sorted_line_items %>
         <% end #unless_sorted  %>
       <% end #sort_line_items %>
+      <% unless job.standard_line_items.empty? %>
+        <table class="table non-imprintables">
+          <thead>
+            <tr>
+              <td>
+                Name
+              </td>
+              <td>
+                Description
+              </td>
+              <td>
+                Price
+              </td>
+              <td style="width: 100px">
+                Quantity
+              </td>
+              <td style="width: 100px" class="text-right">
+                Total
+              </td>
+            </tr>
+          </thead>
+        <% job.standard_line_items.each do |li| %>
+          <tr>
+            <td>
+              <%= li.name %>
+            </td>
+            <td>
+              <%= li.description %>
+            </td>
+            <td>
+              <%= number_to_currency li.unit_price %>
+            </td>
+            <td>
+              <%= li.quantity %>
+            </td>
+            <td class="text-right">
+              <%= number_to_currency li.total_price %>
+            </td>
+          </tr>
+        <% end %>
+        </table>
+      <% end %>
     <% end #jobs.each %>  
   </div>
-
-    <table class="col-xs-12 table">
+  <div class="col-xs-12">
+    <table class="col-xs-12 table order-totals">
       <tbody>
+        <tr>
+          <td colspan="4">
+      </tr>
       <tr id="subtotal">
         <td colspan='2'>
         <td style="width: 100px"><strong>Subtotal:</strong></td>
@@ -107,6 +151,7 @@
       </tr>
     </tbody>
   </table>
+  </div>
   <div class="col-xs-12 text-center">
     <h3>Thank you for your business!</h3>
     <p>

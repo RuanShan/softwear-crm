@@ -150,7 +150,7 @@ class Order < ActiveRecord::Base
   end
 
   def tax
-    tax_rate * subtotal
+    line_items.where(taxable: true).map(&:total_price).map(&:to_f).reduce(:+) * tax_rate
   end
 
   def tax_rate
