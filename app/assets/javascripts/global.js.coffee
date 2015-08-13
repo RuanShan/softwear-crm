@@ -57,22 +57,6 @@ $(document).ajaxStop ->
   $(".js-datetimepicker").datetimepicker()
   $(".js-datetimepicker input[type='text']").datetimepicker()
 
-#@initializeSummernote = ->
-#  $(".summernote").summernote
-#    height: 300
-#    toolbar:[
-#      ['style', ['style']],
-#      ['font', ['bold', 'italic', 'underline', 'clear']],
-#      ['fontsize', ['fontsize']],
-#      ['color', ['color']],
-#      ['para', ['ul', 'ol', 'paragraph']],
-#      ['height', ['height']],
-#      ['table', ['table']],
-#      ['view', ['fullscreen', 'codeview']],
-#    ]
-#
-#  $(".summernote").code "" if $(".note-editable").html() is "<p><br></p>"
-
 @setPendingSelect = ->
   $(".js-pending-select").hide()
   $(".js-pending-select").val "Pending"
@@ -91,10 +75,6 @@ $(document).ajaxStop ->
   returnColor = $element.css('background-color') unless returnDefault
   $element.css('background-color', (color or '#99ffbb'))
   $element.animate {backgroundColor: returnColor}, (duration or 1000), -> $element.css 'background-color', ''
-
-#@summernoteSubmit = ->
-#  $(".summernote").closest("form").submit ->
-#    $(".summernote").val $(".summernote").code()
 
 @styleCheckboxes = ->
   $("input").iCheck
