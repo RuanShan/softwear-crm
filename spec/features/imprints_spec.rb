@@ -212,4 +212,22 @@ feature 'Imprints Management', imprint_spec: true, js: true do
       expect(page).to_not have_css('#js-name-number-table tbody tr td', text: /#{imprint_two.name}/)
     end
   end
+
+  context 'when no name/number imprint is present', story_800: true do
+    scenario 'a user does not see the name/number table at all' do
+      imprint
+      visit edit_order_path(order.id, anchor: 'jobs')
+      wait_for_ajax
+
+      expect(page).to_not have_css '#js-name-number-table'
+    end
+
+    scenario 'a user does not see the download name/number csv button' do
+      imprint
+      visit edit_order_path(order.id, anchor: 'jobs')
+      wait_for_ajax
+
+      expect(page).to_not have_css '.dl-name-number-csv'
+    end
+  end
 end

@@ -61,8 +61,8 @@
         <div class='col-sm-4'>
           <h4>Imprints</h4>
         </div>
-        <div class='col-sm-3 col-xs-offset-5'>
-          <%= link_to 'Download Names/Numbers CSV', name_number_csv_from_job_path(job), class: 'btn btn-info btn-block' %>
+        <div class='col-sm-3 col-xs-offset-5 name-number-download' style="<%= 'display: none;' if job.imprints.name_number.empty? %>">
+          <%= link_to 'Download Names/Numbers CSV', name_number_csv_from_job_path(job), class: 'btn btn-info btn-block dl-name-number-csv' %>
         </div>
       </div>
       <%= form_for :imprint, builder: BatchFormBuilder, method: :put, remote: true,
@@ -88,8 +88,10 @@
       <% end %>
 
       <div class="form-group box-info full job-name-number-info">
-        <%= render 'jobs/name_number_form', job: job %>
-        <%= render 'jobs/name_number_table', job: job %>
+        <% if job.imprints.name_number.any? %>
+          <%= render 'jobs/name_number_form', job: job %>
+          <%= render 'jobs/name_number_table', job: job %>
+        <% end %>
       </div>
 
 

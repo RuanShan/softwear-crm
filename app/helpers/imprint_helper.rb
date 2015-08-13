@@ -19,10 +19,22 @@ module ImprintHelper
   end
 
   def update_name_number_table(job)
-    %(
-      $("#job-#{job.id}").find('.job-name-number-info')
-        .html("#{j render('jobs/name_number_form', job: job) + render('jobs/name_number_table', job: job)}");
-    )
-      .html_safe
+    if job.imprints.name_number.any?
+      %(
+        $("#job-#{job.id}").find('.job-name-number-info')
+          .html("#{j render('jobs/name_number_form', job: job) + render('jobs/name_number_table', job: job)}");
+
+        $("#job-#{job.id}").find('.name-number-download')
+          .show();
+      )
+        .html_safe
+    else
+      %(
+        $("#job-#{job.id}").find('.job-name-number-info').html("");
+
+        $("#job-#{job.id}").find('.name-number-download').hide();
+      )
+        .html_safe
+    end
   end
 end
