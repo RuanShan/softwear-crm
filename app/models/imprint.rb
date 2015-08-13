@@ -15,14 +15,6 @@ class Imprint < ActiveRecord::Base
   validates :job, presence: true
   validates :print_location, presence: true, uniqueness: { scope: :job_id }
 
-  # TODO This is outdated, I believe.
-  scope :with_name_number, -> {
-    where(has_name_number: true)
-    .joins(:name_numbers)
-    .where("name_numbers.name <> '' AND NOT name_numbers.number = NULL AND name_numbers.description <> ''")
-    .references(:name_numbers)
-  }
-
   scope :name_number, -> { joins(:imprint_method).where(imprint_methods: { name: 'Name/Number' }) }
 
   def name

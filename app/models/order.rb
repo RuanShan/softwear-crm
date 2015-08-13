@@ -133,6 +133,10 @@ class Order < ActiveRecord::Base
     end
   end
 
+  def full_name
+    "#{firstname} #{lastname}"
+  end
+  
   def payment_total
     payments.reduce(0) do |total, p|
       p && !p.is_refunded? ? total + p.amount : total
@@ -152,11 +156,15 @@ class Order < ActiveRecord::Base
   end
 
   def tax
+    line_items.where(taxable: true).map(&:total_price).map(&:to_f).reduce(:+) * tax_rate
+  end
+
+  def tax_rate
     0.06
   end
 
   def total
-    subtotal + subtotal * tax
+    subtotal + tax + shipping_price
   end
 
   def name_number_csv
@@ -165,6 +173,10 @@ class Order < ActiveRecord::Base
       .map { |i| [i.name_number.number, i.name_number.name] }
 
     CSV.from_arrays csv, headers: %w(Number Name), write_headers: true
+  end
+  
+  def name_and_numbers
+    jobs.map{|j|  j.name_number_imprints.flat_map{ |i| i.name_numbers } }.flatten
   end
 
   def generate_jobs(job_attributes)

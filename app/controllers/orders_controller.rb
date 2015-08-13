@@ -20,10 +20,6 @@ class OrdersController < InheritedResources::Base
     end
   end
 
-  def show
-    redirect_to action: :edit
-  end
-
   def new
     super do
       @current_action = 'orders#new'
@@ -149,7 +145,7 @@ class OrdersController < InheritedResources::Base
         :in_hand_by, :terms, :tax_exempt,
         :tax_id_number, :redo_reason,
         :delivery_method, :phone_number, :commission_amount,
-        :store_id, :salesperson_id, :total,
+        :store_id, :salesperson_id, :total, :shipping_price,
 
         quote_ids: []
       ]

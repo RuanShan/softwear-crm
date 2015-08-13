@@ -1,0 +1,54 @@
+<div class="row">
+  <% imprintable = line_items.first.imprintable %>
+  <div class="col-xs-4">
+    <p>
+    <strong><%= imprintable.brand_name %> <%= imprintable.style_catalog_no %></strong><br />
+    <%= line_items.first.imprintable_variant.color.name %><br />
+      <%= imprintable.style_name %>
+    </p>
+  </div>
+  <div class="col-xs-8">
+    <table class="pull-right table imprintable-line-item">
+      <thead>
+        <tr>
+        <% line_items.each do |line_item| %>
+          <th><%= line_item.size_display %></th>
+        <% end %>
+        <th class="text-right">Total</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>  
+        <% line_items.each do |line_item| %>
+          <td>
+            <%= line_item.quantity > 0 ? line_item.quantity : "-" %><br />
+          </td>
+        <% end %>
+        <td class="text-right">
+          <%= line_items.sum(&:quantity) %><br />
+        </td>
+        </tr>
+        <tr>  
+          <% line_items.each do |line_item| %>
+            <td>
+              <%= line_item.quantity > 0 ? number_to_currency(line_item.unit_price) : "-"  %>
+            </td>
+          <% end %>
+          <td class="text-right">
+            -
+          </td>
+        </tr>
+        <tr>  
+          <% line_items.each do |line_item| %>
+            <td>
+              <%= line_item.quantity > 0 ? number_to_currency(line_item.total_price) : "-"  %>
+            </td>
+          <% end %>
+          <td class="text-right">
+            <%= number_to_currency line_items.sum(&:total_price) %>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
