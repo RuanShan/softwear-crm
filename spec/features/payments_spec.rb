@@ -39,6 +39,29 @@ feature 'Payments management', js: true, payment_spec: true do
     end
   end
 
+  scenario 'A salesperson can toggle a payment type', story_274: true do
+    visit edit_order_path order, anchor: 'payments'
+    find('#cash-button').click
+    sleep 1
+    expect(page).to have_css '#amount_field'
+    sleep 1
+    find('#cash-button').click
+    sleep 1
+    expect(page).to_not have_css '#amount_field'
+  end
+
+  scenario 'A salesperson can uncollapse a payment type, then switch to another one', story_274: true do
+    visit edit_order_path order, anchor: 'payments'
+    find('#cash-button').click
+    sleep 1
+    expect(page).to have_css '#amount_field'
+    expect(page).to_not have_css '#payment_cc_batch_no'
+    sleep 1
+    find('#cc-button').click
+    sleep 1.5
+    expect(page).to have_css '#payment_cc_batch_no'
+  end
+
   scenario 'A salesperson can make a payment', retry: 3, story_692: true do
     visit (edit_order_path order.id) + '#payments'
     find(:css, '#cash-button').click

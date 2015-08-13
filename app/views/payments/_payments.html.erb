@@ -17,7 +17,6 @@
       <div class="clear"></div>
 
       <div class="progress progress-xs">
-        <% # TODO inline CSS %>
         <div class="progress-bar progress-bar-success" role="progressbar" aria-valuenow="<%= order.percent_paid %>" aria-valuemin="0" aria-valuemax="100" style="width: <%= order.percent_paid %>%">
           <span class="sr-only"><%= order.percent_paid %>&#37; Paid</span>
         </div>
