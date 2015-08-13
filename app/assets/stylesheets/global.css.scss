@@ -1,13 +1,12 @@
-#js-ajax-loading .modal-dialog {
-  width: 800px;
-}
-
 #js-ajax-loading {
+  width: 200px;
+  height: 55px;
   z-index: 10000000000000000000;
-}
-
-#js-ajax-loading .modal-content {
   background-color: #4393D8;
+  position: fixed;
+  border-radius: 25px;
+  box-shadow: 0px 5px 10px 0px;
+  float: right;
 }
 
 .enlarge-modal {

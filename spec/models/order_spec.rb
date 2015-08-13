@@ -35,6 +35,7 @@ describe Order, order_spec: true do
     it { is_expected.to validate_presence_of :salesperson }
     it { is_expected.to validate_presence_of :store }
     it { is_expected.to validate_presence_of :terms }
+    it { is_expected.to validate_presence_of :in_hand_by }
 
     let!(:store) { create(:valid_store) }
     let!(:user) { create(:user) }

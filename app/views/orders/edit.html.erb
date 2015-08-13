@@ -51,6 +51,11 @@
                   <i class="fa fa-file-text-o"></i> Proofs
                 </a>
               </li>
+              <li>
+                <a href="#comments" data-toggle="tab">
+                  <i class="fa fa-bars"></i> Comments
+                </a>
+              </li>
             </ul>
 
             <div class="tab-content">
@@ -82,6 +87,10 @@
 
               <div class="tab-pane animated fadeInRight" id="shipments">
                   <%= render partial: 'shipments' %>
+              </div>
+
+              <div class="tab-pane animated fadeInRight" id="comments">
+                  <%= render 'comments', order: @order %>
               </div>
             </div>
         </div>

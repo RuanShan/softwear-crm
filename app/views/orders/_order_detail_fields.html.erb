@@ -14,8 +14,11 @@
   <%= f.label :in_hand_by, 'In Hand By Date' %>
   <%= f.error_for :in_hand_by %>
   <div class="input-group date js-datetimepicker">
-    <%= f.text_field :in_hand_by, { value: display_time(f.object.in_hand_by),
-                                    placeholder: 'In Hand By', class: 'form-control' } %>
+    <%= f.text_field :in_hand_by,
+      value:       value_time(f.object.in_hand_by),
+      placeholder: 'In Hand By',
+      class: 'form-control'
+    %>
     <span class="input-group-addon">
       <span class="glyphicon glyphicon-calendar"></span>
     </span>
@@ -40,7 +43,7 @@
   <div class="form-group">
     <%= f.label :quote_ids, 'Related Quote(s)' %>
     <%= f.error_for :quote_ids %>
-    <%= f.select :quote_ids, Quote.all.map { |q| [q.name, q.id] }, {}, { multiple: true } %>
+    <%= f.select :quote_ids, options_from_collection_for_select(f.object.quotes, :id, :name, f.object.quote_ids.map(&:to_s)), {}, multiple: true, id: 'order-quote-ids-select2', style: 'width: 100%;' %>
   </div>
 <% end %>
 

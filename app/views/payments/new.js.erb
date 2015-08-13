@@ -1,3 +1,22 @@
-$('#payment-form').html("<br/><%= j(render partial: 'payments/payment_form',
-                                           locals: { payment_method: params[:payment_method] }).html_safe %>");
-$('#payment-form').collapse('toggle');
+var paymentHtml = "<br/><%= j(render partial: 'payments/payment_form', locals: { payment_method: params[:payment_method] }).html_safe %>";
+
+var setContent = function() {
+  $('#payment-form').html(paymentHtml);
+  $('#payment-form').data('current', "<%=j params[:payment_method] %>");
+  setTimeout(function() { $('#payment-form').collapse('show'); }, 100);
+  $('#payment-form').off('hidden.bs.collapse', setContent);
+}
+
+if ($('#payment-form').data('current') != null) {
+  if ($('#payment-form').data('current') == "<%=j params[:payment_method] %>") {
+    $('#payment-form').collapse('hide');
+    $('#payment-form').data('current', null);
+  }
+  else {
+    $('#payment-form').on('hidden.bs.collapse', setContent);
+    $('#payment-form').collapse('hide');
+  }
+}
+else {
+  setContent();
+}

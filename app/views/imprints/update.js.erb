@@ -17,7 +17,7 @@ var shineEditingIn = function ($container) {
   var $printLocation = $container.find('.print-location-container');
   handler = errorHandlerFrom($printLocation, 'imprint', $printLocation, <%= imprint.id %>);
 
-  <% if imprint.valid? %>    
+  <% if imprint.valid? %>
 
     handler.clear();
     $container.remove('.js-name-number-format-fields');
@@ -37,7 +37,7 @@ var shineEditingIn = function ($container) {
   handler = errorHandlerFrom($printLocation, 'imprint', $printLocation, <%= new_imprint.attributes_key %>);
 
   <% if new_imprint.valid? %>
-    
+
     handler.clear();
     $container.attr('data-id', <%= new_imprint.id %>);
     $container.find('.js-print-location-select').attr(
@@ -48,7 +48,7 @@ var shineEditingIn = function ($container) {
     shineEditingIn($container);
 
   <% else %>
-    
+
     handler.handleErrors(<%= new_imprint.errors.messages.to_json.html_safe %>);
 
   <% end %>
@@ -62,3 +62,5 @@ var shineEditingIn = function ($container) {
 <%= update_name_number_table(@job) %>
 
 <%= update_order_timeline(@job.order) %>
+
+registerImprintEvents($('body'));

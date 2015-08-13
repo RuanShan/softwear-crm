@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150810145050) do
+ActiveRecord::Schema.define(version: 20150813170417) do
 
   create_table "activities", force: :cascade do |t|
     t.integer  "trackable_id",   limit: 4
@@ -453,6 +453,10 @@ ActiveRecord::Schema.define(version: 20150810145050) do
     t.integer  "payment_method",    limit: 4
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.string   "t_name",            limit: 255
+    t.string   "t_company_name",    limit: 255
+    t.string   "tf_number",         limit: 255
+    t.text     "t_description",     limit: 65535
   end
 
   create_table "print_location_imprintables", force: :cascade do |t|

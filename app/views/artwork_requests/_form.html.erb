@@ -46,7 +46,6 @@
       <%= f.label :imprint_method_id, class: 'col-sm-2 control-label' %>
 
       <div class="col-sm-10">
-        <% # TODO: Model interaction %>
         <%= f.select :imprint_method_id, ImprintMethod.all.map { |x| [x.name, x.id] },
                      { include_blank: true },
                      { id:'artwork_imprint_method_fields', data: { url: imprint_methods_path } } %>
@@ -89,8 +88,8 @@
       <%= f.label :deadline, class: 'col-sm-2 control-label' %>
 
       <div class="col-sm-10">
-        <div class="input-group js-datetimepicker">
-          <%= f.text_field :deadline, value: display_time(artwork_request.deadline) %>
+        <div class="input-group date js-datetimepicker">
+          <%= f.text_field :deadline, value: value_time(artwork_request.deadline) %>
 
           <span class="input-group-addon">
             <span class="glyphicon glyphicon-calendar"></span>
@@ -128,7 +127,6 @@
       <%= f.label :artist_id, 'Artist', class: 'col-sm-2 control-label' %>
 
       <div class="col-sm-10">
-        <% # TODO: Model call %>
         <%= f.select :artist_id, User.all.map{ |u| [u.full_name, u.id] }, include_blank: true %>
 
         <% if artwork_request.errors.include?(:artist_id) %>

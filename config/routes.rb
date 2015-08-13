@@ -88,6 +88,8 @@ CrmSoftwearcrmCom::Application.routes.draw do
       get 'names_numbers', as: :name_number_csv_from
     end
 
+    resources :comments
+
     collection do
       get 'fba'
       get 'new_fba'

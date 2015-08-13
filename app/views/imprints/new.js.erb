@@ -2,14 +2,14 @@
 
 <% if @job %>
   var $imprint = $("<%=j render 'imprints/imprint',
-                   job: @job,
-                   select_tag_name: params[:select_tag_name].try(:gsub, '*time*', timestamp),
-                   description_name: params[:description_name].try(:gsub, '*time*', timestamp)
+                     job: @job,
+                     select_tag_name: params[:select_tag_name].try(:gsub, '*time*', timestamp),
+                     description_name: params[:description_name].try(:gsub, '*time*', timestamp)
                    %>");
 
   $("#job-<%= @job.id %>").find(".imprints-container").append($imprint);
 
-  $imprint.find("select").addClass("editing-imprint");
+  $imprint.find("select,textarea").addClass("editing-imprint");
   $imprint.find(".js-delete-imprint-button").click(deleteImprint);
   registerImprintEvents($imprint);
 <% else %>

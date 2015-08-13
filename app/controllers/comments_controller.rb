@@ -2,8 +2,9 @@ class CommentsController < InheritedResources::Base
   belongs_to :quote, polymorphic: true, optional: true
 
   def create
-    super do |format|
-      format.js
+    super do |success, failure|
+      success.js
+      failure.js { @failed = true }
     end
   end
 
@@ -17,7 +18,7 @@ class CommentsController < InheritedResources::Base
 
   def permitted_params
     params.permit(
-      :quote_id,
+      :quote_id, :order_id,
       comment: [
         :title, :comment, :public,
         :commentable_id, :commentable_type

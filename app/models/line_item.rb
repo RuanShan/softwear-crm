@@ -28,6 +28,7 @@ class LineItem < ActiveRecord::Base
   validates :name, presence: true, unless: :imprintable?
   validates :quantity, presence: true
   validates :quantity, greater_than_zero: true, if: :should_validate_quantity?
+  validate :quantity_is_not_negative, unless: :should_validate_quantity?
   validates :unit_price, presence: true, price: true, unless: :imprintable?
   validates :decoration_price, :imprintable_price, presence: true, price: true, if: :imprintable?
 
@@ -160,6 +161,16 @@ class LineItem < ActiveRecord::Base
   end
 
   def should_validate_quantity?
+    return false if quantity == MARKUP_ITEM_QUANTITY
+
     line_itemable.try(:jobbable_type) == 'Quote' and imprintable? || quantity != MARKUP_ITEM_QUANTITY
+  end
+
+  def quantity_is_not_negative
+    return if quantity == MARKUP_ITEM_QUANTITY
+
+    if !quantity.nil? && quantity < 0
+      errors.add :quantity, 'cannot be negative'
+    end
   end
 end
