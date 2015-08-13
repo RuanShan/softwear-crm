@@ -39,6 +39,17 @@
   <%= f.select :store_id, options_for_select(Store.order(:name).map{ |s| [s.name, s.id] }, store_id) %>
 </div>
 
+<div class="form-group">
+  <div class="form-group">
+    <%= f.label :shipping_price %>
+
+    <div class="input-group">
+      <span class="input-group-addon">$</span>
+      <%= f.text_field :shipping_price %>
+    </div>
+  </div>
+</div>
+
 <% if local_assigns[:show_quotes] %>
   <div class="form-group">
     <%= f.label :quote_ids, 'Related Quote(s)' %>

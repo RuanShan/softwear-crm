@@ -136,11 +136,11 @@
         <td class="text-right"><%= number_to_currency(@order.tax) %></td>
       </tr>
 
-      <% unless false %>
+      <% if @order.shipping_price > 0 %>
           <tr id="shipping">
             <td colspan='2'>
             <td><strong>Shipping:</strong></td>
-            <td class="text-right">TODO: Add Shipping</td>
+            <td class="text-right"><%= number_to_currency(@order.shipping_price) %></td>
           </tr>
       <% end %>
 

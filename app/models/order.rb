@@ -164,7 +164,7 @@ class Order < ActiveRecord::Base
   end
 
   def total
-    subtotal + tax
+    subtotal + tax + shipping_price
   end
 
   def name_number_csv

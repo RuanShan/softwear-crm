@@ -275,8 +275,8 @@ describe Order, order_spec: true do
     end
 
     it 'returns the total payment for the order' do
-      expect(subject.total)
-        .to eq subject.subtotal + subject.subtotal * subject.tax
+      expect(subject.payment_total)
+        .to eq 15
     end
   end
 
@@ -308,16 +308,6 @@ describe Order, order_spec: true do
 
     it 'returns the sum of all the orders line item prices' do
       expect(subject.subtotal.to_i).to eq(25)
-    end
-  end
-
-  describe '#tax' do
-    subject do
-      build_stubbed(:blank_order)
-    end
-
-    it 'returns the value for tax' do
-      expect(subject.tax).to eq(0.06)
     end
   end
 
