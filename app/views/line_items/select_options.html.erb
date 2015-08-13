@@ -1,12 +1,12 @@
 <% if objects.empty? %>
 
-	<p>Uh oh! Couldn't find any <%= type_name.humanize.pluralize %> that fit the given criteria.</p>
+  <p>Uh oh! Couldn't find any <%= type_name.humanize.pluralize %> that fit the given criteria.</p>
 
 <% else %>
 
-	<div class='form-group'>
-		<%= label_tag type_name.underscore+'_id', type_name.humanize %>
-		<%= select_tag type_name.underscore+'_id', options_from_collection_for_select(objects, 'id', objects.first.is_a?(Imprintable) ? 'style_name_and_catalog_no' : 'name'), include_blank: true, default: nil, class: 'form-control' %>
-	</div>
+  <div class='form-group'>
+    <%= label_tag type_name.underscore+'_id', type_name.humanize %>
+    <%= select_tag type_name.underscore+'_id', options_from_collection_for_select(objects, 'id', objects.first.is_a?(Imprintable) ? 'style_name_and_catalog_no' : 'name'), include_blank: true, default: nil, class: 'form-control', style: 'width: 100%;' %>
+  </div>
 
 <% end %>

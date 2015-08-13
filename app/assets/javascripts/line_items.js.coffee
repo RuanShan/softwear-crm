@@ -74,6 +74,7 @@
         $select_level(1).prepend $response
         $response.fadeIn()
         $responseSelect = $response.find('select')
+        $responseSelect.select2()
         $responseSelect.change ->
           data.brand_id = $(this).val()
           data.clear 'imprintable_id', 'color_id'
@@ -87,6 +88,7 @@
                 $select_level(2).prepend $response
                 $response.fadeIn()
                 $responseSelect = $response.find('select')
+                $responseSelect.select2()
                 $responseSelect.change ->
                   data.imprintable_id = $(this).val()
                   data.clear 'color_id'
@@ -99,6 +101,7 @@
                         $select_level(3).prepend $response
                         $response.fadeIn()
                         $responseSelect = $response.find('select')
+                        $responseSelect.select2()
                         $responseSelect.change ->
                           data.color_id = $(this).val()
 
