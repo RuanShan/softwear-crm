@@ -152,6 +152,49 @@
     </tbody>
   </table>
   </div>
+
+  <% if @order.imprints.name_number.any? %>
+    <div class="col-xs-12">
+      <h3>Names/Numbers</h3>
+      <table class="table table-condensed table-striped">
+        <thead>
+          <th>
+            Job
+          </th>
+          <th>
+            Imprint
+          </th>
+          <th>
+            Imprintable
+          </th>
+          <th>
+            Name
+          </th>
+          <th>
+            Number
+          </th>
+        </thead>
+        <% @order.name_and_numbers.each do |nn| %>
+          <td>
+            <%= nn.imprint.job.name %>
+          </td>
+          <td>
+            <%= nn.imprint.name %>
+          </td>
+          <td>
+            <%= nn.imprintable_variant.full_name %>
+          </td>
+          <td>
+            <%= nn.name %>
+          </td>
+          <td>
+            <%= nn.number %>
+          </td>
+        <% end %>
+      </table>
+    </div>
+  <% end %>
+
   <div class="col-xs-12 text-center">
     <h3>Thank you for your business!</h3>
     <p>

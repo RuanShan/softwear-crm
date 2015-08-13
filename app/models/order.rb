@@ -174,6 +174,10 @@ class Order < ActiveRecord::Base
 
     CSV.from_arrays csv, headers: %w(Number Name), write_headers: true
   end
+  
+  def name_and_numbers
+    jobs.map{|j|  j.name_number_imprints.flat_map{ |i| i.name_numbers } }.flatten
+  end
 
   def generate_jobs(job_attributes)
     job_attributes.each do |attributes|
