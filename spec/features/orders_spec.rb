@@ -63,7 +63,7 @@ feature 'Order management', order_spec: true,  js: true do
       click_button 'Next'
     end
 
-    scenario 'A user can create an order from a quote' do
+    scenario 'A user can create an order from a quote', retry: 3 do
       select 'Paid in full on purchase', from: 'Payment terms'
       date_array = DateTime.current.to_s.split(/\W|T/)
       fill_in 'In Hand By Date', with:  "#{ (date_array[1].to_i + 1).to_s }/#{ date_array[2] }"\

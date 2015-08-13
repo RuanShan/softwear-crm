@@ -24,9 +24,11 @@ class QuotesController < InheritedResources::Base
   def index
     @current_action = 'quotes#index'
 
-    if (terms = params[:q])
+    if terms = params[:q]
+      page     = params[:page]
       @quotes = Quote.search do
         fulltext terms
+        paginate page: page unless page.blank?
       end
         .results
 
@@ -45,6 +47,7 @@ class QuotesController < InheritedResources::Base
           format.html
         end
       end
+
     else
       if params.key?(:sort)
         sort     = params[:sort]

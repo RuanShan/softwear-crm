@@ -21,6 +21,7 @@ class Quote < ActiveRecord::Base
     string :salesperson_name
     string(:store_name) { |q| q.store.try(:name) }
     string :name
+    integer :id
     time :valid_until_date
     time :estimated_delivery_date
   end

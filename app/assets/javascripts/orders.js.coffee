@@ -35,7 +35,6 @@ appendActivities = (content) ->
     ajaxOrderActivities orderId
 
 $(window).load ->
-  # TODO is there commenting style?
   # FIXME 'this is a hack, the whole thing is a hack' - Nigel
   # Edit can't redirect, meaning it can't supply an anchor, so
   # we use data from the error modal to know which tab to switch 
@@ -52,9 +51,18 @@ $(window).load ->
     if window.location.hash.indexOf($(this).attr 'href') == -1
       window.location.hash = $(this).attr 'href'
 
-  # console.log $('select[name="order[quote_ids][]"]').length
-    placeholder_text_multiple: 'Select any relevent quotes'
-    width: '600px'
+  $('#order-quote-ids-select2').select2
+    minimumInputLength: 0
+    ajax:
+      url:      Routes.quotes_path()
+      dataType: 'json'
+      delay:    250
+      data: (params) ->
+        q:        params.term
+        page:     params.page
+      processResults: (data, page) -> { results: data.map (q) -> { text: q.name, id: q.id } }
+      cache: true
+
 
   # TODO instead of Nigel's 'hack' 
   # possibly create a show for Job that would present relevant info
