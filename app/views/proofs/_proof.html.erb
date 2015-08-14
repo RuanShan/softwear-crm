@@ -50,7 +50,8 @@
                       remote: true do %>
             <i class="fa fa-2x danger fa-times-circle"></i> Delete &nbsp
           <% end %>
-
+          <!--
+          TODO: Need to work through process with artists
           <% if proof.approved_at.nil? and proof.status != 'Rejected' %>
             <%= link_to email_customer_order_proofs_path(order_id: order.id, id: proof.id, reminder: 'false') do %>
               <i class="fa fa-2x fa-envelope"></i> Email Customer Proof Approval Request &nbsp
@@ -63,7 +64,7 @@
                 <i class="fa fa-2x warning fa-envelope"></i> Email Customer Proof Approval Reminder &nbsp
               <% end %>
             <% end %>
-
+            -->
             <%= link_to order_proof_path(order_id: order.id, id: proof.id, status: 'Approved', ),
                         data: { confirm: 'Approving this proof will queue up production processes, are you sure you want to proceed?' },
                         method: :put, remote: true do %>
