@@ -78,12 +78,6 @@ GIT
       activerecord (>= 4.0.0, < 5)
       railties (>= 4.0.0, < 5)
 
-PATH
-  remote: ~/r/softwear-lib
-  specs:
-    softwear-lib (1.3.1)
-      activesupport
-
 GEM
   remote: https://rubygems.org/
   specs:
@@ -465,6 +459,8 @@ GEM
       rack (~> 1.4)
       rack-protection (~> 1.4)
       tilt (>= 1.3, < 3)
+    softwear-lib (1.3.2)
+      activesupport
     sprockets (3.2.0)
       rack (~> 1.0)
     sprockets-rails (2.3.2)
@@ -590,7 +586,7 @@ DEPENDENCIES
   sidekiq-status
   simple_token_authentication
   sinatra
-  softwear-lib!
+  softwear-lib (~> 1.3.2)
   summernote-rails
   sunspot_matchers
   sunspot_rails
