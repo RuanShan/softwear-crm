@@ -1,5 +1,5 @@
 module Api
-  class OrdersController < ApiController
+  class OrdersController < Softwear::Lib::ApiController
     private
 
     def permitted_attributes

@@ -1,5 +1,5 @@
 module Api
-  class SizesController < ApiController
+  class SizesController < Softwear::Lib::ApiController
     def index
       params.permit(:imprintable, :color)
       if params[:imprintable] && params[:color]

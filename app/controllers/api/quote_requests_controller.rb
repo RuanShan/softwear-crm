@@ -1,5 +1,5 @@
 module Api
-  class QuoteRequestsController < ApiController
+  class QuoteRequestsController < Softwear::Lib::ApiController
 
     private
 

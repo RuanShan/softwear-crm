@@ -1,5 +1,5 @@
 module Api
-  class JobsController < ApiController
+  class JobsController < Softwear::Lib::ApiController
     protected
     
     def permitted_attributes

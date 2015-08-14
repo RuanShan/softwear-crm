@@ -1,4 +1,4 @@
 module Api
-  class ImprintsController < ApiController
+  class ImprintsController < Softwear::Lib::ApiController
   end
 end
