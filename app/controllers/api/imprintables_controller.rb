@@ -1,5 +1,5 @@
 module Api
-  class ImprintablesController < ApiController
+  class ImprintablesController < Softwear::Lib::ApiController
     include ActiveRecord::Sanitization::ClassMethods
 
     def index

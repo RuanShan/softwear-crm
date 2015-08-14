@@ -1,6 +1,6 @@
 source 'https://rubygems.org'
 
-gem 'softwear-lib', '~> 1.2.0'
+gem 'softwear-lib', '~> 1.3.2'
 
 # === BEGIN SOFTWEAR LIB GEMS === #
 

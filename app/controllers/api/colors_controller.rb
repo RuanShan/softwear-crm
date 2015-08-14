@@ -1,5 +1,5 @@
 module Api
-  class ColorsController < ApiController
+  class ColorsController < Softwear::Lib::ApiController
     def index
       super { @colors = Color.where(retail: true) }
     end

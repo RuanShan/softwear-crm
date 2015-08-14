@@ -1,5 +1,5 @@
 module Api
-  class ImprintableVariantsController < ApiController
+  class ImprintableVariantsController < Softwear::Lib::ApiController
     def index
       params.permit(:imprintable, :color)
       if params[:imprintable] && params[:color]
