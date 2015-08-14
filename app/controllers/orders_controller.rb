@@ -81,6 +81,14 @@ class OrdersController < InheritedResources::Base
     end
   end
 
+  def production_dashboard
+    @order = Order.find(params[:id])
+    respond_to do |format|
+      format.html
+      format.js
+    end
+  end
+
   def names_numbers
     @order = Order.find(params[:id])
     filename = "order_#{@order.name}_names_numbers.csv"
