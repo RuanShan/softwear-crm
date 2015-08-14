@@ -1,7 +1,7 @@
 <tr id="artwork-row-<%= artwork.id %>">
   <td><%= artwork.id %></td>
   <td><%= artwork.name %></td>
-  <td><%= image_tag artwork.preview.file.url(:thumb) %></td>
+  <td><%= link_to(image_tag(artwork.preview.file.url(:thumb)), artwork.preview.file.url(:original), target: :_blank) %></td>
   <td><%= link_to 'Download File', artwork.artwork.file.url %></td>
   <td><%= artwork.tag_list.join(', ') %></td>
   <td><%= artwork.artist.full_name %></td>
