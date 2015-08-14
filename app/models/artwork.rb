@@ -24,7 +24,8 @@ class Artwork < ActiveRecord::Base
 
   validates :name, presence: true
   validates :description, presence: true
-  # FIXME figure out how to validate attachment type
+
+  # TODO: figure out how to validate attachment type
   # validates_attachment_content_type :artwork, :content_type => /^image\/(png|gif|jpeg)/
   # validates_format_of :artwork, :with => %r{\.(png|jpg|gif)\z}i, :message => "must be a .jpg, .png, or .gif"
   # validates_format_of :preview, :with => %r{\.(ai|psd)}i, :message => "must be a .ai or .psd"

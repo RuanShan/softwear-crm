@@ -69,7 +69,7 @@
     <%= f.fields_for :artwork, multipart: true do |ff| %>
       <%= render partial: 'asset_fields',
                  locals: { f: ff,
-                           file_constraints: 'Must be .jpg, .png, or .gif',
+                           file_constraints: 'Must be .ai or .psd',
                            text: 'Describe the artwork file',
                            title: 'Artwork' } %>
     <% end %>
@@ -85,7 +85,7 @@
     <%= f.fields_for :preview, multipart: true do |ff| %>
       <%= render partial: 'asset_fields',
                  locals: { f: ff,
-                           file_constraints: 'Must be .ai or .psd',
+                           file_constraints: 'Must be .jpg, .png, or .gif',
                            text: 'Describe the preview file',
                            title: 'Preview' } %>
     <% end %>
