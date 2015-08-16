@@ -151,8 +151,17 @@
       </tr>
     </tbody>
   </table>
-  </div>
+</div>
 
+  <% if @order.comments.public_comments.any? %>
+    <div class="col-xs-12">
+    <% @order.comments.public_comments.each do |comment| %>
+      <%= render 'comments/basic', comment: comment, hide_destroy: true %>
+    <% end %>
+    </div>
+    <br clear="all" />
+  <% end %>
+  
   <% if @order.imprints.name_number.any? %>
     <div class="col-xs-12">
       <h3>Names/Numbers</h3>

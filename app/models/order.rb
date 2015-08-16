@@ -3,7 +3,8 @@ class Order < ActiveRecord::Base
 
   acts_as_paranoid
   acts_as_commentable :public, :private
-
+  acts_as_warnable
+  
   is_activity_recipient
 
   searchable do

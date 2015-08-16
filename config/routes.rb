@@ -52,7 +52,7 @@ CrmSoftwearcrmCom::Application.routes.draw do
   end
   post 'email/freshdesk', to: 'emails#freshdesk'
   resources :comments
-  warning_paths_for :quotes
+  warning_paths_for :quotes, :orders
 
   resources :quote_requests do
     get :dock
