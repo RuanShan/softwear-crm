@@ -91,6 +91,7 @@ feature 'Proof Features', js: true, proof_spec: true do
     find("a[href='#proofs']").click
     click_link 'Reject Proof'
     sleep 2 if ci?
+    sleep 0.5 unless ci?
     page.driver.browser.switch_to.alert.accept
     sleep 0.5
     expect(page).to have_selector('.modal-content-success')
@@ -99,30 +100,30 @@ feature 'Proof Features', js: true, proof_spec: true do
     expect(Proof.find(proof.id).status).to eq('Rejected')
   end
 
-  scenario 'A user can Email a Customer a Proof Approval Request from the Proof List', story_692: true do
-    visit edit_order_path(order.id)
-    find("a[href='#proofs']").click
-    find("a[href='#{email_customer_order_proofs_path(id: proof.id, order_id: order.id, reminder: 'false')}']").click
-    sleep 0.5
-    click_button 'Send Email'
-    sleep 0.5
-    expect(page).to have_content "Your email was successfully sent"
-    sleep 0.5
-    find(:css, 'button.close').click
-    expect(Proof.find(proof.id).status).to eq('Emailed Customer')
-    expect(Proof.find(proof.id).status).to_not eq('Pending')
-  end
+#  scenario 'A user can Email a Customer a Proof Approval Request from the Proof List', story_692: true, pending: true do
+#    visit edit_order_path(order.id)
+#    find("a[href='#proofs']").click
+#    find("a[href='#{email_customer_order_proofs_path(id: proof.id, order_id: order.id, reminder: 'false')}']").click
+#    sleep 0.5
+#    click_button 'Send Email'
+#    sleep 0.5
+#    expect(page).to have_content "Your email was successfully sent"
+#    sleep 0.5
+#    find(:css, 'button.close').click
+#    expect(Proof.find(proof.id).status).to eq('Emailed Customer')
+#    expect(Proof.find(proof.id).status).to_not eq('Pending')
+#  end
 
-  scenario 'A user can Email a Reminder to the Customer from the Proof List' do
-    proof.status = 'Emailed Customer'
-    proof.save
-    visit edit_order_path(order.id)
-    find("a[href='#proofs']").click
-    find("a[href='#{email_customer_order_proofs_path(id: proof.id, order_id: order.id, reminder: 'true')}']").click
-    sleep 2 if ci?
-    page.driver.browser.switch_to.alert.accept
-    sleep 0.5
-    expect(Proof.find(proof.id).status).to eq('Emailed Customer')
-    expect(Proof.find(proof.id).status).to_not eq('Pending')
-  end
+#  scenario 'A user can Email a Reminder to the Customer from the Proof List', pending: true do
+#    proof.status = 'Emailed Customer'
+#    proof.save
+#    visit edit_order_path(order.id)
+#    find("a[href='#proofs']").click
+#    find("a[href='#{email_customer_order_proofs_path(id: proof.id, order_id: order.id, reminder: 'true')}']").click
+#    sleep 2 if ci?
+#    page.driver.browser.switch_to.alert.accept
+#    sleep 0.5
+#    expect(Proof.find(proof.id).status).to eq('Emailed Customer')
+#    expect(Proof.find(proof.id).status).to_not eq('Pending')
+#  end
 end
