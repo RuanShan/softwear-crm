@@ -8,6 +8,18 @@ class ShipmentsController < InheritedResources::Base
     end
   end
 
+  def update
+    super do |format|
+      format.js
+    end
+  end
+
+  def edit
+    super do |format|
+      format.js
+    end
+  end
+
   protected
 
   def format_shipped_at

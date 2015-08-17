@@ -1,0 +1,9 @@
+showContentModal({
+  title: "<%= @shipment.shipped? ? 'Shipped' : 'Pending' %> Shipment",
+  body: $("<%=j render 'shipments/form', shipment: @shipment %>"),
+  footer: $('<button data-dismiss="modal" class="btn btn-standard">Close</button>'),
+  then: function() {
+    initializeSelect2();
+    initializeDateTimePicker();
+  }
+});

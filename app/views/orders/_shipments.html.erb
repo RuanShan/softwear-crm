@@ -10,10 +10,15 @@
       <ul>
         <% order.shipments.each do |shipment| %>
           <li>
-            Shipment
-            at <%= shipment.shipped_at.try(:strftime, '%m-%d-%Y %l:%M %P') || '(unknown time)' %>
-            by <%= shipment.shipped_by.try(:full_name) || 'no one' %>
-            (<%= link_to 'edit', '#TODO' %>)
+            <% if shipment.shipped? %>
+              Shipment to [<%= shipment.addresses.join(' | ') %>]
+              at <%= shipment.shipped_at.try(:strftime, '%m-%d-%Y %l:%M %P') || '(unknown time)' %>
+              by <%= shipment.shipped_by.try(:full_name) || 'no one' %>
+            <% else %>
+              Pending shipment to [<%= shipment.addresses.join(' | ') %>]
+              added on <%= shipment.shipped_at.try(:strftime, '%m-%d-%Y %l:%M %P') %>
+            <% end %>
+            (<%= link_to 'view', edit_shipment_path(shipment), remote: true %>)
           </li>
         <% end %>
       </ul>

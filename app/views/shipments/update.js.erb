@@ -1,0 +1,17 @@
+<% if @shipment.valid? %>
+  $('#shipments').html("<%=j render partial: 'orders/shipments', locals: { order: @shipment.shippable } %>");
+  successModal("Shipment updated!");
+<% else %>
+  showContentModal({
+    title: "<%= @shipment.shipped? ? 'Shipped' : 'Pending' %> Shipment",
+    body: $("<div class='text-danger'><%= @shipment.errors.full_messages.join(', ') %></div> <%=j render 'shipments/form', shipment: @shipment %>"),
+    footer: $('<button data-dismiss="modal" class="btn btn-standard">Close</button>'),
+    then: function() {
+      initializeSelect2();
+      initializeDateTimePicker();
+    }
+  });
+<% end %>
+
+initializeDateTimePicker();
+initializeSelect2();

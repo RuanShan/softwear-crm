@@ -13,7 +13,7 @@
 
     <%= f.label :shipped_at %>
     <div class="input-group date js-datetimepicker">
-      <%= f.text_field :shipped_at, value: value_time(f.object.try(:deadline)), hide_label: true %>
+      <%= f.text_field :shipped_at, value: value_time(f.object.shipped_at), hide_label: true %>
 
       <span class="input-group-addon">
         <span class="glyphicon glyphicon-calendar"></span>
