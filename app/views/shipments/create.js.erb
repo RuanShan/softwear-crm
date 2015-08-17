@@ -1,0 +1,10 @@
+<% if @shipment.valid? %>
+  $('#shipments').html("<%=j render partial: 'orders/shipments', locals: { order: @order } %>");
+  successModal("Shipment added!");
+<% else %>
+  $('#new-shipment-form').html("<%=j render 'shipments/form', shipment: [@shipment.shippable, @shipment] %>");
+  errorModal("<%= j @shipment.errors.full_messages.join(', ').html_safe %>");
+<% end %>
+
+initializeDateTimePicker();
+initializeSelect2();

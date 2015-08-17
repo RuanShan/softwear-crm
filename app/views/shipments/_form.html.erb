@@ -1,0 +1,41 @@
+<%= bootstrap_form_for shipment, remote: true do |f| %>
+  <div class='form-group'>
+    <%= f.select :shipping_method_id,
+      options_from_collection_for_select(ShippingMethod.all, :id, :name, f.object.try(:shipping_method_id).try(:to_s)),
+      {},
+      class: 'select2', style: 'width: 100%;' %>
+
+    <%= f.select :shipped_by_id,
+      options_from_collection_for_select(User.all, :id, :full_name, f.object.try(:shipped_by_id).try(:to_s) || current_user.id.to_s),
+      {},
+      class: 'select2', style: 'width: 100%;' %>
+    <%= f.text_field :shipping_cost %>
+
+    <%= f.label :shipped_at %>
+    <div class="input-group date js-datetimepicker">
+      <%= f.text_field :shipped_at, value: value_time(f.object.try(:deadline)), hide_label: true %>
+
+      <span class="input-group-addon">
+        <span class="glyphicon glyphicon-calendar"></span>
+      </span>
+    </div>
+
+    <%= f.text_field :tracking_number %>
+  </div>
+
+  <div class='form-group'>
+    <h4>Address info</h4>
+    <%= f.text_field :name %>
+    <%= f.text_field :company %>
+    <%= f.text_field :attn %>
+    <%= f.text_field :address_1 %>
+    <%= f.text_field :address_2 %>
+    <%= f.text_field :address_3 %>
+    <%= f.text_field :city %>
+    <%= f.text_field :state %>
+    <%= f.text_field :zipcode %>
+    <%= f.text_field :country %>
+  </div>
+
+  <%= f.submit %>
+<% end %>

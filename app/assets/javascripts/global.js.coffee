@@ -5,6 +5,21 @@ $(window).load ->
   $("#errorsModal").modal "show"
   $("#dock").zIndex(1000)
 
+@initializeSelect2 = ->
+  $('.select2').each ->
+    placeholder = $(this).data('placeholder')
+    if placeholder
+      resetVal = $(this).data('isblank')
+
+      $(this).select2
+        allowClear: true
+        placeholder: placeholder
+
+      $(this).val('').trigger('change') if resetVal
+    else
+      $(this).select2()
+
+
 $(document).ready ->
   $(document).on 'click', '.js-remove-fields', (event) ->
     $(this).prev('input[type=hidden]').val('1')
@@ -19,19 +34,7 @@ $(document).ready ->
     event.preventDefault()
 
   $('.format-phone').mask("999-999-9999")
-
-  $('.select2').each ->
-    placeholder = $(this).data('placeholder')
-    if placeholder
-      resetVal = $(this).data('isblank')
-
-      $(this).select2
-        allowClear: true
-        placeholder: placeholder
-
-      $(this).val('').trigger('change') if resetVal
-    else
-      $(this).select2()
+  initializeSelect2()
 
   $("#easyWizard").easyWizard
     buttonsClass: "btn btn-default"

@@ -1,5 +1,30 @@
 <div class="user-profile-content">
   <div class="col-sm-6">
+    <div class='icon-box'>
+      <i class='fa fa-truck-2x'></i>
+    </div>
     <h3><strong>Order</strong> Shipments</h3>
+    <% if order.shipments.empty? %>
+      No shipments made
+    <% else %>
+      <ul>
+        <% order.shipments.each do |shipment| %>
+          <li>
+            Shipment
+            at <%= shipment.shipped_at.try(:strftime, '%m-%d-%Y %l:%M %P') || '(unknown time)' %>
+            by <%= shipment.shipped_by.try(:full_name) || 'no one' %>
+            (<%= link_to 'edit', '#TODO' %>)
+          </li>
+        <% end %>
+      </ul>
+    <% end %>
+  </div>
+
+  <div class="col-sm-6">
+    <h3>New <strong>Shipment</strong></h3>
+
+    <div id='new-shipment-form'>
+      <%= render 'shipments/form', shipment: [order, Shipment.new] %>
+    </div>
   </div>
 </div>

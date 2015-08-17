@@ -4,7 +4,7 @@ class Order < ActiveRecord::Base
   acts_as_paranoid
   acts_as_commentable :public, :private
   acts_as_warnable
-  
+
   is_activity_recipient
 
   searchable do
@@ -58,6 +58,7 @@ class Order < ActiveRecord::Base
   has_many :order_quotes
   has_many :quotes, through: :order_quotes
   has_many :quote_requests, through: :quotes
+  has_many :shipments, as: :shippable
 
   accepts_nested_attributes_for :payments
 
@@ -137,7 +138,7 @@ class Order < ActiveRecord::Base
   def full_name
     "#{firstname} #{lastname}"
   end
-  
+
   def payment_total
     payments.reduce(0) do |total, p|
       p && !p.is_refunded? ? total + p.amount : total
@@ -175,7 +176,7 @@ class Order < ActiveRecord::Base
 
     CSV.from_arrays csv, headers: %w(Number Name), write_headers: true
   end
-  
+
   def name_and_numbers
     jobs.map{|j|  j.name_number_imprints.flat_map{ |i| i.name_numbers } }.flatten
   end

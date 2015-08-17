@@ -28,9 +28,9 @@ $(document).ready ->
 ##
 # TODO ensure comment formatting if it exists
 # Quick and easy way to show the content modal!
-# 
+#
 # Valid options include: 'title', 'body', 'footer', and 'force'
-# 
+#
 # Example (in coffeescript):
 # ===============================
 # setupContentModal ($contentModal) ->
@@ -41,15 +41,15 @@ $(document).ready ->
 #   footer: $('<button data-dismiss="modal">Close</button>')
 #   backdrop: 'static'
 # ===============================
-# 
+#
 # TODO backdrop is permanent until new page/reload - fix that.
-# 
+#
 # Calling setupContentModal is not neccessary if you are fine
-# with the default look of the contentModal. However, if you 
-# want to add classes to the modal's innards, I recommend you 
-# make those adjustments within setupContentModal to avoid 
+# with the default look of the contentModal. However, if you
+# want to add classes to the modal's innards, I recommend you
+# make those adjustments within setupContentModal to avoid
 # potential conflicts if the modal is already open.
-# 
+#
 # By default, calling showContentModal will close the content
 # modal if it is already open. If for some reason you don't
 # want that to happen, you can also pass force: false.
@@ -90,7 +90,7 @@ $(document).ready ->
 
     $contentModal.modal options
     options.then() if options.then
-  
+
   if $contentModal.data('open')
     if options.force is true
       wasOpen = true
@@ -105,7 +105,7 @@ $(document).ready ->
 # body parameter is optional, title will default to "Error"
 @errorModal = (body, options) ->
   options = {} unless typeof options is 'object'
-  
+
   options.title ||= 'Error'
   options.body ||= body
   options.footer ||= $('<button class="btn btn-danger" data-dismiss="modal">OK</button>')
@@ -136,8 +136,8 @@ $(document).ready ->
 
 # Modal alternative to confirm() except you pass a function
 # rather than call as a conditional.
-# 
-# With the callback, you can either pass a parameterless 
+#
+# With the callback, you can either pass a parameterless
 # function that will only be called when 'confirm' is clicked,
 # or a single-parameter function where the parameter will
 # be true or false depending on the user's response.

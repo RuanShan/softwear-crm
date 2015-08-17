@@ -90,6 +90,14 @@
                 <%= render partial: 'jobs/jobs', locals: { order: @order } %>
               </div>
 
+              <div class="tab-pane animated fadeInRight" id="payments">
+                <%= render partial: 'payments/payments', locals: { order: @order }%>
+              </div>
+
+              <div class="tab-pane animated fadeInRight" id="shipments">
+                <%= render partial: 'shipments', locals: { order: @order } %>
+              </div>
+
               <div class="tab-pane animated fadeInRight" id="artwork">
                 <%= render partial: 'artwork_requests/list',
                            locals: { order: @order } %>
@@ -97,14 +105,6 @@
 
               <div class="tab-pane animated fadeInRight" id="proofs">
                 <%= render partial: 'proofs/list', locals: { order: @order } %>
-              </div>
-
-              <div class="tab-pane animated fadeInRight" id="payments">
-                <%= render partial: 'payments/payments', locals: { order: @order }%>
-              </div>
-
-              <div class="tab-pane animated fadeInRight" id="shipments">
-                  <%= render partial: 'shipments' %>
               </div>
 
               <div class="tab-pane animated fadeInRight" id="comments">

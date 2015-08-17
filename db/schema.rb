@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150813210429) do
+ActiveRecord::Schema.define(version: 20150817173340) do
 
   create_table "activities", force: :cascade do |t|
     t.integer  "trackable_id",   limit: 4
@@ -536,8 +536,8 @@ ActiveRecord::Schema.define(version: 20150813210429) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.decimal  "shipping",                                     precision: 10, scale: 2
-    t.string   "quote_source",                     limit: 255
     t.datetime "initialized_at"
+    t.string   "quote_source",                     limit: 255
     t.string   "freshdesk_ticket_id",              limit: 255
     t.boolean  "informal"
     t.integer  "insightly_category_id",            limit: 4
@@ -652,6 +652,29 @@ ActiveRecord::Schema.define(version: 20150813210429) do
     t.datetime "deleted_at"
     t.datetime "created_at"
     t.datetime "updated_at"
+  end
+
+  create_table "shipments", force: :cascade do |t|
+    t.integer  "shipping_method_id", limit: 4
+    t.integer  "shipped_by_id",      limit: 4
+    t.integer  "shippable_id",       limit: 4
+    t.string   "shippable_type",     limit: 255
+    t.decimal  "shipping_cost",                  precision: 10, scale: 2
+    t.datetime "shipped_at"
+    t.string   "tracking_number",    limit: 255
+    t.string   "status",             limit: 255
+    t.string   "name",               limit: 255
+    t.string   "company",            limit: 255
+    t.string   "attn",               limit: 255
+    t.string   "address_1",          limit: 255
+    t.string   "address_2",          limit: 255
+    t.string   "address_3",          limit: 255
+    t.string   "city",               limit: 255
+    t.string   "state",              limit: 255
+    t.string   "zipcode",            limit: 255
+    t.string   "country",            limit: 255
+    t.datetime "created_at",                                              null: false
+    t.datetime "updated_at",                                              null: false
   end
 
   create_table "shipping_methods", force: :cascade do |t|

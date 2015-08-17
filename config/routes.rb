@@ -90,6 +90,7 @@ CrmSoftwearcrmCom::Application.routes.draw do
     end
 
     resources :comments
+    resources :shipments, shallow: true
 
     collection do
       get 'fba'
