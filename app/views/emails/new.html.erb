@@ -1,10 +1,22 @@
-<div class="page-heading animated fadeInDownBig">
-  <h1>Email <%= @object_type %> Information <small><%= @object_type %>
-  <%= link_to @object do %>
-    #<%= @object.id %> <i><%= @object.name %></i>
-  <% end %>
-  </small></h1>
+<div class="row-fluid">
+    <div class="page-heading animated fadeInDownBig pull-left">
+      <h1>Email <%= @object_type %> Information <small><%= @object_type %>
+      <%= link_to @object do %>
+        #<%= @object.id %> <i><%= @object.name %></i>
+      <% end %>
+      </small></h1>
+    </div>
+
+    <div class="pull-right text-right">
+      <% unless @object.insightly_opportunity_id.blank? %>
+          <%= link_to  @object.insightly_opportunity_link, class: 'btn btn-warning',
+                       'data-action' => 'new', 'data-toggle' => 'tooltip', 'title' => 'Insightly Opportunity', target: '_blank' do %>
+              <i class="softwear-icon-insightly-icon"></i> Insightly Opportunity
+          <% end %>
+      <% end %>
+    </div>
 </div>
+<br clear="all" />
 
 <% if @freshdesk && @object.freshdesk_ticket_id.blank? %>
   <span>NOTE: This <%= @object_type %> does not have a freshdesk ticket ID</span>
