@@ -24,8 +24,9 @@ describe 'proofs/_proof.html.erb', proof_spec: true do
       expect(rendered).to have_css('dt', text: 'Mockups:')
       expect(rendered).to have_selector("a[href='#{edit_order_proof_path(order, proof)}']")
       expect(rendered).to have_selector("a[href='#{order_proof_path(order, proof)}']")
-      expect(rendered).to have_selector("a[href='#{email_customer_order_proofs_path(id: proof.id, order_id: order.id, reminder: 'false')}']")
-      expect(rendered).to_not have_selector("a[href='#{email_customer_order_proofs_path(id: proof.id, order_id: order.id, reminder: 'true')}']")
+      # todo: revisit with art team
+      # expect(rendered).to have_selector("a[href='#{email_customer_order_proofs_path(id: proof.id, order_id: order.id, reminder: 'false')}']")
+      # expect(rendered).to_not have_selector("a[href='#{email_customer_order_proofs_path(id: proof.id, order_id: order.id, reminder: 'true')}']")
       expect(rendered).to have_selector("a[href='#{order_proof_path(id: proof.id, status: 'Approved', order_id: order.id)}']")
       expect(rendered).to have_selector("a[href='#{order_proof_path(id: proof.id, status: 'Rejected', order_id: order.id)}']")
     end
@@ -42,8 +43,9 @@ describe 'proofs/_proof.html.erb', proof_spec: true do
       let(:proof) { build_stubbed(:blank_proof, status: 'Approved', approved_at: Time.now) }
 
       it 'removes the email buttons and approve/reject buttons' do
-        expect(rendered).to_not have_selector("a[href='#{email_customer_order_proofs_path(id: proof.id, order_id: order.id, reminder: 'false')}']")
-        expect(rendered).to_not have_selector("a[href='#{email_customer_order_proofs_path(id: proof.id, order_id: order.id, reminder: 'true')}']")
+        # todo: revisit with art team
+        # expect(rendered).to_not have_selector("a[href='#{email_customer_order_proofs_path(id: proof.id, order_id: order.id, reminder: 'false')}']")
+        # expect(rendered).to_not have_selector("a[href='#{email_customer_order_proofs_path(id: proof.id, order_id: order.id, reminder: 'true')}']")
         expect(rendered).to_not have_selector("a[href='#{order_proof_path(id: proof.id, status: 'Approved', order_id: order.id)}']")
         expect(rendered).to_not have_selector("a[href='#{order_proof_path(id: proof.id, status: 'Rejected', order_id: order.id)}']")
       end
@@ -53,8 +55,9 @@ describe 'proofs/_proof.html.erb', proof_spec: true do
       let(:proof) { build_stubbed(:blank_proof, status: 'Rejected') }
 
       it 'removes the email buttons and approve/reject buttons' do
-        expect(rendered).to_not have_selector("a[href='#{email_customer_order_proofs_path(id: proof.id, order_id: order.id, reminder: 'false')}']")
-        expect(rendered).to_not have_selector("a[href='#{email_customer_order_proofs_path(id: proof.id, order_id: order.id, reminder: 'true')}']")
+        # todo: revisit with art team
+        # expect(rendered).to_not have_selector("a[href='#{email_customer_order_proofs_path(id: proof.id, order_id: order.id, reminder: 'false')}']")
+        # expect(rendered).to_not have_selector("a[href='#{email_customer_order_proofs_path(id: proof.id, order_id: order.id, reminder: 'true')}']")
         expect(rendered).to_not have_selector("a[href='#{order_proof_path(id: proof.id, status: 'Approved', order_id: order.id)}']")
         expect(rendered).to_not have_selector("a[href='#{order_proof_path(id: proof.id, status: 'Rejected', order_id: order.id)}']")
       end

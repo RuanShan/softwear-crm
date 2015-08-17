@@ -4,7 +4,7 @@
     <div class="btn-group btn-group-xs">
       <%= link_to order_timeline_path(order), class: 'btn btn-default modalLink',
                   remote: true, 'data-toggle'=> 'tooltip', title: 'Show Order Timeline' do  %>
-        <i class="fa fa-list-alt"></i>
+        <i class="fa fa-clock-o"></i>
       <% end %>
     </div>
   </td>
@@ -20,12 +20,16 @@
   <td><%= order.salesperson.full_name %></td>
   <td>
     <span class="label <%= get_style_from_status(order.payment_status)%>"><%= order.payment_status %></span>
-    <!--<div class="btn-group btn-group-xs"><a data-toggle="tooltip" title="Email Payment Request to Customer" class="btn btn-default"><i class="fa fa-envelope"></i></a></div>-->
   </td>
   <td><%= number_to_currency order.total, unit: '$' %></td>
   <td><%= number_to_currency order.balance, unit: '$' %></td>
   <td>
     <div class="btn-group btn-group-xs">
+
+      <%= link_to production_dashboard_order_path(order), remote: true, class: 'btn btn-default', title: 'Production Dashboard', data: {toggle: 'tooltip'} do %>
+        <i class="glyphicon glyphicon-th"></i>
+      <% end %>
+      
       <%= link_to order_path(order), class: 'btn btn-default', title: 'Print Invoice', data: {toggle: 'tooltip'} do %>
         <i class="fa fa-print"></i>
       <% end %>

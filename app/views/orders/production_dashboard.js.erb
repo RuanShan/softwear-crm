@@ -1,0 +1,8 @@
+setupContentModal(function(modal) {
+  modal.find('.modal-dialog').css('width', '90%');
+});
+
+showContentModal({
+  title: $("Order #<%= j @order.id.to_s %> Production Dashboard"),
+  body: $("<%= j(render 'orders/production_dashboard', order:  @order)%>")
+});
