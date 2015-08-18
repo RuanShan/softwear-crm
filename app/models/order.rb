@@ -27,7 +27,6 @@ class Order < ActiveRecord::Base
     date :in_hand_by
 
     reference :salesperson
-    order_by :created_at, :desc
   end
 
   tracked by_current_user
