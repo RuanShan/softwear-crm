@@ -34,7 +34,18 @@ appendActivities = (content) ->
   else
     ajaxOrderActivities orderId
 
+@prepareShippableID = ->
+  $('.shipment_shippable_type').change ->
+    if $(this).val() == 'Job'
+      $(".shipment_shippable_id").prop('disabled', false)
+      $(".hidden_shippable_id").attr("disabled", true)
+    else
+      $(".shipment_shippable_id").prop('disabled', true)
+      $(".hidden_shippable_id").attr("disabled", false)
+
 $(window).load ->
+  prepareShippableID()
+
   # FIXME 'this is a hack, the whole thing is a hack' - Nigel
   # Edit can't redirect, meaning it can't supply an anchor, so
   # we use data from the error modal to know which tab to switch 

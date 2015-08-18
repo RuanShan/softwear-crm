@@ -10,7 +10,7 @@ feature 'shipment management' do
     given!(:order) { create(:order_with_job) }
     let(:time) { Time.now }
 
-    scenario 'a user can add a shipment' do
+    scenario 'a user can add a shipment to an order' do
       visit edit_order_path(order, anchor: 'shipments')
       sleep 1
 
@@ -22,7 +22,7 @@ feature 'shipment management' do
       fill_in 'Name',            with: 'Someone'
       fill_in 'Company',         with: 'Ann Arbor Tees'
       fill_in 'Attn',            with: 'wtf?'
-      fill_in 'Address 1',       with: '123 whatever st.'
+      fill_in 'Address',       with: '123 whatever st.'
       fill_in 'City',            with: 'Ann Arbor'
       fill_in 'State',           with: 'Michigan'
       fill_in 'Zipcode',         with: '48104'
@@ -53,6 +53,32 @@ feature 'shipment management' do
       expect(shipment.state).to eq 'Michigan'
       expect(shipment.zipcode).to eq '48104'
       expect(shipment.country).to eq 'USA'
+    end
+
+    scenario 'a user can add a shipment to a job' do
+      visit edit_order_path(order, anchor: 'shipments')
+      sleep 1
+
+      select 'USPS First Class', from: 'Shipping method'
+      select valid_user.full_name, from: 'Shipped by'
+      select "Yes", from: 'Is this shipment only for a specific job?'
+      select order.jobs.first.name, from: 'Job'
+      fill_in 'Name',            with: 'Job Shipment Somebody'
+      fill_in 'Address',       with: '123 whatever st.'
+      fill_in 'City',            with: 'Ann Arbor'
+      fill_in 'State',           with: 'Michigan'
+      fill_in 'Zipcode',         with: '48104'
+      fill_in 'Country',         with: 'USA'
+
+      click_button 'Create Shipment'
+      sleep 2
+
+      expect(page).to have_content 'Shipment added!'
+      
+      expect(order.reload.all_shipments.size).to eq 1
+      shipment = order.all_shipments.first
+
+      expect(shipment.name).to eq 'Job Shipment Somebody'
     end
   end
 end

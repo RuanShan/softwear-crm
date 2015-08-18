@@ -5,6 +5,9 @@ class Shipment < ActiveRecord::Base
 
   validates :status, presence: true,
     inclusion: { in: ['pending', 'shipped'], message: 'should either be "pending" or "shipped"' }
+  
+  validates :shippable, presence: true
+  validates :name, :address_1, :city, :state, :zipcode, presence: true
 
   before_validation :assign_proper_status
 
@@ -16,10 +19,14 @@ class Shipment < ActiveRecord::Base
     [address_1, address_2, address_3].reject(&:blank?)
   end
 
+  def complete_address
+    [name, company, attn, address_1, address_2, address_3, "#{city}, #{state} #{zipcode}", country].reject(&:blank?)
+  end
+
   protected
 
   def assign_proper_status
-    if tracking_number
+    unless tracking_number.blank?
       self.status = 'shipped'
     else
       self.status = 'pending'

@@ -93,6 +93,10 @@ class Order < ActiveRecord::Base
 
   scope :fba, -> { where(terms: 'Fulfilled by Amazon') }
 
+  def all_shipments
+    jobs.map{|job| job.shipments }.concat(shipments.to_a).flatten
+  end
+
   def fba?
     terms == 'Fulfilled by Amazon'
   end

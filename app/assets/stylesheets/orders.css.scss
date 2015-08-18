@@ -41,3 +41,14 @@ h2.invoice-job-name {
   border: solid 1px #ddd;
   padding-top: 15px;
 }
+
+ul.shipments-list {
+  margin: 0;
+  padding: 0;
+
+  li {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+}

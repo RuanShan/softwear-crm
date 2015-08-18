@@ -1,8 +1,10 @@
 <% if @shipment.valid? %>
-  $('#shipments').html("<%=j render partial: 'orders/shipments', locals: { order: @order } %>");
+  <% order = (@shipment.shippable_type == 'Job' ? @shipment.shippable.order : @shipment.shippable ) %>
+  $('#shipments').html("<%=j render partial: 'orders/shipments', locals: { order: order } %>");
   successModal("Shipment added!");
-<% else %>
-  $('#new-shipment-form').html("<%=j render 'shipments/form', shipment: [@shipment.shippable, @shipment] %>");
+<% else %> 
+  <% order = (@shipment.shippable_type == 'Job' ? @shipment.shippable.order : @shipment.shippable ) %>
+  $('#new-shipment-form').html("<%=j render 'shipments/form', shipment: @shipment, order: order %>");
   errorModal("<%= j @shipment.errors.full_messages.join(', ').html_safe %>");
 <% end %>
 
