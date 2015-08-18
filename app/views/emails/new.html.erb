@@ -8,7 +8,7 @@
     </div>
 
     <div class="pull-right text-right">
-      <% unless @object.insightly_opportunity_id.blank? %>
+      <% unless @object.try(:insightly_opportunity_id).blank? %>
           <%= link_to  @object.insightly_opportunity_link, class: 'btn btn-warning',
                        'data-action' => 'new', 'data-toggle' => 'tooltip', 'title' => 'Insightly Opportunity', target: '_blank' do %>
               <i class="softwear-icon-insightly-icon"></i> Insightly Opportunity

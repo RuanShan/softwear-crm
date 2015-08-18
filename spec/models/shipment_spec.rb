@@ -2,7 +2,7 @@ require 'spec_helper'
 
 describe Shipment do
   describe 'Validations' do
-    it { is_expected.to validate_presence_of :state }
+    it { is_expected.to validate_presence_of :status }
   end
 
   describe '#status' do

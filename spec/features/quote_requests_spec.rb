@@ -149,7 +149,7 @@ feature 'Quote Requests Management', js: true, quote_request_spec: true do
       expect(page).to have_content "Freshdesk ticket created!"
     end
 
-    scenario 'A user can set up an email for freshdesk', story_726: true do
+    scenario 'A user can set up an email for freshdesk', busted: true, story_726: true do
       quote_request.update_attributes!(
         freshdesk_ticket_id: 123
       )
