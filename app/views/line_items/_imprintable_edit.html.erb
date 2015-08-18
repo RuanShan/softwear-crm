@@ -1,10 +1,11 @@
 <div class="row" style="border-bottom: solid 1px #dddddd" id="<%= line_item_id(line_items.first) %>">
   <div class="col-lg-5">
-    <h6>
-      <strong><%= color_name %> <%= style_name %></strong> <%= style_catalog_no %>
-    </h6>
+    <p>
+    <strong><%= line_items.first.imprintable.brand.name %> <%= style_catalog_no %></strong><br />
+    <%= color_name %><br />
+     <%= style_name %>
+    </p>
 
-    <p><%= description %></p>
   </div>
   <div class="col-lg-7">
     <%= content_tag(:div, class: "col-sm-#{10 - line_items.count}") {} %>

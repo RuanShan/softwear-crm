@@ -128,7 +128,7 @@ class Order < ActiveRecord::Base
       when 'Paid in full on purchase'
           'Awaiting Payment'
       when 'Half down on purchase'
-        balance >= (total * 0.49) ? 'Awaiting Payment' : 'Payment Terms Met'
+        balance >= (total * 0.51) ? 'Awaiting Payment' : 'Payment Terms Met'
       when 'Paid in full on pick up'
         Time.now >= self.in_hand_by ? 'Awaiting Payment' : 'Payment Terms Met'
       when 'Net 30'

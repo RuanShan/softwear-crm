@@ -1,6 +1,10 @@
 <div class="user-profile-content">
   <div class="col-sm-6">
     <div class="box-info">
+      <div class="alert <%= get_style_from_status(order.payment_status, 'alert')%>">
+        <%= order.payment_status %>
+      </div>
+      
       <div class="icon-box">
         <span class="fa-stack">
           <i class="fa fa-circle fa-stack-2x success"></i>
