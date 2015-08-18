@@ -27,6 +27,7 @@ class Order < ActiveRecord::Base
     date :in_hand_by
 
     reference :salesperson
+    order_by :created_at, :desc
   end
 
   tracked by_current_user
@@ -90,7 +91,8 @@ class Order < ActiveRecord::Base
 
   alias_method :comments, :all_comments
   alias_method :comments=, :all_comments=
-
+  
+  default_scope -> { order(created_at: :desc) }
   scope :fba, -> { where(terms: 'Fulfilled by Amazon') }
 
   def all_shipments
