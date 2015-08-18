@@ -1,14 +1,13 @@
 showContentModal({
-    backdrop: "static",
-    keyboard: false,
-    title: 'Edit Artwork Request',
-    body: $("<%= j(render partial: 'edit',
-                          locals: { artwork_request: @artwork_request,
-                                    order: @order }).html_safe %>")
+  backdrop: "static",
+  keyboard: false,
+  title: 'New Artwork Request',
+  body: $("<%=j render partial: 'edit', locals: { artwork_request: @artwork_request, order: @order } %>"),
+  then: function() {
+    initializeDateTimePicker();
+    initializeSelect2();
+    setPendingSelect();
+    setSubmitTimeout();
+    styleCheckboxes();
+  }
 });
-
-initializeDateTimePicker();
-initializeJobsChosen();
-setSubmitTimeout();
-styleCheckboxes();
-

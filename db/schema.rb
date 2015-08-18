@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150818151315) do
+ActiveRecord::Schema.define(version: 20150818175205) do
 
   create_table "activities", force: :cascade do |t|
     t.integer  "trackable_id",   limit: 4
@@ -44,6 +44,11 @@ ActiveRecord::Schema.define(version: 20150818151315) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.datetime "deleted_at"
+  end
+
+  create_table "artwork_request_imprints", force: :cascade do |t|
+    t.integer "artwork_request_id", limit: 4
+    t.integer "imprint_id",         limit: 4
   end
 
   create_table "artwork_request_ink_colors", force: :cascade do |t|

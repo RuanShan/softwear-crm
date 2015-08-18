@@ -67,6 +67,7 @@ class ArtworkRequestsController < InheritedResources::Base
                     :imprint_method_id, :print_location_id, :salesperson_id,
                     :deadline, :artwork_status, job_ids: [], ink_color_ids: [],
                     artwork_ids: [],
+                    imprint_ids: [],
                     assets_attributes: [
                       :file, :description, :id, :_destroy
                     ]

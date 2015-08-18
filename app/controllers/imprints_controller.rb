@@ -60,7 +60,12 @@ class ImprintsController < InheritedResources::Base
     end
   end
 
-private
+  def ink_colors
+    @imprint = Imprint.find(params[:id])
+    respond_to(&:js)
+  end
+
+  private
 
   def assign_imprint_attributes(imprint, attrs)
     attrs.each do |key, value|

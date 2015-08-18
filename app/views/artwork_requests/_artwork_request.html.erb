@@ -16,9 +16,9 @@
             <dt>Priority:</dt>
             <dd><%= ArtworkRequest::PRIORITIES[artwork_request.priority.to_i] %></dd>
             <dt>Imprint Method:</dt>
-            <dd><%= artwork_request.imprint_method.name %></dd>
+            <dd><%= artwork_request.imprint_method.try(:name) || 'unknown' %></dd>
             <dt>Print Location:</dt>
-            <dd><%= artwork_request.print_location.name %></dd>
+            <dd><%= artwork_request.print_location.try(:name) || 'unknown' %></dd>
             <dt>Ink Colors:</dt>
             <dd><%= artwork_request.ink_colors.map(&:name).join(', ') %></dd>
             <dt>Imprintables Included:</dt>

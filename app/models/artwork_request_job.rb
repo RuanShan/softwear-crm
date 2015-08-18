@@ -1,3 +1,4 @@
+# TODO this is now obsolite
 class ArtworkRequestJob < ActiveRecord::Base
   acts_as_paranoid
 

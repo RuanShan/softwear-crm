@@ -127,6 +127,7 @@ CrmSoftwearcrmCom::Application.routes.draw do
   put    'line_items/update', to: 'line_items#update'
   patch  'line_items/update', to: 'line_items#update'
 
+  get    'imprints/:id/ink_colors', to: 'imprints#ink_colors', as: :imprint_ink_colors
   put    'jobs/:job_id/imprints/update', to: 'imprints#update', as: :job_imprints_update
   patch  'jobs/:job_id/imprints/update', to: 'imprints#update'
 

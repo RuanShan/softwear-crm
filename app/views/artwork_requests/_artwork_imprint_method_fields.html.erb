@@ -1,40 +1,20 @@
-<%= fields_for imprint_method, {}, builder: LancengFormBuilder do |f| %>
-  <div class="form-group">
-    <div class="row">
-      <%= f.label :print_locations, class: 'col-sm-2 control-label' %>
-      <div class="col-sm-10">
-          <% # TODO: tried to extract selected/checked to Model and failed. Any ideas? %>
-          <% selected =
-                     if artwork_request && !artwork_request.print_location_id.nil?
-                       { selected: artwork_request.print_location_id }
-                     else
-                       { include_blank: true }
-                     end
-          %>
-          <%= f.select :print_locations, imprint_method.print_locations.map{ |x| ["#{x.name}", x.id] },
-                       selected, { name: 'artwork_request[print_location_id]' } %>
-      </div>
+<div class="form-group">
+  <div class="row">
+    <%= label_tag :ink_colors, 'Ink colors', class: 'col-sm-2 control-label' %>
+    <div class="col-sm-10">
+      <% imprint.ink_colors.each do |ink_color| %>
+        <% checked =
+                   if artwork_request && artwork_request.ink_color_ids.include?(ink_color.id)
+                     { checked: true }
+                   else
+                     false
+                   end
+        %>
+
+        <%= check_box_tag 'artwork_request[ink_color_ids][]', ink_color.id, checked %>
+
+        <%= ink_color.name %>
+      <% end %>
     </div>
   </div>
-
-  <div class="form-group">
-    <div class="row">
-      <%= f.label :ink_colors, class: 'col-sm-2 control-label' %>
-      <div class="col-sm-10">
-        <% imprint_method.ink_colors.each do |ink_color| %>
-          <% checked =
-                     if artwork_request && artwork_request.ink_color_ids.include?(ink_color.id)
-                       { checked: true }
-                     else
-                       false
-                     end
-          %>
-
-          <%= check_box_tag 'artwork_request[ink_color_ids][]', ink_color.id, checked %>
-
-          <%= ink_color.name %>
-        <% end %>
-      </div>
-    </div>
-  </div>
-<% end %>
+</div>
