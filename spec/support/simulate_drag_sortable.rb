@@ -1,8 +1,6 @@
 module SimulateDragSortable
   def simulate_drag_sortable_on(page)
-    if @simulating_drag_sortable
-      raise "You are attempting to simulate drag-sortable twice on this spec"
-    end
+    return if @simulating_drag_sortable
 
     @simulating_drag_sortable = true
     page.execute_script(

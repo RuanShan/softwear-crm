@@ -152,6 +152,18 @@ class LineItemsController < InheritedResources::Base
     @line_item = LineItem.find params[:id]
   end
 
+  def update_sort_orders
+    @line_item_ids = params[:categories]
+
+    ActiveRecord::Base.transaction do
+      @line_item_ids.each_with_index do |id, n|
+        LineItem.find(id).update(sort_order: n+1)
+      end
+    end
+
+    render json: {}
+  end
+
   private
 
   def create_json

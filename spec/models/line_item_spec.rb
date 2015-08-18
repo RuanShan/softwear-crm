@@ -274,4 +274,18 @@ describe LineItem, line_item_spec: true do
     end
   end
 
+  describe '#markup_or_option?', story_797: true do
+    let!(:line_item) do
+      build_stubbed(:blank_line_item, unit_price: 1, quantity: 1)
+    end
+
+    it 'returns true when the quantity is equal to MARKUP_ITEM_QUANTITY' do
+      line_item.quantity = LineItem::MARKUP_ITEM_QUANTITY
+      expect(line_item.markup_or_option?).to eq true
+    end
+
+    it 'returns true when the quantity is equal to MARKUP_ITEM_QUANTITY' do
+      expect(line_item.markup_or_option?).to eq false
+    end
+  end
 end

@@ -116,13 +116,14 @@ CrmSoftwearcrmCom::Application.routes.draw do
 
       resources :line_items, except: [:update] do
         get :form_partial, on: :member
+        post :update_sort_orders
       end
       resources :imprints, except: [:index]
     end
   end
 
-  post 'line_items', to: 'line_items#create'
-  get '/line_item/select_options', to: 'line_items#select_options'
+  post   'line_items', to: 'line_items#create'
+  get    'line_item/select_options', to: 'line_items#select_options'
   put    'line_items/update', to: 'line_items#update'
   patch  'line_items/update', to: 'line_items#update'
 

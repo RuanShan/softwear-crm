@@ -13,6 +13,8 @@ class LineItem < ActiveRecord::Base
 
   tracked skip_defaults: true
 
+  default_scope { order(:sort_order) }
+
   scope :non_imprintable, -> { where imprintable_variant_id: nil }
   scope :imprintable, -> { where.not imprintable_variant_id: nil }
 
@@ -31,7 +33,9 @@ class LineItem < ActiveRecord::Base
   validate :quantity_is_not_negative, unless: :should_validate_quantity?
   validates :unit_price, presence: true, price: true, unless: :imprintable?
   validates :decoration_price, :imprintable_price, presence: true, price: true, if: :imprintable?
+  validates :sort_order, presence: true, if: :markup_or_option?
 
+  before_validation :set_sort_order
   before_create :set_default_quantity
 
   def self.create_imprintables(line_itemable, imprintable, color, options = {})
@@ -148,7 +152,24 @@ class LineItem < ActiveRecord::Base
     hash
   end
 
+  def markup_or_option?
+    quantity == MARKUP_ITEM_QUANTITY
+  end
+  alias_method :option_or_markup?, :markup_or_option?
+
   private
+
+  def set_sort_order
+    return unless sort_order.nil?
+
+    if line_itemable && last_line_item = line_itemable.line_items.where.not(id: id).last
+      last_sort_order = last_line_item.sort_order
+    else
+      last_sort_order = 0
+    end
+
+    self.sort_order = 1 + last_sort_order
+  end
 
   def imprintable_variant_exists
     if ImprintableVariant.where(id: imprintable_variant_id).size < 1

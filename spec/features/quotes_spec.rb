@@ -32,6 +32,10 @@ feature 'Quotes management', quote_spec: true, js: true, retry: 2 do
   given(:imprint_method_1) { print_location_1.imprint_method }
   given(:imprint_method_2) { print_location_2.imprint_method }
 
+  given(:standard_line_item_1) { create(:non_imprintable_line_item) }
+  given(:standard_line_item_2) { create(:non_imprintable_line_item) }
+  given(:standard_line_item_3) { create(:non_imprintable_line_item) }
+
   given(:imprintable_group) do
     ImprintableGroup.create(name: 'test group', description: 'yes').tap do |group|
       iig1 = ImprintableImprintableGroup.new
@@ -660,6 +664,25 @@ feature 'Quotes management', quote_spec: true, js: true, retry: 2 do
     expect(line_item.description).to eq 'improved taste'
     expect(line_item.url).to eq 'http://lmgtfy.com/?q=secret+sauce'
     expect(line_item.unit_price.to_f).to eq 99.99
+  end
+
+  scenario 'A user can sort options and markups on a quote', revamp: true, story_797: true do
+    quote.jobs << create(:job, line_items: [create(:imprintable_line_item)])
+    quote.markups_and_options_job.line_items << standard_line_item_1
+    quote.markups_and_options_job.line_items << standard_line_item_2
+    quote.markups_and_options_job.line_items << standard_line_item_3
+
+    visit edit_quote_path quote
+    find('a', text: 'Line Items').click
+
+    simulate_drag_sortable_on page
+    simulate_drag_sortable(".option-and-markup-line-items > :first-child", move: 1)
+    expect(page).to have_selector(".option-and-markup-line-items > :nth-child(2) #line-item-#{standard_line_item_1.id}")
+
+    visit edit_quote_path quote
+    find('a', text: 'Line Items').click
+
+    expect(page).to have_selector(".option-and-markup-line-items > :nth-child(2) #line-item-#{standard_line_item_1.id}")
   end
 
   scenario 'A user can add a note to a quote', revamp: true, story_569: true do

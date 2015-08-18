@@ -151,4 +151,20 @@ function initializeQuoteLineItems() {
         notifyUnsavedChanges();
     }
   });
+
+  $('.option-and-markup-line-item').each(function() {
+    if ($(this).parent().hasClass("fields")) {
+      $(this).parent().attr('data-line-item-id', $(this).data('line-item-id'));
+    }
+  });
+
+  var optionMarkups = $('.option-and-markup-line-items');
+  optionMarkups.sortable({
+    update: function(event, unorderedListElement) {
+      $.post(
+        Routes.line_item_update_sort_orders_path(optionMarkups.data('job-id')),
+        { categories: optionMarkups.sortable("toArray", {attribute: 'data-line-item-id'}) }
+      );
+    }
+  });
 }
