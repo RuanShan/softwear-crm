@@ -1,101 +1,53 @@
 <h1>Order #<%= @order.id %> Production Status</h1>
-<div class="col-xs-12 box-info">
-  <h2>Order Pre-production Trains</h2>
-  <div class="col-sm-3">
-    <div class="panel panel-primary">
-      <div class="panel-heading">FBA Label Train</div>
-      <div class="panel-body">
-        <dl>
-          <dt>Status</dt>
-          <dd>Pending</dd>
-        </dl> 
-      </div>
-    </div>
+<% if @production_order.nil? %>
+  <div class="alert alert-danger">
+    There was either an error communicating with the production server or a
+    production order doesn't exist for this order
   </div>
+<% else %>
+  <div class="col-xs-12 box-info">
 
-  <br clear="all" />
-  <% @order.jobs.each do |job| %>
+  <% unless @production_order.pre_production_trains.empty? %>
+    <h2>Order Pre-production Trains</h2>
+    <% @production_order.pre_production_trains.each do |train| %>
+      <%= render 'orders/production_dashboard/train', train: train %>
+    <% end %>
+    <br clear="all" />
+  <% end %>
+
+  <% @production_order.jobs.each do |job| %>
     <h2>Job "<%= job.name %>"</h2>
     <div class="well well-sm">
+      
       <h4>Pre-production Trains</h4>
+      <% job.pre_production_trains.each do |train| %>      
+        <%= render 'orders/production_dashboard/train', train: train %>
+      <% end %>
       
-      <div class="col-sm-3">
-        <div class="panel panel-warning">
-          <div class="panel-heading">Imprintable Train</div>
-          <div class="panel-body">
-            <dl>
-              <dt>Status</dt>
-              <dd>Some status that is a "delay"</dd>
-              <dt>Location</dt>
-              <dd>3F</dd>
-            </dl> 
-          </div>
-        </div>
-      </div>
       <br clear="all" />
-
-      <h4>Production Trains</h4>
-   
-      <div class="col-sm-3">
-        <div class="panel panel-success">
-          <div class="panel-heading">Screen Print - Left Chest (2C)</div>
-          <div class="panel-body">
-            <dl>
-              <dt>Status</dt>
-              <dd>Some status that is "complete"</dd>
-              <dt>Sccheduled At</dt>
-              <dd>2015-08-20 12:20pm, 0.67hrs</dd>
-              <dt>Machine</dt>
-              <dd>Challenger III</dd>
-            </dl> 
-          </div>
-        </div>
-      </div>
-
-      <div class="col-sm-3">
-        <div class="panel panel-danger">
-          <div class="panel-heading">Screen Print - Full Back (1C)</div>
-          <div class="panel-body">
-            <dl>
-              <dt>Status</dt>
-              <dd>Some status that is "error"</dd>
-            </dl> 
-          </div>
-        </div>
-      </div>
       
+      <h4>Production Trains</h4>
+      <% job.production_trains.each do |train| %>      
+        <%= render 'orders/production_dashboard/train', train: train %>
+      <% end %>
+
       <br clear="all" />
 
       <h4>Post-production Trains</h4>
     
-      <div class="col-sm-3">
-        <div class="panel panel-primary">
-          <div class="panel-heading">FBA Label Train</div>
-          <div class="panel-body">
-            <dl>
-              <dt>Status</dt>
-              <dd>Pending</dd>
-            </dl> 
-          </div>
-        </div>
-      </div>
-      
+      <% job.post_production_trains.each do |train| %>      
+        <%= render 'orders/production_dashboard/train', train: train %>
+      <% end %>
       <br clear="all" />
     </div>
   <% end %>
-  <h2>Order Post-production Trains</h2>
-    <div class="col-sm-3">
-      <div class="panel panel-warning">
-        <div class="panel-heading">Imprintable Train</div>
-        <div class="panel-body">
-          <dl>
-            <dt>Status</dt>
-            <dd>Some status that is a "delay"</dd>
-            <dt>Location</dt>
-            <dd>3F</dd>
-          </dl> 
-        </div>
-      </div>
-    </div>
+  
+  <% unless @production_order.post_production_trains.empty? %>
+    <h2>Order Post-production Trains</h2>
+    <% @production_order.post_production_trains.each do |train| %>
+      <%= render 'orders/production_dashboard/train', train: train %>
+    <% end %>
     <br clear="all" />
-</div>
+  <% end %>
+  </div>
+<% end %>
