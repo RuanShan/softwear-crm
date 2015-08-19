@@ -100,7 +100,9 @@ describe ArtworkRequest, artwork_request_spec: true do
     end
   end
 
-  describe '#compatible_ink_colors', story_862: true do
+  describe '#compatible_ink_colors', story_862: true, compatible_ink_colors: true do
+    subject { build(:artwork_request, imprints: [imprint_1, imprint_2, imprint_3]).tap { |ar| ar.save(validate: false) } }
+
     let!(:red) { create(:ink_color, name: 'Red') }
     let!(:blue) { create(:ink_color, name: 'Blue') }
     let!(:yellow) { create(:ink_color, name: 'Yellow') }
@@ -110,30 +112,33 @@ describe ArtworkRequest, artwork_request_spec: true do
     let!(:imprint_method_1) do
       create(
         :valid_imprint_method,
-        ink_colors: [red, blue, yellow]
+        ink_colors: [red, blue, yellow],
+        print_locations: [create(:valid_imprint).print_location]
       )
     end
 
     let!(:imprint_method_2) do
       create(
         :valid_imprint_method,
-        ink_colors: [red, blue, orange]
+        ink_colors: [red, blue, orange],
+        print_locations: [create(:valid_imprint).print_location]
       )
     end
 
     let!(:imprint_method_3) do
       create(
         :valid_imprint_method,
-        ink_colors: [red, blue, purple]
+        ink_colors: [red, blue, purple],
+        print_locations: [create(:valid_imprint).print_location]
       )
     end
 
-    before do
-      allow(subject).to receive(:imprint_methods).and_return [imprint_method_1, imprint_method_2, imprint_method_3]
-    end
+    let!(:imprint_1) { create(:valid_imprint, print_location: imprint_method_1.print_locations.first) }
+    let!(:imprint_2) { create(:valid_imprint, print_location: imprint_method_2.print_locations.first) }
+    let!(:imprint_3) { create(:valid_imprint, print_location: imprint_method_3.print_locations.first) }
 
     it 'returns the ink colors common to all associated imprint methods' do
-      expect(subject.ink_colors.map(&:name)).to eq ['Red', 'Blue']
+      expect(subject.compatible_ink_colors.map(&:name)).to eq ['Red', 'Blue']
     end
   end
 end

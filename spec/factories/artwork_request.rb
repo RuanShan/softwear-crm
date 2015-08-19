@@ -1,6 +1,13 @@
 FactoryGirl.define do
   factory :blank_artwork_request, class: ArtworkRequest do
 
+    factory :artwork_request do
+      artwork_status 'Pending'
+      deadline '06/05/2014 03:07 PM'
+      description 'Description'
+      priority 'Normal'
+    end
+
     factory :valid_artwork_request do
       artwork_status 'Pending'
       deadline '06/05/2014 03:07 PM'
