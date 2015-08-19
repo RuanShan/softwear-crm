@@ -27,7 +27,7 @@ class ImprintsController < InheritedResources::Base
     else
       super do |format|
         format.html do
-          render partial: 'imprints/imprint', 
+          render partial: 'imprints/imprint',
                  locals: { job: Job.find(params[:job_id]) }
         end
 
@@ -61,7 +61,7 @@ class ImprintsController < InheritedResources::Base
   end
 
   def ink_colors
-    @imprint = Imprint.find(params[:id])
+    @imprints = Imprint.where(id: params[:ids])
     respond_to(&:js)
   end
 

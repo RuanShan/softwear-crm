@@ -9,7 +9,9 @@ $(document).ready ->
   $(document).on "change", "#artwork_request_imprint_ids", ->
     if $(this).find(":selected").attr("value")
       ajax = $.ajax
-        url: Routes.imprint_ink_colors_path($(this).find(":selected").attr("value"))
+        url: Routes.imprint_ink_colors_path()
         dataType: "script"
+        data:
+          ids: $(this).val()
       ajax.done ->
         styleCheckboxes()

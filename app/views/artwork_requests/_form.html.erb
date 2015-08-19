@@ -44,7 +44,7 @@
     <% unless artwork_request.imprints.blank? %>
         <%= render partial: 'artwork_imprint_method_fields',
                    locals: { artwork_request: artwork_request,
-                             imprint: artwork_request.imprints.first } %>
+                             ink_colors: artwork_request.compatible_ink_colors } %>
     <% end %>
   </div>
 

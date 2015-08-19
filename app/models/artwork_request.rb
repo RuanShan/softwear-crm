@@ -27,7 +27,7 @@ class ArtworkRequest < ActiveRecord::Base
   has_many   :assets,                as: :assetable, dependent: :destroy
   has_many   :ink_colors,            through: :artwork_request_ink_colors
   has_many   :imprints,              through: :artwork_request_imprints
-  has_many   :jobs,                  through: :artwork_request_imprints
+  has_many   :jobs,                  through: :imprints
   has_many   :imprint_methods,       through: :imprints
   has_many   :print_locations,       through: :imprints
   has_many   :potential_ink_colors, through: :imprint_methods, source: :ink_colors
@@ -70,17 +70,6 @@ class ArtworkRequest < ActiveRecord::Base
   end
 
   def compatible_ink_colors
-    ink_color_counts = {}
-    imprint_method_count = imprint_methods.size
-
-    potential_ink_color_ids.each do |ink_color_id|
-      ink_color_counts[ink_color_id] =
-        imprint_methods.joins(:ink_colors).where(ink_colors: { id: ink_color_id }).size
-    end
-
-    ink_color_ids = ink_color_counts.keys
-      .select { |ink_color_id| ink_color_counts[ink_color_id] == imprint_method_count }
-
-    InkColor.where(id: ink_color_ids)
+    InkColor.compatible_with(imprint_methods)
   end
 end
