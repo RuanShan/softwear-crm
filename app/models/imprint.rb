@@ -12,6 +12,8 @@ class Imprint < ActiveRecord::Base
   has_many :name_numbers
   has_one :imprint_method, through: :print_location
   has_many :ink_colors, through: :imprint_method
+  has_many :artwork_request_imprints
+  has_many :artwork_requests, through: :artwork_request_imprints
 
   validates :job, presence: true
   validates :print_location, presence: true, uniqueness: { scope: :job_id }

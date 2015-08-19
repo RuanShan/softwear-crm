@@ -15,19 +15,16 @@
           <dl>
             <dt>Priority:</dt>
             <dd><%= ArtworkRequest::PRIORITIES[artwork_request.priority.to_i] %></dd>
-            <dt>Imprint Method:</dt>
-            <dd><%= artwork_request.imprint_method.try(:name) || 'unknown' %></dd>
-            <dt>Print Location:</dt>
-            <dd><%= artwork_request.print_location.try(:name) || 'unknown' %></dd>
+            <dt>Imprints:</dt>
+            <dd><%= artwork_request.imprints.map(&:name).join(', ') %></dd>
             <dt>Ink Colors:</dt>
-            <dd><%= artwork_request.ink_colors.map(&:name).join(', ') %></dd>
+            <dd><%= artwork_request.ink_colors.pluck(:name).join(', ') %></dd>
             <dt>Imprintables Included:</dt>
             <dd><%= artwork_request.imprintable_info %></dd>
             <dt>No. of Pieces:</dt>
             <dd><%= artwork_request.imprintable_variant_count %></dd>
             <br>
-            <dt>Description:</dt>
-            <br>
+            <dt>Description:</dt><br>
             <dd><%= artwork_request.description.html_safe %></dd>
             <br>
             <dt>Attachments:</dt>

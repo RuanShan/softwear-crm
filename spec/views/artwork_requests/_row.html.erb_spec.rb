@@ -1,18 +1,20 @@
 require 'spec_helper'
 
 describe 'artwork_requests/_row.html.erb', artwork_request_spec: true do
-  let!(:artwork_request) { build_stubbed(:blank_artwork_request,
-                                          jobs: [build_stubbed(:blank_job,
-                                                                 jobbable: build_stubbed(:blank_order))],
-                                          imprint_method: build_stubbed(:blank_imprint_method),
-                                          ink_colors: [build_stubbed(:blank_ink_color)]) }
+  let!(:artwork_request) do
+    build_stubbed(:blank_artwork_request).tap do |ar|
+      allow(ar).to receive(:jobs).and_return [build_stubbed(:blank_job, jobbable: build_stubbed(:blank_order))]
+      allow(ar).to receive(:imprint_methods).and_return [build_stubbed(:blank_imprint_method)]
+      allow(ar).to receive(:ink_colors).and_return [build_stubbed(:blank_ink_color)]
+    end
+  end
 
   before(:each) do
     render partial: 'artwork_requests/row', locals: { artwork_request: artwork_request }
   end
 
   it 'has the artwork_request priority, a link to the order, deadline, order in hand by date,
-      total quantity, imprint method name, no. of ink colors, payment terms, order name, and actions' do
+      total quantity, imprint method name, no. of ink colors, payment terms, order name, and actions', was_failing: true do
     expect(rendered).to have_selector('td', text: "#{ArtworkRequest::PRIORITIES[artwork_request.priority.to_i]}")
     expect(rendered).to have_selector('td', text: "#{display_time(artwork_request.deadline)}")
     expect(rendered).to have_selector('td', text: "#{display_time(artwork_request.jobs.first.order.in_hand_by)}")

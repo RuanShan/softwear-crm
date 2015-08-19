@@ -4,7 +4,15 @@ include ApplicationHelper
 feature 'Artwork Request Features', js: true, artwork_request_spec: true do
   given!(:artwork_request) { create(:valid_artwork_request) }
   given!(:valid_user) { create(:alternate_user) }
-  before(:each) { login_as(valid_user) }
+  given!(:order) { artwork_request.jobs.first.order }
+  given!(:imprint_method) { create(:valid_imprint_method) }
+
+  background do
+    login_as(valid_user)
+    imprint_method.ink_colors << create(:ink_color)
+    order.imprints.first.imprint_method = imprint_method
+    artwork_request.imprints << order.imprints.first unless (artwork_request.imprints - order.imprints).empty?
+  end
 
   scenario 'A user can view a list of artwork requests from the root path via Orders', no_ci: true do
     visit root_path
@@ -30,15 +38,12 @@ feature 'Artwork Request Features', js: true, artwork_request_spec: true do
     expect(page).to have_css('table#artwork-request-table')
   end
 
-  scenario 'A user can add an artwork request', what: true, story_692: true do
+  scenario 'A user can add an artwork request', story_692: true do
     visit new_order_artwork_request_path(artwork_request.jobs.first.order)
     sleep 1
 
-    find('#artwork_request_job_ids').select artwork_request.jobs.first.name
+    find('#artwork_request_imprint_ids').select order.imprints.first.name
 
-    find_by_id('artwork_imprint_method_fields').find("option[value='#{artwork_request.imprint_method.id}']").click
-    sleep 0.5
-    find_by_id('imprint_method_print_locations').find("option[value='#{artwork_request.print_location.id}']").click
     find(:css, "div.icheckbox_minimal-grey[aria-checked='false']").click
     fill_in 'artwork_request_deadline', with: '01/23/1992 8:55 PM'
     find_by_id('artwork_request_artist_id').find("option[value='#{artwork_request.artist_id}']").click
@@ -52,7 +57,7 @@ feature 'Artwork Request Features', js: true, artwork_request_spec: true do
 
   # NOTE this fails in CI for absolutely no reason
   scenario 'A user can edit an artwork request', no_ci: true do
-    visit "/orders/#{artwork_request.jobs.first.order.id}/edit#artwork"
+    visit "/orders/#{order.id}/edit#artwork"
     find("a[href='/orders/1/artwork_requests/#{artwork_request.id}/edit']").click
     fill_in 'Description', with: 'edited'
     select 'Normal', from: 'Priority'
@@ -64,7 +69,7 @@ feature 'Artwork Request Features', js: true, artwork_request_spec: true do
   end
 
   scenario 'A user can delete an artwork request' do
-    visit "/orders/#{artwork_request.jobs.first.order.id}/edit#artwork"
+    visit "/orders/#{order.id}/edit#artwork"
     click_link 'Delete'
     expect(page).to have_selector('.modal-content-success')
     find(:css, 'button.close').click

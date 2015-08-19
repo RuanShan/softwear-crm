@@ -15,13 +15,12 @@ FactoryGirl.define do
       priority 'Normal'
 
       before(:create) do |artwork_request|
-        imprint_method = create(:valid_imprint_method_with_color_and_location)
+        imprint_methods = [create(:valid_imprint_method_with_color_and_location)]
         artwork_request.artist_id = create(:user).id
-        artwork_request.imprint_method_id = imprint_method.id
         artwork_request.salesperson_id = create(:alternate_user).id
-        artwork_request.print_location_id = imprint_method.print_locations.first.id
-        artwork_request.ink_color_ids = imprint_method.ink_color_ids
-        artwork_request.jobs << create(:job)
+        artwork_request.imprints << create(:valid_imprint)
+        artwork_request.save(validate: false)
+        ArtworkRequestInkColor.create!(artwork_request_id: artwork_request.id, ink_color_id: create(:ink_color).id)
       end
 
       factory :valid_artwork_request_with_asset do

@@ -22,6 +22,13 @@ end
 Sidekiq.configure_server do |config|
   config.redis = redis_opts
 end
+
+Array.class_eval do
+  def pluck(attr)
+    map(&attr)
+  end
+end
+
 # Requires supporting ruby files with custom matchers and macros, etc, in
 # spec/support/ and its subdirectories. Files matching `spec/**/*_spec.rb` are
 # run as spec files by default. This means that files in spec/support that end

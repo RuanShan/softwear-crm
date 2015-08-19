@@ -32,7 +32,7 @@
                    locals: { print_locations: if local_assigns[:imprint_method]
                                                 imprint_method.print_locations
                                               elsif local_assigns[:imprint]
-                                                imprint.imprint_method.print_locations
+                                                imprint.imprint_method.try(:print_locations) || []
                                               else
                                                 []
                                               end,

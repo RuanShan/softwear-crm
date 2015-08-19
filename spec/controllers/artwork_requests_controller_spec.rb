@@ -4,16 +4,17 @@ include ApplicationHelper
 describe ArtworkRequestsController, js: true, artwork_request_spec: true do
   let!(:order) { create(:order_with_job) }
   let!(:valid_user) { create :alternate_user }
-  before(:each) { sign_in valid_user }
+  before(:each) do
+    sign_in valid_user
+    order.jobs.first.imprints << create(:valid_imprint)
+  end
 
   describe 'POST create' do
     let(:imprint_method) { create(:valid_imprint_method_with_color_and_location) }
     let(:artwork_request) { attributes_for(:valid_artwork_request)
       .merge(artist_id: create(:user).id,
-             imprint_method_id: imprint_method.id,
              salesperson_id: create(:alternate_user).id,
-             print_location_id: imprint_method.print_locations.first.id,
-             job_ids: order.job_ids,
+             imprint_ids: order.imprint_ids,
              ink_color_ids: imprint_method.ink_color_ids) }
 
     it 'renders create.js.erb' do
@@ -21,7 +22,7 @@ describe ArtworkRequestsController, js: true, artwork_request_spec: true do
       expect(response).to render_template('create')
     end
 
-    it 'sends an email to the artist'do
+    it 'sends an email to the artist', email: true do
       expect{ ArtistMailer.delay.artist_notification(artwork_request, 'create') }.to change(Sidekiq::Extensions::DelayedMailer.jobs, :size).by(1)
 
       expect{ (post :create, order_id: order.id, artwork_request: artwork_request, format: 'js') }.to change(Sidekiq::Extensions::DelayedMailer.jobs, :size).by(1)

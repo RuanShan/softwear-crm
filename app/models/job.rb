@@ -15,8 +15,7 @@ class Job < ActiveRecord::Base
   after_update :destroy_self_if_line_items_and_imprints_are_empty
 
   belongs_to :jobbable, polymorphic: true
-  has_many :artwork_request_jobs
-  has_many :artwork_requests, through: :artwork_request_jobs
+  has_many :artwork_requests, through: :imprints
   has_many :colors, -> {readonly}, through: :imprintable_variants
   has_many :imprints, dependent: :destroy
   has_many :imprintables, -> {readonly}, through: :imprintable_variants

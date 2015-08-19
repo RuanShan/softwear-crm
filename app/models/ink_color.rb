@@ -17,10 +17,12 @@ class InkColor < ActiveRecord::Base
   validates :name, presence: true, uniqueness: true
 
   def self.compatible_with(imprint_methods)
+    return [] if imprint_methods.blank?
+
     ink_color_counts = {}
     imprint_method_count = imprint_methods.size
     unless imprint_methods.is_a?(ActiveRecord::Relation)
-      imprint_methods = ImprintMethod.where(id: imprint_methods.map(&:id))
+      imprint_methods = ImprintMethod.where(id: imprint_methods.compact.map(&:id))
     end
 
     potential_ink_color_ids = InkColor
