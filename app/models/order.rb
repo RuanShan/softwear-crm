@@ -84,7 +84,6 @@ class Order < ActiveRecord::Base
             unless: :fba?
   validates :salesperson, presence: true
   validates :store, presence: true
-  validates :tax_id_number, presence: true, if: :tax_exempt?
   validates :terms, presence: true
   validates :in_hand_by, presence: true
 
@@ -167,6 +166,7 @@ class Order < ActiveRecord::Base
   end
 
   def tax
+    return 0 if tax_exempt?
     line_items.where(taxable: true).map(&:total_price).map(&:to_f).reduce(0, :+) * tax_rate
   end
 
