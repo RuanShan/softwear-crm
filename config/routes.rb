@@ -84,6 +84,8 @@ CrmSoftwearcrmCom::Application.routes.draw do
     end
   end
 
+  resources :shipments
+  
   resources :orders do
     member do
       get 'names_numbers', as: :name_number_csv_from
@@ -91,7 +93,6 @@ CrmSoftwearcrmCom::Application.routes.draw do
     end
 
     resources :comments
-    resources :shipments, shallow: true
 
     collection do
       get 'fba'

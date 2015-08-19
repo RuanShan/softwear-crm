@@ -24,13 +24,6 @@ describe 'line_items/_imprintable_edit.html.erb', line_item_spec: true do
       }
   end
 
-  it 'should format the title of the line item set correctly' do
-    expect(rendered).to have_css 'h6 > strong', 
-                                 text: "white #{shirt.style_name}"
-    expect(rendered).to have_css 'p',
-                                 text: white_shirt_s_item.description
-  end
-
   it 'should render the filler div with the correct size' do
     expect(rendered).to have_css "div.col-sm-7"
   end

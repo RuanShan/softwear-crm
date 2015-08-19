@@ -1,0 +1,3 @@
+  <% order = (@shipment.shippable_type == 'Job' ? @shipment.shippable.order : @shipment.shippable ) %>
+  $('#shipments').html("<%=j render partial: 'orders/shipments', locals: { order: order } %>");
+  successModal("Shipment Destroyed!");

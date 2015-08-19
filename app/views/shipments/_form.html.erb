@@ -3,13 +3,30 @@
     <%= f.select :shipping_method_id,
       options_from_collection_for_select(ShippingMethod.all, :id, :name, f.object.try(:shipping_method_id).try(:to_s)),
       {},
-      class: 'select2', style: 'width: 100%;' %>
+      class: 'select2', style: 'width: 100%;'  %>
 
     <%= f.select :shipped_by_id,
       options_from_collection_for_select(User.all, :id, :full_name, f.object.try(:shipped_by_id).try(:to_s) || current_user.id.to_s),
       {},
       class: 'select2', style: 'width: 100%;' %>
-    <%= f.text_field :shipping_cost %>
+    
+      <%= f.select :shippable_type, [["No", "Order"], ["Yes", "Job"]], {label: "Is this shipment only for a specific job?" }, class: 'shipment_shippable_type' %>
+    
+    <% if shipment.shippable_type == 'Job' %>
+      <%= f.hidden_field :shippable_id, value: order.id, disabled: true, class: "hidden_shippable_id" %>
+      <%= f.select :shippable_id,
+        options_from_collection_for_select(order.jobs.all, :id, :name, f.object.try(:shippable_id).try(:to_s)),
+        {},
+        class: 'select2 shipment_shippable_id', style: 'width: 100%;' %>
+    <% else %>
+      <%= f.hidden_field :shippable_id, value: order.id, class: "hidden_shippable_id" %>
+      <%= f.select :shippable_id,
+        options_from_collection_for_select(order.jobs.all, :id, :name, f.object.try(:shippable_id).try(:to_s)),
+        {label: 'Job'},
+        class: 'select2 shipment_shippable_id', style: 'width: 100%;', disabled: true %>
+    <% end %>
+
+    <%= f.text_field :shipping_cost, prepend: "$" %>
 
     <%= f.label :shipped_at %>
     <div class="input-group date js-datetimepicker">
@@ -24,18 +41,20 @@
   </div>
 
   <div class='form-group'>
-    <h4>Address info</h4>
+    <h4>Address</h4>
     <%= f.text_field :name %>
     <%= f.text_field :company %>
     <%= f.text_field :attn %>
-    <%= f.text_field :address_1 %>
-    <%= f.text_field :address_2 %>
-    <%= f.text_field :address_3 %>
+    <%= f.text_field :address_1, label: 'Address' %>
+    <%= f.text_field :address_2, hide_label: true %>
+    <%= f.text_field :address_3, hide_label: true %>
     <%= f.text_field :city %>
     <%= f.text_field :state %>
     <%= f.text_field :zipcode %>
     <%= f.text_field :country %>
   </div>
-
-  <%= f.submit %>
+  
+  <p class="text-center">
+    <%= f.button :submit => "", class: 'btn btn-primary' %>
+  </p>
 <% end %>

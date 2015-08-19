@@ -106,4 +106,9 @@ module ApplicationHelper
         .html_safe
     end
   end
+
+  def shipment_class(shipment)
+    shipment.shipped? ? "success" : "danger"
+  end
+
 end

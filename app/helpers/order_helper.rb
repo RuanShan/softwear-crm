@@ -1,11 +1,30 @@
 module OrderHelper
-  def get_style_from_status(status)
-    case status
-    when 'Payment Terms Pending' then 'label-danger'
-    when 'Awaiting Payment' then 'label-danger'
-    when 'Payment Terms Met' then 'label-warning'
-    when 'Payment Complete' then 'label-success'
-    else nil
+  def get_style_from_status(status, style_type = 'label')
+    if style_type == 'label'
+      case status
+      when 'Payment Terms Pending' then 'label-danger'
+      when 'Awaiting Payment' then 'label-danger'
+      when 'Payment Terms Met' then 'label-warning'
+      when 'Payment Complete' then 'label-success'
+      else nil
+      end
+    elsif style_type == 'alert'
+      case status
+      when 'Payment Terms Pending' then 'alert-danger'
+      when 'Awaiting Payment' then 'alert-danger'
+      when 'Payment Terms Met' then 'alert-warning'
+      when 'Payment Complete' then 'alert-success'
+      else nil
+      end
+    end
+  end
+
+  def get_train_panel_style(state_type)
+    case state_type
+      when 'success' then 'panel-success'
+      when 'delay' then 'panel-warning'
+      when 'failure' then 'panel-danger'
+      else 'panel-primary'
     end
   end
 

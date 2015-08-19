@@ -84,14 +84,22 @@ class Order < ActiveRecord::Base
             unless: :fba?
   validates :salesperson, presence: true
   validates :store, presence: true
-  validates :tax_id_number, presence: true, if: :tax_exempt?
   validates :terms, presence: true
   validates :in_hand_by, presence: true
 
   alias_method :comments, :all_comments
   alias_method :comments=, :all_comments=
-
+  
+  default_scope -> { order(created_at: :desc) }
   scope :fba, -> { where(terms: 'Fulfilled by Amazon') }
+
+  def production_order
+    Production::Order.where(softwear_crm_id: self.id).first
+  end
+
+  def all_shipments
+    jobs.map{|job| job.shipments }.concat(shipments.to_a).flatten
+  end
 
   def fba?
     terms == 'Fulfilled by Amazon'
@@ -123,7 +131,7 @@ class Order < ActiveRecord::Base
       when 'Paid in full on purchase'
           'Awaiting Payment'
       when 'Half down on purchase'
-        balance >= (total * 0.49) ? 'Awaiting Payment' : 'Payment Terms Met'
+        balance >= (total * 0.51) ? 'Awaiting Payment' : 'Payment Terms Met'
       when 'Paid in full on pick up'
         Time.now >= self.in_hand_by ? 'Awaiting Payment' : 'Payment Terms Met'
       when 'Net 30'
@@ -158,6 +166,7 @@ class Order < ActiveRecord::Base
   end
 
   def tax
+    return 0 if tax_exempt?
     line_items.where(taxable: true).map(&:total_price).map(&:to_f).reduce(0, :+) * tax_rate
   end
 
