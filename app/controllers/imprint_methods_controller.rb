@@ -33,15 +33,16 @@ protected
 private
 
   def permitted_params
-    params.permit(:name, imprint_method: [
-                    :name,
-                    ink_colors_attributes: [
-                      :name, :imprint_method_id, :id, :_destroy
-                    ],
-                    print_locations_attributes: [
-                      :name, :max_height, :max_width, :imprint_method_id, :id,
-                      :_destroy
-                    ]
-                  ])
+    params.permit(
+      :name,
+      ink_color_names: [],
+      imprint_method: [
+        :name,
+        print_locations_attributes: [
+          :name, :max_height, :max_width, :imprint_method_id, :id,
+          :_destroy
+        ]
+      ]
+    )
   end
 end

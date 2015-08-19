@@ -21,6 +21,15 @@ $(window).load ->
 
 
 $(document).ready ->
+  $(document).on 'click', '.kill-closest', (e) ->
+    $(this).closest($(this).data('target')).remove()
+    e.preventDefault()
+
+  $(document).on 'click', '.insert-before', (e) ->
+    content = $(this).data('content')
+    $(this).before(content)
+    e.preventDefault()
+
   $(document).on 'click', '.js-remove-fields', (event) ->
     $(this).prev('input[type=hidden]').val('1')
     $(this).closest('.js-removeable').hide()

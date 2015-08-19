@@ -7,7 +7,11 @@
   <div id='error-details' style='display: none;'>
     <p><%= error.class.name %>: <%= error.message %></p>
     <% error.backtrace.each do |line| %>
-      <%= line %><br />
+      <% if line.include? ".rvm" %>
+        <%= line %><br />
+      <% else %>
+        <strong><%= line %></strong><br />
+      <% end %>
     <% end %>
   </div>
 </div>

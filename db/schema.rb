@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150818175205) do
+ActiveRecord::Schema.define(version: 20150818200638) do
 
   create_table "activities", force: :cascade do |t|
     t.integer  "trackable_id",   limit: 4
@@ -208,6 +208,13 @@ ActiveRecord::Schema.define(version: 20150818175205) do
 
   add_index "imprint_method_imprintables", ["imprintable_id", "imprint_method_id"], name: "imprint_method_imprintables_index", using: :btree
 
+  create_table "imprint_method_ink_colors", force: :cascade do |t|
+    t.integer  "imprint_method_id", limit: 4
+    t.integer  "ink_color_id",      limit: 4
+    t.datetime "created_at",                  null: false
+    t.datetime "updated_at",                  null: false
+  end
+
   create_table "imprint_methods", force: :cascade do |t|
     t.string   "name",       limit: 255
     t.datetime "deleted_at"
@@ -340,15 +347,13 @@ ActiveRecord::Schema.define(version: 20150818175205) do
   end
 
   create_table "ink_colors", force: :cascade do |t|
-    t.string   "name",              limit: 255
-    t.integer  "imprint_method_id", limit: 4
+    t.string   "name",       limit: 255
     t.datetime "deleted_at"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
 
   add_index "ink_colors", ["deleted_at"], name: "index_ink_colors_on_deleted_at", using: :btree
-  add_index "ink_colors", ["imprint_method_id"], name: "index_ink_colors_on_imprint_method_id", using: :btree
 
   create_table "jobs", force: :cascade do |t|
     t.string   "name",          limit: 255

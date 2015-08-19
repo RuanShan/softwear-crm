@@ -25,11 +25,11 @@
         <div class="col-sm-10"></div>
 
         <div class="col-md-10 col-md-offset-2">
-          <%= f.fields_for :ink_colors do |ff| %>
-            <%= render partial: 'ink_color_fields', locals: { f: ff } %>
+          <% imprint_method.ink_colors.each do |ink_color| %>
+            <%= render 'ink_color', ink_color: ink_color %>
           <% end %>
 
-          <%= link_to_add_fields "<i class='fa fa-plus'></i> Add Ink color".html_safe, f, :ink_colors %>
+          <%= link_to "<i class='fa fa-plus'></i> Add Ink color".html_safe, '#', class: 'insert-before btn btn-info', data: { content: "#{(render 'ink_color').gsub("\n", ' ').html_safe}" } %>
         </div>
       </div>
 

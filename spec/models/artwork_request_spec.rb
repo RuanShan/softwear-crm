@@ -45,11 +45,11 @@ describe ArtworkRequest, artwork_request_spec: true do
   end
 
   context '#imprintable_variant_count with job having no line items (bug #176)' do
-      before do
-        job = [build_stubbed(:blank_job)]
-        allow(job.first).to receive(:imprintable_variant_count).and_return(0)
-        allow(subject).to receive(:jobs).and_return(job)
-      end
+    before do
+      job = [build_stubbed(:blank_job)]
+      allow(job.first).to receive(:imprintable_variant_count).and_return(0)
+      allow(subject).to receive(:jobs).and_return(job)
+    end
 
     it 'returns zero' do
       expect(subject.imprintable_variant_count).to eq(0)
@@ -97,6 +97,43 @@ describe ArtworkRequest, artwork_request_spec: true do
 
     it 'returns the sum of all line item quantities from the artwork requests jobs' do
       expect(subject.total_quantity).to eq(30)
+    end
+  end
+
+  describe '#compatible_ink_colors', story_862: true do
+    let!(:red) { create(:ink_color, name: 'Red') }
+    let!(:blue) { create(:ink_color, name: 'Blue') }
+    let!(:yellow) { create(:ink_color, name: 'Yellow') }
+    let!(:orange) { create(:ink_color, name: 'Orange') }
+    let!(:purple) { create(:ink_color, name: 'Purple') }
+
+    let!(:imprint_method_1) do
+      create(
+        :valid_imprint_method,
+        ink_colors: [red, blue, yellow]
+      )
+    end
+
+    let!(:imprint_method_2) do
+      create(
+        :valid_imprint_method,
+        ink_colors: [red, blue, orange]
+      )
+    end
+
+    let!(:imprint_method_3) do
+      create(
+        :valid_imprint_method,
+        ink_colors: [red, blue, purple]
+      )
+    end
+
+    before do
+      allow(subject).to receive(:imprint_methods).and_return [imprint_method_1, imprint_method_2, imprint_method_3]
+    end
+
+    it 'returns the ink colors common to all associated imprint methods' do
+      expect(subject.ink_colors.map(&:name)).to eq ['Red', 'Blue']
     end
   end
 end

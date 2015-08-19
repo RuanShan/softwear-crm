@@ -21,15 +21,17 @@ class ArtworkRequest < ActiveRecord::Base
   has_many :artwork_request_artworks
   has_many :artwork_request_ink_colors
   has_many :artwork_request_imprints
-  belongs_to :artist,          class_name: User
-  belongs_to :salesperson,     class_name: User
-  has_many   :artworks,        through: :artwork_request_artworks
-  has_many   :assets,          as: :assetable, dependent: :destroy
-  has_many   :ink_colors,      through: :artwork_request_ink_colors
-  has_many   :imprints,        through: :artwork_request_imprints
-  has_many   :jobs,            through: :artwork_request_imprints
-  has_many   :imprint_methods, through: :imprints
-  has_many   :print_locations, through: :imprints
+  belongs_to :artist,                class_name: User
+  belongs_to :salesperson,           class_name: User
+  has_many   :artworks,              through: :artwork_request_artworks
+  has_many   :assets,                as: :assetable, dependent: :destroy
+  has_many   :ink_colors,            through: :artwork_request_ink_colors
+  has_many   :imprints,              through: :artwork_request_imprints
+  has_many   :jobs,                  through: :artwork_request_imprints
+  has_many   :imprint_methods,       through: :imprints
+  has_many   :print_locations,       through: :imprints
+  # NOTE / TODO this is an outer join, we want inner.
+  has_many   :compatible_ink_colors, through: :imprint_methods, source: :ink_colors
 
   accepts_nested_attributes_for :assets, allow_destroy: true
 

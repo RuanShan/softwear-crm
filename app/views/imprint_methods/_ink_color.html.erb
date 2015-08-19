@@ -1,0 +1,9 @@
+<div class="form-group killme">
+  <div class="input-group">
+    <%= text_field_tag 'imprint_method[ink_color_names][]', local_assigns[:ink_color].is_a?(String) ? ink_color : local_assigns[:ink_color].try(:name), class: 'form-control' %>
+
+    <span class="input-group-btn">
+      <%= button_tag 'x', class: 'btn btn-danger kill-closest', data: { target: '.killme' } %>
+    </span>
+  </div>
+</div>
