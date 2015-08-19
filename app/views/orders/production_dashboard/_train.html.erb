@@ -1,5 +1,5 @@
 <div class="col-sm-3">
-  <div class="panel panel-primary">
+  <div class="panel <%= get_train_panel_style(train.state_type) %>">
     <div class="panel-heading"><%= train.train_class.humanize %></div>
     <div class="panel-body">
       <dl>

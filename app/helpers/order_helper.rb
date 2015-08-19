@@ -19,6 +19,15 @@ module OrderHelper
     end
   end
 
+  def get_train_panel_style(state_type)
+    case state_type
+      when 'success' then 'panel-success'
+      when 'delay' then 'panel-warning'
+      when 'failure' then 'panel-danger'
+      else 'panel-primary'
+    end
+  end
+
   def render_fba_error_handling(fba)
     return render 'orders/error_handling/fba_ok' if fba.errors.empty?
 
