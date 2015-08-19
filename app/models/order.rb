@@ -94,6 +94,10 @@ class Order < ActiveRecord::Base
   default_scope -> { order(created_at: :desc) }
   scope :fba, -> { where(terms: 'Fulfilled by Amazon') }
 
+  def production_order
+    Production::Order.where(softwear_crm_id: self.id).first rescue nil
+  end
+
   def all_shipments
     jobs.map{|job| job.shipments }.concat(shipments.to_a).flatten
   end
