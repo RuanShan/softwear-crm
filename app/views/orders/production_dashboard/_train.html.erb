@@ -1,0 +1,25 @@
+<div class="col-sm-3">
+  <div class="panel panel-primary">
+    <div class="panel-heading"><%= train.train_class.humanize %></div>
+    <div class="panel-body">
+      <dl>
+        <dt>State</dt>
+        <dd><%= train.state.humanize %></dd>
+        <% if train.respond_to? :scheduled_at %>
+          <dt>Scheduled At</dt>
+          <dd><%= Time.new(train.scheduled_at).strftime("%F %T") %></dd>
+        <% end %>
+        <% if train.respond_to? :estimated_time %>
+          <dt>Estimated Time</dt>
+          <dd><%= train.estimated_time %>hrs</dd>
+        <% end %>
+        <% if train.respond_to? :details %>
+          <% train.details.attributes.each do |key, val| %>
+            <dt><%= key.humanize %></dt>
+            <dd><%= val.blank? ? "Not Set" : val %></dd>
+          <% end %>
+        <% end %>
+      </dl> 
+    </div>
+  </div>
+</div>

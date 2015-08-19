@@ -95,7 +95,7 @@ class Order < ActiveRecord::Base
   scope :fba, -> { where(terms: 'Fulfilled by Amazon') }
 
   def production_order
-    Production::Order.where(softwear_crm_id: self.id).first rescue nil
+    Production::Order.where(softwear_crm_id: self.id).first
   end
 
   def all_shipments

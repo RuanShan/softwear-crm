@@ -1,10 +1,5 @@
 <h1>Order #<%= @order.id %> Production Status</h1>
-<% if @production_order.nil? %>
-  <div class="alert alert-danger">
-    There was either an error communicating with the production server or a
-    production order doesn't exist for this order
-  </div>
-<% else %>
+<% unless @production_order.nil? %>
   <div class="col-xs-12 box-info">
 
   <% unless @production_order.pre_production_trains.empty? %>
@@ -49,5 +44,10 @@
     <% end %>
     <br clear="all" />
   <% end %>
+  </div>
+<% else %>
+  <div class="alert alert-danger">
+    There doesn't appear to be an order in softwear-production that is associated
+    with softwear-crm order #<%= @order.id  %>
   </div>
 <% end %>
