@@ -43,6 +43,15 @@ appendActivities = (content) ->
       $(".shipment_shippable_id").prop('disabled', true)
       $(".hidden_shippable_id").attr("disabled", false)
 
+@disableEnterOnNewImprintableLineItems = ->
+  $('#new_imprintable_line_item').on 'keyup keypress', (e) ->
+    code = e.keyCode or e.which
+    if code == 13
+      e.preventDefault()
+      return false
+    return
+
+
 $(window).load ->
   prepareShippableID()
 

@@ -90,8 +90,13 @@ class Order < ActiveRecord::Base
 
   alias_method :comments, :all_comments
   alias_method :comments=, :all_comments=
-
+  
+  default_scope -> { order(created_at: :desc) }
   scope :fba, -> { where(terms: 'Fulfilled by Amazon') }
+
+  def production_order
+    Production::Order.where(softwear_crm_id: self.id).first rescue nil
+  end
 
   def all_shipments
     jobs.map{|job| job.shipments }.concat(shipments.to_a).flatten
@@ -127,7 +132,7 @@ class Order < ActiveRecord::Base
       when 'Paid in full on purchase'
           'Awaiting Payment'
       when 'Half down on purchase'
-        balance >= (total * 0.49) ? 'Awaiting Payment' : 'Payment Terms Met'
+        balance >= (total * 0.51) ? 'Awaiting Payment' : 'Payment Terms Met'
       when 'Paid in full on pick up'
         Time.now >= self.in_hand_by ? 'Awaiting Payment' : 'Payment Terms Met'
       when 'Net 30'
