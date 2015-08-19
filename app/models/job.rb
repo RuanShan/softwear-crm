@@ -22,6 +22,7 @@ class Job < ActiveRecord::Base
   has_many :imprintable_variants, -> {readonly}, through: :line_items
   has_many :line_items, as: :line_itemable, dependent: :destroy 
   has_many :shipments, as: :shippable
+  has_many :proofs
 
   accepts_nested_attributes_for :line_items, :imprints, allow_destroy: true
 

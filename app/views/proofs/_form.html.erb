@@ -44,6 +44,14 @@
     </div>
   </div>
 
+  <p><strong>Which Job does this proof belong to?</strong></p>
+
+  <div class="form-group">
+    <%= f.select :job_id, options_from_collection_for_select(order.jobs, :id, :name, f.object.job_id.to_s), {}, class: 'form-control' %>
+  </div>
+
+  <hr>
+
   <p><strong>Which Artwork is included?</strong></p>
 
   <div class="form-group">

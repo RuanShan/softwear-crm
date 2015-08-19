@@ -10,6 +10,8 @@
             <dd><%= proof.status %></dd>
             <dt>Approve By:</dt>
             <dd><%= display_time(proof.approve_by) %></dd>
+            <dt>Job:</dt>
+            <dd><%= proof.job.try(:name) || 'unassigned' %></dd>
           </dl>
         </div>
 

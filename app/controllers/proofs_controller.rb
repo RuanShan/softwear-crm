@@ -85,7 +85,7 @@ class ProofsController < InheritedResources::Base
   def permitted_params
     params.permit(:id,
                   proof: [
-                    :id, :order_id, :status, :approve_by, :approved_at, artwork_ids: [],
+                    :id, :order_id, :job_id, :status, :approve_by, :approved_at, artwork_ids: [],
                     mockups_attributes: [:file, :description, :id, :_destroy]
                   ])
   end

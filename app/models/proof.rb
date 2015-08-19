@@ -13,6 +13,7 @@ class Proof < ActiveRecord::Base
   ]
 
   belongs_to :order
+  belongs_to :job
   has_many :artwork_proofs
   has_many :artworks, through: :artwork_proofs
   has_many :mockups, as: :assetable, class_name: Asset, dependent: :destroy
