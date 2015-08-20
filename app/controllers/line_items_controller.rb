@@ -186,7 +186,8 @@ class LineItemsController < InheritedResources::Base
       @line_itemable,
       params[:imprintable_id],
       params[:color_id],
-      base_unit_price: params[:base_unit_price]
+      imprintable_price: params[:imprintable_price],
+      decoration_price:  params[:decoration_price]
     )
 
     return create_imprintable_failure unless @line_items.all?(&:valid?)

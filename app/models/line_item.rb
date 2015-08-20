@@ -53,11 +53,11 @@ class LineItem < ActiveRecord::Base
       LineItem.new(
         imprintable_variant_id: variant.id,
         unit_price: options[:base_unit_price].to_f || variant.imprintable.base_price || 0,
-        quantity: 1,
+        quantity: 0,
         line_itemable_id: line_itemable.id,
         line_itemable_type: line_itemable.class.name,
-        imprintable_price: variant.imprintable.base_price,
-        decoration_price: 0,
+        imprintable_price: options[:imprintable_price] || variant.imprintable.base_price,
+        decoration_price:  options[:decoration_price].to_f || 0,
       )
     end
   end
@@ -132,7 +132,7 @@ class LineItem < ActiveRecord::Base
   end
 
   def unit_price
-    if imprintable? && line_itemable.try(:jobbable_type) == 'Quote'
+    if imprintable?
       decoration_price + imprintable_price
     else
       super

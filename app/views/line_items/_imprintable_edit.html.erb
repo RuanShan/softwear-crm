@@ -8,17 +8,17 @@
 
   </div>
   <div class="col-lg-7">
-    <%= content_tag(:div, class: "col-sm-#{10 - line_items.count}") {} %>
+    <%= content_tag(:div, class: "col-sm-#{9 - line_items.count}") {} %>
     <% # TODO inline CSS %>
-    <div class="col-sm-1" style="border-right: solid 1px #dddddd;" align='center'>
-      <label style="margin-bottom: 12px;">size:</label>
-      <label style="margin-bottom: 17px;">quant:</label><br />
-      <label>$:</label>
+    <div class="col-sm-2" style="border-right: solid 1px #dddddd;" align='right'>
+      <label style="margin-bottom: 12px;">size:</label><br />
+      <label style="margin-bottom: 17px;">quantity:</label><br />
+      <label style="margin-bottom: 16px;">decoration $:</label><br />
+      <label>imprintable $:</label>
     </div>
 
     <% line_items.each do |line_item| %>
-      <%= render partial: 'line_items/imprintable_edit_entry',
-                 locals: { line_item: line_item } %>
+      <%= render partial: 'line_items/imprintable_edit_entry', locals: { line_item: line_item } %>
     <% end %>
 
     <div class="col-sm-1">

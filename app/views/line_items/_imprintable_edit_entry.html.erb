@@ -5,7 +5,8 @@
       <% f.common_attr onchange: 'imprintableEditEntryChanged($(this))' %>
       <% f.common_attr onfocus: '$(this).numeric()' %>
       <%= f.text_field :quantity %>
-      <%= f.text_field :unit_price, value: (number_with_precision(line_item.unit_price, precision: 2) || 0) %>
+      <%= f.text_field :decoration_price, value: (number_with_precision(line_item.decoration_price, precision: 2) || 0) %>
+      <%= f.text_field :imprintable_price, value: (number_with_precision(line_item.imprintable_price, precision: 2) || 0) %>
     </div>
   <% end %>
 </div>

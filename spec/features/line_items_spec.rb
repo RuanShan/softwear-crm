@@ -106,7 +106,7 @@ feature 'Line Items management', line_item_spec: true, js: true do
       sleep 1.5
       expect(page).to have_content shirt.style_name
       expect(page).to have_content shirt.style_description
-      fill_in 'base_unit_price', with: '2.30'
+      fill_in 'decoration_price', with: '2.30'
     end
 
     sleep 1

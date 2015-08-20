@@ -25,6 +25,6 @@ describe 'line_items/_imprintable_edit.html.erb', line_item_spec: true do
   end
 
   it 'should render the filler div with the correct size' do
-    expect(rendered).to have_css "div.col-sm-7"
+    expect(rendered).to have_css "div.col-sm-6"
   end
 end

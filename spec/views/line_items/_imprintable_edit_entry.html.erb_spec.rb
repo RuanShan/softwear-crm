@@ -16,6 +16,8 @@ describe 'line_items/_imprintable_edit_entry.html.erb', line_item_spec: true do
     expect(rendered)
       .to have_css "div > input[name='line_item[#{line_item.id}[quantity]]']"
     expect(rendered)
-      .to have_css "div > input[name='line_item[#{line_item.id}[unit_price]]']"
+      .to have_css "div > input[name='line_item[#{line_item.id}[decoration_price]]']"
+    expect(rendered)
+      .to have_css "div > input[name='line_item[#{line_item.id}[imprintable_price]]']"
   end
 end
