@@ -16,7 +16,7 @@ describe LineItem, line_item_spec: true do
     describe 'quantity' do
       before do
         allow(subject)
-          .to receive_message_chain(:line_itemable, :try) #(jobbable_type)
+          .to receive_message_chain(:line_itemable, :try)
           .with(:jobbable_type)
           .and_return 'Quote'
       end

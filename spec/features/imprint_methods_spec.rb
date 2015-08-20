@@ -19,7 +19,7 @@ feature 'Imprint Method Features', imprint_method_spec: true do
     click_link 'Add an Imprint Method'
     fill_in 'Name', with: 'New Imprint Method Name'
     click_link 'Add Ink color'
-    find(:css, "input[id^='imprint_method_ink_colors_attributes_'][id$='_name']").set('Red')
+    find(:css, "input#imprint_method_ink_color_names_").set('Red')
     click_link 'Add Print Location'
     find(:css, "input[id^='imprint_method_print_locations_attributes_'][id$='_name']").set('Chest')
     find(:css, "input[id^='imprint_method_print_locations_attributes_'][id$='_max_height']").set('5.5')

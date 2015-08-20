@@ -13,18 +13,20 @@ module RemoteModel
         end
 
         begin
-          self.site = api_settings["#{slug}_endpoint"]
+          begin
+            self.site = api_settings["#{slug}_endpoint"]
 
-        rescue ActiveRecord::StatementInvalid => e
-          puts "WARNING: *********************************************"
-          puts e.message
-          puts "******************************************************"
-          self.site = "http://invalid-#{slug}.com/api"
+          rescue ActiveRecord::StatementInvalid => e
+            puts "WARNING: *********************************************"
+            puts e.message
+            puts "******************************************************"
+            self.site = "http://invalid-#{slug}.com/api"
+          end
 
         rescue URI::InvalidURIError => e
           puts "WARNING: *********************************************"
           puts e.message
-          puts "If you don't plan to use softwear-production integration, you may disregard this."
+          puts "If you don't plan to use softwear-production integration, you may disregard these."
           puts "******************************************************"
         end
       end

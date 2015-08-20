@@ -1,16 +1,6 @@
 class ImprintMethod < ActiveRecord::Base
   acts_as_paranoid
 
-
-=begin
-  # BEFORE MIGRATION
-  has_many :imprint_method_imprintables
-  has_many :imprintables, through: :imprint_method_imprintables
-  has_many :ink_colors, dependent: :destroy
-  has_many :print_locations, dependent: :destroy
-=end
-
-  # AFTER MIGRATION
   has_many :imprint_method_imprintables
   has_many :imprintables, through: :imprint_method_imprintables
   has_many :imprint_method_ink_colors
