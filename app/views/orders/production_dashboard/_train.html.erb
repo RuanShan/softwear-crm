@@ -7,7 +7,7 @@
         <dd><%= train.state.humanize %></dd>
         <% if train.respond_to? :scheduled_at %>
           <dt>Scheduled At</dt>
-          <dd><%= Time.new(train.scheduled_at).strftime("%F %T") %></dd>
+          <dd><%= Time.new(train.scheduled_at).strftime("%F %T") rescue "Not Scheduled" %></dd>
         <% end %>
         <% if train.respond_to? :estimated_time %>
           <dt>Estimated Time</dt>
