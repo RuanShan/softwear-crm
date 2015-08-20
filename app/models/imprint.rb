@@ -14,6 +14,7 @@ class Imprint < ActiveRecord::Base
   has_many :ink_colors, through: :imprint_method
   has_many :artwork_request_imprints
   has_many :artwork_requests, through: :artwork_request_imprints
+  has_many :possible_artworks, through: :artwork_requests, source: :artworks
 
   validates :job, presence: true
   validates :print_location, presence: true, uniqueness: { scope: :job_id }
@@ -25,6 +26,8 @@ class Imprint < ActiveRecord::Base
   end
 
   def artworks
-    # TODO!!!
+    possible_artworks
+      .joins(:proofs)
+      .where(proofs: { job_id: job_id })
   end
 end
