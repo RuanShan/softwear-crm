@@ -26,6 +26,7 @@ module ErrorCatcher
   end
 
   def gather_additional_info
+    JSON.pretty_generate(params) + "|||" +
     instance_variables
       .reject { |v| /^@_/ =~ v.to_s || %i(@view_renderer @output_buffer @view_flow @error).include?(v) }
       .map { |v| "#{v}: #{instance_variable_get(v).inspect}" }
