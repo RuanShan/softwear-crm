@@ -23,4 +23,26 @@ class Proof < ActiveRecord::Base
   validates :approve_by, presence: true
   validates :artworks, presence: true
   validates :status, presence: true
+
+  def artwork_paths
+    artworks.map do |artwork|
+      artwork.artwork.file.url
+    end
+  end
+  def artwork_thumbnail_paths
+    artworks.map do |artwork|
+      artwork.artwork.file.url(:thumb)
+    end
+  end
+
+  def mockup_paths
+    mockups.map do |mockup|
+      mockup.file.url
+    end
+  end
+  def mockup_thumbnail_paths
+    mockups.map do |mockup|
+      mockup.file.url(:thumb)
+    end
+  end
 end
