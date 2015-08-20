@@ -11,6 +11,6 @@ describe ArtworkRequestInkColor, artwork_request_ink_color_spec: true do
   end
 
   describe 'Validations' do
-    it { is_expected.to validate_uniqueness_of(:artwork_request_id).scoped_to(:ink_color_id) }
+    it { is_expected.to validate_uniqueness_of(:ink_color_id).scoped_to(:artwork_request_id) }
   end
 end

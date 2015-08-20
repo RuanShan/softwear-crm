@@ -35,7 +35,7 @@ class LineItem < ActiveRecord::Base
   validates :decoration_price, :imprintable_price, presence: true, price: true, if: :imprintable?
   validates :sort_order, presence: true, if: :markup_or_option?
 
-  before_validation :set_sort_order
+  before_validation :set_sort_order, if: :markup_or_option?
   before_create :set_default_quantity
 
   def self.create_imprintables(line_itemable, imprintable, color, options = {})

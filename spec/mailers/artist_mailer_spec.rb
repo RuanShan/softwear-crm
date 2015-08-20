@@ -24,8 +24,7 @@ describe ArtistMailer do
     end
 
     it 'assigns @artwork_request' do
-      expect(mailer.body.encoded).to match(artwork_request.imprint_method.name)
-      expect(mailer.body.encoded).to match(artwork_request.print_location.name)
+      expect(mailer.body.encoded).to include(artwork_request.imprints.first.name)
     end
 
     it 'assigns @action_name' do
