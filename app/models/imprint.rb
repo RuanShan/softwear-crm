@@ -23,4 +23,8 @@ class Imprint < ActiveRecord::Base
   def name
     "#{imprint_method.try(:name) || 'n\a'} - #{print_location.try(:name) || 'n\a'}"
   end
+
+  def artworks
+    # TODO!!!
+  end
 end

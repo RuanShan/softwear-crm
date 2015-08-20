@@ -32,4 +32,17 @@ describe Imprint, imprint_spec: true do
       expect(subject.name).to eq('IM name - PL name')
     end
   end
+
+  describe '#artworks' do
+    let!(:other_job) { create(:order_with_job).job }
+    let!(:artwork_request_1) { create(:artwork_request, imprints: [valid_imprint]) }
+    let!(:artwork_request_2) { create(:artwork_request, imprints: [valid_imprint]) }
+    let!(:artwork_request_3) { create(:artwork_request, imprints: [valid_imprint]) }
+    let!(:proof) { create(:proof, job: imprint.job, artworks: [artwork_request_2.artwork]) }
+    let!(:irrelevant_proof) { create(:proof, job: other_job, artworks: [artwork_request_1.artwork]) }
+
+    it 'returns the artworks from the artwork_requests that are also inside a proof for the job' do
+      expect(imprint.artworks).to eq [artwork_request_2.artwork]
+    end
+  end
 end
