@@ -24,6 +24,7 @@ class ArtworkRequest < ActiveRecord::Base
   belongs_to :artist,                class_name: User
   belongs_to :salesperson,           class_name: User
   has_many   :artworks,              through: :artwork_request_artworks
+  has_many   :proofs,                through: :artworks
   has_many   :assets,                as: :assetable, dependent: :destroy
   has_many   :ink_colors,            through: :artwork_request_ink_colors
   has_many   :imprints,              through: :artwork_request_imprints

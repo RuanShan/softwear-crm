@@ -33,7 +33,7 @@ describe Imprint, imprint_spec: true do
     end
   end
 
-  describe '#artworks', story_864: true do
+  describe 'with many artwork requests', story_864: true do
     let!(:other_job) { create(:order_with_job).jobs.first }
     let!(:artwork_request_1) { create(:valid_artwork_request_with_artwork, imprints: [imprint]) }
     let!(:artwork_request_2) { create(:valid_artwork_request_with_artwork, imprints: [imprint]) }
@@ -41,8 +41,12 @@ describe Imprint, imprint_spec: true do
     let!(:proof) { create(:proof, job: imprint.job, artworks: [artwork_request_2.artworks.first]) }
     let!(:irrelevant_proof) { create(:proof, job: other_job, artworks: [artwork_request_1.artworks.first]) }
 
-    it 'returns the artworks from the artwork_requests that are also inside a proof for the job' do
+    specify '#artworks returns the artworks from the artwork_requests that are also inside a proof for the job' do
       expect(imprint.artworks.to_a).to eq [artwork_request_2.artworks.first]
+    end
+
+    specify '#proofs returns the proofs that contain art within the imprint artwork requests' do
+      expect(imprint.proofs.to_a).to eq [proof]
     end
   end
 end

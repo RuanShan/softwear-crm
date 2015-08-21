@@ -16,6 +16,7 @@ class Proof < ActiveRecord::Base
   belongs_to :job
   has_many :artwork_proofs
   has_many :artworks, through: :artwork_proofs
+  has_many :artwork_requests, through: :artworks
   has_many :mockups, as: :assetable, class_name: Asset, dependent: :destroy
 
   accepts_nested_attributes_for :mockups, allow_destroy: true
