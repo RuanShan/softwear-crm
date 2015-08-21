@@ -38,13 +38,13 @@ feature 'Artwork Request Features', js: true, artwork_request_spec: true do
     expect(page).to have_css('table#artwork-request-table')
   end
 
-  scenario 'A user can add an artwork request', story_692: true do
+  scenario 'A user can add an artwork request', add_ar: true, story_692: true do
     visit new_order_artwork_request_path(artwork_request.jobs.first.order)
     sleep 1
 
     find('#artwork_request_imprint_ids').select order.imprints.first.name
 
-    find(:css, "div.icheckbox_minimal-grey[aria-checked='false']").click
+    find('#artwork_request_ink_color_ids_').select(imprint_method.ink_colors.first.name)
     fill_in 'artwork_request_deadline', with: '01/23/1992 8:55 PM'
     find_by_id('artwork_request_artist_id').find("option[value='#{artwork_request.artist_id}']").click
     fill_in 'Description', with: 'hello'

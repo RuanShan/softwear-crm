@@ -1,3 +1,4 @@
 $("#imprint_method_print_locations_and_ink_colors").html("<%= j(render partial: 'artwork_requests/artwork_imprint_method_fields',
                                                                        locals: { artwork_request: nil,
                                                                                  imprints: @imprints }).html_safe %>");
+initializeSelect2();

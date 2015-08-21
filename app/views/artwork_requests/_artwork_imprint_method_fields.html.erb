@@ -6,19 +6,15 @@
       <% if ink_colors.blank? || ink_colors.empty? %>
         The selected imprints share no compatible ink colors.
       <% else %>
-        <% (ink_colors || []).each do |ink_color| %>
-          <% checked =
-                     if artwork_request && artwork_request.ink_color_ids.include?(ink_color.id)
-                       { checked: true }
-                     else
-                       false
-                     end
-          %>
-
-          <%= check_box_tag 'artwork_request[ink_color_ids][]', ink_color.id, checked %>
-
-          <%= ink_color.name %>
-        <% end %>
+        <%=
+          select_tag 'artwork_request[ink_color_ids][]',
+            options_from_collection_for_select(
+                ink_colors, :id, :name, (artwork_request && artwork_request.ink_color_ids.map(&:to_s))
+            ),
+            multiple: true,
+            class: 'form-control select2',
+            style: 'width: 100%;'
+        %>
       <% end %>
     </div>
   </div>
