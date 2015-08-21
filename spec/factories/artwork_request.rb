@@ -18,7 +18,7 @@ FactoryGirl.define do
         imprint_methods = [create(:valid_imprint_method_with_color_and_location)]
         artwork_request.artist_id = create(:user).id
         artwork_request.salesperson_id = create(:alternate_user).id
-        artwork_request.imprints << create(:valid_imprint)
+        artwork_request.imprints << create(:valid_imprint) if artwork_request.imprints.empty?
         artwork_request.save(validate: false)
         ArtworkRequestInkColor.create!(artwork_request_id: artwork_request.id, ink_color_id: create(:ink_color).id)
       end

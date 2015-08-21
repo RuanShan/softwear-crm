@@ -8,6 +8,7 @@ class InkColor < ActiveRecord::Base
 
   validates :name, presence: true, uniqueness: true
 
+  # TODO perhaps this could be sped up
   def self.compatible_with(imprint_methods)
     return [] if imprint_methods.blank?
 
