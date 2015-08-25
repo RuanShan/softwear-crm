@@ -19,6 +19,23 @@ $(window).load ->
     else
       $(this).select2()
 
+  $('.ink-color-select2').each ->
+    self = $(this)
+
+    self.select2
+      allowClear: true
+      placeholder: $(this).data('placeholder')
+      tags: true
+
+    self.on 'select2:select', (e) ->
+      data = self.select2 'data'
+      for datum in data
+        if datum.id is e.params.data.id
+          datum.text = "Custom (#{e.params.data.text})"
+          break
+
+      self.trigger 'change'
+
 
 $(document).ready ->
   $(document).on 'click', '.kill-closest', (e) ->

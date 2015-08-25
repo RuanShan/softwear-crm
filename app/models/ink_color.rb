@@ -32,4 +32,8 @@ class InkColor < ActiveRecord::Base
 
     InkColor.where(id: ink_color_ids)
   end
+
+  def display_name
+    custom? ? "Custom (#{name})" : name
+  end
 end
