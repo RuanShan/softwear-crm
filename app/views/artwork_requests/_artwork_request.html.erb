@@ -18,7 +18,7 @@
             <dt>Imprints:</dt>
             <dd><%= artwork_request.imprints.map(&:name).join(', ') %></dd>
             <dt>Ink Colors:</dt>
-            <dd><%= artwork_request.ink_colors.pluck(:name).join(', ') %></dd>
+            <dd><%= artwork_request.ink_colors.map(&:display_name).join(', ') %></dd>
             <dt>Imprintables Included:</dt>
             <dd><%= artwork_request.imprintable_info %></dd>
             <dt>No. of Pieces:</dt>

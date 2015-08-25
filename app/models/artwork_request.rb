@@ -44,6 +44,22 @@ class ArtworkRequest < ActiveRecord::Base
   validates :priority,       presence: true
   validates :salesperson,    presence: true
 
+  def ink_color_ids=(ids)
+    custom_ids = []
+    ids.reject! do |custom_name|
+      if /^\d+$/ =~ id.to_s
+        custom_ink_color = InkColor.create!(
+          name:   custom_name,
+          custom: true,
+          imprint_methods: imprint_methods
+        )
+          .id.to_s
+        custom_ids << custom_ink_color
+      end
+    end
+    super(ids + custom_ids)
+  end
+
   def imprintable_variant_count
     jobs.map(&:imprintable_variant_count).reduce(:+)
   end

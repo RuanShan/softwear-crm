@@ -16,7 +16,7 @@
         <%=
           select_tag 'artwork_request[ink_color_ids][]',
             options_from_collection_for_select(
-                ink_colors, :id, :name, (artwork_request && artwork_request.ink_color_ids.map(&:to_s))
+                ink_colors, :id, :display_name, (artwork_request && artwork_request.ink_color_ids.map(&:to_s))
             ),
             multiple: true,
             class: 'form-control ink-color-select2',

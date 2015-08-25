@@ -97,6 +97,19 @@ describe ArtworkRequest, artwork_request_spec: true do
     end
   end
 
+  describe '#ink_color_ids=', story_811: true do
+    subject { build_stubbed(:artwork_request) }
+    let!(:color_1) { create(:ink_color) }
+    let!(:color_2) { create(:ink_color) }
+
+    context 'when a given an id is a string instead of an integer' do
+      it 'creates a custom ink color with that string as the name' do
+        subject.ink_color_ids = [color_1.id, color_2.id, 'Other']
+        expect(InkColor.where(custom: true, name: 'Other')).to exist
+      end
+    end
+  end
+
   describe '#compatible_ink_colors', story_862: true, compatible_ink_colors: true do
     subject { build(:artwork_request, imprints: [imprint_1, imprint_2, imprint_3]).tap { |ar| ar.save(validate: false) } }
 
