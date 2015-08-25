@@ -428,7 +428,7 @@ class Quote < ActiveRecord::Base
           ticket_type: 'Lead',
           subject: "Your Quote \"#{self.name}\" (##{self.id}) from the Ann Arbor T-shirt Company",
           custom_field: { FD_QUOTE_ID_FIELD => id },
-          description_html: freshdesk_description(quote_requests.where("freshdesk_contact_id <> ''"))
+          description_html: freshdesk_description(quote_requests)
         }
          .merge(requester_info)
       ))
