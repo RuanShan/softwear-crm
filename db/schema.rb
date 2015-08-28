@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150825182501) do
+ActiveRecord::Schema.define(version: 20150827215125) do
 
   create_table "activities", force: :cascade do |t|
     t.integer  "trackable_id",   limit: 4
@@ -549,8 +549,8 @@ ActiveRecord::Schema.define(version: 20150825182501) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.decimal  "shipping",                                     precision: 10, scale: 2
-    t.datetime "initialized_at"
     t.string   "quote_source",                     limit: 255
+    t.datetime "initialized_at"
     t.string   "freshdesk_ticket_id",              limit: 255
     t.boolean  "informal"
     t.integer  "insightly_category_id",            limit: 4
@@ -784,6 +784,13 @@ ActiveRecord::Schema.define(version: 20150825182501) do
   add_index "users", ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true, using: :btree
   add_index "users", ["unlock_token"], name: "index_users_on_unlock_token", unique: true, using: :btree
 
+  create_table "warning_emails", force: :cascade do |t|
+    t.string  "model",     limit: 255
+    t.decimal "minutes",               precision: 10, scale: 2
+    t.string  "recipient", limit: 255
+    t.string  "url",       limit: 255
+  end
+
   create_table "warnings", force: :cascade do |t|
     t.integer  "warnable_id",   limit: 4
     t.string   "warnable_type", limit: 255
@@ -791,6 +798,8 @@ ActiveRecord::Schema.define(version: 20150825182501) do
     t.text     "message",       limit: 65535
     t.datetime "dismissed_at"
     t.integer  "dismisser_id",  limit: 4
+    t.datetime "created_at"
+    t.datetime "updated_at"
   end
 
 end
