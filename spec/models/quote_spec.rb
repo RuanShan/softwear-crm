@@ -520,14 +520,13 @@ describe Quote, quote_spec: true do
       }
 
       let!(:group) { create(:job, jobbable_id: quote.id, jobbable_type: 'Quote', name: 'A', description: 'b') }
-      let(:iv1) { create(:valid_imprintable_variant) }
-      let(:iv2) { create(:valid_imprintable_variant) }
-      let(:iv3) { create(:valid_imprintable_variant) }
-      let(:line_item_1) { create(:line_item, line_itemable_id: group.id, line_itemable_type: 'Job', imprintable_variant_id: iv1.id, imprintable_price: 0.70, decoration_price: 1.50, tier: 3) }
-      let(:line_item_2) { create(:line_item, line_itemable_id: group.id, line_itemable_type: 'Job', imprintable_variant_id: iv2.id, imprintable_price: 0.90, decoration_price: 1.50, tier: 3) }
+      let(:i1) { create(:valid_imprintable_variant).imprintable }
+      let(:i2) { create(:valid_imprintable_variant).imprintable }
+      let(:i3) { create(:valid_imprintable_variant).imprintable }
+      let(:line_item_1) { create(:line_item, line_itemable_id: group.id, line_itemable_type: 'Job', imprintable_object_id: i1.id, imprintable_price: 0.70, decoration_price: 1.50, tier: 3, imprintable_object_type: 'Imprintable') }
+      let(:line_item_2) { create(:line_item, line_itemable_id: group.id, line_itemable_type: 'Job', imprintable_object_id: i2.id, imprintable_price: 0.90, decoration_price: 1.50, tier: 3, imprintable_object_type: 'Imprintable') }
 
       it 'returns a hash with the imprintables added and the details about where they were added' do
-      #  quote.instance_variable_set("@imprintable_line_item_added_ids", [1,2])
         quote.instance_variable_set("@imprintable_line_item_added_ids", [line_item_1.id, line_item_2.id])
         expect(quote.activity_parameters_hash).to eq(success_hash)
       end

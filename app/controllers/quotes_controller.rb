@@ -177,7 +177,7 @@ class QuotesController < InheritedResources::Base
         quote_request_ids: [],
         line_items_attributes: [
           :name, :quantity, :taxable, :description, :id,
-          :imprintable_variant_id, :unit_price, :_destroy, :url,
+          :imprintable_id, :unit_price, :_destroy, :url,
           :group_name
         ],
         line_items_from_group_attributes: [

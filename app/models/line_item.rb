@@ -29,9 +29,12 @@ class LineItem < ActiveRecord::Base
   validates :unit_price, presence: true, price: true, unless: :imprintable?
   validates :decoration_price, :imprintable_price, presence: true, price: true, if: :imprintable?
   validates :sort_order, presence: true, if: :markup_or_option?
-  validates :imprintable_object_type, inclusion: { in: ['Imprintable', nil] }, if: :quote?
-  validates :imprintable_object_type, inclusion: { in: ['ImprintableVariant', nil] }, if: :order?
-  validates :imprintable_object_id, uniqueness: { scope: [:line_itemable_id, :line_itemable_type] }
+  validates :imprintable_object_type, inclusion: {
+    in: ['Imprintable', nil], message: 'must be "Imprintable"' }, if: :quote?
+  validates :imprintable_object_type, inclusion: {
+    in: ['ImprintableVariant', nil], message: 'must be "Imprintable Variant"' }, if: :order?
+  validates :imprintable_object_id, uniqueness: {
+    scope: [:line_itemable_id], message: 'already exists' }, if: :imprintable_and_in_job?
 
   before_validation :set_sort_order, if: :markup_or_option?
   before_create :set_default_quantity
@@ -132,6 +135,10 @@ class LineItem < ActiveRecord::Base
   end
   def imprintable_variant=(iv)
     imprintable_object = iv
+  end
+
+  def imprintable_and_in_job?
+    imprintable? && !line_itemable.blank?
   end
 
   def imprintable?

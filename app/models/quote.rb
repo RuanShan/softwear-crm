@@ -256,6 +256,11 @@ class Quote < ActiveRecord::Base
     quantity          = attrs[:quantity]
     decoration_price  = attrs[:decoration_price]
 
+    new_job = Job.new
+    new_job.name        = imprintable_group.name
+    new_job.description = imprintable_group.description
+    new_job.save!
+
     new_line_items = Imprintable::TIERS.keys.map do |tier|
       imprintable = imprintable_group.default_imprintable_for_tier(tier)
 
@@ -266,17 +271,14 @@ class Quote < ActiveRecord::Base
       line_item.decoration_price   = decoration_price
       line_item.imprintable_price  = imprintable.base_price
       line_item.imprintable_object = imprintable
+      line_item.line_itemable      = new_job
       line_item.tier               = tier
 
       line_item
     end
       .compact
 
-    new_job = Job.new
-    new_job.name        = imprintable_group.name
-    new_job.description = imprintable_group.description
-    new_job.line_items  = new_line_items
-    new_job.save!
+    new_line_items.each(&:save!)
     @group_added_id = new_job.id
 
     attrs[:print_locations].try(:each_with_index) do |print_location_id, index|
@@ -319,11 +321,11 @@ class Quote < ActiveRecord::Base
       imprintable = Imprintable.find imprintable_id
 
       line_item = LineItem.new
-      line_item.line_itemable     = job
-      line_item.tier              = attrs[:tier].blank? ? Imprintable::TIER.good : attrs[:tier]
-      line_item.quantity          = attrs[:quantity].blank? ? 1 : attrs[:quantity]
-      line_item.decoration_price  = attrs[:decoration_price].blank? ? 0 : attrs[:decoration_price]
-      line_item.imprintable_price = imprintable.base_price
+      line_item.line_itemable      = job
+      line_item.tier               = attrs[:tier].blank? ? Imprintable::TIER.good : attrs[:tier]
+      line_item.quantity           = attrs[:quantity].blank? ? 1 : attrs[:quantity]
+      line_item.decoration_price   = attrs[:decoration_price].blank? ? 0 : attrs[:decoration_price]
+      line_item.imprintable_price  = imprintable.base_price
       line_item.imprintable_object = imprintable
 
       line_item.save!

@@ -22,6 +22,12 @@ FactoryGirl.define do
         decoration_price 8.50
         imprintable_price 2.50
       end
+
+      factory :imprintable_quote_line_item do
+        imprintable_object { |i| i.association :associated_imprintable }
+        decoration_price 8.50
+        imprintable_price 2.50
+      end
     end
   end
 end

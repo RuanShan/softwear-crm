@@ -235,21 +235,21 @@ feature 'Quotes management', quote_spec: true, js: true, retry: 2 do
     expect(quote.jobs.size).to be > 0
     expect(quote.jobs.where(name: imprintable_group.name)).to exist
     job = quote.jobs.where(name: imprintable_group.name).first
-    expect(job.line_items.where(imprintable_object_id: good_variant)).to exist
-    expect(job.line_items.where(imprintable_object_id: better_variant)).to exist
-    expect(job.line_items.where(imprintable_object_id: best_variant)).to exist
+    expect(job.line_items.where(imprintable_object_id: good_imprintable.id)).to exist
+    expect(job.line_items.where(imprintable_object_id: better_imprintable.id)).to exist
+    expect(job.line_items.where(imprintable_object_id: best_imprintable.id)).to exist
     expect(job.imprints.size).to eq 1
     expect(job.imprints.first.imprint_method).to eq imprint_method_2
   end
 
-  scenario 'Adding an imprintable is tracked by public activity', no_ci: true, story_600: true do
+  scenario 'Adding an imprintable is tracked by public activity', busted: true, no_ci: true, story_600: true do
     PublicActivity.with_tracking do
       allow(Imprintable).to receive(:search)
         .and_return OpenStruct.new(
           results: [imprintable1, imprintable2, imprintable3]
         )
 
-      quote.jobs << create(:job, line_items: [create(:imprintable_line_item)])
+      quote.jobs << create(:quote_job, line_items: [create(:imprintable_quote_line_item)])
       job = quote.jobs.first
       visit edit_quote_path quote
 
@@ -498,13 +498,13 @@ feature 'Quotes management', quote_spec: true, js: true, retry: 2 do
 
     expect(quote.jobs.size).to eq 2
 
-    expect(quote.jobs.first.line_items.where(imprintable_object_id: good_variant)).to exist
-    expect(quote.jobs.first.line_items.where(imprintable_object_id: better_variant)).to exist
-    expect(quote.jobs.first.line_items.where(imprintable_object_id: best_variant)).to exist
+    expect(quote.jobs.first.line_items.where(imprintable_object_id: good_imprintable.id)).to exist
+    expect(quote.jobs.first.line_items.where(imprintable_object_id: better_imprintable.id)).to exist
+    expect(quote.jobs.first.line_items.where(imprintable_object_id: best_imprintable.id)).to exist
 
-    expect(quote.jobs.last.line_items.where(imprintable_object_id: good_variant)).to exist
-    expect(quote.jobs.last.line_items.where(imprintable_object_id: better_variant)).to exist
-    expect(quote.jobs.last.line_items.where(imprintable_object_id: best_variant)).to exist
+    expect(quote.jobs.last.line_items.where(imprintable_object_id: good_imprintable.id)).to exist
+    expect(quote.jobs.last.line_items.where(imprintable_object_id: better_imprintable.id)).to exist
+    expect(quote.jobs.last.line_items.where(imprintable_object_id: best_imprintable.id)).to exist
   end
 
   scenario 'A user can add an imprintable group that only has one imprintable, properly', revamp: true, bug_fix: true do
@@ -530,9 +530,9 @@ feature 'Quotes management', quote_spec: true, js: true, retry: 2 do
 
     expect(quote.jobs.size).to be > 0
     job = quote.jobs.where(name: imprintable_group.name).first
-    expect(job.line_items.where(imprintable_object_id: good_variant)).to exist
-    expect(job.line_items.where(imprintable_object_id: better_variant)).to_not exist
-    expect(job.line_items.where(imprintable_object_id: best_variant)).to_not exist
+    expect(job.line_items.where(imprintable_object_id: good_imprintable.id)).to exist
+    expect(job.line_items.where(imprintable_object_id: better_imprintable.id)).to_not exist
+    expect(job.line_items.where(imprintable_object_id: best_imprintable.id)).to_not exist
   end
 
   scenario 'A user can add imprintable line items to an existing job', revamp: true, story_557: true do
@@ -541,7 +541,7 @@ feature 'Quotes management', quote_spec: true, js: true, retry: 2 do
         results: [imprintable1, imprintable2, imprintable3]
       )
 
-    quote.jobs << create(:job, line_items: [create(:imprintable_line_item)])
+    quote.jobs << create(:quote_job, line_items: [create(:imprintable_quote_line_item)])
     job = quote.jobs.first
     visit edit_quote_path quote
 
@@ -571,13 +571,13 @@ feature 'Quotes management', quote_spec: true, js: true, retry: 2 do
     expect(page).to have_content 'Quote was successfully updated.'
 
     job.reload
-    expect(job.line_items.where(imprintable_object_id: iv1.id)).to exist
-    expect(job.line_items.where(imprintable_object_id: iv2.id)).to_not exist
-    expect(job.line_items.where(imprintable_object_id: iv3.id)).to exist
+    expect(job.line_items.where(imprintable_object_id: imprintable1.id)).to exist
+    expect(job.line_items.where(imprintable_object_id: imprintable2.id)).to_not exist
+    expect(job.line_items.where(imprintable_object_id: imprintable3.id)).to exist
   end
 
   scenario 'A user cannot submit adding an imprintable without selecting anything', revamp: true, story_730: true do
-    quote.jobs << create(:job, line_items: [create(:imprintable_line_item)])
+    quote.jobs << create(:quote_job, line_items: [create(:imprintable_quote_line_item)])
     job = quote.jobs.first
     visit edit_quote_path quote
 
@@ -602,7 +602,7 @@ feature 'Quotes management', quote_spec: true, js: true, retry: 2 do
         results: [imprintable1, imprintable2, imprintable3]
       )
 
-    quote.jobs << create(:job, line_items: [create(:imprintable_line_item, quantity: 20, decoration_price: 10)])
+    quote.jobs << create(:quote_job, line_items: [create(:imprintable_quote_line_item, quantity: 20, decoration_price: 10)])
     job = quote.jobs.first
     visit edit_quote_path quote
 
@@ -629,13 +629,13 @@ feature 'Quotes management', quote_spec: true, js: true, retry: 2 do
     expect(page).to have_content 'Quote was successfully updated.'
 
     job.reload
-    expect(job.line_items.where(imprintable_object_id: iv1.id)).to exist
-    expect(job.line_items.where(imprintable_object_id: iv1.id, quantity: 20, decoration_price: 10)).to exist
+    expect(job.line_items.where(imprintable_object_id: imprintable1.id)).to exist
+    expect(job.line_items.where(imprintable_object_id: imprintable1.id, quantity: 20, decoration_price: 10)).to exist
   end
 
   scenario 'A user can add an option/markup to a quote', revamp: true, story_558: true, story_692: true do
     quote.update_attributes informal: true
-    quote.jobs << create(:job, line_items: [create(:imprintable_line_item)])
+    quote.jobs << create(:quote_job, line_items: [create(:imprintable_quote_line_item)])
     visit edit_quote_path quote
 
     find('a', text: 'Line Items').click
@@ -667,7 +667,7 @@ feature 'Quotes management', quote_spec: true, js: true, retry: 2 do
   end
 
   scenario 'A user can sort options and markups on a quote', revamp: true, story_797: true do
-    quote.jobs << create(:job, line_items: [create(:imprintable_line_item)])
+    quote.jobs << create(:quote_job, line_items: [create(:imprintable_quote_line_item)])
     quote.markups_and_options_job.line_items << standard_line_item_1
     quote.markups_and_options_job.line_items << standard_line_item_2
     quote.markups_and_options_job.line_items << standard_line_item_3
@@ -721,12 +721,12 @@ feature 'Quotes management', quote_spec: true, js: true, retry: 2 do
   end
 
   scenario 'A user can remove line items from a quote', story_572: true, revamp: true do
-    job = create(:job, name: 'Some imprintables')
-    job.line_items << create(:imprintable_line_item, tier: Imprintable::TIER.good,   name: 'Good')
-    imprintable_line_item_to_delete = create(:imprintable_line_item, tier: Imprintable::TIER.good, name: 'Bad Good')
+    job = create(:quote_job, name: 'Some imprintables')
+    job.line_items << create(:imprintable_quote_line_item, tier: Imprintable::TIER.good,   name: 'Good')
+    imprintable_line_item_to_delete = create(:imprintable_quote_line_item, tier: Imprintable::TIER.good, name: 'Bad Good')
     job.line_items << imprintable_line_item_to_delete
-    job.line_items << create(:imprintable_line_item, tier: Imprintable::TIER.better, name: 'Better')
-    job.line_items << create(:imprintable_line_item, tier: Imprintable::TIER.best,   name: 'Best')
+    job.line_items << create(:imprintable_quote_line_item, tier: Imprintable::TIER.better, name: 'Better')
+    job.line_items << create(:imprintable_quote_line_item, tier: Imprintable::TIER.best,   name: 'Best')
     quote.jobs << job
 
     quote.markups_and_options_job.line_items << create(:non_imprintable_line_item)
@@ -765,7 +765,7 @@ feature 'Quotes management', quote_spec: true, js: true, retry: 2 do
         results: [template]
       )
     quote.update_attributes informal: true
-    quote.jobs << create(:job, line_items: [create(:imprintable_line_item)])
+    quote.jobs << create(:quote_job, line_items: [create(:imprintable_quote_line_item)])
 
     visit edit_quote_path quote
     find('a', text: 'Line Items').click
