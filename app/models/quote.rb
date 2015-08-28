@@ -262,15 +262,11 @@ class Quote < ActiveRecord::Base
       next if imprintable.nil?
 
       line_item = LineItem.new
-      line_item.quantity          = quantity
-      line_item.decoration_price  = decoration_price
-      line_item.imprintable_price = imprintable.base_price
-      line_item.imprintable_variant_id =
-        imprintable.imprintable_variants.first.try(:id)
-
-      next if line_item.imprintable_variant_id.nil?
-
-      line_item.tier = tier
+      line_item.quantity           = quantity
+      line_item.decoration_price   = decoration_price
+      line_item.imprintable_price  = imprintable.base_price
+      line_item.imprintable_object = imprintable
+      line_item.tier               = tier
 
       line_item
     end
@@ -328,9 +324,8 @@ class Quote < ActiveRecord::Base
       line_item.quantity          = attrs[:quantity].blank? ? 1 : attrs[:quantity]
       line_item.decoration_price  = attrs[:decoration_price].blank? ? 0 : attrs[:decoration_price]
       line_item.imprintable_price = imprintable.base_price
-      line_item.imprintable_variant_id =
-        imprintable.imprintable_variants.pluck(:id).first
-      # TODO error out if that imprintable variant id is nil
+      line_item.imprintable_object = imprintable
+
       line_item.save!
       @imprintable_line_item_added_ids << line_item.id
     end
@@ -636,7 +631,7 @@ class Quote < ActiveRecord::Base
   end
 
   def additional_options_and_markups
-    line_items.where(imprintable_variant_id: nil)
+    line_items.where(imprintable_object_id: nil)
   end
 
   def activity_parameters_hash_for_job_changes(job, li_old, imprints_old)

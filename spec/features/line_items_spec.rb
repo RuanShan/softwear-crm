@@ -113,9 +113,9 @@ feature 'Line Items management', line_item_spec: true, js: true do
     sleep 1
     find('#line-item-submit').click
     sleep 1
-    expect(LineItem.where(imprintable_variant_id: white_shirt_s.id)).to exist
-    expect(LineItem.where(imprintable_variant_id: white_shirt_m.id)).to exist
-    expect(LineItem.where(imprintable_variant_id: white_shirt_l.id)).to exist
+    expect(LineItem.where(imprintable_object_id: white_shirt_s.id)).to exist
+    expect(LineItem.where(imprintable_object_id: white_shirt_m.id)).to exist
+    expect(LineItem.where(imprintable_object_id: white_shirt_l.id)).to exist
 
     expect(page).to have_content shirt.style_name
     expect(page).to have_content shirt.style_catalog_no

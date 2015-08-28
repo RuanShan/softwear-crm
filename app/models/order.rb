@@ -89,7 +89,7 @@ class Order < ActiveRecord::Base
 
   alias_method :comments, :all_comments
   alias_method :comments=, :all_comments=
-  
+
   default_scope -> { order(created_at: :desc) }
   scope :fba, -> { where(terms: 'Fulfilled by Amazon') }
 
@@ -213,11 +213,15 @@ class Order < ActiveRecord::Base
 
           size_id = size_attributes[:size]
 
-          job.line_items
-            .joins(:imprintable_variant)
-            .where(imprintable_variants: { size_id: size_id, color_id: color_id })
+          variant_id = ImprintableVariant
+            .where(id: job.line_item_ids)
+            .where(size_id: size_id, color_id: color_id)
             .readonly(false)
+            .pluck(:id)
             .first
+
+          job.line_items
+            .find_by(imprintable_object_id: variant_id)
             .update_attributes(quantity: size_attributes[:quantity])
         end
       end

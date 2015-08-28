@@ -20,7 +20,7 @@ class Job < ActiveRecord::Base
   has_many :imprints, dependent: :destroy
   has_many :imprintables, -> {readonly}, through: :imprintable_variants
   has_many :imprintable_variants, -> {readonly}, through: :line_items
-  has_many :line_items, as: :line_itemable, dependent: :destroy 
+  has_many :line_items, as: :line_itemable, dependent: :destroy
   has_many :shipments, as: :shippable
   has_many :proofs
 
@@ -161,11 +161,9 @@ class Job < ActiveRecord::Base
 
   def sort_line_items
     result = {}
-    LineItem.includes(
-      imprintable_variant: [:color, :size]
-    )
+    LineItem
       .where(line_itemable_id: id, line_itemable_type: 'Job')
-      .where.not(imprintable_variant_id: nil).each do |line_item|
+      .where.not(imprintable_object_id: nil).each do |line_item|
         imprintable_name = line_item.imprintable.name
         variant          = line_item.imprintable_variant
         color_name       = variant.color.name

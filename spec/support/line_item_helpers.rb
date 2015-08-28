@@ -1,7 +1,7 @@
 module LineItemHelpers
   # Defines a bunch of stuff for you
   # Be aware: the color and imprintable must be already defined
-  # 
+  #
   #  make_variants :blue, :shirt, [:M, :L]
   # Will define the following:
   #  size_m            : Size
@@ -10,14 +10,14 @@ module LineItemHelpers
   #  blue_shirt_l      : ImprintableVariant
   #  blue_shirt_m_item : LineItem
   #  blue_shirt_l_item : LineItem
-  # 
+  #
   # Options include:
   #   lazy: boolean     - if true, all 'let's will be lazy
   #   not: array/symbol - 'let's for these types will be
   #                       lazy loaded
   def make_variants(color, imprintable, sizes=[], options={})
     sizes << :M if sizes.empty?
-    
+
     excluded = [options[:not]].flatten.compact
     letfunc = lambda do |category|
       if options[:lazy] ||
@@ -48,7 +48,7 @@ module LineItemHelpers
              .("#{color}_#{imprintable}_#{size.to_s.downcase}_item") do
         create(
           :imprintable_line_item,
-          imprintable_variant: send(
+          imprintable_object: send(
             "#{color}_#{imprintable}_#{size.to_s.downcase}"
           )
         )
@@ -87,7 +87,7 @@ module LineItemHelpers
       let!(line_item) do
         build_stubbed(
           :imprintable_line_item,
-          imprintable_variant: send(imprintable_variant),
+          imprintable_object: send(imprintable_variant),
         )
       end
 

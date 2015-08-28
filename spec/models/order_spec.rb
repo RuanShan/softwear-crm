@@ -366,7 +366,7 @@ describe Order, order_spec: true do
         job = order.jobs.first
 
         variants.each do |variant|
-          expect(job.line_items.where(imprintable_variant_id: variant.id))
+          expect(job.line_items.where(imprintable_object_id: variant.id))
             .to exist
         end
 

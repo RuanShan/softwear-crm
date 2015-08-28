@@ -3,21 +3,21 @@
   refresh<%= @line_itemable.class.name -%>(<%= @line_itemable.id %>);
   <%= update_order_timeline(@line_itemable.try(:jobbable)) %>
 <% else %>
-  $currentForm = $('#lineItemModal').find('form');
-  errorHandler = $currentForm.data('error-handler');
-
-  if (typeof errorHandler === 'undefined') {
-    errorHandler = ErrorHandler('line_item', $currentForm);
-    $currentForm.data('error-handler', errorHandler);
-  }
-
   try {
+    var $currentForm = $('#lineItemModal').find('form');
+    var errorHandler = $currentForm.data('error-handler');
+
+    if (typeof errorHandler === 'undefined') {
+      errorHandler = ErrorHandler('line_item', $currentForm);
+      $currentForm.data('error-handler', errorHandler);
+    }
+
     errorHandler.handleErrors(
       <%= (@line_item || @line_items.reject(&:valid?).first).errors.messages.to_json.html_safe %>,
       "<%= j render partial: 'shared/modal_errors', locals: { object: @line_item } %>"
     );
   } catch(e) {
-    alert(e.message);
+    alert(e);
   }
 
 <% end %>

@@ -15,25 +15,23 @@ class LineItem < ActiveRecord::Base
 
   default_scope { order(:sort_order) }
 
-  scope :non_imprintable, -> { where imprintable_variant_id: nil }
-  scope :imprintable, -> { where.not imprintable_variant_id: nil }
+  scope :non_imprintable, -> { where imprintable_object_id: nil }
+  scope :imprintable, -> { where.not imprintable_object_id: nil }
 
-  belongs_to :imprintable_variant
+  belongs_to :imprintable_object, polymorphic: true
   belongs_to :line_itemable, polymorphic: true, touch: true
 
   validates :description, presence: true, unless: :imprintable?
-  validates :imprintable_variant_id,
-            uniqueness: {
-              scope: [:line_itemable_id, :line_itemable_type]
-            }, if: :imprintable_and_in_an_order?
-  validate :imprintable_variant_exists, if: :imprintable?
   validates :name, presence: true, unless: :imprintable?
   validates :quantity, presence: true
   validates :quantity, greater_than_zero: true, if: :should_validate_quantity?
-  validate :quantity_is_not_negative, unless: :should_validate_quantity?
+  validate  :quantity_is_not_negative, unless: :should_validate_quantity?
   validates :unit_price, presence: true, price: true, unless: :imprintable?
   validates :decoration_price, :imprintable_price, presence: true, price: true, if: :imprintable?
   validates :sort_order, presence: true, if: :markup_or_option?
+  validates :imprintable_object_type, inclusion: { in: ['Imprintable', nil] }, if: :quote?
+  validates :imprintable_object_type, inclusion: { in: ['ImprintableVariant', nil] }, if: :order?
+  validates :imprintable_object_id, uniqueness: { scope: [:line_itemable_id, :line_itemable_type] }
 
   before_validation :set_sort_order, if: :markup_or_option?
   before_create :set_default_quantity
@@ -51,7 +49,8 @@ class LineItem < ActiveRecord::Base
 
     imprintable_variants.map do |variant|
       LineItem.new(
-        imprintable_variant_id: variant.id,
+        imprintable_object_type: 'ImprintableVariant',
+        imprintable_object_id: variant.id,
         unit_price: options[:base_unit_price].to_f || variant.imprintable.base_price || 0,
         quantity: 0,
         line_itemable_id: line_itemable.id,
@@ -64,20 +63,8 @@ class LineItem < ActiveRecord::Base
 
   %i(description name).each do |method|
     define_method(method) do
-      imprintable? ? imprintable_variant.send(method) : self[method] rescue ''
+      imprintable? ? imprintable_object.send(method) : self[method] rescue ''
     end
-  end
-  def name
-    return super unless imprintable?
-
-    if line_itemable.try(:jobbable_type) == 'Order'
-      imprintable_variant.name
-    else
-      imprintable.try(:name)
-    end
-  end
-  def description
-    imprintable? ? imprintable.description : super rescue ''
   end
 
   def url
@@ -89,6 +76,7 @@ class LineItem < ActiveRecord::Base
   end
 
   def <=>(other)
+    return super if imprintable_object_type == 'Imprintable'
     return 0 if other == self
 
     if imprintable?
@@ -103,20 +91,55 @@ class LineItem < ActiveRecord::Base
     end
   end
 
+  def quote?
+    line_itemable.try(:jobbable_type) == 'Quote'
+  end
+  def order?
+    line_itemable.try(:jobbable_type) == 'Order'
+  end
+
   def order
     line_itemable.try(:order)
   end
 
   def imprintable
-    imprintable_variant.try(:imprintable)
+    if imprintable_object_type == 'Imprintable'
+      imprintable_object
+    else
+      imprintable_object.try(:imprintable)
+    end
   end
 
   def imprintable_id
-    imprintable_variant.try(:imprintable_id)
+    if imprintable_object_type == 'Imprintable'
+      imprintable_object_id
+    else
+      imprintable_object.try(:imprintable_id)
+    end
+  end
+
+  def imprintable_variant
+    imprintable_object if imprintable_object_type == 'ImprintableVariant'
+  end
+
+  def imprintable_variant_id
+    imprintable_object_id if imprintable_object_type == 'ImprintableVariant'
+  end
+
+  def imprintable_variant_id=(iv_id)
+    imprintable_object_type = 'ImprintableVariant'
+    imprintable_object_id = iv_id
+  end
+  def imprintable_variant=(iv)
+    imprintable_object = iv
   end
 
   def imprintable?
-    !imprintable_variant_id.nil?
+    !imprintable_object.blank?
+  end
+
+  def imprintable_variant?
+    !imprintable_object.blank?
   end
 
   def size_display
@@ -124,11 +147,11 @@ class LineItem < ActiveRecord::Base
   end
 
   def style_catalog_no
-    imprintable_variant.imprintable.style_catalog_no
+    imprintable.style_catalog_no
   end
 
   def style_name
-    imprintable_variant.imprintable.style_name
+    imprintable.style_name
   end
 
   def unit_price
@@ -169,12 +192,6 @@ class LineItem < ActiveRecord::Base
     end
 
     self.sort_order = 1 + last_sort_order
-  end
-
-  def imprintable_variant_exists
-    if ImprintableVariant.where(id: imprintable_variant_id).size < 1
-      errors.add :imprintable_variant, 'does not exist'
-    end
   end
 
   def set_default_quantity

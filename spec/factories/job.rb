@@ -5,6 +5,8 @@ FactoryGirl.define do
       sequence(:name) { |s| "Test Job #{s}" }
       description 'Here is the test job description.'
       jobbable { |o| o.association(:order) }
+
+      factory :order_job
     end
 
     factory :quote_job do

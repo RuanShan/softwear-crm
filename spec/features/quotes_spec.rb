@@ -235,9 +235,9 @@ feature 'Quotes management', quote_spec: true, js: true, retry: 2 do
     expect(quote.jobs.size).to be > 0
     expect(quote.jobs.where(name: imprintable_group.name)).to exist
     job = quote.jobs.where(name: imprintable_group.name).first
-    expect(job.line_items.where(imprintable_variant_id: good_variant)).to exist
-    expect(job.line_items.where(imprintable_variant_id: better_variant)).to exist
-    expect(job.line_items.where(imprintable_variant_id: best_variant)).to exist
+    expect(job.line_items.where(imprintable_object_id: good_variant)).to exist
+    expect(job.line_items.where(imprintable_object_id: better_variant)).to exist
+    expect(job.line_items.where(imprintable_object_id: best_variant)).to exist
     expect(job.imprints.size).to eq 1
     expect(job.imprints.first.imprint_method).to eq imprint_method_2
   end
@@ -498,13 +498,13 @@ feature 'Quotes management', quote_spec: true, js: true, retry: 2 do
 
     expect(quote.jobs.size).to eq 2
 
-    expect(quote.jobs.first.line_items.where(imprintable_variant_id: good_variant)).to exist
-    expect(quote.jobs.first.line_items.where(imprintable_variant_id: better_variant)).to exist
-    expect(quote.jobs.first.line_items.where(imprintable_variant_id: best_variant)).to exist
+    expect(quote.jobs.first.line_items.where(imprintable_object_id: good_variant)).to exist
+    expect(quote.jobs.first.line_items.where(imprintable_object_id: better_variant)).to exist
+    expect(quote.jobs.first.line_items.where(imprintable_object_id: best_variant)).to exist
 
-    expect(quote.jobs.last.line_items.where(imprintable_variant_id: good_variant)).to exist
-    expect(quote.jobs.last.line_items.where(imprintable_variant_id: better_variant)).to exist
-    expect(quote.jobs.last.line_items.where(imprintable_variant_id: best_variant)).to exist
+    expect(quote.jobs.last.line_items.where(imprintable_object_id: good_variant)).to exist
+    expect(quote.jobs.last.line_items.where(imprintable_object_id: better_variant)).to exist
+    expect(quote.jobs.last.line_items.where(imprintable_object_id: best_variant)).to exist
   end
 
   scenario 'A user can add an imprintable group that only has one imprintable, properly', revamp: true, bug_fix: true do
@@ -530,9 +530,9 @@ feature 'Quotes management', quote_spec: true, js: true, retry: 2 do
 
     expect(quote.jobs.size).to be > 0
     job = quote.jobs.where(name: imprintable_group.name).first
-    expect(job.line_items.where(imprintable_variant_id: good_variant)).to exist
-    expect(job.line_items.where(imprintable_variant_id: better_variant)).to_not exist
-    expect(job.line_items.where(imprintable_variant_id: best_variant)).to_not exist
+    expect(job.line_items.where(imprintable_object_id: good_variant)).to exist
+    expect(job.line_items.where(imprintable_object_id: better_variant)).to_not exist
+    expect(job.line_items.where(imprintable_object_id: best_variant)).to_not exist
   end
 
   scenario 'A user can add imprintable line items to an existing job', revamp: true, story_557: true do
@@ -571,9 +571,9 @@ feature 'Quotes management', quote_spec: true, js: true, retry: 2 do
     expect(page).to have_content 'Quote was successfully updated.'
 
     job.reload
-    expect(job.line_items.where(imprintable_variant_id: iv1.id)).to exist
-    expect(job.line_items.where(imprintable_variant_id: iv2.id)).to_not exist
-    expect(job.line_items.where(imprintable_variant_id: iv3.id)).to exist
+    expect(job.line_items.where(imprintable_object_id: iv1.id)).to exist
+    expect(job.line_items.where(imprintable_object_id: iv2.id)).to_not exist
+    expect(job.line_items.where(imprintable_object_id: iv3.id)).to exist
   end
 
   scenario 'A user cannot submit adding an imprintable without selecting anything', revamp: true, story_730: true do
@@ -629,8 +629,8 @@ feature 'Quotes management', quote_spec: true, js: true, retry: 2 do
     expect(page).to have_content 'Quote was successfully updated.'
 
     job.reload
-    expect(job.line_items.where(imprintable_variant_id: iv1.id)).to exist
-    expect(job.line_items.where(imprintable_variant_id: iv1.id, quantity: 20, decoration_price: 10)).to exist
+    expect(job.line_items.where(imprintable_object_id: iv1.id)).to exist
+    expect(job.line_items.where(imprintable_object_id: iv1.id, quantity: 20, decoration_price: 10)).to exist
   end
 
   scenario 'A user can add an option/markup to a quote', revamp: true, story_558: true, story_692: true do

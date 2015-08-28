@@ -21,16 +21,20 @@ describe LineItemsController, line_item_spec: true do
         json_response = JSON.parse response.body
         expect(json_response['result']).to eq 'success'
         expect(
-          LineItem.where(imprintable_variant_id: white_shirt_s.id)
+          LineItem.where(imprintable_object_id: white_shirt_s.id,
+                         imprintable_object_type: 'ImprintableVariant')
         ).to exist
         expect(
-          LineItem.where(imprintable_variant_id: white_shirt_m.id)
+          LineItem.where(imprintable_object_id: white_shirt_m.id,
+                         imprintable_object_type: 'ImprintableVariant')
         ).to exist
         expect(
-          LineItem.where(imprintable_variant_id: white_shirt_l.id)
+          LineItem.where(imprintable_object_id: white_shirt_l.id,
+                         imprintable_object_type: 'ImprintableVariant')
         ).to exist
         expect(
-          LineItem.where(imprintable_variant_id: white_shirt_xl.id)
+          LineItem.where(imprintable_object_id: white_shirt_xl.id,
+                         imprintable_object_type: 'ImprintableVariant')
         ).to exist
         expect(
           LineItem.where(line_itemable_id: job.id, line_itemable_type: 'Job')

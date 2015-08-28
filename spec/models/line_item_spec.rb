@@ -6,10 +6,7 @@ describe LineItem, line_item_spec: true do
   it { is_expected.to be_paranoid }
 
   describe 'Relationships' do
-    it { is_expected.to belong_to(:imprintable_variant) }
     it { is_expected.to belong_to(:line_itemable) }
-    # FIXME this doesn't work
-    # it { is_expected.to have_one(:order).through(:job) }
   end
 
   describe 'Validations', now: true do
@@ -39,14 +36,14 @@ describe LineItem, line_item_spec: true do
       end
     end
 
-    context 'when imprintable_variant_id is nil' do
+    context 'when imprintable_object is nil' do
       before :each do
-        allow(subject).to receive(:imprintable_variant_id).and_return nil
+        allow(subject).to receive(:imprintable_object_id).and_return nil
+        allow(subject).to receive(:imprintable_object_type).and_return nil
       end
 
       it { is_expected.to validate_presence_of :description }
       it { is_expected.to validate_presence_of :name }
-      it { is_expected.to_not validate_presence_of :imprintable_variant }
       it { is_expected.to validate_presence_of :unit_price }
 
       it 'description returns the description stored in the database' do
@@ -58,20 +55,12 @@ describe LineItem, line_item_spec: true do
       end
     end
 
-    context 'when imprintable_variant_id is not nil' do
-      let!(:subject) {}
+    context 'when imprintable_object_id is not nil' do
       subject do
         create(
           :imprintable_line_item,
-          imprintable_variant: create(:associated_imprintable_variant)
+          imprintable_object: create(:associated_imprintable_variant)
         )
-      end
-
-      it 'validates the existance of imprintable_variant' do
-        subject.imprintable_variant_id = 99
-        subject.save
-        expect(subject.errors[:imprintable_variant])
-          .to include('does not exist')
       end
 
       it { is_expected.to_not validate_presence_of :description }
@@ -79,13 +68,19 @@ describe LineItem, line_item_spec: true do
       it { is_expected.to validate_presence_of :decoration_price }
       it { is_expected.to validate_presence_of :imprintable_price }
 
-
       it 'description should return the imprintable_variant description' do
         expect(subject.description)
-          .to eq subject.imprintable_variant.imprintable.style_description
+          .to eq subject.imprintable.style_description
       end
       context 'name', story_610: true do
         context 'when belonging to a quote job' do
+          subject do
+            create(
+              :imprintable_line_item,
+              imprintable_object: create(:valid_imprintable)
+            )
+          end
+
           before do
             allow(subject).to receive(:line_itemable)
              .and_return OpenStruct.new(jobbable_type: 'Quote')
@@ -158,7 +153,9 @@ describe LineItem, line_item_spec: true do
     let(:line_item) do
       build_stubbed(
         :blank_line_item,
-        imprintable_variant: build_stubbed(
+        line_itemable: build_stubbed(:order_job),
+
+        imprintable_object: build_stubbed(
           :blank_imprintable_variant,
           imprintable: build_stubbed(:blank_imprintable)
         )
@@ -216,8 +213,9 @@ describe LineItem, line_item_spec: true do
   describe '#size_display' do
     let(:line_item) do
       build_stubbed(:blank_line_item,
+        line_itemable: build_stubbed(:order_job),
 
-        imprintable_variant: build_stubbed(:blank_imprintable_variant,
+        imprintable_object: build_stubbed(:blank_imprintable_variant,
           size: build_stubbed(:blank_size, display_value: 1)
         )
       )
@@ -231,8 +229,9 @@ describe LineItem, line_item_spec: true do
   describe '#style_catalog_no' do
     let(:line_item) do
       build_stubbed(:blank_line_item,
+        line_itemable: build_stubbed(:order_job),
 
-        imprintable_variant: build_stubbed(:blank_imprintable_variant,
+        imprintable_object: build_stubbed(:blank_imprintable_variant,
 
           imprintable: build_stubbed(:blank_imprintable,
             style_catalog_no: 5555
@@ -243,15 +242,16 @@ describe LineItem, line_item_spec: true do
 
     it 'returns the imprintable style_catalog_no' do
       expect(line_item.style_catalog_no)
-        .to eq(line_item.imprintable_variant.imprintable.style_catalog_no)
+        .to eq(line_item.imprintable.style_catalog_no)
     end
   end
 
   describe '#style_name' do
     let(:line_item) do
       build_stubbed(:blank_line_item,
+        line_itemable: build_stubbed(:order_job),
 
-        imprintable_variant: build_stubbed(:blank_imprintable_variant,
+        imprintable_object: build_stubbed(:blank_imprintable_variant,
 
           imprintable: build_stubbed(:blank_imprintable, style_name: 'Style')
         )
@@ -260,7 +260,7 @@ describe LineItem, line_item_spec: true do
 
     it 'returns the imprintable style_name' do
       expect(line_item.style_name)
-        .to eq(line_item.imprintable_variant.imprintable.style_name)
+        .to eq(line_item.imprintable.style_name)
     end
   end
 

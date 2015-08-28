@@ -365,13 +365,13 @@ describe Quote, quote_spec: true do
         expect(subject.jobs.where(name: group.name)).to exist
         expect(subject.jobs.where(description: group.description)).to exist
 
-        expect(job.line_items.where(imprintable_variant_id: good_iv.id)).to exist
-        expect(job.line_items.where(imprintable_variant_id: better_iv.id)).to exist
-        expect(job.line_items.where(imprintable_variant_id: best_iv.id)).to exist
+        expect(job.line_items.where(imprintable_object_id: good_iv.id)).to exist
+        expect(job.line_items.where(imprintable_object_id: better_iv.id)).to exist
+        expect(job.line_items.where(imprintable_object_id: best_iv.id)).to exist
 
-        good_li = job.line_items.where(imprintable_variant_id: good_iv.id).first
-        better_li = job.line_items.where(imprintable_variant_id: better_iv.id).first
-        best_li = job.line_items.where(imprintable_variant_id: best_iv.id).first
+        good_li = job.line_items.where(imprintable_object_id: good_iv.id).first
+        better_li = job.line_items.where(imprintable_object_id: better_iv.id).first
+        best_li = job.line_items.where(imprintable_object_id: best_iv.id).first
 
         expect(good_li.quantity).to eq 2
         expect(better_li.quantity).to eq 2
@@ -443,8 +443,8 @@ describe Quote, quote_spec: true do
         subject.line_item_to_group_attributes = attributes
         subject.save!
 
-        expect(job.line_items.where(imprintable_variant_id: variant_1.id)).to exist
-        expect(job.line_items.where(imprintable_variant_id: variant_2.id)).to exist
+        expect(job.line_items.where(imprintable_object_id: variant_1.id)).to exist
+        expect(job.line_items.where(imprintable_object_id: variant_2.id)).to exist
 
         job.line_items.each do |line_item|
           expect(line_item.quantity).to eq 11

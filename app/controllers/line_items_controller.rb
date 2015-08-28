@@ -333,6 +333,7 @@ class LineItemsController < InheritedResources::Base
       line_item: [
         :id, :name, :description, :quantity, :url,
         :unit_price, :imprintable_variant_id,
+        :imprintable_id,
         :taxable, :line_itemable_id, :line_itemable_type
       ]
     )
