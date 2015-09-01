@@ -146,7 +146,7 @@ class LineItem < ActiveRecord::Base
   end
 
   def imprintable_variant?
-    !imprintable_object.blank?
+    !imprintable_object_id.blank? && imprintable_object_type == 'ImprintableVariant'
   end
 
   def size_display

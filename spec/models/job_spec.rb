@@ -22,10 +22,7 @@ describe Job, job_spec: true do
 
   describe 'Relationships' do
     it { is_expected.to belong_to(:jobbable) }
-    it { is_expected.to have_many(:colors).through(:imprintable_variants) }
     it { is_expected.to have_many(:imprints) }
-    it { is_expected.to have_many(:imprintables).through(:imprintable_variants) }
-    it { is_expected.to have_many(:imprintable_variants).through(:line_items) }
     it { is_expected.to have_many(:line_items) }
     it { is_expected.to have_many(:artwork_requests) }
 
@@ -111,9 +108,15 @@ describe Job, job_spec: true do
   describe '#imprintable_variant_count', artwork_request_spec: true do
     before do
       allow(subject).to receive(:line_items) { [
-        build_stubbed(:blank_line_item, imprintable_variant_id: 1, quantity: 25),
-        build_stubbed(:blank_line_item, imprintable_variant_id: nil, quantity: 50),
-        build_stubbed(:blank_line_item, imprintable_variant_id: 1, quantity: 30)
+        build_stubbed(
+          :blank_line_item, imprintable_object_id: 1, quantity: 25,
+          imprintable_object_type: 'ImprintableVariant'
+        ),
+        build_stubbed(:blank_line_item, imprintable_object_id: nil, quantity: 50),
+        build_stubbed(
+          :blank_line_item, imprintable_object_id: 2, quantity: 30,
+          imprintable_object_type: 'ImprintableVariant'
+        )
       ]}
     end
 
@@ -265,14 +268,6 @@ describe Job, job_spec: true do
 
       expect(result[shirt.name]["red"])
         .to eq [red_shirt_s_item, red_shirt_m_item, red_shirt_xl_item]
-    end
-
-    it 'should eager load imprintable variant color and size' do
-      expect(LineItem).to receive(:includes)
-        .with(imprintable_variant: [:color, :size])
-        .and_call_original
-
-      job.sort_line_items
     end
   end
 

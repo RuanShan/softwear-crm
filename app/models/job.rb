@@ -16,10 +16,7 @@ class Job < ActiveRecord::Base
 
   belongs_to :jobbable, polymorphic: true
   has_many :artwork_requests, through: :imprints
-  has_many :colors, -> {readonly}, through: :imprintable_variants
   has_many :imprints, dependent: :destroy
-  has_many :imprintables, -> {readonly}, through: :imprintable_variants
-  has_many :imprintable_variants, -> {readonly}, through: :line_items
   has_many :line_items, as: :line_itemable, dependent: :destroy
   has_many :shipments, as: :shippable
   has_many :proofs
@@ -91,6 +88,26 @@ class Job < ActiveRecord::Base
     return jobbable if jobbable_type == 'Order'
   end
 
+  def imprintable_variants
+    ImprintableVariant.where(
+      id: line_items.where(imprintable_object_type: 'ImprintableVariant')
+                    .pluck(:imprintable_object_id)
+    )
+  end
+
+  def imprintables
+    Imprintable.where(
+      id: line_items.where(imprintable_object_type: 'Imprintable')
+                    .pluck(:imprintable_object_id)
+    )
+  end
+
+  def colors
+    Color
+      .joins(:imprintable_variants)
+      .where(imprintable_variants: { id: imprintable_variants.pluck(:id) })
+  end
+
   def imprintable_info
     colors, style_names, style_catalog_nos = [], [], []
     sorted_line_items = self.sort_line_items
@@ -112,7 +129,7 @@ class Job < ActiveRecord::Base
   def imprintable_variant_count
     return 0 if line_items.empty?
     line_items
-      .map { |li| li.imprintable_variant_id ? li.quantity : 0 }
+      .map { |li| li.imprintable_variant? ? li.quantity : 0 }
       .reduce(0, :+)
   end
 
@@ -161,6 +178,7 @@ class Job < ActiveRecord::Base
 
   def sort_line_items
     result = {}
+
     LineItem
       .where(line_itemable_id: id, line_itemable_type: 'Job')
       .where.not(imprintable_object_id: nil).each do |line_item|
