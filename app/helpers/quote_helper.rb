@@ -109,4 +109,20 @@ module QuoteHelper
       }
     )
   end
+
+  # HACK/DEBUG this "fixes" an issue with quotes breaking when imprintables are removed
+  # quote_line_items.js uses this span.
+  def cleanup_imprintableless_line_item!(source, line_item)
+    if @quote
+      @quote.issue_warning(
+        "Invalid Line Item",
+        "A line item without an imprintable was found when rendering "\
+        "#{source} and was destroyed.\n\n"\
+        "#{JSON.pretty_generate(line_item.serializable_hash)}"
+      )
+    end
+
+    line_item.destroy
+    content_tag(:span, '', class: 'line-item-was-busted')
+  end
 end

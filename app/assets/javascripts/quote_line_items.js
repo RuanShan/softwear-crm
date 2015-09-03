@@ -1,6 +1,21 @@
 $(function() {
   if ($('.edit-quote-line-items').length != 0)
     initializeQuoteLineItems();
+
+  // HACK this "fixes" an issue with non-imprintable line items ending up out of the
+  // markups and options job... The spans come from
+  // quotes/edit/_line_items_imprintable.html.erb and quote_helper.rb
+  var bustedLineItemCount = $('.line-item-was-busted').length;
+  if (bustedLineItemCount > 0) {
+    $('.line-item-was-busted').remove();
+    var message = bustedLineItemCount > 1 ?
+      bustedLineItemCount+" line items" : "One of the line items"
+
+    errorModal(
+      message + " in this quote somehow became invalid, and was automatically removed." +
+      "Make sure nothing important is missing."
+    );
+  }
 });
 
 function initializeExistingLineItemGroupSelect() {
