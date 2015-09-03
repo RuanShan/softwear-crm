@@ -7,7 +7,7 @@
   <div id='error-details' style='display: none;'>
     <p><%= error.class.name %>: <%= error.message %></p>
     <% error.backtrace.each do |line| %>
-      <% if line.include? ".rvm" %>
+      <% if line.include? "/gems/" %>
         <%= line %><br />
       <% else %>
         <strong><%= line %></strong><br />

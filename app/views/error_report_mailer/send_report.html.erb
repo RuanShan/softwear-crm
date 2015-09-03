@@ -15,7 +15,13 @@
 <div>
   <ul>
     <% @backtrace.split("\n").each do |line| %>
-      <li><code><%= line %></code></li>
+      <li>
+        <% if line.include? "/gems/" %>
+          <%= line %><br />
+        <% else %>
+          <strong><%= line %></strong><br />
+        <% end %>
+      </li>
     <% end %>
   </ul>
 </div>
