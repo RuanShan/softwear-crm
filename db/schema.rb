@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150903162048) do
+ActiveRecord::Schema.define(version: 20150903180249) do
 
   create_table "activities", force: :cascade do |t|
     t.integer  "trackable_id",   limit: 4
@@ -493,11 +493,14 @@ ActiveRecord::Schema.define(version: 20150903162048) do
   create_table "print_locations", force: :cascade do |t|
     t.string   "name",              limit: 255
     t.integer  "imprint_method_id", limit: 4
-    t.decimal  "max_height",                    precision: 8, scale: 2
-    t.decimal  "max_width",                     precision: 8, scale: 2
+    t.decimal  "max_height",                    precision: 8,  scale: 2
+    t.decimal  "max_width",                     precision: 8,  scale: 2
     t.datetime "deleted_at"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.integer  "platen_hoop_id",    limit: 4
+    t.decimal  "ideal_width",                   precision: 10, scale: 2
+    t.decimal  "ideal_height",                  precision: 10, scale: 2
   end
 
   add_index "print_locations", ["deleted_at"], name: "index_print_locations_on_deleted_at", using: :btree
@@ -558,8 +561,8 @@ ActiveRecord::Schema.define(version: 20150903162048) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.decimal  "shipping",                                     precision: 10, scale: 2
-    t.datetime "initialized_at"
     t.string   "quote_source",                     limit: 255
+    t.datetime "initialized_at"
     t.string   "freshdesk_ticket_id",              limit: 255
     t.boolean  "informal"
     t.integer  "insightly_category_id",            limit: 4

@@ -6,7 +6,7 @@ $(window).load ->
   $("#dock").zIndex(1000)
 
 @initializeSelect2 = ->
-  $('.select2').each ->
+  $('select.select2').each ->
     placeholder = $(this).data('placeholder')
     if placeholder
       resetVal = $(this).data('isblank')

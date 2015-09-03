@@ -40,6 +40,7 @@ private
         :name,
         print_locations_attributes: [
           :name, :max_height, :max_width, :imprint_method_id, :id,
+          :ideal_width, :ideal_height, :platen_hoop_id,
           :_destroy
         ]
       ]
