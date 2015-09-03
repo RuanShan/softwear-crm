@@ -1,0 +1,61 @@
+<div class="box-info">
+ <%= render partial: 'shared/modal_errors', locals: {object: platen_hoop} %>
+
+  <%= form_for platen_hoop do |f| %>
+        <div id="horizontal-form" class="collapse in">
+          <div class="form-group">
+            <%= f.label :name, class: 'col-sm-2 control-label' %>
+
+            <div class="col-sm-10">
+              <% if platen_hoop.errors.include?(:name) %>
+                <% platen_hoop.errors.full_messages_for(:name).each do |message| %>
+                  <p class="text-danger"><%= message %></p>
+                <% end %>
+              <% end %>
+
+              <%= f.text_field :name, class: 'form-control' %>
+
+              <p class="help-block">Name of the platen or hoop</p>
+             </div>
+          </div>
+
+          <div class="form-group">
+            <%= f.label :max_width, class: 'col-sm-2 control-label' %>
+
+            <div class="col-sm-10">
+              <% if platen_hoop.errors.include?(:max_width) %>
+                <% platen_hoop.errors.full_messages_for(:max_width).each do |message| %>
+                  <p class="text-danger"><%= message %></p>
+                <% end %>
+              <% end %>
+
+              <%= f.text_field :max_width, class: 'form-control' %>
+
+              <p class="help-block">Maximum supported width, in inches</p>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <%= f.label :max_height, class: 'col-sm-2 control-label' %>
+
+            <div class="col-sm-10">
+              <% if platen_hoop.errors.include?(:max_height) %>
+                <% platen_hoop.errors.full_messages_for(:max_height).each do |message| %>
+                  <p class="text-danger"><%= message %></p>
+                <% end %>
+              <% end %>
+
+              <%= f.text_field :max_height, class: 'form-control' %>
+
+              <p class="help-block">Maximum supported height, in inches</p>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <div class="col-sm-offset-2 col-sm-10">
+              <button type="submit" class="btn btn-info"><%= create_or_edit_text(platen_hoop) %> Platen/Hoop</button>
+            </div>
+          </div>
+        </div>
+  <% end %>
+</div>

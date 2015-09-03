@@ -82,6 +82,7 @@ CrmSoftwearcrmCom::Application.routes.draw do
         get '/fetch_table_attributes/(:table_name)', to: 'email_templates#fetch_table_attributes'
       end
     end
+    resources :platen_hoops
   end
 
   resources :shipments
