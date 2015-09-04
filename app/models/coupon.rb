@@ -14,9 +14,11 @@ class Coupon < ActiveRecord::Base
 
   def apply(order, job = nil)
     calc_method = method(calculator)
+
     case calc_method.arity
     when 1 then calc_method.call(order)
     when 2 then calc_method.call(order, job)
+
     else raise "Calculator method #{calculator} must take 1 or 2 arguments. "\
                "Got #{calc_method.arity}."
     end

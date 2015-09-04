@@ -204,6 +204,10 @@ class Job < ActiveRecord::Base
     line_items.empty? ? 0 : line_items.map(&:quantity).reduce(0, :+)
   end
 
+  def total_price
+    line_items.map(&:total_price)
+  end
+
   def name_number_csv
     csv = imprints
       .with_name_number
