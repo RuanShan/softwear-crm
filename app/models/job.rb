@@ -205,7 +205,7 @@ class Job < ActiveRecord::Base
   end
 
   def total_price
-    line_items.map(&:total_price)
+    line_items.map(&:total_price).map(&:to_f).reduce(0, :+)
   end
 
   def name_number_csv

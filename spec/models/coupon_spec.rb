@@ -37,7 +37,7 @@ describe Coupon do
     end
 
     describe '#percent_off_job' do
-      subject { create :flat_rate, value: 10 }
+      subject { create :percent_off_job, value: 10 }
       let!(:job_1) { create(:order_job) }
       let!(:job_2) { create(:order_job) }
 
@@ -50,8 +50,7 @@ describe Coupon do
           create(:non_imprintable_line_item, quantity: 2, unit_price: 5.0),
           create(:non_imprintable_line_item, quantity: 1, unit_price: 10.0)
         ]
-        order.jobs << job_1
-        order.jobs << job_2
+        order.jobs = [job_1, job_2]
       end
 
       it "reduces the total price of a single job from the order's subtotal" do

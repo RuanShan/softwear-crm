@@ -31,6 +31,22 @@ class Coupon < ActiveRecord::Base
     end
   end
 
+  def flat_rate(order)
+    modify_method(order, :total) do |total|
+      total - value
+    end
+  end
+
+  def percent_off_job(order, job)
+    modify_method(order, :subtotal) do |subtotal|
+      subtotal - job.total_price * value/100
+    end
+  end
+
+  def free_shipping(order)
+    modify_method(order, :shipping_price) { 0 }
+  end
+
   protected
 
   def modify_method(order, method_name, &block)
