@@ -1,0 +1,142 @@
+<div class="box-info">
+ <%= render partial: 'shared/modal_errors', locals: {object: in_store_credit} %>
+
+  <%= form_for in_store_credit do |f| %>
+        <div id="horizontal-form" class="collapse in">
+          <div class="form-group">
+            <%= f.label :name, class: 'col-sm-2 control-label' %>
+
+            <div class="col-sm-10">
+              <% if in_store_credit.errors.include?(:name) %>
+                <% in_store_credit.errors.full_messages_for(:name).each do |message| %>
+                  <p class="text-danger"><%= message %></p>
+                <% end %>
+              <% end %>
+
+              <%= f.text_field :name, class: 'form-control' %>
+
+              <p class="help-block">In-Store Credit title</p>
+             </div>
+          </div>
+
+          <div class="form-group">
+            <%= f.label :customer_first_name, class: 'col-sm-2 control-label' %>
+
+            <div class="col-sm-10">
+              <% if in_store_credit.errors.include?(:customer_first_name) %>
+                <% in_store_credit.errors.full_messages_for(:customer_first_name).each do |message| %>
+                  <p class="text-danger"><%= message %></p>
+                <% end %>
+              <% end %>
+
+              <%= f.text_field :customer_first_name, class: 'form-control' %>
+
+              <p class="help-block">First name of the customer to which this credit belongs</p>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <%= f.label :customer_last_name, class: 'col-sm-2 control-label' %>
+
+            <div class="col-sm-10">
+              <% if in_store_credit.errors.include?(:customer_last_name) %>
+                <% in_store_credit.errors.full_messages_for(:customer_last_name).each do |message| %>
+                  <p class="text-danger"><%= message %></p>
+                <% end %>
+              <% end %>
+
+              <%= f.text_field :customer_last_name, class: 'form-control' %>
+
+              <p class="help-block">Last name of the customer to which this credit belongs</p>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <%= f.label :customer_email, class: 'col-sm-2 control-label' %>
+
+            <div class="col-sm-10">
+              <% if in_store_credit.errors.include?(:customer_email) %>
+                <% in_store_credit.errors.full_messages_for(:customer_email).each do |message| %>
+                  <p class="text-danger"><%= message %></p>
+                <% end %>
+              <% end %>
+
+              <%= f.text_field :customer_email, class: 'form-control' %>
+
+              <p class="help-block">Customer E-Mail address</p>
+            </div>
+          </div>
+
+
+          <div class="form-group">
+            <%= f.label :amount, class: 'col-sm-2 control-label' %>
+
+            <div class="col-sm-10">
+              <% if in_store_credit.errors.include?(:amount) %>
+                <% in_store_credit.errors.full_messages_for(:amount).each do |message| %>
+                  <p class="text-danger"><%= message %></p>
+                <% end %>
+              <% end %>
+
+              <%= f.text_field :amount, class: 'form-control' %>
+
+              <p class="help-block">The dollar amount that this credit can count towards</p>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <%= f.label :description, class: 'col-sm-2 control-label' %>
+
+            <div class="col-sm-10">
+              <% if in_store_credit.errors.include?(:description) %>
+                <% in_store_credit.errors.full_messages_for(:description).each do |message| %>
+                  <p class="text-danger"><%= message %></p>
+                <% end %>
+              <% end %>
+
+              <%= f.text_area :description, class: 'form-control' %>
+
+              <p class="help-block">What was the reason for awarding this in-store credit?</p>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <%= f.label :user_id, class: 'col-sm-2 control-label' %>
+
+            <div class="col-sm-10">
+              <% if in_store_credit.errors.include?(:user_id) %>
+                <% in_store_credit.errors.full_messages_for(:user_id).each do |message| %>
+                  <p class="text-danger"><%= message %></p>
+                <% end %>
+              <% end %>
+
+              <%= f.select :user_id, options_from_collection_for_select(User.all, :id, :full_name, in_store_credit.user_id || current_user.id), {}, class: 'form-control select2' %>
+
+              <p class="help-block">The user in charge of this in-store credit</p>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <%= f.label :valid_until, class: 'col-sm-2 control-label' %>
+
+            <div class="col-sm-10">
+              <% if in_store_credit.errors.include?(:valid_until) %>
+                <% in_store_credit.errors.full_messages_for(:valid_until).each do |message| %>
+                  <p class="text-danger"><%= message %></p>
+                <% end %>
+              <% end %>
+
+              <%= f.text_field :valid_until, class: 'form-control js-datetimepicker', value: value_time(in_store_credit.valid_until) %>
+
+              <p class="help-block">Latest date this in-store credit can be used</p>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <div class="col-sm-offset-2 col-sm-10">
+              <button type="submit" class="btn btn-info"><%= create_or_edit_text(in_store_credit) %> In-Store Credit</button>
+            </div>
+          </div>
+        </div>
+  <% end %>
+</div>

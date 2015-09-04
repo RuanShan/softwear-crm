@@ -1,0 +1,11 @@
+<div class="page-heading animated fadeInDownBig col-lg-9">
+  <h1>In-Store Credit <small>Configure the in_store_credits available for order discounts</small></h1>
+</div>
+
+<div class="col-lg-3 text-right">
+  <%= link_to 'Add In-Store Credit', new_in_store_credit_path, class: 'btn btn-primary' %>
+</div>
+
+<div class="box-info row clear">
+  <%= render partial: 'table', locals: { in_store_credits: @in_store_credits } %>
+</div>

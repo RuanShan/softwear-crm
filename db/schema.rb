@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150904145122) do
+ActiveRecord::Schema.define(version: 20150904194102) do
 
   create_table "activities", force: :cascade do |t|
     t.integer  "trackable_id",   limit: 4
@@ -158,8 +158,8 @@ ActiveRecord::Schema.define(version: 20150904145122) do
     t.string   "name",        limit: 255
     t.string   "calculator",  limit: 255
     t.decimal  "value",                   precision: 10
-    t.datetime "valid_until"
-    t.datetime "valid_from"
+    t.date     "valid_until"
+    t.date     "valid_from"
     t.datetime "created_at",                             null: false
     t.datetime "updated_at",                             null: false
   end
@@ -357,6 +357,19 @@ ActiveRecord::Schema.define(version: 20150904145122) do
     t.string   "name_format",       limit: 255
     t.string   "number_format",     limit: 255
     t.text     "description",       limit: 65535
+  end
+
+  create_table "in_store_credits", force: :cascade do |t|
+    t.string   "name",                limit: 255
+    t.string   "customer_first_name", limit: 255
+    t.string   "customer_last_name",  limit: 255
+    t.string   "customer_email",      limit: 255
+    t.decimal  "amount",                            precision: 10
+    t.text     "description",         limit: 65535
+    t.integer  "user_id",             limit: 4
+    t.datetime "valid_until"
+    t.datetime "created_at",                                       null: false
+    t.datetime "updated_at",                                       null: false
   end
 
   create_table "ink_colors", force: :cascade do |t|
@@ -574,8 +587,8 @@ ActiveRecord::Schema.define(version: 20150904145122) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.decimal  "shipping",                                     precision: 10, scale: 2
-    t.string   "quote_source",                     limit: 255
     t.datetime "initialized_at"
+    t.string   "quote_source",                     limit: 255
     t.string   "freshdesk_ticket_id",              limit: 255
     t.boolean  "informal"
     t.integer  "insightly_category_id",            limit: 4

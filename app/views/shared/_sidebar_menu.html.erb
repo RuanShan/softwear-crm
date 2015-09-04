@@ -100,7 +100,7 @@
       <% end %>
     <% end %>
 
-    <%= content_tag :li, class: ('active' if current_url.include?('users')) do %>
+    <%= content_tag :li, class: ('active' if current_url.include?('users') || current_url.include?('administration')) do %>
       <a href="#fakelink"><i class="fa fa-folder-open"></i><i class="fa fa-angle-double-down i-right"></i> Administration</a>
 
       <%= content_tag :ul, class: ('visible' if current_url.include?('users')) do %>
@@ -111,6 +111,10 @@
 
          <%= content_tag :li, class:('active' if current_action == 'coupons') do %>
             <%= link_to coupons_path do %><i class="fa fa-angle-right"></i> Coupons<% end %>
+         <% end %>
+
+         <%= content_tag :li, class:('active' if current_action == 'in_store_credits') do %>
+            <%= link_to in_store_credits_path do %><i class="fa fa-angle-right"></i> In-Store Credit<% end %>
          <% end %>
 
          <li>

@@ -86,7 +86,7 @@ CrmSoftwearcrmCom::Application.routes.draw do
   end
 
   scope 'administration' do
-    resources :coupons
+    resources :coupons, :in_store_credits
   end
 
   resources :shipments

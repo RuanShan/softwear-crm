@@ -1,0 +1,49 @@
+<div class="box-info full">
+  <div class="table-responsive">
+    <table class="table table-hover" id="in_store_credits_list">
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Customer name</th>
+          <th>Customer email</th>
+          <th>Amount</th>
+          <th>Valid until</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+
+      <tbody>
+        <% in_store_credits.each do |in_store_credit| %>
+          <tr id="<%= model_table_row_id in_store_credit %>">
+            <td><%= in_store_credit.name %></td>
+            <td><%= in_store_credit.customer_first_name %> <%= in_store_credit.customer_last_name %></td>
+            <td><%= in_store_credit.customer_email %></td>
+            <td><%= in_store_credit.amount %></td>
+            <td><%= in_store_credit.valid_until.strftime('%m/%d/%Y') %></td>
+            <td>
+              <div class="btn-group btn-group-xs">
+                <%= link_to in_store_credit_path(in_store_credit),
+                            class: 'btn btn-default', 'data-action' => 'show',
+                            'data-toggle' => 'tooltip', 'title' => 'Show' do %>
+                  <i class="fa fa-eye"></i>
+                <% end %>
+                <%= link_to edit_in_store_credit_path(in_store_credit),
+                            class: 'btn btn-default', 'data-action' => 'edit',
+                            'data-toggle' => 'tooltip', 'title' => 'Edit' do %>
+                  <i class="fa fa-edit"></i>
+                <% end %>
+                <%= link_to in_store_credit_path(in_store_credit),
+                            class: 'btn btn-default',
+                            data: {confirm: 'Are you sure you would like to delete the in_store_credit?'},
+                            method: :delete, 'data-action' => 'destroy',
+                            'data-toggle' => 'tooltip', 'title' => 'Destroy' do %>
+                  <i class="fa fa-times"></i>
+                <% end %>
+              </div>
+            </td>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+  </div>
+</div>

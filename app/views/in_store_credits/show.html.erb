@@ -1,0 +1,33 @@
+<div class="page-heading animated fadeInDownBig">
+  <h1>In-Store Credit <small>Viewing in-store credit <i><%= @in_store_credit.name %></i></small></h1>
+</div>
+
+<% if @in_store_credit.used? %>
+  <div class='alert alert-danger'>
+    This in-store credit has already been used up.
+  </div>
+<% end %>
+
+<div class="box-info">
+  <dl>
+    <dt>Customer</dt>
+    <dd><%= @in_store_credit.customer_first_name %> <%= @in_store_credit.customer_last_name %></dd>
+
+    <dt>Email</dt>
+    <dd><%= @in_store_credit.customer_email %></dd>
+
+    <dt>Amount</dt>
+    <dd><%= number_to_currency(@in_store_credit.amount) %></dd>
+
+    <dt>Description</dt>
+    <dd><%= @in_store_credit.description %></dd>
+
+    <dt>Created by</dt>
+    <dd><%= @in_store_credit.user.full_name %></dd>
+
+    <dt>Valid until</dt>
+    <dd><%= @in_store_credit.valid_until.strftime('%m/%d/%Y') %></dd>
+  </dl>
+
+  <%= link_to 'Edit', edit_in_store_credit_path(@in_store_credit), class: 'btn btn-primary' %>
+</div>
