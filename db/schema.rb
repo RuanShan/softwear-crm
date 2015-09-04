@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150903180249) do
+ActiveRecord::Schema.define(version: 20150904145122) do
 
   create_table "activities", force: :cascade do |t|
     t.integer  "trackable_id",   limit: 4
@@ -152,6 +152,19 @@ ActiveRecord::Schema.define(version: 20150903180249) do
   end
 
   add_index "coordinate_imprintables", ["coordinate_id", "imprintable_id"], name: "coordinate_imprintable_index", using: :btree
+
+  create_table "coupons", force: :cascade do |t|
+    t.string   "code",        limit: 255
+    t.string   "name",        limit: 255
+    t.string   "calculator",  limit: 255
+    t.decimal  "value",                   precision: 10
+    t.date     "valid_until"
+    t.date     "valid_from"
+    t.datetime "created_at",                             null: false
+    t.datetime "updated_at",                             null: false
+  end
+
+  add_index "coupons", ["code"], name: "index_coupons_on_code", using: :btree
 
   create_table "customer_uploads", force: :cascade do |t|
     t.string   "filename",         limit: 255
@@ -561,8 +574,8 @@ ActiveRecord::Schema.define(version: 20150903180249) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.decimal  "shipping",                                     precision: 10, scale: 2
-    t.string   "quote_source",                     limit: 255
     t.datetime "initialized_at"
+    t.string   "quote_source",                     limit: 255
     t.string   "freshdesk_ticket_id",              limit: 255
     t.boolean  "informal"
     t.integer  "insightly_category_id",            limit: 4

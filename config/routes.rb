@@ -85,8 +85,12 @@ CrmSoftwearcrmCom::Application.routes.draw do
     resources :platen_hoops
   end
 
+  scope 'administration' do
+    resources :coupons
+  end
+
   resources :shipments
-  
+
   resources :orders do
     member do
       get 'names_numbers', as: :name_number_csv_from
