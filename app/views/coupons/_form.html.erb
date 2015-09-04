@@ -1,0 +1,115 @@
+<div class="box-info">
+ <%= render partial: 'shared/modal_errors', locals: {object: coupon} %>
+
+  <%= form_for coupon do |f| %>
+        <div id="horizontal-form" class="collapse in">
+          <div class="form-group">
+            <%= f.label :name, class: 'col-sm-2 control-label' %>
+
+            <div class="col-sm-10">
+              <% if coupon.errors.include?(:name) %>
+                <% coupon.errors.full_messages_for(:name).each do |message| %>
+                  <p class="text-danger"><%= message %></p>
+                <% end %>
+              <% end %>
+
+              <%= f.text_field :name, class: 'form-control' %>
+
+              <p class="help-block">Coupon title</p>
+             </div>
+          </div>
+
+          <div class="form-group">
+            <%= f.label :code, class: 'col-sm-2 control-label' %>
+
+            <div class="col-sm-10">
+              <% if coupon.errors.include?(:code) %>
+                <% coupon.errors.full_messages_for(:code).each do |message| %>
+                  <p class="text-danger"><%= message %></p>
+                <% end %>
+              <% end %>
+
+              <%= f.text_field :code, class: 'form-control' %>
+
+              <p class="help-block">Coupon code</p>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <%= f.label :calculator, class: 'col-sm-2 control-label' %>
+
+            <div class="col-sm-10">
+              <% if coupon.errors.include?(:calculator) %>
+                <% coupon.errors.full_messages_for(:calculator).each do |message| %>
+                  <p class="text-danger"><%= message %></p>
+                <% end %>
+              <% end %>
+
+              <%= f.select :calculator, options_from_collection_for_select(Coupon::CALCULATORS.keys, :to_s, :humanize, coupon.calculator.to_s), { include_blank: true }, class: 'form-control select2' %>
+
+              <p class="help-block" id="calculator-help-block" data-descriptions="<%= Coupon::CALCULATORS.to_json %>">
+                <% if coupon.calculator.blank? %>
+                  Calculator determines what type of discount this coupon applies
+                <% else %>
+                  <%= Coupon::CALCULATORS[coupon.calculator] %>
+                <% end %>
+              </p>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <%= f.label :value, class: 'col-sm-2 control-label' %>
+
+            <div class="col-sm-10">
+              <% if coupon.errors.include?(:value) %>
+                <% coupon.errors.full_messages_for(:value).each do |message| %>
+                  <p class="text-danger"><%= message %></p>
+                <% end %>
+              <% end %>
+
+              <%= f.text_field :value, class: 'form-control' %>
+
+              <p class="help-block">The value that the calculator will use. This is the flat amount for Flat rate and the percentage for the percent off calculators.</p>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <%= f.label :valid_from, class: 'col-sm-2 control-label' %>
+
+            <div class="col-sm-10">
+              <% if coupon.errors.include?(:valid_from) %>
+                <% coupon.errors.full_messages_for(:valid_from).each do |message| %>
+                  <p class="text-danger"><%= message %></p>
+                <% end %>
+              <% end %>
+
+              <%= f.text_field :valid_from, class: 'form-control js-datetimepicker', value: value_time(coupon.valid_from) %>
+
+              <p class="help-block">Earliest date this coupon can be used</p>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <%= f.label :valid_until, class: 'col-sm-2 control-label' %>
+
+            <div class="col-sm-10">
+              <% if coupon.errors.include?(:valid_until) %>
+                <% coupon.errors.full_messages_for(:valid_until).each do |message| %>
+                  <p class="text-danger"><%= message %></p>
+                <% end %>
+              <% end %>
+
+              <%= f.text_field :valid_until, class: 'form-control js-datetimepicker', value: value_time(coupon.valid_until) %>
+
+              <p class="help-block">Latest date this coupon can be used</p>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <div class="col-sm-offset-2 col-sm-10">
+              <button type="submit" class="btn btn-info"><%= create_or_edit_text(coupon) %> Coupon</button>
+            </div>
+          </div>
+        </div>
+  <% end %>
+</div>

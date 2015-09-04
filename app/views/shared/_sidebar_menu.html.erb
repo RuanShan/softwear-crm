@@ -109,6 +109,10 @@
             <%= link_to users_path do %><i class="fa fa-angle-right"></i> Users<% end %>
          <% end %>
 
+         <%= content_tag :li, class:('active' if current_action == 'coupons') do %>
+            <%= link_to coupons_path do %><i class="fa fa-angle-right"></i> Coupons<% end %>
+         <% end %>
+
          <li>
            <a href="gallery.html"><i class="fa fa-dollar"></i> Cash Drawer</a>
          </li>

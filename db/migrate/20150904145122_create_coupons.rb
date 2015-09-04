@@ -5,8 +5,8 @@ class CreateCoupons < ActiveRecord::Migration
       t.string :name
       t.string :calculator
       t.decimal :value
-      t.date :valid_until
-      t.date :valid_from
+      t.datetime :valid_until
+      t.datetime :valid_from
 
       t.timestamps null: false
     end

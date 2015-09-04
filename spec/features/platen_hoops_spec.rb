@@ -11,7 +11,7 @@ feature 'Platens and Hoops management', story_866: true do
 
   scenario 'User views list of existing platen/hoops' do
     visit root_path
-    click_link 'Administration'
+    click_link 'Configuration'
     click_link 'Platens/Hoops'
     expect(page).to have_css("tr##{model_table_row_id(platen_hoop)}")
   end

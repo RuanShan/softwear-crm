@@ -1,0 +1,48 @@
+<div class="box-info full">
+  <div class="table-responsive">
+    <table class="table table-hover" id="coupons_list">
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Code</th>
+          <th>Calculator</th>
+          <th>Value</th>
+          <th>Valid From</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+
+      <tbody>
+        <% coupons.each do |coupon| %>
+          <tr id="<%= model_table_row_id coupon %>">
+            <td><%= coupon.name %></td>
+            <td><code><%= coupon.code %></code></td>
+            <td><%= coupon.calculator.humanize.titleize %></td>
+            <td><%= coupon.format_value(self) %></td>
+            <% if coupon.valid_from.blank? || coupon.valid_until.blank? %>
+              <td>Please configure valid times for this coupon</td>
+            <% else %>
+              <td><%= "#{coupon.valid_from.strftime('%m/%d/%Y')} until #{coupon.valid_until.strftime('%m/%d/%Y')}" %></td>
+            <% end %>
+            <td>
+              <div class="btn-group btn-group-xs">
+                <%= link_to edit_coupon_path(coupon),
+                            class: 'btn btn-default', 'data-action' => 'edit',
+                            'data-toggle' => 'tooltip', 'title' => 'Edit' do %>
+                  <i class="fa fa-edit"></i>
+                <% end %>
+                <%= link_to coupon_path(coupon),
+                            class: 'btn btn-default',
+                            data: {confirm: 'Are you sure you would like to delete the coupon?'},
+                            method: :delete, 'data-action' => 'destroy',
+                            'data-toggle' => 'tooltip', 'title' => 'Destroy' do %>
+                  <i class="fa fa-times"></i>
+                <% end %>
+              </div>
+            </td>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+  </div>
+</div>

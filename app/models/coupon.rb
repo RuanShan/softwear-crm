@@ -1,15 +1,19 @@
 class Coupon < ActiveRecord::Base
   CALCULATORS = {
-    percent_off_order: "reduces a % off the subtotal of the whole order",
-    flat_rate:         "decucts a flat amount from the total of the whole order",
-    percent_off_job:   "reduces a % off the total of a specified job within an order",
-    free_shipping:     "deducts the shipping price from the order"
+    percent_off_order: "Reduces a % off the subtotal of the whole order",
+    flat_rate:         "Decucts a flat amount from the total of the whole order",
+    percent_off_job:   "Reduces a % off the total of a specified job within an order",
+    free_shipping:     "Deducts the shipping price from the order"
   }
+    .with_indifferent_access
 
-  before_create :assign_code
+  validates :name, :code, uniqueness: true, presence: true
+  validates :calculator, inclusion: { in: CALCULATORS.keys, message: 'is not a defined calculator method' }
+
+  after_initialize :assign_code
 
   def assign_code
-    self.code = SecureRandom.hex while Coupon.where(code: code).exists?
+    self.code = SecureRandom.hex while code.blank? || Coupon.where(code: code).exists?
   end
 
   def apply(order, job = nil)
@@ -19,8 +23,19 @@ class Coupon < ActiveRecord::Base
     when 1 then calc_method.call(order)
     when 2 then calc_method.call(order, job)
 
-    else raise "Calculator method #{calculator} must take 1 or 2 arguments. "\
+    else raise "Calculator method #{calculator} must take only 1 or 2 arguments. "\
                "Got #{calc_method.arity}."
+    end
+  end
+
+  def format_value(view)
+    case calculator
+
+    when /percent_off/   then "#{value}%"
+    when /flat_rate/     then view.number_to_currency(value)
+    when /free_shipping/ then "No Shipping"
+
+    else value
     end
   end
 
