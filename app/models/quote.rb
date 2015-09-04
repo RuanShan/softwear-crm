@@ -269,7 +269,7 @@ class Quote < ActiveRecord::Base
       line_item = LineItem.new
       line_item.quantity           = quantity
       line_item.decoration_price   = decoration_price
-      line_item.imprintable_price  = imprintable.base_price
+      line_item.imprintable_price  = imprintable.base_price || 0
       line_item.imprintable_object = imprintable
       line_item.line_itemable      = new_job
       line_item.tier               = tier
