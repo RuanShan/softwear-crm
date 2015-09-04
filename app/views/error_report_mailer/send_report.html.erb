@@ -16,10 +16,10 @@
   <ul>
     <% @backtrace.split("\n").each do |line| %>
       <li>
-        <% if line.include? "/gems/" %>
-          <%= line %><br />
-        <% else %>
+        <% if backtrace_is_from_app?(line) %>
           <strong><%= line %></strong><br />
+        <% else %>
+          <%= line %><br />
         <% end %>
       </li>
     <% end %>

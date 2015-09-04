@@ -9,6 +9,7 @@ class ErrorReportMailer < ActionMailer::Base
 
     mail(
       from: @user.email,
+      reply_to: @user.email,
       to: 'devteam@annarbortees.com',
       subject: "Softwear CRM Error Report From #{@user.full_name}"
     )
