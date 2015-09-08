@@ -113,6 +113,8 @@ class Quote < ActiveRecord::Base
   alias_method :private_notes, :private_comments
   alias_method :private_notes=, :private_comments=
 
+  attr_reader :warnings
+
   def all_activities
     PublicActivity::Activity.where( '
       (
@@ -133,6 +135,7 @@ class Quote < ActiveRecord::Base
   def show_quoted_email_text
     html_doc = Nokogiri::HTML()
   end
+if
 
   def markups_and_options_job
     attrs = {
@@ -278,7 +281,15 @@ class Quote < ActiveRecord::Base
     end
       .compact
 
-    new_line_items.each(&:save!)
+    bad_line_items = new_line_items.reject(&:valid?)
+    @warnings ||= []
+    @warnings += new_line_items.map do |li|
+      "Line Item for #{li.imprintable.try(:name) || li.name} "\
+      "could not be added to the quote: "\
+      "#{li.errors.full_messages.join(', ')}"
+    end
+
+    (new_line_items - bad_line_items).each(&:save!)
     @group_added_id = new_job.id
 
     attrs[:print_locations].try(:each_with_index) do |print_location_id, index|

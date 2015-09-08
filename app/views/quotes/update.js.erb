@@ -3,4 +3,9 @@ $('#line_items .quote-line-items-container').html(
   "<%=j render 'quotes/edit/line_items', quote: @quote %>"
 );
 initializeQuoteLineItems();
-successModal("Quote was successfully updated.");
+
+<% if @quote.warnings.blank? %>
+  successModal("Quote was successfully updated.");
+<% else %>
+  successModal("Not all line items could be added: <%= @quote.warnings.join(' | ') %>")
+<% end %>
