@@ -24,7 +24,7 @@ class DiscountsController < InheritedResources::Base
     params.permit(
       discount: [
         :amount, :user_id, :discountable_id, :discountable_type, :reason, :payment_method,
-        :applicator_id, :applicator_type, :discount_method
+        :applicator_id, :applicator_type, :discount_method, :coupon_code, :transaction_id
       ]
     )
   end
