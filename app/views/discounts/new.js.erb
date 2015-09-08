@@ -1,0 +1,22 @@
+var discountHtml = "<br/><%= j(render 'form').html_safe %>";
+
+var setContent = function() {
+  $('#discount-form').html(discountHtml);
+  $('#discount-form').data('current', "<%=j params[:form] %>");
+  setTimeout(function() { $('#discount-form').collapse('show'); }, 100);
+  $('#discount-form').off('hidden.bs.collapse', setContent);
+}
+
+if ($('#discount-form').data('current') != null) {
+  if ($('#discount-form').data('current') == "<%=j params[:form] %>") {
+    $('#discount-form').collapse('hide');
+    $('#discount-form').data('current', null);
+  }
+  else {
+    $('#discount-form').on('hidden.bs.collapse', setContent);
+    $('#discount-form').collapse('hide');
+  }
+}
+else {
+  setContent();
+}

@@ -4,7 +4,7 @@
       <div class="alert <%= get_style_from_status(order.payment_status, 'alert')%>">
         <%= order.payment_status %>
       </div>
-      
+
       <div class="icon-box">
         <span class="fa-stack">
           <i class="fa fa-circle fa-stack-2x success"></i>
@@ -54,7 +54,7 @@
       <%= button_to new_order_payment_path(params[:id]) + '?payment_method=4', {
               class: 'additional-icon btn btn-default payment-button', method: :get,
               remote: true, 'data-target' => '#payment-form', id: 'paypal-button' } do %>
-        <i class="fa fa-rub"></i> PayPal
+        <i class="fa fa-paypal"></i> PayPal
       <% end %>
 
       <%= button_to new_order_payment_path(params[:id]) + '?payment_method=1', {
@@ -78,17 +78,29 @@
 
     <div id="payment-form" class="collapse"></div>
 
-    <h3><strong>Make</strong> Payment</h3>
+    <h3><strong>Apply</strong> Discount</h3>
 
-    <div class="btn-group btn-group-sm">
-      <a data-toggle="tooltip" title="Quick View" class="btn btn-default">
-        <i class="fa fa-credit-card"></i> eCreditCard
-      </a>
+    <div class="btn-group btn-group-sm max-width">
+      <%= button_to new_order_discount_path(params[:id]) + '?form=coupon', {
+              class: 'additional-icon btn btn-default payment-button', method: :get,
+              remote: true, 'data-target' => '#discount-form', id: 'coupon-button' } do %>
+        <i class="fa fa-tag"></i> Coupon
+      <% end %>
 
-      <a data-toggle="tooltip" title="Printable Invoice" class="btn btn-default">
-        <i class="fa fa-rub"></i> Request from PayPal
-      </a>
+      <%= button_to new_order_discount_path(params[:id]) + '?form=in_store_credit', {
+              class: 'additional-icon btn btn-default payment-button', method: :get,
+              remote: true, 'data-target' => '#discount-form', id: 'in-store-credit-button' } do %>
+        <i class="fa fa-plus-square-o"></i> In-Store Credit
+      <% end %>
+
+      <%= button_to new_order_discount_path(params[:id]) + '?form=refund', {
+              class: 'additional-icon btn btn-default payment-button', method: :get,
+              remote: true, 'data-target' => '#discount-form', id: 'refund-button' } do %>
+        <i class="fa fa-dollar"></i> Refund
+      <% end %>
     </div>
+
+    <div id="discount-form" class="collapse"></div>
   </div>
 
   <div class="col-sm-12">

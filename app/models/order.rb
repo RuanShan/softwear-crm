@@ -59,6 +59,7 @@ class Order < ActiveRecord::Base
   has_many :quotes, through: :order_quotes
   has_many :quote_requests, through: :quotes
   has_many :shipments, as: :shippable
+  has_many :discounts, as: :discountable
 
   accepts_nested_attributes_for :payments
 

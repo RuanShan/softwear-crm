@@ -1,0 +1,26 @@
+<%= form_for [@order, @discount], builder: LancengFormBuilder, remote: true do |f| %>
+  <div id="horizontal-form" class="collapse in">
+    <%= f.hidden_field :user_id, value: @current_user.id %>
+
+    <%= f.hidden_field :discountable_type, value: 'Order' %>
+    <%= f.hidden_field :discountable_id, value: @order.id %>
+
+    <div class="form-group">
+      <%= f.label :user %><br>
+
+      <%= @current_user.full_name %>
+
+      <%= link_to '(Change user)', destroy_user_session_path, class: 'md-trigger',
+                  method: :delete, 'data-model'=>'logout-modal-alt' %>
+    </div>
+
+    <div class="form-group">
+      <%= f.label :discount_method %>
+      <%= f.select :discount_method, options_for_select(Discount::PAYMENT_METHODS, @discount.discount_method), {} %>
+    </div>
+
+    <%= render params[:form], f: f %>
+
+    <%= f.submit 'Apply Discount', class: 'btn btn-info' %>
+  </div>
+<% end %>

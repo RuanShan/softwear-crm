@@ -106,7 +106,7 @@ CrmSoftwearcrmCom::Application.routes.draw do
     end
 
     get 'timeline', to: 'timeline#show', as: :timeline
-    resources :payments, shallow: true
+    resources :payments, :discounts, shallow: true
     resources :artwork_requests
     resources :proofs do
       collection do
