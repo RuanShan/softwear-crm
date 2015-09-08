@@ -16,7 +16,7 @@ class Coupon < ActiveRecord::Base
     self.code = SecureRandom.hex while code.blank? || Coupon.where(code: code).exists?
   end
 
-  def apply(order, job = nil)
+  def calculate(order, job = nil)
     calc_method = method(calculator)
 
     case calc_method.arity
@@ -41,25 +41,19 @@ class Coupon < ActiveRecord::Base
 
   # === Calculators ===
   def percent_off_order(order)
-    modify_method(order, :subtotal) do |subtotal|
-      subtotal - subtotal * value/100
-    end
+    order.subtotal * value/100
   end
 
   def flat_rate(order)
-    modify_method(order, :total) do |total|
-      total - value
-    end
+    value
   end
 
   def percent_off_job(order, job)
-    modify_method(order, :subtotal) do |subtotal|
-      subtotal - job.total_price * value/100
-    end
+    job.total_price * value/100
   end
 
   def free_shipping(order)
-    modify_method(order, :shipping_price) { 0 }
+    order.shipping_price
   end
 
   protected

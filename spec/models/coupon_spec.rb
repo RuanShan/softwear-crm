@@ -10,12 +10,9 @@ describe Coupon do
         allow(order).to receive(:line_items).and_return [double('LineItem', total_price: 12.5)] * 3
       end
 
-      it "reduces the order's subtotal by #value %" do
+      it "reduces the order's subtotal by #value %", percent_off_order: true do
         expect(order.subtotal).to eq 12.5*3
-
-        subject.apply(order, nil)
-
-        expect(order.subtotal).to eq (12.5*3) - (12.5*3)*0.10
+        expect(subject.calculate(order)).to eq (12.5*3)*0.10
       end
     end
 
@@ -29,10 +26,7 @@ describe Coupon do
 
       it "subtracts from the order's total by #value" do
         expect(order.total).to eq 10 + 0.2 + 0.5
-
-        subject.apply(order, nil)
-
-        expect(order.total).to eq 10 + 0.2 + 0.5 - 5.0
+        expect(subject.calculate(order)).to eq 5.0
       end
     end
 
@@ -56,10 +50,7 @@ describe Coupon do
       it "reduces the total price of a single job from the order's subtotal" do
         expect(order.jobs.size).to eq 2
         expect(order.subtotal).to eq (1*7.0) + (2*5.0 + 1*10.0)
-
-        subject.apply(order, job_2)
-
-        expect(order.subtotal).to eq (1*7.0) + (2*5.0 + 1*10.0) - (2*5.0 + 1*10.0)*0.10
+        expect(subject.calculate(order, job_2)).to eq (2*5.0 + 1*10.0)*0.10
       end
     end
 
@@ -69,10 +60,7 @@ describe Coupon do
 
       it 'removes the shipping price from the order' do
         expect(order.shipping_price).to eq 2.50
-
-        subject.apply(order)
-
-        expect(order.shipping_price).to eq 0
+        expect(subject.calculate(order)).to eq 2.50
       end
     end
   end
