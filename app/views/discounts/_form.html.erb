@@ -19,7 +19,7 @@
       <%= f.select :discount_method, options_for_select(Discount::PAYMENT_METHODS, @discount.discount_method), {} %>
     </div>
 
-    <%= render params[:form], f: f %>
+    <%= render params[:form], f: f, order: @order %>
 
     <%= f.submit 'Apply Discount', class: 'btn btn-info' %>
   </div>

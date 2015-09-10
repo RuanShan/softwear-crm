@@ -60,6 +60,7 @@ class Order < ActiveRecord::Base
   has_many :quote_requests, through: :quotes
   has_many :shipments, as: :shippable
   has_many :discounts, as: :discountable
+  has_many :job_discounts, through: :jobs, source: :discounts
 
   accepts_nested_attributes_for :payments
 
@@ -100,6 +101,10 @@ class Order < ActiveRecord::Base
 
   def all_shipments
     jobs.map{|job| job.shipments }.concat(shipments.to_a).flatten
+  end
+
+  def all_discounts
+    discounts + job_discounts
   end
 
   def fba?

@@ -15,7 +15,6 @@ describe DiscountsController do
           order_id: order.id,
           in_store_credit_ids: [in_store_credit_1.id, in_store_credit_2.id],
           discount: {
-            amount: 22,
             discount_method: 'PayPal',
             user_id: valid_user.id,
             discountable_type: 'Order',
@@ -30,14 +29,12 @@ describe DiscountsController do
         expect(
           Discount.where(
             applicator: in_store_credit_1,
-            amount: 22,
             discount_method: 'PayPal'
           )
         ).to exist
         expect(
           Discount.where(
             applicator: in_store_credit_2,
-            amount: 22,
             discount_method: 'PayPal'
           )
         ).to exist

@@ -15,6 +15,11 @@ class CouponsController < InheritedResources::Base
     end
   end
 
+  def validate
+    @coupon = Coupon.find_by(code: params[:code])
+    respond_to(&:js)
+  end
+
   protected
 
   def set_current_action

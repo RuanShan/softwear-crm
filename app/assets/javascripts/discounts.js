@@ -16,4 +16,18 @@ $(function() {
       data: data
     });
   });
+
+  var couponTimeout;
+  $(document).on('input', '#discount_coupon_code', function() {
+    if ($(this).val() == '') return;
+    if (couponTimeout != null) { clearTimeout(couponTimeout); couponTimeout = null; }
+
+    couponTimeout = setTimeout(function() {
+      $.ajax({
+        url: Routes.validate_coupon_coupons_path($('#discount_coupon_code').val()),
+        dataType: 'script'
+      });
+    },
+      500);
+  });
 });

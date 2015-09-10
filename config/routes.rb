@@ -86,7 +86,9 @@ CrmSoftwearcrmCom::Application.routes.draw do
   end
 
   scope 'administration' do
-    resources :coupons
+    resources :coupons do
+      collection { get '/validate/:code', to: 'coupons#validate', as: :validate_coupon }
+    end
     resources :in_store_credits do
       collection { get :search }
     end

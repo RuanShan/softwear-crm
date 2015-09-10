@@ -1,7 +1,8 @@
 class DiscountsController < InheritedResources::Base
   include ActionView::Helpers::TextHelper
 
-  belongs_to :order, optional: true
+  # belongs_to :order, optional: true
+  before_filter :grab_order_if_possible
   respond_to :js
 
   ACCEPTED_FORMS = %w(coupon in_store_credit refund)
@@ -18,6 +19,12 @@ class DiscountsController < InheritedResources::Base
   def new
     super do |format|
       raise "Invalid form" unless ACCEPTED_FORMS.include? params[:form]
+      format.js
+    end
+  end
+
+  def destroy
+    super do |format|
       format.js
     end
   end
@@ -53,6 +60,14 @@ class DiscountsController < InheritedResources::Base
 
     respond_to do |format|
       format.js
+    end
+  end
+
+  def grab_order_if_possible
+    if params[:order_id]
+      @order = Order.find(params[:order_id])
+    elsif @discount
+      @discount.order
     end
   end
 

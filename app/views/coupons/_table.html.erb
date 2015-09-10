@@ -22,7 +22,7 @@
             <% if coupon.valid_from.blank? || coupon.valid_until.blank? %>
               <td>Please configure valid times for this coupon</td>
             <% else %>
-              <td><%= "#{coupon.valid_from.strftime('%m/%d/%Y')} until #{coupon.valid_until.strftime('%m/%d/%Y')}" %></td>
+              <td><%= "#{coupon.time(:valid_from)} until #{coupon.time(:valid_until)}" %></td>
             <% end %>
             <td>
               <div class="btn-group btn-group-xs">

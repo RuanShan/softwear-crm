@@ -20,6 +20,7 @@ class Job < ActiveRecord::Base
   has_many :line_items, as: :line_itemable, dependent: :destroy
   has_many :shipments, as: :shippable
   has_many :proofs
+  has_many :discounts, as: :discountable
 
   accepts_nested_attributes_for :line_items, :imprints, allow_destroy: true
 

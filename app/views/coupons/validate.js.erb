@@ -1,0 +1,10 @@
+<% if @coupon.try(:requires_job?) %>
+  $('#discount_discountable_type').val('Job');
+  $('#discount_discountable_id').prop('disabled', true);
+  $('#discount_discountable_id_select').prop('disabled', false);
+
+<% else %>
+  $('#discount_discountable_type').val('Order');
+  $('#discount_discountable_id').prop('disabled', false);
+  $('#discount_discountable_id_select').prop('disabled', true);
+<% end %>

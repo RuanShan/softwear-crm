@@ -13,7 +13,11 @@ class Coupon < ActiveRecord::Base
   after_initialize :assign_code
 
   def assign_code
-    self.code = SecureRandom.hex while code.blank? || Coupon.where(code: code).exists?
+    self.code = SecureRandom.hex if code.blank?
+  end
+
+  def requires_job?
+    method(calculator).arity == 2
   end
 
   def calculate(order, job = nil)
@@ -36,6 +40,19 @@ class Coupon < ActiveRecord::Base
     when /free_shipping/ then "No Shipping"
 
     else value
+    end
+  end
+
+  def time(attribute)
+    t = send(attribute)
+    if t
+      t.strftime('%m/%d/%Y')
+    else
+      case attribute.to_sym
+      when :valid_from  then 'the beginning of time'
+      when :valid_until then 'the end of time'
+      else '???'
+      end
     end
   end
 

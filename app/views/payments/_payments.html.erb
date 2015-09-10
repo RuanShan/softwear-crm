@@ -104,7 +104,7 @@
   </div>
 
   <div class="col-sm-12">
-    <h3><strong>Payments</strong> List</h3>
+    <h3><strong>Payments</strong></h3>
 
     <ul>
       <% order.payments.each_with_index do |payment, index| %>
@@ -119,5 +119,9 @@
         <% end %>
        <% end %>
     </ul>
+  </div>
+
+  <div class="col-sm-12" id='order-discounts'>
+    <%= render 'payments/discounts', order: order %>
   </div>
 </div>

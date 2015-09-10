@@ -2,3 +2,7 @@
 <%= f.label :coupon_code %>
 <%= f.text_field :coupon_code %>
 </div>
+<div class='form-group'>
+  <%= f.label :discountable_id, 'Job' %>
+  <%= f.select :discountable_id, options_from_collection_for_select(order.jobs, :id, :name), { include_blank: true }, disabled: true, id: 'discount_discountable_id_select' %>
+</div>

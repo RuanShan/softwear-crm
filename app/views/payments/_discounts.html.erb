@@ -1,0 +1,21 @@
+<h3><strong>Discounts</strong></h3>
+
+<ul>
+  <% order.all_discounts.each_with_index do |discount, index| %>
+    <li id="discount-<%= discount.id %>">
+      <h4>
+        Discount
+        <%= index + 1 %>
+        (<%= discount.applicator_type || 'Refund' %>)
+        <% if discount.discountable_type == 'Job' %>
+          (Job: <%= discount.discountable.name %>)
+        <% end %>
+      </h4>
+      Amount: <%= number_to_currency(discount.amount) %>
+
+      <%= render "discounts/show/#{discount.discount_type}", discount: discount %>
+
+      <%= link_to 'Remove', discount_path(discount), remote: :true, method: :delete, class: 'btn btn-xs btn-danger' %>
+    </li>
+  <% end %>
+</ul>

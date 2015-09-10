@@ -4,8 +4,10 @@ feature 'Discounts management', js: true, discount_spec: true, story_859: true d
   given!(:valid_user) { create(:alternate_user) }
   background(:each) { login_as(valid_user) }
 
-  given!(:order) { create(:order) }
+  given!(:order) { create(:order_with_job) }
+  given(:job) { order.jobs.first }
   given(:coupon) { create(:flat_rate) }
+  given(:percent_off_job) { create(:percent_off_job) }
 
   given(:credit_1) { create(:in_store_credit) }
   given(:credit_2) { create(:in_store_credit) }
@@ -52,6 +54,21 @@ feature 'Discounts management', js: true, discount_spec: true, story_859: true d
 
       expect(page).to have_content 'Coupon code does not correspond to any coupon in the system'
       expect(page).to_not have_content 'Reason'
+    end
+
+    scenario 'A salesperson can add a percent-off-job coupon discount' do
+      visit edit_order_path order, anchor: 'payments'
+      click_button 'Coupon'
+
+      fill_in 'Coupon code', with: percent_off_job.code
+      sleep 1
+      find('#discount_discountable_id_select').select job.name
+
+      click_button 'Apply Discount'
+
+      expect(page).to have_content 'Discount was successfully created.'
+      expect(Discount.where(applicator_type: 'Coupon', applicator_id: percent_off_job.id)).to exist
+      expect(Discount.where(applicator_type: 'Coupon', applicator_id: percent_off_job.id).first.discountable).to eq job
     end
   end
 
