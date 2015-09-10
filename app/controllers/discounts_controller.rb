@@ -25,11 +25,17 @@ class DiscountsController < InheritedResources::Base
   private
 
   def create_from_in_store_credits
+    in_store_credit_ids = params[:in_store_credit_ids].reject(&:blank?)
+    if in_store_credit_ids.empty?
+      @error_message = "Please provide at least one in-store credit"
+      respond_to(&:js) and return
+    end
+
     @discounts = []
     @success = []
     @failure = []
 
-    params[:in_store_credit_ids].each do |in_store_credit_id|
+    in_store_credit_ids.each do |in_store_credit_id|
       discount = Discount.create(
         permitted_params[:discount].merge(
           applicator_type: 'InStoreCredit',

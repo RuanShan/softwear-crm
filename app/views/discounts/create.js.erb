@@ -1,4 +1,6 @@
-<% if @failure && !@failure.empty? %>
+<% if @error_message %>
+  errorModal("<%= @error_message %>");
+<% elsif @failure && !@failure.empty? %>
   errorModal("Of <%= @discounts.size %> discounts, <%= @failure.size %> failed to create.");
 <% else %>
   successModal("<%=j flash[:notice] %>");

@@ -3,6 +3,7 @@ class InStoreCredit < ActiveRecord::Base
   validates :name, uniqueness: true
 
   belongs_to :user
+  has_one :discount, as: :applicator
 
   searchable do
     text :name, :customer_name, :tokenize_email, :description
@@ -17,8 +18,7 @@ class InStoreCredit < ActiveRecord::Base
   end
 
   def used?
-    # TO BE IMPLEMENTED
-    false
+    !discount.nil? && discount.discountable?
   end
   alias_method :used, :used?
 
