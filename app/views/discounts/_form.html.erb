@@ -14,11 +14,6 @@
                   method: :delete, 'data-model'=>'logout-modal-alt' %>
     </div>
 
-    <div class="form-group">
-      <%= f.label :discount_method %>
-      <%= f.select :discount_method, options_for_select(Discount::PAYMENT_METHODS, @discount.discount_method), {} %>
-    </div>
-
     <%= render params[:form], f: f, order: @order %>
 
     <%= f.submit 'Apply Discount', class: 'btn btn-info' %>

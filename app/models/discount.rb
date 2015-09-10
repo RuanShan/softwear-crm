@@ -5,14 +5,14 @@ class Discount < ActiveRecord::Base
   belongs_to :applicator, polymorphic: true
   belongs_to :user
 
-  validates :discount_method, inclusion: { in: PAYMENT_METHODS, message: "is not any of #{PAYMENT_METHODS.join(', ')}" }
+  validates :discount_method, inclusion: { in: PAYMENT_METHODS, message: "is not any of #{PAYMENT_METHODS.join(', ')}" }, if: :refund?
   validates :discountable, presence: { message: "(order or job) must be assigned" }
   validates :amount, presence: true
   validate :coupon_is_valid
   validates :reason, presence: true, if: :refund?
 
-  after_validation :calculate_amount, if: :coupon?
-  after_validation :set_amount, if: :in_store_credit?
+  before_validation :calculate_amount, if: :coupon?
+  before_validation :set_amount, if: :in_store_credit?
 
   acts_as_paranoid
 

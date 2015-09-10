@@ -34,20 +34,18 @@ feature 'Discounts management', js: true, discount_spec: true, story_859: true d
       visit edit_order_path order, anchor: 'payments'
       click_button 'Coupon'
 
-      select 'Cash', from: 'Discount method'
       fill_in 'Coupon code', with: coupon.code
 
       click_button 'Apply Discount'
 
       expect(page).to have_content 'Discount was successfully created.'
-      expect(Discount.where(discount_method: 'Cash', applicator_type: 'Coupon', applicator_id: coupon.id)).to exist
+      expect(Discount.where(applicator_type: 'Coupon', applicator_id: coupon.id)).to exist
     end
 
     scenario 'A salesperson sees an error when entering a bad coupon code' do
       visit edit_order_path order, anchor: 'payments'
       click_button 'Coupon'
 
-      select 'Cash', from: 'Discount method'
       fill_in 'Coupon code', with: 'notarealcouponcode'
 
       click_button 'Apply Discount'
@@ -81,8 +79,6 @@ feature 'Discounts management', js: true, discount_spec: true, story_859: true d
     scenario 'A salesperson can add an "in-store credit" discount', isc: true do
       visit edit_order_path order, anchor: 'payments'
       click_button 'In-Store Credit'
-
-      select 'Cash', from: 'Discount method'
 
       find('.in-store-credit-search').set('search terms')
       click_button 'Search'
