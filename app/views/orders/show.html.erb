@@ -130,6 +130,13 @@
         <td style="width: 100px"><strong>Subtotal:</strong></td>
         <td style="width: 150px" class="text-right"><%= number_to_currency(@order.subtotal) %></td>
       </tr>
+      <% unless @order.all_discounts.empty? %>
+        <tr id="discounts">
+          <td colspan='2'>
+          <td style="width: 100px"><strong>Discounts:</strong></td>
+          <td style="width: 150px" class="text-right">(<%= number_to_currency(@order.discount_total) %>)</td>
+        </tr>
+      <% end %>
       <tr id="tax">
         <td colspan='2'>
         <td><strong>Tax:</strong></td>

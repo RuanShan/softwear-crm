@@ -167,13 +167,19 @@ class Order < ActiveRecord::Base
     User.find(salesperson_id).full_name
   end
 
+  def discount_total
+    all_discounts.map { |d| d.amount.to_f }.reduce(0, :+)
+  end
+
   def subtotal
     line_items.map(&:total_price).map(&:to_f).reduce(0, :+)
   end
 
   def tax
     return 0 if tax_exempt?
-    line_items.where(taxable: true).map(&:total_price).map(&:to_f).reduce(0, :+) * tax_rate
+    (
+      line_items.where(taxable: true).map(&:total_price).map(&:to_f).reduce(0, :+) - discount_total
+    ) * tax_rate
   end
 
   def tax_rate
@@ -181,7 +187,7 @@ class Order < ActiveRecord::Base
   end
 
   def total
-    subtotal + tax + shipping_price
+    subtotal + tax + shipping_price - discount_total
   end
 
   def name_number_csv

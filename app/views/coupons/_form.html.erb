@@ -45,7 +45,7 @@
                 <% end %>
               <% end %>
 
-              <%= f.select :calculator, options_from_collection_for_select(Coupon::CALCULATORS.keys, :to_s, :humanize, coupon.calculator.to_s), { include_blank: true }, class: 'form-control select2' %>
+              <%= f.select :calculator, options_from_collection_for_select(Coupon::CALCULATORS.keys, :to_s, :humanize, coupon.calculator.to_s), { include_blank: true }, class: 'form-control select2', disabled: coupon.persisted? && Discount.where(applicator: coupon).where.not(discountable: nil).exists? %>
 
               <p class="help-block" id="calculator-help-block" data-descriptions="<%= Coupon::CALCULATORS.to_json %>">
                 <% if coupon.calculator.blank? %>

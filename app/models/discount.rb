@@ -7,6 +7,7 @@ class Discount < ActiveRecord::Base
 
   validates :discount_method, inclusion: { in: PAYMENT_METHODS, message: "is not any of #{PAYMENT_METHODS.join(', ')}" }
   validates :discountable, presence: { message: "(order or job) must be assigned" }
+  validates :amount, presence: true
   validate :coupon_is_valid
   validates :reason, presence: true, if: :refund?
 
