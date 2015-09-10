@@ -9,6 +9,11 @@
 
     <div class="pull-right text-right">
 
+      <%= link_to imprintable_order_sheets_order_path(@order), class: 'btn btn-primary',
+                  'data-action' => 'show' do %>
+          <i class="softwear-icon-t-shirt"></i> Imprintable Sheets
+      <% end %>
+
       <%= link_to order_path(@order), class: 'btn btn-primary',
                   'data-action' => 'show' do %>
           <i class="fa fa-print"></i> Print

@@ -158,8 +158,8 @@ ActiveRecord::Schema.define(version: 20150904194102) do
     t.string   "name",        limit: 255
     t.string   "calculator",  limit: 255
     t.decimal  "value",                   precision: 10
-    t.date     "valid_until"
-    t.date     "valid_from"
+    t.datetime "valid_until"
+    t.datetime "valid_from"
     t.datetime "created_at",                             null: false
     t.datetime "updated_at",                             null: false
   end
@@ -587,8 +587,8 @@ ActiveRecord::Schema.define(version: 20150904194102) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.decimal  "shipping",                                     precision: 10, scale: 2
-    t.datetime "initialized_at"
     t.string   "quote_source",                     limit: 255
+    t.datetime "initialized_at"
     t.string   "freshdesk_ticket_id",              limit: 255
     t.boolean  "informal"
     t.integer  "insightly_category_id",            limit: 4

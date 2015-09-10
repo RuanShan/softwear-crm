@@ -52,3 +52,21 @@ ul.shipments-list {
     padding: 0;
   }
 }
+
+.imprintable-order-sheet-job {
+  page-break-after: always;
+}
+
+.imprintable-order-sheet-imprintable {
+  page-break-inside: avoid;
+}
+
+.imprintable-order-sheet-table {
+  width: 100%;
+
+  th, td {
+    text-align: center;
+    padding: 5px 15px;
+    border: solid 1px #666;
+  } 
+}
