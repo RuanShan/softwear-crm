@@ -34,7 +34,7 @@ class Discount < ActiveRecord::Base
     self.applicator_type = 'Coupon'
     self.applicator_id = Coupon.where(code: code).pluck(:id).first
     if applicator_id.nil?
-      @bad_coupon_code = "does not corrospond to any coupon in the system"
+      @bad_coupon_code = "does not correspond to any coupon in the system"
     end
     code
   end

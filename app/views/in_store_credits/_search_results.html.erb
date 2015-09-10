@@ -1,0 +1,43 @@
+<% if results.empty? %>
+  <p>Sorry, couldn't find any in-store credits matching your search terms!</p>
+  <p>
+    <div class='input-group'>
+      <%= text_field_tag :in_store_credit_search, params[:q], class: 'form-control in-store-credit-search', id: 'modal-isc-search' %>
+      <span class='input-group-btn'>
+        <%= button_tag 'Try Again', class: 'btn btn-default in-store-credit-search-button', id: 'modal-isc-btn' %>
+      </span>
+    </div>
+  </p>
+
+<% else %>
+
+  <div id='in-store-credit-list'>
+    <% results.each do |in_store_credit| %>
+      <div class='col-sm-6 in-store-credit-entry' data-id='<%= in_store_credit.id %>'>
+        <%= hidden_field_tag 'in_store_credit_ids[]', in_store_credit.id %>
+
+        <div class='panel panel-default'>
+          <div class='panel-heading'>
+            <h4><%= number_to_currency(in_store_credit.amount) %></h4>
+          </div>
+          <div class='panel-body'>
+            <dl>
+              <dt>Name</dt>
+              <dd><%= in_store_credit.name %></dd>
+
+              <dt>Customer</dt>
+              <dd><%= in_store_credit.customer_name %> (<%= in_store_credit.customer_email %>)</dd>
+
+              <dt>Valid until</dt>
+              <dd><%= in_store_credit.valid_until.strftime('%m/%d/%Y') %></dd>
+            </dl>
+
+            <%= check_box_tag "in_store_credit_#{in_store_credit.id}", '1', false, class: 'form-control in-store-credit-check' %>
+          </div>
+        </div>
+      </div>
+    <% end %>
+
+    <div class='clearfix'></div>
+  </div>
+<% end %>

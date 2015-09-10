@@ -2,6 +2,21 @@ class InStoreCreditsController < InheritedResources::Base
   before_action :set_current_action
   before_action :format_dates, only: [:create, :update]
 
+  def search
+    @in_store_credits = InStoreCredit.search do
+      fulltext params[:q]
+
+      with :used, false
+      with(:valid_until).greater_than Time.now
+      without :id, params[:exclude] if params[:exclude]
+    end
+      .results
+
+    respond_to do |format|
+      format.js
+    end
+  end
+
   protected
 
   def set_current_action

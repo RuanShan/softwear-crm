@@ -7,6 +7,9 @@ feature 'Discounts management', js: true, discount_spec: true, story_859: true d
   given!(:order) { create(:order) }
   given(:coupon) { create(:flat_rate) }
 
+  given(:credit_1) { create(:in_store_credit) }
+  given(:credit_2) { create(:in_store_credit) }
+
   context 'refunds' do
     scenario 'A salesperson can add a "refund" discount' do
       visit edit_order_path order, anchor: 'payments'
@@ -47,8 +50,43 @@ feature 'Discounts management', js: true, discount_spec: true, story_859: true d
 
       click_button 'Apply Discount'
 
-      expect(page).to have_content 'Coupon code does not corrospond to any coupon in the system'
+      expect(page).to have_content 'Coupon code does not correspond to any coupon in the system'
       expect(page).to_not have_content 'Reason'
+    end
+  end
+
+  context 'in-store credit' do
+    background do
+      allow(InStoreCredit).to receive(:search)
+        .and_return double('Search Results', results: [credit_1, credit_2])
+    end
+
+    scenario 'A salesperson can add an "in-store credit" discount', isc: true do
+      visit edit_order_path order, anchor: 'payments'
+      click_button 'In-Store Credit'
+
+      select 'Cash', from: 'Discount method'
+
+      find('.in-store-credit-search').set('search terms')
+      click_button 'Search'
+
+      expect(page).to have_content credit_1.name
+      expect(page).to have_content credit_1.customer_name
+      expect(page).to have_content credit_1.customer_email
+
+      first('input[type=checkbox]').set true
+      click_button 'Add Selected'
+
+      expect(page).to have_content credit_1.name
+      expect(page).to have_content credit_1.customer_name
+      expect(page).to have_content credit_1.customer_email
+
+      click_button 'Apply Discount'
+
+      expect(page).to have_content "Successfully added 1 in-store credit discount"
+
+      expect(order.reload.discounts.size).to eq 1
+      expect(order.discounts.first.applicator).to eq credit_1
     end
   end
 end

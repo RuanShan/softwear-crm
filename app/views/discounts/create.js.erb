@@ -1,1 +1,6 @@
-successModal("<%=j flash[:notice] %>");
+<% if @failure && !@failure.empty? %>
+  errorModal("Of <%= @discounts.size %> discounts, <%= @failure.size %> failed to create.");
+<% else %>
+  successModal("<%=j flash[:notice] %>");
+  $('#discount-form').collapse('hide');
+<% end %>

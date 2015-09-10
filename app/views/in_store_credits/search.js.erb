@@ -1,0 +1,46 @@
+showContentModal({
+  title: 'In-Store credit search results',
+  body: $("<%=j render 'search_results', results: @in_store_credits %>"),
+  footer: $('<button id="add-in-store-credits" class="btn btn-default" data-dismiss="modal"><%= @in_store_credits.empty? ? 'Close' : 'Add Selected' %></button>'),
+
+  then: function() {
+    <% if @in_store_credits.empty? %>
+      setTimeout(function() {
+        // Select search text, since user will probably want to type there as their next action
+        $('#modal-isc-search').focus();
+        $('#modal-isc-search').select();
+        // Enter key doesn't automatically go to the search button
+        $('#modal-isc-search').keypress(function(key) {
+          if (key.which == 13) {
+            $('#modal-isc-btn').click();
+            return false;
+          }
+        });
+      }, 500);
+
+    <% else %>
+
+      $('#add-in-store-credits').click(function() {
+        // Move all selected in-store credit boxes to the discount form
+        $('#in-store-credit-list').find('.in-store-credit-check:checked').each(function() {
+          var entry = $(this).closest('.in-store-credit-entry');
+          var closeButton = $('<a class="pull-right" href="#"><i class="fa fa-2x danger fa-times-circle"></i></a>');
+
+          closeButton.click(function(event) {
+            event.preventDefault();
+            entry.remove();
+          });
+
+          // Remove the checkbox
+          $(this).remove();
+
+          entry.find('.panel-heading').append(closeButton);
+
+          // Actually add it to the discount form
+          $('#in-store-credit-spot').append(entry);
+        });
+      });
+
+    <% end %>
+  }
+});
