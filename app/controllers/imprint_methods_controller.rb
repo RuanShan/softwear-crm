@@ -38,10 +38,11 @@ private
       ink_color_names: [],
       imprint_method: [
         :name,
+        ink_color_names: [],
         print_locations_attributes: [
           :name, :max_height, :max_width, :imprint_method_id, :id,
           :ideal_width, :ideal_height, :platen_hoop_id,
-          :_destroy
+          :_destroy,
         ]
       ]
     )

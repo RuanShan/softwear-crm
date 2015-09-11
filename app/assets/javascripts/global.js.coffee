@@ -19,6 +19,12 @@ $(window).load ->
     else
       $(this).select2()
 
+  $('.select2-tags').select2
+    allowClear: true
+    tags: true
+    tokenSeparators: [','],
+    placeholder: $(this).data('placeholder')
+
   $('.ink-color-select2').each ->
     self = $(this)
 

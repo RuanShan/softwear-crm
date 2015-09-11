@@ -18,13 +18,16 @@ feature 'Imprint Method Features', imprint_method_spec: true do
     visit imprint_methods_path
     click_link 'Add an Imprint Method'
     fill_in 'Name', with: 'New Imprint Method Name'
-    click_link 'Add Ink color'
-    find(:css, "input#imprint_method_ink_color_names_").set('Red')
+
+    find('#imprint_method_ink_color_names').select InkColor.pluck(:name).sample
+
     click_link 'Add Print Location'
     find(:css, "input[id^='imprint_method_print_locations_attributes_'][id$='_name']").set('Chest')
     find(:css, "input[id^='imprint_method_print_locations_attributes_'][id$='_max_height']").set('5.5')
     find(:css, "input[id^='imprint_method_print_locations_attributes_'][id$='_max_width']").set('5.5')
+
     click_button 'Create Imprint Method'
+
     sleep 2 if ci?
     expect(ImprintMethod.where(name: 'New Imprint Method Name')).to exist
     expect(page).to have_selector('#flash_notice', text: 'Imprint method was successfully created.')
