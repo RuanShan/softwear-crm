@@ -1,0 +1,79 @@
+<div class="row imprintable-order-sheet-imprintable">
+  <% imprintable = line_items.first.imprintable %>
+   <p class='text-center'>
+    <strong><%= imprintable.brand_name %> <%= imprintable.style_catalog_no %></strong> - 
+    <%= line_items.first.imprintable_variant.color.name %> - 
+    <strong><%= imprintable.style_name %></strong>
+  </p>
+  <div class="col-xs-12">
+    <table class="imprintable-order-sheet-table">
+      <thead>
+        <tr>
+          <th>
+          </th>
+          <th>
+          </th>
+        <th style="width: 100px;">
+        </th>
+        <% line_items.each do |line_item| %>
+          <th class='size-col' ><%= line_item.size_display %></th>
+        <% end %>
+        <th class="text-right" style="width: 150px;">Total</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>  
+        <th>
+          Warehouse Location
+        </th>
+        <th>
+          Arrival Date
+        </th>
+          <td>
+          </td>
+        <% line_items.each do |line_item| %>
+          <td>
+            <%= line_item.quantity > 0 ? line_item.quantity : "-" %><br />
+          </td>
+        <% end %>
+        <td class="text-right">
+          <%= line_items.sum(&:quantity) %><br />
+        </td>
+        </tr>
+        <% 4.times do %>
+          <tr>  
+            <td rowspan="2">
+            </td>
+            <td rowspan="2">
+            </td>
+            <td>
+              Ordered
+            </td>
+            <% line_items.each do |line_item| %>
+              <td>
+              
+              </td>
+            <% end %>
+            <td>
+            
+            </td>
+          </tr>
+          <tr>  
+            <td>
+              Arrived
+            </td>
+            <% line_items.each do |line_item| %>
+              <td>
+              </td>
+            <% end %>
+            <td>
+            </td>
+          </tr>
+         <% end %>
+      </tbody>
+    </table>
+  </div>
+  <p class="h3">
+    Inventoried By: 
+  </p>
+</div>

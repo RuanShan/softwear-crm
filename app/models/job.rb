@@ -34,6 +34,10 @@ class Job < ActiveRecord::Base
   validate :assure_name_and_description, on: :create
   validates :name, uniqueness: { scope: [:jobbable_id] }, if: -> { jobbable_type == 'Order' }
 
+  def imprintable_line_items_total
+    line_items.where.not(imprintable_object_id: nil).sum(:quantity)
+  end
+
   def imprintable_line_items_for_tier(tier)
     send(tier_line_items_sym(tier))
   end
@@ -45,6 +49,7 @@ class Job < ActiveRecord::Base
     )
       .to_sym
   end
+
   def tier_line_items_sym(tier)
     Job.tier_line_items_sym(tier)
   end

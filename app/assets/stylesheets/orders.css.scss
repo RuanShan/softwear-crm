@@ -52,3 +52,48 @@ ul.shipments-list {
     padding: 0;
   }
 }
+
+.breakhere {
+  page-break-before: always;
+  page-break-after: always;
+}
+
+@media print {
+  .imprintable-order-sheet-job {
+    page-break-after: always;
+  }
+
+  .imprintable-order-sheet-imprintable {
+    page-break-inside: avoid;
+    margin-bottom: 20px;
+    border-bottom: dashed 1px #000;
+  }
+
+}
+  .imprintable-order-sheet-job {
+    page-break-after: always;
+    page-break-before: always;
+    display: block;
+  }
+
+  .imprintable-order-sheet-imprintable {
+    page-break-inside: avoid;
+    margin-bottom: 20px;
+    padding-bottom: 20px;
+    border-bottom: dashed 1px #000;
+  }
+
+
+.imprintable-order-sheet-table {
+  width: 100%;
+
+  th, td {
+    text-align: center;
+    padding: 5px 15px;
+    border: solid 1px #666;
+  }
+
+ .size-col {
+    width: 50px;
+  } 
+}

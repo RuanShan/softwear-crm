@@ -100,6 +100,7 @@ CrmSoftwearcrmCom::Application.routes.draw do
     member do
       get 'names_numbers', as: :name_number_csv_from
       get 'production_dashboard', as: 'production_dashboard'
+      get :imprintable_order_sheets, as: :imprintable_order_sheets
     end
 
     resources :comments
