@@ -5,7 +5,7 @@ class DiscountsController < InheritedResources::Base
   before_filter :grab_order_if_possible
   respond_to :js
 
-  ACCEPTED_FORMS = %w(coupon in_store_credit refund)
+  ACCEPTED_FORMS = %w(coupon in_store_credit refund discount)
 
   def create
     return create_from_in_store_credits if params[:in_store_credit_ids]

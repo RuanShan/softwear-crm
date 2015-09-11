@@ -1,6 +1,8 @@
 <div class='form-group'>
+  <%= f.hidden_field :applicator_type, value: 'Refund' %>
+
   <div class="form-group">
-    <%= f.label :discount_method %>
+    <%= f.label :discount_method, 'Refund Method' %>
     <%= f.select :discount_method, options_for_select(Discount::PAYMENT_METHODS, @discount.discount_method), {} %>
   </div>
 

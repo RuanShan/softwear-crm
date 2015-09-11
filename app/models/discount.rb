@@ -9,15 +9,27 @@ class Discount < ActiveRecord::Base
   validates :discountable, presence: { message: "(order or job) must be assigned" }
   validates :amount, presence: true
   validate :coupon_is_valid
-  validates :reason, presence: true, if: :refund?
+  validates :reason, presence: true, if: :needs_reason?
 
   before_validation :calculate_amount, if: :coupon?
   before_validation :set_amount, if: :in_store_credit?
 
   acts_as_paranoid
 
+  def applicator
+    applicator_type == 'Refund' ? nil : super
+  end
+
   def refund?
+    applicator_type == 'Refund'
+  end
+
+  def discount?
     applicator_type.blank?
+  end
+
+  def needs_reason?
+    refund? or discount?
   end
 
   def coupon?
@@ -40,7 +52,8 @@ class Discount < ActiveRecord::Base
     case applicator_type
     when 'Coupon'        then 'coupon'
     when 'InStoreCredit' then 'in_store_credit'
-    else 'refund'
+    when 'Refund'        then 'refund'
+    else 'discount'
     end
   end
 
@@ -59,7 +72,7 @@ class Discount < ActiveRecord::Base
       if !applicator.valid_from.blank? && Time.now < applicator.valid_from
         @bad_coupon_code = "will be valid starting #{applicator.valid_from.strftime('%m/%d/%Y %I:%M%p')}"
 
-      elsif !applicator.valid_from.blank? && Time.now > applicator.valid_until
+      elsif !applicator.valid_until.blank? && Time.now > applicator.valid_until
         @bad_coupon_code = "corresponds to a coupon that expired on #{applicator.valid_until.strftime('%m/%d/%Y %I:%M%p')}!"
       end
     end

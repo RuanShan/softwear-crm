@@ -6,7 +6,7 @@
       <h4>
         Discount
         <%= index + 1 %>
-        (<%= discount.applicator_type || 'Refund' %>)
+        (<%= discount.applicator_type || 'Discount' %>)
         <% if discount.discountable_type == 'Job' %>
           (Job: <%= discount.discountable.name %>)
         <% end %>

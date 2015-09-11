@@ -98,6 +98,12 @@
               remote: true, 'data-target' => '#discount-form', id: 'refund-button' } do %>
         <i class="fa fa-dollar"></i> Refund
       <% end %>
+
+      <%= button_to new_order_discount_path(params[:id]) + '?form=discount', {
+              class: 'additional-icon btn btn-default payment-button', method: :get,
+              remote: true, 'data-target' => '#discount-form', id: 'discount-button' } do %>
+        <i class="fa fa-dollar"></i> Discount
+      <% end %>
     </div>
 
     <div id="discount-form" class="collapse"></div>
