@@ -18,20 +18,6 @@
     </div>
 
     <div class="form-group">
-      <div class="input-group clear">
-        <%= f.label :platen_hoop_id, 'Platen or Hoop', class: 'input-group-addon' %>
-
-        <%= f.select :platen_hoop_id, options_from_collection_for_select(PlatenHoop.all, :id, :name, f.object.try(:platen_hoop_id).try(:to_s)), { include_blank: true }, class: 'select2 form-control', style: 'width: 100%;' %>
-      </div>
-
-      <% if f.object.errors.include?(:platen_hoop) %>
-        <% f.object.errors.full_messages_for(:platen_hoop).each do |message| %>
-          <p class="text-danger"><%= message %></p>
-        <% end %>
-      <% end %>
-    </div>
-
-    <div class="form-group">
         <div class="input-group clear">
           <%= f.label :max_width, class: 'input-group-addon' %>
 
@@ -60,40 +46,6 @@
 
         <% if f.object.errors.include?(:max_height) %>
           <% f.object.errors.full_messages_for(:max_height).each do |message| %>
-            <p class="text-danger"><%= message %></p>
-          <% end %>
-        <% end %>
-      </div>
-
-      <div class="form-group">
-        <div class="input-group">
-          <%= f.label :ideal_width, class: 'input-group-addon' %>
-
-          <%= f.text_field :ideal_width, class: 'form-control',
-                           placeholder: 'Width (0.00) in inches' %>
-
-          <span class='input-group-addon'>inches</span>
-        </div>
-
-        <% if f.object.errors.include?(:ideal_width) %>
-          <% f.object.errors.full_messages_for(:ideal_width).each do |message| %>
-            <p class="text-danger"><%= message %></p>
-          <% end %>
-        <% end %>
-      </div>
-
-      <div class="form-group">
-        <div class="input-group">
-          <%= f.label :ideal_height, class: 'input-group-addon' %>
-
-          <%= f.text_field :ideal_height, class: 'form-control',
-                           placeholder: 'Height (0.00) in inches' %>
-
-          <span class='input-group-addon'>inches</span>
-        </div>
-
-        <% if f.object.errors.include?(:ideal_height) %>
-          <% f.object.errors.full_messages_for(:ideal_height).each do |message| %>
             <p class="text-danger"><%= message %></p>
           <% end %>
         <% end %>
