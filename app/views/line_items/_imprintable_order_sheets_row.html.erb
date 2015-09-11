@@ -1,4 +1,4 @@
-<div class="row">
+<div class="row imprintable-order-sheet-imprintable">
   <% imprintable = line_items.first.imprintable %>
    <p class='text-center'>
     <strong><%= imprintable.brand_name %> <%= imprintable.style_catalog_no %></strong> - 
@@ -13,12 +13,12 @@
           </th>
           <th>
           </th>
-        <th>
+        <th style="width: 100px;">
         </th>
         <% line_items.each do |line_item| %>
-          <th><%= line_item.size_display %></th>
+          <th class='size-col' ><%= line_item.size_display %></th>
         <% end %>
-        <th class="text-right">Total</th>
+        <th class="text-right" style="width: 150px;">Total</th>
         </tr>
       </thead>
       <tbody>

@@ -132,6 +132,7 @@ class OrdersController < InheritedResources::Base
 
   def imprintable_order_sheets
     @order = Order.find(params[:id])
+    render layout: 'no_overlay'
   end
 
   private
