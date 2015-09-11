@@ -2,6 +2,13 @@
 <%= f.select :print_location_id, option_groups_from_collection_for_select(ImprintMethod.joins(:print_locations).uniq, :print_locations, :name, :id, :qualified_name, f.object.print_location_id), {}, class: 'select2 select-print-location' %>
 
   <div class='col-sm-6'>
+    <%= f.label :platen_hoop_id, 'Platen or Hoop' %>:
+  </div>
+  <div class='col-sm-6'>
+    <%= f.select :platen_hoop_id, options_from_collection_for_select(PlatenHoop.all, :id, :name, f.object.platen_hoop_id.to_s), { include_blank: true }, class: 'select2 form-control', style: 'width: 100%' %>
+  </div>
+
+  <div class='col-sm-6'>
     <%= f.label :max_imprint_width %>:
   </div>
   <div class='col-sm-6'>
@@ -13,6 +20,20 @@
   </div>
   <div class='col-sm-6'>
     <%= f.text_field :max_imprint_height %>
+  </div>
+
+  <div class='col-sm-6'>
+    <%= f.label :ideal_imprint_width %>:
+  </div>
+  <div class='col-sm-6'>
+    <%= f.text_field :ideal_imprint_width %>
+  </div>
+
+  <div class='col-sm-6'>
+    <%= f.label :ideal_imprint_height %>:
+  </div>
+  <div class='col-sm-6'>
+    <%= f.text_field :ideal_imprint_height %>
   </div>
 
   <%= f.try(:link_to_remove, 'Remove', class: 'btn btn-danger') %>

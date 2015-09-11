@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150908150135) do
+ActiveRecord::Schema.define(version: 20150910205640) do
 
   create_table "activities", force: :cascade do |t|
     t.integer  "trackable_id",   limit: 4
@@ -158,8 +158,8 @@ ActiveRecord::Schema.define(version: 20150908150135) do
     t.string   "name",        limit: 255
     t.string   "calculator",  limit: 255
     t.decimal  "value",                   precision: 10
-    t.date     "valid_until"
-    t.date     "valid_from"
+    t.datetime "valid_until"
+    t.datetime "valid_from"
     t.datetime "created_at",                             null: false
     t.datetime "updated_at",                             null: false
   end
@@ -524,25 +524,25 @@ ActiveRecord::Schema.define(version: 20150908150135) do
   end
 
   create_table "print_location_imprintables", force: :cascade do |t|
-    t.integer  "imprintable_id",     limit: 4
-    t.integer  "print_location_id",  limit: 4
-    t.decimal  "max_imprint_width",            precision: 10
-    t.decimal  "max_imprint_height",           precision: 10
-    t.datetime "created_at",                                  null: false
-    t.datetime "updated_at",                                  null: false
+    t.integer  "imprintable_id",       limit: 4
+    t.integer  "print_location_id",    limit: 4
+    t.decimal  "max_imprint_width",              precision: 10
+    t.decimal  "max_imprint_height",             precision: 10
+    t.datetime "created_at",                                              null: false
+    t.datetime "updated_at",                                              null: false
+    t.decimal  "ideal_imprint_width",            precision: 10, scale: 2
+    t.decimal  "ideal_imprint_height",           precision: 10, scale: 2
+    t.integer  "platen_hoop_id",       limit: 4
   end
 
   create_table "print_locations", force: :cascade do |t|
     t.string   "name",              limit: 255
     t.integer  "imprint_method_id", limit: 4
-    t.decimal  "max_height",                    precision: 8,  scale: 2
-    t.decimal  "max_width",                     precision: 8,  scale: 2
+    t.decimal  "max_height",                    precision: 8, scale: 2
+    t.decimal  "max_width",                     precision: 8, scale: 2
     t.datetime "deleted_at"
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.integer  "platen_hoop_id",    limit: 4
-    t.decimal  "ideal_width",                   precision: 10, scale: 2
-    t.decimal  "ideal_height",                  precision: 10, scale: 2
   end
 
   add_index "print_locations", ["deleted_at"], name: "index_print_locations_on_deleted_at", using: :btree
@@ -603,8 +603,8 @@ ActiveRecord::Schema.define(version: 20150908150135) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.decimal  "shipping",                                     precision: 10, scale: 2
-    t.datetime "initialized_at"
     t.string   "quote_source",                     limit: 255
+    t.datetime "initialized_at"
     t.string   "freshdesk_ticket_id",              limit: 255
     t.boolean  "informal"
     t.integer  "insightly_category_id",            limit: 4
