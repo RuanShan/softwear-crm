@@ -8,7 +8,7 @@ class Order < ActiveRecord::Base
   is_activity_recipient
 
   searchable do
-    text :name, :email, :firstname, :lastname,
+    text :name, :email, :firstname, :lastname, :invoice_state, 
          :company, :twitter, :terms, :delivery_method
 
     text :jobs do
@@ -30,6 +30,11 @@ class Order < ActiveRecord::Base
   end
 
   tracked by_current_user
+
+  VALID_INVOICE_STATES = [
+    'pending', 
+    'approved'
+  ]
 
   VALID_PAYMENT_TERMS = [
     '',
@@ -64,6 +69,12 @@ class Order < ActiveRecord::Base
 
   accepts_nested_attributes_for :payments
 
+  validates :invoice_state,
+            presence: true,
+            inclusion: {
+                in: VALID_INVOICE_STATES,
+                message: 'Invalid invoice state'
+            }
   validates :delivery_method,
             presence: true,
             inclusion: {
@@ -88,6 +99,8 @@ class Order < ActiveRecord::Base
   validates :store, presence: true
   validates :terms, presence: true
   validates :in_hand_by, presence: true
+
+  after_initialize -> (o) { o.invoice_state = 'pending' if o.invoice_state.blank? }
 
   alias_method :comments, :all_comments
   alias_method :comments=, :all_comments=

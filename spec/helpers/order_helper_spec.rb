@@ -1,6 +1,31 @@
 require 'spec_helper'
 
 describe OrderHelper, order_spec: true do
+  describe '#get_style_from_invoice_state' do
+    let!(:order) { (build_stubbed(:blank_order)) }
+
+    context 'invoice_state is approved' do
+      before(:each) do
+        allow(order).to receive(:invoice_state).and_return('approved')
+      end
+
+      it 'returns label-danger' do
+        expect(get_style_from_invoice_state(order.invoice_state)).to eq('label-success')
+      end
+    end
+
+    context 'invoice_state is pending' do
+      before(:each) do
+        allow(order).to receive(:invoice_state).and_return('pending')
+      end
+
+      it 'returns label-danger' do
+        expect(get_style_from_invoice_state(order.invoice_state)).to eq('label-warning')
+      end
+    end
+  end
+
+
   describe '#get_style_from_status' do
     let!(:order) { (build_stubbed(:blank_order)) }
 

@@ -21,6 +21,9 @@
   <td>
     <span class="label <%= get_style_from_status(order.payment_status)%>"><%= order.payment_status %></span>
   </td>
+  <td class='invoice-state'>
+    <span class="label <%= get_style_from_invoice_state(order.invoice_state)%>"><%= order.invoice_state.humanize %></span>
+  </td>
   <td><%= number_to_currency order.total, unit: '$' %></td>
   <td><%= number_to_currency order.balance, unit: '$' %></td>
   <td>

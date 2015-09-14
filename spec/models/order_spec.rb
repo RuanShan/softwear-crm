@@ -20,6 +20,9 @@ describe Order, order_spec: true do
   end
 
   describe 'Validations' do
+    it { is_expected.to validate_presence_of :invoice_state }
+    it { is_expected.to validate_inclusion_of(:invoice_state)
+           .in_array Order::VALID_INVOICE_STATES }
     it { is_expected.to validate_presence_of :delivery_method }
     it { is_expected.to validate_inclusion_of(:delivery_method)
            .in_array Order::VALID_DELIVERY_METHODS }
@@ -51,6 +54,14 @@ describe Order, order_spec: true do
         expect(Order.fba).to_not include normal_order
       end
     end
+  end
+  
+  describe 'upon initialization' do 
+    subject { create(:order) }
+    
+    it 'sets invoice_state to pending' do 
+      expect(subject.invoice_state).to eq('pending')
+    end  
   end
 
   describe '#balance' do

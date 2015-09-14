@@ -276,6 +276,8 @@ feature 'Quotes management', quote_spec: true, js: true, retry: 2 do
       click_button 'Add Imprintable(s)'
       click_button 'OK'
       visit edit_quote_path quote
+      
+      click_link 'Timeline'
 
       expect(page).to have_content '19.95'
       expect(page).to have_content '6'
@@ -293,6 +295,7 @@ feature 'Quotes management', quote_spec: true, js: true, retry: 2 do
       wait_for_ajax
       click_link 'Timeline'
       visit edit_quote_path quote
+      click_link 'Timeline'
       expect(page).to have_link 'Hi There'
     end
   end
@@ -398,6 +401,8 @@ feature 'Quotes management', quote_spec: true, js: true, retry: 2 do
       click_button 'Save Line Item Changes'
 
       visit edit_quote_path quote
+      
+      click_link 'Timeline'
 
       expect(page).to have_content '10'
       expect(page).to have_content '12.55'

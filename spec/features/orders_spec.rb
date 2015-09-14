@@ -161,11 +161,13 @@ feature 'Order management', order_spec: true,  js: true do
     wait_for_ajax
 
     fill_in 'Name', with: 'New Title'
+    select 'approved', from: 'Invoice state'
 
     click_button 'Save'
 
     sleep 2 if ci?
     expect(Order.where(name: 'New Title')).to exist
+    expect(Order.where(invoice_state: 'approved')).to exist
   end
 
   scenario 'when editing, submitting invalid information displays error content' do
@@ -182,7 +184,7 @@ feature 'Order management', order_spec: true,  js: true do
       order.save
     end
     visit edit_order_path(order)
-
+    click_link 'Timeline'
     expect(page).to have_content "Updated order #{order.name}"
   end
 end

@@ -30,6 +30,7 @@ feature 'FreshdeskTicketViewing' do
       
     scenario 'A user can toggle quoted freshdesk text', js: true do
       visit edit_quote_path(quote)
+      click_link 'Timeline'
       expect(page).not_to have_content "wasabi451"
       click_link 'Toggle Quoted Text'
       expect(page).to have_content "wasabi451"

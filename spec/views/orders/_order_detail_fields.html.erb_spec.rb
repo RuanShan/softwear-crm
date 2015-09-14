@@ -17,6 +17,7 @@ describe 'orders/_order_detail_fields.html.erb', order_spec: true do
       expect(rendered).to have_field_for :tax_exempt
       expect(rendered).to have_field_for :store_id
       expect(rendered).to have_field_for :salesperson_id
+      expect(rendered).to have_field_for :invoice_state
     end
   end
 

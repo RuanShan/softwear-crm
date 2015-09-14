@@ -18,6 +18,7 @@ describe 'orders/_table_entry.html.erb', order_spec: true do
 		expect(rendered).to have_selector 'td', text: 'o lastname'
 		expect(rendered).to have_selector 'td', text: 'o@email.com'
 		expect(rendered).to have_selector 'td', text: 'Payment Complete'
+		expect(rendered).to have_selector 'td.invoice-state', text: 'Pending'
 		expect(rendered).to have_selector 'td', text: '$0.00'
 	end
 end
