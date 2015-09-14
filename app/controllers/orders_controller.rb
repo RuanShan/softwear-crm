@@ -157,7 +157,7 @@ class OrdersController < InheritedResources::Base
         :email, :firstname, :lastname,
         :company, :twitter, :name, :po,
         :in_hand_by, :terms, :tax_exempt,
-        :tax_id_number, :redo_reason, :invoice_state
+        :tax_id_number, :redo_reason, :invoice_state,
         :delivery_method, :phone_number, :commission_amount,
         :store_id, :salesperson_id, :total, :shipping_price,
 
