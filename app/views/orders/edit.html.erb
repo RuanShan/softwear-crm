@@ -40,6 +40,11 @@
         <div class="box-info full">
             <ul class="nav nav-tabs nav-justified">
               <li class="active">
+                <a href="#jobs" data-toggle="tab">
+                  <i class="fa fa-tasks"></i> Jobs
+                </a>
+              </li>
+              <li>
                 <a href="#timeline" data-toggle="tab">
                   <i class="fa fa-clock-o"></i> Timeline
                 </a>
@@ -47,11 +52,6 @@
               <li>
                 <a href="#details" data-toggle="tab">
                   <i class="fa fa-shopping-cart"></i> Details
-                </a>
-              </li>
-              <li>
-                <a href="#jobs" data-toggle="tab">
-                  <i class="fa fa-tasks"></i> Jobs
                 </a>
               </li>
               <li>
@@ -82,17 +82,17 @@
             </ul>
 
             <div class="tab-content">
-              <div class="tab-pane animated fadeInRight active" id="timeline">
+              <div class="tab-pane animated fadeInRight active" id="jobs">
+                <%= render partial: 'jobs/jobs', locals: { order: @order } %>
+              </div>
+
+              <div class="tab-pane animated fadeInRight" id="timeline">
                 <%= render partial: 'shared/timeline',
                            locals: {activities: @activities} %>
               </div>
 
               <div class="tab-pane animated  fadeInRight" id="details">
                 <%= render partial: 'details', locals: { order: @order } %>
-              </div>
-
-              <div class="tab-pane animated fadeInRight" id="jobs">
-                <%= render partial: 'jobs/jobs', locals: { order: @order } %>
               </div>
 
               <div class="tab-pane animated fadeInRight" id="payments">

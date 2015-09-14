@@ -15,8 +15,14 @@ describe 'orders/edit.html.erb', order_spec: true do
 
   it 'displays a "download names and numbers" button on the top right' do
     allow(order).to receive_message_chain(:imprints, :name_number).and_return [1]
-    params[:id] = order.id
     render
     expect(rendered).to have_text('Name/Numbers')
   end
+
+  it 'displays the jobs tab by default' do 
+    render
+    expect(rendered).to have_css("li.active", text: 'Jobs')
+    expect(rendered).to have_css("#jobs.active")  
+  end
+
 end

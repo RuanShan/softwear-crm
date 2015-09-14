@@ -32,5 +32,11 @@ describe 'quotes/edit.html.erb', quote_spec: true do
   it 'should contain a link to create order from quote' do
     expect(rendered).to have_css('a', text: 'Create Order from Quote')
   end
+  
+  it 'displays the line items tab by default' do 
+    render
+    expect(rendered).to have_css("li.active", text: 'Line Items')
+    expect(rendered).to have_css("#line_items.active")  
+  end
 
 end

@@ -32,44 +32,44 @@
     <h3><strong>Apply</strong> Payment</h3>
 
     <div class="btn-group btn-group-sm max-width">
-      <%= button_to new_order_payment_path(params[:id]) + '?payment_method=1',
+      <%= button_to new_order_payment_path(order.id) + '?payment_method=1',
                     { class: 'additional-icon btn btn-default payment-button',
                       method: :get, remote: true, 'data-target' => '#payment-form',
                       id: 'cash-button' } do %>
         <i class="fa fa-money"></i> Cash
       <% end %>
 
-      <%= button_to new_order_payment_path(params[:id]) + '?payment_method=2', {
+      <%= button_to new_order_payment_path(order.id) + '?payment_method=2', {
               class: 'additional-icon btn btn-default payment-button', method: :get,
               remote: true, 'data-target' => '#payment-form', id: 'cc-button' } do %>
         <i class="fa fa-credit-card"></i> Swiped Credit Card
       <% end %>
 
-      <%= button_to new_order_payment_path(params[:id]) + '?payment_method=3', {
+      <%= button_to new_order_payment_path(order.id) + '?payment_method=3', {
               class: 'additional-icon btn btn-default payment-button', method: :get,
               remote: true, 'data-target' => '#payment-form', id: 'check-button' } do %>
         <i class="fa fa-edit"></i> Check
       <% end %>
 
-      <%= button_to new_order_payment_path(params[:id]) + '?payment_method=4', {
+      <%= button_to new_order_payment_path(order.id) + '?payment_method=4', {
               class: 'additional-icon btn btn-default payment-button', method: :get,
               remote: true, 'data-target' => '#payment-form', id: 'paypal-button' } do %>
         <i class="fa fa-paypal"></i> PayPal
       <% end %>
 
-      <%= button_to new_order_payment_path(params[:id]) + '?payment_method=1', {
+      <%= button_to new_order_payment_path(order.id) + '?payment_method=1', {
               class: 'additional-icon btn btn-default payment-button', method: :get,
               remote: true, 'data-target' => '#payment-form', id: 'wire-button' } do %>
         <i class="fa fa-code-fork"></i> Wire Transfer
       <% end %>
 
-      <%= button_to new_order_payment_path(params[:id]) + '?payment_method=5', {
+      <%= button_to new_order_payment_path(order.id) + '?payment_method=5', {
               class: 'additional-icon btn btn-default payment-button', method: :get,
               remote: true, 'data-target' => '#payment-form', id: 'trade-first-button' } do %>
         <i class="fa fa-asterisk"></i> Trade First
       <% end %>
 
-      <%= button_to new_order_payment_path(params[:id]) + '?payment_method=6', {
+      <%= button_to new_order_payment_path(order.id) + '?payment_method=6', {
               class: 'additional-icon btn btn-default payment-button', method: :get,
               remote: true, 'data-target' => '#payment-form', id: 'trade-button' } do %>
         <i class="fa fa-exchange"></i> Trade
@@ -81,25 +81,25 @@
     <h3><strong>Apply</strong> Discount</h3>
 
     <div class="btn-group btn-group-sm max-width">
-      <%= button_to new_order_discount_path(params[:id]) + '?form=coupon', {
+      <%= button_to new_order_discount_path(order.id) + '?form=coupon', {
               class: 'additional-icon btn btn-default payment-button', method: :get,
               remote: true, 'data-target' => '#discount-form', id: 'coupon-button' } do %>
         <i class="fa fa-tag"></i> Coupon
       <% end %>
 
-      <%= button_to new_order_discount_path(params[:id]) + '?form=in_store_credit', {
+      <%= button_to new_order_discount_path(order.id) + '?form=in_store_credit', {
               class: 'additional-icon btn btn-default payment-button', method: :get,
               remote: true, 'data-target' => '#discount-form', id: 'in-store-credit-button' } do %>
         <i class="fa fa-plus-square-o"></i> In-Store Credit
       <% end %>
 
-      <%= button_to new_order_discount_path(params[:id]) + '?form=refund', {
+      <%= button_to new_order_discount_path(order.id) + '?form=refund', {
               class: 'additional-icon btn btn-default payment-button', method: :get,
               remote: true, 'data-target' => '#discount-form', id: 'refund-button' } do %>
         <i class="fa fa-dollar"></i> Refund
       <% end %>
 
-      <%= button_to new_order_discount_path(params[:id]) + '?form=discount', {
+      <%= button_to new_order_discount_path(order.id) + '?form=discount', {
               class: 'additional-icon btn btn-default payment-button', method: :get,
               remote: true, 'data-target' => '#discount-form', id: 'discount-button' } do %>
         <i class="fa fa-dollar"></i> Discount
