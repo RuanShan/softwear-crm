@@ -29,6 +29,17 @@ module OrderHelper
     end
   end
 
+  def get_style_from_production_state(status, style_type = 'label')
+    if style_type == 'label'
+      case status
+      when 'pending' then 'label-danger'
+      when 'in_production' then 'label-warning'
+      when 'complete' then 'label-success'
+      else nil
+      end
+    end
+  end
+
   def get_train_panel_style(state_type)
     case state_type
       when 'success' then 'panel-success'

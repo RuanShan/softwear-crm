@@ -18,11 +18,14 @@
     <% end %>
   </td>
   <td><%= order.salesperson.full_name %></td>
-  <td>
+  <td class='payment-state'>
     <span class="label <%= get_style_from_status(order.payment_status)%>"><%= order.payment_status %></span>
   </td>
   <td class='invoice-state'>
     <span class="label <%= get_style_from_invoice_state(order.invoice_state)%>"><%= order.invoice_state.humanize %></span>
+  </td>
+  <td class='production-state'>
+    <span class="label <%= get_style_from_production_state(order.production_state)%>"><%= order.production_state.humanize %></span>
   </td>
   <td><%= number_to_currency order.total, unit: '$' %></td>
   <td><%= number_to_currency order.balance, unit: '$' %></td>
