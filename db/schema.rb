@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150914210248) do
+ActiveRecord::Schema.define(version: 20150915173219) do
 
   create_table "activities", force: :cascade do |t|
     t.integer  "trackable_id",   limit: 4
@@ -373,6 +373,7 @@ ActiveRecord::Schema.define(version: 20150914210248) do
     t.string   "name_format",       limit: 255
     t.string   "number_format",     limit: 255
     t.text     "description",       limit: 65535
+    t.integer  "softwear_prod_id",  limit: 4
   end
 
   create_table "in_store_credits", force: :cascade do |t|
@@ -399,14 +400,15 @@ ActiveRecord::Schema.define(version: 20150914210248) do
   add_index "ink_colors", ["deleted_at"], name: "index_ink_colors_on_deleted_at", using: :btree
 
   create_table "jobs", force: :cascade do |t|
-    t.string   "name",          limit: 255
-    t.text     "description",   limit: 65535
-    t.integer  "jobbable_id",   limit: 4
+    t.string   "name",             limit: 255
+    t.text     "description",      limit: 65535
+    t.integer  "jobbable_id",      limit: 4
     t.datetime "deleted_at"
     t.datetime "created_at"
     t.datetime "updated_at"
     t.boolean  "collapsed"
-    t.string   "jobbable_type", limit: 255
+    t.string   "jobbable_type",    limit: 255
+    t.integer  "softwear_prod_id", limit: 4
   end
 
   add_index "jobs", ["deleted_at"], name: "index_jobs_on_deleted_at", using: :btree
@@ -490,6 +492,7 @@ ActiveRecord::Schema.define(version: 20150914210248) do
     t.integer  "salesperson_id",    limit: 4
     t.decimal  "shipping_price",                precision: 10, scale: 2, default: 0.0
     t.string   "invoice_state",     limit: 255
+    t.integer  "softwear_prod_id",  limit: 4
   end
 
   add_index "orders", ["deleted_at"], name: "index_orders_on_deleted_at", using: :btree
@@ -604,8 +607,8 @@ ActiveRecord::Schema.define(version: 20150914210248) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.decimal  "shipping",                                     precision: 10, scale: 2
-    t.string   "quote_source",                     limit: 255
     t.datetime "initialized_at"
+    t.string   "quote_source",                     limit: 255
     t.string   "freshdesk_ticket_id",              limit: 255
     t.boolean  "informal"
     t.integer  "insightly_category_id",            limit: 4

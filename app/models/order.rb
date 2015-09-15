@@ -1,5 +1,6 @@
 class Order < ActiveRecord::Base
   include TrackingHelpers
+  include ProductionCounterpart
 
   acts_as_paranoid
   acts_as_commentable :public, :private
@@ -8,7 +9,7 @@ class Order < ActiveRecord::Base
   is_activity_recipient
 
   searchable do
-    text :name, :email, :firstname, :lastname, :invoice_state, 
+    text :name, :email, :firstname, :lastname, :invoice_state,
          :company, :twitter, :terms, :delivery_method
 
     text :jobs do
@@ -33,7 +34,7 @@ class Order < ActiveRecord::Base
   tracked by_current_user
 
   VALID_INVOICE_STATES = [
-    'pending', 
+    'pending',
     'approved'
   ]
 
@@ -80,13 +81,13 @@ class Order < ActiveRecord::Base
             presence: true,
             inclusion: {
                 in: VALID_INVOICE_STATES,
-                message: 'Invalid invoice state'
+                message: 'is invalid'
             }
   validates :delivery_method,
             presence: true,
             inclusion: {
                 in: VALID_DELIVERY_METHODS,
-                message: 'Invalid delivery method'
+                message: 'is invalid'
             },
             unless: :fba?
   validates :email,
@@ -108,6 +109,7 @@ class Order < ActiveRecord::Base
   validates :in_hand_by, presence: true
 
   after_initialize -> (o) { o.invoice_state = 'pending' if o.invoice_state.blank? }
+  after_save :create_production_order, if: :ready_for_production?
 
   alias_method :comments, :all_comments
   alias_method :comments=, :all_comments=
@@ -117,6 +119,12 @@ class Order < ActiveRecord::Base
 
   def production_order
     Production::Order.where(softwear_crm_id: self.id).first
+  end
+
+  def ready_for_production?
+    return if production?
+
+    payment_status == 'Payment Terms Met' and invoice_state == 'approved'
   end
 
   def all_shipments
@@ -221,6 +229,54 @@ class Order < ActiveRecord::Base
   def name_and_numbers
     jobs.map{|j|  j.name_number_imprints.flat_map{ |i| i.name_numbers } }.flatten
   end
+
+  def create_production_order
+    prod_order = Production::Order.create(
+      softwear_crm_id:    id,
+      deadline:           in_hand_by,
+      name:               name,
+      fba:                fba?,
+      has_imprint_groups: false,
+
+      jobs_attributes: jobs.map do |job|
+        {
+          name: job.name,
+          softwear_crm_id: job.id,
+          imprints_attributes: job.imprints.map do |imprint|
+            {
+              softwear_crm_id: imprint.id,
+              name:            imprint.name,
+              description:     '',
+              type:            'Print'
+            }
+          end
+        }
+      end
+    )
+
+    update_column :softwear_prod_id, prod_order.id
+    job_hash = {}
+    imprint_hash = {}
+
+    prod_order.jobs.each do |p_job|
+      job_hash[p_job.softwear_crm_id] = p_job
+
+      p_job.imprints.each do |p_imprint|
+        imprint_hash[p_imprint.softwear_crm_id] = p_imprint
+      end
+    end
+
+    jobs.each do |job|
+      job.update_column :softwear_prod_id, job_hash[job.id].id
+
+      job.imprints.each do |imprint|
+        imprint.update_column :softwear_prod_id, imprint_hash[imprint.id].id
+      end
+    end
+
+    # TODO generate trains?
+  end
+  warn_on_failure_of :create_production_order unless Rails.env.test?
 
   def generate_jobs(job_attributes)
     job_attributes.each do |attributes|

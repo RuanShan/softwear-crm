@@ -129,6 +129,7 @@ gem 'yaml_db', github: 'jetthoughts/yaml_db', ref: 'fb4b6bd7e12de3cffa93e0a298a1
 gem 'nested_form'
 gem 'jquery-minicolors-rails'
 gem 'aws-ses'
+gem 'endpoint_stub', github: 'AnnArborTees/endpoint_stub', branch: 'master'
 
 # Use ActiveModel has_secure_password
 # gem 'bcrypt', '~> 3.1.7'

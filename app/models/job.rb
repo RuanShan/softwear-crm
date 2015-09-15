@@ -1,5 +1,6 @@
 class Job < ActiveRecord::Base
   include TrackingHelpers
+  include ProductionCounterpart
 
   acts_as_paranoid
 
