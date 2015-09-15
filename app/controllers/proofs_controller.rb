@@ -61,11 +61,11 @@ class ProofsController < InheritedResources::Base
 
   def email_type(email_hash)
     if email_hash[:reminder]
-      ProofMailer.delay.proof_reminder_email(email_hash)
+      ProofMailer.proof_reminder_email(email_hash).deliver
       flash[:success] = 'Your reminder was successfully sent!'
       email_hash[:proof].create_activity :reminded_customer, owner: current_user
     else
-      ProofMailer.delay.proof_approval_email(email_hash)
+      ProofMailer.proof_approval_email(email_hash).deliver
       email_hash[:proof].status = 'Emailed Customer'
       email_hash[:proof].save
       flash[:success] = 'Your email was successfully sent!'

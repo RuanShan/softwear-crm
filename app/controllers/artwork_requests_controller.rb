@@ -48,7 +48,7 @@ class ArtworkRequestsController < InheritedResources::Base
   end
 
   def notify_artist
-    ArtistMailer.delay.artist_notification(@artwork_request, action_name)
+    ArtistMailer.artist_notification(@artwork_request, action_name).deliver
   end
 
   def format_deadline

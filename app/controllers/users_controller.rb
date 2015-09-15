@@ -17,7 +17,7 @@ class UsersController < InheritedResources::Base
 
     if user_signed_in?
       hash = {new_user: user, password: password, granter: current_user}
-      NewUserMailer.delay.confirm_user(hash)
+      NewUserMailer.confirm_user(hash).deliver
     else
       flash[:alert] = 'Not signed in!'
       redirect_to '/'
