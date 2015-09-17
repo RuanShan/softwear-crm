@@ -1,0 +1,9 @@
+<p><%= activity.owner.full_name rescue "(User Unavailable)" %> changed order 
+"<%= activity.parameters['machine'] %> from 
+"<%= activity.parameters['old_state'] %>" to 
+"<%= activity.parameters['new_state'] %>" via transition 
+"<%= activity.parameters['transition'] %>
+<% unless activity.parameters['details'].blank? %>
+  with the details <i><%= activity.parameters['details'] %></i>
+<% end %>
+</p>

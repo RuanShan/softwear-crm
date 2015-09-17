@@ -1,0 +1,25 @@
+<%= form_tag transition_order_path(@order), remote: true  do %>
+  <% if @machine.to_s == 'notification_state' %>
+    <h3>Customer Notification Details</h3>
+    <dl>
+      <dt>Name</dt>
+      <dd><%= @order.full_name %></dd>
+      <dt>Email</dt>
+      <dd><%= @order.email %></dd>
+      <dt>Phone</dt>
+      <dd><%= @order.phone_number %></dd>
+    </dl>
+  <% end %>
+
+  <%= label_tag 'What did you do?' %>
+  <%= select_tag :transition, 
+    options_for_select(
+      @order.send("#{@machine}_paths").events.map{|x| [x.to_s.humanize, x]}
+  ), class: 'form-control'  %>
+  <br />
+  <%= label_tag "And what are the details?" %>  
+  <%= text_area_tag :details, '', class: 'form-control' %>
+  <br />
+  <%= hidden_field_tag :state_machine, :notification_state  %>
+  <%= submit_tag "Update #{@machine.to_s.humanize}", class: "btn btn-primary" %>
+<% end %>

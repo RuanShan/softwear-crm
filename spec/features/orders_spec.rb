@@ -186,4 +186,38 @@ feature 'Order management', order_spec: true,  js: true do
     click_link 'Timeline'
     expect(page).to have_content "Updated order #{order.name}"
   end
+
+  scenario 'user can access notification interface from orders index', story_913: true do
+    # look for phone icon, make sure it links to notification form modal
+    # look for thumbs up, make sure it links to picked up
+  end
+
+  scenario 'user can attempt to notify customer, and take note of what happened', story_913: true do 
+    # go to order
+    # click notify (phone icon)
+    # get form, fill out
+    # press submit, 
+    # check page timeline for stuff
+    # check order notification status 
+  end
+
+  scenario 'user can notify customer and update state', story_913: true do 
+    # go to order
+    # click notify (phone icon)
+    # get form, fill out
+    # press submit, 
+    # check page timeline for stuff
+    # check order notification status 
+  end
+
+  scenario 'user can mark order as picked up', story_913: true do 
+    visit edit_order_path(order)
+    click_link 'Picked Up'
+    sleep(0.5)
+    page.driver.browser.switch_to.alert.accept
+    sleep(1)
+    find("button[data-dismiss='modal']").click
+    expect(page).to have_selector("#order_#{order.id} > .notification-state", text: 'Picked up')
+  end
+
 end

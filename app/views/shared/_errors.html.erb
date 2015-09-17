@@ -1,0 +1,7 @@
+<div class="modal-body" id="error_messages">
+  <ul>
+    <% object.errors.full_messages.each do |msg| %>
+      <li><%= msg %></li>
+    <% end %>
+  </ul>
+</div>

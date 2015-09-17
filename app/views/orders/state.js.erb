@@ -1,0 +1,40 @@
+<% if @successful_transition %>
+  $("#order_<%= @order.id %> > .<%= @machine.gsub('_', '-') %>").html("<%= j render('orders/state', which: @machine, state: @order.send(@machine)) %>");
+  
+  <% if @machine.to_s == 'notification_state' && @order.send(@machine).to_s == 'picked_up' %>
+    $("#order_<%= @order.id %>  .notification-buttons").hide();
+  <% end %>
+  
+  setupContentModal(function($contentModal) {
+    $contentModal.find('.modal-content').addClass('modal-content-success')
+  });
+
+  showContentModal({
+    title: 'Success',
+    body: 'Successfully updated <%= @machine.humanize %>'
+  }).delay(50);
+  
+<% elsif @order.errors.any? %>
+
+  setupContentModal(function($contentModal) {
+    $contentModal.find('.modal-content').addClass('modal-content-error')
+  });
+
+  showContentModal({
+    title: 'Failure',
+    body: $("<%= j render('shared/errors', object: @order) %>")
+  }).delay(50);
+<% else %>
+  showContentModal({
+    keyboard: false,
+    title: 'Notify Customer',
+    body: $("<%=j render 'orders/new_state', state_machine: @machine %>"),
+    then: function() {
+      initializeDateTimePicker();
+      initializeSelect2();
+      setPendingSelect();
+      setSubmitTimeout();
+      styleCheckboxes();
+    }
+  });
+<% end %>

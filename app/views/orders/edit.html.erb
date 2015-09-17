@@ -20,23 +20,71 @@
       <% end %>
 
       <%= link_to order_path(@order), class: 'btn btn-primary',
-                  'data-action' => 'show' do %>
-          <i class="fa fa-print"></i> Print
+        data: {action: :show, toggle: :tooltip, title: 'Printable Invoice', placement: :bottom } do %>
+          <i class="fa fa-print"></i>
       <% end %>
+      
 
+      <% if @order.imprints.name_number.any? %>
+        <%= link_to name_number_csv_from_order_path(@order), 
+          data: {toggle: :tooltip, title: 'Names/Numbers', placement: :bottom}, 
+          class: 'btn btn-primary' do  %>
+          <i class="glyphicon glyphicon-list"></i>
+        <% end %>
+      <% end %>
+      
+      <% unless @order.notification_state == 'picked_up' %>
+        <%= link_to state_order_path(@order, :notification_state), remote: true, 
+          data: {toggle: :tooltip, :title => 'Notify Customer', placement: :bottom}, 
+          class: 'btn btn-primary'  do %>
+            <i class="glyphicon glyphicon-phone-alt"></i>
+        <% end %>
+        
+        <%= link_to transition_order_path(@order, :notification_state,  :picked_up), remote: true, 
+          method: :post, data: { toggle: :tooltip, title: 'Mark Picked Up', placement: :bottom,
+          confirm: 'Are you sure you want to mark this order as picked up?'}, 
+          class: 'btn btn-primary' do %>
+            <i class="glyphicon glyphicon-thumbs-up"></i>
+        <% end %>
+      <% end %>
+      
       <%= link_to order_warnings_path(@order.id), class: 'btn btn-warning' do %>
         <i class="fa fa-exclamation-triangle"></i> Warnings
         <%= @order.warnings.active.any? ? "(#{@order.warnings.active.size})" : '' %>
       <% end %>
 
-      <% if @order.imprints.name_number.any? %>
-        <%= link_to name_number_csv_from_order_path(@order), class: 'btn btn-primary' do  %>
-          <i class="glyphicon glyphicon-list"></i> Name/Numbers
-        <% end %>
-      <% end %>
     </div>
 
-</div>
+  </div>
+  <br clear="all" />
+  <table class="table table-condensed">
+    <thead>
+      <th>Payment State
+      </th>
+      <th>Invoice State
+      </th>
+      <th>Production State
+      </th>
+      <th>Notification State
+      </th>
+    </thead>
+    <tbody>
+      <tr id="order_<%= @order.id %>">
+        <td class='payment-state'>
+          <span class="label <%= get_style_from_status(@order.payment_status)%>"><%= @order.payment_status %></span>
+        </td>
+        <td class='invoice-state'>
+          <span class="label <%= get_style_from_invoice_state(@order.invoice_state)%>"><%= @order.invoice_state.humanize %></span>
+        </td>
+        <td class='production-state'>
+          <span class="label <%= get_style_from_production_state(@order.production_state)%>"><%= @order.production_state.humanize %></span>
+        </td>
+        <td class='notification-state'>
+          <span class="label <%= get_style_from_notification_state(@order.notification_state)%>"><%= @order.notification_state.humanize %></span>
+        </td>
+      </tr>
+    </tbody>
+  </table>
 
 <%= content_tag(:div, id: 'order-page', 'data-order-id' => @order.id) {} %>
 

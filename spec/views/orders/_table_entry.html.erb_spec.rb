@@ -20,6 +20,7 @@ describe 'orders/_table_entry.html.erb', order_spec: true do
 		expect(rendered).to have_selector 'td.payment-state', text: 'Payment Complete'
 		expect(rendered).to have_selector 'td.production-state', text: 'Pending'
 		expect(rendered).to have_selector 'td.invoice-state', text: 'Pending'
+		expect(rendered).to have_selector 'td.notification-state', text: 'Pending'
 		expect(rendered).to have_selector 'td', text: '$0.00'
 	end
 end
