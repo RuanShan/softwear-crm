@@ -1,7 +1,9 @@
 <% if activity.trackable_type %>
     Added proof
     <% if activity.trackable %>
-        by <%= current_user.full_name %>
+      <% if activity.owner.try(:full_name) %>
+        by <%= activity.owner.full_name %>
+      <% end %>
     <% else %>
         which has since been removed
     <% end %>
