@@ -55,6 +55,21 @@ class Job < ActiveRecord::Base
     Job.tier_line_items_sym(tier)
   end
 
+  def production_imprints_attributes
+    attrs = {}
+
+    imprints.each_with_index do |imprint, index|
+      attrs[index] = {
+        softwear_crm_id: imprint.id,
+        name:            imprint.name,
+        description:     '',
+        type:            'Print'
+      }
+    end
+
+    attrs
+  end
+
   def imprintable_train_attributes
     if line_items.imprintable.any?
       { state: 'ready_to_order' }

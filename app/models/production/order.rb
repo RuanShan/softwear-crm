@@ -7,4 +7,4 @@ module Production
 
     has_many :jobs, class_name: 'Production::Job'
   end
-end      
+end

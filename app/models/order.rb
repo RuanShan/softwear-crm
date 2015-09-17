@@ -242,39 +242,30 @@ class Order < ActiveRecord::Base
   end
 
   def create_production_order
-    prod_order = Production::Order.create(
+    prod_order = Production::Order.post_raw(
       softwear_crm_id:    id,
       deadline:           in_hand_by,
       name:               name,
       fba:                fba?,
       has_imprint_groups: false,
 
-      jobs_attributes: jobs.map do |job|
-        {
-          name: job.name,
-          softwear_crm_id: job.id,
-          imprints_attributes: job.imprints.map do |imprint|
-            {
-              softwear_crm_id: imprint.id,
-              name:            imprint.name,
-              description:     '',
-              type:            'Print'
-            }
-          end,
-
-          imprintable_train_attributes: job.imprintable_train_attributes
-        }
-      end
+      jobs_attributes: production_jobs_attributes
     )
 
     update_column :softwear_prod_id, prod_order.id
+
+    # These hashes are used to minimize time spend looping and updating softwear_prod_id's
     job_hash = {}
     imprint_hash = {}
 
     prod_order.jobs.each do |p_job|
       job_hash[p_job.softwear_crm_id] = p_job
 
-      p_job.imprints.each do |p_imprint|
+      p_job.production_trains.each do |p_imprint|
+        # NOTE We are assuming that any production train with a softwear_crm_id
+        # is an imprint.
+        next unless p_imprint.respond_to?(:softwear_crm_id)
+
         imprint_hash[p_imprint.softwear_crm_id] = p_imprint
       end
     end
@@ -288,6 +279,21 @@ class Order < ActiveRecord::Base
     end
   end
   warn_on_failure_of :create_production_order unless Rails.env.test?
+
+  def production_jobs_attributes
+    attrs = {}
+
+    jobs.each_with_index do |job, index|
+      attrs[index] = {
+        name: job.name,
+        softwear_crm_id: job.id,
+        imprints_attributes: job.production_imprints_attributes,
+        imprintable_train_attributes: job.imprintable_train_attributes
+      }
+    end
+
+    attrs
+  end
 
   def generate_jobs(job_attributes)
     job_attributes.each do |attributes|

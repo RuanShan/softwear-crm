@@ -45,6 +45,24 @@ module RemoteModel
           "#{prefix}-User-Email" => api_settings["#{api_settings["slug"]}_email"]
         )
       end
+
+      def post_raw(data)
+        inst = self.new
+
+        connection.post(collection_path, { model_name.element => data }.to_json, headers).tap do |response|
+          inst.instance_eval do
+            self.id = id_from_response(response)
+            begin
+              load_attributes_from_response(response)
+            rescue StandardError => e
+              # TODO  BYEBUG BYEBUG BYEBUG BYEBUG BYEBUG
+              byebug
+            end
+          end
+        end
+
+        inst
+      end
     end
   end
 end
