@@ -13,6 +13,11 @@ describe 'orders/edit.html.erb', order_spec: true do
 		expect(rendered).to have_css 'h2', text: order.name
 	end
 
+  it 'has a link to "Order Report"  on the top right' do
+    render
+    expect(rendered).to have_link('Order Report')
+  end
+
   it 'displays a "download names and numbers" button on the top right' do
     allow(order).to receive_message_chain(:imprints, :name_number).and_return [1]
     render

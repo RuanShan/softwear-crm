@@ -1,0 +1,55 @@
+<div style="page-break-after: always">
+  <p class="text-center">Printed on <%= Time.now.strftime("%a, %b %d %Y") %></p>
+  <h2 class="text-center">Job Report  #<%= @order.id %><br />
+    <strong>Order:</strong> <%= @order.full_name %> - <%= @order.name %><br />
+    <strong>In Hand Date: </strong> <%= @order.in_hand_by.strftime('%a, %b %d %Y') rescue 'n/a' %>
+      </h2>
+      
+      <div class="col-xs-12"  style="border: dashed 2px #000; margin-bottom: 10px; padding: 10px;">
+          <h2>
+          Machine
+          </h2>
+        <br clear="all" />
+       </div>
+      <div class="col-xs-12"  style="border: dashed 2px #000; margin-bottom: 10px; padding: 10px;">
+          <h2>
+            Delivery Method: <%= @order.delivery_method %>
+          </h2>
+        <br clear="all" />
+       </div>
+</div>
+
+  <% @order.jobs.each_with_index do |job, index| %>
+    <div class="imprintable-order-sheet-job" style="page-break-after: always">
+      <p class="text-center">Job Report - Printed on <%= Time.now.strftime("%a, %b %d %Y") %><br />
+      <strong>Order:</strong> <%= @order.full_name %> - <%= @order.name %><br />
+      Job: <%= index + 1 %> of <%= @order.jobs.size %> - <%= job.name %><br />
+      <%= job.imprints.map{|j| j.name }.join(", ") %><br />
+      <span class="h2"><%= job.imprintable_line_items_total %> Total Pieces</span></p> 
+
+      <div class="col-xs-12"  style="border: dashed 2px #000; margin-bottom: 10px">
+          <h2>
+          I verify the counts for this job are correct
+          </h2>
+        <div style="border-bottom: solid 1px #000; padding: 20px; margin: 0 10px">
+          Signature
+        </div>
+        <div style="border-bottom: solid 1px #000; padding: 20px; margin: 0 10px">
+          Name (Printed)
+        </div>
+        <br clear="all" />
+       </div>
+
+      <% job.sort_line_items.tap do |sorted_line_items| %>
+        <% unless sorted_line_items.empty? %>
+          <% sorted_line_items.each do |_imprintable_name, by_color| %>
+            <% by_color.each do |color_name, line_items| %>
+              <%= render 'line_items/order_report_imprintable_row', line_items: line_items %>
+            <% end # by_color %>
+          <% end #sorted_line_items %>
+        <% end #unless_sorted  %>
+      <% end #sort_line_items %>
+    </div>
+    <p class="breakhere">
+    </p>
+<% end %>

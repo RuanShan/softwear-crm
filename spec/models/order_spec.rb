@@ -23,6 +23,9 @@ describe Order, order_spec: true do
     it { is_expected.to validate_presence_of :invoice_state }
     it { is_expected.to validate_inclusion_of(:invoice_state)
            .in_array Order::VALID_INVOICE_STATES }
+    it { is_expected.to validate_presence_of :production_state }
+    it { is_expected.to validate_inclusion_of(:production_state)
+           .in_array Order::VALID_PRODUCTION_STATES }
     it { is_expected.to validate_presence_of :delivery_method }
     it { is_expected.to validate_inclusion_of(:delivery_method)
            .in_array Order::VALID_DELIVERY_METHODS }
@@ -61,6 +64,10 @@ describe Order, order_spec: true do
     
     it 'sets invoice_state to pending' do 
       expect(subject.invoice_state).to eq('pending')
+    end 
+
+    it 'sets production_state to pending' do 
+      expect(subject.production_state).to eq('pending')
     end  
   end
 

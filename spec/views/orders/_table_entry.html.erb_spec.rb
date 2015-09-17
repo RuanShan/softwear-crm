@@ -12,12 +12,13 @@ describe 'orders/_table_entry.html.erb', order_spec: true do
 			terms: 'Payment Complete') }
 	end
 
-	it 'displays Order ID, Order contact info, sales status, and total' do
+	it 'displays Order ID, Order contact info, payment_state, invoice_state, production_state,  and total' do
 		expect(rendered).to have_selector 'td', text: 'o name'
 		expect(rendered).to have_selector 'td', text: 'o firstname'
 		expect(rendered).to have_selector 'td', text: 'o lastname'
 		expect(rendered).to have_selector 'td', text: 'o@email.com'
-		expect(rendered).to have_selector 'td', text: 'Payment Complete'
+		expect(rendered).to have_selector 'td.payment-state', text: 'Payment Complete'
+		expect(rendered).to have_selector 'td.production-state', text: 'Pending'
 		expect(rendered).to have_selector 'td.invoice-state', text: 'Pending'
 		expect(rendered).to have_selector 'td', text: '$0.00'
 	end

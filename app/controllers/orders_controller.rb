@@ -135,6 +135,11 @@ class OrdersController < InheritedResources::Base
     render layout: 'no_overlay'
   end
 
+  def order_report
+    @order = Order.find(params[:id])
+    render layout: 'no_overlay'
+  end
+
   private
 
   def format_in_hand_by
