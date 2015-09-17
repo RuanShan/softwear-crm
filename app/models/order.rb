@@ -124,11 +124,13 @@ class Order < ActiveRecord::Base
     event :attempted do
       transition :pending => :attempted
       transition :attempted => :attempted
+      transition :notified => :attempted
     end
 
     event :notified do
       transition :pending => :notified
       transition :attempted => :notified
+      transition :notified => :notified
     end
 
     event :picked_up do

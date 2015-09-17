@@ -155,20 +155,22 @@ class OrdersController < InheritedResources::Base
   def transition_order
     if @order.send("#{@machine}_events").include? @transition
       old_state = @order.send(@machine)
+      PublicActivity.enabled = false
       @order.send("fire_#{@machine}_event",  @transition)
+      PublicActivity.enabled = true
       transition_params = {
         old_state: old_state,
         new_state: @order.send(@machine), 
-        machine: @machine, 
-        transition: @transition,
+        machine: params[:state_machine], 
+        transition: params[:transition],
         details: params[:details]
       }
-      byebug
       @order.create_activity(
             action:     :transition,
             parameters: transition_params,
             owner:      current_user
-        )
+      )
+      @order.reload
       @successful_transition = true if @order.valid?
     else 
       @order.errors.add(:base, "Invalid transition '#{@transition.to_s.humanize}' for 

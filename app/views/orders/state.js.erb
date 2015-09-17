@@ -3,17 +3,20 @@
   
   <% if @machine.to_s == 'notification_state' && @order.send(@machine).to_s == 'picked_up' %>
     $("#order_<%= @order.id %>  .notification-buttons").hide();
+    $(".edit-notification-buttons").hide();
   <% end %>
   
   setupContentModal(function($contentModal) {
-    $contentModal.find('.modal-content').addClass('modal-content-success')
+    $contentModal.find('.modal-content').addClass('modal-content-success');
   });
 
   showContentModal({
     title: 'Success',
     body: 'Successfully updated <%= @machine.humanize %>'
   }).delay(50);
-  
+
+  $("#timeline").html("<%= j render('shared/timeline', activities: @order.all_activities) %>");
+
 <% elsif @order.errors.any? %>
 
   setupContentModal(function($contentModal) {

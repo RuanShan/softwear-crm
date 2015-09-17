@@ -34,6 +34,7 @@
       <% end %>
       
       <% unless @order.notification_state == 'picked_up' %>
+        <span ".edit-notification-buttons">
         <%= link_to state_order_path(@order, :notification_state), remote: true, 
           data: {toggle: :tooltip, :title => 'Notify Customer', placement: :bottom}, 
           class: 'btn btn-primary'  do %>
@@ -45,7 +46,8 @@
           confirm: 'Are you sure you want to mark this order as picked up?'}, 
           class: 'btn btn-primary' do %>
             <i class="glyphicon glyphicon-thumbs-up"></i>
-        <% end %>
+          <% end %>
+        </span>
       <% end %>
       
       <%= link_to order_warnings_path(@order.id), class: 'btn btn-warning' do %>
