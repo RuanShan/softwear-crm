@@ -260,7 +260,9 @@ class Order < ActiveRecord::Base
               description:     '',
               type:            'Print'
             }
-          end
+          end,
+
+          imprintable_train_attributes: job.imprintable_train_attributes
         }
       end
     )
@@ -284,8 +286,6 @@ class Order < ActiveRecord::Base
         imprint.update_column :softwear_prod_id, imprint_hash[imprint.id].id
       end
     end
-
-    # TODO generate trains?
   end
   warn_on_failure_of :create_production_order unless Rails.env.test?
 

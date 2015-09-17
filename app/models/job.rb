@@ -55,6 +55,14 @@ class Job < ActiveRecord::Base
     Job.tier_line_items_sym(tier)
   end
 
+  def imprintable_train_attributes
+    if line_items.imprintable.any?
+      { state: 'ready_to_order' }
+    else
+      nil
+    end
+  end
+
   # NOTE this works together with javascripts/quote_line_items.js to achieve
   # dragging and dropping between jobs/tiers easily.
   #

@@ -69,18 +69,18 @@ describe Order, order_spec: true do
     let!(:job_2) { create(:job, jobbable: order) }
     let!(:imprint_2_1) { create(:valid_imprint, job: job_2) }
 
-    it 'creates a Softwear Production order' do
+    it 'creates a Softwear Production order', create_production_order: true do
       [order, job_1, job_2, imprint_1_1, imprint_1_2, imprint_2_1].each do |record|
         expect(record.reload.softwear_prod_id).to be_nil
       end
 
       allow(order).to receive(:payment_status).and_return 'Payment Terms Met'
       order.invoice_state = 'approved'
-
       order.save!
 
-      [order, job_1, job_2, imprint_1_1, imprint_1_2, imprint_2_1].each do |record|
-        expect(record.reload.softwear_prod_id).to_not be_nil
+      %w(order job_1 job_2 imprint_1_1 imprint_1_2 imprint_2_1).each do |record|
+        expect(eval(record).reload.softwear_prod_id).to_not be_nil,
+          "#{record} was not assigned a softwear_prod_id"
       end
 
       expect(Production::Order.where(softwear_crm_id: order.id)).to be_any
@@ -96,6 +96,18 @@ describe Order, order_spec: true do
       expect(imprint_1_1.production.name).to eq imprint_1_1.name
       expect(imprint_1_2.production.name).to eq imprint_1_2.name
       expect(imprint_2_1.production.name).to eq imprint_2_1.name
+    end
+
+    it 'adds imprintable trains to (only) jobs that have imprintable line items' do
+      job_1.line_items << create(:imprintable_line_item)
+
+      allow(order).to receive(:payment_status).and_return 'Payment Terms Met'
+      order.invoice_state = 'approved'
+
+      order.save!
+
+      expect(job_1.reload.production.imprintable_train.state).to eq 'ready_to_order'
+      expect(job_2.reload.production.imprintable_train).to be_nil
     end
   end
 
