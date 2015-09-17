@@ -35,12 +35,11 @@ $(window).load ->
 
     self.on 'select2:select', (e) ->
       data = self.select2 'data'
-      for datum in data
-        if datum.id is e.params.data.id
-          datum.text = "Custom (#{e.params.data.text})"
-          break
+      self.children().each ->
+        if $(this).val() is e.params.data.id
+          $(this).text "Custom (#{e.params.data.text})"
 
-      self.trigger 'change'
+      # self.trigger 'change'
 
 
 $(document).ready ->

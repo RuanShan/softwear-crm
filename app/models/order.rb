@@ -38,6 +38,10 @@ class Order < ActiveRecord::Base
     'approved'
   ]
 
+  VALID_PRODUCTION_STATES = %w(
+    pending in_production complete
+  )
+
   VALID_PAYMENT_TERMS = [
     '',
     'Paid in full on purchase',
@@ -83,6 +87,12 @@ class Order < ActiveRecord::Base
                 in: VALID_INVOICE_STATES,
                 message: 'is invalid'
             }
+  validates :production_state,
+            presence: true,
+            inclusion: {
+                in: VALID_PRODUCTION_STATES,
+                message: 'Invalid production state'
+            }
   validates :delivery_method,
             presence: true,
             inclusion: {
@@ -108,6 +118,7 @@ class Order < ActiveRecord::Base
   validates :terms, presence: true
   validates :in_hand_by, presence: true
 
+  after_initialize -> (o) { o.production_state = 'pending' if o.production_state.blank? }
   after_initialize -> (o) { o.invoice_state = 'pending' if o.invoice_state.blank? }
   after_save :create_production_order, if: :ready_for_production?
 

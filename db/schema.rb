@@ -492,6 +492,7 @@ ActiveRecord::Schema.define(version: 20150915173219) do
     t.integer  "salesperson_id",    limit: 4
     t.decimal  "shipping_price",                precision: 10, scale: 2, default: 0.0
     t.string   "invoice_state",     limit: 255
+    t.string   "production_state",  limit: 255
     t.integer  "softwear_prod_id",  limit: 4
   end
 
