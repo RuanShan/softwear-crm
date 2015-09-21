@@ -31,7 +31,7 @@ describe ArtworkRequest, artwork_request_spec: true do
     it 'creates a freshdesk ticket', story_809: true
   end
 
-  context '#freshdesk_proof_ticket' do, story_809: true
+  context '#freshdesk_proof_ticket', story_809: true do 
     context 'no freshdesk artwork ticket exists' do 
       it 'creates an artwork freshdesk ticket for the order' 
     end
