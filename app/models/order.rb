@@ -126,6 +126,27 @@ class Order < ActiveRecord::Base
   default_scope -> { order(created_at: :desc) }
   scope :fba, -> { where(terms: 'Fulfilled by Amazon') }
 
+  state_machine :notification_state, :initial => :pending do
+    
+    event :attempted do
+      transition :pending => :attempted
+      transition :attempted => :attempted
+      transition :notified => :attempted
+    end
+
+    event :notified do
+      transition :pending => :notified
+      transition :attempted => :notified
+      transition :notified => :notified
+    end
+
+    event :picked_up do
+      transition :pending => :picked_up
+      transition :attempted => :picked_up
+      transition :notified => :picked_up
+    end
+  end
+
   def production_order
     Production::Order.where(softwear_crm_id: self.id).first
   end

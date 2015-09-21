@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 describe 'public_activity/proof/_create.html.erb', proof_spec: true do
-  let!(:activity) { create(:proof_activity) }
+  let!(:activity) { create(:proof_activity, owner: current_user) }
   let!(:current_user) { create :user }
 
   it 'has trackable_type, trackable, and recipient' do
