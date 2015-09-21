@@ -47,7 +47,7 @@ class ArtworkRequest < ActiveRecord::Base
   def ink_color_ids=(ids)
     custom_ids = []
     ids.reject! do |custom_name|
-      if /^\d+$/ =~ id.to_s
+      unless /^\d+$/ =~ custom_name.to_s
         custom_ink_color = InkColor.create!(
           name:   custom_name,
           custom: true,

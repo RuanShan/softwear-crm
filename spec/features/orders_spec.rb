@@ -187,8 +187,8 @@ feature 'Order management', order_spec: true,  js: true do
     expect(page).to have_content "Updated order #{order.name}"
   end
 
-  scenario 'user can attempt to notify customer, and take note of what happened', story_913: true do 
-    PublicActivity.with_tracking do  
+  scenario 'user can attempt to notify customer, and take note of what happened', story_913: true do
+    PublicActivity.with_tracking do
       visit edit_order_path(order)
       find('.glyphicon-phone-alt').click
       sleep(0.5)
@@ -204,8 +204,8 @@ feature 'Order management', order_spec: true,  js: true do
     end
   end
 
-  scenario 'user can notify customer and update state', story_913: true do 
-    PublicActivity.with_tracking do  
+  scenario 'user can notify customer and update state', story_913: true do
+    PublicActivity.with_tracking do
       visit edit_order_path(order)
       find('.glyphicon-phone-alt').click
       sleep(0.5)
@@ -221,9 +221,9 @@ feature 'Order management', order_spec: true,  js: true do
     end
   end
 
-  scenario 'user can mark order as picked up', story_913: true do 
+  scenario 'user can mark order as picked up', story_913: true do
     visit edit_order_path(order)
-      PublicActivity.with_tracking do  
+      PublicActivity.with_tracking do
       find('.glyphicon-thumbs-up').click
       sleep(0.5)
       page.driver.browser.switch_to.alert.accept
@@ -233,4 +233,35 @@ feature 'Order management', order_spec: true,  js: true do
     end
   end
 
+
+  context 'search', search: true do
+    background do
+      visit orders_path
+      find('#collapse-order-search').click
+    end
+
+    scenario 'user can filter on salesperson', story_914: true do
+      select valid_user.full_name, from: 'Salesperson'
+      click_button 'Search'
+
+      expect(Sunspot.session).to be_a_search_for Order
+      expect(Sunspot.session).to have_search_params(:with, :salesperson, valid_user)
+    end
+
+    scenario 'user can filter on invoice state', story_914: true do
+      select 'pending', from: 'Invoice state'
+      click_button 'Search'
+
+      expect(Sunspot.session).to be_a_search_for Order
+      expect(Sunspot.session).to have_search_params(:with, :invoice_state, 'pending')
+    end
+
+    scenario 'user can filter on payment status', story_914: true do
+      select 'Payment Terms Met', from: 'Payment status'
+      click_button 'Search'
+
+      expect(Sunspot.session).to be_a_search_for Order
+      expect(Sunspot.session).to have_search_params(:with, :payment_status, 'Payment Terms Met')
+    end
+  end
 end

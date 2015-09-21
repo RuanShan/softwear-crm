@@ -17,7 +17,8 @@ class Order < ActiveRecord::Base
 
     [
       :firstname, :lastname, :email, :terms,
-      :delivery_method, :company, :phone_number
+      :delivery_method, :company, :phone_number,
+      :payment_status, :invoice_state
     ]
       .each { |f| string f }
 
@@ -55,6 +56,12 @@ class Order < ActiveRecord::Base
     'Pick up in Ypsilanti',
     'Ship to one location',
     'Ship to multiple locations'
+  ]
+
+  VALID_PAYMENT_STATUSES = [
+    'Awaiting Payment',
+    'Payment Terms Met',
+    'Payment Terms Pending'
   ]
 
   belongs_to :salesperson, class_name: User
@@ -180,7 +187,7 @@ class Order < ActiveRecord::Base
       self.in_hand_by ||= Time.now
       case terms
       when 'Paid in full on purchase'
-          'Awaiting Payment'
+        'Awaiting Payment'
       when 'Half down on purchase'
         balance >= (total * 0.51) ? 'Awaiting Payment' : 'Payment Terms Met'
       when 'Paid in full on pick up'
