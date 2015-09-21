@@ -1,7 +1,9 @@
 class ArtworkRequest < ActiveRecord::Base
   include TrackingHelpers
+  include IntegratedCrms
 
   acts_as_paranoid
+  acts_as_warnable
 
   tracked by_current_user + on_order
 
@@ -43,6 +45,8 @@ class ArtworkRequest < ActiveRecord::Base
   validates :imprints,       presence: true
   validates :priority,       presence: true
   validates :salesperson,    presence: true
+
+  after_create :enqueue_create_freshdesk_proof_ticket
 
   def ink_color_ids=(ids)
     custom_ids = []
@@ -89,4 +93,82 @@ class ArtworkRequest < ActiveRecord::Base
   def compatible_ink_colors
     InkColor.compatible_with(imprint_methods)
   end
+ 
+  def order
+    self.imprints.first.job.order
+  end
+
+  def no_proof_ticket_id_entered?
+    freshdesk_proof_ticket_id.blank?
+  end
+
+  def no_fd_login?(current_user)
+    config = FreshdeskModule.get_freshdesk_config(current_user)
+    if config.has_key?(:freshdesk_email) && config.has_key?(:freshdesk_password)
+      false
+    else
+      true
+    end
+  end
+  
+  def enqueue_create_freshdesk_proof_ticket
+    self.delay(queue: 'api').create_freshdesk_proof_ticket if 
+            (should_access_third_parties? && order.freshdesk_proof_ticket_id.blank?)
+  end
+  warn_on_failure_of :enqueue_create_freshdesk_proof_ticket
+
+  def has_freshdesk_proof_ticket?(current_user)
+    response = get_freshdesk_proof_ticket current_user
+    response.quote_fd_id_configured ? false : true
+  end
+
+  # this function assumes that the following functions are called beforehand
+  # with the same user (and therefore doesn't bother checking if they're true or false):
+  #   no_ticket_id_entered
+  #   no_fd_login
+  def get_freshdesk_proof_ticket(current_user)
+    # logic for getting freshdesk ticket
+    # Once it grabs ticket, if CRM Quote ID not set, set it
+    # https://github.com/AnnArborTees/softwear-mockbot/blob/release-2014-10-17/app/models/spree/store.rb
+    # Rails.cache.fetch(:order_proof_fd_ticket, :expires => 15.minutes) do
+      config = FreshdeskModule.get_freshdesk_config(current_user)
+      client = Freshdesk.new(config[:freshdesk_url], config[:freshdesk_email], config[:freshdesk_password])
+      client.response_format = 'json'
+
+      ticket = client.get_tickets(order.freshdesk_proof_ticket_id)
+      ticket = '{ "quote_fd_id_configured": "false" }' if ticket.nil?
+      return OpenStruct.new JSON.parse(ticket)
+    # end
+  end
+  
+  def create_freshdesk_proof_ticket
+    return if freshdesk.nil? || !order.freshdesk_proof_ticket_id.blank?
+
+    requester_info = {
+      email: order.email,
+      phone: format_phone(order.phone_number),
+      name: order.full_name
+    }
+
+    ticket = JSON.parse(freshdesk.post_tickets(
+        helpdesk_ticket: {
+          source: 2,
+          group_id: FD_ART_GROUP_ID,
+          ticket_type: 'Proofing Convo',
+          subject: "Your Ann Arbor T-Shirt Company Order Proof(s) for \"#{order.name}\" ##{order.id} Are Ready",
+          custom_field: { 
+            FD_PROOF_CREATION_STATUS => 'Proof(s) Not Ready',
+            FD_NO_OF_DECORATIONS_FIELD => order.imprints.count,
+            FD_NO_OF_PROOFS => order.jobs.count,
+            FD_ORDER_QTY => order.jobs.map(&:imprintable_line_items_total).inject(:+)
+          }
+        }
+         .merge(requester_info)
+      ))
+      .try(:[], 'helpdesk_ticket')
+    
+    order.update_column(:freshdesk_proof_ticket_id, ticket.try(:[], 'display_id'))
+    ticket
+  end
+  warn_on_failure_of :create_freshdesk_proof_ticket, raise_anyway: true
 end

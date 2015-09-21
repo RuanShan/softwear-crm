@@ -201,7 +201,7 @@ class OrdersController < InheritedResources::Base
         :tax_id_number, :redo_reason, :invoice_state,
         :delivery_method, :phone_number, :commission_amount,
         :store_id, :salesperson_id, :total, :shipping_price,
-
+        :freshdesk_proof_ticket_id, 
         quote_ids: []
       ]
     )

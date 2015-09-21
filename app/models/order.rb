@@ -291,4 +291,10 @@ class Order < ActiveRecord::Base
       end
     end
   end
+  
+  def freshdesk_proof_ticket_link(obj = nil)
+    obj ||= self
+    return if obj.try(:freshdesk_proof_ticket_id).blank?
+    "http://annarbortees.freshdesk.com/helpdesk/tickets/#{freshdesk_proof_ticket_id}"
+  end
 end

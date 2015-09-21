@@ -27,6 +27,20 @@ describe ArtworkRequest, artwork_request_spec: true do
     it { is_expected.to validate_presence_of(:salesperson) }
   end
 
+  context 'after_creation' do 
+    it 'creates a freshdesk ticket', story_809: true
+  end
+
+  context '#freshdesk_proof_ticket' do, story_809: true
+    context 'no freshdesk artwork ticket exists' do 
+      it 'creates an artwork freshdesk ticket for the order' 
+    end
+
+    context 'freshdesk artwork ticket exists' do 
+      it 'returns the ticket'
+    end
+  end
+
   context '#imprintable_variant_count' do
      before do
        jobs = [build_stubbed(:blank_job), build_stubbed(:blank_job), build_stubbed(:blank_job)]
