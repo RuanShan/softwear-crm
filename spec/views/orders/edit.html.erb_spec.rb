@@ -21,7 +21,7 @@ describe 'orders/edit.html.erb', order_spec: true do
   it 'displays a "download names and numbers" button on the top right' do
     allow(order).to receive_message_chain(:imprints, :name_number).and_return [1]
     render
-    expect(rendered).to have_text('Name/Numbers')
+    expect(rendered).to have_css("a[href='#{name_number_csv_from_order_path(order)}']")
   end
 
   it 'displays the jobs tab by default' do 
