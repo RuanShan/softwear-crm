@@ -180,7 +180,7 @@ class Quote < ActiveRecord::Base
     # logic for getting freshdesk ticket
     # Once it grabs ticket, if CRM Quote ID not set, set it
     # https://github.com/AnnArborTees/softwear-mockbot/blob/release-2014-10-17/app/models/spree/store.rb
-    Rails.cache.fetch(:quote_fd_ticket, :expires => 30.minutes) do
+    Rails.cache.fetch(:quote_fd_ticket, :expires => 15.minutes) do
       config = FreshdeskModule.get_freshdesk_config(current_user)
       client = Freshdesk.new(config[:freshdesk_url], config[:freshdesk_email], config[:freshdesk_password])
       client.response_format = 'json'
