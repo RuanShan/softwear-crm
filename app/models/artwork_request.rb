@@ -95,7 +95,7 @@ class ArtworkRequest < ActiveRecord::Base
   end
  
   def order
-    jobs.first.order
+    self.imprints.first.job.order
   end
 
   def no_proof_ticket_id_entered?

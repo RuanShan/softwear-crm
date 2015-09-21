@@ -1,7 +1,13 @@
 <div class='user-profile-content'>
   <div class="row">
     <div class="col-sm-12">
-      <h3><strong>Proofs</strong></h3>
+      <h3 class="pull-left"><strong>Proofs</strong></h3>
+      <% unless order.freshdesk_proof_ticket_id.blank? %>
+        <%= link_to order.freshdesk_proof_ticket_link, class: 'btn btn-primary pull-right', target: :_blank do %>
+          <i class="softwear-icon-freshdesk-icon"></i> Freshdesk Proof Ticket
+        <% end %>
+      <% end %>
+      <br clear="all" />
 
       <div class="proof-list" >
         <% order.proofs.each do |proof| %>
