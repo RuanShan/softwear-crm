@@ -18,12 +18,17 @@ class Order < ActiveRecord::Base
     [
       :firstname, :lastname, :email, :terms,
       :delivery_method, :company, :phone_number,
-      :payment_status, :invoice_state
+      :payment_status, :invoice_state, :production_state,
+      :notification_state
     ]
       .each { |f| string f }
 
     double :total
     double :commission_amount
+
+    boolean :balance do
+      balance != 0
+    end
 
     date :in_hand_by
 

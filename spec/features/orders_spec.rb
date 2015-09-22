@@ -234,22 +234,13 @@ feature 'Order management', order_spec: true,  js: true do
   end
 
 
-  context 'search', search: true, pending: 'TODO: Nigel, Failing'  do
+  context 'search', search: true  do
     background do
       visit orders_path
-      find('#collapse-order-search').click
-    end
-
-    scenario 'user can filter on salesperson', story_914: true do
-      select valid_user.full_name, from: 'Salesperson'
-      click_button 'Search'
-
-      expect(Sunspot.session).to be_a_search_for Order
-      expect(Sunspot.session).to have_search_params(:with, :salesperson, valid_user)
     end
 
     scenario 'user can filter on invoice state', story_914: true do
-      select 'pending', from: 'Invoice state'
+      find("[id$=invoice_state]").select 'pending'
       click_button 'Search'
 
       expect(Sunspot.session).to be_a_search_for Order
@@ -257,11 +248,24 @@ feature 'Order management', order_spec: true,  js: true do
     end
 
     scenario 'user can filter on payment status', story_914: true do
-      select 'Payment Terms Met', from: 'Payment status'
+      find("[id$=payment_status]").select 'Payment Terms Met'
       click_button 'Search'
 
       expect(Sunspot.session).to be_a_search_for Order
       expect(Sunspot.session).to have_search_params(:with, :payment_status, 'Payment Terms Met')
+    end
+
+    scenario 'user can filter on delivery deadline before', story_926: true do
+      time = 5.days.ago
+
+      find("[id$=in_hand_by][less_than=true]").click
+      sleep 0.1
+      find("[id$=in_hand_by][less_than=true]").set time.strftime('%m/%d/%Y %I:%M %p')
+      find('.order-search-fulltext').click
+      click_button 'Search'
+
+      expect(Sunspot.session).to be_a_search_for Order
+      expect(Sunspot.session).to have_search_params(:with) { with(:in_hand_by).less_than(time.to_date) }
     end
   end
 end
