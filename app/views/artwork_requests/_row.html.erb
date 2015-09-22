@@ -1,11 +1,23 @@
 <td><%= ArtworkRequest::PRIORITIES[artwork_request.priority.to_i] %></td>
-<td><%= link_to artwork_request.jobs.first.order.name, edit_order_path("#{artwork_request.jobs.first.order.id}/#artwork") %></td>
-<td><%= display_time(artwork_request.deadline) %></td>
-<td><%= display_time(artwork_request.jobs.first.order.in_hand_by) %></td>
-<td><%= artwork_request.total_quantity %></td>
-<td><%= artwork_request.imprint_methods.pluck(:name).join(', ') %></td>
-<td><%= artwork_request.ink_colors.count %></td>
-<td><%= artwork_request.jobs.first.order.payment_status %></td>
+<td>
+  <%= link_to artwork_request.order.name, "#{edit_order_path(artwork_request.order.id)}#artwork"%>
+  
+  <br />
+  <%= render 'orders/state', which: 'payment_state', state: artwork_request.order.payment_status %>
+</td>
+<td>
+  <dl>
+    <dt>Imprints</dt>
+    <dd><%= artwork_request.imprint_methods.pluck(:name).join(', ') %></dd>
+    <dt>Ink Colors</dt>
+    <dd><%= artwork_request.ink_colors.count %></dd>
+  </dl>
+  </td>
+  <td><%= display_date(artwork_request.deadline) %></td>
+  <td><%= display_date(artwork_request.jobs.first.order.in_hand_by) %></td>
+  <td>
+    <%= artwork_request.total_quantity %>
+  </td>
 <td>
   <div class="btn-group btn-group-xs">
     <%= link_to edit_order_artwork_request_path(artwork_request.jobs.first.order, artwork_request),

@@ -1,0 +1,62 @@
+<table class="table table-striped">
+  <thead>
+    <tr>
+      <th>
+        Order 
+      </th>
+      <th>
+        Proof Status
+      </th>
+      <th>
+        Proof By
+      </th>
+      <th>
+        Order In Hand
+      </th>
+      <th>
+        Actions
+      </th>
+  </thead>
+  <tbody>
+    <% proofs.each do |proof| %>
+      <tr>
+        <td>
+          <%= link_to proof.order.name, "#{edit_order_path(proof.order.id)}#proofs" %>
+          <br />
+          <%= render 'orders/state', which: 'payment_state', state: proof.order.payment_status %>
+        </td>
+        <td>
+          <%= proof.status %>
+        </td>
+        <td>
+          <%= display_date proof.approve_by %>
+        </td>
+        <td> 
+          <%= display_date proof.order.in_hand_by %>
+        </td>
+        <td>
+          <div class='btn-group btn-group-xs'>
+            <% unless proof.order.freshdesk_proof_ticket_id.blank? %>
+              <%= link_to proof.order.freshdesk_proof_ticket_link, 
+                  class: 'btn btn-default', target: :_blank, data: {
+                    toggle: :tooltip, title: 'Freshdesk Proof Ticket'
+                  } do %>
+                <i class="softwear-icon-freshdesk-icon"></i>
+              <% end %>
+            <% end %>
+            
+            <%= link_to edit_order_proof_path(proof.order, proof), class: 'btn btn-default', 
+                data: {toggle: :tooltip, title: 'Edit'}, remote: true do %>
+              <i class="fa fa-edit"></i>
+            <% end %>
+
+            <%= link_to order_proof_path(proof.order, proof), class: 'btn btn-default', method: :delete,
+                data: {toggle: :tooltip, title: 'Delete', confirm: 'Are you sure?'}, remote: true do %>
+               <i class="fa fa-times-circle"></i>
+            <% end %>
+          </div>
+        </td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>

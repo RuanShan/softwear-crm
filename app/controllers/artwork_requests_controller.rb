@@ -35,6 +35,12 @@ class ArtworkRequestsController < InheritedResources::Base
     end
   end
 
+  def manager_dashboard
+    @unassigned_artwork_requests = ArtworkRequest.unassigned  
+    @pending_artwork_requests = ArtworkRequest.pending
+    @pending_proof_requests = Proof.pending 
+  end
+
   protected
 
   def set_current_action

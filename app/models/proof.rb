@@ -1,6 +1,8 @@
 class Proof < ActiveRecord::Base
   include TrackingHelpers
 
+  scope :pending, -> { where('status != ?', 'Approved') }
+
   acts_as_paranoid
 
   tracked by_current_user + on_order
