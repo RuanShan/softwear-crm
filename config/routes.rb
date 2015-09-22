@@ -102,6 +102,8 @@ CrmSoftwearcrmCom::Application.routes.draw do
       get 'production_dashboard', as: 'production_dashboard'
       get :imprintable_order_sheets, as: :imprintable_order_sheets
       get :order_report, as: :order_report
+      get 'state/:state_machine' => :state,  as: :state
+      post 'transition/(:state_machine/:transition)' => :state, as: :transition
     end
 
     resources :comments

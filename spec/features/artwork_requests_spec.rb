@@ -38,9 +38,9 @@ feature 'Artwork Request Features', js: true, artwork_request_spec: true do
     expect(page).to have_css('table#artwork-request-table')
   end
 
-  scenario 'A user can add an artwork request', add_ar: true, story_692: true do
+  scenario 'A user can add an artwork request', add_ar: true, retry: 3, story_692: true do
     visit new_order_artwork_request_path(artwork_request.jobs.first.order)
-    sleep 1
+    sleep 2 if ci?
 
     find('#artwork_request_imprint_ids').select order.imprints.first.name
 

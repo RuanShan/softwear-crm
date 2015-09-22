@@ -19,12 +19,17 @@ class Order < ActiveRecord::Base
     [
       :firstname, :lastname, :email, :terms,
       :delivery_method, :company, :phone_number,
-      :payment_status, :invoice_state
+      :payment_status, :invoice_state, :production_state,
+      :notification_state
     ]
       .each { |f| string f }
 
     double :total
     double :commission_amount
+
+    boolean :balance do
+      balance != 0
+    end
 
     date :in_hand_by
 
@@ -127,6 +132,27 @@ class Order < ActiveRecord::Base
 
   default_scope -> { order(created_at: :desc) }
   scope :fba, -> { where(terms: 'Fulfilled by Amazon') }
+
+  state_machine :notification_state, :initial => :pending do
+    
+    event :attempted do
+      transition :pending => :attempted
+      transition :attempted => :attempted
+      transition :notified => :attempted
+    end
+
+    event :notified do
+      transition :pending => :notified
+      transition :attempted => :notified
+      transition :notified => :notified
+    end
+
+    event :picked_up do
+      transition :pending => :picked_up
+      transition :attempted => :picked_up
+      transition :notified => :picked_up
+    end
+  end
 
   def production_order
     Production::Order.where(softwear_crm_id: self.id).first
@@ -331,5 +357,11 @@ class Order < ActiveRecord::Base
         end
       end
     end
+  end
+  
+  def freshdesk_proof_ticket_link(obj = nil)
+    obj ||= self
+    return if obj.try(:freshdesk_proof_ticket_id).blank?
+    "http://annarbortees.freshdesk.com/helpdesk/tickets/#{freshdesk_proof_ticket_id}"
   end
 end

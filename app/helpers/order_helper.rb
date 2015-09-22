@@ -1,4 +1,14 @@
 module OrderHelper
+  def get_style_from_state(which, state, style_type='label')
+    which = which.to_s
+    case which
+    when 'invoice_state' then get_style_from_invoice_state(state, style_type)
+    when 'notification_state' then get_style_from_notification_state(state, style_type)
+    when 'production_state' then get_style_from_notification_state(state, style_type)
+    when 'payment_state' then get_style_from_status(state, style_type)
+    end
+  end
+
   def get_style_from_status(status, style_type = 'label')
     if style_type == 'label'
       case status
@@ -24,6 +34,18 @@ module OrderHelper
       case status
       when 'pending' then 'label-warning'
       when 'approved' then 'label-success'
+      else nil
+      end
+    end
+  end
+
+  def get_style_from_notification_state(status, style_type = 'label')
+    if style_type == 'label'
+      case status
+      when 'pending' then 'label-danger'
+      when 'attempted' then 'label-danger'
+      when 'notified' then 'label-warning'
+      when 'picked_up' then 'label-success'
       else nil
       end
     end

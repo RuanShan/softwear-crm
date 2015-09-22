@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150915173219) do
+ActiveRecord::Schema.define(version: 20150921161257) do
 
   create_table "activities", force: :cascade do |t|
     t.integer  "trackable_id",   limit: 4
@@ -471,29 +471,31 @@ ActiveRecord::Schema.define(version: 20150915173219) do
   end
 
   create_table "orders", force: :cascade do |t|
-    t.string   "email",             limit: 255
-    t.string   "firstname",         limit: 255
-    t.string   "lastname",          limit: 255
-    t.string   "company",           limit: 255
-    t.string   "twitter",           limit: 255
-    t.string   "name",              limit: 255
-    t.string   "po",                limit: 255
+    t.string   "email",                     limit: 255
+    t.string   "firstname",                 limit: 255
+    t.string   "lastname",                  limit: 255
+    t.string   "company",                   limit: 255
+    t.string   "twitter",                   limit: 255
+    t.string   "name",                      limit: 255
+    t.string   "po",                        limit: 255
     t.datetime "in_hand_by"
-    t.string   "terms",             limit: 255
+    t.string   "terms",                     limit: 255
     t.boolean  "tax_exempt"
-    t.string   "tax_id_number",     limit: 255
-    t.string   "delivery_method",   limit: 255
+    t.string   "tax_id_number",             limit: 255
+    t.string   "delivery_method",           limit: 255
     t.datetime "deleted_at"
-    t.string   "phone_number",      limit: 255
+    t.string   "phone_number",              limit: 255
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.decimal  "commission_amount",             precision: 10, scale: 2
-    t.integer  "store_id",          limit: 4
-    t.integer  "salesperson_id",    limit: 4
-    t.decimal  "shipping_price",                precision: 10, scale: 2, default: 0.0
-    t.string   "invoice_state",     limit: 255
-    t.string   "production_state",  limit: 255
-    t.integer  "softwear_prod_id",  limit: 4
+    t.decimal  "commission_amount",                     precision: 10, scale: 2
+    t.integer  "store_id",                  limit: 4
+    t.integer  "salesperson_id",            limit: 4
+    t.decimal  "shipping_price",                        precision: 10, scale: 2, default: 0.0
+    t.string   "invoice_state",             limit: 255
+    t.string   "production_state",          limit: 255
+    t.integer  "softwear_prod_id",          limit: 4
+    t.string   "notification_state",        limit: 255
+    t.integer  "freshdesk_proof_ticket_id", limit: 4
   end
 
   add_index "orders", ["deleted_at"], name: "index_orders_on_deleted_at", using: :btree
@@ -608,8 +610,8 @@ ActiveRecord::Schema.define(version: 20150915173219) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.decimal  "shipping",                                     precision: 10, scale: 2
-    t.string   "quote_source",                     limit: 255
     t.datetime "initialized_at"
+    t.string   "quote_source",                     limit: 255
     t.string   "freshdesk_ticket_id",              limit: 255
     t.boolean  "informal"
     t.integer  "insightly_category_id",            limit: 4

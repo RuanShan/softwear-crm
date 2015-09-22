@@ -152,8 +152,6 @@ module Search
     # inside the context of the search proc if passed as a block parameter.
     #
     # Hopefully that makes sense!
-    # If it doesn't, I suggest checking online and hopping into an irb
-    # session to play around with procs and instance_eval/currying.
     def compose_search_proc(search)
       default_fulltext = search['fulltext']
 
@@ -233,7 +231,7 @@ module Search
       end
 
       if !applied_fulltext && default_fulltext
-        context.fulltext default_fulltext
+        base_scope.fulltext default_fulltext
       end
     end
 

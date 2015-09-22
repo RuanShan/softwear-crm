@@ -12,9 +12,13 @@
 
 <br clear="all" />
 
-<div class="box-info full">
+<div class="col-sm-8 col-sm-offset-2 col-xs-12">
   <%= render partial: 'orders/search' %>
+</div>
 
+<%= paginate @orders %>
+
+<div class="box-info full clear">
   <div class="table-responsive">
     <table class="table table-hover table-striped">
       <thead>
@@ -26,6 +30,7 @@
           <th>Payment</th>
           <th>Invoice</th>
           <th>Production</th>
+          <th>Notification</th>
           <th>Total</th>
           <th>Balance</th>
           <th>Actions</th>

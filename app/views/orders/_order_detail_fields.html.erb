@@ -75,3 +75,9 @@
   <%= f.error_for :invoice_state %>
   <%= f.select :invoice_state, Order::VALID_INVOICE_STATES %>
 </div>
+
+<div class="form-group">
+  <%= f.label :freshdesk_proof_ticket_id %>
+  <%= f.error_for :freshdesk_proof_ticket_id %>
+  <%= f.text_field :freshdesk_proof_ticket_id, type: :integer %>
+</div>

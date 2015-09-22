@@ -1,59 +1,55 @@
-<div class="box-info">
-  <h2>Search Orders</h2>
-
-  <div class="additional-btn">
-    <a class="additional-icon" data-toggle="collapse" data-target="#horizontal-form" id='collapse-order-search'><i class="fa fa-chevron-down"></i></a>
-    <a class="additional-icon"><i class="fa fa-question-circle"></i></a>
+<%= search_form_for Order, class: 'form-horizontal' do |s| %>
+  <div class="form-group order-search-fulltext">
+    <div class="col-sm-12">
+      <%= s.fulltext id: 'js_search', placeholder: 'Search Terms', class: 'form-control' %>
+    </div>
   </div>
 
-  <%= search_form_for Order, class: 'form-horizontal' do |s| %>
-    <div id="horizontal-form" class="collapse out">
-      <div class="col-sm-4">
-        <div class="form-group">
-          <%= s.label :salesperson, class: 'col-sm-2 control-label' %>
-
-          <div class="col-sm-10">
-            <%= s.select :salesperson, User.all, display: :full_name %>
-          </div>
-        </div>
-      </div>
-
-      <div class="col-sm-4">
-        <div class="form-group">
-          <%= s.label :invoice_state, class: 'col-sm-2 control-label' %>
-
-          <div class="col-sm-10">
-            <%= s.select :invoice_state, Order::VALID_INVOICE_STATES %>
-          </div>
-        </div>
-      </div>
-
-      <div class="col-sm-4">
-        <div class="form-group">
-          <%= s.label :payment_status, class: 'col-sm-2 control-label' %>
-
-          <div class="col-sm-10">
-            <%= s.select :payment_status, Order::VALID_PAYMENT_STATUSES %>
-          </div>
-        </div>
-      </div>
+  <div class='row form-group'>
+    <div class="col-sm-3">
+      <%= s.select :payment_status, Order::VALID_PAYMENT_STATUSES %>
     </div>
 
-    <div class="col-sm-2">
-      <%= s.save %>
+    <div class="col-sm-3">
+      <%= s.select :invoice_state, Order::VALID_INVOICE_STATES %>
     </div>
 
-    <div class="col-sm-2">
-      <%= link_to 'Clear', '#', class: 'btn btn-primary js-clear-btn' %>
+    <div class="col-sm-3">
+      <%= s.select :production_state, Order::VALID_PRODUCTION_STATES %>
     </div>
 
-    <div class="col-sm-6">
-      <%= s.fulltext id: 'js_search', placeholder: 'Keywords' %>
-      <%= s.submit class: 'btn-lg btn-block margin-top-10' %>
+    <div class="col-sm-3">
+      <%= s.select :notification_state, Order.state_machines[:notification_state].states.map { |s| s.name.to_s }, display: :humanize %>
     </div>
-  <% end %>
-
-  <div class="col-sm-3">
-    <%= select_search_queries Order %>
   </div>
+
+  <div class='row form-group'>
+    <div class='col-sm-4'>
+      <%= s.text_field :in_hand_by, less_than: true, placeholder: 'Deadline before...', class: 'js-datetimepicker' %>
+    </div>
+
+    <div class='col-sm-4'>
+      <%= s.text_field :in_hand_by, greater_than: true, placeholder: 'Deadline after...', class: 'js-datetimepicker' %>
+    </div>
+
+    <div class='col-sm-4'>
+      <%= s.yes_or_no_select :balance %>
+    </div>
+  </div>
+
+  <div class="col-sm-2">
+    <%= s.save %>
+  </div>
+
+  <div class="col-sm-2">
+    <%= link_to 'Clear', '#', class: 'btn btn-primary js-clear-btn' %>
+  </div>
+
+  <div class="col-sm-6">
+    <%= s.submit class: 'btn-lg btn-block margin-top-10' %>
+  </div>
+<% end %>
+
+<div class="col-sm-3">
+  <%= select_search_queries Order %>
 </div>

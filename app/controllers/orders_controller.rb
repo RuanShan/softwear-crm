@@ -140,7 +140,43 @@ class OrdersController < InheritedResources::Base
     render layout: 'no_overlay'
   end
 
+  def state
+    @order = Order.find(params[:id])
+    @transition = params[:transition].to_sym unless params[:transition].nil?
+    @machine = params[:state_machine]
+    transition_order if (@machine && @transition) 
+    respond_to do |format|
+      format.js
+    end
+  end
+
   private
+
+  def transition_order
+    if @order.send("#{@machine}_events").include? @transition
+      old_state = @order.send(@machine)
+      PublicActivity.enabled = false
+      @order.send("fire_#{@machine}_event",  @transition)
+      PublicActivity.enabled = true
+      transition_params = {
+        old_state: old_state,
+        new_state: @order.send(@machine), 
+        machine: params[:state_machine], 
+        transition: params[:transition],
+        details: params[:details]
+      }
+      @order.create_activity(
+            action:     :transition,
+            parameters: transition_params,
+            owner:      current_user
+      )
+      @order.reload
+      @successful_transition = true if @order.valid?
+    else 
+      @order.errors.add(:base, "Invalid transition '#{@transition.to_s.humanize}' for 
+                        '#{@machine.to_s.humanize}' from state '#{@order.send(@machine).humanize}'")
+    end
+  end
 
   def format_in_hand_by
     unless params[:order].nil? || params[:order][:in_hand_by].nil?
@@ -165,7 +201,7 @@ class OrdersController < InheritedResources::Base
         :tax_id_number, :redo_reason, :invoice_state,
         :delivery_method, :phone_number, :commission_amount,
         :store_id, :salesperson_id, :total, :shipping_price,
-
+        :freshdesk_proof_ticket_id, 
         quote_ids: []
       ]
     )

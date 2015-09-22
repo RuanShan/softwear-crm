@@ -2,6 +2,12 @@ module IntegratedCrms
   extend ActiveSupport::Concern
 
   FD_QUOTE_ID_FIELD = :softwearcrm_quote_id_7483
+  FD_NO_OF_DECORATIONS_FIELD = :cf_of_unique_decorations_in_pr_7483
+  FD_NO_OF_PROOFS = :cf_of_proofs_for_pr_7483
+  FD_PROOF_ARTWORK_FOLDER = :order_folder_7483
+  FD_PROOF_CREATION_STATUS = :custom_proof_creation_status_7483
+  FD_ORDER_QTY = :order_qty_7483
+  FD_ART_GROUP_ID = 86612
 
   included do
     def self.get_insightly_api_key_from(&block)

@@ -24,7 +24,6 @@ CrmSoftwearcrmCom::Application.configure do
       port: '3000'
   }
 
-
       # Print deprecation notices to the Rails logger.
   config.active_support.deprecation = :log
 

@@ -187,22 +187,60 @@ feature 'Order management', order_spec: true,  js: true do
     expect(page).to have_content "Updated order #{order.name}"
   end
 
-  context 'search', search: true do
+  scenario 'user can attempt to notify customer, and take note of what happened', story_913: true do
+    PublicActivity.with_tracking do
+      visit edit_order_path(order)
+      find('.glyphicon-phone-alt').click
+      sleep(0.5)
+      select('Attempted', from: 'What did you do?')
+      fill_in('And what are the details?',  with: 'Left Voicemail')
+      click_button('Update Notification state')
+      sleep(1)
+      find("button[data-dismiss='modal']").click
+      expect(page).to have_selector("#order_#{order.id} > .notification-state", text: 'Attempted')
+      click_link "Timeline"
+      sleep(0.3)
+      expect(page).to have_content "changed order notification_state from pending to attempted via transition attempted with the details Left Voicemail"
+    end
+  end
+
+  scenario 'user can notify customer and update state', story_913: true do
+    PublicActivity.with_tracking do
+      visit edit_order_path(order)
+      find('.glyphicon-phone-alt').click
+      sleep(0.5)
+      select('Notified', from: 'What did you do?')
+      fill_in('And what are the details?', with:  'Spoke over the phone')
+      click_button('Update Notification state')
+      sleep(1)
+      find("button[data-dismiss='modal']").click
+      expect(page).to have_selector("#order_#{order.id} > .notification-state", text: 'Notified')
+      click_link "Timeline"
+      sleep(0.3)
+      expect(page).to have_content 'changed order notification_state from pending to notified via transition notified with the details Spoke over the phone'
+    end
+  end
+
+  scenario 'user can mark order as picked up', story_913: true do
+    visit edit_order_path(order)
+      PublicActivity.with_tracking do
+      find('.glyphicon-thumbs-up').click
+      sleep(0.5)
+      page.driver.browser.switch_to.alert.accept
+      sleep(1)
+      find("button[data-dismiss='modal']").click
+      expect(page).to have_selector("#order_#{order.id} > .notification-state", text: 'Picked up')
+    end
+  end
+
+
+  context 'search', search: true  do
     background do
       visit orders_path
-      find('#collapse-order-search').click
-    end
-
-    scenario 'user can filter on salesperson', story_914: true do
-      select valid_user.full_name, from: 'Salesperson'
-      click_button 'Search'
-
-      expect(Sunspot.session).to be_a_search_for Order
-      expect(Sunspot.session).to have_search_params(:with, :salesperson, valid_user)
     end
 
     scenario 'user can filter on invoice state', story_914: true do
-      select 'pending', from: 'Invoice state'
+      find("[id$=invoice_state]").select 'pending'
       click_button 'Search'
 
       expect(Sunspot.session).to be_a_search_for Order
@@ -210,11 +248,24 @@ feature 'Order management', order_spec: true,  js: true do
     end
 
     scenario 'user can filter on payment status', story_914: true do
-      select 'Payment Terms Met', from: 'Payment status'
+      find("[id$=payment_status]").select 'Payment Terms Met'
       click_button 'Search'
 
       expect(Sunspot.session).to be_a_search_for Order
       expect(Sunspot.session).to have_search_params(:with, :payment_status, 'Payment Terms Met')
+    end
+
+    scenario 'user can filter on delivery deadline before', story_926: true do
+      time = 5.days.ago
+
+      find("[id$=in_hand_by][less_than=true]").click
+      sleep 0.1
+      find("[id$=in_hand_by][less_than=true]").set time.strftime('%m/%d/%Y %I:%M %p')
+      find('.order-search-fulltext').click
+      click_button 'Search'
+
+      expect(Sunspot.session).to be_a_search_for Order
+      expect(Sunspot.session).to have_search_params(:with) { with(:in_hand_by).less_than(time.to_date) }
     end
   end
 end
