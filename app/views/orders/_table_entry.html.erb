@@ -19,16 +19,16 @@
   </td>
   <td><%= order.salesperson.full_name %></td>
   <td class='payment-state'>
-    <%= render 'state', which: 'payment_state', state: order.payment_status %>
+    <%= render 'orders/state', which: 'payment_state', state: order.payment_status %>
   </td>
   <td class='invoice-state'>
-    <%= render 'state', which: 'invoice_state', state: order.invoice_state %>
+    <%= render 'orders/state', which: 'invoice_state', state: order.invoice_state %>
   </td>
   <td class='production-state'>
-    <%= render 'state', which: 'production_state', state: order.production_state %>
+    <%= render 'orders/state', which: 'production_state', state: order.production_state %>
   </td>
   <td class='notification-state'>
-    <%= render 'state', which: 'notification_state', state: order.notification_state %>
+    <%= render 'orders/state', which: 'notification_state', state: order.notification_state %>
   </td>
   <td><%= number_to_currency order.total, unit: '$' %></td>
   <td><%= number_to_currency order.balance, unit: '$' %></td>
