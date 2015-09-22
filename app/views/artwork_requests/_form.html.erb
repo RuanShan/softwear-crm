@@ -111,7 +111,7 @@
         <% #TODO: Eliminate when roles are in place
            # becomes obsolete when there's a proofing manager
            pm = User.find_by(last_name: 'lawcock') %>
-        <%= f.select :artist_id, options_from_collection_for_select(User.all, :id, :full_name, artwork_request.artist_id || pm.id), include_blank: true %>
+        <%= f.select :artist_id, options_from_collection_for_select(User.all, :id, :full_name, artwork_request.artist_id || pm.try(:id)), include_blank: true %>
 
         <% if artwork_request.errors.include?(:artist_id) %>
           <% artwork_request.errors.full_messages_for(:artist_id).each do |message| %>
