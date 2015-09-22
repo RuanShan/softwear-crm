@@ -134,7 +134,7 @@ class Order < ActiveRecord::Base
   scope :fba, -> { where(terms: 'Fulfilled by Amazon') }
 
   state_machine :notification_state, :initial => :pending do
-    
+
     event :attempted do
       transition :pending => :attempted
       transition :attempted => :attempted
@@ -268,6 +268,7 @@ class Order < ActiveRecord::Base
   end
 
   def create_production_order
+    # NOTE make sure the permitted params in Production match up with this
     prod_order = Production::Order.post_raw(
       softwear_crm_id:    id,
       deadline:           in_hand_by,
@@ -288,8 +289,6 @@ class Order < ActiveRecord::Base
       job_hash[p_job.softwear_crm_id] = p_job
 
       p_job.imprints.each do |p_imprint|
-        # NOTE We are assuming that any production train with a softwear_crm_id
-        # is an imprint.
         next unless p_imprint.respond_to?(:softwear_crm_id)
 
         imprint_hash[p_imprint.softwear_crm_id] = p_imprint
@@ -310,6 +309,7 @@ class Order < ActiveRecord::Base
     attrs = {}
 
     jobs.each_with_index do |job, index|
+      # NOTE make sure the permitted params in Production match up with this
       attrs[index] = {
         name: job.name,
         softwear_crm_id: job.id,
@@ -358,7 +358,7 @@ class Order < ActiveRecord::Base
       end
     end
   end
-  
+
   def freshdesk_proof_ticket_link(obj = nil)
     obj ||= self
     return if obj.try(:freshdesk_proof_ticket_id).blank?

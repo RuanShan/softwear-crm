@@ -72,6 +72,7 @@ class Job < ActiveRecord::Base
   end
 
   def imprintable_train_attributes
+    # NOTE make sure the permitted params in Production match up with this
     if line_items.imprintable.any?
       { state: 'ready_to_order' }
     else
