@@ -1,5 +1,6 @@
 class Order < ActiveRecord::Base
   include TrackingHelpers
+  include ProductionCounterpart
 
   acts_as_paranoid
   acts_as_commentable :public, :private
@@ -8,7 +9,7 @@ class Order < ActiveRecord::Base
   is_activity_recipient
 
   searchable do
-    text :name, :email, :firstname, :lastname, :invoice_state, 
+    text :name, :email, :firstname, :lastname, :invoice_state,
          :company, :twitter, :terms, :delivery_method
 
     text :jobs do
@@ -38,7 +39,7 @@ class Order < ActiveRecord::Base
   tracked by_current_user
 
   VALID_INVOICE_STATES = [
-    'pending', 
+    'pending',
     'approved'
   ]
 
@@ -89,7 +90,7 @@ class Order < ActiveRecord::Base
             presence: true,
             inclusion: {
                 in: VALID_INVOICE_STATES,
-                message: 'Invalid invoice state'
+                message: 'is invalid'
             }
   validates :production_state,
             presence: true,
@@ -101,7 +102,7 @@ class Order < ActiveRecord::Base
             presence: true,
             inclusion: {
                 in: VALID_DELIVERY_METHODS,
-                message: 'Invalid delivery method'
+                message: 'is invalid'
             },
             unless: :fba?
   validates :email,
@@ -124,6 +125,7 @@ class Order < ActiveRecord::Base
 
   after_initialize -> (o) { o.production_state = 'pending' if o.production_state.blank? }
   after_initialize -> (o) { o.invoice_state = 'pending' if o.invoice_state.blank? }
+  after_save :create_production_order, if: :ready_for_production?
 
   alias_method :comments, :all_comments
   alias_method :comments=, :all_comments=
@@ -132,7 +134,7 @@ class Order < ActiveRecord::Base
   scope :fba, -> { where(terms: 'Fulfilled by Amazon') }
 
   state_machine :notification_state, :initial => :pending do
-    
+
     event :attempted do
       transition :pending => :attempted
       transition :attempted => :attempted
@@ -154,6 +156,12 @@ class Order < ActiveRecord::Base
 
   def production_order
     Production::Order.where(softwear_crm_id: self.id).first
+  end
+
+  def ready_for_production?
+    return if production?
+
+    payment_status == 'Payment Terms Met' and invoice_state == 'approved'
   end
 
   def all_shipments
@@ -259,6 +267,60 @@ class Order < ActiveRecord::Base
     jobs.map{|j|  j.name_number_imprints.flat_map{ |i| i.name_numbers } }.flatten
   end
 
+  def create_production_order
+    # NOTE make sure the permitted params in Production match up with this
+    prod_order = Production::Order.post_raw(
+      softwear_crm_id:    id,
+      deadline:           in_hand_by,
+      name:               name,
+      fba:                fba?,
+      has_imprint_groups: false,
+
+      jobs_attributes: production_jobs_attributes
+    )
+
+    update_column :softwear_prod_id, prod_order.id
+
+    # These hashes are used to minimize time spend looping and updating softwear_prod_id's
+    job_hash = {}
+    imprint_hash = {}
+
+    prod_order.jobs.each do |p_job|
+      job_hash[p_job.softwear_crm_id] = p_job
+
+      p_job.imprints.each do |p_imprint|
+        next unless p_imprint.respond_to?(:softwear_crm_id)
+
+        imprint_hash[p_imprint.softwear_crm_id] = p_imprint
+      end
+    end
+
+    jobs.each do |job|
+      job.update_column :softwear_prod_id, job_hash[job.id].id
+
+      job.imprints.each do |imprint|
+        imprint.update_column :softwear_prod_id, imprint_hash[imprint.id].id
+      end
+    end
+  end
+  warn_on_failure_of :create_production_order unless Rails.env.test?
+
+  def production_jobs_attributes
+    attrs = {}
+
+    jobs.each_with_index do |job, index|
+      # NOTE make sure the permitted params in Production match up with this
+      attrs[index] = {
+        name: job.name,
+        softwear_crm_id: job.id,
+        imprints_attributes: job.production_imprints_attributes,
+        imprintable_train_attributes: job.imprintable_train_attributes
+      }
+    end
+
+    attrs
+  end
+
   def generate_jobs(job_attributes)
     job_attributes.each do |attributes|
       attributes = HashWithIndifferentAccess.new(attributes)
@@ -296,7 +358,7 @@ class Order < ActiveRecord::Base
       end
     end
   end
-  
+
   def freshdesk_proof_ticket_link(obj = nil)
     obj ||= self
     return if obj.try(:freshdesk_proof_ticket_id).blank?

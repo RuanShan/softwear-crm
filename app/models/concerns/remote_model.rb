@@ -9,12 +9,12 @@ module RemoteModel
         @api_settings_slug = slug
 
         define_singleton_method :api_settings do
-          @api_settings = Setting.where("name like ?", "#{slug}%").each_with_object({}) {|r, h| h[r.name] = r.val  }
+          @api_settings ||= Setting.where("name like ?", "#{slug}%").each_with_object({}) {|r, h| h[r.name] = r.val  }
         end
 
         begin
           begin
-            self.site = api_settings["#{slug}_endpoint"]
+            self.site = api_settings["#{slug}_endpoint"] || "http://invalid-#{slug.to_s.dasherize}.com/api"
 
           rescue ActiveRecord::StatementInvalid => e
             puts "WARNING: *********************************************"
@@ -44,6 +44,19 @@ module RemoteModel
           "#{prefix}-User-Token" => api_settings["#{api_settings["slug"]}_token"],
           "#{prefix}-User-Email" => api_settings["#{api_settings["slug"]}_email"]
         )
+      end
+
+      def post_raw(data)
+        inst = self.new
+
+        connection.post(collection_path, { model_name.element => data }.to_json, headers).tap do |response|
+          inst.instance_eval do
+            self.id = id_from_response(response)
+            load_attributes_from_response(response)
+          end
+        end
+
+        inst
       end
     end
   end

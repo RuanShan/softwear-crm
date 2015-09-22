@@ -1,5 +1,6 @@
 class Job < ActiveRecord::Base
   include TrackingHelpers
+  include ProductionCounterpart
 
   acts_as_paranoid
 
@@ -52,6 +53,31 @@ class Job < ActiveRecord::Base
 
   def tier_line_items_sym(tier)
     Job.tier_line_items_sym(tier)
+  end
+
+  def production_imprints_attributes
+    attrs = {}
+
+    imprints.each_with_index do |imprint, index|
+      attrs[index] = {
+        softwear_crm_id: imprint.id,
+        name:            imprint.name,
+        description:     "#{name} --- #{imprint.name}",
+        count:           imprintable_line_items_total,
+        type:            'Print'
+      }
+    end
+
+    attrs
+  end
+
+  def imprintable_train_attributes
+    # NOTE make sure the permitted params in Production match up with this
+    if line_items.imprintable.any?
+      { state: 'ready_to_order' }
+    else
+      nil
+    end
   end
 
   # NOTE this works together with javascripts/quote_line_items.js to achieve

@@ -117,6 +117,15 @@ RSpec.configure do |config|
     example.metadata[:solr] ? lazy_load_solr : refresh_sunspot_session_spy
   end
 
+  config.before(:suite) do
+    EndpointStub.activate!
+    WebMock.disable_net_connect! allow_localhost: true
+
+    Endpoint::Stub[Production::Order]
+    Endpoint::Stub[Production::Job]
+    Endpoint::Stub[Production::Imprint]
+  end
+
   config.after(:suite) do
     stop_solr if solr_running?
   end
