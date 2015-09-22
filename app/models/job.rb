@@ -62,7 +62,8 @@ class Job < ActiveRecord::Base
       attrs[index] = {
         softwear_crm_id: imprint.id,
         name:            imprint.name,
-        description:     '',
+        description:     "#{name} --- #{imprint.name}",
+        count:           imprintable_line_items_total,
         type:            'Print'
       }
     end
