@@ -1,3 +1,4 @@
+<tr id="artwork-request-row-<%= artwork_request.id %>">
 <td><%= ArtworkRequest::PRIORITIES[artwork_request.priority.to_i] %></td>
 <td>
   <%= link_to artwork_request.order.name, "#{edit_order_path(artwork_request.order.id)}#artwork"%>
@@ -39,3 +40,4 @@
     <% end %>
   </div>
 </td>
+</tr>

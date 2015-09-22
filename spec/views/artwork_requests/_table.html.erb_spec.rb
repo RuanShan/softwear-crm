@@ -11,13 +11,11 @@ describe 'artwork_requests/_table.html.erb', artwork_request_spec: true do
   it 'has table with priority, artwork request deadline, order in hand by date,
       imprint method, no. of pieces, ink color count, payment status, order name, and actions columns' do
     expect(rendered).to have_selector('th', text: 'Priority')
+    expect(rendered).to have_selector('th', text: 'Order')
+    expect(rendered).to have_selector('th', text: 'Request Details')
     expect(rendered).to have_selector('th', text: 'Artwork Request Deadline')
-    expect(rendered).to have_selector('th', text: 'Order In Hand By Date')
-    expect(rendered).to have_selector('th', text: 'Imprint Method')
+    expect(rendered).to have_selector('th', text: 'Order In Hand')
     expect(rendered).to have_selector('th', text: 'No. of Pieces')
-    expect(rendered).to have_selector('th', text: 'Ink Color Count')
-    expect(rendered).to have_selector('th', text: 'Payment Status')
-    expect(rendered).to have_selector('th', text: 'Order Name')
     expect(rendered).to have_selector('th', text: 'Actions')
   end
 

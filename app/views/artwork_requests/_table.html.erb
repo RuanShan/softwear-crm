@@ -15,10 +15,8 @@
 
       <tbody>
         <% artwork_requests.each do |artwork_request| %>
-          <tr id="artwork-request-row-<%= artwork_request.id %>">
             <%= render partial: 'row',
                        locals: { artwork_request: artwork_request } %>
-          </tr>
         <% end %>
       </tbody>
     </table>
