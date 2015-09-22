@@ -267,9 +267,8 @@ class Order < ActiveRecord::Base
     jobs.map{|j|  j.name_number_imprints.flat_map{ |i| i.name_numbers } }.flatten
   end
 
-  def enqueue_create_production_order
-    delay(queue: 'api').create_production_order
-  end
+
+
   def create_production_order
     # NOTE make sure the permitted params in Production match up with this
     prod_order = Production::Order.post_raw(
@@ -306,7 +305,23 @@ class Order < ActiveRecord::Base
       end
     end
   end
+
   warn_on_failure_of :create_production_order unless Rails.env.test?
+
+  if Rails.env.production?
+    def enqueue_create_production_order
+      delay(queue: 'api').create_production_order
+    end
+  else
+    alias_method :enqueue_create_production_order, :create_production_order
+  end
+
+  def sync_with_production(sync)
+    sync[:name]
+    sync[deadline: :in_hand_by]
+  end
+
+
 
   def production_jobs_attributes
     attrs = {}

@@ -115,6 +115,18 @@ describe Order, order_spec: true do
     end
   end
 
+  describe 'with a production order', story_932: true do
+    let!(:prod_order) { create(:production_order) }
+    let!(:order) { create(:order, softwear_prod_id: prod_order.id) }
+
+    it 'updates the name and deadline in production when changed' do
+      order.name = "NEW order name"
+      order.save!
+
+      expect(prod_order.reload.name).to eq "NEW order name"
+    end
+  end
+
   describe 'upon initialization' do
     subject { create(:order) }
 

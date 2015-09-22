@@ -62,7 +62,7 @@ class Job < ActiveRecord::Base
       attrs[index] = {
         softwear_crm_id: imprint.id,
         name:            imprint.name,
-        description:     "#{name} --- #{imprint.name}",
+        description:     imprint.job_and_name,
         count:           imprintable_line_items_total,
         type:            'Print'
       }
@@ -78,6 +78,10 @@ class Job < ActiveRecord::Base
     else
       nil
     end
+  end
+
+  def sync_with_production(sync)
+    sync[:name]
   end
 
   # NOTE this works together with javascripts/quote_line_items.js to achieve

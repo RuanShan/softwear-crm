@@ -32,4 +32,13 @@ class Imprint < ActiveRecord::Base
     "#{job.name} - #{name}"
   end
 
+  def count
+    job.imprintable_line_items_total
+  end
+
+  def sync_with_production(sync)
+    sync[:name]
+    sync[description: :job_and_name]
+    sync[:count]
+  end
 end
