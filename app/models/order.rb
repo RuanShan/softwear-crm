@@ -125,7 +125,7 @@ class Order < ActiveRecord::Base
 
   after_initialize -> (o) { o.production_state = 'pending' if o.production_state.blank? }
   after_initialize -> (o) { o.invoice_state = 'pending' if o.invoice_state.blank? }
-  after_save :create_production_order, if: :ready_for_production?
+  after_save :enqueue_create_production_order, if: :ready_for_production?
 
   alias_method :comments, :all_comments
   alias_method :comments=, :all_comments=
@@ -267,6 +267,9 @@ class Order < ActiveRecord::Base
     jobs.map{|j|  j.name_number_imprints.flat_map{ |i| i.name_numbers } }.flatten
   end
 
+  def enqueue_create_production_order
+    delay(queue: 'api').create_production_order
+  end
   def create_production_order
     # NOTE make sure the permitted params in Production match up with this
     prod_order = Production::Order.post_raw(

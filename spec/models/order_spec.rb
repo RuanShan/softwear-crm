@@ -69,6 +69,10 @@ describe Order, order_spec: true do
     let!(:job_2) { create(:job, jobbable: order) }
     let!(:imprint_2_1) { create(:valid_imprint, job: job_2) }
 
+    before do
+      allow_any_instance_of(Order).to receive(:enqueue_create_production_order, &:create_production_order)
+    end
+
     it 'creates a Softwear Production order', create_production_order: true do
       [order, job_1, job_2, imprint_1_1, imprint_1_2, imprint_2_1].each do |record|
         expect(record.reload.softwear_prod_id).to be_nil
