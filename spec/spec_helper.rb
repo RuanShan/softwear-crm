@@ -115,6 +115,8 @@ RSpec.configure do |config|
 
   config.before(:each) do |example|
     example.metadata[:solr] ? lazy_load_solr : refresh_sunspot_session_spy
+
+    allow_any_instance_of(Order).to receive(:enqueue_create_production_order)
   end
 
   config.before(:suite) do
