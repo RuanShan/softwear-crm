@@ -287,7 +287,7 @@ class Order < ActiveRecord::Base
     prod_order.jobs.each do |p_job|
       job_hash[p_job.softwear_crm_id] = p_job
 
-      p_job.production_trains.each do |p_imprint|
+      p_job.imprints.each do |p_imprint|
         # NOTE We are assuming that any production train with a softwear_crm_id
         # is an imprint.
         next unless p_imprint.respond_to?(:softwear_crm_id)

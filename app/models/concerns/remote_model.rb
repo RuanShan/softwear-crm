@@ -52,12 +52,7 @@ module RemoteModel
         connection.post(collection_path, { model_name.element => data }.to_json, headers).tap do |response|
           inst.instance_eval do
             self.id = id_from_response(response)
-            begin
-              load_attributes_from_response(response)
-            rescue StandardError => e
-              # TODO  BYEBUG BYEBUG BYEBUG BYEBUG BYEBUG
-              byebug
-            end
+            load_attributes_from_response(response)
           end
         end
 

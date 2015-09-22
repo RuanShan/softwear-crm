@@ -22,13 +22,6 @@ GIT
     dumpsync (0.0.1)
 
 GIT
-  remote: git://github.com/AnnArborTees/endpoint_stub.git
-  revision: 0974abdd300f18a841b0389725a0f25d6e79176c
-  branch: master
-  specs:
-    endpoint_stub (1.5.3)
-
-GIT
   remote: git://github.com/AnnArborTees/insightly-ruby.git
   revision: 329e2c63c36fc2aee8b6e73382be18bd9fe0e3ac
   specs:
@@ -85,6 +78,11 @@ GIT
       actionpack (>= 4.0.0, < 5)
       activerecord (>= 4.0.0, < 5)
       railties (>= 4.0.0, < 5)
+
+PATH
+  remote: ~/r/endpoint_stub
+  specs:
+    endpoint_stub (1.5.3)
 
 GEM
   remote: https://rubygems.org/
