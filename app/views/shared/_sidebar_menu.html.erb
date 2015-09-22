@@ -86,10 +86,14 @@
       <% end %>
 
     <%= content_tag :li, class: ('active' if current_url.include?('artwork')) do %>
-      <a href="#fakelink"><i class="fa fa-picture-o"></i><i class="fa fa-angle-double-down i-right"></i>Artwork <span class="label label-danger new-circle">W.I.P.</span></a>
+      <a href="#fakelink"><i class="fa fa-picture-o"></i><i class="fa fa-angle-double-down i-right"></i>Artwork </a>
 
       <%= content_tag :ul, class: ('visible' if current_url.include?('artwork')) do %>
 
+        <%= content_tag :li, class: ('active' if current_action == 'artwork_requests') do %>
+          <%= link_to proofing_manager_dashboard_path do %><i class="fa fa-angle-right"></i> Manager Dashboard<% end %>
+        <% end %>
+        
         <%= content_tag :li, class: ('active' if current_action == 'artwork_requests') do %>
           <%= link_to artwork_requests_path do %><i class="fa fa-angle-right"></i> Artwork Requests<% end %>
         <% end %>

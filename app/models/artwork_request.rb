@@ -19,6 +19,10 @@ class ArtworkRequest < ActiveRecord::Base
     'In Progress',
     'Art Created'
   ]
+ 
+  default_scope { order(deadline: :asc).order(priority: :desc) }
+  scope :unassigned, -> { where("artist_id is null or artist_id = ?", (User.find_by(last_name: 'Lawcock').id rescue nil)) }
+  scope :pending, -> { where.not(artwork_status: 'art created') } 
 
   has_many :artwork_request_artworks
   has_many :artwork_request_ink_colors
@@ -47,6 +51,10 @@ class ArtworkRequest < ActiveRecord::Base
   validates :salesperson,    presence: true
 
   after_create :enqueue_create_freshdesk_proof_ticket
+  
+  def name
+    
+  end
 
   def ink_color_ids=(ids)
     custom_ids = []
