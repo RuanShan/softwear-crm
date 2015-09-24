@@ -104,6 +104,7 @@ group :test do
   gem 'rack_session_access'
   # for faking redis (used by sidekiq)
   gem 'fakeredis', :require => 'fakeredis/rspec'
+  gem 'endpoint_stub', github: 'AnnArborTees/endpoint_stub', branch: 'master'
 end
 
 gem 'markitup-rails'
@@ -128,5 +129,4 @@ gem 'yaml_db', github: 'jetthoughts/yaml_db', ref: 'fb4b6bd7e12de3cffa93e0a298a1
 gem 'nested_form'
 gem 'jquery-minicolors-rails'
 gem 'aws-ses'
-gem 'endpoint_stub', github: 'AnnArborTees/endpoint_stub', branch: 'master'
 gem 'state_machines-activerecord'

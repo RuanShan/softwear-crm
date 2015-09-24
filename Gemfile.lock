@@ -23,10 +23,10 @@ GIT
 
 GIT
   remote: git://github.com/AnnArborTees/endpoint_stub.git
-  revision: 15134e32b95c9a2956ad782c224834dee05ce712
+  revision: a1ff49bbb291af6cc4789cb139e6515d67c01745
   branch: master
   specs:
-    endpoint_stub (1.5.3)
+    endpoint_stub (1.5.4)
 
 GIT
   remote: git://github.com/AnnArborTees/insightly-ruby.git
