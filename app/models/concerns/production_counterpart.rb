@@ -5,7 +5,7 @@ module ProductionCounterpart
     cattr_accessor :production_class
     self.production_class = "Production::#{name}".constantize
 
-    after_save :enqueue_update_production
+    after_save :enqueue_update_production, if: :production?
 
     try :warn_on_failure_of, :update_production unless Rails.env.test?
 
