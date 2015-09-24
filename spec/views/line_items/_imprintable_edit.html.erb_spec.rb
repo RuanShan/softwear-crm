@@ -13,7 +13,7 @@ describe 'line_items/_imprintable_edit.html.erb', line_item_spec: true do
   ]}
 
   before(:each) do
-    render partial: 'line_items/imprintable_edit', 
+    render partial: 'line_items/imprintable_edit',
       locals: {
         color_name: 'white',
         style_name: shirt.style_name,
@@ -26,5 +26,10 @@ describe 'line_items/_imprintable_edit.html.erb', line_item_spec: true do
 
   it 'should render the filler div with the correct size' do
     expect(rendered).to have_css "div.col-sm-6"
+  end
+
+  it 'includes "Imprintable Info" and "Supplier" links', story_902: true do
+    expect(rendered).to have_css 'a', text: 'Imprintable Info'
+    expect(rendered).to have_css "a[href='#{shirt.supplier_link}']", text: 'Supplier'
   end
 end

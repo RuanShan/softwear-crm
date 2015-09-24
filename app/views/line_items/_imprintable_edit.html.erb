@@ -3,13 +3,14 @@
     <p>
     <strong><%= line_items.first.imprintable.brand.name %> <%= style_catalog_no %></strong><br />
     <%= color_name %><br />
-     <%= style_name %>
+    <%= style_name %><br />
+    <%= render 'line_items/more_info', imprintable: line_items.first.imprintable %>
     </p>
 
   </div>
   <div class="col-lg-7">
     <%= content_tag(:div, class: "col-sm-#{9 - line_items.count}") {} %>
-    <% # TODO inline CSS %>
+
     <div class="col-sm-2" style="border-right: solid 1px #dddddd;" align='right'>
       <label style="margin-bottom: 12px;">size:</label><br />
       <label style="margin-bottom: 17px;">quantity:</label><br />

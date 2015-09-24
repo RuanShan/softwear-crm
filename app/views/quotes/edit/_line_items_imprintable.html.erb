@@ -8,8 +8,10 @@
     <div class="col-xs-7">
       <b><%= line_item.imprintable.name %></b><br />
       <%= line_item.imprintable.description.html_safe %><br />
+      <%= render 'line_items/more_info', imprintable: line_item.imprintable %>
+      <br />
       <%= link_to 'Add Coordinate', edit_quote_path(@quote, imprintable_id: line_item.imprintable_id, type: 'coordinates'), remote: true %>
-      |
+      &nbsp;|
       <%= link_to 'Add Similar', edit_quote_path(@quote, imprintable_id: line_item.imprintable_id, type: 'similar_imprintables'), remote: true %>
     </div>
     <div class="col-xs-2">

@@ -1,0 +1,5 @@
+<%= link_to 'Imprintable Info', imprintable_path(imprintable), remote: true %>
+<% if imprintable.supplier_link? %>
+  |
+  <%= link_to 'Supplier', imprintable.supplier_link, target: :_blank %>
+<% end %>
