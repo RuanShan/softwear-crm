@@ -19,10 +19,10 @@ class ArtworkRequest < ActiveRecord::Base
     'In Progress',
     'Art Created'
   ]
- 
+
   default_scope { order(deadline: :asc).order(priority: :desc) }
   scope :unassigned, -> { where("artist_id is null or artist_id = ?", (User.find_by(last_name: 'Lawcock').id rescue nil)) }
-  scope :pending, -> { where.not(artwork_status: 'art created') } 
+  scope :pending, -> { where.not(artwork_status: 'art created') }
 
   has_many :artwork_request_artworks
   has_many :artwork_request_ink_colors
@@ -51,9 +51,9 @@ class ArtworkRequest < ActiveRecord::Base
   validates :salesperson,    presence: true
 
   after_create :enqueue_create_freshdesk_proof_ticket
-  
+
   def name
-    
+
   end
 
   def ink_color_ids=(ids)
@@ -101,7 +101,7 @@ class ArtworkRequest < ActiveRecord::Base
   def compatible_ink_colors
     InkColor.compatible_with(imprint_methods)
   end
- 
+
   def order
     self.imprints.first.job.order
   end
@@ -118,9 +118,9 @@ class ArtworkRequest < ActiveRecord::Base
       true
     end
   end
-  
+
   def enqueue_create_freshdesk_proof_ticket
-    self.delay(queue: 'api').create_freshdesk_proof_ticket if 
+    self.delay(queue: 'api').create_freshdesk_proof_ticket if
             (should_access_third_parties? && order.freshdesk_proof_ticket_id.blank?)
   end
   warn_on_failure_of :enqueue_create_freshdesk_proof_ticket
@@ -148,7 +148,7 @@ class ArtworkRequest < ActiveRecord::Base
       return OpenStruct.new JSON.parse(ticket)
     # end
   end
-  
+
   def create_freshdesk_proof_ticket
     return if freshdesk.nil? || !order.freshdesk_proof_ticket_id.blank?
 
@@ -164,7 +164,7 @@ class ArtworkRequest < ActiveRecord::Base
           group_id: FD_ART_GROUP_ID,
           ticket_type: 'Proofing Convo',
           subject: "Your Ann Arbor T-Shirt Company Order Proof(s) for \"#{order.name}\" ##{order.id} Are Ready",
-          custom_field: { 
+          custom_field: {
             FD_PROOF_CREATION_STATUS => 'Proof(s) Not Ready',
             FD_NO_OF_DECORATIONS_FIELD => order.imprints.count,
             FD_NO_OF_PROOFS => order.jobs.count,
@@ -174,7 +174,7 @@ class ArtworkRequest < ActiveRecord::Base
          .merge(requester_info)
       ))
       .try(:[], 'helpdesk_ticket')
-    
+
     order.update_column(:freshdesk_proof_ticket_id, ticket.try(:[], 'display_id'))
     ticket
   end

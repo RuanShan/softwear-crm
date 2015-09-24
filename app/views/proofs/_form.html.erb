@@ -83,6 +83,8 @@
   <p><strong>Are there any Mockups to include?</strong></p>
 
   <div class="form-group">
+    <p class="help-block"><%= max_file_size_message %></p>
+
     <%= f.fields_for :mockups, multipart: true do |ff| %>
       <%= render partial: 'mockup_fields', locals: { f: ff } %>
     <% end %>
