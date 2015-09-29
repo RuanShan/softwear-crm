@@ -79,7 +79,7 @@
     <ul>
       <% imprintable.imprintable_imprintable_groups.each do |info| %>
         <li>
-          <h5><%= info.imprintable_group.name %></h5> - <%= info.tier_name %>
+          <h5><%= info.imprintable_group.try(:name) || '<deleted group>' %></h5> - <%= info.tier_name %>
           <% if info.default? %> <em>default</em> <% end %>
         </li>
       <% end %>
