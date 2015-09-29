@@ -16,7 +16,7 @@
   <ul>
     <% @backtrace.split("\n").each do |line| %>
       <li>
-        <% if backtrace_is_from_app?(line) %>
+        <% if EmailsHelper.backtrace_is_from_app?(line) %>
           <strong><%= line %></strong><br />
         <% else %>
           <%= line %><br />

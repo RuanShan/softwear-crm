@@ -103,7 +103,7 @@ class ArtworkRequest < ActiveRecord::Base
   end
 
   def order
-    self.imprints.first.job.order
+    imprints.first.try(:job).try(:order)
   end
 
   def no_proof_ticket_id_entered?
