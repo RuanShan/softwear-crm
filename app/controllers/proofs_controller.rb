@@ -25,6 +25,18 @@ class ProofsController < InheritedResources::Base
     end
   end
 
+  def create
+    super do |success, failure|
+      success.html { redirect_to edit_order_path(@order, anchor: 'proofs') }
+    end
+  end
+
+  def update
+    super do |success, failure|
+      success.html { redirect_to edit_order_path(@order, anchor: 'proofs') }
+    end
+  end
+
   private
 
   def approved?

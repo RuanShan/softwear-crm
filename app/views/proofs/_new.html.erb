@@ -2,7 +2,7 @@
   <%= render partial: 'shared/modal_errors', locals: { object: proof } %>
 
   <%= form_for proof, url: order_proofs_path(order, proof),
-                      builder: LancengFormBuilder, multipart: true, remote: true do |f| %>
+                      builder: LancengFormBuilder, multipart: true do |f| %>
     <%= render partial: 'form', locals: { f: f, order: order, proof: proof } %>
   <% end %>
 </div>

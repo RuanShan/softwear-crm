@@ -44,7 +44,7 @@
     <div class="row">
       <% if params[:disable_buttons].nil? %>
         <div class="col-sm-12  clear text-left">
-          <%= link_to edit_order_proof_path(order, proof), remote: true do %>
+          <%= link_to edit_order_proof_path(order, proof) do %>
             <i class="fa fa-2x fa-edit"></i> Edit &nbsp
           <% end %>
 
