@@ -2,7 +2,7 @@
   <%= render partial: 'shared/modal_errors', locals: { object: artwork_request } %>
   <%= form_for artwork_request, url: order_artwork_request_path(order, artwork_request),
                                 builder: LancengFormBuilder,
-                                multipart: true, remote: true do |f| %>
+                                multipart: true do |f| %>
     <%= render partial: 'form',
                locals: { artwork_request: artwork_request, f: f, order: order } %>
   <% end %>

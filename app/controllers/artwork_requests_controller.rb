@@ -8,6 +8,10 @@ class ArtworkRequestsController < InheritedResources::Base
   def create
     super do |success, _failure|
       success.js { notify_artist }
+      success.html do
+        notify_artist
+        redirect_to order_path(@order, anchor: 'artwork')
+      end
     end
   end
 
@@ -31,14 +35,18 @@ class ArtworkRequestsController < InheritedResources::Base
     super do |success, _failure|
       if @artwork.nil?
         success.js { notify_artist }
+        success.html do
+          notify_artist
+          redirect_to order_path(@order, anchor: 'artwork')
+        end
       end
     end
   end
 
   def manager_dashboard
-    @unassigned_artwork_requests = ArtworkRequest.unassigned  
+    @unassigned_artwork_requests = ArtworkRequest.unassigned
     @pending_artwork_requests = ArtworkRequest.pending
-    @pending_proof_requests = Proof.pending 
+    @pending_proof_requests = Proof.pending
   end
 
   protected
