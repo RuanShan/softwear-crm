@@ -59,15 +59,18 @@ class ArtworkRequest < ActiveRecord::Base
   def ink_color_ids=(ids)
     custom_ids = []
     ids.reject! do |custom_name|
-      unless /^\d+$/ =~ custom_name.to_s
-        custom_ink_color = InkColor.create!(
-          name:   custom_name,
-          custom: true,
-          imprint_methods: imprint_methods
-        )
-          .id.to_s
-        custom_ids << custom_ink_color
+      next if /^\d+$/ =~ custom_name.to_s
+
+      custom_ink_color = InkColor.find_or_initialize_by(
+        name:   custom_name,
+        custom: true
+      )
+      if custom_ink_color.new_record?
+        custom_ink_color.imprint_methods = imprint_methods
+        custom_ink_color.save!
       end
+
+      custom_ids << custom_ink_color.id.to_s
     end
     super(ids + custom_ids)
   end
