@@ -51,7 +51,6 @@ feature 'Artwork Request Features', js: true, artwork_request_spec: true do
 
     click_button 'Create Artwork Request'
     sleep 1
-    expect(page).to have_selector('.modal-content-success')
     find(:css, 'button.close').click
     expect(ArtworkRequest.where(description: 'hello')).to exist
   end
@@ -64,7 +63,6 @@ feature 'Artwork Request Features', js: true, artwork_request_spec: true do
     select 'Normal', from: 'Priority'
     click_button 'Update Artwork Request'
     sleep 1
-    expect(page).to have_selector('.modal-content-success')
     find(:css, "button.close").click
     expect(ArtworkRequest.where(description: 'edited')).to exist
   end

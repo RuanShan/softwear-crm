@@ -10,7 +10,7 @@ class ArtworkRequestsController < InheritedResources::Base
       success.js { notify_artist }
       success.html do
         notify_artist
-        redirect_to order_path(@order, anchor: 'artwork')
+        redirect_to edit_order_path(@order, anchor: 'artwork')
       end
     end
   end
@@ -37,8 +37,10 @@ class ArtworkRequestsController < InheritedResources::Base
         success.js { notify_artist }
         success.html do
           notify_artist
-          redirect_to order_path(@order, anchor: 'artwork')
+          redirect_to edit_order_path(@order, anchor: 'artwork')
         end
+      else
+        success.html { redirect_to edit_order_path(@order, anchor: 'artwork') }
       end
     end
   end
