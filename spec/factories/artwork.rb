@@ -5,13 +5,15 @@ FactoryGirl.define do
       name 'Artwork'
       description 'This is artwork'
 
-      before(:create) do |artwork|
-        artwork.artist_id = create(:user).id
-        artwork.preview.file = create(:valid_asset).file
-        artwork.preview.description = create(:valid_asset).description
-        artwork.artwork.file = create(:valid_asset).file
-        artwork.artwork.description = create(:valid_asset).description
+      artwork do |a|
+        a.association(
+          :valid_asset,
+          file: File.open("#{Rails.root}" + '/spec/fixtures/images/test.psd'),
+        )
       end
+      preview { |p| p.association(:valid_asset) }
+
+      artist { |a| a.association(:user) }
     end
   end
 end

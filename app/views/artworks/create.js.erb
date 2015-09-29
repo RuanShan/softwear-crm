@@ -1,11 +1,9 @@
 <% if @artwork.valid? %>
 
-  $('#artwork-table').append("<%= j(render partial: 'row',
-                                           locals: { artwork: @artwork,
-                                                     artwork_request: nil }).html_safe %>");
+  $('#artwork-table').append("<%= j(render partial: 'row', locals: { artwork: @artwork, artwork_request: nil }).html_safe %>");
 
   setupContentModal(function($contentModal) {
-    $contentModal.find('.modal-content').addClass('modal-content-success')
+    $contentModal.find('.modal-content').addClass('modal-content-success');
   });
 
   showContentModal({
@@ -16,13 +14,18 @@
 <% else %>
 
     var form = $('#contentModal .modal-body form');
-    if (form.data('errorHandler') === null) {
+    if (form.data('errorHandler') == null) {
       form.data('errorHandler', ErrorHandler('artwork', form));
     }
 
     var handler = form.data('errorHandler');
-    handler.handleErrors(JSON.parse("<%= j(@artwork.errors.messages.to_json.html_safe) %>"),
-      $("<%= j(render partial: 'shared/modal_errors',
-                      locals: { object: @artwork }).html_safe %>"));
+    try {
+      handler.handleErrors(
+        JSON.parse("<%= j(@artwork.errors.messages.to_json) %>"),
+        $("<%= j(render partial: 'shared/modal_errors', locals: { object: @artwork }).html_safe %>")
+      );
+    } catch(e) {
+      console.log("ERROR HANDLING ERRORS! " + e);
+    }
 
 <% end %>
