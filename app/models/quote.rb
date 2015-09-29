@@ -520,6 +520,7 @@ class Quote < ActiveRecord::Base
       end
     end
 
+    Rails.logger.error "INSIGHTLYOP START creating insightly opportunity with name #{name}"
     op = insightly.create_opportunity(
       opportunity: {
         opportunity_name:    name,
@@ -539,6 +540,7 @@ class Quote < ActiveRecord::Base
     )
     self.insightly_opportunity_id = op.opportunity_id
     save(validate: false)
+    Rails.logger.error "INSIGHTLYOP END creating insightly opportunity with name #{name}"
     op
   end
   warn_on_failure_of :create_insightly_opportunity, raise_anyway: true
