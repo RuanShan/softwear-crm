@@ -39,20 +39,6 @@ feature 'Artwork Features', js: true, artwork_spec: true do
     expect(Artwork.count).to eq artwork_count + 1
   end
 
-#  scenario 'A user can search existing artwork for tags and names', solr: true do
-#    visit artworks_path
-#    expect(page).to have_css("tr#artwork-row-#{artwork.id}")
-#    find(:css, "input#search_artwork_fulltext").set('adsflk;jasdpfiuawekfjasdf;klj')
-#    click_button 'Search'
-#    expect(page).to_not have_css("tr#artwork-row-#{artwork.id}")
-#    find(:css, "input#search_artwork_fulltext").set('')
-#    click_button 'Search'
-#    expect(page).to have_css("tr#artwork-row-#{artwork.id}")
-#    find(:css, "input#search_artwork_fulltext").set('Artwork')
-#    click_button 'Search'
-#    expect(page).to have_css("tr#artwork-row-#{artwork.id}")
-#  end
-
   scenario 'A user can edit and update an Artwork from the Artwork List', no_ci: true, retry: 4, story_692: true do
     artwork_count = Artwork.count
     visit artworks_path

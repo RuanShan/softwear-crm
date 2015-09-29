@@ -4,7 +4,7 @@ class Asset < ActiveRecord::Base
   path = if Paperclip::Attachment.default_options[:storage] == :s3
            '/public/assets/:assetable_type/:assetable_id/asset/:style/:id.:extension'
          else
-           "#{Rails.root}/public/assets/:assetable_type/:assetable_id/asset/:style/:id.:extension"
+           ":rails_root/public/assets/:assetable_type/:assetable_id/asset/:style/:id.:extension"
          end
 
   url = if Paperclip::Attachment.default_options[:storage] == :s3

@@ -51,8 +51,8 @@ FactoryGirl.define do
   end
 
   factory :associated_imprintable, class: Imprintable do
-  	brand { |b| b.association(:valid_brand) }
-  	sizing_category 'Ladies'
+    brand { |b| b.association(:valid_brand) }
+    sizing_category 'Ladies'
     max_imprint_height 5.5
     max_imprint_width 5.5
     sequence(:style_name) { |n| "style_#{n}" }
