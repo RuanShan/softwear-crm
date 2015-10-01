@@ -242,7 +242,7 @@ feature 'Quotes management', quote_spec: true, js: true, retry: 2 do
     expect(job.imprints.first.imprint_method).to eq imprint_method_2
   end
 
-  scenario 'Adding an imprintable is tracked by public activity', busted: true, no_ci: true, story_600: true do
+  scenario 'Adding an imprintable is tracked by public activity', no_ci: true, story_600: true do
     PublicActivity.with_tracking do
       allow(Imprintable).to receive(:search)
         .and_return OpenStruct.new(

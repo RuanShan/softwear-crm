@@ -3,8 +3,7 @@
 
   <%= form_for artwork, url: artwork_path(artwork),
                         builder: LancengFormBuilder,
-                        multipart: true,
-                        remote: true do |f| %>
+                        multipart: true do |f| %>
     <%= render partial: 'form', locals: { artwork: artwork, f: f } %>
   <% end %>
 </div>

@@ -1,7 +1,7 @@
 class ArtworksController < InheritedResources::Base
   before_action :set_current_action
 
-  respond_to :js
+  respond_to :html, :js
 
   def index
     super do |format|
@@ -9,6 +9,19 @@ class ArtworksController < InheritedResources::Base
       @artwork_request = params[:artwork_request_id].nil? ? nil : ArtworkRequest.find(params[:artwork_request_id])
 
       format.js{ render(locals: { artwork_request: @artwork_request }) }
+      format.html{ render(locals: { artwork_request: @artwork_request }) }
+    end
+  end
+
+  def create
+    super do |format|
+      format.html { redirect_to params[:back_to] || artworks_path }
+    end
+  end
+
+  def update
+    super do |format|
+      format.html { redirect_to params[:back_to] || artworks_path }
     end
   end
 

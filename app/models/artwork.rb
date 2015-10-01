@@ -24,16 +24,13 @@ class Artwork < ActiveRecord::Base
   accepts_nested_attributes_for :artwork, allow_destroy: true
   accepts_nested_attributes_for :preview, allow_destroy: true
 
-  validates :name, presence: true
-  validates :description, presence: true
+  validates :name, :description, :artwork_id, :preview_id, presence: true
 
   after_save :assign_image_assetables
 
   private
 
   def initialize_assets
-    return unless new_record?
-
     self.artwork ||= Asset.new(allowed_content_type: "^image/(ai|pdf|psd)")
     self.preview ||= Asset.new(allowed_content_type: "^image/(png|gif|jpeg|jpg)")
   end

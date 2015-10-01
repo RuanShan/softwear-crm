@@ -1,4 +1,9 @@
 <div class='user-profile-content'>
+  <div class='pull-right hidden-print'>
+    <%= link_to new_artwork_path(back_to: (edit_order_path(@order, anchor: 'artwork') if @order)), class: 'btn btn-primary' do %>
+      Add Artwork
+    <% end %>
+  </div>
   <div class="row">
     <div class="col-sm-12">
       <h3><strong>Artwork</strong> Requests</h3>

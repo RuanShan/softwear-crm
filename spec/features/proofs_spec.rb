@@ -29,7 +29,7 @@ feature 'Proof Features', js: true, proof_spec: true do
     expect(page).to have_css("div#proof-#{proof.id}")
   end
 
-  scenario 'A user can create a Proof', busted: true, no_ci: true, retry: 3 do
+  scenario 'A user can create a Proof', no_ci: true, retry: 3 do
     visit edit_order_path(order.id)
     find("a[href='#proofs']").click
     find("a[href='/orders/#{order.id}/proofs/new']").click
@@ -71,7 +71,7 @@ feature 'Proof Features', js: true, proof_spec: true do
     expect(Proof.where(id: proof.id)).to_not exist
   end
 
-  scenario 'A user can Approve a Proof from the Proof List', busted: true do
+  scenario 'A user can Approve a Proof from the Proof List' do
     visit edit_order_path(order.id)
     find("a[href='#proofs']").click
     click_link 'Accept Proof'

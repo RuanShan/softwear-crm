@@ -1,6 +1,6 @@
 <div class="box-info">
   <h2>Search Artwork</h2>
-  <%= search_form_for Artwork, class: 'form-horizontal', remote: remote do |s| %>
+  <%= search_form_for Artwork, class: 'form-horizontal', remote: local_assigns[:remote] do |s| %>
     <% id = artwork_request == nil ? nil : artwork_request.id%>
     <%= s.pass_locals_to_controller artwork_request_id: id %>
 

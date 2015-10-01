@@ -1,23 +1,29 @@
 <div class="page-heading animated fadeInDownBig col-lg-9">
-  <h1>Artwork</h1>
+  <h1>
+    Artwork
+    <% if @artwork_request %>
+      for <%= link_to "Order ##{@artwork_request.order.id}", edit_order_path(@artwork_request.order, anchor: 'artwork') %>
+      Artwork Request <%= @artwork_request.order.artwork_request_ids.index(@artwork_request.id) + 1 %>
+    <% end %>
+  </h1>
 </div>
 
 <div class="col-lg-3 text-right">
-  <%= link_to new_artwork_path, class: 'btn btn-primary ', remote: true do %>
+  <%= link_to new_artwork_path, class: 'btn btn-primary ' do %>
     Add Artwork
   <% end %>
 </div>
 
 <div class="col-lg-9">
   <%= render partial: 'artworks/search',
-             locals: { artwork_request: nil, remote: false } %>
+             locals: { artwork_request: @artwork_request } %>
 </div>
 
 <%= paginate @artworks %>
 
 <div class="box-info row clear">
   <%= render partial: 'artworks/table',
-             locals: { artworks: @artworks, artwork_request: nil } %>
+             locals: { artworks: @artworks, artwork_request: @artwork_request } %>
 </div>
 
 <%= paginate @artworks %>

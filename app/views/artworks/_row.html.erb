@@ -1,8 +1,20 @@
 <tr id="artwork-row-<%= artwork.id %>">
   <td><%= artwork.id %></td>
   <td><%= artwork.name %></td>
-  <td><%= link_to(image_tag(artwork.preview.file.url(:thumb)), artwork.preview.file.url(:original), target: :_blank) %></td>
-  <td><%= link_to 'Download File', artwork.artwork.file.url %></td>
+  <td>
+    <% if artwork.preview %>
+      <%= link_to(image_tag(artwork.preview.file.url(:thumb)), artwork.preview.file.url(:original), target: :_blank) %>
+    <% else %>
+      (no preview)
+    <% end %>
+  </td>
+  <td>
+    <% if artwork.preview %>
+      <%= link_to 'Download File', artwork.artwork.file.url %>
+    <% else %>
+      (no artwork file)
+    <% end %>
+  </td>
   <td><%= artwork.tag_list.join(', ') %></td>
   <td><%= artwork.artist.full_name %></td>
   <td><%= artwork.description %></td>
@@ -11,7 +23,7 @@
       <% if artwork_request.nil? %>
 
         <%= link_to edit_artwork_path(artwork), class: 'btn btn-default',
-                    remote: true, 'data-toggle' => 'tooltip', 'title' => 'Edit' do %>
+                    'data-toggle' => 'tooltip', 'title' => 'Edit' do %>
           <i class="fa fa-edit"></i>
         <% end %>
 
