@@ -1,6 +1,8 @@
 class Asset < ActiveRecord::Base
   acts_as_paranoid
 
+  attr_accessor :photo
+
   path = if Paperclip::Attachment.default_options[:storage] == :s3
            '/public/assets/:assetable_type/:assetable_id/asset/:style/:id.:extension'
          else

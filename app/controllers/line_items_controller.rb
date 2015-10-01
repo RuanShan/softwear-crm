@@ -290,7 +290,7 @@ class LineItemsController < InheritedResources::Base
     @line_item = LineItem.find(ids.first)
     fire_activity @line_item, :destroy unless ids.empty?
 
-    LineItem.destroy ids
+    LineItem.destroy ids.select { |id| LineItem.where(id: id).exists? }
 
     respond_to(&respond)
   end

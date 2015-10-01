@@ -12,8 +12,5 @@ describe Asset, asset_spec: true do
 
   describe 'Validations' do
     it { is_expected.to validate_presence_of(:description) }
-    it { is_expected.to validate_attachment_presence(:file) }
-    it { is_expected.to validate_attachment_content_type(:file) }
-    it { is_expected.to validate_attachment_size(:file).less_than(120.megabytes)  }
   end
 end

@@ -34,7 +34,7 @@ class LineItem < ActiveRecord::Base
   validates :imprintable_object_type, inclusion: {
     in: ['ImprintableVariant', nil], message: 'must be "Imprintable Variant"' }, if: :order?
   validates :imprintable_object_id, uniqueness: {
-    scope: [:line_itemable_id], message: 'already exists' }, if: :imprintable_and_in_job?
+    scope: [:line_itemable_id], message: 'is a duplicate in this group' }, if: :imprintable_and_in_job?
 
   before_validation :set_sort_order, if: :markup_or_option?
   before_create :set_default_quantity
