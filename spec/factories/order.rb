@@ -28,7 +28,7 @@ FactoryGirl.define do
 
       before(:create) do |order|
         store = FactoryGirl.create(:valid_store)
-        user = FactoryGirl.create(:user)
+        user = FactoryGirl.create(:user, email: "order_#{Random.rand}_guy@gmail.com")
         order.store_id = store.id
         order.salesperson_id = user.id
       end
