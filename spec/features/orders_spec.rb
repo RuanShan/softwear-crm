@@ -82,8 +82,6 @@ feature 'Order management', order_spec: true,  js: true do
 #       fail the form
         click_button 'Next'
         date_array = DateTime.current.to_s.split(/\W|T/)
-        fill_in 'In Hand By Date', with:  "#{ (date_array[1].to_i + 1).to_s }/#{ date_array[2] }"\
-                                          "/#{ date_array.first } 4:00 PM"
         sleep 0.5
         click_button 'Submit'
 #       expect failure
@@ -91,6 +89,8 @@ feature 'Order management', order_spec: true,  js: true do
         close_error_modal
         click_button 'Next'
 
+        fill_in 'In Hand By Date', with:  "#{ (date_array[1].to_i + 1).to_s }/#{ date_array[2] }"\
+                                          "/#{ date_array.first } 4:00 PM"
         select 'Net 30', from: 'order_terms'
         click_button 'Next'
 
