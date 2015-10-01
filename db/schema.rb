@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150929154420) do
+ActiveRecord::Schema.define(version: 20151001214414) do
 
   create_table "activities", force: :cascade do |t|
     t.integer  "trackable_id",   limit: 4
@@ -82,14 +82,15 @@ ActiveRecord::Schema.define(version: 20150929154420) do
   end
 
   create_table "artworks", force: :cascade do |t|
-    t.string   "name",        limit: 255
-    t.string   "description", limit: 255
-    t.integer  "artist_id",   limit: 4
+    t.string   "name",                limit: 255
+    t.string   "description",         limit: 255
+    t.integer  "artist_id",           limit: 4
     t.datetime "deleted_at"
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.integer  "artwork_id",  limit: 4
-    t.integer  "preview_id",  limit: 4
+    t.integer  "artwork_id",          limit: 4
+    t.integer  "preview_id",          limit: 4
+    t.string   "local_file_location", limit: 255
   end
 
   create_table "assets", force: :cascade do |t|

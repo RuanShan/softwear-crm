@@ -24,7 +24,11 @@ class Artwork < ActiveRecord::Base
   accepts_nested_attributes_for :artwork, allow_destroy: true
   accepts_nested_attributes_for :preview, allow_destroy: true
 
-  validates :name, :description, :artwork_id, :preview_id, presence: true
+  validates :local_file_location,
+            :name,
+            :description,
+            :artwork_id,
+            :preview_id, presence: true
 
   after_save :assign_image_assetables
 

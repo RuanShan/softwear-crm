@@ -45,6 +45,7 @@ class ArtworksController < InheritedResources::Base
     params.permit(:artwork_request_id, :artworks,
                   artwork: [
                     :id, :name, :description, :tag_list, :artist_id,
+                    :local_file_location,
                     artwork_request_ids: [],
                     artwork_attributes: [
                       :file, :description, :id, :_destroy
