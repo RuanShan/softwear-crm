@@ -37,7 +37,6 @@ class LineItem < ActiveRecord::Base
     scope: [:line_itemable_id], message: 'is a duplicate in this group' }, if: :imprintable_and_in_job?
 
   before_validation :set_sort_order, if: :markup_or_option?
-  before_create :set_default_quantity
 
   def self.create_imprintables(line_itemable, imprintable, color, options = {})
     new_imprintables(line_itemable, imprintable, color, options)
@@ -199,10 +198,6 @@ class LineItem < ActiveRecord::Base
     end
 
     self.sort_order = 1 + last_sort_order
-  end
-
-  def set_default_quantity
-    self.quantity = 1 if self.quantity.to_i == 0
   end
 
   def should_validate_quantity?
