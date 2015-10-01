@@ -16,7 +16,7 @@ describe 'artwork_requests/_row.html.erb', artwork_request_spec: true do
 
   it 'has the artwork_request priority, a link to the order, deadline, order in hand by date,
       total quantity, imprint method name, no. of ink colors, payment terms, order name, and actions', was_failing: true do
-    within("#artwork-request-row-#{artwork_request.id}") do 
+    within("#artwork-request-row-#{artwork_request.id}") do
       expect(rendered).to have_selector 'td', text: ArtworkRequest::PRIORITIES[artwork_request.priority.to_i]
       expect(rendered).to have_selector 'td', text: display_time(artwork_request.deadline)
       expect(rendered).to have_selector 'td', text: display_time(artwork_request.jobs.first.order.in_hand_by)
@@ -28,5 +28,13 @@ describe 'artwork_requests/_row.html.erb', artwork_request_spec: true do
       expect(rendered).to have_selector("a[href='#{order_artwork_request_path(artwork_request.jobs.first.order, artwork_request)}?disable_buttons=true']")
       expect(rendered).to have_selector("a[href='#{order_artwork_request_path(artwork_request.jobs.first.order, artwork_request)}']")
     end
+  end
+
+  it 'includes the artist and salesperson', story_941: true do
+    expect(rendered).to have_selector 'dt', text: 'Salesperson'
+    expect(rendered).to have_selector 'dd', text: artwork_request.salesperson.full_name
+
+    expect(rendered).to have_selector 'dt', text: 'Artist'
+    expect(rendered).to have_selector 'dd', text: artwork_request.artist.full_name
   end
 end
