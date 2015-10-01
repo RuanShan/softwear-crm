@@ -2,7 +2,7 @@ module ErrorCatcher
   extend ActiveSupport::Concern
 
   included do
-    rescue_from Exception, StandardError, with: :error_report_form
+    rescue_from Exception, StandardError, with: :error_report_form unless Rails.env.test?
   end
 
   protected

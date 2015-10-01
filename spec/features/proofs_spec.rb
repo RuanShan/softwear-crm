@@ -9,8 +9,8 @@ feature 'Proof Features', js: true, proof_spec: true do
 
   before(:each) do
     login_as(valid_user)
-    allow(Order).to receive(:find).and_return(order)
-    allow(order).to receive(:artwork_requests).and_return([artwork_request])
+    # allow(Order).to receive(:find) { order.reload }
+    allow_any_instance_of(Order).to receive(:artwork_requests).and_return([artwork_request])
   end
 
   scenario 'A user can view a list of Proofs', ass: true do
@@ -45,7 +45,7 @@ feature 'Proof Features', js: true, proof_spec: true do
     expect(Proof.where(id: proof.id)).to exist
   end
 
-  scenario 'A user can edit and update an Proof from the Proof List', busted: true, retry: 2, story_692: true do
+  scenario 'A user can edit and update an Proof from the Proof List', retry: 2, story_692: true do
     visit edit_order_path(order.id)
     find("a[href='#proofs']").click
     find("a[href='#{edit_order_proof_path(id: proof.id, order_id: order.id)}']").click
@@ -54,7 +54,7 @@ feature 'Proof Features', js: true, proof_spec: true do
     sleep 1
     click_button 'Update Proof'
     sleep 1 if ci?
-    expect(page).to have_content 'Successfuly updated Proof'
+    expect(page).to have_content 'Proof was successfully updated'
     sleep 0.5
     find(:css, 'button.close').click
     expect(page).to have_css("div#proof-#{proof.id}")
@@ -71,7 +71,7 @@ feature 'Proof Features', js: true, proof_spec: true do
     expect(Proof.where(id: proof.id)).to_not exist
   end
 
-  scenario 'A user can Approve a Proof from the Proof List' do
+  scenario 'A user can Approve a Proof from the Proof List', busted: true do
     visit edit_order_path(order.id)
     find("a[href='#proofs']").click
     click_link 'Accept Proof'
