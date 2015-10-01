@@ -97,6 +97,7 @@ class Quote < ActiveRecord::Base
   validates :store, presence: true
   validates :valid_until_date, presence: true
   validates *(INSIGHTLY_FIELDS - [:insightly_opportunity_id]), presence: true, if: :should_validate_insightly_fields?
+  validate :no_line_item_errors
 
   after_save :set_quote_request_statuses_to_quoted
   after_create :enqueue_create_freshdesk_ticket
@@ -334,8 +335,12 @@ class Quote < ActiveRecord::Base
       line_item.imprintable_price  = imprintable.base_price
       line_item.imprintable_object = imprintable
 
-      line_item.save!
-      @imprintable_line_item_added_ids << line_item.id
+      if line_item.save
+        @imprintable_line_item_added_ids << line_item.id
+      else
+        @line_item_errors ||= {}
+        @line_item_errors[line_item.imprintable.name] = line_item.errors.full_messages
+      end
     end
   end
 
@@ -760,6 +765,16 @@ class Quote < ActiveRecord::Base
   end
 
   private
+
+  def no_line_item_errors
+    return if @line_item_errors.blank?
+
+    @line_item_errors.each do |name, errors|
+      errors.add(:line_items, errors)
+    end
+
+    @line_item_errors = nil
+  end
 
   def freshdesk_contact_id
     quote_requests

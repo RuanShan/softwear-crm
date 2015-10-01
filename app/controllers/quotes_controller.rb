@@ -27,7 +27,7 @@ class QuotesController < InheritedResources::Base
     @current_action = 'quotes#index'
 
     if terms = params[:q]
-      page     = params[:page]
+      page    = params[:page]
       @quotes = Quote.search do
         fulltext terms
         paginate page: page unless page.blank?
