@@ -7,6 +7,8 @@ describe 'artwork_requests/_row.html.erb', artwork_request_spec: true do
       allow(ar).to receive(:imprint_methods).and_return [build_stubbed(:blank_imprint_method)]
       allow(ar).to receive(:ink_colors).and_return [build_stubbed(:blank_ink_color)]
       allow(ar).to receive(:imprints).and_return [build_stubbed(:valid_imprint, job: build_stubbed(:job))]
+      allow(ar).to receive(:salesperson).and_return double('Salesperson', full_name: 'Bob Jones')
+      allow(ar).to receive(:artist).and_return double('Artist', full_name: 'Leonardi Divinci')
     end
   end
 
