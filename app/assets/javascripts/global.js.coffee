@@ -44,9 +44,17 @@ $(window).load ->
 
 $(document).ready ->
   $(document).on 'submit', 'form', (e) ->
+    timeout = null
     buttons = $(this).find('button[type=submit],input[type=submit]')
     buttons.prop('disabled', true)
-    setTimeout (-> buttons.prop('disabled', false)), 10000
+
+    reEnable = ->
+      buttons.prop('disabled', false)
+      $('[data-remote]').off 'ajax:success', reEnable
+      clearTimeout(timeout) if timeout
+
+    timeout = setTimeout reEnable, 10000
+    $('[data-remote]').on 'ajax:success', reEnable
 
   $(document).on 'click', '.kill-closest', (e) ->
     $(this).closest($(this).data('target')).remove()
