@@ -142,6 +142,7 @@ feature 'Quote Requests Management', js: true, quote_request_spec: true do
       expect_any_instance_of(QuoteRequest).to receive(:create_freshdesk_ticket)
 
       visit quote_request_path(quote_request)
+      sleep 1
       click_link 'Create Freshdesk Ticket'
 
       sleep 2
