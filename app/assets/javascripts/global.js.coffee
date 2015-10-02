@@ -43,6 +43,11 @@ $(window).load ->
 
 
 $(document).ready ->
+  $(document).on 'submit', 'form', (e) ->
+    buttons = $(this).find('button[type=submit],input[type=submit]')
+    buttons.prop('disabled', true)
+    setTimeout (-> buttons.prop('disabled', false)), 10000
+
   $(document).on 'click', '.kill-closest', (e) ->
     $(this).closest($(this).data('target')).remove()
     e.preventDefault()

@@ -16,8 +16,6 @@ class QuotesController < InheritedResources::Base
       @quote_request_id = params[:quote_request_id]         if params.has_key?(:quote_request_id)
       @quote_request = QuoteRequest.find(@quote_request_id) if @quote_request_id
       @quote.assign_from_quote_request(@quote_request)      if @quote_request
-      Rails.logger.error "MULTIQUOTE quote assigned by #{@current_user.full_name} at #{Time.now.strftime('%m/%d/%Y %I:%M%P')}"
-      Rails.logger.error "=========================\n"
       # TODO: this is pretty gross...
       @current_action = 'quotes#new'
     end

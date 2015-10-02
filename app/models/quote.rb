@@ -105,12 +105,6 @@ class Quote < ActiveRecord::Base
   before_create :set_default_valid_until_date
   after_initialize  :initialize_time
 
-  after_create do
-    Rails.logger.error "MULTIQUOTE Created quote! Email: #{email}."
-    Rails.logger.error caller.join("\n")
-    Rails.logger.error "===================================================\n"
-  end
-
   alias_method :comments, :all_comments
   alias_method :comments=, :all_comments=
   alias_method :notes, :all_comments
@@ -409,8 +403,6 @@ class Quote < ActiveRecord::Base
       self.deadline_is_specified = true
       self.valid_until_date = quote_request.date_needed
     end
-
-    Rails.logger.error "MULTIQUOTE Assigning from quote request ##{quote_request.id} email: #{email}"
   end
 
   def enqueue_create_freshdesk_ticket
