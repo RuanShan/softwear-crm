@@ -306,6 +306,8 @@ GEM
     launchy (2.4.3)
       addressable (~> 2.3)
     liquid (3.0.4)
+    listjs-rails (1.1.1)
+      railties (>= 3.1.0)
     little-plugger (1.1.3)
     logging (2.0.0)
       little-plugger (~> 1.1)
@@ -583,6 +585,7 @@ DEPENDENCIES
   kaminari
   launchy (~> 2.4.2)
   liquid
+  listjs-rails
   markitup-rails
   momentjs-rails (~> 2.9.0)
   mysql2

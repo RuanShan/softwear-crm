@@ -1,0 +1,8 @@
+setupContentModal(function(modal) {
+  modal.find('.modal-dialog').addClass('modal-lg');
+});
+showContentModal({
+  title:  "<%= @imprintable_group.name.html_safe %>",
+  body:   $("<%=j render 'info', imprintable_group: @imprintable_group %>"),
+  footer: $('<button data-dismiss="modal" class="btn btn-default">Close</button>')
+});

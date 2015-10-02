@@ -167,6 +167,8 @@ class Quote < ActiveRecord::Base
 
   def no_fd_login?(current_user)
     config = FreshdeskModule.get_freshdesk_config(current_user)
+    return true if config.nil?
+
     if config.has_key?(:freshdesk_email) && config.has_key?(:freshdesk_password)
       false
     else

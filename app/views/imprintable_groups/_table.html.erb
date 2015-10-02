@@ -1,4 +1,8 @@
-<div class="box-info full">
+<div class="box-info full" id='imprintable-groups-list'>
+  <div>
+    <%= text_field_tag :filter_groups, '', placeholder: 'Filter', class: 'form-control fuzzy-search' %>
+  </div>
+
   <div class="table-responsive">
     <table class="table table-hover" id="imprintable_groups_list">
       <thead>
@@ -8,10 +12,10 @@
         </tr>
       </thead>
 
-      <tbody>
+      <tbody id='imprintable_groups_table_body' class='list'>
         <% imprintable_groups.each do |imprintable_group| %>
           <tr id="<%= model_table_row_id imprintable_group %>">
-            <td><%= imprintable_group.name %></td>
+            <td data-id="<%= imprintable_group.id %>" class='imprintable-group'><%= imprintable_group.name %></td>
             <td>
               <div class="btn-group btn-group-xs">
                 <%= link_to edit_imprintable_group_path(imprintable_group),

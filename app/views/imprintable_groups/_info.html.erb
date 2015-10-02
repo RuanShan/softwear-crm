@@ -1,0 +1,38 @@
+<% Imprintable::TIERS.each.with_index do |tier, index| %>
+  <% if index != 0 %>
+    <hr />
+  <% end %>
+
+  <div class='row tier-row'>
+    <div class='col-xs-1'>
+      <%= tier[1] %>
+    </div>
+
+    <div class='col-xs-11'>
+      <ul class='container-fluid'>
+        <% @imprintable_group.imprintable_imprintable_groups.where(tier: tier[0]).each do |iig| %>
+          <li class='row sortable-quote-line-item' <%= "style='list-style-type: none;'".html_safe unless iig.default? %>>
+            <div class='col-xs-9'>
+              <dl>
+                <dt><%= iig.imprintable.name %></dt>
+                <dd><%= iig.imprintable.description.html_safe %></dd>
+              </dl>
+              <%= link_to 'Imprintable Info', imprintable_path(iig.imprintable), target: :_blank %>
+              <% if iig.imprintable.supplier_link? %>
+                |
+                <%= link_to 'Supplier', iig.imprintable.supplier_link, target: :_blank %>
+              <% end %>
+            </div>
+
+            <div class='col-xs-3'>
+              <dl>
+                <dt>Base Price</dt>
+                <dd><%= number_to_currency(iig.imprintable.base_price) %></dd>
+              </dl>
+            </div>
+          </li>
+        <% end %>
+      </ul>
+    </div>
+  </div>
+<% end %>

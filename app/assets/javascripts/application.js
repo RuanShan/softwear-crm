@@ -39,5 +39,7 @@
 //= require markitup/sets/xbbcode/set
 //= require jquery_nested_form
 //= require jquery.minicolors
+//= require list
+//= require list.fuzzysearch
 
 //= require_tree .
