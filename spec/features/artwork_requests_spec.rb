@@ -75,4 +75,31 @@ feature 'Artwork Request Features', js: true, artwork_request_spec: true do
     expect(page).to_not have_css("div#artwork-request-#{artwork_request.id}")
     expect(artwork_request.reload.deleted_at).to be_truthy
   end
+
+  context 'search', search: true, no_ci: true do
+    background do
+      visit artwork_requests_path
+
+      scenario 'user can filter on status', story_940: true do
+        find('[id$=artwork_statsu]').select 'Pending'
+        click_button 'Search'
+
+        expect(Sunspot.session).to be_a_search_for ArtworkRequest
+        expect(Sunspot.session).to have_search_params(:with, :artwork_statsu, 'Pending')
+      end
+
+      scenario 'user can filter on deadline before', story_940: true do
+        time = 5.days.ago
+
+        find("[id$=deadline][less_than=true]").click
+        sleep 0.1
+        find("[id$=deadline][less_than=true]").set time.strftime('%m/%d/%Y %I:%M %p')
+        find('.artwork-request-search-fulltext').click
+        click_button 'Search'
+
+        expect(Sunspot.session).to be_a_search_for ArtworkRequest
+        expect(Sunspot.session).to have_search_params(:with) { with(:deadline).less_than(time.to_date) }
+      end
+    end
+  end
 end

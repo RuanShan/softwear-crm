@@ -25,11 +25,11 @@
 
   <div class='row form-group'>
     <div class='col-sm-4'>
-      <%= s.text_field :in_hand_by, less_than: true, placeholder: 'Deadline before...', class: 'js-datetimepicker' %>
+      <%= s.text_field :in_hand_by, greater_than: true, placeholder: 'Deadline after...', class: 'js-datetimepicker' %>
     </div>
 
     <div class='col-sm-4'>
-      <%= s.text_field :in_hand_by, greater_than: true, placeholder: 'Deadline after...', class: 'js-datetimepicker' %>
+      <%= s.text_field :in_hand_by, less_than: true, placeholder: 'Deadline before...', class: 'js-datetimepicker' %>
     </div>
 
     <div class='col-sm-4'>

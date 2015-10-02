@@ -15,7 +15,7 @@
 
       <tbody>
         <% artwork_requests.each do |artwork_request| %>
-            <%= render partial: 'row',
+            <%= render partial: 'artwork_requests/row',
                        locals: { artwork_request: artwork_request } %>
         <% end %>
       </tbody>

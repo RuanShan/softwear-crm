@@ -15,6 +15,11 @@ class ArtworkRequestsController < InheritedResources::Base
     end
   end
 
+  def index
+    @current_action = 'artwork_requests#index'
+    @artwork_requests = ArtworkRequest.all.page(params[:page] || 1)
+  end
+
   # TODO couldn't figure out a way to refactor this, but could possibly be too much for a controller?
   def update
     unless params[:artwork_id].nil?

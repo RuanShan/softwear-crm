@@ -7,6 +7,17 @@ class ArtworkRequest < ActiveRecord::Base
 
   tracked by_current_user + on_order
 
+  searchable do
+    text :order_name, :job_names, :ink_color_names,
+         :artwork_names, :artwork_descriptions,
+         :artist_full_name, :salesperson_full_name
+
+    string :artwork_status
+
+    date :deadline
+    date :order_in_hand_by
+  end
+
   PRIORITIES = {
     1 => 'High (Rush Job)',
     3 => 'Customer Paid For Art',
@@ -53,7 +64,37 @@ class ArtworkRequest < ActiveRecord::Base
   # after_create :enqueue_create_freshdesk_proof_ticket
 
   def name
+  end
 
+  def artist_full_name
+    artist.try(:full_name)
+  end
+
+  def salesperson_full_name
+    salesperson.try(:full_name)
+  end
+
+  def order_in_hand_by
+    order.try(:in_hand_by)
+  end
+
+  def order_name
+    order.try(:name) || 'broken'
+  end
+
+  def job_names
+    jobs.pluck(:name).join(', ')
+  end
+
+  def ink_color_names
+    ink_colors.pluck(:name).join(', ')
+  end
+
+  def artwork_names
+    artworks.pluck(:name).join(', ')
+  end
+  def artwork_descriptions
+    artworks.pluck(:description).join(', ')
   end
 
   def ink_color_ids=(ids)

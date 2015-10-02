@@ -144,7 +144,7 @@ class OrdersController < InheritedResources::Base
     @order = Order.find(params[:id])
     @transition = params[:transition].to_sym unless params[:transition].nil?
     @machine = params[:state_machine]
-    transition_order if (@machine && @transition) 
+    transition_order if (@machine && @transition)
     respond_to do |format|
       format.js
     end
@@ -160,8 +160,8 @@ class OrdersController < InheritedResources::Base
       PublicActivity.enabled = true
       transition_params = {
         old_state: old_state,
-        new_state: @order.send(@machine), 
-        machine: params[:state_machine], 
+        new_state: @order.send(@machine),
+        machine: params[:state_machine],
         transition: params[:transition],
         details: params[:details]
       }
@@ -172,8 +172,8 @@ class OrdersController < InheritedResources::Base
       )
       @order.reload
       @successful_transition = true if @order.valid?
-    else 
-      @order.errors.add(:base, "Invalid transition '#{@transition.to_s.humanize}' for 
+    else
+      @order.errors.add(:base, "Invalid transition '#{@transition.to_s.humanize}' for
                         '#{@machine.to_s.humanize}' from state '#{@order.send(@machine).humanize}'")
     end
   end
@@ -201,7 +201,7 @@ class OrdersController < InheritedResources::Base
         :tax_id_number, :redo_reason, :invoice_state,
         :delivery_method, :phone_number, :commission_amount,
         :store_id, :salesperson_id, :total, :shipping_price,
-        :freshdesk_proof_ticket_id, 
+        :freshdesk_proof_ticket_id,
         quote_ids: []
       ]
     )
