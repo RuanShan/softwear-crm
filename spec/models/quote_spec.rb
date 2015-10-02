@@ -788,13 +788,14 @@ describe Quote, quote_spec: true do
 
           dummy_client = Object.new
           allow(quote).to receive(:freshdesk).and_return(dummy_client)
+          quote.salesperson.update_attributes!(store_id: create(:valid_store, name: 'rspec').id)
 
           expect(dummy_client).to receive(:post_tickets)
             .with(helpdesk_ticket: {
               source: 2,
               group_id: 54321,
               ticket_type: 'Lead',
-              subject: "Your Quote \"#{quote.name}\" (##{quote.id}) from the Ann Arbor T-shirt Company",
+              subject: "Your Quote \"#{quote.name}\" (##{quote.id}) from the #{quote.salesperson.store.name}",
               custom_field: {
                 softwearcrm_quote_id_7483: quote.id
               },
@@ -940,6 +941,20 @@ describe Quote, quote_spec: true do
         expect(quote.save).to eq true
         expect(quote_request.reload.status).to eq 'quoted'
       end
+    end
+  end
+
+  describe 'valid_until_date' do
+    it 'should default to 30 days from now', story_883: true do
+      expect(Quote.new.valid_until_date).to be > 29.days.from_now
+      expect(Quote.new.valid_until_date).to be < 31.days.from_now
+    end
+  end
+
+  describe 'estimated_delivery_date' do
+    it 'should default to 14 days from now', story_883: true do
+      expect(Quote.new.estimated_delivery_date).to be > 13.days.from_now
+      expect(Quote.new.estimated_delivery_date).to be < 15.days.from_now
     end
   end
 end

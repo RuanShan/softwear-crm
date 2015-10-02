@@ -102,7 +102,7 @@ class Quote < ActiveRecord::Base
   after_save :set_quote_request_statuses_to_quoted
   after_create :enqueue_create_freshdesk_ticket
   after_create :enqueue_create_insightly_opportunity
-  before_create :set_default_valid_until_date
+  after_initialize :set_default_valid_until_date
   after_initialize  :initialize_time
 
   alias_method :comments, :all_comments
@@ -403,6 +403,8 @@ class Quote < ActiveRecord::Base
       self.deadline_is_specified = true
       self.valid_until_date = quote_request.date_needed
     end
+
+    self.estimated_delivery_date = nil
   end
 
   def enqueue_create_freshdesk_ticket
@@ -430,7 +432,7 @@ class Quote < ActiveRecord::Base
           source: 2,
           group_id: freshdesk_group_id(salesperson),
           ticket_type: 'Lead',
-          subject: "Your Quote \"#{self.name}\" (##{self.id}) from the Ann Arbor T-shirt Company",
+          subject: "Your Quote \"#{self.name}\" (##{self.id}) from the #{salesperson.store.try(:name) || 'Ann Arbor T-shirt Company'}",
           custom_field: { FD_QUOTE_ID_FIELD => id },
           description_html: freshdesk_description(quote_requests)
         }
@@ -778,8 +780,8 @@ class Quote < ActiveRecord::Base
   end
 
   def set_default_valid_until_date
-    return unless valid_until_date.nil?
-    self.valid_until_date = 30.days.from_now
+    self.valid_until_date ||= 30.days.from_now
+    self.estimated_delivery_date ||= 14.days.from_now
   end
 
   def yes_or_no(bool)
