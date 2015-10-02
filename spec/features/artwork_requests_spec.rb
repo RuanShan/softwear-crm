@@ -3,7 +3,7 @@ include ApplicationHelper
 
 feature 'Artwork Request Features', js: true, artwork_request_spec: true do
   given!(:artwork_request) { create(:valid_artwork_request) }
-  given!(:valid_user) { create(:alternate_user) }
+  given!(:valid_user) { create(:alternate_user, last_name: 'Lawcock') }
   given!(:order) { artwork_request.jobs.first.order }
   given!(:imprint_method) { create(:valid_imprint_method) }
 
@@ -46,7 +46,6 @@ feature 'Artwork Request Features', js: true, artwork_request_spec: true do
 
     find('#artwork_request_ink_color_ids_').select(imprint_method.ink_colors.first.name)
     fill_in 'artwork_request_deadline', with: '01/23/1992 8:55 PM'
-    find_by_id('artwork_request_artist_id').find("option[value='#{artwork_request.artist_id}']").click
     fill_in 'Description', with: 'hello'
 
     click_button 'Create Artwork Request'

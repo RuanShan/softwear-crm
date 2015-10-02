@@ -104,21 +104,27 @@
   </div>
 
   <div class="form-group">
+    <% #TODO: Eliminate when roles are in place
+       # becomes obsolete when there's a proofing manager
+       pm = User.find_by(last_name: 'lawcock') %>
     <div class="row">
-      <%= f.label :artist_id, 'Artist', class: 'col-sm-2 control-label' %>
+      <% if f.object.new_record? %>
+        <%= f.hidden_field :artist_id, value: pm.try(:id) %>
+      <% else %>
 
-      <div class="col-sm-10">
-        <% #TODO: Eliminate when roles are in place
-           # becomes obsolete when there's a proofing manager
-           pm = User.find_by(last_name: 'lawcock') %>
-        <%= f.select :artist_id, options_from_collection_for_select(User.all, :id, :full_name, artwork_request.artist_id || pm.try(:id)), include_blank: true %>
+        <%= f.label :artist_id, 'Artist', class: 'col-sm-2 control-label' %>
 
-        <% if artwork_request.errors.include?(:artist_id) %>
-          <% artwork_request.errors.full_messages_for(:artist_id).each do |message| %>
-            <p class="text-danger"><%= message %></p>
+        <div class="col-sm-10">
+
+          <%= f.select :artist_id, options_from_collection_for_select(User.all, :id, :full_name, artwork_request.artist_id || pm.try(:id)), include_blank: true %>
+
+          <% if artwork_request.errors.include?(:artist_id) %>
+            <% artwork_request.errors.full_messages_for(:artist_id).each do |message| %>
+              <p class="text-danger"><%= message %></p>
+            <% end %>
           <% end %>
-        <% end %>
-      </div>
+        </div>
+      <% end %>
     </div>
   </div>
 
