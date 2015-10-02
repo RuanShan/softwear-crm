@@ -50,7 +50,7 @@ class ArtworkRequest < ActiveRecord::Base
   validates :priority,       presence: true
   validates :salesperson,    presence: true
 
-  after_create :enqueue_create_freshdesk_proof_ticket
+  # after_create :enqueue_create_freshdesk_proof_ticket
 
   def name
 
