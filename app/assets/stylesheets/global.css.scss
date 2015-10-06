@@ -38,6 +38,12 @@
   z-index: 9999999 !important;
 }
 
+.no-click {
+  cursor: not-allowed;
+  color: #A8A8A8;
+  text-decoration: line-through;
+}
+
 #dock {
   position: fixed;
   bottom: 0;

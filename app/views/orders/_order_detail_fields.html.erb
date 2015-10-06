@@ -4,11 +4,13 @@
   <%= f.text_field :name, placeholder: 'Title used internally by company' %>
 </div>
 
-<div class="form-group">
-  <%= f.label :po, 'P.O. Number' %>
-  <%= f.error_for :po %>
-  <%= f.text_field :po, placeholder: 'Purchase Order if required by customer' %>
-</div>
+<% unless f.object.fba? %>
+  <div class="form-group">
+    <%= f.label :po, 'P.O. Number' %>
+    <%= f.error_for :po %>
+    <%= f.text_field :po, placeholder: 'Purchase Order if required by customer' %>
+  </div>
+<% end %>
 
 <div class="form-group">
   <%= f.label :in_hand_by, 'In Hand By Date' %>
@@ -39,16 +41,18 @@
   <%= f.select :store_id, options_for_select(Store.order(:name).map{ |s| [s.name, s.id] }, store_id) %>
 </div>
 
-<div class="form-group">
+<% unless f.object.fba? %>
   <div class="form-group">
-    <%= f.label :shipping_price %>
+    <div class="form-group">
+      <%= f.label :shipping_price %>
 
-    <div class="input-group">
-      <span class="input-group-addon">$</span>
-      <%= f.text_field :shipping_price %>
+      <div class="input-group">
+        <span class="input-group-addon">$</span>
+        <%= f.text_field :shipping_price %>
+      </div>
     </div>
   </div>
-</div>
+<% end %>
 
 <% if local_assigns[:show_quotes] %>
   <div class="form-group">
@@ -58,26 +62,28 @@
   </div>
 <% end %>
 
-<div class="form-group">
-  <%= f.label :terms, 'Payment terms' %>
-  <%= f.error_for :terms %>
-  <%= f.select :terms, Order::VALID_PAYMENT_TERMS - ['Fulfilled by Amazon'] %>
-</div>
+<% unless f.object.fba? %>
+  <div class="form-group">
+    <%= f.label :terms, 'Payment terms' %>
+    <%= f.error_for :terms %>
+    <%= f.select :terms, Order::VALID_PAYMENT_TERMS - ['Fulfilled by Amazon'] %>
+  </div>
 
-<div class="form-group">
-  <%= f.label :tax_exempt, 'Tax exempt?' %>
-  <%= f.error_for :tax_exempt %>
-  <%= f.check_box_with_text_field :tax_exempt, :tax_id_number, placeholder: 'Tax ID Number' %>
-</div>
+  <div class="form-group">
+    <%= f.label :tax_exempt, 'Tax exempt?' %>
+    <%= f.error_for :tax_exempt %>
+    <%= f.check_box_with_text_field :tax_exempt, :tax_id_number, placeholder: 'Tax ID Number' %>
+  </div>
 
-<div class="form-group">
-  <%= f.label :invoice_state %>
-  <%= f.error_for :invoice_state %>
-  <%= f.select :invoice_state, Order::VALID_INVOICE_STATES %>
-</div>
+  <div class="form-group">
+    <%= f.label :invoice_state %>
+    <%= f.error_for :invoice_state %>
+    <%= f.select :invoice_state, Order::VALID_INVOICE_STATES %>
+  </div>
 
-<div class="form-group">
-  <%= f.label :freshdesk_proof_ticket_id %>
-  <%= f.error_for :freshdesk_proof_ticket_id %>
-  <%= f.text_field :freshdesk_proof_ticket_id, type: :integer %>
-</div>
+  <div class="form-group">
+    <%= f.label :freshdesk_proof_ticket_id %>
+    <%= f.error_for :freshdesk_proof_ticket_id %>
+    <%= f.text_field :freshdesk_proof_ticket_id, type: :integer %>
+  </div>
+<% end %>

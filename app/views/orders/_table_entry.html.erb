@@ -9,36 +9,61 @@
     </div>
   </td>
   <td>
-    <%= order.name %><br>
     <% if order.fba? %>
       <span class="label label-warning">FBA</span>
-    <% else %>
+    <% end %>
+    <%= order.name %><br>
+    <% unless order.fba? %>
       <%= order.firstname %> <%= order.lastname %><br>
       <%= order.email %>
     <% end %>
   </td>
   <td><%= order.salesperson.full_name %></td>
   <td class='payment-state'>
-    <%= render 'orders/state', which: 'payment_state', state: order.payment_status %>
+    <% if order.fba? %>
+      <span class="label label-default">N/A</span>
+    <% else %>
+      <%= render 'orders/state', which: 'payment_state', state: order.payment_status %>
+    <% end %>
   </td>
   <td class='invoice-state'>
-    <%= render 'orders/state', which: 'invoice_state', state: order.invoice_state %>
+    <% if order.fba? %>
+      <span class="label label-default">N/A</span>
+    <% else %>
+      <%= render 'orders/state', which: 'invoice_state', state: order.invoice_state %>
+    <% end %>
   </td>
   <td class='production-state'>
     <%= render 'orders/state', which: 'production_state', state: order.production_state %>
   </td>
   <td class='notification-state'>
-    <%= render 'orders/state', which: 'notification_state', state: order.notification_state %>
+    <% if order.fba? %>
+      <span class="label label-default">N/A</span>
+    <% else %>
+      <%= render 'orders/state', which: 'notification_state', state: order.notification_state %>
+    <% end %>
   </td>
-  <td><%= number_to_currency order.total, unit: '$' %></td>
-  <td><%= number_to_currency order.balance, unit: '$' %></td>
+  <td>
+    <% if order.fba? %>
+      <span class="label label-default">N/A</span>
+    <% else %>
+      <%= number_to_currency order.total, unit: '$' %>
+    <% end %>
+  </td>
+  <td>
+    <% if order.fba? %>
+      <span class="label label-default">N/A</span>
+    <% else %>
+      <%= number_to_currency order.balance, unit: '$' %>
+    <% end %>
+  </td>
   <td>
     <div class="btn-group btn-group-xs">
 
       <%= link_to production_dashboard_order_path(order), remote: true, class: 'btn btn-default', title: 'Production Dashboard', data: {toggle: 'tooltip'} do %>
         <i class="glyphicon glyphicon-th"></i>
       <% end %>
-      
+
       <%= link_to order_path(order), class: 'btn btn-default', title: 'Print Invoice', data: {toggle: 'tooltip'} do %>
         <i class="fa fa-print"></i>
       <% end %>
@@ -50,14 +75,14 @@
     <br />
       <% unless order.notification_state == 'picked_up' %>
     <div class="btn-group btn-group-xs">
-        <%= link_to state_order_path(order, :notification_state), remote: true, 
-          data: {toggle: :tooltip, :title => 'Notify Customer'}, 
+        <%= link_to state_order_path(order, :notification_state), remote: true,
+          data: {toggle: :tooltip, :title => 'Notify Customer'},
           class: 'btn btn-default'  do %>
             <i class="glyphicon glyphicon-phone-alt"></i>
         <% end %>
 
-        <%= link_to transition_order_path(order, :notification_state,  :picked_up), remote: true, 
-          method: :post, data: {toggle: :tooltip, :title => 'Marked Picked Up', confirm: 'Are you sure you want to mark this order as picked up?'}, 
+        <%= link_to transition_order_path(order, :notification_state,  :picked_up), remote: true,
+          method: :post, data: {toggle: :tooltip, :title => 'Marked Picked Up', confirm: 'Are you sure you want to mark this order as picked up?'},
           class: 'btn btn-default'  do %>
             <i class="glyphicon glyphicon-thumbs-up"></i>
         <% end %>

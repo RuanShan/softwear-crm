@@ -125,7 +125,7 @@ feature 'FBA Order management', fba_spec: true, story_103: true, js: true do
     after(:each) do
       Capybara.ignore_hidden_elements = true
     end
-    
+
     given!(:other_size_s) { create :valid_size, sku: '10' }
     given!(:size_m) { create :valid_size, sku: '03' }
     given!(:size_l) { create :valid_size, sku: '04' }

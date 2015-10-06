@@ -91,7 +91,8 @@ class Order < ActiveRecord::Base
             inclusion: {
                 in: VALID_INVOICE_STATES,
                 message: 'is invalid'
-            }
+            },
+            unless: :fba?
   validates :production_state,
             presence: true,
             inclusion: {

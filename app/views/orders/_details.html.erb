@@ -5,25 +5,28 @@
         <h3><strong>Order</strong> Details</h3>
 
         <%= render partial: 'order_detail_fields',
-                   locals: { f: f, order: order, show_quotes: true } %>
+                   locals: { f: f, order: order, show_quotes: !order.fba? } %>
 
-        <div class="form-group">
-          <%= f.label :commission_amount %>
+        <% unless order.fba? %>
+          <div class="form-group">
+            <%= f.label :commission_amount %>
 
-          <div class="input-group">
-            <span class="input-group-addon">$</span>
-            <%= f.text_field :commission_amount %>
-            <span class="input-group-addon">.00</span>
+            <div class="input-group">
+              <span class="input-group-addon">$</span>
+              <%= f.text_field :commission_amount %>
+              <span class="input-group-addon">.00</span>
+            </div>
           </div>
-        </div>
+        <% end %>
       </div>
 
       <div class="col-sm-6">
-        <h3><strong>Customer</strong> Details</h3>
+        <% unless order.fba? %>
+          <h3><strong>Customer</strong> Details</h3>
 
-        <%= render partial: 'customer_detail_fields',
-                   locals: { f: f, order: order } %>
-
+          <%= render partial: 'customer_detail_fields',
+                     locals: { f: f, order: order } %>
+        <% end %>
       </div>
     </div>
     <div class='row'>

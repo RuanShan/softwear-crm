@@ -71,6 +71,17 @@ module OrderHelper
     end
   end
 
+  def order_tab(tag, disabled = false, &block)
+    options = {}
+    if disabled
+      options[:class] = 'no-click'
+    else
+      options[:data] = { toggle: 'tab' }
+    end
+
+    link_to("##{tag}", options, &block)
+  end
+
   def render_fba_error_handling(fba)
     return render 'orders/error_handling/fba_ok' if fba.errors.empty?
 

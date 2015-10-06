@@ -4,7 +4,12 @@
 <div class="row-fluid">
     <div class="page-heading animated fadeInDownBig pull-left">
       <h1>Edit <strong>Order #<%= @order.id %></strong></h1>
-      <h2><%= @order.name  %></h2>
+      <h2>
+        <% if @order.fba? %>
+          <span class="label label-warning">FBA</span>
+        <% end %>
+        <%= @order.name %>
+      </h2>
     </div>
 
     <div class="pull-right text-right">
@@ -61,29 +66,38 @@
   <br clear="all" />
   <table class="table table-condensed">
     <thead>
-      <th>Payment State
-      </th>
-      <th>Invoice State
-      </th>
-      <th>Production State
-      </th>
-      <th>Notification State
-      </th>
+      <% if @order.fba? %>
+        <th>Production State</th>
+      <% else %>
+        <th>Payment State
+        </th>
+        <th>Invoice State
+        </th>
+        <th>Production State
+        </th>
+        <th>Notification State
+        </th>
+      <% end %>
     </thead>
     <tbody>
       <tr id="order_<%= @order.id %>">
-        <td class='payment-state'>
-          <span class="label <%= get_style_from_status(@order.payment_status)%>"><%= @order.payment_status %></span>
-        </td>
-        <td class='invoice-state'>
-          <span class="label <%= get_style_from_invoice_state(@order.invoice_state)%>"><%= @order.invoice_state.humanize %></span>
-        </td>
-        <td class='production-state'>
-          <span class="label <%= get_style_from_production_state(@order.production_state)%>"><%= @order.production_state.humanize %></span>
-        </td>
-        <td class='notification-state'>
-          <span class="label <%= get_style_from_notification_state(@order.notification_state)%>"><%= @order.notification_state.humanize %></span>
-        </td>
+        <% if @order.fba? %>
+          <td class='production-state'>
+            <span class="label <%= get_style_from_production_state(@order.production_state)%>"><%= @order.production_state.humanize %></span>
+        <% else %>
+          <td class='payment-state'>
+            <span class="label <%= get_style_from_status(@order.payment_status)%>"><%= @order.payment_status %></span>
+          </td>
+          <td class='invoice-state'>
+            <span class="label <%= get_style_from_invoice_state(@order.invoice_state)%>"><%= @order.invoice_state.humanize %></span>
+          </td>
+          <td class='production-state'>
+            <span class="label <%= get_style_from_production_state(@order.production_state)%>"><%= @order.production_state.humanize %></span>
+          </td>
+          <td class='notification-state'>
+            <span class="label <%= get_style_from_notification_state(@order.notification_state)%>"><%= @order.notification_state.humanize %></span>
+          </td>
+        <% end %>
       </tr>
     </tbody>
   </table>
@@ -95,44 +109,45 @@
         <div class="box-info full">
             <ul class="nav nav-tabs nav-justified">
               <li class="active">
-                <a href="#jobs" data-toggle="tab">
+                <%= order_tab(:jobs) do %>
                   <i class="fa fa-tasks"></i> Jobs
-                </a>
+                <% end %>
               </li>
               <li>
-                <a href="#timeline" data-toggle="tab">
+                <%= order_tab(:timeline) do %>
                   <i class="fa fa-clock-o"></i> Timeline
-                </a>
+                <% end %>
               </li>
               <li>
-                <a href="#details" data-toggle="tab">
+                <%= order_tab(:details) do %>
                   <i class="fa fa-shopping-cart"></i> Details
-                </a>
+                <% end %>
               </li>
               <li>
-                <a href="#payments" data-toggle="tab">
+                <%= order_tab(:payments, @order.fba?) do %>
                   <i class="fa fa-money"></i> Payments
-                </a>
+                <% end %>
               </li>
               <li>
-                <a href="#shipments" data-toggle="tab">
+                <%= order_tab(:shipments, @order.fba?) do %>
                   <i class="fa fa-archive"></i> Shipments
-                </a>
+                <% end %>
               </li>
               <li>
-                <a href="#artwork" data-toggle="tab">
+                <%= order_tab(:artwork, @order.fba?) do %>
                   <i class="fa fa-picture-o"></i> Artwork
-                </a>
+                <% end %>
               </li>
               <li>
-                <a href="#proofs" data-toggle="tab">
+                <%= order_tab(:proofs, @order.fba?) do %>
                   <i class="fa fa-file-text-o"></i> Proofs
+                <% end %>
                 </a>
               </li>
               <li>
-                <a href="#comments" data-toggle="tab">
+                <%= order_tab(:comments) do %>
                   <i class="fa fa-bars"></i> Comments
-                </a>
+                <% end %>
               </li>
             </ul>
 
