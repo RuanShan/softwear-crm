@@ -110,6 +110,11 @@ class JobsController < InheritedResources::Base
     send_data @job.name_number_csv, filename: sanitize_filename(filename)
   end
 
+  def duplicate
+    @job = Job.find(params[:id]).duplicate!
+    render 'create'
+  end
+
   private
 
   def quote?

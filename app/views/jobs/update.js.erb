@@ -87,3 +87,5 @@ $('.removing-line-item').remove();
 <%= update_name_number_table(@job) %>
 
 <%= update_order_timeline(@job.order) if @job.jobbable_type == 'Order' %>
+
+$('.editable').editable()

@@ -33,7 +33,7 @@ class Job < ActiveRecord::Base
   end
 
   validate :assure_name_and_description, on: :create
-  validates :name, uniqueness: { scope: [:jobbable_id] }, if: -> { jobbable_type == 'Order' }
+  validates :name, uniqueness: { scope: [:jobbable_id] }, if: ->(j) { j.jobbable_type == 'Order' }
 
   def imprintable_line_items_total
     line_items.where.not(imprintable_object_id: nil).sum(:quantity)
@@ -256,6 +256,30 @@ class Job < ActiveRecord::Base
     imprints.includes(:imprint_method).where('imprint_methods.name = "Name/Number"').references(:imprint_methods)
   end
 
+  def duplicate!
+    new_job = dup
+
+    new_job.send(:assure_name_and_description, name)
+    new_job.softwear_prod_id = nil
+    new_job.save!
+
+    line_items.each do |line_item|
+      new_line_item = line_item.dup
+      new_line_item.quantity = 0 if new_line_item.imprintable?
+      new_line_item.line_itemable = new_job
+      new_line_item.save!
+    end
+
+    imprints.each do |imprint|
+      new_imprint = imprint.dup
+      new_imprint.job = new_job
+      new_imprint.softwear_prod_id = nil
+      new_imprint.save!
+    end
+
+    new_job.reload
+  end
+
   private
 
   def placeholder_name
@@ -263,15 +287,15 @@ class Job < ActiveRecord::Base
     jobbable.fba? ? 'Shipping Location' : 'New Job'
   end
 
-  def assure_name_and_description
+  def assure_name_and_description(force_name = nil)
     return unless jobbable_type == 'Order'
-    if name.nil?
-      new_job_name = placeholder_name
+    if name.nil? || force_name
+      new_job_name = force_name || placeholder_name
       counter = 1
 
       while Job.where(jobbable_id: self.jobbable_id, name: new_job_name).exists?
         counter += 1
-        new_job_name = "#{placeholder_name} #{counter}"
+        new_job_name = "#{force_name || placeholder_name} #{counter}"
       end
 
       self.name = new_job_name

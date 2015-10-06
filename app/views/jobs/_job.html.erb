@@ -51,11 +51,18 @@
 
 
       <div class="form-group box-info">
-        <div class="col-sm-4 col-xs-offset-4">
+        <div class="col-sm-4 col-xs-offset-2">
           <%= link_to job_path(job),
                       class: 'btn btn-danger btn-lg btn-block delete-job-button',
                       id: "delete-job-#{job.id}", method: 'DELETE', remote: true do %>
             <i class="fa fa-times-circle"></i> Delete Job
+          <% end %>
+        </div>
+        <div class='col-sm-4'>
+          <%= link_to duplicate_job_path(job),
+                      class: 'btn btn-warning btn-lg btn-block dup-job-button',
+                      id: "dup-job-#{job.id}", method: 'PUT', remote: true do %>
+            <i class="fa fa-recycle"></i> Duplicate Job
           <% end %>
         </div>
       </div>

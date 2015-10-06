@@ -16,6 +16,7 @@ module FormHelpers
     @@scope_to_form = nil
   end
 
+  # NOT USED
   def fill_in_inline(field, options)
     expect(options[:with]).to_not be_nil
     selector = "#{css_pre}span.inline-field[resource-method='#{field}']"
@@ -24,6 +25,12 @@ module FormHelpers
 
     getter = options[:first] ? method(:first) : method(:find)
     getter.call(selector).set options[:with]
+  end
+
+  def set_editable(field, to, options = {})
+    first(".editable[data-name='#{field}']").click
+    find('.editable-input > input').set to
+    find('button.editable-submit').click
   end
 
   RSpec::Matchers.define :have_button_or_link_to do |location|

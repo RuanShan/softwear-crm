@@ -2,7 +2,7 @@ disableFor('.js-new-job', 1000);
 
 <% if @job.valid? %>
 
-  $newJob = $("<%= j(render partial: 'job', locals: { job: @job }).html_safe %>");
+  var $newJob = $("<%= j(render partial: 'job', locals: { job: @job }).html_safe %>");
 
   $('#jobs').children().last().before($newJob);
 
@@ -13,6 +13,7 @@ disableFor('.js-new-job', 1000);
 
   registerJobEvents($newJob);
   updateOrderTimeline();
+  $('.editable').editable()
 
 <% else %>
   

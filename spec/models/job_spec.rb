@@ -87,6 +87,42 @@ describe Job, job_spec: true do
     end
   end
 
+  describe '#duplicate!', story_959: true do
+    let(:prod_job) { create(:production_job) }
+    let!(:order) { create(:order_with_job) }
+    let(:job) { order.jobs.first }
+    let!(:line_item_1) { create(:imprintable_line_item, line_itemable: job, quantity: 2) }
+    let!(:line_item_2) { create(:non_imprintable_line_item, line_itemable: job, quantity: 5) }
+    let!(:imprint) { create(:valid_imprint) }
+
+    before do
+      job.line_items = [line_item_1, line_item_2]
+      job.imprints = [imprint]
+      job.save!
+    end
+
+    subject { job.reload.duplicate!.reload }
+
+    it 'returns a new job (within its jobbable) with the same attributes and line items (with 0 quantity)' do
+      expect(subject.jobbable).to eq order
+      expect(subject.description).to eq job.description
+
+      expect(subject.line_items.map(&:name)).to eq [line_item_1.name, line_item_2.name]
+      expect(subject.line_items.map(&:id)).to_not eq [line_item_1.id, line_item_2.id]
+      expect(subject.line_items.map(&:quantity)).to eq [0, line_item_2.quantity]
+
+      expect(subject.imprints.first.name).to eq imprint.name
+      expect(subject.imprints.first.id).to_not eq imprint.id
+    end
+
+    it 'does not duplicate softwear_prod_id' do
+      job.update_column :softwear_prod_id, prod_job.id
+
+      expect(subject.softwear_prod_id).to be_nil
+      expect(subject.imprints.first.softwear_prod_id).to eq nil
+    end
+  end
+
   describe '#imprintable_info', artwork_request_spec: true do
     [:red, :green].each { |c| let!(c) { build_stubbed(:valid_color, name: c) } }
     [:shirt, :hat].each { |s| let!(s) { build_stubbed(:valid_imprintable) } }

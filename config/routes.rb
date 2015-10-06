@@ -131,6 +131,7 @@ CrmSoftwearcrmCom::Application.routes.draw do
       resources :name_numbers, only: [:create, :destroy]
       member do
         get 'names_numbers', as: :name_number_csv_from
+        put :duplicate
       end
 
       resources :line_items, except: [:update] do
