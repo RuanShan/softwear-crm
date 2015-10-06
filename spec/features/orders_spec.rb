@@ -77,7 +77,7 @@ feature 'Order management', order_spec: true,  js: true do
     end
 
     context 'when failing to fill the order form properly' do
-      scenario 'entries are still created in the linker table', story_248: true do
+      scenario 'entries are still created in the linker table', retry: 3, stillcreated: true, story_248: true do
         expect(OrderQuote.count).to eq(0)
 #       fail the form
         click_button 'Next'
@@ -91,6 +91,7 @@ feature 'Order management', order_spec: true,  js: true do
 
         fill_in 'In Hand By Date', with:  "#{ (date_array[1].to_i + 1).to_s }/#{ date_array[2] }"\
                                           "/#{ date_array.first } 4:00 PM"
+        sleep 0.1
         select 'Net 30', from: 'order_terms'
         click_button 'Next'
 

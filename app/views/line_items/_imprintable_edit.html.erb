@@ -14,12 +14,14 @@
     <div class="col-sm-2" style="border-right: solid 1px #dddddd;" align='right'>
       <label style="margin-bottom: 12px;">size:</label><br />
       <label style="margin-bottom: 17px;">quantity:</label><br />
-      <label style="margin-bottom: 16px;">decoration $:</label><br />
-      <label>imprintable $:</label>
+      <% if show_prices %>
+        <label style="margin-bottom: 16px;">decoration $:</label><br />
+        <label>imprintable $:</label>
+      <% end %>
     </div>
 
     <% line_items.each do |line_item| %>
-      <%= render partial: 'line_items/imprintable_edit_entry', locals: { line_item: line_item } %>
+      <%= render partial: 'line_items/imprintable_edit_entry', locals: { line_item: line_item, show_prices: local_assigns[:show_prices] } %>
     <% end %>
 
     <div class="col-sm-1">

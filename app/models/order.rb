@@ -350,7 +350,7 @@ class Order < ActiveRecord::Base
 
       job = jobs.create(name: attributes[:job_name])
       unless job.valid?
-        job.assure_name_and_description
+        job.send :assure_name_and_description
         job.save!
       end
       if attributes[:imprintable]

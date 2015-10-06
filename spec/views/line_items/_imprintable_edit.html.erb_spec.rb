@@ -20,7 +20,8 @@ describe 'line_items/_imprintable_edit.html.erb', line_item_spec: true do
         style_catalog_no: shirt.style_catalog_no,
         description: white_shirt_s_item.description,
         line_items: line_items,
-        class_name: 'Job'
+        class_name: 'Job',
+        show_prices: true
       }
   end
 

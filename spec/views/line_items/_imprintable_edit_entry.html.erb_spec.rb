@@ -4,7 +4,7 @@ describe 'line_items/_imprintable_edit_entry.html.erb', line_item_spec: true do
   let!(:line_item) { build_stubbed :imprintable_line_item }
   before(:each) do
     render partial: 'line_items/imprintable_edit_entry',
-           locals: { line_item: line_item }
+           locals: { line_item: line_item, show_prices: true }
   end
   it 'renders inside a col-sm-1 div' do
     expect(rendered).to have_css 'div.col-sm-1'

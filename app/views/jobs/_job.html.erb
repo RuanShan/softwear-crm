@@ -81,7 +81,8 @@
                                      style_catalog_no: line_items.first.style_catalog_no,
                                      description: line_items.first.description,
                                      line_items: line_items,
-                                     class_name: 'Job' } %>
+                                     class_name: 'Job',
+                                     show_prices: !job.jobbable.try(:fba?) } %>
               <% end %>
             <% end %>
           <% end %>

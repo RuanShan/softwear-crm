@@ -310,11 +310,6 @@ class LineItemsController < InheritedResources::Base
     end
   end
 
-  def entry_partial(kind)
-    return 'imprintable_edit_entry' if @line_item.imprintable?
-    "standard_#{kind}_entry"
-  end
-
   def line_item_locals(edit = false)
     { line_item: @line_item, edit: edit }
   end
