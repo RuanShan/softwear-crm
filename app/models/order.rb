@@ -353,31 +353,35 @@ class Order < ActiveRecord::Base
         job.assure_name_and_description
         job.save!
       end
-      imprintable_id = attributes[:imprintable]
+      if attributes[:imprintable]
+        imprintable_id = attributes[:imprintable]
 
-      attributes[:colors].each do |color_attributes|
-        next if color_attributes.nil?
+        attributes[:colors].each do |color_attributes|
+          next if color_attributes.nil?
 
-        color_id = color_attributes[:color]
+          color_id = color_attributes[:color]
 
-        LineItem.create_imprintables(job, imprintable_id, color_id)
+          LineItem.create_imprintables(job, imprintable_id, color_id)
 
-        color_attributes[:sizes].each do |size_attributes|
-          next if size_attributes.nil?
+          color_attributes[:sizes].each do |size_attributes|
+            next if size_attributes.nil?
 
-          size_id = size_attributes[:size]
+            size_id = size_attributes[:size]
 
-          variant_id = ImprintableVariant
-            .where(id: job.line_item_ids)
-            .where(size_id: size_id, color_id: color_id)
-            .readonly(false)
-            .pluck(:id)
-            .first
+            variant_id = ImprintableVariant
+              .where(id: job.line_item_ids)
+              .where(size_id: size_id, color_id: color_id)
+              .readonly(false)
+              .pluck(:id)
+              .first
 
-          job.line_items
-            .find_by(imprintable_object_id: variant_id)
-            .update_attributes(quantity: size_attributes[:quantity])
+            job.line_items
+              .find_by(imprintable_object_id: variant_id)
+              .update_attributes(quantity: size_attributes[:quantity])
+          end
         end
+      else
+
       end
     end
   end
