@@ -80,15 +80,15 @@ feature 'Jobs management', js: true, job_spec: true do
     visit edit_order_path(1, anchor: 'jobs')
     click_button 'New Job'
     sleep 1
-    
+
     order.jobs.inspect
-    
+
     all('a', text: 'Delete Job').last.click
     sleep 0.5
     # find('a', text: 'Confirm').click
-    
+
     order.jobs.inspect
-    
+
     sleep 1
     expect(page).to have_css("#job-#{order.jobs.second.id}", :visible => false)
     expect(order.jobs.count).to eq 1

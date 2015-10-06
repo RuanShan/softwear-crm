@@ -258,15 +258,20 @@ class Job < ActiveRecord::Base
 
   private
 
+  def placeholder_name
+    return unless jobbable_type == 'Order'
+    jobbable.fba? ? 'Shipping Location' : 'New Job'
+  end
+
   def assure_name_and_description
     return unless jobbable_type == 'Order'
     if name.nil?
-      new_job_name = 'New Job'
+      new_job_name = placeholder_name
       counter = 1
 
       while Job.where(jobbable_id: self.jobbable_id, name: new_job_name).exists?
         counter += 1
-        new_job_name = "New Job #{counter}"
+        new_job_name = "#{placeholder_name} #{counter}"
       end
 
       self.name = new_job_name

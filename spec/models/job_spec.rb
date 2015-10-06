@@ -337,5 +337,13 @@ describe Job, job_spec: true do
       expect(job1.name).to eq 'New Job 2'
       expect(job2.name).to eq 'New Job 3'
     end
+
+    context 'that are fba' do
+      it 'sets the placeholder to "Shipping Location"' do
+        order = create(:fba_order)
+        job = create(:blank_job, jobbable: order)
+        expect(job.name).to eq 'Shipping Location'
+      end
+    end
   end
 end

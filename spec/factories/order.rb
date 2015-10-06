@@ -39,6 +39,10 @@ FactoryGirl.define do
           after(:create) { |o| o.proofs << create(:valid_proof) }
         end
       end
+
+      factory :fba_order do
+        terms "Fulfilled by Amazon"
+      end
     end
   end
 end
