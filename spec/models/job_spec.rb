@@ -123,6 +123,23 @@ describe Job, job_spec: true do
     end
   end
 
+  describe 'an fba job' do
+    let!(:screen_print) { create(:valid_imprint_method, name: 'Screen Print') }
+    let!(:full_chest) { create(:print_location, name: 'Full Chest', imprint_method: screen_print) }
+    let!(:order) { create(:fba_order) }
+
+    it 'has a default imprint of screen print full chest', story_967: true do
+      job = Job.create(
+        jobbable: order,
+        name: 'Job one',
+        description: 'Test spec job'
+      )
+
+      expect(job).to be_fba
+      expect(job.imprints).to_not be_empty
+    end
+  end
+
   describe '#imprintable_info', artwork_request_spec: true do
     [:red, :green].each { |c| let!(c) { build_stubbed(:valid_color, name: c) } }
     [:shirt, :hat].each { |s| let!(s) { build_stubbed(:valid_imprintable) } }

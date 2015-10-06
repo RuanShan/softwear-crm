@@ -14,6 +14,7 @@ class Job < ActiveRecord::Base
 
   before_destroy :check_for_line_items
   after_update :destroy_self_if_line_items_and_imprints_are_empty
+  after_create :create_default_imprint, if: :fba?
 
   belongs_to :jobbable, polymorphic: true
   has_many :artwork_requests, through: :imprints
@@ -53,6 +54,10 @@ class Job < ActiveRecord::Base
 
   def tier_line_items_sym(tier)
     Job.tier_line_items_sym(tier)
+  end
+
+  def fba?
+    jobbable_type == 'Order' && jobbable.fba?
   end
 
   def production_imprints_attributes
@@ -270,14 +275,28 @@ class Job < ActiveRecord::Base
       new_line_item.save!
     end
 
-    imprints.each do |imprint|
-      new_imprint = imprint.dup
-      new_imprint.job = new_job
-      new_imprint.softwear_prod_id = nil
-      new_imprint.save!
+    unless fba?
+      imprints.each do |imprint|
+        new_imprint = imprint.dup
+        new_imprint.job = new_job
+        new_imprint.softwear_prod_id = nil
+        new_imprint.save!
+      end
     end
 
     new_job.reload
+  end
+
+  def create_default_imprint
+    screen_print = ImprintMethod.find_by(name: 'Screen Print')
+    return if screen_print.nil?
+    full_chest = screen_print.print_locations.find_by(name: 'Full chest')
+    return if full_chest.nil?
+
+    Imprint.create(
+      print_location_id: full_chest.id,
+      job_id: id
+    )
   end
 
   private

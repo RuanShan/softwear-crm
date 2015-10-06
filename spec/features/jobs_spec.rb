@@ -51,7 +51,7 @@ feature 'Jobs management', js: true, job_spec: true do
 
   scenario 'creating two jobs in a row does not fail on account of duplicate name' do
     visit edit_order_path(order, anchor: 'jobs')
-    2.times { click_button 'New Job'; sleep 0.5 }
+    2.times { click_button 'New Job'; sleep 1.5 }
     expect(all('.job-container').count).to eq 3
     expect(Job.all.count).to eq 3
   end
