@@ -9,7 +9,7 @@ class JobsController < InheritedResources::Base
     Job.public_activity_off if quote?
     super do |success, failure|
       success.json do
-        render json: { result: 'success' }
+        render json: @job.serializable_hash.merge(result: 'success')
     end
       failure.json do
         modal_html = 'ERROR'

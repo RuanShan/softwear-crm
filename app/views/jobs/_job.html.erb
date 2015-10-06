@@ -1,6 +1,6 @@
 <div id="job-<%= job.id %>" class="box-info job-container" data-id="<%=job.id%>">
   <div class="box-info <%= 'animated fadeInLeft' if local_assigns[:animated] %>" style="background-color: #eeeeee">
-    <h3 class="job-title"><%= inline_field_tag job, :name, 'Job Name Here' %></h3>
+    <h3 class="job-title"><%= editable job, :name, type: :text %></h3>
 
     <div class='additional-btn'>
       <a class="additional-icon collapse-job-btn" href="#jobs" data-toggle="collapse" data-target="#job-<%= job.id %>-collapse">
@@ -9,7 +9,7 @@
 
     <div id='job-<%= job.id %>-collapse' data-job-id='<%= job.id %>' class='job-collapse collapse <%= job.collapsed? ? "in" : "out" %>'>
       <p class="job-description">
-        Description: <%= inline_field_tag job, :description, 'Job Description Here' %>
+        Description: <%= editable job, :description, type: :text %>
       </p>
 
       <div class='row'>
