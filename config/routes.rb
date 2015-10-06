@@ -106,6 +106,7 @@ CrmSoftwearcrmCom::Application.routes.draw do
       get :order_report, as: :order_report
       get 'state/:state_machine' => :state,  as: :state
       post 'transition/(:state_machine/:transition)' => :state, as: :transition
+      post :send_to_production
     end
 
     resources :comments

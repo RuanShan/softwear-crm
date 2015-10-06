@@ -270,7 +270,11 @@ class Order < ActiveRecord::Base
 
 
 
-  def create_production_order
+  def create_production_order(options = {})
+    if options[:force] == false && !softwear_prod_id.nil?
+      raise "Attempted to create a duplicate production order."
+    end
+
     # NOTE make sure the permitted params in Production match up with this
     prod_order = Production::Order.post_raw(
       softwear_crm_id:    id,

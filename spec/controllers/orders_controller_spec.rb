@@ -62,7 +62,7 @@ describe OrdersController, order_spec: true do
         it 'passes the params to FBA.parse_packing_slip' do
           expect(FBA).to receive(:parse_packing_slip)
             .with(anything, { imprintables: { '0705' => '5' } })
-          
+
           get :fba_job_info,
                packing_slips: [packing_slip],
                options: { imprintables: { '0705' => '5' } },
@@ -141,7 +141,7 @@ describe OrdersController, order_spec: true do
           ]
         }
       end
-      
+
       it 'calls order#generate_jobs with' do
         dummy_order = double('Order')
         expect(Order).to receive(:create).and_return dummy_order
@@ -149,6 +149,34 @@ describe OrdersController, order_spec: true do
         expect(dummy_order).to receive(:generate_jobs)
 
         post :create, job_attributes: [fba_params.to_json], order: order_params
+      end
+    end
+  end
+
+  describe 'POST #send_to_production', story_961: true do
+    before do
+      allow(Order).to receive(:find).with(order.id.to_s).and_return order
+    end
+
+    context 'when an order does not have a production order' do
+      let!(:order) { create(:order) }
+
+      it 'enqueues Order#create_production_order and sets a flash notice' do
+        expect(order).to receive(:enqueue_create_production_order)
+        post :send_to_production, id: order.id
+        expect(flash[:success]).to eq "This order should appear in SoftWEAR Production within the next few minutes."
+      end
+    end
+
+    context 'when an order already has a production order' do
+      let!(:prod_order) { create(:production_order) }
+      let!(:order) { create(:order, softwear_prod_id: prod_order.id) }
+
+      it 'sets a flash error' do
+        expect(order).to_not receive(:enqueue_create_production_order)
+        allow(order).to receive(:production_url).and_return 'http://production-location.com/'
+        post :send_to_production, id: order.id
+        expect(flash[:error]).to eq "This order already has a Production entry: http://production-location.com/"
       end
     end
   end

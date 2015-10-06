@@ -34,6 +34,13 @@ module ProductionCounterpart
     # Override this!
   end
 
+  def production_url
+    base = Figaro.env.production_url
+    return if base.blank? || !production?
+
+    "#{base}/#{model_name.collection}/#{softwear_prod_id}"
+  end
+
   def update_production
     changed = false
 

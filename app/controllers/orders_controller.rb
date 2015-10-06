@@ -73,7 +73,7 @@ class OrdersController < InheritedResources::Base
     end
 
     if @order.valid?
-      @order.generate_jobs(params[:job_attributes].map(&JSON.method(:parse)))
+      @order.generate_jobs(params[:job_attributes].map(&JSON.method(:parse))) if params[:job_attributes]
       redirect_to order_path @order
     else
       @empty = Store.all.empty?
@@ -148,6 +148,20 @@ class OrdersController < InheritedResources::Base
     respond_to do |format|
       format.js
     end
+  end
+
+  def send_to_production
+    @order = Order.find(params[:id])
+    if @order.production?
+      flash[:error] = "This order already has a Production entry: #{@order.production_url}"
+      redirect_to edit_order_path(@order) and return
+    end
+    @order.enqueue_create_production_order force: false
+
+    flash[:success] =
+      "This order should appear in SoftWEAR Production within the next few minutes."
+
+    redirect_to edit_order_path(@order)
   end
 
   private
