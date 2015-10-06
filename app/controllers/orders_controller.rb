@@ -74,7 +74,7 @@ class OrdersController < InheritedResources::Base
 
     if @order.valid?
       @order.generate_jobs(params[:job_attributes].map(&JSON.method(:parse))) if params[:job_attributes]
-      redirect_to order_path @order
+      redirect_to edit_order_path @order
     else
       @empty = Store.all.empty?
       render 'new_fba'

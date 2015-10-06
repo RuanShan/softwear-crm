@@ -369,7 +369,7 @@ class Order < ActiveRecord::Base
             size_id = size_attributes[:size]
 
             variant_id = ImprintableVariant
-              .where(id: job.line_item_ids)
+              .where(id: job.line_items.imprintable.pluck(:imprintable_object_id))
               .where(size_id: size_id, color_id: color_id)
               .readonly(false)
               .pluck(:id)
