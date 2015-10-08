@@ -84,7 +84,7 @@ class Order < ActiveRecord::Base
   has_many :discounts, as: :discountable
   has_many :job_discounts, through: :jobs, source: :discounts
 
-  accepts_nested_attributes_for :payments
+  accepts_nested_attributes_for :payments, :jobs
 
   validates :invoice_state,
             presence: true,
@@ -344,43 +344,20 @@ class Order < ActiveRecord::Base
     attrs
   end
 
-  def generate_jobs(job_attributes)
-    job_attributes.each do |attributes|
-      attributes = HashWithIndifferentAccess.new(attributes)
+  def generate_jobs(fba_job_infos)
+    fba_job_infos.map(&:with_indifferent_access).each do |job_info|
+      job = jobs.create(name: job_info[:job_name])
 
-      job = jobs.create(name: attributes[:job_name])
-      unless job.valid?
-        job.send :assure_name_and_description
-        job.save!
-      end
-      if attributes[:imprintable]
-        imprintable_id = attributes[:imprintable]
+      if !job_info[:imprintables].blank?
 
-        attributes[:colors].each do |color_attributes|
-          next if color_attributes.nil?
-
-          color_id = color_attributes[:color]
-
-          LineItem.create_imprintables(job, imprintable_id, color_id)
-
-          color_attributes[:sizes].each do |size_attributes|
-            next if size_attributes.nil?
-
-            size_id = size_attributes[:size]
-
-            variant_id = ImprintableVariant
-              .where(id: job.line_items.imprintable.pluck(:imprintable_object_id))
-              .where(size_id: size_id, color_id: color_id)
-              .readonly(false)
-              .pluck(:id)
-              .first
-
-            job.line_items
-              .find_by(imprintable_object_id: variant_id)
-              .update_attributes(quantity: size_attributes[:quantity])
-          end
+        job_info[:imprintables].each do |imprintable, color, quantities|
+          LineItem.create_imprintables(
+            job,
+            imprintable,
+            color,
+            quantity: quantities
+          )
         end
-      else
 
       end
     end

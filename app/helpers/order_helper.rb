@@ -83,7 +83,7 @@ module OrderHelper
   end
 
   def render_fba_error_handling(fba)
-    return render 'orders/error_handling/fba_ok' if fba.errors.empty?
+    return render 'orders/error_handling/fba_ok', fba_info: fba if fba.errors.empty?
 
     fba.errors.reduce(''.html_safe) do |all, error|
       all.send(:original_concat,

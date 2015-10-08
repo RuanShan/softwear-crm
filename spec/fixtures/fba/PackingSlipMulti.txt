@@ -1,0 +1,21 @@
+Shipment ID	FBA312LM3T
+Name	FBA - Do it Deeper (10/5)
+Plan ID	PLN62ZZYS
+Ship To	Amazon.com, 650 Boulder Drive, Breiningsville, PA, US, 18031
+Total SKUs	12
+Total Units	12
+Pack list	1 of 1
+
+Merchant SKU	Title	ASIN	FNSKU	external-id	Condition	Who will prep?	Prep Type	Who will label?	Shipped
+0-scuba_doitdeeper-2010001003	Scuba Divers do it Deeper | Funny Diving Humor, Bubble Blower Unisex T-shirt-Adult,XS	B01604FTLY	X000VE1A6T		New	"--"	"--"	Merchant	1
+0-scuba_doitdeeper-2010002003	Scuba Divers do it Deeper | Funny Diving Humor, Bubble Blower Unisex T-shirt-Adult,S	B01604FWEI	X000VE1A5Z		New	"--"	"--"	Merchant	1
+0-scuba_doitdeeper-2010003003	Scuba Divers do it Deeper | Funny Diving Humor, Bubble Blower Unisex T-shirt-Adult,M	B01604FXQA	X000VE1A69		New	"--"	"--"	Merchant	1
+0-scuba_doitdeeper-2010004003	Scuba Divers do it Deeper | Funny Diving Humor, Bubble Blower Unisex T-shirt-Adult,L	B01604FZ7W	X000VE1A4B		New	"--"	"--"	Merchant	1
+0-scuba_doitdeeper-2010005003	Scuba Divers do it Deeper | Funny Diving Humor, Bubble Blower Unisex T-shirt-Adult,XL	B01604G0TY	X000VE1A3H		New	"--"	"--"	Merchant	1
+0-scuba_doitdeeper-2010006003	Scuba Divers do it Deeper | Funny Diving Humor, Bubble Blower Unisex T-shirt-Adult,2XL	B01604G2HE	X000VE1A4V		New	"--"	"--"	Merchant	1
+0-scuba_doitdeeper-2010007003	Scuba Divers do it Deeper | Funny Diving Humor, Bubble Blower Unisex T-shirt-Adult,3XL	B01604G41I	X000VE1A5F		New	"--"	"--"	Merchant	1
+0-scuba_doitdeeper-2100002003	Scuba Divers do it Deeper | Funny, Cute Diving Humor Ladies' V-neck T-shirt-Vneck,S	B01604FL7Q	X000VE1A55		New	"--"	"--"	Merchant	1
+0-scuba_doitdeeper-2100003003	Scuba Divers do it Deeper | Funny, Cute Diving Humor Ladies' V-neck T-shirt-Vneck,M	B01604FGZ8	X000VE1A5P		New	"--"	"--"	Merchant	1
+0-scuba_doitdeeper-2100004003	Scuba Divers do it Deeper | Funny, Cute Diving Humor Ladies' V-neck T-shirt-Vneck,L	B01604FJ64	X000VE1A3R		New	"--"	"--"	Merchant	1
+0-scuba_doitdeeper-2100005003	Scuba Divers do it Deeper | Funny, Cute Diving Humor Ladies' V-neck T-shirt-Vneck,XL	B01604FM3O	X000VE1A4L		New	"--"	"--"	Merchant	1
+0-scuba_doitdeeper-2100006003	Scuba Divers do it Deeper | Funny, Cute Diving Humor Ladies' V-neck T-shirt-Vneck,2XL	B01604FK6S	X000VE1A6J		New	"--"	"--"	Merchant	1

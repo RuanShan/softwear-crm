@@ -52,13 +52,13 @@ class LineItem < ActiveRecord::Base
     imprintable_variants.map do |variant|
       LineItem.new(
         imprintable_object_type: 'ImprintableVariant',
-        imprintable_object_id: variant.id,
-        unit_price: options[:base_unit_price].to_f || variant.imprintable.base_price || 0,
-        quantity: 0,
-        line_itemable_id: line_itemable.id,
+        imprintable_object_id:   variant.id,
+        unit_price:         options[:base_unit_price].try(:to_f) || variant.imprintable.base_price || 0,
+        quantity:           options[:quantity].try(:[], variant.size_id.to_s) || 0,
+        line_itemable_id:   line_itemable.id,
         line_itemable_type: line_itemable.class.name,
-        imprintable_price: options[:imprintable_price] || variant.imprintable.base_price,
-        decoration_price:  options[:decoration_price].to_f || 0,
+        imprintable_price:  options[:imprintable_price] || variant.imprintable.base_price,
+        decoration_price:   options[:decoration_price].try(:to_f) || 0,
       )
     end
   end

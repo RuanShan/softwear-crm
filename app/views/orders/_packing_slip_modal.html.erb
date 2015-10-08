@@ -6,18 +6,20 @@
         <h4 class="modal-title modal-content-area" id="packingSlipTitle">Upload packing slip(s)</h4>
       </div>
 
-      <%= form_tag fba_job_info_orders_path, remote: true, id: 'js-packing-slip-form' do %>
+      <%= form_tag fba_job_info_orders_path, remote: true, id: 'js-packing-slip-form', multipart: true, format: 'js' do %>
 
         <div class="modal-body modal-content-area">
           <div id='js-packing-slips'>
             <%= file_field_tag 'packing_slips[]', multiple: true %>
           </div>
-          <!-- <%= link_to '#', id: 'js-add-packing-slip-file' do %><i class='fa fa-2x fa-plus-circle'></i><% end %> -->
+          <div id='js-packing-slip-urls'>
+            <%= text_area_tag 'packing_slip_urls', '', placeholder: 'Paste urls here (one per line)', class: 'form-control' %>
+          </div>
         </div>
 
-        <!-- <div class="modal-footer modal-content-area" id="packingSlipFooter">
+        <div class="modal-footer modal-content-area" id="packingSlipFooter">
           <%= submit_tag 'Upload', id: 'js-submit-packing-slips', class: 'btn btn-info' %>
-        </div> -->
+        </div>
       <% end %>
     </div>
   </div>

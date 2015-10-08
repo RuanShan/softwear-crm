@@ -1,9 +1,13 @@
 <% if @fba_infos %>
-  var container = $('#<%= @script_container_id %>');
 
-  container.find('.info')
-    .empty()
-    .append("<%=j render_fba_error_handling(@fba_infos.first) %>");
+  <% @fba_infos.each do |fba| %>
+    console.log('ADDED <%=j fba.filename %>');
+    var container = $("<%=j "#{render('fba_upload', filename: fba.filename || fba.job_name)}" %>");
+    $('#js-packing-slip-info-zone').append(container);
+    container.find('.info')
+    .append("<%=j "#{render('fba_job_info_box', fba: fba)}" %>");
+  <% end %>
+
 <% else %>
-  errorModal('Something went wrong internally');
+  errorModal("You've met with a terrible fate, haven't you?");
 <% end %>

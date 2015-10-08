@@ -65,15 +65,9 @@ class OrdersController < InheritedResources::Base
     end
 
     @order = Order.create(permitted_params[:order])
-    if session.has_key? :quote_id
-      unless OrderQuote.new(quote_id: session[:quote_id], order_id: @order.id).save
-        flash[:error] = 'Something went wrong creating your order!'
-      end
-      session[:quote_id] = nil
-    end
 
     if @order.valid?
-      @order.generate_jobs(params[:job_attributes].map(&JSON.method(:parse))) if params[:job_attributes]
+      @order.generate_jobs(params[:fba_jobs].map(&JSON.method(:parse))) if params[:fba_jobs]
       redirect_to edit_order_path @order
     else
       @empty = Store.all.empty?
@@ -113,21 +107,34 @@ class OrdersController < InheritedResources::Base
   end
 
   def fba_job_info
-    params.permit('script_container_id')
-    params.permit('options').permit!
-    options = params['options']
-    options = JSON.parse(options) if options.is_a?(String)
-
     packing_slips = params[:packing_slips]
+    packing_slip_urls = params[:packing_slip_urls]
 
-    return if packing_slips.nil?
+    @fba_infos = []
 
-    @file_name = packing_slips.first.original_filename
-    @script_container_id = params[:script_container_id]
-
-    @fba_infos = packing_slips.map do |packing_slip|
-      FBA.parse_packing_slip(StringIO.new(packing_slip.read), options)
+    if packing_slips
+      @fba_infos += packing_slips.map do |packing_slip|
+        FBA.parse_packing_slip(
+          StringIO.new(packing_slip.read),
+          filename: packing_slip.original_filename
+        )
+      end
     end
+
+    if packing_slip_urls
+      @fba_infos += packing_slip_urls.split("\n").map do |url|
+        next if url =~ /^\s*$/
+        url = url.strip
+        uri = URI.parse(url)
+
+        FBA.parse_packing_slip(
+          StringIO.new(Net::HTTP.get(uri)),
+          filename: url.split('/').last
+        )
+      end
+    end
+
+    @fba_infos.try(:compact!)
   end
 
   def imprintable_order_sheets
@@ -206,7 +213,7 @@ class OrdersController < InheritedResources::Base
   def permitted_params
     params.permit(
       :packing_slips, :page,
-      :job_attributes,
+      :fba_jobs,
 
       order: [
         :email, :firstname, :lastname,

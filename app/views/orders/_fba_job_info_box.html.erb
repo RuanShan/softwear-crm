@@ -1,0 +1,22 @@
+<% if fba.errors? %>
+  <p class='text-danger'>
+    ERRORS:
+    <ul>
+      <% fba.errors.uniq.each do |error| %>
+        <li><%= error %></li>
+      <% end %>
+    </ul>
+    <% if fba.imprintables.empty? %>
+      No line items will be generated.
+    <% else %>
+      Other imprintables will be generated.
+    <% end %>
+  </p>
+<% else %>
+  <p class='text-success'>
+    <span class='glyphicon glyphicon-ok'></span>
+    Job and line items will be generated.
+  </p>
+<% end %>
+
+<%= hidden_field_tag('fba_jobs[]', fba.to_h.to_json) %>

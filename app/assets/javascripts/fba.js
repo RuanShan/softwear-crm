@@ -21,7 +21,7 @@ $(function() {
     var container =
       self.closest('.error-result');
 
-    var inputElement = 
+    var inputElement =
       container
       .find('.' + inputClass);
 
@@ -70,29 +70,20 @@ $(function() {
     $('#packingSlipModal').modal('show');
   });
 
-  $('#js-packing-slip-form').fileupload({
-    dataType: 'script',
+  $('#js-packing-slip-form').submit(function(e) {
+    /*
+    var data = $('#packing_slips_')[0];
+    var file = data.files[0];
 
-    add: function(e, data) {
-      var file = data.files[0];
-      // currentDatas.push(data);
+    var context = $(tmpl('template-upload', file));
+    $('#js-packing-slip-info-zone').append(context);
+    context.data('file-data', data);
 
-      // var context = $(
-      //   '#' + file.name.toLowerCase().replace(".", "_") + '-upload'
-      // );
+    data.formData = {
+      script_container_id: context.attr('id')
+    };
 
-      data.context = $(tmpl('template-upload', file));
-      $('#js-packing-slip-info-zone').append(data.context);
-      data.context.data('file-data', data);
-
-      data.formData = {
-        script_container_id: data.context.attr('id')
-      };
-
-      data.submit();
-      $('#packingSlipModal').modal('hide');
-    },
-
-    progress: function(e, data) { }
+    */
+    $('#packingSlipModal').modal('hide');
   });
 });

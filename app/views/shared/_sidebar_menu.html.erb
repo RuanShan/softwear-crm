@@ -18,8 +18,12 @@
           <%= link_to new_order_path do %><i class="fa fa-angle-right"></i> New<% end %>
         <% end %>
 
-        <%= content_tag :li, class: ('active' if current_action == 'orders#new_fba') do %>
+        <%= content_tag :li, class: ('active' if current_action == 'orders#fba') do %>
           <%= link_to fba_orders_path do %><i class="fa fa-angle-right"></i> FBA<% end %>
+        <% end %>
+
+        <%= content_tag :li, class: ('active' if current_action == 'orders#new_fba') do %>
+          <%= link_to new_fba_orders_path do %><i class="fa fa-angle-right"></i> New FBA<% end %>
         <% end %>
 
       <% end %>
@@ -93,7 +97,7 @@
         <%= content_tag :li, class: ('active' if current_action == 'artwork_requests') do %>
           <%= link_to proofing_manager_dashboard_path do %><i class="fa fa-angle-right"></i> Manager Dashboard<% end %>
         <% end %>
-        
+
         <%= content_tag :li, class: ('active' if current_action == 'artwork_requests') do %>
           <%= link_to artwork_requests_path do %><i class="fa fa-angle-right"></i> Artwork Requests<% end %>
         <% end %>
