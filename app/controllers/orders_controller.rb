@@ -78,7 +78,8 @@ class OrdersController < InheritedResources::Base
 
   def production_dashboard
     @order = Order.find(params[:id])
-    @production_order = @order.production_order
+    @production_order = @order.production if @order.production?
+
     respond_to do |format|
       format.html
       format.js

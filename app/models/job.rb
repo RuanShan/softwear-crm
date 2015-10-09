@@ -61,6 +61,8 @@ class Job < ActiveRecord::Base
   end
 
   def production_imprints_attributes
+    return if imprintable_line_items_total == 0
+
     attrs = {}
 
     imprints.each_with_index do |imprint, index|
@@ -71,6 +73,7 @@ class Job < ActiveRecord::Base
         count:           imprintable_line_items_total,
         type:            'Print'
       }
+      attrs[index].delete_if { |_,v| v.nil? }
     end
 
     attrs

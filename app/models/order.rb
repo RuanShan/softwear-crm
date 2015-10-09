@@ -155,10 +155,6 @@ class Order < ActiveRecord::Base
     end
   end
 
-  def production_order
-    Production::Order.where(softwear_crm_id: self.id).first
-  end
-
   def ready_for_production?
     return if production?
 
@@ -339,6 +335,7 @@ class Order < ActiveRecord::Base
         imprints_attributes: job.production_imprints_attributes,
         imprintable_train_attributes: job.imprintable_train_attributes
       }
+      attrs[index].delete_if { |_,v| v.nil? }
     end
 
     attrs
