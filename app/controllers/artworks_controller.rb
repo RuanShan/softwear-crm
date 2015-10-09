@@ -15,14 +15,14 @@ class ArtworksController < InheritedResources::Base
 
   def create
     super do |success, failure|
-      success.html { redirect_to params[:back_to] || artworks_path }
+      success.html { redirect_to params[:back_to].blank? ? artworks_path : params[:back_to] }
       failure.html { render :new }
     end
   end
 
   def update
     super do |format|
-      format.html { redirect_to params[:back_to] || artworks_path }
+      format.html { redirect_to params[:back_to].blank? ? artworks_path : params[:back_to] }
     end
   end
 

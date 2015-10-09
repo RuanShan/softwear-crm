@@ -27,26 +27,17 @@ class Artwork < ActiveRecord::Base
   validates :local_file_location,
             :name,
             :description,
-            :artwork_id,
-            :preview_id, presence: true
-
-  after_save :assign_image_assetables
+            :artwork,
+            :preview, presence: true
 
   private
 
   def initialize_assets
-    self.artwork ||= Asset.new(allowed_content_type: "^image/(ai|pdf|psd)")
-    self.preview ||= Asset.new(allowed_content_type: "^image/(png|gif|jpeg|jpg)")
+    self.artwork ||= Asset.new(allowed_content_type: "^image/(ai|pdf|psd)").tap(&set_assetable)
+    self.preview ||= Asset.new(allowed_content_type: "^image/(png|gif|jpeg|jpg)").tap(&set_assetable)
   end
 
-  def assign_image_assetables
-    return if id.nil?
-
-    [artwork, preview].each do |image|
-      next if image.nil? || !image.assetable.nil?
-
-      image.assetable = self
-      image.save(validate: false)
-    end
+  def set_assetable
+    proc { |artwork| artwork.assetable = self }
   end
 end
