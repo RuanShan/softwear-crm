@@ -26,7 +26,12 @@
     </span>
   </div>
 </div>
-
+<div class="form-group">
+          <%= f.label :delivery_method %>
+          <%= f.error_for :delivery_method %>
+          <%= f.select :delivery_method, Order::VALID_DELIVERY_METHODS,
+                       include_blank: true %>
+</div>                       
 <div class="form-group">
   <%= f.label :salesperson_id, 'Salesperson' %>
   <%= f.error_for :salesperson_id %>

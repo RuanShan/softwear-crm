@@ -28,8 +28,7 @@ describe 'orders/_table_entry.html.erb', order_spec: true do
         firstname: 'o firstname',
         lastname: 'o lastname',
         email: 'o@email.com') }
-
-      expect(rendered).to have_selector 'td', text: 'N/A', count: 5
+      expect(rendered).to have_selector 'td', text: 'N/A', count: 6
     end
   end
 end

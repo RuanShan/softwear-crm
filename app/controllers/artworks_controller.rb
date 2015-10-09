@@ -14,8 +14,9 @@ class ArtworksController < InheritedResources::Base
   end
 
   def create
-    super do |format|
-      format.html { redirect_to params[:back_to] || artworks_path }
+    super do |success, failure|
+      success.html { redirect_to params[:back_to] || artworks_path }
+      failure.html { render :new }
     end
   end
 

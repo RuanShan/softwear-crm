@@ -39,6 +39,10 @@
       <dd><%= @order.name %></dd>
       <dt>In Hand By Date:</dt>
       <dd><%= display_time @order.in_hand_by  %></dd>
+      <dt>Payment Terms</dt>
+      <dd><%= @order.terms %></dd>
+      <dt>Payment Status</dt>
+      <dd><%= @order.payment_status %></dd>
       <dt>Salesperson</dt>
       <dd><%= @order.salesperson.full_name %></dd>
       <% unless @order.po.blank? %>
@@ -50,13 +54,28 @@
   <div class="col-xs-4">
     <h2><strong>Payment and Delivery</strong> Details</h2>
     <dl>
-      <dt>Payment Terms</dt>
-      <dd><%= @order.terms %></dd>
-      <dt>Payment Status</dt>
-      <dd><%= @order.payment_status %></dd>
       <dt>Delivery Method</dt>
-      <dd>TODO: How does this work again?</dd>
+      <dd><%= @order.delivery_method %></dd>
     </dl>
+      <% @order.shipments.each do |shipment| %>
+        <dl>
+          <% if shipment.shippable_type == 'Job' %>
+            <dt>Job</dt>
+            <dd><%= shipment.shippable.name %></dd>
+          <% end %>
+          <dt>Shipping Method </dt>
+          <dd><%= shipment.shipping_method.name %></dd>
+          <dd> 
+            <address>
+              <%= shipment.complete_address.join('<br />').html_safe %>
+            </address>
+          </dd>
+          <% unless shipment.tracking_number.blank? %>
+          <dt>Tracking</dt>
+          <dd><%= shipment.tracking_number %></dd>
+        <% end %>
+        </dl>
+      <% end %>
   </div>
   
   <div class="col-xs-12">
