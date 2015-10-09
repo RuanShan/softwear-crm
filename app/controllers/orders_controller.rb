@@ -141,6 +141,12 @@ class OrdersController < InheritedResources::Base
     @order = Order.find(params[:id])
     render layout: 'no_overlay'
   end
+  
+  def show
+    super do
+      render layout: 'no_overlay'
+    end 
+  end
 
   def order_report
     @order = Order.find(params[:id])
