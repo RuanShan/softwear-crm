@@ -17,7 +17,7 @@
         <th>
           Payment
         </th>
-        <td>
+        <td class='payment-state'>
           <% if order.fba? %>
             <span class="label label-default">N/A</span>
           <% else %>
@@ -46,7 +46,7 @@
     <tr>
       <th>Notification
       </th>
-      <td class='production-state'>
+      <td class='notification-state'>
         <% if order.fba? %>
           <span class="label label-default">N/A</span>
         <% else %>

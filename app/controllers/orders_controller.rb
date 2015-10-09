@@ -1,5 +1,6 @@
 class OrdersController < InheritedResources::Base
   before_filter :format_in_hand_by, only: [:create, :update]
+  layout 'no_overlay', only: [:show]
 
   def index
     super do
@@ -142,12 +143,6 @@ class OrdersController < InheritedResources::Base
     render layout: 'no_overlay'
   end
   
-  def show
-    super do
-      render layout: 'no_overlay'
-    end 
-  end
-
   def order_report
     @order = Order.find(params[:id])
     render layout: 'no_overlay'
