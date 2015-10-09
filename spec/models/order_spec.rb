@@ -396,7 +396,7 @@ describe Order, order_spec: true do
     end
   end
 
-  describe '#generate_jobs', story_103: true do
+  describe '#generate_jobs', story_957: true, story_103: true do
     let!(:order) { create :order }
 
     context 'given a hash of imprintables, colors, and sizes' do
@@ -422,29 +422,17 @@ describe Order, order_spec: true do
           {
             job_name: 'test_fba FBA222EE2E',
             imprintable: imprintable.id,
-            colors: [
-              {
-                color: color.id,
-                sizes: [
-                  {
-                    size: size_s.id,
-                    quantity: 10
-                  },
-                  {
-                    size: size_m.id,
-                    quantity: 11
-                  },
-                  {
-                    size: size_l.id,
-                    quantity: 12
-                  },
-                  nil,
-                  {
-                    size: size_xl.id,
-                    quantity: 13
-                  }
-                ]
-              }
+            imprintables: [
+              [
+                imprintable.id,
+                color.id,
+                {
+                  size_s.id.to_s  => 10,
+                  size_m.id.to_s  => 11,
+                  size_l.id.to_s  => 12,
+                  size_xl.id.to_s => 13
+                }
+              ]
             ]
           }
         ]
@@ -462,9 +450,10 @@ describe Order, order_spec: true do
             .to exist
         end
 
-        [10, 11, 12, 13].each do |quantity|
-          expect(job.line_items.where(quantity: quantity)).to exist
-        end
+        expect(job.line_items.where(quantity: 10)).to exist
+        expect(job.line_items.where(quantity: 11)).to exist
+        expect(job.line_items.where(quantity: 12)).to exist
+        expect(job.line_items.where(quantity: 13)).to exist
       end
     end
   end

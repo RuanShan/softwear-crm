@@ -67,6 +67,7 @@ feature 'FBA Order management', fba_spec: true, story_103: true, js: true do
       find('#js-upload-packing-slips-button').click
       wait_for_ajax
       attach_file 'packing_slips_', multi_packing_slip_path
+      click_button 'Upload'
 
       sleep 1
 
@@ -128,6 +129,7 @@ feature 'FBA Order management', fba_spec: true, story_103: true, js: true do
         find('#js-upload-packing-slips-button').click
         wait_for_ajax
         attach_file 'packing_slips_', packing_slip_path
+        click_button 'Upload'
 
         sleep 1
 
@@ -160,8 +162,12 @@ feature 'FBA Order management', fba_spec: true, story_103: true, js: true do
 
           click_button 'Next'
 
-          attach_file 'packing_slips_', packing_slip_path
+          find('#js-upload-packing-slips-button').click
           wait_for_ajax
+          attach_file 'packing_slips_', packing_slip_path
+          click_button 'Upload'
+          wait_for_ajax
+          sleep 0.2
 
           expect(page).to have_content %(No color with SKU 000 was found)
         end
@@ -195,9 +201,13 @@ feature 'FBA Order management', fba_spec: true, story_103: true, js: true do
       click_button 'Next'
       sleep 0.2
 
-      attach_file 'packing_slips_', packing_slip_path
+      find('#js-upload-packing-slips-button').click
       wait_for_ajax
-      expect(page).to have_content %(No size with sku 02 was found)
+      attach_file 'packing_slips_', packing_slip_path
+      click_button 'Upload'
+      wait_for_ajax
+
+      expect(page).to have_content %(No size with SKU 02 was found)
     end
   end
 end

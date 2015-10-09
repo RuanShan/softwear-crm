@@ -46,30 +46,32 @@ describe OrdersController, order_spec: true do
   end
 
   describe 'GET #fba_job_info', story_103: true do
-    context 'given a valid packing slip' do
+    context 'given a valid packing slip', story_957: true do
       let(:packing_slip) do
         fixture_file_upload('fba/TestPackingSlip.txt', 'text/text')
       end
 
-      it 'calls FBA.parse_packing_slip on the file', basic: true do
-        expect(FBA).to receive(:parse_packing_slip).and_call_original
+      it 'calls FBA::parse_packing_slip on an uploaded file', basic: true do
+        expect(FBA).to receive(:parse_packing_slip)
+          .with(anything, filename: 'TestPackingSlip.txt')
+          .and_call_original
+
         get :fba_job_info, packing_slips: [packing_slip], format: :js
 
         expect(response).to be_successful
       end
 
-      context 'with options params' do
-        it 'passes the params to FBA.parse_packing_slip' do
-          expect(FBA).to receive(:parse_packing_slip)
-            .with(anything, { imprintables: { '0705' => '5' } })
+      it 'calls FBA::parse_packing_slip on a given url', url: true do
+        stub_request(:get, "http://amazon.com/packing-slip/test.txt")
+          .to_return(status: 200, body: "#{packing_slip.read}")
 
-          get :fba_job_info,
-               packing_slips: [packing_slip],
-               options: { imprintables: { '0705' => '5' } },
-               format: :js
+        expect(FBA).to receive(:parse_packing_slip)
+          .with(anything, filename: 'test.txt')
+          .and_call_original
 
-          expect(response).to be_successful
-        end
+        get :fba_job_info, packing_slip_urls: 'http://amazon.com/packing-slip/test.txt', format: :js
+
+        expect(response).to be_successful
       end
     end
   end
@@ -114,31 +116,6 @@ describe OrdersController, order_spec: true do
 
       let(:fba_params) do
         {
-          job_name: 'test_fba FBA222EE2E',
-          imprintable: 500,
-          colors: [
-            {
-              color: 500,
-              sizes: [
-                {
-                  size: 500,
-                  quantity: 10
-                },
-                {
-                  size: 500,
-                  quantity: 11
-                },
-                {
-                  size: 500,
-                  quantity: 12
-                },
-                {
-                  size: 500,
-                  quantity: 13
-                }
-              ]
-            }
-          ]
         }
       end
 
@@ -148,7 +125,7 @@ describe OrdersController, order_spec: true do
         expect(dummy_order).to receive(:valid?).and_return true
         expect(dummy_order).to receive(:generate_jobs)
 
-        post :create, job_attributes: [fba_params.to_json], order: order_params
+        post :create, fba_jobs: [fba_params.to_json], order: order_params
       end
     end
   end
