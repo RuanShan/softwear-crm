@@ -6,7 +6,18 @@ class FBA
       header, data = parse_file(packing_slip)
 
       errors = []
-      imprintables = {}
+      jobs = {}
+      all_imprintables = {}
+
+      if header.blank? || data.blank?
+        errors << "Could not parse file"
+        return FBA.new(
+          "Bad file #{options[:filename] || Random.rand}",
+          {},
+          errors,
+          options[:filename]
+        )
+      end
 
       data.each do |datum|
         sku = parse_sku(datum)
@@ -15,9 +26,18 @@ class FBA
           next
         end
 
-        unless imprintable = imprintables[sku.imprintable]
+        unless imprintable = all_imprintables[sku.imprintable]
           imprintable = imprintable_entry(sku, errors) or next
-          imprintables[sku.imprintable] = imprintable
+
+          all_imprintables[sku.imprintable] = imprintable
+
+          if imprintable[:isolate]
+            jobs[imprintable[:imprintable].style_name] ||= {}
+            jobs[imprintable[:imprintable].style_name][sku.imprintable] = imprintable
+          else
+            jobs['main'] ||= {}
+            jobs['main'][sku.imprintable] = imprintable
+          end
         end
 
         unless color = imprintable[:colors][sku.color]
@@ -25,11 +45,16 @@ class FBA
           imprintable[:colors][sku.color] = color
         end
 
-        size = size_entry(sku, datum, errors) or next
+        size = size_entry(sku, datum, imprintable, errors) or next
         color[:sizes][sku.size] = size
       end
 
-      FBA.new("Shipment #{header['Shipment ID']}", form_data(imprintables), errors, options[:filename])
+      FBA.new(
+        "Shipment #{header['Shipment ID']}",
+        form_data(jobs),
+        errors,
+        options[:filename]
+      )
     end
 
     def imprintable_entry(sku, errors)
@@ -42,7 +67,8 @@ class FBA
 
       {
         imprintable: record,
-        colors: {}
+        colors: {},
+        isolate: /infant|toddler|onesie/i =~ record.style_name.to_s
       }
     end
 
@@ -60,11 +86,26 @@ class FBA
       }
     end
 
-    def size_entry(sku, data, errors)
+    def size_entry(sku, data, imprintable_hash, errors)
       record = Size.find_by(sku: sku.size)
 
       if record.nil?
         errors << "No size with SKU #{sku.size} was found"
+        return nil
+      end
+
+      imprintable = imprintable_hash[:imprintable]
+      color = imprintable_hash[:colors][sku.color][:color]
+
+      variant = ImprintableVariant.where(
+        imprintable_id: imprintable.id,
+        color_id:       color.id,
+        size_id:        record.id
+      )
+
+      unless variant.exists?
+        errors << "The imprintable #{imprintable.name} (SKU #{imprintable.sku}) does not have a variant of "\
+                  "color: #{color.name} (SKU #{color.sku}), size: #{record.name} (SKU #{record.sku})"
         return nil
       end
 
@@ -74,69 +115,30 @@ class FBA
       }
     end
 
-    def form_data(imprintables)
-      data = []
+    def form_data(jobs)
+      data = {}
 
       # Transform imprintable data into a json friendly format.
       # This format is assumed by Order#generate_jobs.
-      imprintables.each do |_, imprintable|
-        imprintable[:colors].each do |_, color|
-          quantities = {}
-          color[:sizes].each do |_, size|
-            quantities[size[:size].id] = size[:quantity]
-          end
+      jobs.each do |style, imprintables|
+        imprintables.each do |_, imprintable|
+          imprintable[:colors].each do |_, color|
+            quantities = {}
+            color[:sizes].each do |_, size|
+              quantities[size[:size].id] = size[:quantity]
+            end
 
-          data << [
-            imprintable[:imprintable].id,
-            color[:color].id,
-            quantities
-          ]
+            data[style] ||= []
+            data[style] << [
+              imprintable[:imprintable].id,
+              color[:color].id,
+              quantities
+            ]
+          end
         end
       end
 
       data
-    end
-
-    # TODO unused
-    def retrieve_colors(data, options = {})
-      sizes_by_color = {}
-
-      data.each do |row|
-        sku = parse_sku(row)
-
-        color = sizes_by_color[sku.color] ||= color_from(sku, options)
-        color.sizes << size_from(sku, row, color, options)
-      end
-
-      return sizes_by_color.values
-    end
-
-    def option?(options, *keys)
-      yield keys.reduce(options) { |current, key| current.try(:[], key) ||
-                                                  current.try(:[], key.to_s) }
-    end
-
-    # TODO unused
-    def color_from(sku, options = {})
-      color = option?(options, :colors, sku.color) do |color_id|
-        color_id ? ::Color.find(color_id) : ::Color.find_by(sku: sku.color)
-      end
-
-      FBA::Color.new(color, [], color.try(:sku) || sku.color)
-    end
-
-    # TODO unused
-    def size_from(sku, data, color, options = {})
-      size = option?(options, :sizes, sku.size) do |size_id|
-        size_id ? ::Size.find(size_id) : ::Size.find_by(sku: sku.size)
-      end
-
-      FBA::Size.new(
-        size,
-        data['Shipped'],
-        size.try(:sku) || sku.size,
-        color.try(:sku) || sku.color
-      )
     end
 
     def parse_sku(data)
@@ -195,16 +197,16 @@ class FBA
     end
   end
 
-  attr_reader :imprintables
+  attr_reader :jobs
   attr_reader :errors
   attr_reader :job_name
   attr_reader :filename
 
-  def initialize(job_name, imprintables, errors, filename)
-    @job_name     = job_name
-    @errors       = errors
-    @imprintables = imprintables
-    @filename     = filename
+  def initialize(job_name, jobs, errors = [], filename = nil)
+    @job_name = job_name
+    @errors   = errors
+    @jobs     = jobs
+    @filename = filename
   end
 
   def errors?
@@ -213,9 +215,9 @@ class FBA
 
   def to_h
     {
-      job_name:     job_name,
-      filename:     filename,
-      imprintables: imprintables
+      job_name: job_name,
+      filename: filename,
+      jobs:     jobs
     }
   end
 end

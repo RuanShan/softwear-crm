@@ -314,8 +314,8 @@ class Order < ActiveRecord::Base
   warn_on_failure_of :create_production_order unless Rails.env.test?
 
   if Rails.env.production?
-    def enqueue_create_production_order
-      delay(queue: 'api').create_production_order
+    def enqueue_create_production_order(*args)
+      delay(queue: 'api').create_production_order(*args)
     end
   else
     alias_method :enqueue_create_production_order, :create_production_order
@@ -345,20 +345,20 @@ class Order < ActiveRecord::Base
   end
 
   def generate_jobs(fba_job_infos)
-    fba_job_infos.map(&:with_indifferent_access).each do |job_info|
-      job = jobs.create(name: job_info[:job_name])
+    fba_job_infos.map(&:with_indifferent_access).each do |fba|
+      fba[:jobs].each do |style, job_info|
+        job = jobs.create(name: "#{fba[:job_name]} - #{style}")
 
-      if !job_info[:imprintables].blank?
-
-        job_info[:imprintables].each do |imprintable, color, quantities|
-          LineItem.create_imprintables(
-            job,
-            imprintable,
-            color,
-            quantity: quantities
-          )
+        if !job_info.nil?
+          job_info.each do |imprintable, color, quantities|
+            LineItem.create_imprintables(
+              job,
+              imprintable,
+              color,
+              quantity: quantities
+            )
+          end
         end
-
       end
     end
   end

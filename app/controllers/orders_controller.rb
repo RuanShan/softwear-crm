@@ -113,7 +113,7 @@ class OrdersController < InheritedResources::Base
     @fba_infos = []
 
     if packing_slips
-      @fba_infos += packing_slips.map do |packing_slip|
+      @fba_infos += packing_slips.flat_map do |packing_slip|
         FBA.parse_packing_slip(
           StringIO.new(packing_slip.read),
           filename: packing_slip.original_filename
@@ -122,7 +122,7 @@ class OrdersController < InheritedResources::Base
     end
 
     if packing_slip_urls
-      @fba_infos += packing_slip_urls.split("\n").map do |url|
+      @fba_infos += packing_slip_urls.split("\n").flat_map do |url|
         next if url =~ /^\s*$/
         url = url.strip
         uri = URI.parse(url)

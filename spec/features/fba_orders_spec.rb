@@ -37,18 +37,18 @@ feature 'FBA Order management', fba_spec: true, story_103: true, js: true do
     given!(:imprintable_1) { create :valid_imprintable, sku: '0100' }
     given!(:imprintable_2) { create :valid_imprintable, sku: '1000' }
 
-    before do
+    background do
       [size_xs, size_s, size_m, size_l, size_xl, size_2xl, size_3xl].each do |size|
         ImprintableVariant.create!(
-          imprintable: imprintable_1,
-          size:  size,
-          color: color
+          imprintable_id: imprintable_1.id,
+          size_id:  size.id,
+          color_id: color.id
         )
-        unless size == size_xs || size == size_2xl || size == size_3xl
+        unless size == size_xs || size == size_3xl
           ImprintableVariant.create!(
-            imprintable: imprintable_2,
-            size:  size,
-            color: color
+            imprintable_id: imprintable_2.id,
+            size_id:  size.id,
+            color_id: color.id
           )
         end
       end
@@ -77,14 +77,53 @@ feature 'FBA Order management', fba_spec: true, story_103: true, js: true do
       sleep 0.5
       all('input[value="Submit"]').first.click
 
-      sleep 2 if ci?
+      sleep 2
       expect(Order.fba.where(name: 'Test FBA')).to exist
       order = Order.fba.find_by(name: 'Test FBA')
       expect(order.jobs.count).to eq 1
-      expect(order.jobs.first.line_items.count).to eq 11
+      expect(order.jobs.first.line_items.count).to eq 12
       expect(order.jobs.first.line_items.first.quantity).to eq 1
 
       expect(page).to have_content 'Test FBA'
+    end
+
+    context 'when one imprintable has "toddler" (or "onesie" or "infant") in the name' do
+      background do
+        imprintable_1.update_column :style_name, 'Some Kind of Onesie'
+      end
+
+      it 'creates a separate job for the toddler/infant/onesie imprintable' do
+        visit fba_orders_path
+        click_link 'New FBA Order'
+
+        fill_in 'Name', with: 'Test FBA'
+        fill_in 'Deadline', with: 'Feb 04, 2015, 12:00 PM'
+
+        click_button 'Next'
+        sleep 0.2
+
+        find('#js-upload-packing-slips-button').click
+        wait_for_ajax
+        attach_file 'packing_slips_', multi_packing_slip_path
+        click_button 'Upload'
+
+        sleep 1
+
+        expect(page).to have_content 'Job and line items will be generated'
+
+        click_button 'Next'
+        sleep 0.5
+        all('input[value="Submit"]').first.click
+
+        sleep 2
+        expect(Order.fba.where(name: 'Test FBA')).to exist
+        order = Order.fba.find_by(name: 'Test FBA')
+        expect(order.jobs.count).to eq 2
+        expect(order.line_items.count).to eq 12
+        expect(order.line_items.first.quantity).to eq 1
+
+        expect(page).to have_content 'Test FBA'
+      end
     end
   end
 
@@ -190,6 +229,16 @@ feature 'FBA Order management', fba_spec: true, story_103: true, js: true do
     given!(:size_xl) { create :valid_size, sku: '05' }
     given!(:color) { create :valid_color, sku: '000' }
     given!(:imprintable) { create :valid_imprintable, sku: '0705' }
+
+    background do
+      [other_size_s, size_m, size_l, size_xl].each do |size|
+        ImprintableVariant.create!(
+          imprintable_id: imprintable.id,
+          size_id:  size.id,
+          color_id: color.id
+        )
+      end
+    end
 
     scenario 'user is informed that the size could not be found' do
       visit fba_orders_path
