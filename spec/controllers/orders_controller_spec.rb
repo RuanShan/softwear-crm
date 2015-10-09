@@ -62,6 +62,8 @@ describe OrdersController, order_spec: true do
       end
 
       it 'calls FBA::parse_packing_slip on a given url', url: true do
+        extend WebMock
+
         stub_request(:get, "http://amazon.com/packing-slip/test.txt")
           .to_return(status: 200, body: "#{packing_slip.read}")
 
@@ -119,7 +121,7 @@ describe OrdersController, order_spec: true do
         }
       end
 
-      it 'calls order#generate_jobs with' do
+      it 'calls order#generate_jobs with the passed parameters' do
         dummy_order = double('Order')
         expect(Order).to receive(:create).and_return dummy_order
         expect(dummy_order).to receive(:valid?).and_return true

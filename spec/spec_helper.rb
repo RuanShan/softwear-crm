@@ -8,7 +8,6 @@ require 'public_activity/testing'
 require 'email_spec'
 require 'sidekiq/testing'
 require 'fakeredis'
-require 'webmock/rspec'
 require 'softwear/lib'
 
 # explicitly use fakeredis with sidekiq
