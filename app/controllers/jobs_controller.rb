@@ -82,10 +82,12 @@ class JobsController < InheritedResources::Base
   # Kind of hacky fix for rare quote job deletion error.
   rescue ActiveRecord::RecordNotFound => e
     respond_to do |format|
-      format.json {
-        result: 'success',
-        error: nil
-      }
+      format.json do
+        render json: {
+          result: 'success',
+          error: nil
+        }
+      end
 
       format.js
     end
