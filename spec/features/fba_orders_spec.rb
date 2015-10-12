@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-feature 'FBA Order management', fba_spec: true, story_103: true, js: true do
+feature 'FBA Order management', fba_spec: true, story_103: true, js: true, retry: 3 do
   given!(:valid_user) { create :user }
   background(:each) { login_as valid_user }
 
@@ -192,7 +192,7 @@ feature 'FBA Order management', fba_spec: true, story_103: true, js: true do
           color.update_attributes sku: '123'
         end
 
-        scenario 'user is informed', color: true do
+        scenario 'user is informed', color: true, retry: 3 do
           visit fba_orders_path
           click_link 'New FBA Order'
 
