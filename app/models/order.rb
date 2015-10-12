@@ -72,17 +72,17 @@ class Order < ActiveRecord::Base
 
   belongs_to :salesperson, class_name: User
   belongs_to :store
-  has_many :jobs, as: :jobbable
-  has_many :artwork_requests, through: :jobs
+  has_many :jobs, as: :jobbable, dependent: :destroy
+  has_many :artwork_requests, through: :jobs, dependent: :destroy
   has_many :imprints, through: :jobs
   has_many :payments
-  has_many :proofs
-  has_many :order_quotes
+  has_many :proofs, dependent: :destroy
+  has_many :order_quotes, dependent: :destroy
   has_many :quotes, through: :order_quotes
   has_many :quote_requests, through: :quotes
-  has_many :shipments, as: :shippable
-  has_many :discounts, as: :discountable
-  has_many :job_discounts, through: :jobs, source: :discounts
+  has_many :shipments, as: :shippable, dependent: :destroy
+  has_many :discounts, as: :discountable, dependent: :destroy
+  has_many :job_discounts, through: :jobs, source: :discounts, dependent: :destroy
 
   accepts_nested_attributes_for :payments, :jobs
 
