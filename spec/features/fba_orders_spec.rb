@@ -240,7 +240,7 @@ feature 'FBA Order management', fba_spec: true, story_103: true, js: true do
       end
     end
 
-    scenario 'user is informed that the size could not be found' do
+    scenario 'user is informed that the size could not be found', retry: 3 do
       visit fba_orders_path
       click_link 'New FBA Order'
 

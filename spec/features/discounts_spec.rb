@@ -69,7 +69,7 @@ feature 'Discounts management', js: true, discount_spec: true, story_859: true d
       expect(page).to_not have_content 'Reason'
     end
 
-    scenario 'A salesperson can add a percent-off-job coupon discount' do
+    scenario 'A salesperson can add a percent-off-job coupon discount', retry: 3 do
       visit edit_order_path order, anchor: 'payments'
       click_button 'Coupon'
 

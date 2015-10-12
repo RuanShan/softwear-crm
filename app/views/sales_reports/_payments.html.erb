@@ -1,0 +1,46 @@
+<table class='table table-striped'>
+  <thead>
+    <tr>
+      <th>
+        Order ID
+      </th>
+      <th>
+        Order Name
+      </th>
+      <th>
+        Store
+      </th>
+      <th>
+        Method
+      </th>
+      <th>
+        Amount
+      </th>
+    </tr>
+  </thead>
+  <tbody>
+    <% data[:payments].each do |payment| %> 
+      <tr>
+        <td>
+          <%= payment.order.id %>
+        </td>
+        <td>
+          <%= payment.salesperson.full_name %>
+        </td>
+        <td>
+          <%= payment.order.name %>
+        </td>
+        <td>
+          <%= payment.store.name %>
+        </td>
+        <td>
+          <%= Payment::VALID_PAYMENT_METHODS[payment.payment_method] %>
+        </td>
+        <td>
+          <%= number_to_currency payment.amount %>
+        </td>
+    </tr>
+  <% end %>
+  </tbody>
+</table>
+

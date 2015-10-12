@@ -1,9 +1,10 @@
 module LineItemHelper
   def line_item_id(line_item)
     sub = -> (s) { s.gsub(/[^a-zA-Z\d]/, '-') }
-
-    line_item.is_a?(String) ? sub.call(line_item) : sub.call(line_item.name)
-    "line-itemable-#{line_item.line_itemable.id}-line-item-#{line_item.id}"
+    
+    "line-itemable-#{line_item.line_itemable.id}-line-item-#{line_item.id}" rescue (
+      line_item.is_a?(String) ? sub.call(line_item) : sub.call(line_item.name)
+    )
   end
 
   # TODO: test if return is necessary

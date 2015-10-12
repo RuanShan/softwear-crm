@@ -1,7 +1,8 @@
 class Report
   include ActiveModel::Model
   SALES_REPORTS = [
-      ['Quote Request Success Report', 'quote_request_success']
+      ['Quote Request Success Report', 'quote_request_success'], 
+      ['Payments Report', 'payments']
   ]
 
   attr_accessor :start_time, :end_time, :report_data
@@ -16,4 +17,14 @@ class Report
     return_hash[:number_of_orders_from_quotes] = Order.joins(:quote_requests).where(quote_requests: { created_at: time_range }).count
     return_hash
   end
+
+  def payments
+    time_format = '%Y-%m-%d'
+    time_range = DateTime.strptime(start_time, time_format)..DateTime.strptime(end_time, time_format)
+    return_hash = {}
+    return_hash[:payments] = Payment.where(created_at: time_range)
+    return_hash
+  end
+
+
 end

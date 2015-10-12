@@ -23,6 +23,8 @@ class SalesReportsController < ApplicationController
   def get_data
     if params[:report_type] == 'quote_request_success'
       @data = @report.quote_request_success
+    elsif params[:report_type] == 'payments'
+      @data = @report.payments
     end
   end
 end
