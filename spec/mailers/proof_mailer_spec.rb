@@ -2,7 +2,7 @@ require 'spec_helper'
 
 describe ArtistMailer do
 
-  describe 'proof_approval_email', pending: "I think it's paperclip's fault that this fails" do
+  describe 'proof_approval_email' do
     let!(:proof) { create(:valid_proof) }
     let!(:order) { proof.order }
     subject = 'Subject'
