@@ -275,4 +275,35 @@ feature 'Line Items management', line_item_spec: true, js: true do
     expect(LineItem.where(id: non_imprintable.id)).to_not exist
     expect(page).to_not have_content non_imprintable.name
   end
+  
+  context 'order has two jobs with the same imprintable line_item', story_971: true  do
+    
+    given(:job_2) { create(:job, jobbable: order) }
+    
+    scenario 'removing the line_item from the second job hides the correct line item' do
+      
+      ['s', 'm', 'l'].each do |s|
+        job.line_items << send("white_shirt_#{s}_item")
+      end
+      
+      ['s', 'm', 'l'].each do |s|
+        # job_2.line_items << send("white_shirt_#{s}_item")
+      end
+
+      visit edit_order_path(order.id, anchor: 'jobs')
+      byebug
+      sleep 1
+
+      expect(page).to have_content shirt.style_name
+
+      first('a[title="Delete"]').click
+      sleep 2
+
+      ['s', 'm', 'l'].each do |s|
+        item = send("white_shirt_#{s}_item")
+        expect(LineItem.where(id: item.id)).to_not exist
+      end
+      expect(page).to_not have_content shirt.style_name
+    end
+  end
 end
