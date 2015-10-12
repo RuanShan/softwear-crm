@@ -279,6 +279,7 @@ feature 'Line Items management', line_item_spec: true, js: true do
   context 'order has two jobs with the same imprintable line_item', story_971: true  do
     
     given(:job_2) { create(:job, jobbable: order) }
+    make_variants :white, :shirt, [:S, :M, :L], not: [:line_items, :job_2]
     
     scenario 'removing the line_item from the second job hides the correct line item' do
       
@@ -286,24 +287,25 @@ feature 'Line Items management', line_item_spec: true, js: true do
         job.line_items << send("white_shirt_#{s}_item")
       end
       
-      ['s', 'm', 'l'].each do |s|
-        # job_2.line_items << send("white_shirt_#{s}_item")
+      job.line_items.each do |li_old|
+        li_new = li_old.dup
+        job_2.line_items << li_new
       end
-
+      
+      deleted_imprintable_id = job_2.line_items.first.imprintable.id
+      
       visit edit_order_path(order.id, anchor: 'jobs')
-      byebug
+      expect(page).to have_selector("[data-job-id='#{job.id}'] [data-imprintable-id='#{job.line_items.first.imprintable.id}']")
+      expect(page).to have_selector("[data-job-id='#{job_2.id}'] [data-imprintable-id='#{deleted_imprintable_id}']")
       sleep 1
-
-      expect(page).to have_content shirt.style_name
-
-      first('a[title="Delete"]').click
-      sleep 2
-
-      ['s', 'm', 'l'].each do |s|
-        item = send("white_shirt_#{s}_item")
-        expect(LineItem.where(id: item.id)).to_not exist
+      
+      within("[data-job-id='#{job_2.id}']") do 
+        find('a[title="Delete"]').click
+        sleep 2
       end
-      expect(page).to_not have_content shirt.style_name
+
+      expect(page).to have_selector("[data-job-id='#{job.id}'] [data-imprintable-id='#{job.line_items.first.imprintable.id}']")
+      expect(page).to_not have_selector("[data-job-id='#{job_2.id}'] [data-imprintable-id='#{deleted_imprintable_id}']")
     end
   end
 end

@@ -178,7 +178,7 @@ feature 'FBA Order management', fba_spec: true, story_103: true, js: true do
         sleep 0.5
         all('input[value="Submit"]').first.click
 
-        sleep 2 if ci?
+        sleep 2
         expect(Order.fba.where(name: 'Test FBA')).to exist
         order = Order.fba.find_by(name: 'Test FBA')
         expect(order.jobs.count).to eq 1
