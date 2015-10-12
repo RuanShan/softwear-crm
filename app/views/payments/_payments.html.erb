@@ -119,7 +119,7 @@
           <dt>Method:</dt>
           <dd><%= Payment::VALID_PAYMENT_METHODS[payment.payment_method] %></dd>
           <dt>Salesperson:</dt>
-          <dd><%= payment.salesperson.full_name %></dd>
+          <dd><%= payment.salesperson.full_name rescue 'No Salesperson' %></dd>
           <dt>Date:</dt>
           <dd><%= payment.created_at.strftime('%a, %b %d, %Y %I:%M%p') %></dd>
           <dt>Amount: </dt>
