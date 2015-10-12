@@ -54,7 +54,7 @@ feature 'FBA Order management', fba_spec: true, story_103: true, js: true do
       end
     end
 
-    scenario 'user can create a new FBA order' do
+    scenario 'user can create a new FBA order', retry: 3 do
       visit fba_orders_path
       click_link 'New FBA Order'
 

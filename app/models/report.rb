@@ -8,9 +8,6 @@ class Report
   attr_accessor :start_time, :end_time, :report_data
 
   def quote_request_success
-    # fetch # of quote_requests
-    time_format = '%Y-%m-%d'
-    time_range = DateTime.strptime(start_time, time_format)..DateTime.strptime(end_time, time_format)
     return_hash = {}
     return_hash[:number_of_quote_requests] = QuoteRequest.where(created_at: time_range).count
     return_hash[:number_of_quotes_from_requests] = Quote.joins(:quote_requests).where(quote_requests: { created_at: time_range }).count
@@ -19,12 +16,21 @@ class Report
   end
 
   def payments
-    time_format = '%Y-%m-%d'
-    time_range = DateTime.strptime(start_time, time_format)..DateTime.strptime(end_time, time_format)
+    time_range = DateTime.strptime(start_time, time_format)..(DateTime.strptime(end_time, time_format) + 1.day)
     return_hash = {}
     return_hash[:payments] = Payment.where(created_at: time_range)
+    return_hash[:totals] = Payment.where(created_at: time_range).group(:store_id, :payment_method).sum(:amount)
     return_hash
   end
 
+  private
+
+  def time_format 
+    time_format = '%Y-%m-%d'
+  end
+
+  def time_range
+    DateTime.strptime(start_time, time_format)..(DateTime.strptime(end_time, time_format) + 1.day)
+  end
 
 end
