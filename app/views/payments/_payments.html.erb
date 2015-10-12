@@ -115,8 +115,15 @@
     <ul>
       <% order.payments.each_with_index do |payment, index| %>
         <% unless payment.is_refunded? %>
-          <dt>Payment <%= index + 1 %></dt>
-          <dd>Amount: $<%= payment.amount %></dd>
+          <dt>Payment <%= payment.id %></dt>
+          <dt>Method:</dt>
+          <dd><%= Payment::VALID_PAYMENT_METHODS[payment.payment_method] %></dd>
+          <dt>Salesperson:</dt>
+          <dd><%= payment.salesperson.full_name %></dd>
+          <dt>Date:</dt>
+          <dd><%= payment.created_at.strftime('%a, %b %d, %Y %I:%M%p') %></dd>
+          <dt>Amount: </dt>
+          <dd><%= number_to_currency payment.amount %></dd>
           <dd>
             <%= link_to 'Refund Payment', edit_payment_path(payment, refund: true, order_id: order.id),
                          class: 'order_payment_refund_link', remote: true %>

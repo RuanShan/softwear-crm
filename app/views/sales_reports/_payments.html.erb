@@ -41,13 +41,16 @@
         Order Name
       </th>
       <th>
+        Salesperson
+      </th>
+      <th>
         Store
       </th>
       <th>
         Method
       </th>
       <th>
-        Method
+        Time
       </th>
       <th>
         Amount
@@ -61,16 +64,19 @@
           <%= payment.order.id %>
         </td>
         <td>
-          <%= payment.salesperson.full_name %>
+          <%= payment.order.name %>
         </td>
         <td>
-          <%= payment.order.name %>
+          <%= payment.salesperson.full_name %>
         </td>
         <td>
           <%= payment.store.name %>
         </td>
         <td>
           <%= Payment::VALID_PAYMENT_METHODS[payment.payment_method] %>
+        </td>
+        <td>
+          <%= payment.created_at.strftime('%a, %b %d, %Y %I:%M%p') %>
         </td>
         <td>
           <%= number_to_currency payment.amount %>
