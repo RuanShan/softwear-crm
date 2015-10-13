@@ -61,7 +61,7 @@ class ArtworkRequest < ActiveRecord::Base
   validates :priority,       presence: true
   validates :salesperson,    presence: true
 
-  # after_create :enqueue_create_freshdesk_proof_ticket
+  after_create :enqueue_create_freshdesk_proof_ticket if Rails.env.production?
 
   def name
   end
@@ -103,10 +103,10 @@ class ArtworkRequest < ActiveRecord::Base
       next if /^\d+$/ =~ custom_name.to_s
 
       custom_ink_color = InkColor.find_or_initialize_by(
-        name:   custom_name,
-        custom: true
+        name: custom_name
       )
       if custom_ink_color.new_record?
+        custom_ink_color.custom = true
         custom_ink_color.imprint_methods = imprint_methods
         custom_ink_color.save!
       end
