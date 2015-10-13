@@ -79,12 +79,14 @@
     <%= f.error_for :tax_exempt %>
     <%= f.check_box_with_text_field :tax_exempt, :tax_id_number, placeholder: 'Tax ID Number' %>
   </div>
-
+  
+  <% unless f.object.new_record? %> 
   <div class="form-group">
     <%= f.label :invoice_state %>
     <%= f.error_for :invoice_state %>
     <%= f.select :invoice_state, Order::VALID_INVOICE_STATES %>
   </div>
+  <% end %>
 
   <div class="form-group">
     <%= f.label :freshdesk_proof_ticket_id %>

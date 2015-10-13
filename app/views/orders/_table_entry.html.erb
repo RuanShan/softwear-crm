@@ -7,8 +7,9 @@
     <%= order.name %><br>
     <% unless order.fba? %>
       <%= order.firstname %> <%= order.lastname %><br>
-      <%= order.email %>
+      <%= order.email %><br />
     <% end %>
+    <b>In Hand By</b> <%= order.in_hand_by.strftime("%a, %b %d, %I:%M%p") %>
   </td>
   <td><%= order.salesperson.full_name %></td>
   <td>
