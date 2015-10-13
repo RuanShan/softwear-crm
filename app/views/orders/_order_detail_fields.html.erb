@@ -6,6 +6,12 @@
 
 <% unless f.object.fba? %>
   <div class="form-group">
+    <%= f.label :id, 'Order ID', class: 'text-danger' %>
+    <%= f.error_for :id %>
+    <%= f.text_field :id, placeholder: Order::ID_FIELD_TEXT, title: Order::ID_FIELD_TEXT, data: { toggle: 'tooltip' } %>
+  </div>
+
+  <div class="form-group">
     <%= f.label :po, 'P.O. Number' %>
     <%= f.error_for :po %>
     <%= f.text_field :po, placeholder: 'Purchase Order if required by customer' %>

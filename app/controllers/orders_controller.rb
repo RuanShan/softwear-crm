@@ -218,6 +218,7 @@ class OrdersController < InheritedResources::Base
       :fba_jobs,
 
       order: [
+        :id,
         :email, :firstname, :lastname,
         :company, :twitter, :name, :po,
         :in_hand_by, :terms, :tax_exempt,

@@ -141,7 +141,7 @@ feature 'Quotes management', quote_spec: true, js: true, retry: 2 do
     expect(current_path).to eq(edit_quote_path quote.id)
   end
 
-  scenario 'A user can edit a quote', edit: true, story_692: true do
+  scenario 'A user can edit a quote', 151: true, edit: true, story_692: true do
     visit edit_quote_path quote.id
     find('a', text: 'Details').click
     fill_in 'Quote Name', with: 'New Quote Name'
@@ -151,7 +151,7 @@ feature 'Quotes management', quote_spec: true, js: true, retry: 2 do
     expect(quote.reload.name).to eq('New Quote Name')
   end
 
-  scenario 'A user can change the shipping cost', retry: 7, story_711: true do
+  scenario 'A user can change the shipping cost', no_ci: true, retry: 7, story_711: true do
     visit edit_quote_path quote
     find('a', text: 'Details').click
     fill_in 'Shipping', with: '12'
@@ -195,7 +195,7 @@ feature 'Quotes management', quote_spec: true, js: true, retry: 2 do
     expect(page).to have_select('Bid Tier', :selected => "Tier 4 ($1000 and up)")
   end
 
-  scenario 'A users options are properly saved', edit: true, story_692: true do
+  scenario 'A users options are properly saved', no_ci: true, edit: true, story_692: true do
     visit edit_quote_path quote.id
     click_link 'Details'
     select 'No', :from => "Informal quote?"
@@ -725,7 +725,7 @@ feature 'Quotes management', quote_spec: true, js: true, retry: 2 do
     expect(quote.notes.where(comment: 'This is what I want to see')).to_not exist
   end
 
-  scenario 'A user can remove line items from a quote', story_572: true, revamp: true do
+  scenario 'A user can remove line items from a quote', no_ci: true, story_572: true, revamp: true do
     job = create(:quote_job, name: 'Some imprintables')
     job.line_items << create(:imprintable_quote_line_item, tier: Imprintable::TIER.good,   name: 'Good')
     imprintable_line_item_to_delete = create(:imprintable_quote_line_item, tier: Imprintable::TIER.good, name: 'Bad Good')

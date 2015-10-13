@@ -38,6 +38,8 @@ class Order < ActiveRecord::Base
 
   tracked by_current_user
 
+  ID_FIELD_TEXT = "DO NOT ENTER ANYTHING INTO THIS FIELD UNLESS YOU'RE KARSTEN"
+
   VALID_INVOICE_STATES = [
     'pending',
     'approved'
@@ -153,6 +155,11 @@ class Order < ActiveRecord::Base
       transition :attempted => :picked_up
       transition :notified => :picked_up
     end
+  end
+
+  def id=(new_id)
+    return if new_id.blank?
+    super
   end
 
   def ready_for_production?
