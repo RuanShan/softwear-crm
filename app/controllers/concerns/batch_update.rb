@@ -37,7 +37,7 @@ module BatchUpdate
     updated_resources = resource_attributes
       .keys
       .select { |k| /[\d\.]+/ =~ k.to_s && k.to_i >= 0 }
-      .map(&resource_class.method(:find))
+      .map { |id| resource_class.unscoped.find(id) }
 
     assigned = []
 

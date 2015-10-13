@@ -14,6 +14,9 @@ shared_examples 'batch update' do
       end
     end
     let!(:resource_class) { subject.send(:resource_class) }
+    before do
+      allow(resource_class).to receive(:unscoped).and_return resource_class
+    end
 
     let!(:params) do
       {
