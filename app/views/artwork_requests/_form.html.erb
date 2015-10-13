@@ -104,14 +104,8 @@
   </div>
 
   <div class="form-group">
-    <% #TODO: Eliminate when roles are in place
-       # becomes obsolete when there's a proofing manager
-       pm = User.find_by(last_name: 'lawcock') %>
     <div class="row">
-      <% if f.object.new_record? %>
-        <%= f.hidden_field :artist_id, value: pm.try(:id) %>
-      <% else %>
-
+      <% unless f.object.new_record? %>
         <%= f.label :artist_id, 'Artist', class: 'col-sm-2 control-label' %>
 
         <div class="col-sm-10">
