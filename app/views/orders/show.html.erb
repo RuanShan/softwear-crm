@@ -175,6 +175,19 @@
         <td><strong>Total:</strong></td>
         <td class="text-right"><%= number_to_currency(@order.total) %></td>
       </tr>
+      
+      <% @order.payments.each do |payment| %>
+          <tr id="shipping">
+            <td colspan='2'>
+              <td><strong><%= Payment::VALID_PAYMENT_METHODS[payment.payment_method]%> Payment on <%= payment.created_at.strftime('%a, %b %d, %I:%M%p') %></strong></td>
+            <td class="text-right">(<%= number_to_currency(payment.amount) %>)</td>
+          </tr>
+      <% end %>
+      <tr id="total">
+        <td colspan='2'>
+        <td><strong>Balance:</strong></td>
+        <td class="text-right"><%= number_to_currency(@order.balance) %></td>
+      </tr>
     </tbody>
   </table>
 </div>
