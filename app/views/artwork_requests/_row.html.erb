@@ -23,7 +23,7 @@
   </td>
   <td><%= display_date(artwork_request.deadline) %></td>
   <td>
-    <% if artwork_request.jobs.empty? %>
+    <% if artwork_request.jobs.empty? || artwork_request.jobs.first.order.nil? %>
       (No order)
     <% else %>
       <%= display_date(artwork_request.jobs.first.order.in_hand_by) %>
