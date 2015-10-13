@@ -158,7 +158,9 @@ class Order < ActiveRecord::Base
   def ready_for_production?
     return if production?
 
-    payment_status == 'Payment Terms Met' and invoice_state == 'approved'
+    payment_status == 'Payment Terms Met' ||
+    payment_status == 'Payment Complete' and
+    invoice_state  == 'approved'
   end
 
   def all_shipments

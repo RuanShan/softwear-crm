@@ -16,6 +16,19 @@ module ProductionCounterpart
     else
       alias_method :enqueue_update_production, :update_production
     end
+
+    def self.fetch_production_ids(start_date = nil)
+      start_date ||= 1.month.ago
+
+      updated_count = 0
+      where('softwear_prod_id IS NULL AND created_at > ?', start_date).find_each do |record|
+        if prod_record = production_class.where(softwear_crm_id: record.id).first
+          record.update_column :softwear_prod_id, prod_record.id
+          updated_count += 1
+        end
+      end
+      updated_count
+    end
   end
 
   def production_class

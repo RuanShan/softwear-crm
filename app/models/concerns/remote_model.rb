@@ -17,17 +17,17 @@ module RemoteModel
             self.site = api_settings["#{slug}_endpoint"] || "http://invalid-#{slug.to_s.dasherize}.com/api"
 
           rescue ActiveRecord::StatementInvalid => e
-            puts "WARNING: *********************************************"
-            puts e.message
-            puts "******************************************************"
+            Rails.logger.error "WARNING: *********************************************"
+            Rails.logger.error e.message
+            Rails.logger.error "******************************************************"
             self.site = "http://invalid-#{slug}.com/api"
           end
 
         rescue URI::InvalidURIError => e
-          puts "WARNING: *********************************************"
-          puts e.message
-          puts "If you don't plan to use softwear-production integration, you may disregard these."
-          puts "******************************************************"
+          Rails.logger.error "WARNING: *********************************************"
+          Rails.logger.error e.message
+          Rails.logger.error "If you don't plan to use softwear-production integration, you may disregard these."
+          Rails.logger.error "******************************************************"
         end
       end
 
