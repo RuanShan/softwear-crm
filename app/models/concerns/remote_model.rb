@@ -41,8 +41,8 @@ module RemoteModel
 
         prefix = api_settings_slug.camelize
         (super or {}).merge(
-          "#{prefix}-User-Token" => api_settings["#{api_settings["slug"]}_token"],
-          "#{prefix}-User-Email" => api_settings["#{api_settings["slug"]}_email"]
+          "X-User-Token" => api_settings["#{api_settings["slug"]}_token"],
+          "X-User-Email" => api_settings["#{api_settings["slug"]}_email"]
         )
       end
 
