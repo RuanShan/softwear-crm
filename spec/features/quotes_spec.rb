@@ -151,7 +151,7 @@ feature 'Quotes management', quote_spec: true, js: true, retry: 2 do
     expect(quote.reload.name).to eq('New Quote Name')
   end
 
-  scenario 'A user can change the shipping cost', story_711: true do
+  scenario 'A user can change the shipping cost', retry: 7, story_711: true do
     visit edit_quote_path quote
     find('a', text: 'Details').click
     fill_in 'Shipping', with: '12'

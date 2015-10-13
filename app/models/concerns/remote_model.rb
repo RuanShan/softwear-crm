@@ -31,18 +31,20 @@ module RemoteModel
         end
       end
 
-      def headers
-        if api_settings.nil?
-          raise(
-            "Please assign api_settings_slug in the model #{self.class.name} " +
-            "or add an api setting with slug #{@api_settings_slug}."
+      unless Rails.env.test?
+        def headers
+          if api_settings.nil?
+            raise(
+              "Please assign api_settings_slug in the model #{self.class.name} " +
+              "or add an api setting with slug #{@api_settings_slug}."
+            )
+          end
+
+          (super or {}).merge(
+            "X-User-Token" => api_settings["#{@api_settings_slug}_token"],
+            "X-User-Email" => api_settings["#{@api_settings_slug}_email"]
           )
         end
-
-        (super or {}).merge(
-          "X-User-Token" => api_settings["#{@api_settings_slug}_token"],
-          "X-User-Email" => api_settings["#{@api_settings_slug}_email"]
-        )
       end
 
       def post_raw(data)
