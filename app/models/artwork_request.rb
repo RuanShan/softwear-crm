@@ -32,7 +32,7 @@ class ArtworkRequest < ActiveRecord::Base
   ]
 
   default_scope { order(deadline: :asc).order(priority: :desc) }
-  scope :unassigned, -> { where("artist_id is null or artist_id = ?", (User.find_by(last_name: 'Lawcock').id rescue nil)) }
+  scope :unassigned, -> { where("artist_id is null") }
   scope :pending, -> { where.not(artwork_status: 'art created') }
 
   has_many :artwork_request_artworks
