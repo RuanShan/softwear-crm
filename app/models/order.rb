@@ -163,10 +163,11 @@ class Order < ActiveRecord::Base
   end
 
   def ready_for_production?
+    byebug
     return if production?
 
-    payment_status == 'Payment Terms Met' ||
-    payment_status == 'Payment Complete' and
+    (payment_status == 'Payment Terms Met' ||
+    payment_status == 'Payment Complete') and
     invoice_state  == 'approved'
   end
 
@@ -292,6 +293,7 @@ class Order < ActiveRecord::Base
     )
 
     update_column :softwear_prod_id, prod_order.id
+    update_column :production_state, :in_production
 
     # These hashes are used to minimize time spend looping and updating softwear_prod_id's
     job_hash = {}
