@@ -213,10 +213,14 @@
   <% end %>
   
   <% if @order.imprints.name_number.any? %>
-    <div class="col-xs-12">
+ 
+    <p class="breakhere">
+    </p>
+    <div class="col-xs-12 ">
       <h3>Names/Numbers</h3>
       <table class="table table-condensed table-striped">
         <thead>
+          <tr>
           <th>
             Job
           </th>
@@ -232,8 +236,11 @@
           <th>
             Number
           </th>
+        </tr>
         </thead>
+        <tbody>
         <% @order.name_and_numbers.each do |nn| %>
+          <tr>
           <td>
             <%= nn.imprint.job.name %>
           </td>
@@ -249,7 +256,9 @@
           <td>
             <%= nn.number %>
           </td>
+          </tr>
         <% end %>
+      </tbody>
       </table>
     </div>
   <% end %>
