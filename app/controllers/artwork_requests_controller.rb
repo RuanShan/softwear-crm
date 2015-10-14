@@ -9,7 +9,7 @@ class ArtworkRequestsController < InheritedResources::Base
     super do |success, _failure|
       success.js { notify_artist }
       success.html do
-        notify_artist unless @artwork_request.artist.blank?
+        notify_artist
         redirect_to edit_order_path(@order, anchor: 'artwork')
       end
     end
@@ -69,6 +69,7 @@ class ArtworkRequestsController < InheritedResources::Base
   end
 
   def notify_artist
+    return if @artwork_request.artist.blank?
     ArtistMailer.artist_notification(@artwork_request, action_name).deliver
   end
 
