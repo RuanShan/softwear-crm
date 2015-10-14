@@ -28,6 +28,6 @@ describe 'artwork_requests/_form.html.erb', artwork_request_spec: true do
     allow(artwork_request).to receive(:new_record?).and_return true
     form_for(artwork_request, url: order_artwork_requests_path(order, artwork_request)) { |f| @f = f }
     render partial: 'artwork_requests/form', locals: { artwork_request: artwork_request, current_user: build_stubbed(:blank_user), f: @f, order: order }
-    expect(rendered).to have_selector('input[type=hidden]#artwork_request_artist_id')
+    expect(rendered).to_not have_selector('select#artwork_request_artist_id')
   end
 end

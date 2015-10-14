@@ -52,7 +52,6 @@ class ArtworkRequest < ActiveRecord::Base
 
   accepts_nested_attributes_for :assets, allow_destroy: true
 
-  validates :artist,         presence: true
   validates :artwork_status, presence: true
   validates :deadline,       presence: true
   validates :description,    presence: true

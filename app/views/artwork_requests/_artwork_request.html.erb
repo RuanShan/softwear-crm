@@ -47,7 +47,7 @@
             <dt>Salesperson:</dt>
             <dd><%= current_user.full_name %></dd>
             <dt>Artist:</dt>
-            <dd><%= artwork_request.artist.full_name %></dd>
+            <dd><%= artwork_request.artist.full_name rescue 'unassigned' %></dd>
           </dl>
         </div>
       </div>
