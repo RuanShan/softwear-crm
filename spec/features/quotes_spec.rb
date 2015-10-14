@@ -3,7 +3,7 @@ include ApplicationHelper
 require 'email_spec'
 require_relative '../../app/controllers/jobs_controller'
 
-feature 'Quotes management', quote_spec: true, js: true, retry: 2 do
+feature 'Quotes management', quote_spec: true, js: true, retry: 3 do
   given!(:valid_user) { create(:alternate_user, insightly_api_key: "insight") }
   background(:each) { login_as(valid_user) }
 
@@ -137,7 +137,7 @@ feature 'Quotes management', quote_spec: true, js: true, retry: 2 do
   scenario 'A user can visit the edit quote page', edit: true do
     visit quotes_path
     find('i.fa.fa-edit').click
-    sleep 2 if ci?
+    sleep 2
     expect(current_path).to eq(edit_quote_path quote.id)
   end
 
