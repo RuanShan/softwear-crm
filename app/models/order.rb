@@ -163,7 +163,6 @@ class Order < ActiveRecord::Base
   end
 
   def ready_for_production?
-    byebug
     return if production?
 
     (payment_status == 'Payment Terms Met' ||
