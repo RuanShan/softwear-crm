@@ -7,9 +7,8 @@ class ArtworkRequestsController < InheritedResources::Base
 
   def create
     super do |success, _failure|
-      success.js { notify_artist }
+      success.js
       success.html do
-        notify_artist
         redirect_to edit_order_path(@order, anchor: 'artwork')
       end
     end
