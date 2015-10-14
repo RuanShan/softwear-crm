@@ -1,6 +1,7 @@
+<div class='order-invoice'>
 <div class="page-heading animated fadeInDownBig row">
   <div class="pull-left">
-    <h1><strong>Invoice</strong> #<%= @order.id %></h1>
+    <h1><strong>Invoice</strong> #<%= @order.id %> <% unless @order.po.blank? %><small>P.O. No. <%= @order.po %></small><% end %></h1>
   </div>
 
   <div class='pull-right hidden-print'>
@@ -14,49 +15,58 @@
 </div>
 
 <div class="box-info">
-  <div class="col-xs-4">
+  <div class="col-xs-12">
+    <h2><strong>Order</strong> Details</h2>
+    <table>
+      <tr>
+      <th>Order Name</th>
+      <td><%= @order.name %></td>
+      <th>In Hand By Date:</th>
+      <td><%= display_time @order.in_hand_by  %></td>
+    </tr>
+    <tr>
+      <th>Payment Terms</th>
+      <td><%= @order.terms %></td>
+      <th>Salesperson</th>
+      <td><%= @order.salesperson.full_name %></td>
+    </tr>
+    </table>
+  </div>
+</div>
+<div class="box-info">
+  <div class="col-xs-6">
     <h2><strong>Customer</strong> Details</h2>
-    <dl>
-      <dt>Name</dt>
-      <dd><%= @order.full_name %></dd>
+    <table>
+      <tr>
+      <th>Name</th>
+      <td><%= @order.full_name %></td>
+    </tr>
       <% unless @order.company.blank? %>
-        <dt>Company</dt>
-        <dd><%= @order.company %></dd>
+      <tr>
+        <th>Company</th>
+        <td><%= @order.company %></td>
+      </tr>
       <% end %>
-      <dt>E-mail</dt>
-      <dd><%= @order.email %></dd>
+      <tr>
+        <th>E-mail</th>
+        <td><%= @order.email %></td>
+      </tr>  
       <% unless @order.phone_number.blank? %>
-        <dt>Phone Number</dt>
-        <dd><%= @order.phone_number %></dd>
+      <tr>
+        <th>Phone Number</th>
+        <td><%= @order.phone_number %></td>
+      </tr>
       <% end %>
-    </dl>
+    </table>
   </div>
 
-  <div class="col-xs-4">
-    <h2><strong>Order</strong> Details</h2>
-    <dl>
-      <dt>Name</dt>
-      <dd><%= @order.name %></dd>
-      <dt>In Hand By Date:</dt>
-      <dd><%= display_time @order.in_hand_by  %></dd>
-      <dt>Payment Terms</dt>
-      <dd><%= @order.terms %></dd>
-      <dt>Payment Status</dt>
-      <dd><%= @order.payment_status %></dd>
-      <dt>Salesperson</dt>
-      <dd><%= @order.salesperson.full_name %></dd>
-      <% unless @order.po.blank? %>
-        <dt>P.O. Number</dt>
-        <dd><%= @order.po %></dd>
-      <% end %>
-    </dl>
-  </div>
-  <div class="col-xs-4">
+  <div class="col-xs-6">
     <h2><strong>Payment and Delivery</strong> Details</h2>
-    <dl>
-      <dt>Delivery Method</dt>
-      <dd><%= @order.delivery_method %></dd>
-    </dl>
+    <table>
+      <tr>
+      <th>Delivery Method</th>
+      <td><%= @order.delivery_method %></td>
+    </table>
       <% @order.shipments.each do |shipment| %>
         <dl>
           <% if shipment.shippable_type == 'Job' %>
@@ -76,13 +86,14 @@
         <% end %>
         </dl>
       <% end %>
-  </div>
-  
+  </div>  
+</div>
+<div class="box-info">
   <div class="col-xs-12">
     <% @order.jobs.each do |job| %>
       <h2 class="invoice-job-name">
-        <strong><%= job.name %></strong>: 
-        <%= job.imprints.map{|i| "#{i.name} (#{i.description})" }.join(", ") %>
+        <strong><%= job.name %></strong>: <%= job.description %><br />
+        <strong>Imprints</strong>: <%= job.imprints.map{|i| "#{i.name} (#{i.description})" }.join(", ") %>
       </h2>
 
       <% job.sort_line_items.tap do |sorted_line_items| %>
@@ -95,24 +106,24 @@
         <% end #unless_sorted  %>
       <% end #sort_line_items %>
       <% unless job.standard_line_items.empty? %>
-        <table class="table non-imprintables">
+        <table class="non-imprintables table table-condensed">
           <thead>
             <tr>
-              <td>
+              <th>
                 Name
-              </td>
-              <td>
+              </th>
+              <th>
                 Description
-              </td>
-              <td>
+              </th>
+              <th>
                 Price
-              </td>
-              <td style="width: 100px">
+              </th>
+              <th style="width: 100px">
                 Quantity
-              </td>
-              <td style="width: 100px" class="text-right">
+              </th>
+              <th style="width: 100px" class="text-right">
                 Total
-              </td>
+              </th>
             </tr>
           </thead>
         <% job.standard_line_items.each do |li| %>
@@ -142,44 +153,44 @@
     <table class="col-xs-12 table order-totals">
       <tbody>
         <tr>
-          <td colspan="4">
+          <td colspan="4"></td>
       </tr>
       <tr id="subtotal">
-        <td colspan='2'>
+        <td colspan='2'></td>
         <td style="width: 100px"><strong>Subtotal:</strong></td>
         <td style="width: 150px" class="text-right"><%= number_to_currency(@order.subtotal) %></td>
       </tr>
       <% unless @order.all_discounts.empty? %>
         <tr id="discounts">
-          <td colspan='2'>
+          <td colspan='2'></td>
           <td style="width: 100px"><strong>Discounts:</strong></td>
           <td style="width: 150px" class="text-right">(<%= number_to_currency(@order.discount_total) %>)</td>
         </tr>
       <% end %>
       <tr id="tax">
-        <td colspan='2'>
+        <td colspan='2'></td>
         <td><strong>Tax:</strong></td>
         <td class="text-right"><%= number_to_currency(@order.tax) %></td>
       </tr>
 
       <% if @order.shipping_price > 0 %>
           <tr id="shipping">
-            <td colspan='2'>
+            <td colspan='2'></td>
             <td><strong>Shipping:</strong></td>
             <td class="text-right"><%= number_to_currency(@order.shipping_price) %></td>
           </tr>
       <% end %>
 
       <tr id="total">
-        <td colspan='2'>
+        <td colspan='2'></td>
         <td><strong>Total:</strong></td>
         <td class="text-right"><%= number_to_currency(@order.total) %></td>
       </tr>
       
       <% @order.payments.each do |payment| %>
-          <tr id="shipping">
-            <td colspan='2'>
-              <td><strong><%= Payment::VALID_PAYMENT_METHODS[payment.payment_method]%> Payment on <%= payment.created_at.strftime('%a, %b %d, %I:%M%p') %></strong></td>
+          <tr id="payments">
+            <td colspan="3" class="text-right">
+            <strong><%= Payment::VALID_PAYMENT_METHODS[payment.payment_method]%> Payment on <%= payment.created_at.strftime('%a, %b %d, %I:%M%p') %></strong></td>
             <td class="text-right">(<%= number_to_currency(payment.amount) %>)</td>
           </tr>
       <% end %>
@@ -252,5 +263,4 @@
     </p>
   </div>
 </div>
-
-
+</div>
