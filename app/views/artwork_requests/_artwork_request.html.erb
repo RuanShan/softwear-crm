@@ -45,7 +45,7 @@
             <dt>Deadline:</dt>
             <dd><%= display_time(artwork_request.deadline) %></dd>
             <dt>Salesperson:</dt>
-            <dd><%= current_user.full_name %></dd>
+            <dd><%= current_user.full_name rescue 'unassigned' %></dd>
             <dt>Artist:</dt>
             <dd><%= artwork_request.artist.full_name rescue 'unassigned' %></dd>
           </dl>
