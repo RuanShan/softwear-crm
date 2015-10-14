@@ -1,12 +1,11 @@
 <% if activity.trackable_type %>
-  Updated art
-  <% if activity.trackable %>
-      by <%= activity.trackable.artist.full_name %>
+  <% if activity.owner %>
+    <%= activity.owner.full_name rescue "User Removed" %>
   <% else %>
       which has since been removed
-  <% end %>
+    <% end %>
+    has updated art
 <% else %>
-  Added some art...
 <% end %>
 <% if activity.recipient %>
   in
