@@ -3,15 +3,21 @@ module Api
     private
 
     def permitted_attributes
-      [:name]
+      super
     end
 
     def includes
       [
         proofs: {
+          include: {
+            artworks: {
+              methods: [
+                :path, :thumbnail_path
+              ]
+            }
+          },
           methods: [
-            :artwork_paths, :artwork_thumbnail_paths,
-            :mockup_paths, :mockup_thumbnail_paths
+            :mockup_paths
           ]
         }
       ]

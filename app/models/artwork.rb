@@ -30,6 +30,14 @@ class Artwork < ActiveRecord::Base
             :artwork,
             :preview, presence: true
 
+  def path
+    artwork.file.url
+  end
+
+  def thumbnail_path
+    artwork.file.url(:thumb)
+  end
+
   private
 
   def initialize_assets
