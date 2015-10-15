@@ -47,18 +47,24 @@ $(window).load ->
       mode: $(this).data('mode') or 'popup'
 
 $(document).ready ->
-  $(document).on 'submit', 'form', (e) ->
+  $(document).on 'click', 'button[type=submit],input[type=submit],a[data-remote]', (e) ->
+    e.preventDefault() if $(this).closest('[data-fading-out]').length isnt 0
+
+  disableButtons = (e) ->
     timeout = null
-    buttons = $(this).find('button[type=submit],input[type=submit]')
-    buttons.prop('disabled', true)
+    buttons = $(this).find('button[type=submit],input[type=submit],a[data-remote]')
+    buttons.prop 'disabled', true
 
     reEnable = ->
-      buttons.prop('disabled', false)
+      buttons.prop 'disabled', false
       $('[data-remote]').off 'ajax:success', reEnable
       clearTimeout(timeout) if timeout
 
     timeout = setTimeout reEnable, 10000
     $('[data-remote]').on 'ajax:success', reEnable
+
+  $(document).on 'submit', 'form', disableButtons
+  $(document).on 'ajax:start', '[data-remote]', disableButtons
 
   $(document).on 'click', '.kill-closest', (e) ->
     $(this).closest($(this).data('target')).remove()
@@ -138,4 +144,5 @@ $(document).ajaxStop ->
   after ms, -> $(element).removeAttr 'disabled'
 
 @thenRemove = ($element) ->
+  $element.prop 'data-fading-out', true
   -> $element.remove()

@@ -3,7 +3,7 @@ disableFor('#delete-job-<%= @job.id %>', 1000);
 <% if @job.destroyed? || @job.jobbable_type == 'Quote' %>
 
   $("#job-<%= @job.id %>").fadeOut(500, updateOrderTimeline);
-  $(".destroy-job-<%= @job.id %>").fadeOut(500);
+  $(".destroy-job-<%= @job.id %>").remove();
 
 <% else %>
 
