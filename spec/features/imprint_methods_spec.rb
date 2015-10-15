@@ -28,7 +28,7 @@ feature 'Imprint Method Features', imprint_method_spec: true do
 
     click_button 'Create Imprint Method'
 
-    sleep 2 if ci?
+    sleep 2
     expect(ImprintMethod.where(name: 'New Imprint Method Name')).to exist
     expect(page).to have_selector('#flash_notice', text: 'Imprint method was successfully created.')
   end
@@ -45,7 +45,7 @@ feature 'Imprint Method Features', imprint_method_spec: true do
   scenario 'A user can delete an imprint method', js: true, story_692: true do
     visit imprint_methods_path
     find("tr#imprint_method_#{imprint_method.id} a[data-action='destroy']").click
-    sleep 2 if ci?
+    sleep 2
     page.driver.browser.switch_to.alert.accept
     wait_for_ajax
     expect(imprint_method.reload.deleted_at).not_to eq(nil)

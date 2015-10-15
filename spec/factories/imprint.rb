@@ -1,5 +1,6 @@
 FactoryGirl.define do
   factory :blank_imprint, class: Imprint do
+    description '1-CF'
 
     factory :valid_imprint do
       job { |j| j.association(:job) }

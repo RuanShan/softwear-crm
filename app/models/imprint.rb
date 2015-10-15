@@ -25,7 +25,7 @@ class Imprint < ActiveRecord::Base
   scope :name_number, -> { joins(:imprint_method).where(imprint_methods: { name: 'Name/Number' }) }
 
   def name
-    "#{imprint_method.try(:name) || 'n\a'} - #{print_location.try(:name) || 'n\a'}"
+    "#{imprint_method.try(:name) || 'n\a'} - #{print_location.try(:name) || 'n\a'} - #{description}"
   end
 
   def job_and_name

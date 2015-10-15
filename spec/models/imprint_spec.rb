@@ -26,10 +26,11 @@ describe Imprint, imprint_spec: true do
     before do
       allow(subject).to receive(:imprint_method) { build_stubbed(:blank_imprint_method, name: 'IM name') }
       allow(subject).to receive(:print_location) { build_stubbed(:blank_print_location, name: 'PL name') }
+      allow(subject).to receive(:description) { '1CF' }
     end
 
     it 'returns a string of imprint_method.name - print_location.name' do
-      expect(subject.name).to eq('IM name - PL name')
+      expect(subject.name).to eq("IM name - PL name - 1CF")
     end
   end
 
