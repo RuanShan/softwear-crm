@@ -133,6 +133,8 @@ class Order < ActiveRecord::Base
   alias_method :comments, :all_comments
   alias_method :comments=, :all_comments=
 
+  paginates_per 20
+
   default_scope -> { order(created_at: :desc) }
   scope :fba, -> { where(terms: 'Fulfilled by Amazon') }
 
@@ -262,18 +264,16 @@ class Order < ActiveRecord::Base
   end
 
   def name_number_csv
-    csv = imprints
-      .with_name_number
-      .map { |i| [i.name_number.number, i.name_number.name] }
-
-    CSV.from_arrays csv, headers: %w(Number Name), write_headers: true
+    csv = name_and_numbers.map{|x| [x.imprint.job.name, x.imprint.number_format, x.imprint.name_format, x.number, x.name ]}
+    CSV.from_arrays csv, headers: ["Job", "Number Format", "Name Format", "Number", "Name"], write_headers: true
   end
 
   def name_and_numbers
-    jobs.map{|j|  j.name_number_imprints.flat_map{ |i| i.name_numbers } }.flatten
+    jobs.map{|j|  j.name_number_imprints
+      .flat_map{ |i| i.name_numbers } }
+      .flatten
+      .sort { |x, y| x.imprint_id <=> y.imprint_id }
   end
-
-
 
   def create_production_order(options = {})
     if options[:force] == false && !softwear_prod_id.nil?
@@ -375,4 +375,7 @@ class Order < ActiveRecord::Base
     return if obj.try(:freshdesk_proof_ticket_id).blank?
     "http://annarbortees.freshdesk.com/helpdesk/tickets/#{freshdesk_proof_ticket_id}"
   end
+
+  private
+  
 end

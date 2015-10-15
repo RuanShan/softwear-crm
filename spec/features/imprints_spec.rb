@@ -203,7 +203,7 @@ feature 'Imprints Management', imprint_spec: true, js: true do
     scenario 'a user can remove a name/number from the list', name_number_spec: true, story_190: true do
       expect(page).to have_css('#js-name-number-table tbody tr td', text: /#{imprint_two.name}/)
       find("#destroy-name-number-#{ name_number.id }").click
-      sleep 2 if ci?
+      sleep 2 
       page.driver.browser.switch_to.alert.accept
       wait_for_ajax
       # TODO not sure if there is a better way of doing this

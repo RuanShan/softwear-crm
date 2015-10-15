@@ -253,7 +253,7 @@ feature 'Imprintables management', imprintable_spec: true, slow: true do
   scenario 'A user can delete an existing imprintable', js: true do
     visit imprintables_path
     find("tr#imprintable_#{imprintable.id} a[data-action='destroy']").click
-    sleep 2 if ci?
+    sleep 2
     page.driver.browser.switch_to.alert.accept
     wait_for_ajax
     expect(page).to have_content 'Imprintable was successfully destroyed.'
