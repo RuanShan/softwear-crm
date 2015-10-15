@@ -11,11 +11,11 @@
     </div>
 
     <div class="col-sm-3">
-      <%= s.select :invoice_state, Order::VALID_INVOICE_STATES %>
+      <%= s.select :invoice_state, Order::VALID_INVOICE_STATES, multiple: true %>
     </div>
 
     <div class="col-sm-3">
-      <%= s.select :production_state, Order::VALID_PRODUCTION_STATES %>
+      <%= s.select :production_state, Order::VALID_PRODUCTION_STATES, multiple: true %>
     </div>
 
     <div class="col-sm-3">
