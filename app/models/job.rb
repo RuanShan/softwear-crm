@@ -253,15 +253,17 @@ class Job < ActiveRecord::Base
   end
 
   def name_number_csv
-    csv = imprints
-      .with_name_number
-      .map { |i| [i.name_number.number, i.name_number.name] }
-
-    CSV.from_arrays csv, headers: %w(Number Name), write_headers: true
+    csv = name_and_numbers.map{|x| [x.imprint.job.name, x.imprint.number_format, x.imprint.name_format, x.number, x.name ]}
+    CSV.from_arrays csv, headers: ["Job", "Number Format", "Name Format", "Number", "Name"], write_headers: true
   end
 
   def name_number_imprints
     imprints.includes(:imprint_method).where('imprint_methods.name = "Name/Number"').references(:imprint_methods)
+  end
+
+  def name_and_numbers
+    name_number_imprints.flat_map{|i| i.name_numbers}
+    .sort{ |x, y| x.imprint_id <=> y.imprint_id }  
   end
 
   def duplicate!
