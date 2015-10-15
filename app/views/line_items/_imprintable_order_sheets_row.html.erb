@@ -1,12 +1,12 @@
 <div class="row imprintable-order-sheet-imprintable">
   <% imprintable = line_items.first.imprintable %>
-   <p class='text-center'>
+   <p class='text-center' style="margin: 6px 0 15px 0">
     <strong><%= imprintable.brand_name %> <%= imprintable.style_catalog_no %></strong> - 
     <%= line_items.first.imprintable_variant.color.name %> - 
     <strong><%= imprintable.style_name %></strong>
   </p>
   <div class="col-xs-12">
-    <table class="imprintable-order-sheet-table">
+    <table class="imprintable-order-sheet-table" style="border: solid 3px #000">
       <thead>
         <tr>
           <th>
@@ -24,10 +24,10 @@
       <tbody>
         <tr>  
         <th>
-          Warehouse Location
+          Warehouse
         </th>
         <th>
-          Arrival Date
+          Arrival
         </th>
           <td>
           </td>
@@ -51,19 +51,20 @@
             </td>
             <% line_items.each do |line_item| %>
               <td>
-              
+                <%= "N/A" if line_item.quantity == 0 %>              
               </td>
             <% end %>
             <td>
             
             </td>
           </tr>
-          <tr>  
+          <tr style="border-bottom: solid 3px #000;">  
             <td>
               Arrived
             </td>
             <% line_items.each do |line_item| %>
               <td>
+                <%= "N/A" if line_item.quantity == 0 %>              
               </td>
             <% end %>
             <td>

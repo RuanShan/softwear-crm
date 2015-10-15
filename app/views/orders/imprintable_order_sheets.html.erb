@@ -6,7 +6,6 @@
       Job: <%= index + 1 %> of <%= @order.jobs.size %> - <%= job.name %><br />
       <span class="h2"><%= job.imprintable_line_items_total %> Total Pieces</span></p> 
 
-
       <% job.sort_line_items.tap do |sorted_line_items| %>
         <% unless sorted_line_items.empty? %>
           <% sorted_line_items.each do |_imprintable_name, by_color| %>
