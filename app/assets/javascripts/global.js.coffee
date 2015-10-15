@@ -41,6 +41,10 @@ $(window).load ->
 
       # self.trigger 'change'
 
+@initializeEditable = ->
+  $('.editable').each ->
+    $(this).editable
+      mode: $(this).data('mode') or 'popup'
 
 $(document).ready ->
   $(document).on 'submit', 'form', (e) ->
@@ -84,7 +88,7 @@ $(document).ready ->
     buttonsClass: "btn btn-default"
     submitButtonClass: "btn btn-primary"
 
-  $('.editable').editable()
+  initializeEditable()
 
 
 $(document).ajaxStart ->
