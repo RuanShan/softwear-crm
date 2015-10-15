@@ -63,7 +63,7 @@ class SearchFormBuilder
 
     is_textarea = options.delete :textarea
     func = is_textarea ? :text_area_tag : :text_field_tag
-    name = @model      ? "search[#{model_name}[fulltext]]" : "search[fulltext]"
+    name = @model      ? "search[#{model_name}][fulltext]" : "search[fulltext]"
 
     @template.send func, name, initial_fulltext_value, options
   end

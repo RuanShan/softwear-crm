@@ -21,13 +21,13 @@ feature 'Quote Requests Management', js: true, quote_request_spec: true do
     expect(page).to have_content quote_request.name
     expect(page).to have_content quote_request_2.name
 
-    find('.select2-selection').click
+    all('.select2-selection').last.click
     find('.select2-results__option', text: 'Assigned').click
     sleep 2
 
     expect(Sunspot.session).to be_a_search_for QuoteRequest
 
-    find('.select2-selection').click
+    all('.select2-selection').last.click
     find('.select2-results__option', text: 'Pending').click
     sleep 2
 

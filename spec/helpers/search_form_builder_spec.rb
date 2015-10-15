@@ -50,14 +50,6 @@ describe 'SearchFormBuilder', search_spec: true do
     end
   end
 
-  [:filter_all, :filter_any].each do |method_name|
-    describe "##{method_name}" do
-      it "isn't implemented yet and raises an error" do
-        expect{f.send(method_name) {}}.to raise_error SearchException
-      end
-    end
-  end
-
   [:text_field, :text_area, :number_field].each do |method_name|
     describe "##{method_name}" do
       context 'without a model' do
@@ -74,7 +66,7 @@ describe 'SearchFormBuilder', search_spec: true do
 
       it "sends #{method_name}_tag to the template with proper name format" do
         expect(template).to receive("#{method_name}_tag")
-          .with('search[dummy_object[1[name]]]', anything, anything)
+          .with('search[dummy_object][1][name]', anything, anything)
 
         f.send(method_name, :name)
       end
@@ -82,9 +74,9 @@ describe 'SearchFormBuilder', search_spec: true do
   end
 
   describe '#label' do
-    it 'calls label_tag with name formatted as search[model[num[field]]]' do
+    it 'calls label_tag with name formatted as search[model][num][field]' do
       expect(template).to receive(:label_tag)
-        .with('search[dummy_object[1[name]]]', 'Name', {})
+        .with('search[dummy_object][1][name]', 'Name', {})
 
       f.label(:name)
     end
@@ -94,18 +86,18 @@ describe 'SearchFormBuilder', search_spec: true do
 
   describe '#fulltext' do
     context 'no options' do
-      it 'calls text_field_tag with name as search[model[fulltext]]' do
+      it 'calls text_field_tag with name as search[model][fulltext]' do
         expect(template).to receive(:text_field_tag)
-          .with('search[dummy_object[fulltext]]', anything, anything)
+          .with('search[dummy_object][fulltext]', anything, anything)
 
         f.fulltext
       end
     end
 
     context 'textarea: true' do
-      it 'calls text_area_tag with name as search[model[fulltext]]' do
+      it 'calls text_area_tag with name as search[model][fulltext]' do
         expect(template).to receive(:text_area_tag)
-          .with('search[dummy_object[fulltext]]', anything, anything)
+          .with('search[dummy_object][fulltext]', anything, anything)
           
         f.fulltext textarea: true
       end
@@ -206,7 +198,7 @@ describe 'SearchFormBuilder', search_spec: true do
     end
 
     it 'formats the name of the radio buttons properly' do
-      expect(f.yes_or_no(:do_it)).to include 'search[dummy_object[1[do_it]]]'
+      expect(f.yes_or_no(:do_it)).to include 'search[dummy_object][1][do_it]'
     end
 
     context 'yes: "Totally", no: "Doubtedly"' do
