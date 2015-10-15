@@ -20,12 +20,7 @@ class SearchFormBuilder
     @last_search  = last_search
     @current_user = current_user
     @locals       = locals
-
-    # FIXME
-    # there has been no need for groups, so the form builder
-    # doesn't support them.
-    @filter_group_stack = [:all]
-    @field_count        = 0
+    @field_count  = 0
   end
 
   # Remember to define self.permitted_search_locals in your controller
@@ -43,16 +38,10 @@ class SearchFormBuilder
     end
   end
 
-  # These methods are not actually useful right now.
-  %i(filter_all filter_any).each do |method_name|
-    define_method(method_name) do |&block|
-      raise SearchException,
-            "Filter groups in search forms aren't quite implemented yet."
-
-      @filter_group_stack.push method_name.to_s.last(3).to_sym
-      block.call(self)
-      @filter_group_stack.pop
-    end
+  def any_of
+    @any = true
+    yield
+    @any = false
   end
 
   def label(field_name, content_or_options={}, options={}, &block)
@@ -85,12 +74,20 @@ class SearchFormBuilder
     end
     preprocess_options options, field_name
 
-    initial_option = options.delete(:nil) || "#{field_name.to_s.humanize}..."
+    if options[:multiple]
+      select_options = ''.html_safe
+      options[:data] ||= {}
+      options[:data][:placeholder] = "#{field_name.to_s.humanize}..."
+    else
+      initial_option = options.delete(:nil) || "#{field_name.to_s.humanize}..."
 
-    select_options =
-      @template.content_tag(:option, initial_option, value: 'nil')
+      select_options =
+        @template.content_tag(:option, initial_option, value: 'nil')
+    end
 
     choices.reduce(select_options, &compile_select_options(field_name, options))
+
+    add_class(options, 'select2')
 
     @field_count += 1
     process_options(field_name, options) +
@@ -219,9 +216,13 @@ class SearchFormBuilder
 
       next total if value.empty?
 
-      selected = value.to_s == initial_value.to_s ? 'selected' : nil
+      if initial_value.is_a?(Array)
+        selected = initial_value.include?(value.to_s) ? 'selected' : nil
+      else
+        selected = value.to_s == initial_value.to_s ? 'selected' : nil
+      end
       option =
-        @template.content_tag(:option, name, value: value, selected: selected, data: { initial_should_ne: initial_value })
+        @template.content_tag(:option, name, value: value, selected: selected)
 
       total.send(:original_concat, option)
     end
@@ -277,10 +278,6 @@ class SearchFormBuilder
     query_initial_value(field_name) || hash_initial_value(field_name)
   end
 
-  def current_depth
-    @filter_group_stack.count
-  end
-
   def query_model
     if @query.nil?
       nil
@@ -300,12 +297,21 @@ class SearchFormBuilder
     end
   end
 
-  # TODO When groups are implemented, these will have to be different
   def input_name_for(field_name, num=nil)
-    "search[#{model_name}[#{num || @field_count}[#{field_name}]]]"
+    num ||= @field_count
+
+    if @any
+      "search[#{model_name}][#{num}][_group][#{num}][#{field_name}]"
+    else
+      "search[#{model_name}][#{num}][#{field_name}]"
+    end
   end
 
   def metadata_name_for(field_name)
-    "search[#{model_name}[#{@field_count}[_metadata]]][]"
+    if @any
+      "search[#{model_name}][#{@field_count}][_group][#{@field_count}][_metadata][]"
+    else
+      "search[#{model_name}][#{@field_count}][_metadata][]"
+    end
   end
 end

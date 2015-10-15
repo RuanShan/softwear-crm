@@ -305,7 +305,7 @@ describe Search::QueriesController, search_spec: true do
   context 'POST' do
     describe '#create', :create do
       it 'creates a new query with the given filter info for the given user' do
-        post :create, 
+        post :create,
              test_params.merge(query: {user_id: valid_user.id, name: 'test q'})
         expect(response).to be_ok
 

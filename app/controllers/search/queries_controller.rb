@@ -180,7 +180,9 @@ module Search
     # execution back to process_fields to apply the contents of the
     # group.
     def process_group(model, base_scope, field_hash, context)
-      group_func = metadata?(field_hash, 'any_of') ? :any_of : :all_of
+      # group_func = metadata?(field_hash, 'any_of') ? :any_of : :all_of
+      # NOTE for now, we will assume any_of
+      group_func = :any_of
 
       context.send(
         group_func,

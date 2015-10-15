@@ -44,7 +44,12 @@ module Search
     # like boolean and string. Override for more 
     # complex behavior, like number or phrase.
     def apply(s, base=nil)
-      s.send(with_func, field, value)
+      if value.is_a?(String) && /\[.+\]/ =~ value
+        value_to_use = JSON.parse(value)
+      else
+        value_to_use = value
+      end
+      s.send(with_func, field, value_to_use)
     end
 
     # Returns the name of the proper DSL function to call
