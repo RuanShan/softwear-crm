@@ -221,7 +221,7 @@ class SearchFormBuilder
 
       selected = value.to_s == initial_value.to_s ? 'selected' : nil
       option =
-        @template.content_tag(:option, name, value: value, selected: selected)
+        @template.content_tag(:option, name, value: value, selected: selected, data: { initial_should_ne: initial_value })
 
       total.send(:original_concat, option)
     end
@@ -261,7 +261,7 @@ class SearchFormBuilder
   end
 
   def hash_initial_value(field_name)
-    return nil unless field_name.is_a?(Hash)
+    return nil unless @last_search.is_a?(Hash)
 
     traverse @last_search[model_name] do |k,v|
       return v == 'nil' ? nil : v if k.to_s == field_name.to_s
