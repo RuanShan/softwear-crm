@@ -196,6 +196,7 @@ class SearchFormBuilder
   end
 
   def traverse(h,&b)
+    return if h.nil?
     h.each do |k,v|
       case v
         when Hash
