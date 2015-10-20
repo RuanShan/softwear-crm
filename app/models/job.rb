@@ -225,6 +225,7 @@ class Job < ActiveRecord::Base
 
     LineItem
       .where(line_itemable_id: id, line_itemable_type: 'Job')
+      .where(imprintable_object_type: 'Imprintable')
       .where.not(imprintable_object_id: nil).each do |line_item|
         imprintable_name = line_item.imprintable.name
         variant          = line_item.imprintable_variant
