@@ -1,19 +1,2 @@
-<% if activity.trackable_type %>
-    Added proof
-    <% if activity.trackable %>
-      <% if activity.owner.try(:full_name) %>
-        by <%= activity.owner.full_name %>
-      <% end %>
-    <% else %>
-        which has since been removed
-    <% end %>
-<% else %>
-    Added some proof...
-<% end %>
-to
-<% if activity.recipient %>
-    <%= activity.recipient_type.underscore.humanize.downcase %>
-    <%= link_to activity.recipient.name, activity.recipient %>
-<% else %>
-    a deleted order
-<% end %>
+Proof #<%= activity.trackable_id %> was added to  
+<%= link_to "order ##{activity.trackable.order.id}", order_path(activity.trackable.order_id) rescue "an order that has since been deleted" %> 

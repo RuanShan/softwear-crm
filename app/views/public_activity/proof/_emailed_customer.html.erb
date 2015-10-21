@@ -1,21 +1,3 @@
-<% begin %>
-<% if activity.trackable_type %>
-    Emailed proof approval request
-    <% if activity.trackable %>
-        by <%= current_user.full_name %>
-    <% else %>
-        which has since been removed
-    <% end %>
-<% else %>
-    Emailed some proof...
-<% end %>
-in
-<% if activity.recipient %>
-    <%= activity.recipient_type.underscore.humanize.downcase %>
-    <%= link_to activity.recipient.name, activity.recipient %>
-<% else %>
-    a deleted order
-  <% end %>
-<% rescue Exception => e %>
-  <p>Something went terribly wrong</p>
-<% end %>
+An e-mal to approve proof #<%= activity.trackable_id %> for 
+<%= link_to "order ##{activity.trackable.order.id}", order_path(activity.trackable.order_id) rescue "an order that has since been deleted" %> 
+was sent to the customer. 

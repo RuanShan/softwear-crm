@@ -1,15 +1,1 @@
-<% if activity.trackable_type %>
-    Deleted proof
-    <% if activity.trackable %>
-        by <%= current_user.full_name %>
-    <% end %>
-<% else %>
-    Deleted some proof...
-<% end %>
-from
-<% if activity.recipient %>
-    <%= activity.recipient_type.underscore.humanize.downcase %>
-    <%= link_to activity.recipient.name, activity.recipient %>
-<% else %>
-    a deleted order
-<% end %>
+Proof #<%= activity.trackable_id %> for was deleted
