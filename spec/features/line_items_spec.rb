@@ -228,6 +228,23 @@ feature 'Line Items management', line_item_spec: true, js: true do
     end
   end
 
+  context 'editing an imprintable line-item' do 
+ 
+    scenario 'user sees updated quantity total' do 
+      line_item = LineItem.create_imprintables(job, shirt, white).sample
+
+      visit edit_order_path(order.id, anchor: 'jobs')
+      sleep 1
+
+      find("#line_item_#{line_item.id}_quantity").set 20
+      sleep 1
+      find('.update-line-items').click
+      sleep 1
+    
+      expect(page).to have_css(".imprintable-line-item-total", text: "20")
+    end
+  end
+
   scenario 'user sees errors when inputting bad data on standard line item edit' do
     non_imprintable
     visit edit_order_path(order.id, anchor: 'jobs')

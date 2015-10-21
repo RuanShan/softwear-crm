@@ -1,5 +1,5 @@
-<div class="row" style="border-bottom: solid 1px #dddddd" id="<%= line_item_id(line_items.first) %>" data-imprintable-id="<%= line_items.first.imprintable.id %>">
-  <div class="col-lg-5">
+<div class="row edit-line-item-row" style="border-bottom: solid 1px #dddddd; margin-bottom: 6px;" id="<%= line_item_id(line_items.first) %>" data-imprintable-id="<%= line_items.first.imprintable.id %>">
+  <div class="col-sm-4">
     <p>
     <strong><%= line_items.first.imprintable.brand.name %> <%= style_catalog_no %></strong><br />
     <%= color_name %><br />
@@ -8,15 +8,14 @@
     </p>
 
   </div>
-  <div class="col-lg-7">
-    <%= content_tag(:div, class: "col-sm-#{9 - line_items.count}") {} %>
+  <div class="col-sm-8">
 
-    <div class="col-sm-2" style="border-right: solid 1px #dddddd;" align='right'>
-      <label style="margin-bottom: 12px;">size:</label><br />
-      <label style="margin-bottom: 17px;">quantity:</label><br />
+    <div class="col-sm-2 col-sm-offset-<%= 9 - line_items.count %>" style="border-right: solid 1px #dddddd;" align='right'>
+      <label style="margin-bottom: 12px;">Size</label><br />
+      <label style="margin-bottom: 17px;">Quantity</label><br />
       <% if show_prices %>
-        <label style="margin-bottom: 16px;">decoration $:</label><br />
-        <label>imprintable $:</label>
+        <label style="margin-bottom: 16px;">Decoration $</label><br />
+        <label>Item $:</label>
       <% end %>
     </div>
 
@@ -25,6 +24,11 @@
     <% end %>
 
     <div class="col-sm-1">
+      <label style="margin-bottom: 12px;">Total</label><br />
+      <span class='imprintable-line-item-total'>
+        <%= line_items.map{|x| x.quantity }.inject(:+) %>
+      </span>
+      <br /><br />
       <%= link_to line_item_path(line_items.map(&:id).join('/')),
                   title: 'Delete', remote: true, method: :delete do %>
         <i class="fa fa-2x danger fa-times-circle"></i>

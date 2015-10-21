@@ -71,6 +71,15 @@
 <% end %>
 
 <% unless @line_items.empty? %>
+  $('.edit-line-item-row').each(function(index) {
+    var totalPieces = 0;
+    $(this).find('.imprintable-line-item-quantity').each(function(){
+      totalPieces = totalPieces + parseInt($(this).val());
+    });
+
+    $(this).find('.imprintable-line-item-total').html(totalPieces); 
+  });
+
   <%= update_order_timeline(@line_items.first.line_itemable.try(:jobbable)) %>
   window.onbeforeunload = undefined;
 <% end %>
