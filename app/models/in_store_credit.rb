@@ -18,7 +18,7 @@ class InStoreCredit < ActiveRecord::Base
   end
 
   def used?
-    !discount.nil? && discount.discountable?
+    !discount.nil? && discount.discountable_id
   end
   alias_method :used, :used?
 
