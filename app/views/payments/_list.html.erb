@@ -1,0 +1,27 @@
+<ul id='payments-list'>
+  <% payments.each do |payment| %>
+    <% unless payment.is_refunded? %>
+      <dt>Payment <%= payment.id %></dt>
+      <dt>Method:</dt>
+      <dd class='method'><%= Payment::VALID_PAYMENT_METHODS[payment.payment_method] %></dd>
+      <dt>Salesperson:</dt>
+      <dd class='salesperson'><%= payment.salesperson.full_name rescue 'No Salesperson' %></dd>
+      <dt>Date:</dt>
+      <dd class='date'><%= payment.created_at.strftime('%a, %b %d, %Y %I:%M%p') %></dd>
+      <dt>Amount: </dt>
+      <dd class='amount'><%= number_to_currency payment.amount %></dd>
+      <% unless Payment::FIELDS_TO_RENDER_FOR_METHOD[payment.payment_method].nil? %>
+        <% Payment::FIELDS_TO_RENDER_FOR_METHOD[payment.payment_method].each do |field| %>
+          <dt><%= field.to_s.humanize %></dt>
+          <dd class="<%= field.to_s.gsub('_', '-') %>"><%= payment.send(field) %></dd>
+        <% end %>
+      <% end %>
+      
+      <dd class='refund'>
+        <%= link_to 'Refund Payment', edit_payment_path(payment, refund: true, order_id: payment.order_id),
+                     class: 'order_payment_refund_link', remote: true %>
+      </dd>
+      <br>
+    <% end %>
+   <% end %>
+</ul>

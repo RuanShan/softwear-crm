@@ -12,6 +12,31 @@ describe Payment, payment_spec: true do
 
   describe 'Validations' do
     it { is_expected.to validate_presence_of(:store) }
+    it { is_expected.to validate_presence_of(:payment_method) }
+    it { is_expected.to validate_presence_of(:salesperson) }
+    it { is_expected.to validate_presence_of(:amount) }
+    
+    context 'when payment_method = 5' do 
+      before { subject.payment_method = 5 }
+      
+      it { is_expected.to validate_presence_of :t_name }
+      it { is_expected.to validate_presence_of :t_company_name }
+      it { is_expected.to validate_presence_of :tf_number }
+    end
+    
+    context 'when payment_method = 4' do 
+      before { subject.payment_method = 4 }
+      
+      it { is_expected.to validate_presence_of :pp_transaction_id }
+    end
+    
+    context 'when payment_method = 6' do 
+      before { subject.payment_method = 6 }
+       
+      it { is_expected.to validate_presence_of :t_name }
+      it { is_expected.to validate_presence_of :t_company_name }
+      it { is_expected.to validate_presence_of :t_description }
+    end
   end
 
   describe '#is_refunded?' do

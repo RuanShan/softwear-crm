@@ -11,6 +11,14 @@ class Payment < ActiveRecord::Base
     7 => 'Wire Transfer'
   }
 
+  FIELDS_TO_RENDER_FOR_METHOD = {
+    3 => [:check_dl_no, :check_phone_no],
+    4 => [:pp_transaction_id],
+    5 => [:t_name, :t_company_name, :tf_number],
+    6 => [:t_name, :t_company_name, :t_description],
+    7 => [:pp_transaction_id]
+  }
+
   acts_as_paranoid
 
   default_scope { order(:created_at) }
@@ -19,7 +27,10 @@ class Payment < ActiveRecord::Base
   belongs_to :store
   belongs_to :salesperson, class_name: User
 
-  validates :store, presence: true
+  validates :store, :payment_method, :amount, :salesperson, presence: true
+  validates :pp_transaction_id, presence: true, if: Proc.new{ |p| p.payment_method == 4 || p.payment_method == 7 }
+  validates :t_name, :t_company_name, :tf_number, presence: true, if: Proc.new{ |p| p.payment_method == 5 }
+  validates :t_name, :t_company_name, :t_description, presence: true, if: Proc.new{ |p| p.payment_method == 6 }
 
   def is_refunded?
     refunded

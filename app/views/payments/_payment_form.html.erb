@@ -1,119 +1,46 @@
 <%= render partial: 'shared/modal_errors', locals: { object: @payment } %>
 
-<%= form_for [@order, @payment], builder: LancengFormBuilder do |f| %>
-  <div id="horizontal-form" class="collapse in">
+<div id="horizontal-form" class="collapse in">
+<%= bootstrap_form_for [@order, @payment] do |f| %>
     <%= f.hidden_field :salesperson_id, value: @current_user.id %>
-
     <%= f.hidden_field :order_id, value: @order.id %>
-
     <%= f.hidden_field :payment_method, value: payment_method %>
 
     <div id="data_supply" data-total="<%= @order.total %>" aria-hidden="true"></div>
 
-    <div class="form-group">
-      <%= f.label :user %><br>
+    <p><%= f.label :salesperson %>
+    </p>
+    
+    <p><%= @current_user.full_name %>
+    <%= link_to '(Not You? Sign Out)', destroy_user_session_path, class: 'md-trigger',
+                method: :delete, 'data-model'=>'logout-modal-alt' %>
+    </p>
 
-      <%= @current_user.full_name %>
+    <p><%= f.label :method %>
+    </p>
+    <p><%= english_payment_method = Payment::VALID_PAYMENT_METHODS[payment_method.to_i] %>
+    </p>
 
-      <%= link_to '(Change user)', destroy_user_session_path, class: 'md-trigger',
-                  method: :delete, 'data-model'=>'logout-modal-alt' %>
-    </div>
+    <%= f.select :store_id, Store.order(:name).map{|s| [s.name, s.id] }, { selected: @current_user.store_id}, { } %>
+    <%= f.text_field :amount, prepend: '$' %>
 
-    <div class="form-group">
-      <%= f.label :store %>
-
-      <%= f.collection_select :store_id, Store.order(:name), :id, :name,
-                              { selected: @order.salesperson.store_id }, { class: 'form-control' } %>
-    </div>
-
-    <div class="form-group">
-      <%= f.label :amount %>
-
-      <div class="input-group">
-        <span class="input-group-addon">$</span>
-
-        <%= f.text_field :amount, id: 'amount_field' %>
-      </div>
-    </div>
-
-    <% if payment_method == '2' %>
-      <div class="form-group">
-        <%= f.label :cc_invoice_no, 'Invoice Number' %>
-
-        <%= f.text_field :cc_invoice_no %>
-      </div>
-
-      <div class="form-group">
-        <%= f.label :cc_batch_no, 'Batch Number' %>
-
-        <%= f.text_field :cc_batch_no %>
-      </div>
-
-    <% elsif payment_method == '3' %>
-      <div class="form-group">
-        <%= f.label :check_dl_no, 'Drivers License Number' %>
-
-        <%= f.text_field :check_dl_no %>
-      </div>
-
-      <div class="form-group">
-        <%= f.label :check_phone_no, 'Phone Number' %>
-
-        <%= f.text_field :check_phone_no %>
-      </div>
-
-    <% elsif payment_method == '4' %>
-      <div class="form-group">
-        <%= f.label :pp_transaction_id, 'PayPal Transaction ID' %>
-
-        <%= f.text_field :pp_transaction_id %>
-      </div>
-
-    <% elsif payment_method == '5' %>
-      <div class='form-group'>
-        <%= f.label :t_name, 'Name' %>
-
-        <%= f.text_field :t_name %>
-      </div>
-
-      <div class='form-group'>
-        <%= f.label :t_company_name, 'Company Name' %>
-
-        <%= f.text_field :t_company_name %>
-      </div>
-
-      <div class='form-group'>
-        <%= f.label :tf_number, 'Trade First Number' %>
-
-        <%= f.text_field :tf_number %>
-      </div>
-
-    <% elsif payment_method == '6' %>
-      <div class='form-group'>
-        <%= f.label :t_description, 'Trade Description' %>
-
-        <%= f.text_area :t_description %>
-      </div>
-
-      <div class='form-group'>
-        <%= f.label :t_name, 'Name' %>
-
-        <%= f.text_field :t_name %>
-      </div>
-
-      <div class='form-group'>
-        <%= f.label :t_company_name, 'Company Name' %>
-
-        <%= f.text_field :t_company_name %>
-      </div>
+    <% if english_payment_method == 'Check' %>
+        <%= f.text_field :check_dl_no, label: 'Customer Drivers License' %>
+        <%= f.text_field :check_phone_no, label: 'Customer Phone Number' %>
+    <% elsif english_payment_method == 'PayPal' || payment_method == 'Wire Transfer' %>
+        <%= f.text_field :pp_transaction_id, label: 'Transaction ID' %>
+    <% elsif english_payment_method == 'Trade First' %>
+        <%= f.text_field :t_name, label: 'Trade First Cardmember Name' %>
+        <%= f.text_field :t_company_name, label: 'Trade First Company Name' %>
+        <%= f.text_field :tf_number, label: 'Trade First Card Number' %>
+    <% elsif english_payment_method == 'Trade' %>
+        <%= f.text_field :t_name, label: 'Trade Partner Name' %>
+        <%= f.text_field :t_company_name, label: 'Trade Partner Company' %>
+        <%= f.text_area :t_description, label: 'Description of traded goods' %>
     <% end %>
 
-    <div class="form-group">
-      <% # TODO how to remove inline javascript onclick event?? %>
-      <%= f.submit 'Apply Payment', class: 'btn btn-info', id: 'submit_payment_button',
-                   onclick: "return confirm('Are you sure you would like to add a payment of ' +
-                             document.getElementById('amount_field').value + '?')" %>
-    </div>
+    <%= f.submit 'Apply Payment', class: 'btn btn-success', id: 'submit_payment_button', 
+      data: {confirm: 'Are you sure you would like to add this payment?'} %>
 
-  </div>
-<% end %>
+  <% end %>
+</div>

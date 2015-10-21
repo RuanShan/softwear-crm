@@ -24,7 +24,7 @@ feature 'Payments management', js: true, payment_spec: true, retry: 2 do
     scenario 'balance is still correctly computed and displayed', story_692: true do
       visit (edit_order_path order.id) + '#payments'
       find(:css, '#cash-button').click
-      fill_in 'amount_field', with: '20'
+      fill_in 'payment_amount', with: '20'
       click_button 'Apply Payment'
       sleep 2
       page.driver.browser.switch_to.alert.accept
@@ -43,29 +43,27 @@ feature 'Payments management', js: true, payment_spec: true, retry: 2 do
     visit edit_order_path order, anchor: 'payments'
     find('#cash-button').click
     sleep 1
-    expect(page).to have_css '#amount_field'
+    expect(page).to have_css '#payment_amount'
     sleep 1
     find('#cash-button').click
     sleep 1
-    expect(page).to_not have_css '#amount_field'
+    expect(page).to_not have_css '#payment_amount'
   end
 
   scenario 'A salesperson can uncollapse a payment type, then switch to another one', story_274: true do
     visit edit_order_path order, anchor: 'payments'
     find('#cash-button').click
     sleep 1
-    expect(page).to have_css '#amount_field'
-    expect(page).to_not have_css '#payment_cc_batch_no'
+    expect(page).to have_css '#payment_amount'
     sleep 1
     find('#cc-button').click
     sleep 1.5
-    expect(page).to have_css '#payment_cc_batch_no'
   end
 
   scenario 'A salesperson can make a payment', retry: 3, story_692: true do
     visit (edit_order_path order.id) + '#payments'
     find(:css, '#cash-button').click
-    fill_in 'amount_field', with: '100'
+    fill_in 'payment_amount', with: '100'
     click_button 'Apply Payment'
     sleep 2
     page.driver.browser.switch_to.alert.accept
@@ -88,7 +86,7 @@ feature 'Payments management', js: true, payment_spec: true, retry: 2 do
     scenario 'applying a payment' do
       visit (edit_order_path order.id) + '#payments'
       find(:css, '#cash-button').click
-      fill_in 'amount_field', with: 20
+      fill_in 'payment_amount', with: 20
       click_button 'Apply Payment'
       sleep 2
       page.driver.browser.switch_to.alert.accept
