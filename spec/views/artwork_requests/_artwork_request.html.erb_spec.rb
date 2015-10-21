@@ -5,9 +5,7 @@ describe 'artwork_requests/_artwork_request.html.erb', artwork_request_spec: tru
   let!(:order) { build_stubbed(:blank_order) }
 
   before(:each) do
-    current_user = build_stubbed(:blank_user)
-    allow(current_user).to receive(:full_name).and_return('Stone Cold Steve Austin')
-    render partial: 'artwork_requests/artwork_request', locals: { artwork_request: artwork_request, current_user: current_user, order: order }
+    render partial: 'artwork_requests/artwork_request', locals: { artwork_request: artwork_request, order: order }
   end
 
   context 'given a single artwork request' do
@@ -32,7 +30,7 @@ describe 'artwork_requests/_artwork_request.html.erb', artwork_request_spec: tru
       expect(rendered).to have_css('dt', text: 'Deadline:')
       expect(rendered).to have_css('dd', text: "#{display_time(artwork_request.deadline)}")
       expect(rendered).to have_css('dt', text: 'Salesperson:')
-      expect(rendered).to have_css('dd', text: 'Stone Cold Steve Austin')
+      expect(rendered).to have_css('dd', text: artwork_request.salesperson.full_name)
       expect(rendered).to have_css('dt', text: 'Artist:')
       expect(rendered).to have_css('dd', text: "#{artwork_request.artist.full_name}")
       expect(rendered).to have_css('dt', text: 'Attachments:')
