@@ -76,6 +76,35 @@ feature 'Artwork Request Features', js: true, artwork_request_spec: true do
     expect(artwork_request.reload.deleted_at).to be_truthy
   end
 
+  scenario 'A user can add ink colors for more than one job sharing the same imprint', story_1005: true do
+    visit edit_order_path(order)
+    first('.dup-job-button').click
+    sleep ci? ? 3 : 1
+    expect(order.reload.jobs.size).to eq 2
+    visit new_order_artwork_request_path(order)
+
+    first('.select2-selection__rendered').click
+    sleep 0.1
+    all('.select2-results__option').first.click
+    sleep 0.1
+    first('.select2-selection__rendered').click
+    sleep 0.1
+    all('.select2-results__option').last.click
+    sleep 0.1
+
+    find('#artwork_request_ink_color_ids_').select(imprint_method.ink_colors.first.name)
+    sleep 0.1
+    fill_in 'artwork_request_deadline', with: '01/23/1992 8:55 PM'
+    fill_in 'Description', with: 'hello'
+
+    click_button 'Create Artwork Request'
+    sleep 1
+    find(:css, 'button.close').click
+    expect(ArtworkRequest.where(description: 'hello')).to exist
+    expect(ArtworkRequest.where(description: 'hello').first.ink_colors.first.name)
+      .to eq imprint_method.ink_colors.first.name
+  end
+
   context 'search', search: true, no_ci: true do
     background do
       visit artwork_requests_path

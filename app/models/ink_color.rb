@@ -8,27 +8,23 @@ class InkColor < ActiveRecord::Base
 
   validates :name, presence: true, uniqueness: true
 
-  # TODO perhaps this could be sped up
   def self.compatible_with(imprint_methods)
     return [] if imprint_methods.blank?
 
-    ink_color_counts = {}
-    imprint_method_count = imprint_methods.size
-    unless imprint_methods.is_a?(ActiveRecord::Relation)
-      imprint_methods = ImprintMethod.where(id: imprint_methods.compact.map(&:id))
+    if imprint_methods.is_a?(ActiveRecord::Relation)
+      imprint_method_ids = imprint_methods.pluck(:id)
+    else
+      imprint_method_ids = imprint_methods.map(&:id)
     end
 
-    potential_ink_color_ids = InkColor
+    ink_color_ids = InkColor
       .joins(:imprint_methods)
-      .where(imprint_methods: { id: imprint_methods.pluck(:id) })
+      .where(imprint_methods: { id: imprint_method_ids })
+      .pluck(:id)
 
-    potential_ink_color_ids.each do |ink_color_id|
-      ink_color_counts[ink_color_id] =
-        imprint_methods.joins(:ink_colors).where(ink_colors: { id: ink_color_id }).size
+    imprint_methods.each do |imprint_method|
+      ink_color_ids &= imprint_method.ink_color_ids
     end
-
-    ink_color_ids = ink_color_counts.keys
-      .select { |ink_color_id| ink_color_counts[ink_color_id] == imprint_method_count }
 
     InkColor.where(id: ink_color_ids)
   end
