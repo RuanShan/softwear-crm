@@ -99,7 +99,7 @@ module LineItemHelpers
 
   def stub_imprintable_line_items(options)
     allow(LineItem).to receive_message_chain(
-      :where, :where, :not
+      :where, :where, :where, :not
     )
       .and_return options[:with]
   end
