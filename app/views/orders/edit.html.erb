@@ -1,6 +1,5 @@
 <%= render_error_modal_for @order %>
 
-
 <div class="row-fluid">
     <div class="page-heading animated fadeInDownBig pull-left">
       <h1>Edit <strong>Order #<%= @order.id %></strong></h1>
@@ -200,3 +199,6 @@
         </div>
     </div>
 </div>
+
+<% # WEIRD BUGFIX: see defintion of this method in quote_helper.rb %>
+<%= cleanup_invalid_imprintable_variants_for(@order) %>

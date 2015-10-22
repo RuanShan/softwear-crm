@@ -56,6 +56,21 @@ feature 'Order management', order_spec: true,  js: true do
     expect(Order.where(firstname: 'Guy')).to exist
   end
 
+  scenario 'an order with a line item that has a bad imprintable variant removes it and informs the user', bugfix: true do
+    job = create(:job)
+    line_item = create(:imprintable_line_item)
+    job.line_items << line_item
+    line_item.update_column :imprintable_object_id, 19999
+    order.jobs << job
+
+    visit edit_order_path order
+
+    expect(page).to have_content "Some line items in this order were somehow referencing "\
+                                 "imprintable variants that don't exist and were removed."
+
+    expect(job.reload.line_items).to be_empty
+  end
+
   context 'involving quotes' do
     given!(:quote) { create(:valid_quote) }
     background(:each) do

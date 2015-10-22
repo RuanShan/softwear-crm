@@ -71,7 +71,7 @@
       <% end %>
 
       <%= form_for :line_item, method: :put, url: line_items_update_path, remote: true, builder: BatchFormBuilder do |f| %>
-        <% job.sort_line_items.tap do |sorted_line_items| %>
+        <% job.sort_line_items(@order).tap do |sorted_line_items| %>
           <% unless sorted_line_items.empty? %>
             <% sorted_line_items.each do |_imprintable_name, by_color| %>
               <% by_color.each do |color_name, line_items| %>

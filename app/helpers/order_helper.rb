@@ -112,4 +112,23 @@ module OrderHelper
   def render_fba_data(fba)
     hidden_field_tag('job_attributes[]', fba.to_h.to_json)
   end
+
+  # HACK/DEBUG very similar to the fix in quote_helper.rb. Sometimes line items have
+  # imprintable variant IDs that don't belong to imprintable variants
+  # orders.js.coffee uses this span.
+  def cleanup_invalid_imprintable_variants_for(order)
+    return if order.bad_variant_ids.blank?
+
+    order.issue_warning(
+      "Bad imprintable variants",
+      "This order had line items with imprintable variant ids that don't "+
+      "correspond to real imprintable variants. The ids were #{order.bad_variant_ids}."
+    )
+
+    order.bad_variant_ids = nil
+
+    content_tag(
+      :span, '', class: 'busted-line-item-imprintable-variants'
+    )
+  end
 end

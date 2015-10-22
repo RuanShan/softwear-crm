@@ -53,6 +53,13 @@ appendActivities = (content) ->
 
 
 $(window).load ->
+  bustedLineItemCount = $('.busted-line-item-imprintable-variants').length
+  if bustedLineItemCount > 0
+    errorModal "Some line items in this order were somehow referencing imprintable
+                variants that don't exist and were removed. Please make sure
+                the line items in this order are correct. Contact
+                devteam@annarbortees.com if you can reproduce this."
+
   prepareShippableID()
 
   # FIXME 'this is a hack, the whole thing is a hack' - Nigel

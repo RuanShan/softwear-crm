@@ -220,13 +220,18 @@ class Job < ActiveRecord::Base
     # like this, I feel it reads much better with #(), or even #[].
   end
 
-  def sort_line_items
+  def sort_line_items(order_instance = nil)
     result = {}
 
     LineItem
       .where(line_itemable_id: id, line_itemable_type: 'Job')
-      .where(imprintable_object_type: 'ImprintableVariant')
       .where.not(imprintable_object_id: nil).each do |line_item|
+        if line_item.imprintable_variant.nil?
+          (order_instance || order).bad_variant_ids << line_item.imprintable_object_id
+          line_item.destroy
+          next
+        end
+
         imprintable_name = line_item.imprintable.name
         variant          = line_item.imprintable_variant
         color_name       = variant.color.name

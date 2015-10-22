@@ -96,7 +96,7 @@
         <strong>Imprints</strong>: <%= job.imprints.map{|i| "#{i.name} (#{i.description})" }.join(", ") %>
       </h2>
 
-      <% job.sort_line_items.tap do |sorted_line_items| %>
+      <% job.sort_line_items(@order).tap do |sorted_line_items| %>
         <% unless sorted_line_items.empty? %>
           <% sorted_line_items.each do |_imprintable_name, by_color| %>
             <% by_color.each do |color_name, line_items| %>

@@ -138,6 +138,8 @@ class Order < ActiveRecord::Base
   default_scope -> { order(created_at: :desc) }
   scope :fba, -> { where(terms: 'Fulfilled by Amazon') }
 
+  attr_accessor :bad_variant_ids
+
   state_machine :notification_state, :initial => :pending do
 
     event :attempted do
@@ -162,6 +164,10 @@ class Order < ActiveRecord::Base
   def id=(new_id)
     return if new_id.blank?
     super
+  end
+
+  def bad_variant_ids
+    @bad_variant_ids ||= []
   end
 
   def ready_for_production?
