@@ -296,7 +296,7 @@ class LineItemsController < InheritedResources::Base
   end
 
   def destroy_single(id)
-    @line_item = LineItem.find(id)
+    @line_item = LineItem.unscoped.find(id)
     @line_item.destroy
 
     respond_to do |format|

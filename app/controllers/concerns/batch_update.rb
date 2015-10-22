@@ -16,14 +16,16 @@ module BatchUpdate
     resource_name = self.class.controller_name.singularize.to_sym
     params.permit(resource_name).permit!
 
-    resource_attributes = params[resource_name].to_hash
+    resource_attributes = params[resource_name].try(:to_hash)
 
-    update_positives(resource_attributes, options[:assignment])
-    if options[:create_negatives]
-      create_from_negatives(resource_attributes,
-        options[:parent],
-        options[:assignment]
-      )
+    if resource_attributes
+      update_positives(resource_attributes, options[:assignment])
+      if options[:create_negatives]
+        create_from_negatives(resource_attributes,
+          options[:parent],
+          options[:assignment]
+        )
+      end
     end
 
     respond_to(&block) if block_given?
