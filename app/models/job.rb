@@ -226,7 +226,7 @@ class Job < ActiveRecord::Base
     LineItem
       .where(line_itemable_id: id, line_itemable_type: 'Job')
       .where.not(imprintable_object_id: nil).each do |line_item|
-        imprintable_name = line_item.imprintable.name
+        imprintable_name = line_item.imprintable.try(:name) || line_item.imprintable_object_id
         variant          = line_item.imprintable_variant
         color_name       = variant.color.name
 
@@ -263,7 +263,7 @@ class Job < ActiveRecord::Base
 
   def name_and_numbers
     name_number_imprints.flat_map{|i| i.name_numbers}
-    .sort{ |x, y| x.imprint_id <=> y.imprint_id }  
+    .sort{ |x, y| x.imprint_id <=> y.imprint_id }
   end
 
   def duplicate!
