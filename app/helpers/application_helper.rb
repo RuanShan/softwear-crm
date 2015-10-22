@@ -118,4 +118,13 @@ module ApplicationHelper
       "You're probably in development and don't care about max file upload size"
     end
   end
+
+  def preview_artwork(artwork, size = :medium)
+    img_options = {}
+    unless artwork.bg_color.blank?
+      img_options[:style] = "background-color: #{artwork.bg_color};"
+    end
+
+    image_tag artwork.preview.file.url(size), img_options
+  end
 end
