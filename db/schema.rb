@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20151001214414) do
+ActiveRecord::Schema.define(version: 20151022000753) do
 
   create_table "activities", force: :cascade do |t|
     t.integer  "trackable_id",   limit: 4
@@ -737,7 +737,7 @@ ActiveRecord::Schema.define(version: 20151001214414) do
     t.integer  "shipped_by_id",      limit: 4
     t.integer  "shippable_id",       limit: 4
     t.string   "shippable_type",     limit: 255
-    t.decimal  "shipping_cost",                  precision: 10, scale: 2
+    t.decimal  "shipping_cost",                    precision: 10, scale: 2
     t.datetime "shipped_at"
     t.string   "tracking_number",    limit: 255
     t.string   "status",             limit: 255
@@ -751,8 +751,9 @@ ActiveRecord::Schema.define(version: 20151001214414) do
     t.string   "state",              limit: 255
     t.string   "zipcode",            limit: 255
     t.string   "country",            limit: 255
-    t.datetime "created_at",                                              null: false
-    t.datetime "updated_at",                                              null: false
+    t.datetime "created_at",                                                null: false
+    t.datetime "updated_at",                                                null: false
+    t.text     "notes",              limit: 65535
   end
 
   create_table "shipping_methods", force: :cascade do |t|

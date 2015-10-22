@@ -36,6 +36,11 @@
               <address>
                 <%= shipment.complete_address.join('<br />').html_safe %>
               </address>
+              <% unless shipment.notes.blank? %>
+                <p>
+                  <%= shipment.notes %>
+                </p>
+              <% end %>
               <%= link_to edit_shipment_path(shipment), remote: true, class: 'btn btn-primary' do  %>
                 <i class="glyphicon glyphicon-edit"></i> Edit
               <% end %>
