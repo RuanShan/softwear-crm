@@ -7,7 +7,6 @@ feature 'Order management', order_spec: true,  js: true do
 
   given!(:order) { create(:order) }
 
-
   scenario 'user views the index of orders' do
     visit root_path
     unhide_dashboard

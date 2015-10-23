@@ -5,7 +5,8 @@ class Store < ActiveRecord::Base
   has_many :imprintable_stores
   has_many :imprintables, through: :imprintable_stores
 
-  validates_presence_of :name, :address_1, :city, :state, :zipcode, :country, :phone, :sales_email 
+  validates :name, :address_1, :city, :state, :zipcode, :country, :phone, :sales_email, presence: true
+  validates :name, uniqueness: true
   
 
   def address_array
