@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 describe 'stores/edit.html.erb', store_spec: true do
-  let!(:store) { build_stubbed(:valid_store) }
+  let!(:store) { create(:valid_store) }
   before(:each) do
     assign(:store, store)
     render file: 'stores/edit', id: store.to_param

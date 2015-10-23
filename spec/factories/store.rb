@@ -15,5 +15,8 @@ FactoryGirl.define do
       phone '800-555-1212'
       sales_email 'sales@softwearcrm.com'
     end
+
+    initialize_with { Store.find_or_create_by(name: name) }
+
   end
 end
