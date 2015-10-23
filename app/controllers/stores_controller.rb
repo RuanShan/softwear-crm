@@ -29,6 +29,7 @@ class StoresController < InheritedResources::Base
   private
 
   def permitted_params
-    params.permit(store: [:name])
+    params.permit(store: [:name, :address_1, :address_2, :city, :state, :zip, 
+                  :country, :phone, :zipcode, :sales_email])
   end
 end

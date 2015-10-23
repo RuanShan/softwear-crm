@@ -25,13 +25,8 @@ FactoryGirl.define do
       tax_exempt false
       delivery_method 'Ship to one location'
       phone_number '123-456-7890'
-
-      before(:create) do |order|
-        store = FactoryGirl.create(:valid_store)
-        user = FactoryGirl.create(:user, email: "order_#{Random.rand}_guy@gmail.com")
-        order.store_id = store.id
-        order.salesperson_id = user.id
-      end
+      salesperson { |t| t.association(:user, email: "order_#{Random.rand}_guy@gmail.com")} 
+      store { |t| t.association(:valid_store) }
 
       factory :order_with_job do
         after(:create) { |o| o.jobs << create(:job) }

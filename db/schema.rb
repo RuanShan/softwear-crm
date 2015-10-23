@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20151022000753) do
+ActiveRecord::Schema.define(version: 20151022194514) do
 
   create_table "activities", force: :cascade do |t|
     t.integer  "trackable_id",   limit: 4
@@ -497,9 +497,9 @@ ActiveRecord::Schema.define(version: 20151022000753) do
     t.decimal  "shipping_price",                        precision: 10, scale: 2, default: 0.0
     t.string   "invoice_state",             limit: 255
     t.string   "production_state",          limit: 255
-    t.integer  "softwear_prod_id",          limit: 4
     t.string   "notification_state",        limit: 255
     t.integer  "freshdesk_proof_ticket_id", limit: 4
+    t.integer  "softwear_prod_id",          limit: 4
   end
 
   add_index "orders", ["deleted_at"], name: "index_orders_on_deleted_at", using: :btree
@@ -783,10 +783,18 @@ ActiveRecord::Schema.define(version: 20151022000753) do
   add_index "sizes", ["retail"], name: "index_sizes_on_retail", using: :btree
 
   create_table "stores", force: :cascade do |t|
-    t.string   "name",       limit: 255
-    t.string   "deleted_at", limit: 255
+    t.string   "name",        limit: 255
+    t.string   "deleted_at",  limit: 255
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.string   "address_1",   limit: 255
+    t.string   "address_2",   limit: 255
+    t.string   "city",        limit: 255
+    t.string   "state",       limit: 255
+    t.string   "zipcode",     limit: 255
+    t.string   "country",     limit: 255
+    t.string   "phone",       limit: 255
+    t.string   "sales_email", limit: 255
   end
 
   add_index "stores", ["deleted_at"], name: "index_stores_on_deleted_at", using: :btree

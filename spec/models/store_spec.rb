@@ -11,5 +11,12 @@ describe Store, store_spec: true do
 
   describe 'Validations' do
     it { is_expected.to validate_presence_of(:name) }
+    it { is_expected.to validate_presence_of(:address_1) }
+    it { is_expected.to validate_presence_of(:city) }
+    it { is_expected.to validate_presence_of(:state) }
+    it { is_expected.to validate_presence_of(:zipcode) }
+    it { is_expected.to validate_presence_of(:country) }
+    it { is_expected.to validate_presence_of(:phone) }
+    it { is_expected.to validate_presence_of(:sales_email) }
   end
 end

@@ -1,7 +1,7 @@
 <div class='order-invoice'>
 <div class="page-heading animated fadeInDownBig row">
   <div class="pull-left">
-    <h1><strong>Invoice</strong> #<%= @order.id %> <% unless @order.po.blank? %><small>P.O. No. <%= @order.po %></small><% end %></h1>
+    <h1><strong><%= @order.store.name %> Invoice</strong> #<%= @order.id %> <% unless @order.po.blank? %><small>P.O. No. <%= @order.po %></small><% end %></h1>
   </div>
 
   <div class='pull-right hidden-print'>
@@ -263,12 +263,12 @@
     </div>
   <% end %>
 
-  <div class="col-xs-12 text-center">
+  <div class="col-xs-12 text-center" id="invoice_footer">
     <h3>Thank you for your business!</h3>
     <p>
-      The Ann Arbor T-shirt Company<br />
-      2275 S. Industrial Hwy - Ann Arbor MI, 48104, USA<br />
-      734-274-2659 - sales@annarbortees.com
+      <%= @order.store.name %><br />
+      <%= @order.store.address_array.join(" - ") %><br />
+      <%= @order.store.phone %> - <%= @order.store.sales_email %>
     </p>
   </div>
 </div>
