@@ -12,7 +12,7 @@ module Api
           include: {
             artworks: {
               methods: [
-                :path, :thumbnail_path
+                :path, :thumbnail_path, :bg_color
               ]
             }
           },

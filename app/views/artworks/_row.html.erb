@@ -3,7 +3,7 @@
   <td><%= artwork.name %></td>
   <td>
     <% if artwork.preview %>
-      <%= link_to(image_tag(artwork.preview.file.url(:thumb)), artwork.preview.file.url(:original), target: :_blank) %>
+      <%= link_to(preview_artwork(artwork, :thumb), artwork.preview.file.url(:original), target: :_blank) %>
     <% else %>
       (no preview)
     <% end %>

@@ -47,6 +47,10 @@ $(window).load ->
       mode: $(this).data('mode') or 'popup'
 
 $(document).ready ->
+  $('.colorpicker').minicolors
+    theme:      'bootstrap',
+    letterCase: 'uppercase'
+
   $(document).on 'click', 'button[type=submit],input[type=submit],a[data-remote]', (e) ->
     e.preventDefault() if $(this).closest('[data-fading-out]').length isnt 0
 

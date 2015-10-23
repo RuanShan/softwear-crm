@@ -62,4 +62,10 @@ feature 'Artwork Features', js: true, artwork_spec: true do
     expect(page).to_not have_css("tr#artwork-row-#{artwork.id}")
     expect(Artwork.where(name: 'Rspec Artwork')).to_not exist
   end
+
+  scenario 'A user can view an image with a background color', story_981: true do
+    artwork.update_column :bg_color, '#FF0000'
+    visit artworks_path
+    expect(page).to have_css "img[style='background-color: #FF0000;']"
+  end
 end
