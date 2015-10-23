@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20151023170916) do
+ActiveRecord::Schema.define(version: 20151023202128) do
 
   create_table "activities", force: :cascade do |t|
     t.integer  "trackable_id",   limit: 4
@@ -797,6 +797,7 @@ ActiveRecord::Schema.define(version: 20151023170916) do
     t.string   "country",     limit: 255
     t.string   "phone",       limit: 255
     t.string   "sales_email", limit: 255
+    t.integer  "logo_id",     limit: 4
   end
 
   add_index "stores", ["deleted_at"], name: "index_stores_on_deleted_at", using: :btree

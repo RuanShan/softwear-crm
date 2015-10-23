@@ -7,7 +7,9 @@ describe Store, store_spec: true do
     it { is_expected.to have_many(:sample_locations) }
     it { is_expected.to have_many(:imprintable_stores) }
     it { is_expected.to have_many(:imprintables).through(:imprintable_stores) }
+    it { is_expected.to belong_to(:logo).class_name(Asset) }
   end
+
 
   describe 'Validations' do
     it { is_expected.to validate_presence_of(:name) }

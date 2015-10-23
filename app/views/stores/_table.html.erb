@@ -4,6 +4,7 @@
       <thead>
         <tr>
           <th>Name</th>
+          <th>Logo</th>
           <th>Address</th>
           <th>Actions</th>
         </tr>
@@ -13,7 +14,12 @@
         <% stores.each do |store| %>
         <tr id="<%= model_table_row_id store %>">
           <td><%= store.name %></td>
-          <td class='store-address'><%= store.address_array.join("<br />") %><br />
+          <td>
+            <% unless store.logo.file.blank? %>
+              <%= link_to image_tag(store.logo.file.url(:thumb)), store.logo.file.url, target: :_blank %>
+            <% end %>
+          </td>
+          <td class='store-address'><%= raw store.address_array.join("<br />") %><br />
             <%= store.phone %> - <%= store.sales_email %>
           </td>
           <td>

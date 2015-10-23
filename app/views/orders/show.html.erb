@@ -1,10 +1,6 @@
 <div class='order-invoice'>
-<div class="page-heading animated fadeInDownBig row">
-  <div class="pull-left">
-    <h1><strong><%= @order.store.name %> Invoice</strong> #<%= @order.id %> <% unless @order.po.blank? %><small>P.O. No. <%= @order.po %></small><% end %></h1>
-  </div>
-
-  <div class='pull-right hidden-print'>
+<div class="page-heading animated fadeInDownBig row" style="background-color: #fff;"> 
+  <div class='hidden-print text-right'>
     <%= link_to edit_order_path(@order), class: 'btn btn-primary' do %>
         <i class="fa fa-edit"></i> Edit
     <% end %>
@@ -12,6 +8,25 @@
         <i class="fa fa-print"></i> Print
     <% end %>
   </div>
+
+  <div class="pull-left"> 
+    <% if @order.store.logo.file.blank? %>
+      <h1 class='pull-left'>
+        <strong><%= @order.store.name %></strong>
+      </h1>
+    <% else %>
+      <%= image_tag @order.store.logo.file.url(:thumb) %>
+    <% end %>
+  </h1>
+  </div>
+  <div class="pull-right">
+    <h1 class='text-right'><strong>Invoice</strong> #<%= @order.id %> 
+      <% unless @order.po.blank? %>
+        <small>P.O. No. <%= @order.po %></small>
+      <% end %>
+    </h1>
+  </div>
+
 </div>
 
 <div class="box-info">
