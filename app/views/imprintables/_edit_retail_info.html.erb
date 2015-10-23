@@ -27,6 +27,15 @@
       </div>
 
       <div class="form-group">
+        <%= f.label :marketplace_name, 'Marketplace Name', class: 'control-label' %>
+        <%= f.error_for :marketplace_name %>
+        <%= f.text_field :marketplace_name %>
+          <p class="help-block">
+            Marketplace name is appended to the end of product titles in Channel Advisor.
+          </p>
+      </div>
+
+      <div class="form-group">
         <%= f.label :sku, class: 'control-label' %>
           <%= f.text_field :sku, class: 'form-control' %>
           <p class="help-block">4-Character Retail SKU Used to Identify the Imprintable</p>
