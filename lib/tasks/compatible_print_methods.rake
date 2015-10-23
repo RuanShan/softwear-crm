@@ -24,20 +24,28 @@ namespace :upload do
       imprintable_name = row['Imprintable'].try(:strip)
       template         = row['TemplateName'].try(:strip)
 
-      next if imprintable_name.blank? && template.blank?
+      next if template.blank?
 
       if imprintable_name.blank?
         puts "Tried to map #{template} to empty imprintable. Skipping."
         next
       end
-      if template.blank?
-        puts "Tried to map #{imprintable_name} to no template. Skipping."
-        next
-      end
 
-      results = Imprintable.search { fulltext imprintable_name }.results
+      /^(?<brand_name>[\w-]+)\s*-\s*(?<catalog_no>\w+)$/ =~ imprintable_name
+      # Some imprintable identifiers are wrong but consistent
+      brand_name.gsub! 'dri-duck', 'dry-duck'
+      brand_name.gsub! '-', '%'
+      brand_name.gsub! 'sportek', 'sport-tek'
+      brand_name += '%'
+
+      results = Imprintable.joins(:brand).where(
+        'brands.name LIKE ? AND imprintables.style_catalog_no LIKE ?',
+        brand_name, catalog_no
+      )
+
       if results.empty?
-        puts "Couldn't find an imprintable matching '#{imprintable_name}'. Skipping."
+        puts "Couldn't find an imprintable matching '#{imprintable_name}'. "\
+             "Brand name: #{brand_name}, catalog no: #{catalog_no}."
         next
       end
       if results.size > 1
@@ -48,11 +56,12 @@ namespace :upload do
       imprintables_for[template] ||= []
       imprintables_for[template] += results
     end
-    puts "============================ TEMPLATES: #{imprintables_for.keys.join(', ')} ============================"
+    puts "============================ DONE PARSING TEMPLATES ============================"
 
     # ============================
 
     # ============= PARSE ACTUAL DATA ==============
+    undefined_templates = {}
     updated_imprintable_count = 0
     row_count = 1 # Start at one then increment, because of the header.
     CSV.foreach(File.expand_path(data_filename), headers: :first_row) do |row|
@@ -79,7 +88,10 @@ namespace :upload do
       imprintables = imprintables_for[template]
 
       if imprintables.blank?
-        puts "No template called '#{template}' was defined. Skipping row #{row_count}."
+        unless undefined_templates[template]
+          puts "Skipping entries with empty template #{template}"
+          undefined_templates[template] = true
+        end
         next
       end
 
