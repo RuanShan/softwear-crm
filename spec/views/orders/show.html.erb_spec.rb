@@ -10,7 +10,7 @@ describe "orders/show", type: :view do
   end
 
   it "Displays the store's name at the head of the invoice" do 
-    expect(rendered).to have_css :h1, text: "#{order.store.name} Invoice"  
+    expect(rendered).to have_css :h1, text: "#{order.store.name}"  
   end
 
   it "Displays the store's address at the foot of the invoice" do  

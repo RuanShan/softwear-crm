@@ -30,6 +30,10 @@ class StoresController < InheritedResources::Base
 
   def permitted_params
     params.permit(store: [:name, :address_1, :address_2, :city, :state, :zip, 
-                  :country, :phone, :zipcode, :sales_email])
+                  :country, :phone, :zipcode, :sales_email, 
+                  logo_attributes: [
+                   :file, :description, :id, :_destroy
+                  ]
+                ])
   end
 end

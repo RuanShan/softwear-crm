@@ -17,16 +17,18 @@ class Asset < ActiveRecord::Base
 
   belongs_to :assetable, polymorphic: true
 
-  validates :description, presence: true
+  validates :description, presence: true, unless: :model_can_be_blank?
 
   has_attached_file :file,
                     path: path,
                     url: url,
                     styles: { icon: ['100x100#'], thumb: ['200x200>'], medium: ['250x250>'], large: ['500x500>'], signature: ['300x300>'] }
-  validates_attachment :file, presence: true,
+  validates_attachment :file,
             size: { less_than: 120.megabytes },
     content_type: { content_type: ->(_, a) { Regexp.new(a.allowed_content_type) } },
               if: :content_type_restricted?
+
+  validates_attachment :file, presence: true, unless: :model_can_be_blank?
 
   do_not_validate_attachment_file_type :file, unless: :content_type_restricted?
 
@@ -40,5 +42,11 @@ class Asset < ActiveRecord::Base
 
   def content_type_restricted?
     !allowed_content_type.blank?
+  end
+
+  private
+  
+  def model_can_be_blank?
+    assetable_type == 'Store'
   end
 end
