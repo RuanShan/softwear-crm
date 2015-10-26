@@ -1,0 +1,5 @@
+<h1>Payment for Order #<%= @order.id %>, <%= @order.name %></h1>
+
+<%= render 'shared/modal_errors', object: @payment %>
+
+<%= render 'payments/payment_form', payment_method: @payment.payment_method %> 
