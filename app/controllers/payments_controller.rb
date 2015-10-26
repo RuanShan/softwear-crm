@@ -1,5 +1,5 @@
 class PaymentsController < InheritedResources::Base
-  belongs_to :order
+  before_filter :initialize_order, only: [:index, :new, :create]
 
   def create
     super do |success, failure|
@@ -33,6 +33,10 @@ class PaymentsController < InheritedResources::Base
   end
 
   private
+
+  def initialize_order
+    @order = Order.find(params[:order_id])
+  end
 
   def permitted_params
     params.permit(payment: [:amount, :store_id, :salesperson_id, :order_id, :t_company_name, 
