@@ -24,15 +24,19 @@
   </div>
 
   <div class='row form-group'>
-    <div class='col-sm-4'>
+    <div class='col-sm-3'>
+      <%= s.select :salesperson_full_name, User.all.map{|x| x.full_name }, multiple: true %>
+    </div>
+    
+    <div class='col-sm-3'>
       <%= s.text_field :in_hand_by, greater_than: true, placeholder: 'Deadline after...', class: 'js-datetimepicker' %>
     </div>
 
-    <div class='col-sm-4'>
+    <div class='col-sm-3'>
       <%= s.text_field :in_hand_by, less_than: true, placeholder: 'Deadline before...', class: 'js-datetimepicker' %>
     </div>
 
-    <div class='col-sm-4'>
+    <div class='col-sm-3'>
       <%= s.yes_or_no_select :balance %>
     </div>
   </div>

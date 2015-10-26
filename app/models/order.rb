@@ -10,7 +10,7 @@ class Order < ActiveRecord::Base
 
   searchable do
     text :name, :email, :firstname, :lastname, :invoice_state,
-         :company, :twitter, :terms, :delivery_method
+         :company, :twitter, :terms, :delivery_method, :salesperson_full_name
 
     text :jobs do
       jobs.map { |j| "#{j.name} #{j.description}" }
@@ -201,6 +201,10 @@ class Order < ActiveRecord::Base
 
   def get_store_id(id, current_user)
     id ? Order.find(id).store_id : current_user.store_id
+  end
+
+  def salesperson_full_name
+    salesperson.full_name
   end
 
   def line_items
