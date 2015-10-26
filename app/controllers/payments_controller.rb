@@ -1,8 +1,11 @@
 class PaymentsController < InheritedResources::Base
+  belongs_to :order
+
   def create
-    super do |format|
-      @payment.create_activity(:applied_payment, owner: current_user, recipient: @payment.order)
-      format.html { redirect_to edit_order_path(params[:order_id], anchor: 'payments') }
+    super do |success, failure|
+      @payment.create_activity(:applied_payment, owner: current_user, recipient: @payment.order) if @payment.valid?
+      success.html { redirect_to edit_order_path(params[:order_id], anchor: 'payments') }
+      failure.html { render 'payments/new' }
     end
   end
 
@@ -32,7 +35,7 @@ class PaymentsController < InheritedResources::Base
   private
 
   def permitted_params
-    params.permit(payment: [:amount, :store_id, :salesperson_id, :order_id,
-                            :refunded, :refund_reason, :payment_method])
+    params.permit(payment: [:amount, :store_id, :salesperson_id, :order_id, :t_company_name, 
+                            :refunded, :refund_reason, :payment_method, :t_name, :t_description, :tf_number])
   end
 end
