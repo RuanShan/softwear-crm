@@ -23,7 +23,7 @@
     <div class="imprintable-order-sheet-job" style="page-break-after: always">
       <p class="text-center">Job Report - Printed on <%= Time.now.strftime("%a, %b %d %Y") %><br />
       <strong>Order:</strong> <%= @order.full_name %> - <%= @order.name %><br />
-      Job: <%= index + 1 %> of <%= @order.jobs.size %> - <%= job.name %><br />
+      Job: <%= index + 1 %> of <%= @order.jobs.size %> - #<%= job.id %> - <%= job.name %><br />
       <%= job.imprints.map{|j| j.name }.join(", ") %><br />
       <span class="h2"><%= job.imprintable_line_items_total %> Total Pieces</span></p> 
 
