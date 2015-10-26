@@ -20,50 +20,5 @@
     </p>
   <% end %>
 
-  <% if @order.imprints.name_number.any? %>
-    <div class="col-xs-12" style="page-break-after: always">
-      <h3>Names/Numbers</h3>
-      <table class="table table-condensed table-striped">
-        <thead>
-          <tr>
-          <th>
-            Job
-          </th>
-          <th>
-            Imprint
-          </th>
-          <th>
-            Imprintable
-          </th>
-          <th>
-            Name
-          </th>
-          <th>
-            Number
-          </th>
-        </tr>
-        </thead>
-        <tbody>
-        <% @order.name_and_numbers.each do |nn| %>
-          <tr>
-          <td>
-            <%= nn.imprint.job.name %>
-          </td>
-          <td>
-            <%= nn.imprint.name %>
-          </td>
-          <td>
-            <%= nn.imprintable_variant.full_name %>
-          </td>
-          <td>
-            <%= nn.name %>
-          </td>
-          <td>
-            <%= nn.number %>
-          </td>
-          </tr>
-        <% end %>
-      </tbody>
-      </table>
-    </div>
-  <% end %>
+<%= render('name_numbers/table', {order: @order}) if @order.imprints.name_number.any? %>
+

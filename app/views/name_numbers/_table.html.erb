@@ -1,0 +1,47 @@
+<div class="col-xs-12" style="page-break-after: always">
+  <h3><%= order.name %> Names/Numbers</h3>
+  <table class="table table-condensed table-striped">
+    <thead>
+      <tr>
+      <th>
+        Job
+      </th>
+      <th>
+        Imprint
+      </th>
+      <th>
+        Imprintable
+      </th>
+      <th>
+        Name
+      </th>
+      <th>
+        Number
+      </th>
+    </tr>
+    </thead>
+    <tbody>
+    <% order.name_and_numbers.each do |nn| %>
+      <tr>
+      <td>
+        <%= nn.imprint.job.name %>
+      </td>
+      <td class='imprint-name-and-format'>
+        <%= nn.imprint.name %><br />
+        <%= nn.imprint.name_format %><br />
+        <%= nn.imprint.number_format %>
+      </td>
+      <td>
+        <%= nn.imprintable_variant.full_name %>
+      </td>
+      <td>
+        <%= nn.name %>
+      </td>
+      <td>
+        <%= nn.number %>
+      </td>
+      </tr>
+    <% end %>
+  </tbody>
+  </table>
+</div>

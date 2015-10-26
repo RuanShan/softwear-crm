@@ -1,7 +1,11 @@
 <% field_name_for = method(:imprint_select_field_name_for).to_proc.curry.(imprint) %>
 <div class="<%= imprint_method_name == 'Name/Number' ? nil : 'hidden' %> js-name-number-format-fields form-group">
   <%= label_tag :name_format %>
-  <%= text_field_tag local_assigns[:name_format_name] ? name_format_name : field_name_for.('name_format'), imprint.name_format, class: 'form-control js-name-format-field' %>
+  <%= text_field_tag local_assigns[:name_format_name] ? name_format_name : field_name_for.('name_format'), 
+    imprint.name_format, class: 'form-control js-name-format-field', placeholder: 'Size(") - Style - Color - Method' %>
+    <p class="help-block">(i.e. 2" - Block - Black - Transfer)</p>
   <%= label_tag :number_format %>
-  <%= text_field_tag local_assigns[:number_format_name] ? number_format_name : field_name_for.('number_format'), imprint.number_format, class: 'form-control js-number-format-field' %>
+  <%= text_field_tag local_assigns[:number_format_name] ? number_format_name : field_name_for.('number_format'), 
+      imprint.number_format, class: 'form-control js-number-format-field', placeholder: 'Size(") - Style - Color - Method' %>
+    <p class="help-block">(i.e. 8" - Hercules - Black - DTG)</p>
 </div>
