@@ -4,7 +4,7 @@ module OrderHelper
     case which
     when 'invoice_state' then get_style_from_invoice_state(state, style_type)
     when 'notification_state' then get_style_from_notification_state(state, style_type)
-    when 'production_state' then get_style_from_notification_state(state, style_type)
+    when 'production_state' then get_style_from_production_state(state, style_type)
     when 'payment_state' then get_style_from_status(state, style_type)
     end
   end
