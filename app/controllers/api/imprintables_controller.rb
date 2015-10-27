@@ -35,7 +35,12 @@ module Api
         :xxxxl_upcharge, :xxxxxl_upcharge, :xxxxxxl_upcharge,
         :default_photo_url, :photo_urls, :supplier_link, :brand_name,
         :coordinate_ids, :similar_imprintable_ids,
-        :imprintable_category_names, :tag, :marketplace_name
+        :imprintable_category_names, :tag, :marketplace_name,
+
+        :water_resistance_level, :sleeve_type, :sleeve_length, :neck_style,
+        :neck_size, :fabric_type, :is_stain_resistant, :fit_type, :fabric_wash,
+        :department_name, :chest_size, :package_height, :package_width,
+        :package_length
       ]
     end
 
@@ -43,6 +48,7 @@ module Api
       [
         :colors, :sizes,
         imprintable_variants: {
+          methods: [:sku],
           include: {
             color: { only: [:name, :hexcode] },
             size: { only: [:name, :display_value, :sort_order] }
