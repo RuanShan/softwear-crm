@@ -457,4 +457,24 @@ describe Order, order_spec: true do
       end
     end
   end
+
+  describe '#invoice_should_be_approved_by_now?', current: true do 
+    context 'in_hand_by is less than or equal to 6 business days from now' do
+      let(:order) { create(:order, in_hand_by: 5.business_days.from_now) }
+
+      it 'returns true' do 
+        expect(order.invoice_should_be_approved_by_now?).to eq(true)
+      end
+    end
+
+    context 'in_hand_by is greater than 6 business days from now' do
+      let(:order) { create(:order, in_hand_by: 7.business_days.from_now) }
+
+      it 'returns true' do 
+        expect(order.invoice_should_be_approved_by_now?).to eq(false)
+      end
+    end
+  end
+
+
 end

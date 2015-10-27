@@ -1,5 +1,9 @@
 class HomeController < ApplicationController
   def index
+    @order_warnings = Order.search do 
+      with(:warnings_count).greater_than 0 
+      with(:salesperson_full_name,  current_user.full_name)
+    end.results 
   end
 
   def undock

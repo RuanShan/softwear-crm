@@ -1,6 +1,22 @@
 <div class="page-heading">
-  <h1>Dashboard<small></small></h1>
+  <h1>Dashboard For <%= @current_user.full_name %></h1>
 </div>
+
+<% if @order_warnings.empty? %>
+  <div class="alert alert-success">
+    <p>None of your orders appear to have any issues at this time</p>
+  </div>
+<% else %>
+  <div class="alert alert-danger">
+    <h3>You have orders that have issues that need to be addressed</h3>
+    <ul>
+      <% @order_warnings.each do |o| %>
+        <li><%= link_to "#{o.name} (#{o.warnings_count} Warnings)", order_warnings_path(o, active_only: 'true') %>
+      </li>
+    <% end %>
+    </ul>
+  </div>
+<% end %>
 
 <% if !current_user.pending_quote_requests.empty? %>
     <div class="box-info row clear">

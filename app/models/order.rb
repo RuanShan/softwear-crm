@@ -20,12 +20,14 @@ class Order < ActiveRecord::Base
       :firstname, :lastname, :email, :terms,
       :delivery_method, :company, :phone_number,
       :payment_status, :invoice_state, :production_state,
-      :notification_state
+      :notification_state, :salesperson_full_name
     ]
       .each { |f| string f }
 
     double :total
     double :commission_amount
+
+    integer :warnings_count
 
     boolean :balance do
       balance != 0
@@ -386,6 +388,15 @@ class Order < ActiveRecord::Base
     "http://annarbortees.freshdesk.com/helpdesk/tickets/#{freshdesk_proof_ticket_id}"
   end
 
+  def invoice_should_be_approved_by_now?
+    in_hand_by <= 6.business_days.from_now
+  end
+
+  def warnings_count
+    warnings.count
+  end
+
   private
-  
+
+
 end
