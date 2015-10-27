@@ -1,6 +1,4 @@
-namespace :warnings do
-
-  
+namespace :warnings do 
   task create_for_orders: :environment do
     # Invoice approval warnings
     begin
