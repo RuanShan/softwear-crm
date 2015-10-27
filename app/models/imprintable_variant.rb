@@ -44,4 +44,8 @@ class ImprintableVariant < ActiveRecord::Base
   def style_name
     imprintable.style_name
   end
+
+  def sku
+    "#{imprintable.sku}#{size.sku}#{color.sku}"
+  end
 end
