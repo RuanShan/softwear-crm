@@ -393,10 +393,9 @@ class Order < ActiveRecord::Base
   end
 
   def warnings_count
-    warnings.count
+    warnings.active.count
   end
 
   private
-
 
 end
