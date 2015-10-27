@@ -8,7 +8,11 @@
         <dt>Imprintable Groups</dt>
       <% imprintable.imprintable_imprintable_groups.each do |iig| %>
         <dd>
-          <%= iig.imprintable_group.name %> (<%= Imprintable::TIERS[iig.tier] %>)
+          <% if iig.imprintable_group.nil? %>
+            &lt;Nil group&gt;
+          <% else %>
+            <%= iig.imprintable_group.name %> (<%= Imprintable::TIERS[iig.tier] %>)
+          <% end %>
         </dd>
       <% end %>
       </dl>
