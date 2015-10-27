@@ -43,6 +43,34 @@ namespace :warnings do
         message: 'Exception caught while issuing artwork_request warnings'
       )
     end
-  end
 
+    # shipments warning
+    begin
+      orders = Order.where("in_hand_by > ? and in_hand_by < ?", 7.business_days.ago.strftime("%Y-%m-%d"), 7.business_days.from_now.strftime("%Y-%m-%d"))
+      orders.each do |o|
+        if (o.delivery_method == 'Ship to one location' || o.delivery_method == 'Ship to multiple locations') && 
+            o.shipments.empty?
+
+          puts "Issuing shipment warning for order #{o.id} #{o.name}"
+          o.warnings << Warning.new(
+            source: 'Daily Warning Report', 
+            message: "Shipment(s) are missing for order '#{o.id} '#{o.name}'"
+          )
+          Sunspot.index o 
+        end
+      end
+    rescue Exception => e
+      puts "Exception caught"
+      puts "#{e.message}"
+      Warning.create(
+        source: 'Daily Warning Report', 
+        message: 'Exception caught while issuing artwork_request warnings'
+      )
+    end
+
+
+
+
+
+  end
 end
