@@ -392,6 +392,10 @@ class Order < ActiveRecord::Base
     in_hand_by <= 6.business_days.from_now
   end
 
+  def missing_artwork_requests?
+    imprints.map{|i| i.artwork_requests.empty? }.include? true
+  end
+
   def warnings_count
     warnings.active.count
   end
