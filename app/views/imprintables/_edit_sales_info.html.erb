@@ -37,16 +37,22 @@
           <%= link_to_add_fields "<i class='fa fa-plus'></i> Add Imprintable Category".html_safe,
                                  f, :imprintable_categories %>
       </div>
+      
+      <% if f.object.imprintable_variants.empty? %>
+        <div class="alert alert-danger">
+          <p>You cannot add imprintable groups to an imprintable until it has imprintable variants created</p>
+        </div>
+      <% else %>
+        <div class="form-group">
+          <%= f.label :imprintable_imprintable_groups, 'Imprintable Groups', class: 'control-label' %>
+          <%= f.error_for :imprintable_imprintable_groups %>
+          <%= f.fields_for :imprintable_imprintable_groups do |ff| %>
+            <%= render 'imprintable_imprintable_group_fields', f: ff %>
+          <% end %>
 
-      <div class="form-group">
-        <%= f.label :imprintable_imprintable_groups, 'Imprintable Groups', class: 'control-label' %>
-        <%= f.error_for :imprintable_imprintable_groups %>
-        <%= f.fields_for :imprintable_imprintable_groups do |ff| %>
-          <%= render 'imprintable_imprintable_group_fields', f: ff %>
-        <% end %>
-
-        <%= link_to_add_fields "<i class='fa fa-plus'></i> Add Imprintable Group".html_safe, f, :imprintable_imprintable_groups %>
-      </div>
+          <%= link_to_add_fields "<i class='fa fa-plus'></i> Add Imprintable Group".html_safe, f, :imprintable_imprintable_groups %>
+        </div>
+      <% end %>
 
       <div class="form-group">
         <%= f.label :coordinate_ids, 'Coordinate Imprintables', class: 'control-label' %>

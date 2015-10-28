@@ -2,8 +2,9 @@ require 'spec_helper'
 
 describe 'imprintables/_edit_sales_info.html.erb', imprintable_spec: true do
 
+  let(:imprintable) { build_stubbed(:valid_imprintable) }
+
   before(:each) do
-    imprintable = build_stubbed(:valid_imprintable)
     f = test_form_for imprintable, builder: LancengFormBuilder
     mch = {
             brand_collection: [],
@@ -16,6 +17,20 @@ describe 'imprintables/_edit_sales_info.html.erb', imprintable_spec: true do
                      f: f,
                      model_collection_hash: mch
                    }
+  end
+
+  context 'without imprintable variants' do 
+    it 'contains a warning that you cannot add imprint groups' do 
+      expect(rendered).to have_text("cannot add imprintable groups")
+    end
+  end
+  
+  context 'with imprintable variants' do
+    let(:imprintable) { build_stubbed(:valid_imprintable, imprintable_variants: [build_stubbed(:valid_imprintable_variant)])  }
+    
+    it 'does not contain a warning that you cannot add imprint groups' do 
+      expect(rendered).to_not have_text("cannot add imprintable groups")
+    end
   end
 
   it 'has field for brand, style name, catalog no, description' do
