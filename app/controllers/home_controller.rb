@@ -36,7 +36,7 @@ class HomeController < ApplicationController
       begin
         o.prod_api_confirm_job_counts
         o.prod_api_confirm_shipment
-#        o.prod_api_confirm_art_trains
+        o.prod_api_confirm_artwork_preprod
       
       rescue ActiveResource::ResourceNotFound => e
         message = "API Failed to find PRODUCTION(#{o.softwear_prod_id}) for CRM(#{o.id})" 
