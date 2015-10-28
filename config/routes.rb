@@ -5,6 +5,7 @@ CrmSoftwearcrmCom::Application.routes.draw do
   mount ActsAsWarnable::Engine => '/'
 
   root 'home#index'
+  get 'home/api_warnings', to: 'home#api_warnings', as: :api_warnings
 
   get '/users/change_password', to: 'users#edit_password', as: :change_password
   put '/users/change_password', to: 'users#update_password', as: :update_password
@@ -67,6 +68,7 @@ CrmSoftwearcrmCom::Application.routes.draw do
     end
   end
   warning_paths_for :quote_requests
+  resources :warnings
 
   get '/logout' => 'users#logout'
 

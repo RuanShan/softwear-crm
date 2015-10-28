@@ -13,4 +13,62 @@ class HomeController < ApplicationController
       session[:docked] = []
     end
   end
+
+  def api_warnings
+    @api_warnings = Warning.active.where("message like 'API%'").page(params[:page] || 1)
+
+    generate_api_warnings if params[:generate_api_warnings]
+  end
+
+  private
+
+  def format_dates
+    @starting = format_time(params[:start_date])
+    @ending = format_time(params[:end_date])
+  end
+
+  def generate_api_warnings
+    format_dates
+    orders_in_production = Order.where("production_state = ? and updated_at > ? and updated_at < ?", :in_production, @starting, @ending)
+    puts "Processing #{orders_in_production.count} orders"
+    orders_in_production.each do |o|
+    
+      begin
+        o.prod_api_confirm_job_counts
+        o.prod_api_confirm_shipment
+#        o.prod_api_confirm_art_trains
+      
+      rescue ActiveResource::ResourceNotFound => e
+        message = "API Failed to find PRODUCTION(#{o.softwear_prod_id}) for CRM(#{o.id})" 
+        puts message 
+
+        o.warnings << Warning.new(
+          source: 'API Production Configuration Report', 
+          message: message
+        )
+        
+        Sunspot.index(o)
+        next
+      end   
+
+      o.jobs.each do |j| 
+        begin
+#          j.prod_api_confirm_preproduction_trains
+          j.prod_api_confirm_imprintable_train
+        rescue ActiveResource::ResourceNotFound => e
+          message = "API Failed to find PRODUCTION_JOB(#{j.softwear_prod_id}) for CRM_ORDER(#{o.id}) CRM_JOB(#{j.id})" 
+          puts message 
+
+          o.warnings << Warning.new(
+            source: 'API Production Configuration Report', 
+            message: message
+          )
+          
+          Sunspot.index(o)
+          next
+        end  
+      end    
+    end
+  end
+
 end

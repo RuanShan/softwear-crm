@@ -9,7 +9,7 @@ namespace :api do
       begin
         o.prod_api_confirm_job_counts
         o.prod_api_confirm_shipment
-        o.prod_api_confirm_art_trains
+#        o.prod_api_confirm_art_trains
       
       rescue ActiveResource::ResourceNotFound => e
         message = "API Failed to find PRODUCTION(#{o.softwear_prod_id}) for CRM(#{o.id})" 
@@ -26,7 +26,7 @@ namespace :api do
 
       o.jobs.each do |j| 
         begin
-          j.prod_api_confirm_preproduction_trains
+#          j.prod_api_confirm_preproduction_trains
           j.prod_api_confirm_imprintable_train
         rescue ActiveResource::ResourceNotFound => e
           message = "API Failed to find PRODUCTION_JOB(#{j.softwear_prod_id}) for CRM_ORDER(#{o.id}) CRM_JOB(#{j.id})" 

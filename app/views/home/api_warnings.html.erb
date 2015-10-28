@@ -1,0 +1,71 @@
+<div class="page-heading">
+  <h1>API Warnings</h1>
+</div>
+
+<h2>Generate new API Warnings</h2>
+<div class="row">
+<%= form_tag api_warnings_path, method: :get, builder: BootstrapForm do %>
+  <div class="col-sm-4">
+    <%= label_tag :start_date, "Orders last modified starting" %><br />
+    <%= text_field_tag :start_date, "", class: 'js-datetimepicker form-control', required: true %>
+  </div>
+  <div class="col-sm-4">
+    <%= label_tag :start_date, "Orders last modified ending" %><br />
+    <%= text_field_tag :end_date, "",  class: 'js-datetimepicker form-control', required: true %>
+  </div>
+  <div class="col-sm-4">
+    <%= hidden_field_tag :generate_api_warnings %>
+    <%= submit_tag "Generate Warnings", class: 'btn btn-warning' %>
+  </div>
+<% end %>
+</div>
+
+<% if @api_warnings.empty? %>
+  <div class="alert alert-success">
+    <p>No orders appear to have any API issues at this time</p>
+  </div>
+<% else %>
+<div class="row">
+  <%= paginate @api_warnings %>
+
+  <table class='table table-striped'>
+    <thead>
+      <tr>
+        <% if Warning.column_names.include?("created_at") %>
+          <th>Date Issued</th>
+        <% end %>
+        <th>Warnable</th>
+        <th>Warnable ID</th>
+        <th>Warning</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+
+    <tbody>
+      <% @api_warnings.each do |warning| %>
+        <tr>
+          <% if Warning.column_names.include?("created_at") %>
+            <td><%= warning.created_at.strftime('%m/%d/%Y %I:%M%p') %></td>
+          <% end %>
+          <td><%= warning.warnable_type.underscore.humanize %></td>
+          <td><%= warning.warnable_id %></td>
+          <td><%= warning.message %></td>
+          <td>
+
+            <%= link_to "/warnings/#{warning.id}", data: { toggle: 'tooltip' }, class: 'btn btn-xs btn-success', title: 'Show' do %>
+              <i class='glyphicon glyphicon-eye-open'></i>
+            <% end %>
+            <% unless warning.dismissed? %>
+              <%= button_to_dismiss_warning warning, text: '<i class="glyphicon glyphicon-ok"></i>'.html_safe, data: { toggle: 'tooltip' }, class: 'btn btn-xs btn-primary', title: 'Dismiss' do %>
+              <% end %>
+            <% end %>
+
+          </td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+
+  <%= paginate @api_warnings %>
+</div>
+<% end %>
