@@ -458,6 +458,18 @@ describe Order, order_spec: true do
     end
   end
 
+  describe "#screen_print_artwork_requests", current: true do
+    context 'order has artwork request with Screen Print or Large Format Screen Print imprints' do 
+      let(:artwork_request) { create(:valid_artwork_request) }
+      let(:order) { artwork_request.order }
+      before(:each) { allow_any_instance_of(ArtworkRequest).to receive(:imprint_method) {build_stubbed(:screen_print_imprint_method) } }
+
+      it 'returns an array of those requests' do 
+        expect(order.screen_print_artwork_requests).to eq([artwork_request]) 
+      end
+    end 
+  end
+
   describe '#invoice_should_be_approved_by_now?' do 
     context 'in_hand_by is less than or equal to 6 business days from now' do
       let(:order) { create(:order, in_hand_by: 5.business_days.from_now) }
@@ -476,7 +488,7 @@ describe Order, order_spec: true do
     end
   end
 
-  describe '#prod_crm_confirm_job_counts' do 
+  describe '#prod_api_confirm_job_counts' do 
     context "production order doesn't have the same amount of jobs" do 
 
       let!(:prod_order) { create(:production_order) }
@@ -502,7 +514,53 @@ describe Order, order_spec: true do
     end
   end
 
-  describe '#prod_crm_confirm_shipment' do 
+  describe '#prod_api_confirm_artwork_preprod', current: true do 
+    context "order has artwork requests with Screen Prints or Large Format Screen Prints" do 
+      
+      let!(:prod_order) { create(:production_order) }
+      let!(:order) { create(:order_with_job, softwear_prod_id: prod_order.id) }
+       
+      context "and doesn't have the same amount of screen_trains as these ArtworkRequests" do 
+        let!(:prod_order) { create(:production_order, pre_production_trains: [] ) }
+        
+        before(:each) { allow_any_instance_of(Order).to receive(:screen_print_artwork_requests) {[1]} }
+        
+        it 'it creates a warning' do 
+          expect { 
+            order.prod_api_confirm_artwork_preprod
+          }.to change{order.warnings_count}.from(0).to(1)
+        end
+      end
+      
+      context "and has the same amount of screen_trains as these ArtworkRequests" do 
+        let!(:screen_train) { {train_class: 'screen_train'} }
+        let!(:prod_order) { create(:production_order, pre_production_trains: [screen_train] ) }
+
+        before(:each) { allow_any_instance_of(Order).to receive(:screen_print_artwork_requests) {[1]} }
+
+        it 'it does nothing' do 
+          expect {
+            order.prod_api_confirm_artwork_preprod
+          }.not_to change{order.warnings_count}
+        end
+      end
+
+    end
+    
+    context "order has artwork requests with Screen Prints and Large Format Screen Prints" do 
+     
+      context "and doesn't have the same amount of screen_trains as these ArtworkRequests" do 
+        it 'it creates a warning'
+      end
+      
+      context "and has the same amount of screen_trains as these ArtworkRequests" do 
+        it 'it does nothing'
+      end
+
+    end
+  end
+
+  describe '#prod_api_confirm_shipment' do 
     context "delivery_method is 'Pick up in Ann Arbor'" do
      
       let!(:order) { create(:order_with_job, delivery_method: "Pick up in Ann Arbor", softwear_prod_id: prod_order.id) }

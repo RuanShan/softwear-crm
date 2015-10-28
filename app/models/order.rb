@@ -482,6 +482,26 @@ class Order < ActiveRecord::Base
     Sunspot.index(self)
   end
 
+  def prod_api_confirm_artwork_preprod
+    unless screen_print_artwork_requests.empty? 
+      screen_train_count = production.pre_production_trains.map(&:train_class).delete_if{|x| x != 'screen_train' }.count
+      unless screen_train_count == screen_print_artwork_requests.count
+        message = "API Order ScreenTrain counts are off CRM(#{id}} has #{screen_print_artwork_requests.count} screen print requests"\
+          ", PRODUCTION(#{softwear_prod_id}) has #{screen_train_count} screen_trains" 
+        logger.error message
+        
+        warnings << Warning.new(
+          source: 'API Production Configuration Report', 
+           message: message
+        )    
+      end
+    end
+  end
+
+  def screen_print_artwork_requests
+    artwork_requests.to_a.delete_if{|x| !['Screen Print', 'Large Format Screen Print'].include? x.imprint_method.name}
+  end
+
   private
 
 end

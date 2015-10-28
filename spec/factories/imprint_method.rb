@@ -14,6 +14,10 @@ FactoryGirl.define do
       factory :name_number_imprint_method do
         name 'Name/Number'
       end
+
+      factory :screen_print_imprint_method do 
+        name 'Screen Print'
+      end
     end
   end
 end
