@@ -496,10 +496,48 @@ class Order < ActiveRecord::Base
         )    
       end
     end
+    
+    unless dtg_artwork_requests.empty? 
+      ar3_train_count = production.pre_production_trains.map(&:train_class).delete_if{|x| x != 'ar3_train' }.count
+      unless ar3_train_count == dtg_artwork_requests.count
+        message = "API Order Ar3Train counts are off CRM(#{id}} has #{dtg_artwork_requests.count} dtg requests"\
+          ", PRODUCTION(#{softwear_prod_id}) has #{ar3_train_count} ar3_trains" 
+        logger.error message
+        
+        warnings << Warning.new(
+          source: 'API Production Configuration Report', 
+           message: message
+        )    
+      end
+    end
+    
+    unless embroidery_artwork_requests.empty? 
+      digitization_train_count = production.pre_production_trains.map(&:train_class).delete_if{|x| x != 'digitization_train' }.count
+      unless digitization_train_count == embroidery_artwork_requests.count
+        message = "API Order DigitizationTrain counts are off CRM(#{id}} has #{embroidery_artwork_requests.count} digitization requests"\
+          ", PRODUCTION(#{softwear_prod_id}) has #{digitization_train_count} digitization_trains" 
+        logger.error message
+        
+        warnings << Warning.new(
+          source: 'API Production Configuration Report', 
+           message: message
+        )    
+      end
+    end
+    
+    Sunspot.index(self)
+  end
+
+  def dtg_artwork_requests
+    artwork_requests.to_a.delete_if{|x| !['Digital Print - Non-White (DTG-NW)', 'Digital Print - White (DTG-W)'].include? x.imprint_method.name}
   end
 
   def screen_print_artwork_requests
     artwork_requests.to_a.delete_if{|x| !['Screen Print', 'Large Format Screen Print'].include? x.imprint_method.name}
+  end
+  
+  def embroidery_artwork_requests
+    artwork_requests.to_a.delete_if{|x| !['In-House Embroidery', 'Outsourced Embroidery', 'In-House Applique EMB'].include? x.imprint_method.name}
   end
 
   private

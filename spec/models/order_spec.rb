@@ -458,7 +458,7 @@ describe Order, order_spec: true do
     end
   end
 
-  describe "#screen_print_artwork_requests", current: true do
+  describe "#screen_print_artwork_requests"  do
     context 'order has artwork request with Screen Print or Large Format Screen Print imprints' do 
       let(:artwork_request) { create(:valid_artwork_request) }
       let(:order) { artwork_request.order }
@@ -470,6 +470,30 @@ describe Order, order_spec: true do
     end 
   end
 
+  describe "#embroidery_artwork_requests" do
+    context "order has artwork request with 'In-House Embroidery', 'Outsourced Embroidery' or 'In-House Applique EMB' imprints" do 
+      let(:artwork_request) { create(:valid_artwork_request) }
+      let(:order) { artwork_request.order }
+      before(:each) { allow_any_instance_of(ArtworkRequest).to receive(:imprint_method) {build_stubbed(:embroidery_imprint_method) } }
+
+      it 'returns an array of those requests' do 
+        expect(order.embroidery_artwork_requests).to eq([artwork_request]) 
+      end
+    end 
+  end
+  
+  describe "#dtg_artwork_requests"  do
+    context "order has artwork request with 'Digital Print - Non-White (DTG-NW)' or 'Digital Print - White (DTG-W)' imprints" do 
+      let(:artwork_request) { create(:valid_artwork_request) }
+      let(:order) { artwork_request.order }
+      before(:each) { allow_any_instance_of(ArtworkRequest).to receive(:imprint_method) {build_stubbed(:dtg_imprint_method) } }
+
+      it 'returns an array of those requests' do 
+        expect(order.dtg_artwork_requests).to eq([artwork_request]) 
+      end
+    end 
+  end
+  
   describe '#invoice_should_be_approved_by_now?' do 
     context 'in_hand_by is less than or equal to 6 business days from now' do
       let(:order) { create(:order, in_hand_by: 5.business_days.from_now) }
@@ -547,14 +571,66 @@ describe Order, order_spec: true do
 
     end
     
-    context "order has artwork requests with Screen Prints and Large Format Screen Prints" do 
-     
-      context "and doesn't have the same amount of screen_trains as these ArtworkRequests" do 
-        it 'it creates a warning'
+    context "order has artwork requests with Embroidery Prints" do 
+      
+      let!(:prod_order) { create(:production_order) }
+      let!(:order) { create(:order_with_job, softwear_prod_id: prod_order.id) }
+       
+      context "and doesn't have the same amount of digitization_trains as these ArtworkRequests" do 
+        let!(:prod_order) { create(:production_order, pre_production_trains: [] ) }
+        
+        before(:each) { allow_any_instance_of(Order).to receive(:embroidery_artwork_requests) {[1]} }
+        
+        it 'it creates a warning' do 
+          expect { 
+            order.prod_api_confirm_artwork_preprod
+          }.to change{order.warnings_count}.from(0).to(1)
+        end
       end
       
-      context "and has the same amount of screen_trains as these ArtworkRequests" do 
-        it 'it does nothing'
+      context "and has the same amount of digitization_trains as these ArtworkRequests" do 
+        let!(:digitization_train) { {train_class: 'digitization_train'} }
+        let!(:prod_order) { create(:production_order, pre_production_trains: [digitization_train] ) }
+
+        before(:each) { allow_any_instance_of(Order).to receive(:embroidery_artwork_requests) {[1]} }
+
+        it 'it does nothing' do 
+          expect {
+            order.prod_api_confirm_artwork_preprod
+          }.not_to change{order.warnings_count}
+        end
+      end
+
+    end
+
+    context "order has artwork requests with DTG Prints" do 
+      
+      let!(:prod_order) { create(:production_order) }
+      let!(:order) { create(:order_with_job, softwear_prod_id: prod_order.id) }
+       
+      context "and doesn't have the same amount of ar3_trains as these ArtworkRequests" do 
+        let!(:prod_order) { create(:production_order, pre_production_trains: [] ) }
+        
+        before(:each) { allow_any_instance_of(Order).to receive(:dtg_artwork_requests) {[1]} }
+        
+        it 'it creates a warning' do 
+          expect { 
+            order.prod_api_confirm_artwork_preprod
+          }.to change{order.warnings_count}.from(0).to(1)
+        end
+      end
+      
+      context "and has the same amount of ar3_trains as these ArtworkRequests" do 
+        let!(:ar3_train) { {train_class: 'ar3_train'} }
+        let!(:prod_order) { create(:production_order, pre_production_trains: [ar3_train] ) }
+
+        before(:each) { allow_any_instance_of(Order).to receive(:dtg_artwork_requests) {[1]} }
+
+        it 'it does nothing' do 
+          expect {
+            order.prod_api_confirm_artwork_preprod
+          }.not_to change{order.warnings_count}
+        end
       end
 
     end

@@ -15,6 +15,14 @@ FactoryGirl.define do
         name 'Name/Number'
       end
 
+      factory :dtg_imprint_method do 
+        name 'Digital Print - Non-White (DTG-NW)'
+      end
+      
+      factory :embroidery_imprint_method do 
+        name 'In-House Embroidery'
+      end
+      
       factory :screen_print_imprint_method do 
         name 'Screen Print'
       end

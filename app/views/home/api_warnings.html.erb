@@ -55,10 +55,13 @@
             <%= link_to "/warnings/#{warning.id}", data: { toggle: 'tooltip' }, class: 'btn btn-xs btn-success', title: 'Show' do %>
               <i class='glyphicon glyphicon-eye-open'></i>
             <% end %>
+            <% begin %>
             <% unless warning.dismissed? %>
               <%= button_to_dismiss_warning warning, text: '<i class="glyphicon glyphicon-ok"></i>'.html_safe, data: { toggle: 'tooltip' }, class: 'btn btn-xs btn-primary', title: 'Dismiss' do %>
               <% end %>
             <% end %>
+          <% rescue %>
+          <% end %>
 
           </td>
         </tr>

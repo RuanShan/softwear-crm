@@ -11,6 +11,10 @@
     <h3>You have orders that have issues that need to be addressed</h3>
     <ul>
       <% @order_warnings.each do |o| %>
+        <% if o.warnings_count == 0
+          Sunspot.index o
+          next 
+         end %>
         <li><%= link_to "#{o.name} (#{pluralize(o.warnings_count, 'warning')})", order_warnings_path(o, active_only: 'true') %>
       </li>
     <% end %>
