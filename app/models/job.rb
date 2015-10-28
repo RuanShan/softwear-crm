@@ -310,6 +310,22 @@ class Job < ActiveRecord::Base
     )
   end
 
+  def prod_api_confirm_imprintable_train
+    return if imprintables.empty?  
+    
+    unless production.pre_production_trains.map(&:train_class).include?("imprintable_train")
+      message = "API Job missing imprintable train CRM_ORDER(#{order.id}) CRM_JOB(#{id}) PRODUCTION(#{order.softwear_prod_id})=#{production.id}" 
+      logger.error message
+    
+      order.warnings << Warning.new(
+        source: 'Production Configuration Report', 
+        message: message
+      )
+
+      Sunspot.index(order)
+    end
+  end
+
   private
 
   def placeholder_name

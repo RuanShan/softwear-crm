@@ -458,7 +458,7 @@ describe Order, order_spec: true do
     end
   end
 
-  describe '#invoice_should_be_approved_by_now?', current: true do 
+  describe '#invoice_should_be_approved_by_now?' do 
     context 'in_hand_by is less than or equal to 6 business days from now' do
       let(:order) { create(:order, in_hand_by: 5.business_days.from_now) }
 
@@ -476,5 +476,158 @@ describe Order, order_spec: true do
     end
   end
 
+  describe '#prod_crm_confirm_job_counts' do 
+    context "production order doesn't have the same amount of jobs" do 
+
+      let!(:prod_order) { create(:production_order) }
+      let!(:order) { create(:order_with_job, softwear_prod_id: prod_order.id) }
+
+      it 'creates a warning' do 
+        expect { 
+          order.prod_api_confirm_job_counts
+        }.to change{order.warnings_count}.from(0).to(1)
+      end
+    end
+    
+    context "production order has the same amount of jobs" do 
+
+      let!(:prod_order) { create(:production_order_with_job) }
+      let!(:order) { create(:order_with_job, softwear_prod_id: prod_order.id) }
+
+      it 'does nothing' do 
+        expect { 
+          order.prod_api_confirm_job_counts
+        }.not_to change{order.warnings_count}
+      end
+    end
+  end
+
+  describe '#prod_crm_confirm_shipment' do 
+    context "delivery_method is 'Pick up in Ann Arbor'" do
+     
+      let!(:order) { create(:order_with_job, delivery_method: "Pick up in Ann Arbor", softwear_prod_id: prod_order.id) }
+
+      context "and production order doesn't have a StageForPickupTrain" do
+      let!(:prod_order) { create(:production_order_with_post_production_trains) }
+        it 'creates a warning' do 
+          expect { 
+            order.prod_api_confirm_shipment
+          }.to change{order.warnings_count}.from(0).to(1)
+        end
+      end 
+      
+      context "and production order has a StageForPickupTrain" do 
+        let(:stage_for_pickup_train) { {train_class: 'stage_for_pickup_train'} }
+        let!(:prod_order) { create(:production_order, post_production_trains: [ stage_for_pickup_train ]) }
+        
+        it 'creates a warning' do
+          expect { 
+            order.prod_api_confirm_shipment
+          }.to_not change{order.warnings_count}
+        end
+      end 
+    end 
+    
+    context "delivery_method is 'Pick up in Ypsilanti'" do
+     
+      let!(:order) { create(:order_with_job, delivery_method: "Pick up in Ypsilanti", softwear_prod_id: prod_order.id) }
+
+      context "and production order doesn't have a StoreDeliveryTrain" do
+        let!(:prod_order) { create(:production_order_with_post_production_trains) }
+        
+        it 'creates a warning' do 
+          expect { 
+            order.prod_api_confirm_shipment
+          }.to change{order.warnings_count}.from(0).to(1)
+        end
+      end 
+      
+      context "and production order has a StageForPickupTrain" do 
+        let(:store_delivery_train) { {train_class: 'store_delivery_train'} }
+        let!(:prod_order) { create(:production_order, post_production_trains: [ store_delivery_train ]) }
+        
+        it 'creates a warning' do
+          expect { 
+            order.prod_api_confirm_shipment
+          }.to_not change{order.warnings_count}
+        end
+      end 
+    end 
+    
+    context "delivery_method is 'Ship to one location'" do
+      let!(:order) { create(:order_with_job, delivery_method: "Ship to one location") }
+      
+      context 'and shipments are empty' do 
+
+        it 'creates a warning' do 
+          expect { 
+            order.prod_api_confirm_shipment
+          }.to change{order.warnings.count}.from(0).to(1)
+        end
+      end
+
+      context "there are shipments, and that shipment is an 'Ann Arbor Tees Delivery'" do 
+        let!(:shipment) { create(:ann_arbor_tees_delivery_shipment) }
+        let!(:order) { create(:order_with_job, delivery_method: "Ship to one location", softwear_prod_id: prod_order.id, shipments: [shipment]) }
+        
+        context 'and production order has a LocalDeliveryTrain' do  
+          let(:local_delivery_train) { {train_class: 'local_delivery_train'} }
+          let!(:prod_order) { create(:production_order, post_production_trains: [ local_delivery_train ]) }
+
+          it 'does nothing' do
+            expect { 
+              order.prod_api_confirm_shipment
+            }.not_to change{order.warnings_count}
+          end
+        end
+        
+        context 'and production order does not have a LocalDeliveryTrain' do  
+          let!(:prod_order) { create(:production_order, post_production_trains: []) }
+
+          it 'creates a warning' do
+            expect { 
+              order.prod_api_confirm_shipment
+            }.to change{order.warnings_count}.from(0).to(1)
+          end
+        end
+      end
+      
+      context "there are shipments, and that shipment is anything but an 'Ann Arbor Tees Delivery'" do 
+        let!(:shipment) { create(:shipment) }
+        let!(:order) { create(:order_with_job, delivery_method: "Ship to one location", softwear_prod_id: prod_order.id, shipments: [shipment]) }
+        
+        context 'and production order has a ShipmentTrain' do  
+          let(:shipment_train) { {train_class: 'shipment_train'} }
+          let!(:prod_order) { create(:production_order, post_production_trains: [ shipment_train ]) }
+
+          it 'does nothing' do
+            expect { 
+              order.prod_api_confirm_shipment
+            }.not_to change{order.warnings_count}
+          end
+        end
+        
+        context 'and production order does not have a ShpmentTrain' do  
+          let!(:prod_order) { create(:production_order, post_production_trains: []) }
+
+          it 'creates a warning' do
+            expect { 
+              order.prod_api_confirm_shipment
+            }.to change{order.warnings_count}.from(0).to(1)
+          end
+        end
+      end
+    end 
+    
+    context "delivery_method is 'Ship to multiple locations'" do
+      let!(:order) { create(:order_with_job, delivery_method: "Ship to multiple locations") }
+      
+      it 'creates a warning' do 
+        expect { 
+          order.prod_api_confirm_shipment
+        }.to change{order.warnings_count}.from(0).to(1)
+      end
+    end 
+  end
 
 end

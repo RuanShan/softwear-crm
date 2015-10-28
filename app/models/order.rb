@@ -400,6 +400,88 @@ class Order < ActiveRecord::Base
     warnings.active.count
   end
 
+  def prod_api_confirm_job_counts  
+    if jobs.count != production.jobs.count
+      message = "API Job counts don't match for CRM(#{id})=#{jobs.count} PRODUCTION(#{softwear_prod_id})=#{production.jobs.count}" 
+      logger.error message
+      
+      warnings << Warning.new(
+        source: 'API Production Configuration Report', 
+         message: message
+      )
+      
+      Sunspot.index(self)
+    end
+  end
+
+  def prod_api_confirm_shipment
+    case delivery_method
+    when 'Pick up in Ann Arbor'
+      unless production.post_production_trains.map(&:train_class).include?("stage_for_pickup_train")
+        message = "API Order StageForPickupTrain missing PRODUCTION(#{softwear_prod_id}) CRM(#{id})" 
+        logger.error message
+        
+        warnings << Warning.new(
+          source: 'API Production Configuration Report', 
+           message: message
+        )    
+      end
+    when 'Pick up in Ypsilanti'
+      unless production.post_production_trains.map(&:train_class).include?("store_delivery_train")
+        message = "API Order StoreDeliveryTrain missing PRODUCTION(#{softwear_prod_id}) CRM(#{id})" 
+        logger.error message
+        
+        warnings << Warning.new(
+          source: 'API Production Configuration Report', 
+           message: message
+        )    
+      end
+    when 'Ship to one location'
+      if shipments.empty? 
+        message =  "API Can't confirm shipment configured correctly without shipments being created"
+        logger.error message
+        
+        self.warnings << Warning.new(
+          source: 'API Production Configuration Report', 
+          message: message
+        )
+      else
+        shipments.each do |shipment|
+          if shipment.shipping_method.name == 'Ann Arbor Tees Delivery'
+            if !production.post_production_trains.map(&:train_class).include?("local_delivery_train")
+              message = "API Order LocalDeliveryTrain missing PRODUCTION(#{softwear_prod_id}) CRM(#{id})" 
+              logger.error message
+              
+              warnings << Warning.new(
+                source: 'API Production Configuration Report', 
+                 message: message
+              )
+            end
+          else
+            if !production.post_production_trains.map(&:train_class).include?("shipment_train")
+              message = "API Order ShipmentTrain missing PRODUCTION(#{softwear_prod_id}) CRM(#{id})" 
+              logger.error message
+              
+              warnings << Warning.new(
+                source: 'API Production Configuration Report', 
+                 message: message
+              )
+            end
+          end  
+        end
+      end      
+    when 'Ship to multiple locations'
+      message =  "CRM Production isn't capable of multiple shipment location"
+      logger.error message
+      
+      self.warnings << Warning.new(
+        source: 'API Production Configuration Report', 
+        message: message
+      )
+    end  
+    Sunspot.index(self)
+  end
+
   private
 
 end

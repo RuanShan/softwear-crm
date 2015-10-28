@@ -7,5 +7,10 @@ FactoryGirl.define do
     zipcode "A Zipcode"
     shipping_method { |s| s.association(:shipping_method) }
     shippable {|s| s.association(:order) }
+    
+    factory :ann_arbor_tees_delivery_shipment do 
+      shipping_method { |s| s.association(:ann_arbor_tees_shipping_method) }
+    end
   end
+
 end

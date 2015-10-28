@@ -399,4 +399,43 @@ describe Job, job_spec: true do
       end
     end
   end
+
+  describe '#prod_api_confirm_imprintable_train' do 
+    context "job doesn't have any imprintables" do 
+
+      let!(:job) { create(:job) }
+
+      it 'does nothing' do 
+        expect { 
+          job.prod_api_confirm_imprintable_train
+        }.not_to change{job.jobbable.warnings_count}
+      end
+    end
+    
+    context "job has imprintables", current: true do
+      let!(:job) { create(:job, softwear_prod_id: prod_job.id ) }
+      before(:each) { allow_any_instance_of(Job).to receive(:imprintables).and_return([1,2,3]) }
+      
+      context "and production_job doesn't have an imprintable_train" do 
+        let!(:prod_job) { create(:production_job, pre_production_trains: []) }
+        
+        it 'creates a warning on the order' do 
+          expect {
+            job.prod_api_confirm_imprintable_train
+          }.to change{job.order.warnings_count}.from(0).to(1)
+        end
+      end
+
+      context "and production_job has an imprintable_train" do 
+        let(:imprintable_train) { {train_class: 'imprintable_train'} }
+        let!(:prod_job) { create(:production_job, pre_production_trains: [imprintable_train]) }
+        
+        it 'does nothing' do 
+          expect {
+            job.prod_api_confirm_imprintable_train
+          }.not_to change{job.order.warnings_count}
+        end
+      end 
+    end
+  end
 end
