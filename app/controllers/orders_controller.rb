@@ -86,13 +86,6 @@ class OrdersController < InheritedResources::Base
     end
   end
 
-  def names_numbers
-    @order = Order.find(params[:id])
-    filename = "order_#{@order.name}_names_numbers.csv"
-
-    send_data @order.name_number_csv, filename: sanitize_filename(filename)
-  end
-
   def fba
     @current_action = 'orders#fba'
     @orders = Order.fba.page(params[:page])

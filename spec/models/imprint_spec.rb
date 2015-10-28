@@ -50,4 +50,16 @@ describe Imprint, imprint_spec: true do
       expect(imprint.proofs.to_a).to eq [proof]
     end
   end
+  
+  describe '#number_count' do 
+    context 'the imprint has a set of name_numbers with numbers' do
+      let(:imprint){ create(:imprint_with_name_number) }
+     
+      it 'returns a hash of each number and the amount of times it occurs' do 
+        allow_any_instance_of(Imprint).to receive(:name_numbers) { [build(:number_12), build(:number_33), build(:number_39)]}
+        expect(imprint.number_count).to eq( {"1" => 1, "2" => 1, "3" => 3, "9" => 1 } ) 
+      end  
+    end
+  end
+
 end

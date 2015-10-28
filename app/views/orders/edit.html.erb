@@ -28,15 +28,6 @@
           <i class="fa fa-print"></i>
       <% end %>
 
-
-      <% if @order.imprints.name_number.any? %>
-        <%= link_to name_number_csv_from_order_path(@order),
-          data: {toggle: :tooltip, title: 'Names/Numbers', placement: :bottom},
-          class: 'btn btn-primary' do  %>
-          <i class="glyphicon glyphicon-list"></i>
-        <% end %>
-      <% end %>
-
       <% unless @order.notification_state == 'picked_up' %>
         <span ".edit-notification-buttons">
         <%= link_to state_order_path(@order, :notification_state), remote: true,

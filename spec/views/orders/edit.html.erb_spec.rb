@@ -18,12 +18,6 @@ describe 'orders/edit.html.erb', order_spec: true do
     expect(rendered).to have_link('Order Report')
   end
 
-  it 'displays a "download names and numbers" button on the top right' do
-    allow(order).to receive_message_chain(:imprints, :name_number).and_return [1]
-    render
-    expect(rendered).to have_css("a[href='#{name_number_csv_from_order_path(order)}']")
-  end
-
   it 'displays the jobs tab by default' do 
     render
     expect(rendered).to have_css("li.active", text: 'Jobs')

@@ -41,4 +41,12 @@ class Imprint < ActiveRecord::Base
     sync[description: :job_and_name]
     sync[:count]
   end
+
+  def number_count
+    counts = {}
+    numbers_in_imprint = name_numbers.map{|x| x.number.split(//)}.flatten.sort{|x, y| x <=> y}
+    numbers_in_imprint.uniq.map{|x| counts[x] = numbers_in_imprint.count(x) }
+    counts
+  end
+
 end

@@ -259,8 +259,8 @@ class Job < ActiveRecord::Base
   end
 
   def name_number_csv
-    csv = name_and_numbers.map{|x| [x.imprint.job.name, x.imprint.number_format, x.imprint.name_format, x.number, x.name ]}
-    CSV.from_arrays csv, headers: ["Job", "Number Format", "Name Format", "Number", "Name"], write_headers: true
+    csv = name_and_numbers.map{|x| [ x.name ]}
+    CSV.from_arrays csv
   end
 
   def name_number_imprints

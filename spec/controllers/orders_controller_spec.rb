@@ -24,18 +24,7 @@ describe OrdersController, order_spec: true do
 
     end
   end
-
-  describe 'GET #names_numbers' do
-    let(:order) { build_stubbed :order }
-
-    it 'sends csv data' do
-      allow(Order).to receive(:find).and_return order
-      expect(order).to receive(:name_number_csv)
-
-      get :names_numbers, id: order.id
-    end
-  end
-
+  
   describe 'GET #fba', story_103: true do
     it 'renders index where terms = Fulfilled by Amazon' do
       expect(Order).to receive(:fba).and_call_original

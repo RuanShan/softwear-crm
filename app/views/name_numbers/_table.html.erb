@@ -1,4 +1,35 @@
 <div class="col-xs-12" style="page-break-after: always">
+  <% order.jobs.map{|j| j.name_number_imprints }.flatten.each do |imprint| %>
+    <h3>Number Breakdown for <%= imprint.name %>
+    </h3>
+    <% if imprint.number_count.empty? %>
+      <div class="alert alert-danger">
+        <p>There appear to be no numbers assigned for this job</p>
+      </div>
+    <% else %>
+      <table class="table table-condensed table-bordered">
+        <tr>
+          <th class="text-right">Number
+          </th>
+          <th>Quantity
+          </th>
+        </tr>
+        <% imprint.number_count.each do |key, val| %>
+          <tr>
+            <td class="text-right" style="padding-right: 10px">
+              <%= key %>
+            </td>
+            <td style="border-left: solid 3px #000; padding-left: 10px">
+              <%= val %>
+            </td>
+          </tr>
+        <% end %>
+      </table>
+    <% end %>
+  <% end %>
+</div>
+
+<div class="col-xs-12" style="page-break-after: always">
   <h3><%= order.name %> Names/Numbers</h3>
   <table class="table table-condensed table-striped">
     <thead>
