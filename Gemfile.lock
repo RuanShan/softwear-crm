@@ -1,6 +1,6 @@
 GIT
   remote: git://github.com/AnnArborTees/acts_as_warnable.git
-  revision: 06f9ae982d6a3a42e659046e4a14c1025dd7db8b
+  revision: b18fa6629e0f340c0ce3b8ba0fdc509249f2653a
   specs:
     acts_as_warnable (0.2.1)
       devise
@@ -325,7 +325,7 @@ GEM
     mime-types (2.6.2)
     mimemagic (0.3.0)
     mini_portile (0.6.2)
-    minitest (5.8.1)
+    minitest (5.8.2)
     momentjs-rails (2.9.0)
       railties (>= 3.1)
     multi_json (1.11.0)
@@ -629,3 +629,6 @@ DEPENDENCIES
   wkhtmltopdf-binary
   x-editable-rails
   yaml_db!
+
+BUNDLED WITH
+   1.10.6
