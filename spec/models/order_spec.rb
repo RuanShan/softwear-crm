@@ -158,6 +158,28 @@ describe Order, order_spec: true do
     end
   end
 
+  describe '#proof_state' do
+    context "There isn't an artwork request for every imprint" do 
+      it 'returns :pending_arwork_requests'
+    end  
+    
+    context "There isn't a proof for every artwork request" do 
+      it 'returns :pending'
+    end  
+    
+    context "There is at least one proof pending approval for an artwork request" do 
+      it 'returns :submitted_to_customer'
+    end
+
+    context "There aren't any missing artwork requests, but missing approved ones" do 
+      it 'returns rejected'
+    end
+
+    context "There's an approved proof for every artwork request" do 
+      it 'returns approved'
+    end
+  end
+
   # TODO implement this
   describe 'get_salesperson_id'
 
@@ -396,6 +418,66 @@ describe Order, order_spec: true do
     end
   end
 
+  describe '#missing_proofs?', current: true do     
+    let(:proof) { build_stubbed(:proof) } 
+    let(:artwork_request) { build_stubbed(:artwork_request) }
+    let(:order) { create(:order) } 
+    
+    context 'all artwork requests have at least one proof associated with them' do
+      before do 
+        allow(order).to receive(:artwork_requests) { [artwork_request] }  
+        allow(artwork_request).to receive(:proofs) { [proof] }  
+      end 
+
+      it 'returns false' do
+        expect(order.missing_proofs?).to be_falsy
+      end
+
+    end
+
+    context 'at least one artwork request has no proof associated with it' do 
+      let(:artwork_request_2) { build_stubbed(:artwork_request) }
+    
+      before do 
+        allow(order).to receive(:artwork_requests) { [artwork_request, artwork_request_2] }  
+        allow(artwork_request).to receive(:proofs) { [proof] }  
+      end 
+
+      it 'returns true' do
+        expect(order.missing_proofs?).to be_truthy
+      end 
+    end
+  end
+
+  describe '#missing_approved_proofs?', current: true do 
+    
+    let(:artwork_request) { build_stubbed(:artwork_request) }
+    let(:order) { create(:order) } 
+    
+    context 'all artwork requests have at least one approved proof with them' do
+      before do 
+        allow(order).to receive(:artwork_requests) { [artwork_request] }  
+        allow(artwork_request).to receive(:has_approved_proof?) { true } 
+      end 
+
+      it 'returns false' do
+        expect(order.missing_approved_proofs?).to be_falsy
+      end
+
+    end
+
+    context 'at least one artwork request has no proof associated with it' do 
+      before do 
+        allow(order).to receive(:artwork_requests) { [artwork_request] }  
+        allow(artwork_request).to receive(:has_approved_proof?) { false } 
+      end 
+
+      it 'returns true' do
+        expect(order.missing_approved_proofs?).to be_truthy
+      end 
+    end
+  end
+
   describe '#generate_jobs', story_957: true, story_103: true do
     let!(:order) { create :order }
 
@@ -538,7 +620,7 @@ describe Order, order_spec: true do
     end
   end
 
-  describe '#prod_api_confirm_artwork_preprod', current: true do 
+  describe '#prod_api_confirm_artwork_preprod' do 
     context "order has artwork requests with Screen Prints or Large Format Screen Prints" do 
       
       let!(:prod_order) { create(:production_order) }

@@ -5,6 +5,10 @@ class Proof < ActiveRecord::Base
 
   acts_as_paranoid
 
+  searchable do 
+    
+  end
+
   tracked by_current_user + on_order
 
   VALID_PROOF_STATUSES = [
@@ -27,6 +31,8 @@ class Proof < ActiveRecord::Base
   validates :artworks, presence: true
   validates :status, presence: true
 
+  after_save :update_order_proof_state
+
   def mockup_paths
     mockups.map do |mockup|
       [
@@ -35,4 +41,10 @@ class Proof < ActiveRecord::Base
       ]
     end
   end
+
+  def update_order_proof_state
+    Sunspot.index order
+  end
+
+
 end

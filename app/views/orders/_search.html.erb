@@ -15,11 +15,17 @@
     </div>
 
     <div class="col-sm-3">
-      <%= s.select :production_state, Order::VALID_PRODUCTION_STATES, multiple: true %>
-    </div>
-
-    <div class="col-sm-3">
       <%= s.select :notification_state, Order.state_machines[:notification_state].states.map { |s| s.name.to_s }, display: :humanize %>
+    </div>
+  </div>
+
+  <div class='row form-group'>
+    <div class="col-sm-3">
+      <%= s.select :proof_state, Order::VALID_PROOF_STATES.map{|s| s.to_s}, display: :humanize, multiple: true %>
+    </div>
+    
+    <div class="col-sm-3">
+      <%= s.select :production_state, Order::VALID_PRODUCTION_STATES, multiple: true %>
     </div>
   </div>
 
