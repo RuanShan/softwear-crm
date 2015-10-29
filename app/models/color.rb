@@ -11,7 +11,7 @@ class Color < ActiveRecord::Base
   validates :sku, length: { is: 3 }, if: :is_retail?
 
   searchable do
-    text :name, :sku
+    text :name, :sku, :map
   end
 
   def hexcodes

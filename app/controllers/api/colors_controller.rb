@@ -7,7 +7,7 @@ module Api
     protected
 
     def permitted_attributes
-      [:name, :sku, :hexcode]
+      [:name, :sku, :hexcode, :map]
     end
   end
 end

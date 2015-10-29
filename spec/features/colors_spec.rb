@@ -18,9 +18,11 @@ feature 'Colors management', color_spec: true do
     click_link('Add a color')
     fill_in 'color_name', with: 'Sample Name'
     fill_in 'color_sku', with: '042'
+    fill_in 'color_map', with: 'Green'
     click_button('Create Color')
     expect(page).to have_content 'Color was successfully created.'
     expect(Color.find_by name: 'Sample Name').to_not be_nil
+    expect(Color.where(name: 'Sample Name', sku: '042', map: 'Green')).to exist
   end
 
   scenario 'A user can edit an existing color', story_692: true do

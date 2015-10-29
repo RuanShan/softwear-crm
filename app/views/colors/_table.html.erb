@@ -4,6 +4,7 @@
       <thead>
       <tr>
         <th>Name</th>
+        <th>Map</th>
         <th>SKU</th>
       </tr>
       </thead>
@@ -11,6 +12,7 @@
       <% colors.each do |color| %>
         <tr id="<%= model_table_row_id color %>">
           <td><%= color.name %></td>
+          <td><%= color.map %></td>
           <td><%= color.sku %></td>
           <td>
             <div class="btn-group btn-group-xs">
