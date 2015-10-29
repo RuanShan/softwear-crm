@@ -39,7 +39,7 @@ class PaymentsController < InheritedResources::Base
   end
 
   def permitted_params
-    params.permit(payment: [:amount, :store_id, :salesperson_id, :order_id, :t_company_name, 
+    params.permit(payment: [:amount, :store_id, :salesperson_id, :order_id, :t_company_name, :pp_transaction_id,  
                             :refunded, :refund_reason, :payment_method, :t_name, :t_description, :tf_number])
   end
 end
