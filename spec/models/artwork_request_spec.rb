@@ -26,16 +26,16 @@ describe ArtworkRequest, artwork_request_spec: true do
     it { is_expected.to validate_presence_of(:salesperson) }
   end
 
-  context 'after_creation' do 
+  context 'after_creation' do
     it 'creates a freshdesk ticket', story_809: true
   end
 
-  context '#freshdesk_proof_ticket', story_809: true do 
-    context 'no freshdesk artwork ticket exists' do 
-      it 'creates an artwork freshdesk ticket for the order' 
+  context '#freshdesk_proof_ticket', story_809: true do
+    context 'no freshdesk artwork ticket exists' do
+      it 'creates an artwork freshdesk ticket for the order'
     end
 
-    context 'freshdesk artwork ticket exists' do 
+    context 'freshdesk artwork ticket exists' do
       it 'returns the ticket'
     end
   end
@@ -164,25 +164,24 @@ describe ArtworkRequest, artwork_request_spec: true do
       expect(subject.compatible_ink_colors.map(&:name)).to eq ['Red', 'Blue']
     end
   end
-  
-  describe '#has_proof_pending_approval?'
-    context 'artwork_request has at least one proof with status Emailed Customer' do 
+
+  describe '#has_proof_pending_approval?' do
+    context 'artwork_request has at least one proof with status Emailed Customer' do
       it 'returns true'
     end
-  
+
     context 'artwork_request has no proofs with status Emailed Customer' do
-     it 'returns false' 
+     it 'returns false'
     end
   end
-  
-  describe '#has_approved_proof?'
 
-    context 'artwork_request has at least one approved proof' do 
+  describe '#has_approved_proof?' do
+    context 'artwork_request has at least one approved proof' do
       it 'returns true'
     end
-  
+
     context 'artwork_request has no approved proofs' do
-     it 'returns false' 
+     it 'returns false'
     end
   end
 end
