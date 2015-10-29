@@ -18,7 +18,7 @@ describe ArtworkRequest, artwork_request_spec: true do
   end
 
   describe 'Validations' do
-    it { is_expected.to validate_presence_of(:artwork_status) }
+    it { is_expected.to validate_presence_of(:artwork_state) }
     it { is_expected.to validate_presence_of(:deadline) }
     it { is_expected.to validate_presence_of(:description) }
     it { is_expected.to validate_presence_of(:ink_colors) }

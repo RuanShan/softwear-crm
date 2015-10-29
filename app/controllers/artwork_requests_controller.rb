@@ -27,10 +27,10 @@ class ArtworkRequestsController < InheritedResources::Base
 
       if params[:remove_artwork].nil?
         @artwork_request.artworks << @artwork
-        @artwork_request.artwork_status = 'Art Created'
+        @artwork_request.state = 'Art Created'
       else
         @artwork_request.artworks.delete(@artwork)
-        @artwork_request.artwork_status = 'Pending' if @artwork_request.artwork_ids.empty?
+        @artwork_request.state = 'Pending' if @artwork_request.artwork_ids.empty?
       end
 
       @order = Order.find(@artwork_request.jobs.first.order.id)
@@ -86,7 +86,7 @@ class ArtworkRequestsController < InheritedResources::Base
                   artwork_request:[
                     :id, :priority, :description, :artist_id,
                     :imprint_method_id, :salesperson_id,
-                    :deadline, :artwork_status, ink_color_ids: [],
+                    :deadline, :state, ink_color_ids: [],
                     artwork_ids: [],
                     imprint_ids: [],
                     assets_attributes: [

@@ -12,7 +12,7 @@ class ArtworkRequest < ActiveRecord::Base
          :artwork_names, :artwork_descriptions,
          :artist_full_name, :salesperson_full_name
 
-    string :artwork_status
+    string :state
 
     date :deadline
     date :order_in_hand_by
@@ -33,7 +33,7 @@ class ArtworkRequest < ActiveRecord::Base
 
   default_scope { order(deadline: :asc).order(priority: :desc) }
   scope :unassigned, -> { where("artist_id is null") }
-  scope :pending, -> { where.not(artwork_status: 'art created') }
+  scope :pending, -> { where.not(state: 'art created') }
 
   has_many :artwork_request_artworks
   has_many :artwork_request_ink_colors
@@ -52,7 +52,7 @@ class ArtworkRequest < ActiveRecord::Base
 
   accepts_nested_attributes_for :assets, allow_destroy: true
 
-  validates :artwork_status, presence: true
+  validates :state,          presence: true
   validates :deadline,       presence: true
   validates :description,    presence: true
   validates :ink_colors,     presence: true
