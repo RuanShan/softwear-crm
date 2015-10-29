@@ -9,7 +9,7 @@ class Order < ActiveRecord::Base
   is_activity_recipient
 
   searchable do
-    text :name, :email, :firstname, :lastname, :invoice_state,
+    text :name, :email, :firstname, :lastname, :invoice_state, :proof_state,
          :company, :twitter, :terms, :delivery_method, :salesperson_full_name
 
     text :jobs do
@@ -20,7 +20,7 @@ class Order < ActiveRecord::Base
       :firstname, :lastname, :email, :terms,
       :delivery_method, :company, :phone_number,
       :payment_status, :invoice_state, :production_state,
-      :notification_state, :salesperson_full_name
+      :notification_state,  :salesperson_full_name
     ]
       .each { |f| string f }
 
@@ -73,6 +73,15 @@ class Order < ActiveRecord::Base
     'Payment Terms Met',
     'Payment Terms Pending'
   ]
+
+  VALID_PROOF_STATES = [
+    :pending_artwork_requests,
+    :pending,
+    :submitted_to_customer,
+    :rejected,
+    :approved
+  ]
+
 
   belongs_to :salesperson, class_name: User
   belongs_to :store
@@ -162,7 +171,7 @@ class Order < ActiveRecord::Base
       transition :notified => :picked_up
     end
   end
-
+  
   def id=(new_id)
     return if new_id.blank?
     super
@@ -232,6 +241,14 @@ class Order < ActiveRecord::Base
       else 'Payment Terms Pending'
       end
     end
+  end
+
+  def proof_state
+    return 'pending_artwork_requests' if missing_artwork_requests?
+    return 'pending' if missing_proofs?
+    return 'submitted_to_customer' if proofs_pending_approval?
+    return 'rejected' if !missing_artwork_requests? && missing_approved_proofs?
+    return 'approved' unless missing_approved_proofs?
   end
 
   def full_name
@@ -388,8 +405,21 @@ class Order < ActiveRecord::Base
     in_hand_by <= 6.business_days.from_now
   end
 
+
   def missing_artwork_requests?
     imprints.map{|i| i.artwork_requests.empty? }.include? true
+  end
+
+  def missing_proofs?
+    artwork_requests.map{|ar| ar.proofs.empty? }.include? true
+  end
+  
+  def missing_approved_proofs?
+    artwork_requests.map{|ar| ar.has_approved_proof? }.include? false
+  end
+
+  def proofs_pending_approval?
+    artwork_requests.map{|ar| ar.has_proof_pending_approval? }.include? true
   end
 
   def warnings_count

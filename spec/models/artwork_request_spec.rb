@@ -164,4 +164,25 @@ describe ArtworkRequest, artwork_request_spec: true do
       expect(subject.compatible_ink_colors.map(&:name)).to eq ['Red', 'Blue']
     end
   end
+  
+  describe '#has_proof_pending_approval?'
+    context 'artwork_request has at least one proof with status Emailed Customer' do 
+      it 'returns true'
+    end
+  
+    context 'artwork_request has no proofs with status Emailed Customer' do
+     it 'returns false' 
+    end
+  end
+  
+  describe '#has_approved_proof?'
+
+    context 'artwork_request has at least one approved proof' do 
+      it 'returns true'
+    end
+  
+    context 'artwork_request has no approved proofs' do
+     it 'returns false' 
+    end
+  end
 end
