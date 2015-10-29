@@ -31,11 +31,11 @@ class Artwork < ActiveRecord::Base
             :preview, presence: true
 
   def path
-    artwork.preview.url
+    preview.url
   end
 
   def thumbnail_path
-    artwork.preview.url(:thumb)
+    preview.url(:thumb)
   end
 
   private
