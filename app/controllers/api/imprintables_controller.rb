@@ -50,7 +50,7 @@ module Api
         imprintable_variants: {
           methods: [:sku],
           include: {
-            color: { only: [:name, :hexcode] },
+            color: { only: [:name, :hexcode, :map] },
             size: { only: [:name, :display_value, :sort_order] }
           }
         }
