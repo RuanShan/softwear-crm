@@ -5,3 +5,7 @@ set :output, {:error => '/home/ubuntu/RailsApps/crm.softwearcrm.com/shared/log/c
 every :hour, at: 0 do
   rake "data:backup"
 end
+
+every :day, at: '7:00am' do 
+  rake "warnings:create_for_orders"
+end
