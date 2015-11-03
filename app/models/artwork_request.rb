@@ -62,6 +62,39 @@ class ArtworkRequest < ActiveRecord::Base
 
   after_create :enqueue_create_freshdesk_proof_ticket if Rails.env.production?
 
+  state_machine :state, initial: :unassigned do 
+    event :assigned do 
+      transition :unassigned => :pending_artwork
+    end
+    
+    event :unassigned do 
+      transition any => :unassigned
+    end
+
+    event :artwork_added do 
+      transition :pending_artwork => :pending_manager_approval
+    end
+
+    event :approved do 
+      transition :pending_manager_approval => :manager_approved
+    end
+
+    event :reject do 
+      transition :pending_manager_approval => :pending_artwork
+      transition :manager_approved => :pending_artwork
+    end
+
+    state :pending_manager_approval, :manager_approved do 
+      validates :artwork, presence: true
+    end
+
+    state :approved do 
+      validates :manager_id, presence: true
+    end
+
+  end
+
+
   def name
   end
 

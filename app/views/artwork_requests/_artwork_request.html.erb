@@ -5,7 +5,7 @@
                  locals: { artwork_request: artwork_request } %>
     <% end %>
 
-     <div class="col-sm-8">
+     <div class="col-xs-12">
       <div class="row">
         <div class="col-sm-6">
           <h4 class="artwork-request-title">Artwork Request
@@ -51,8 +51,57 @@
           </dl>
         </div>
       </div>
-
+      <table class="table table-condensed">
+        <tr>
+          <th>Job ID
+          </th>
+          <th>Quantity
+          </th>
+          <th>Max Print Area
+          </th>
+          <th>Ideal Decoration Sizing
+          </th>
+          <th>Template
+          </th>
+          <th>Style
+          </th>
+          <th>Colors
+          </th> 
+          <th>Sizing Category
+          </th>
+        </tr>
+        <% artwork_request.jobs.each do |job| %>
+          <tr>
+            <td><%= job.id %>
+            </td>
+            <td><%= job.imprintable_variant_count %>
+            </td>
+            <td> ??
+            </td>
+            <td> ??
+            </td>
+            <td> ??
+            </td>
+            <td> ??
+            </td>
+            <td> ??
+            </td>
+            <td> ??
+            </td>
+            <td> ??
+            </td>
+          </tr>
+        <% end %>
+      </table>
       <div class="row">
+        <dl>
+          <dt>Description:</dt><br>
+          <dd><%= artwork_request.description.html_safe %></dd>
+          <dt>Attachments:</dt>
+          <% if artwork_request.assets.empty? %>
+            <dd>None</dd>
+          <% end %>
+        </dl>
         <% artwork_request.assets.each do |asset| %>
           <div class="col-sm-5 indent">
             <dl>
