@@ -309,7 +309,7 @@ class Order < ActiveRecord::Base
       softwear_crm_id:    id,
       deadline:           in_hand_by,
       name:               name,
-      customer_name:      customer_full_name,
+      customer_name:      full_name,
       fba:                fba?,
       has_imprint_groups: false,
 
