@@ -53,7 +53,7 @@
       <%= f.label :state, class: 'col-sm-2 control-label' %>
 
       <div class="col-sm-10">
-        <%= f.select :state, ArtworkRequest::STATUSES %>
+        <%= f.select :state, ['unassigned', 'pending_artwork'] %>
 
         <% if artwork_request.errors.include?(:state) %>
           <% artwork_request.errors.full_messages_for(:state).each do |message| %>
@@ -86,6 +86,40 @@
     </div>
   </div>
 
+  <div class="form-group">
+    <div class="row">
+      <%= f.label :reorder, 'Reoder?', class: 'col-sm-2 control-label' %>
+
+      <div class="col-sm-10">
+
+        <%= f.select :reorder, [["No", false], ["Yes", true]] %>
+        <p class='help-block'>Is this an <i>exact</i> reorder of a previous order?</p>
+        <% if artwork_request.errors.include?(:reorder) %>
+          <% artwork_request.errors.full_messages_for(:reorder).each do |message| %>
+            <p class="text-danger"><%= message %></p>
+          <% end %>
+        <% end %>
+      </div>
+    </div>
+  </div>
+
+  <div class="form-group">
+    <div class="row">
+      <%= f.label :exact_recreation, 'Exact Recreation?', class: 'col-sm-2 control-label' %>
+
+      <div class="col-sm-10">
+
+        <%= f.select :exact_recreation, [["No", false], ["Yes", true]] %>
+        <p class='help-block'>Are the descriptions and uploads you're providing exactly 
+        what the customer wants or do they represent ideas and approximations of what the customer wants?</p>
+        <% if artwork_request.errors.include?(:exact_recreation) %>
+          <% artwork_request.errors.full_messages_for(:exact_recreation).each do |message| %>
+            <p class="text-danger"><%= message %></p>
+          <% end %>
+        <% end %>
+      </div>
+    </div>
+  </div>
 
   <div class="form-group hide">
     <div class="row">

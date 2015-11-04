@@ -1,56 +1,58 @@
-<tr id="artwork-request-row-<%= artwork_request.id %>">
-<td><%= ArtworkRequest::PRIORITIES[artwork_request.priority.to_i] %></td>
-<td>
-  <% if artwork_request.order.nil? %>
-    (No order)
-  <% else %>
-    <%= link_to artwork_request.order.name, "#{edit_order_path(artwork_request.order.id)}#artwork"%>
-    <br />
-    <%= render 'orders/state', which: 'payment_state', state: artwork_request.order.payment_status %>
-  <% end %>
-</td>
-<td>
-  <dl>
-    <dt>Artist</dt>
-    <dd><%= artwork_request.artist.try(:full_name) || 'Nobody' %></dd>
-    <dt>Salesperson</dt>
-    <dd><%= artwork_request.salesperson.try(:full_name) || 'Nobody' %></dd>
-    <dt>Imprints</dt>
-    <dd><%= artwork_request.imprint_methods.pluck(:name).join(', ') %></dd>
-    <dt>Ink Colors</dt>
-    <dd><%= artwork_request.ink_colors.count %></dd>
-  </dl>
-  </td>
-  <td><%= display_date(artwork_request.deadline) %></td>
+<% cache(["_row", artwork_request]) do %>
+  <tr id="artwork-request-row-<%= artwork_request.id %>">
+  <td><%= ArtworkRequest::PRIORITIES[artwork_request.priority.to_i] %></td>
   <td>
-    <% if artwork_request.jobs.empty? || artwork_request.jobs.first.order.nil? %>
+    <% if artwork_request.order.nil? %>
       (No order)
     <% else %>
-      <%= display_date(artwork_request.jobs.first.order.in_hand_by) %>
+      <%= link_to artwork_request.order.name, "#{edit_order_path(artwork_request.order.id)}#artwork"%>
+      <br />
+      <%= render 'orders/state', which: 'payment_state', state: artwork_request.order.payment_status %>
     <% end %>
   </td>
-  <td><%= artwork_request.total_quantity %></td>
-<td>
-  <div class="btn-group btn-group-xs">
-    <% unless artwork_request.jobs.empty? %>
-      <%= link_to edit_order_artwork_request_path(artwork_request.jobs.first.order, artwork_request),
-                  class: 'btn btn-default', remote: true,
-                  'data-toggle' => 'tooltip', 'title' => 'Edit' do %>
-        <i class="fa fa-edit"></i>
+  <td>
+    <dl>
+      <dt>Artist</dt>
+      <dd><%= artwork_request.artist.try(:full_name) || 'Nobody' %></dd>
+      <dt>Salesperson</dt>
+      <dd><%= artwork_request.salesperson.try(:full_name) || 'Nobody' %></dd>
+      <dt>Imprints</dt>
+      <dd><%= artwork_request.imprint_methods.pluck(:name).join(', ') %></dd>
+      <dt>Ink Colors</dt>
+      <dd><%= artwork_request.ink_colors.count %></dd>
+    </dl>
+    </td>
+    <td><%= display_date(artwork_request.deadline) %></td>
+    <td>
+      <% if artwork_request.jobs.empty? || artwork_request.jobs.first.order.nil? %>
+        (No order)
+      <% else %>
+        <%= display_date(artwork_request.jobs.first.order.in_hand_by) %>
+      <% end %>
+    </td>
+    <td><%= artwork_request.total_quantity %></td>
+  <td>
+    <div class="btn-group btn-group-xs">
+      <% unless artwork_request.jobs.empty? %>
+        <%= link_to edit_order_artwork_request_path(artwork_request.jobs.first.order, artwork_request),
+                    class: 'btn btn-default', remote: true,
+                    'data-toggle' => 'tooltip', 'title' => 'Edit' do %>
+          <i class="fa fa-edit"></i>
+        <% end %>
+
+        <%= link_to "#{order_artwork_request_path(artwork_request.jobs.first.order, artwork_request)}?disable_buttons=true",
+                    class: 'btn btn-default', remote: true,
+                    'data-toggle' => 'tooltip', 'title' => 'Show' do %>
+          <i class="fa fa-eye"></i>
+        <% end %>
       <% end %>
 
-      <%= link_to "#{order_artwork_request_path(artwork_request.jobs.first.order, artwork_request)}?disable_buttons=true",
-                  class: 'btn btn-default', remote: true,
-                  'data-toggle' => 'tooltip', 'title' => 'Show' do %>
-        <i class="fa fa-eye"></i>
+      <%= link_to artwork_request_path(artwork_request),
+                  class: 'btn btn-default', method: :delete, remote: true,
+                  'data-action' => 'destroy', 'data-toggle' => 'tooltip', 'title' => 'Destroy' do %>
+        <i class="fa fa-times"></i>
       <% end %>
-    <% end %>
-
-    <%= link_to artwork_request_path(artwork_request),
-                class: 'btn btn-default', method: :delete, remote: true,
-                'data-action' => 'destroy', 'data-toggle' => 'tooltip', 'title' => 'Destroy' do %>
-      <i class="fa fa-times"></i>
-    <% end %>
-  </div>
-</td>
-</tr>
+    </div>
+  </td>
+  </tr>
+<% end %>

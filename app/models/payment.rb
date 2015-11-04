@@ -23,7 +23,7 @@ class Payment < ActiveRecord::Base
 
   default_scope { order(:created_at) }
 
-  belongs_to :order
+  belongs_to :order, touch: true
   belongs_to :store
   belongs_to :salesperson, class_name: User
 

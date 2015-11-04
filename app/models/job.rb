@@ -139,6 +139,17 @@ class Job < ActiveRecord::Base
     )
   end
 
+  def imprintables_for_order
+    iv_ids = ImprintableVariant.where(
+      id: line_items.where(imprintable_object_type: 'ImprintableVariant')
+                    .pluck(:imprintable_object_id)
+    )
+
+    Imprintable.joins(:imprintable_variants)
+        .where(imprintable_variants: {id: iv_ids })
+        .uniq
+  end
+
   def imprintables
     Imprintable.where(
       id: line_items.where(imprintable_object_type: 'Imprintable')

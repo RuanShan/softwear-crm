@@ -8,7 +8,7 @@ class Imprint < ActiveRecord::Base
 
   tracked by_current_user + on_order
 
-  belongs_to :job
+  belongs_to :job, touch: true
   belongs_to :print_location
   belongs_to :production, class_name: 'Production::Imprint', foreign_key: :softwear_prod_id
   has_many :name_numbers
@@ -21,6 +21,8 @@ class Imprint < ActiveRecord::Base
 
   validates :job, presence: true
   validates :print_location, presence: true, uniqueness: { scope: :job_id }
+
+  after_save :touch_associations
 
   scope :name_number, -> { joins(:imprint_method).where(imprint_methods: { name: 'Name/Number' }) }
 
@@ -47,6 +49,14 @@ class Imprint < ActiveRecord::Base
     numbers_in_imprint = name_numbers.map{|x| x.number.split(//)}.flatten.sort{|x, y| x <=> y}
     numbers_in_imprint.uniq.map{|x| counts[x] = numbers_in_imprint.count(x) }
     counts
+  end
+
+  private
+
+  def touch_associations
+    name_numbers.update_all(updated_at: Time.now)
+    artwork_requests.update_all(updated_at: Time.now)
+    proofs.update_all(updated_at: Time.now) 
   end
 
 end

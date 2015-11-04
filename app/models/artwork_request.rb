@@ -156,11 +156,51 @@ class ArtworkRequest < ActiveRecord::Base
     jobs.map(&:imprintable_info).join(', ')
   end
 
+  def imprintable_proofing_templates
+    jobs.map(&:imprintables_for_order).flatten.map(&:proofing_template_name).uniq
+  end
+
+  def print_location_names_for_job(job)
+    print_locations_for_job(job).map(&:name)
+  end
+
+  def print_locations_for_job(job)
+    imprints.where(job_id: job.id).map(&:print_location)
+  end
+
+  def max_ideal_print_location_size_for_job(job)
+    print_location_ids = imprints.where(job_id: job.id).pluck(:print_location_id)
+    print_location_imprintables = jobs.map{|x| x.imprintables_for_order }.flatten
+    .map{|x| x.print_location_imprintables.where(print_location_id: print_location_ids) }
+    .flatten
+    width = print_location_imprintables.map(&:ideal_imprint_width).min
+    height = print_location_imprintables.map(&:ideal_imprint_height).min
+    { width: width , height: height }
+  end
+
+  def max_print_location_size
+    print_location_ids = imprints.pluck(:print_location_id)
+    print_location_imprintables = jobs.map{|x| x.imprintables_for_order }.flatten
+    .map{|x| x.print_location_imprintables.where(print_location_id: print_location_ids) }
+    .flatten
+    width = print_location_imprintables.map(&:max_imprint_width).min
+    height = print_location_imprintables.map(&:max_imprint_height).min
+    { width: width , height: height }
+  end
+
+  def imprintables_for_job_with_proofing_template(job, proofing_template_name)
+    job.imprintables_for_order.where(proofing_template_name: proofing_template_name)
+  end
+  
+  def colors_for_imprintable_for_job(imprintable, job)
+    job.imprintable_variants
+      .where(imprintable_id: imprintable.id)
+      .map(&:color).map(&:name).uniq
+  end
+
   def max_print_area(print_location)
-    areas = jobs.map{ |j| j.max_print_area(print_location) }
-    max_width = areas.map(&:first).min
-    max_height = areas.map(&:last).min
-    "#{max_width.to_s} in. x #{max_height.to_s} in."
+    max = max_print_location_size
+    "#{max[:width]} in. x #{max[:height]} in."
   end
 
   def total_quantity
@@ -170,8 +210,13 @@ class ArtworkRequest < ActiveRecord::Base
   def print_location
     print_locations.first
   end
+ 
   def imprint_method
     imprint_methods.first
+  end
+
+  def imprint_method_names
+    imprint_methods.map{|im| im.name }.uniq
   end
 
   def compatible_ink_colors

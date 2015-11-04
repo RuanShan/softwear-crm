@@ -2,6 +2,7 @@ class ArtworkRequestsController < InheritedResources::Base
   before_filter :assign_order
   before_filter :format_deadline, only: [:create, :update]
   before_filter :set_current_action
+  before_filter :clear_cache, only: [:create, :update, :destroy]
 
   respond_to :js
 
@@ -85,13 +86,20 @@ class ArtworkRequestsController < InheritedResources::Base
     params.permit(:order_id, :id,
                   artwork_request:[
                     :id, :priority, :description, :artist_id,
-                    :imprint_method_id, :salesperson_id,
-                    :deadline, :state, ink_color_ids: [],
+                    :imprint_method_id, :salesperson_id, :reorder, 
+                    :exact_or_approximate, :deadline, :state, 
+                    ink_color_ids: [],
                     artwork_ids: [],
                     imprint_ids: [],
                     assets_attributes: [
                       :file, :description, :id, :_destroy
                     ]
                   ])
+  end
+
+  def clear_cache
+    %w(_artwork_request).each do |v| 
+      expire_fragment( [v, params[:id]] ) 
+    end
   end
 end
