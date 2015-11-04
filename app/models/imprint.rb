@@ -54,7 +54,6 @@ class Imprint < ActiveRecord::Base
   private
 
   def touch_associations
-    name_numbers.update_all(updated_at: Time.now)
     artwork_requests.update_all(updated_at: Time.now)
     proofs.update_all(updated_at: Time.now) 
   end

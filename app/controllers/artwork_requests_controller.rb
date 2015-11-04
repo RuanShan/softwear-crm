@@ -2,7 +2,7 @@ class ArtworkRequestsController < InheritedResources::Base
   before_filter :assign_order
   before_filter :format_deadline, only: [:create, :update]
   before_filter :set_current_action
-  before_filter :clear_cache, only: [:create, :update, :destroy]
+  before_filter :assign_artwork_request_states
 
   respond_to :js
 
@@ -51,9 +51,21 @@ class ArtworkRequestsController < InheritedResources::Base
   end
 
   def manager_dashboard
-    @unassigned_artwork_requests = ArtworkRequest.unassigned
-    @pending_artwork_requests = ArtworkRequest.pending
-    @pending_proof_requests = Proof.pending
+    @unassigned = ArtworkRequest.search do 
+      with :state, :unassigned
+    end.results
+
+    @pending_artwork = ArtworkRequest.search do 
+      with :state, :pending_artwork
+    end.results
+
+    @pending_manager_approval = ArtworkRequest.search do 
+      with :state, :pending_manager_approval
+    end.results
+
+    @ready_to_proof = []
+    @proofs_awaiting_approval = []
+    @pending_production = []
   end
 
   protected
@@ -97,9 +109,8 @@ class ArtworkRequestsController < InheritedResources::Base
                   ])
   end
 
-  def clear_cache
-    %w(_artwork_request).each do |v| 
-      expire_fragment( [v, params[:id]] ) 
-    end
+  def assign_artwork_request_states
+    @artwork_request_states = ArtworkRequest.state_machine.states.map{|x| [x.human_name.humanize, x.name] }
   end
+
 end

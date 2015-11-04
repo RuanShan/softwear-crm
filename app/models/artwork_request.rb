@@ -25,12 +25,6 @@ class ArtworkRequest < ActiveRecord::Base
     7 => 'Low'
   }
 
-  STATUSES = [
-    'Pending',
-    'In Progress',
-    'Art Created'
-  ]
-
   default_scope { order(deadline: :asc).order(priority: :desc) }
   scope :unassigned, -> { where("artist_id is null") }
   scope :pending, -> { where.not(state: 'art created') }
@@ -40,6 +34,7 @@ class ArtworkRequest < ActiveRecord::Base
   has_many :artwork_request_imprints
   belongs_to :artist,                class_name: User
   belongs_to :salesperson,           class_name: User
+  belongs_to :approved_by,           class_name: User
   has_many   :artworks,              through: :artwork_request_artworks
   has_many   :proofs,                through: :artworks
   has_many   :assets,                as: :assetable, dependent: :destroy
@@ -61,8 +56,13 @@ class ArtworkRequest < ActiveRecord::Base
   validates :salesperson,    presence: true
 
   after_create :enqueue_create_freshdesk_proof_ticket if Rails.env.production?
+  after_save :advance_state
 
   state_machine :state, initial: :unassigned do 
+    after_transition on: :reject do |artwork_request| 
+      artwork_request.approved_by = nil
+    end
+
     event :assigned do 
       transition :unassigned => :pending_artwork
     end
@@ -85,7 +85,7 @@ class ArtworkRequest < ActiveRecord::Base
     end
 
     state :pending_manager_approval, :manager_approved do 
-      validates :artwork, presence: true
+      validates :artworks, presence: true
     end
 
     state :approved do 
@@ -93,7 +93,6 @@ class ArtworkRequest < ActiveRecord::Base
     end
 
   end
-
 
   def name
   end
@@ -307,5 +306,13 @@ class ArtworkRequest < ActiveRecord::Base
   
   def has_approved_proof?
     proofs.where(status: 'approved').exists?
+  end
+
+  private 
+
+  def advance_state
+    assigned if state == 'unassigned' and !artist.blank?
+    artwork_added if state == 'pending_artwork' and !artworks.empty?
+    approved if state == 'pending_manager_approval' and !approved_by.blank? 
   end
 end

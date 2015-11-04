@@ -9,67 +9,128 @@
         <div class="box-info full">
             <ul class="nav nav-tabs nav-justified">
               <li class="active">
-                <a href="#unassigned_artwork" data-toggle="tab">
-                  <i class="fa fa-tasks"></i> Unassigned Artwork Requests
+                <a href="#unassigned" data-toggle="tab">
+                  <i class="fa fa-tasks"></i> Unassigned
                 </a>
               </li>
               <li>
                 <a href="#pending_artwork" data-toggle="tab">
-                  <i class="fa fa-tasks"></i> Pending Artwork Requests
+                  <i class="fa fa-tasks"></i> Pending Artwork
                 </a>
               </li>
               <li>
-                <a href="#pending_proof" data-toggle="tab">
-                  <i class="fa fa-tasks"></i> Pending Proofs
+                <a href="#pending_manager_approval" data-toggle="tab">
+                  <i class="fa fa-tasks"></i> Pending Manager Approval
+                </a>
+              </li>
+              <li>
+                <a href="#ready_to_proof" data-toggle="tab">
+                  <i class="fa fa-tasks"></i> Ready To Proof
+                </a>
+              </li>
+              <li>
+                <a href="#proofs_awaiting_approval" data-toggle="tab">
+                  <i class="fa fa-tasks"></i> Proofs Awaiting Approval
+                </a>
+              </li>
+              <li>
+                <a href="#pending_production" data-toggle="tab">
+                  <i class="fa fa-tasks"></i> Pending Production
                 </a>
               </li>
             </ul>
 
             <div class="tab-content">
-              <div class="tab-pane animated fadeInRight active" id="unassigned_artwork"> 
-                <% if @unassigned_artwork_requests.empty? %>
+              <div class="tab-pane animated fadeInRight active" id="unassigned"> 
+                <% if @unassigned.empty? %>
                   <p class="alert alert-success col-xs-12">
                     No artwork requests are currently unassigned
                   </p>
                 <% else %> 
                   <h2 class="alert alert-warning">
-                    There are currently <span class='unassigned-artwork-count'><%= @unassigned_artwork_requests.count %> 
+                    There are currently <span class='unassigned-artwork-count'><%= @unassigned.count %> 
                     </span>artwork requests unassigned
                   </h2>
-                   <%= render partial: 'table', locals: { artwork_requests: @unassigned_artwork_requests } %>
+                   <%= render partial: 'table', locals: { artwork_requests: @unassigned } %>
                  <% end %>
               </div>
 
               <div class="tab-pane animated fadeInRight" id="pending_artwork">
-                <% if @pending_artwork_requests.empty? %>
+                <% if @pending_artwork.empty? %>
                   <p class="alert alert-success col-xs-12">
-                    No artwork requests are currently pending
+                    No artwork requests are currently pending artworkg
                   </p>
                 <% else %> 
                   
                   <h2 class="alert alert-warning">
-                    There are currently <span class='pending-artwork-count'><%= @pending_artwork_requests.count %> 
+                    There are currently <span class='pending-artwork-count'><%= @pending_artwork.count %> 
                     </span>artwork requests pending
                   </h2>
 
-                   <%= render partial: 'table', locals: { artwork_requests: @pending_artwork_requests } %>
+                   <%= render partial: 'table', locals: { artwork_requests: @pending_artwork } %>
                  <% end %>
               </div>
 
-              <div class="tab-pane animated  fadeInRight" id="pending_proof">
-                <% if @pending_proof_requests.empty? %>
+              <div class="tab-pane animated  fadeInRight" id="pending_manager_approval">
+                <% if @pending_manager_approval.empty? %>
                   
                   <p class="alert alert-success col-xs-12">
-                    No proof requests are currently pending
+                    No artwork requests are currently pending artwork approval
                   </p>
                 <% else %> 
                   <h2 class="alert alert-warning">
-                    There are currently <span class='pending-proofs-count'><%= @pending_proof_requests.count %> 
+                    There are currently <span class='pending-proofs-count'><%= @pending_manager_approval.count %> 
                     </span>proof requests pending
                   </h2>
-                   <%= render partial: 'proofs/table', locals: { proofs: @pending_proof_requests } %>
+                   <%= render partial: 'proofs/table', locals: { proofs: @pending_manager_approval } %>
                  <% end %>
               </div>
+              
+              <div class="tab-pane animated  fadeInRight" id="ready_to_proof">
+                <% if @ready_to_proof.empty? %>
+                  
+                  <p class="alert alert-success col-xs-12">
+                    No orders are currently ready to proof
+                  </p>
+                <% else %> 
+                  <h2 class="alert alert-warning">
+                    There are currently <span class='pending-proofs-count'><%= @ready_to_proof.count %> 
+                    </span> orders ready to proof
+                  </h2>
+                   <%= render partial: 'proofs/table', locals: { proofs: @ready_to_proof } %>
+                 <% end %>
+              </div>
+              
+              <div class="tab-pane animated  fadeInRight" id="proofs_awaiting_approval">
+                <% if @proofs_awaiting_approval.empty? %>
+                  
+                  <p class="alert alert-success col-xs-12">
+                    No artwork proofs currently awaiting approval
+                  </p>
+                <% else %> 
+                  <h2 class="alert alert-warning">
+                    There are currently <span class='pending-proofs-count'><%= @proofs_awaiting_approval.count %> 
+                    </span> proofs awaiting approval
+                  </h2>
+                   <%= render partial: 'proofs/table', locals: { proofs: @proofs_awaiting_approval } %>
+                 <% end %>
+              </div>
+
+              <div class="tab-pane animated  fadeInRight" id="proofs_awaiting_approval">
+                <% if @pending_production.empty? %>
+                  
+                  <p class="alert alert-success col-xs-12">
+                    No artworks are currently pending production
+                  </p>
+                <% else %> 
+                  <h2 class="alert alert-warning">
+                    There are currently <span class='pending-proofs-count'><%= @pending_production.count %> 
+                    </span> artworks pending production
+                  </h2>
+                   <%= render partial: 'proofs/table', locals: { proofs: @pending_production } %>
+                 <% end %>
+               </div>
+
             </div>
         </div>
     </div>

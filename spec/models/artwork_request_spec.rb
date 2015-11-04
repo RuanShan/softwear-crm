@@ -12,13 +12,13 @@ describe ArtworkRequest, artwork_request_spec: true do
     it { is_expected.to have_many(:print_locations) }
     it { is_expected.to have_many(:assets) }
     it { is_expected.to have_many(:artworks) }
-    it { is_expected.to have_many(:ink_colors) }
+    it { is_expected.to have_many(:proofs).through(:artworks) }
+    it { is_expected.to have_many(:ink_colors).through(:artwork_request_ink_colors) }
     it { is_expected.to have_many(:jobs) }
     it { is_expected.to accept_nested_attributes_for(:assets) }
   end
 
   describe 'Validations' do
-    it { is_expected.to validate_presence_of(:artwork_state) }
     it { is_expected.to validate_presence_of(:deadline) }
     it { is_expected.to validate_presence_of(:description) }
     it { is_expected.to validate_presence_of(:ink_colors) }
@@ -26,7 +26,47 @@ describe ArtworkRequest, artwork_request_spec: true do
     it { is_expected.to validate_presence_of(:salesperson) }
   end
 
-  context 'after_creation' do
+  describe 'callbacks'  do
+    describe 'after_save' do 
+      let(:artwork_request) { create(:valid_artwork_request) }
+
+      context 'when state is pending and newly assigning artist_id is not null' do 
+        before do 
+          artwork_request.artist = create(:user)
+          artwork_request.save
+        end
+
+        it 'advances to pending_artwork state' do
+          expect(artwork_request.state).to eq('pending_artwork') 
+        end
+      end
+      
+      context 'when state is pending_artwork and newly assigning artist_id is not null' do 
+        before do 
+          artwork_request.artist = create(:user)
+          artwork_request.save
+          expect(artwork_request.state).to eq('pending_artwork')
+          artwork_request.artworks << create(:valid_artwork)
+          artwork_request.save
+        end
+
+        it 'advances to pending_artwork state' do
+          artwork_request.artist = create(:user)
+          artwork_request.save
+          expect(artwork_request.state).to eq('pending_manager_approval') 
+        end
+      end
+    end
+  end 
+
+  context 'after_creation'  do
+    
+    let(:artwork_request) { build(:artwork_request) }
+
+    it 'default state is unassigned' do 
+      expect(artwork_request.state).to eq("unassigned")
+    end
+
     it 'creates a freshdesk ticket', story_809: true
   end
 
@@ -80,7 +120,7 @@ describe ArtworkRequest, artwork_request_spec: true do
     end
   end
 
-  context '#max_print_area' do
+  context '#max_print_area', pending: true do
     let!(:print_location) { create(:blank_print_location, name: 'Chest', max_width: 9.1, max_height: 2.6) }
     before do
       jobs = [build_stubbed(:blank_job), build_stubbed(:blank_job), build_stubbed(:blank_job), build_stubbed(:blank_job)]

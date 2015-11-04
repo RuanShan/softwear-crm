@@ -19,7 +19,7 @@ describe 'artwork_requests/_row.html.erb', artwork_request_spec: true do
   it 'has the artwork_request priority, a link to the order, deadline, order in hand by date,
       total quantity, imprint method name, no. of ink colors, payment terms, order name, and actions', was_failing: true do
     within("#artwork-request-row-#{artwork_request.id}") do
-      expect(rendered).to have_selector 'td', text: ArtworkRequest::PRIORITIES[artwork_request.priority.to_i]
+      expect(rendered).to have_selector 'td', text: ArtworkRequest.state_machine.initial_state(:state).human_name
       expect(rendered).to have_selector 'td', text: display_time(artwork_request.deadline)
       expect(rendered).to have_selector 'td', text: display_time(artwork_request.jobs.first.order.in_hand_by)
       expect(rendered).to have_selector 'td', text: artwork_request.total_quantity

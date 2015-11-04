@@ -3,8 +3,10 @@ require 'spec_helper'
 describe 'artwork_requests/_artwork_request.html.erb', artwork_request_spec: true do
   let!(:artwork_request) { create(:valid_artwork_request) }
   let!(:order) { build_stubbed(:blank_order) }
+  let!(:artist) { build_stubbed(:user) }
 
   before(:each) do
+    artwork_request.artist = artist
     render partial: 'artwork_requests/artwork_request', locals: { artwork_request: artwork_request, order: order }
   end
 
@@ -15,12 +17,8 @@ describe 'artwork_requests/_artwork_request.html.erb', artwork_request_spec: tru
       expect(rendered).to have_selector('h4.artwork-request-title')
       expect(rendered).to have_css('dt', text: 'Priority:')
       expect(rendered).to have_css('dd', text: "#{ArtworkRequest::PRIORITIES[artwork_request.priority.to_i]}")
-      expect(rendered).to have_css('dt', text: 'Imprints:')
-      expect(rendered).to have_css('dd', text: "#{artwork_request.imprints.map(&:name).join(', ')}")
       expect(rendered).to have_css('dt', text: 'Ink Colors:')
       expect(rendered).to have_css('dd', text: "#{artwork_request.ink_colors.map(&:name).join(', ')}")
-      expect(rendered).to have_css('dt', text: 'Imprintables Included:')
-      expect(rendered).to have_css('dd', text: "#{artwork_request.imprintable_info}")
       expect(rendered).to have_css('dt', text: 'No. of Pieces:')
       expect(rendered).to have_css('dd', text: "#{artwork_request.imprintable_variant_count}")
       expect(rendered).to have_css('dt', text: 'Description:')
@@ -29,7 +27,9 @@ describe 'artwork_requests/_artwork_request.html.erb', artwork_request_spec: tru
       expect(rendered).to have_css('dd', text: "#{artwork_request.state}")
       expect(rendered).to have_css('dt', text: 'Deadline:')
       expect(rendered).to have_css('dd', text: "#{display_time(artwork_request.deadline)}")
-      expect(rendered).to have_css('dt', text: 'Salesperson:')
+      expect(rendered).to have_css('dt', text: 'Order Salesperson:')
+      expect(rendered).to have_css('dd', text: artwork_request.order.salesperson.full_name)
+      expect(rendered).to have_css('dt', text: 'Request Created By:')
       expect(rendered).to have_css('dd', text: artwork_request.salesperson.full_name)
       expect(rendered).to have_css('dt', text: 'Artist:')
       expect(rendered).to have_css('dd', text: "#{artwork_request.artist.full_name}")

@@ -74,11 +74,11 @@ ActiveRecord::Schema.define(version: 20151029204231) do
     t.integer  "print_location_id", limit: 4
     t.integer  "salesperson_id",    limit: 4
     t.datetime "deadline"
-    t.string   "state",             limit: 255
     t.datetime "deleted_at"
     t.datetime "created_at"
     t.datetime "updated_at"
     t.string   "priority",          limit: 255
+    t.string   "state",             limit: 255
     t.boolean  "reorder"
     t.integer  "approved_by_id",    limit: 4
     t.boolean  "exact_recreation"
