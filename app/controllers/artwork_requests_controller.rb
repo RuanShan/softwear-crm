@@ -20,7 +20,6 @@ class ArtworkRequestsController < InheritedResources::Base
     @artwork_requests = ArtworkRequest.all.page(params[:page] || 1)
   end
 
-  # TODO couldn't figure out a way to refactor this, but could possibly be too much for a controller?
   def update
     unless params[:artwork_id].nil?
       @artwork_request = ArtworkRequest.find(params[:id])
@@ -28,10 +27,9 @@ class ArtworkRequestsController < InheritedResources::Base
 
       if params[:remove_artwork].nil?
         @artwork_request.artworks << @artwork
-        @artwork_request.state = 'Art Created'
       else
         @artwork_request.artworks.delete(@artwork)
-        @artwork_request.state = 'Pending' if @artwork_request.artwork_ids.empty?
+        @artwork_request.artwork_removed
       end
 
       @order = Order.find(@artwork_request.jobs.first.order.id)

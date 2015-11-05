@@ -3,7 +3,7 @@ require 'spec_helper'
 describe ArtistMailer do
 
   describe 'artist_notification' do
-    let!(:artwork_request) { create(:valid_artwork_request) }
+    let!(:artwork_request) { create(:valid_artwork_request_with_artist) }
     let!(:action_name) { 'create' }
     let!(:mailer) { ArtistMailer.artist_notification(artwork_request, action_name) }
 

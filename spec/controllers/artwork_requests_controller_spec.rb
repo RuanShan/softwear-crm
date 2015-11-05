@@ -25,7 +25,7 @@ describe ArtworkRequestsController, js: true, artwork_request_spec: true do
 
   describe 'PUT update' do
     let(:artwork) { create(:valid_artwork) }
-    let(:artwork_request) { create(:valid_artwork_request) }
+    let(:artwork_request) { create(:valid_artwork_request_with_artist) }
 
     context 'params[:artwork_id] is nil' do
       it 'renders update.js.erb' do

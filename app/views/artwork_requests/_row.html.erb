@@ -47,9 +47,27 @@
         <% end %>
       <% end %>
 
+      <% if artwork_request.state == 'pending_manager_approval' %>
+        <%= link_to order_artwork_request_path(artwork_request.order, artwork_request, artwork_request: { state: 'manager_approved'} ),
+          class: 'btn btn-default', method: :put, data: {action: :update, toggle: :tooltip,
+            title: 'Approve',  confirm: "Confirm Manager Approval" } do %>
+        <i class="glyphicon glyphicon-thumbs-up"></i> 
+        <% end %>
+      <% end %>
+  
+
+      <% if artwork_request.state == 'pending_manager_approval' || artwork_request.state == 'manager_approved' %>
+        <%= link_to order_artwork_request_path(artwork_request.order, artwork_request, artwork_request: { state: 'pending_artwork' }), method: :put,
+          class: 'btn btn-default', method: :put, data: {action: :update, toggle: :tooltip,
+            title: 'Rejext',  confirm: "Confirm Rejection" } do %>
+          <i class="glyphicon glyphicon-thumbs-down"></i>
+        <% end %>
+      <% end %>
+
       <%= link_to artwork_request_path(artwork_request),
-                  class: 'btn btn-default', method: :delete, remote: true,
-                  'data-action' => 'destroy', 'data-toggle' => 'tooltip', 'title' => 'Destroy' do %>
+        class: 'btn btn-default', method: :delete, remote: true,
+          data: {confirm: 'Are you sure you want to destroy this artwork request?', action: :destroy, 
+            toggle: :tooltip, title: 'Destroy'} do %>
         <i class="fa fa-times"></i>
       <% end %>
     </div>

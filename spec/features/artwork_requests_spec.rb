@@ -104,6 +104,10 @@ feature 'Artwork Request Features', js: true, artwork_request_spec: true do
     expect(ArtworkRequest.where(description: 'hello').first.ink_colors.first.name)
       .to eq imprint_method.ink_colors.first.name
   end
+  
+  scenario 'a proofing manager can approve artwork requests that are pending_approval'
+  scenario 'a proofigng manager can reject artwork requests that are pending_approval'
+  scenario 'an artist can add artwork and have the status become pending_manager_approval'
 
   context 'search', search: true, no_ci: true do
     background do

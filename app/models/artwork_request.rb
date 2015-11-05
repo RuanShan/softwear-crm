@@ -58,9 +58,17 @@ class ArtworkRequest < ActiveRecord::Base
   after_create :enqueue_create_freshdesk_proof_ticket if Rails.env.production?
   after_save :advance_state
 
-  state_machine :state, initial: :unassigned do 
+  state_machine :state, initial: :unassigned do
+    after_transition any => any do |artwork_request|
+      artwork_request.touch
+    end
+
     after_transition on: :reject do |artwork_request| 
       artwork_request.approved_by = nil
+    end
+
+    after_transition on: :approved do |artwork_request| 
+      artwork_request.approved_by = current_user
     end
 
     event :assigned do 
@@ -73,6 +81,12 @@ class ArtworkRequest < ActiveRecord::Base
 
     event :artwork_added do 
       transition :pending_artwork => :pending_manager_approval
+    end
+    
+    event :artwork_removed do 
+      transition :pending_manager_approval => :pending_manager_approval,  :unless => lambda{ |artwork_request| artwork_request.artworks.empty? }
+      transition :approved => :pending_manager_approval,  :unless => lambda{ |artwork_request| artwork_request.artworks.empty? }
+      transition :pending_manager_approval => :pending_artwork,  :if =>  lambda{ |artwork_request| artwork_request.artworks.empty? }
     end
 
     event :approved do 
