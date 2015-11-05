@@ -1,9 +1,35 @@
 <div class='user-profile-content'>
-  <div class='pull-right hidden-print'>
+  <div class='text-right hidden-print clearfix'>
+
+    <% if order.artwork_state == 'pending_artwork_requests' && !order.missing_artwork_requests? %>
+      <%= link_to order_path(@order, transition: {artwork_state: :artwork_requests_complete}), method: :put, class: 'btn btn-primary' do %>
+        <i class='glyphicon glyphicon-check'></i> Mark Art Requests Complete
+      <% end %>
+    <% end %>   
+    
+    <% if order.artwork_state == 'pending_artwork' %>
+      <%= link_to order_path(@order, transition: {artwork_state: :artwork_complete} ), method: :put, class: 'btn btn-primary' do %>
+        <i class='glyphicon glyphicon-check'></i> Mark Art Complete
+      <% end %>
+    <% end %>   
+    
+    <% if order.artwork_state == 'ready_for_production' %>
+      <%= link_to order_path(@order, transition: {artwork_state: :put_into_production} ), method: :put, class: 'btn btn-success' do %>
+        <i class='glyphicon glyphicon-check'></i> Mark Art In Production
+      <% end %>
+    <% end %>   
+    
     <%= link_to new_artwork_path(back_to: (edit_order_path(@order, anchor: 'artwork') if @order)), class: 'btn btn-primary' do %>
-      Add Artwork
+      <i class='fa fa-picture-o'></i> Upload New Artwork
     <% end %>
   </div>
+  
+  <% if order.missing_artwork_requests? %>
+    <div class="alert alert-danger clearfix ">
+      This order is missing artwork requests. Artwork can not proceed until all imprints have an artwork request associated with them.  
+    </div>
+  <% end %>
+    
   <div class="row">
     <div class="col-sm-12">
       <h3><strong>Artwork</strong> Requests</h3>

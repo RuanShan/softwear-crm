@@ -9,7 +9,7 @@ class Order < ActiveRecord::Base
   is_activity_recipient
 
   searchable do
-    text :name, :email, :firstname, :lastname, :invoice_state, :proof_state,
+    text :name, :email, :firstname, :lastname, :invoice_state, :proof_state, :artwork_state,
          :company, :twitter, :terms, :delivery_method, :salesperson_full_name
 
     text :jobs do
@@ -18,7 +18,7 @@ class Order < ActiveRecord::Base
 
     [
       :firstname, :lastname, :email, :terms,
-      :delivery_method, :company, :phone_number,
+      :delivery_method, :company, :phone_number, :artwork_state,
       :payment_status, :invoice_state, :production_state,
       :notification_state,  :salesperson_full_name
     ]
@@ -172,6 +172,45 @@ class Order < ActiveRecord::Base
     end
   end
   
+  state_machine :artwork_state, :initial => :pending_artwork_requests do
+  
+    after_transition on: :proofs_submitted, do: :mark_proofs_submitted
+    after_transition on: :proofs_rejected, do: :mark_proofs_rejected
+    after_transition on: :proofs_approved, do: :mark_proofs_approved
+    
+    event :artwork_requests_complete do
+      transition :pending_artwork_requests => :pending_artwork, :unless => lambda{ |x| x.missing_artwork_requests? }
+    end
+
+    event :artwork_complete do 
+      transition :pending_artwork => :pending_proofs, :if => lambda{ |x| x.missing_proofs? }
+      transition :pending_artwork => :pending_proof_submission
+    end
+
+    event :proofs_ready do 
+      transition :pending_proofs => :pending_proof_submission, :unless => lambda{ |x| x.missing_proofs }
+    end
+
+    event :proofs_submitted do 
+      transition :pending_proof_submission => :pending_proof_approval
+    end
+
+    event :proofs_rejected do 
+      transition :pending_proof_approval => :pending_artwork
+      transition :pending_proof_submission => :pending_artwork
+      transition :ready_for_production => :pending_artwork
+    end
+
+    event :proofs_approved do 
+      transition :pending_proof_approval => :ready_for_production
+    end
+
+    event :put_into_production do 
+      transition :ready_for_production => :in_production
+    end 
+
+  end
+
   def id=(new_id)
     return if new_id.blank?
     super
@@ -405,7 +444,6 @@ class Order < ActiveRecord::Base
     in_hand_by <= 6.business_days.from_now
   end
 
-
   def missing_artwork_requests?
     imprints.map{|i| i.artwork_requests.empty? }.include? true
   end
@@ -567,5 +605,23 @@ class Order < ActiveRecord::Base
   end
 
   private
+
+  def mark_proofs_submitted
+    proofs.where(status: 'Pending').each do |proof|
+      proof.update_attribute(:status, 'Emailed Customer')
+    end
+  end
+  
+  def mark_proofs_approved
+    proofs.where(status: 'Emailed Customer').each do |proof|
+      proof.update_attribute(:status, 'Approved')
+    end
+  end
+  
+  def mark_proofs_rejected
+    proofs.each do |proof|
+      proof.update_attribute(:status, 'Rejected')
+    end
+  end
 
 end

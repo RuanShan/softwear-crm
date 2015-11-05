@@ -65,6 +65,10 @@
         </th>
         <th>Production State
         </th>
+        <th>Artwork State
+        </th>
+        <th>Proof State
+        </th>
         <th>Notification State
         </th>
       <% end %>
@@ -94,6 +98,12 @@
           </td>
           <td class='production-state'>
             <span class="label <%= get_style_from_production_state(@order.production_state)%>"><%= @order.production_state.humanize %></span>
+          </td>
+          <td class='artwork-state'>
+          <span class="label label-primary <%= get_style_from_artwork_state(@order.artwork_state) %>"><%=  @order.artwork_state.humanize %></span>
+          </td>
+          <td class='proof-state'>
+            <span class="label <%= get_style_from_proof_state(@order.proof_state) %>"><%= @order.proof_state.humanize %></span>
           </td>
           <td class='notification-state'>
             <span class="label <%= get_style_from_notification_state(@order.notification_state)%>"><%= @order.notification_state.humanize %></span>

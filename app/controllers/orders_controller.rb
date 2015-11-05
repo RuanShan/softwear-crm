@@ -12,6 +12,9 @@ class OrdersController < InheritedResources::Base
   def update
     super do |success, failure|
       success.html do
+        if params[:transition]
+          @order.fire_artwork_state_event(params[:transition][:artwork_state]) if params[:transition][:artwork_state]
+        end
         redirect_to edit_order_path(params[:id], anchor: 'details')
       end
       failure.html do
@@ -217,7 +220,7 @@ class OrdersController < InheritedResources::Base
         :in_hand_by, :terms, :tax_exempt,
         :tax_id_number, :redo_reason, :invoice_state,
         :delivery_method, :phone_number, :commission_amount,
-        :store_id, :salesperson_id, :total, :shipping_price,
+        :store_id, :salesperson_id, :total, :shipping_price, :artwork_state,
         :freshdesk_proof_ticket_id, :softwear_prod_id, :production_state,
         quote_ids: []
       ]

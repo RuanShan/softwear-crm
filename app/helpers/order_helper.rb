@@ -7,6 +7,9 @@ module OrderHelper
     when 'production_state' then get_style_from_production_state(state, style_type)
     when 'payment_state' then get_style_from_status(state, style_type)
     when 'proof_state' then get_style_from_proof_state(state, style_type)
+    when 'artwork_state' then get_style_from_artwork_state(state, style_type)
+    else 
+      'label-primary'
     end
   end
 
@@ -40,10 +43,20 @@ module OrderHelper
     end
   end
 
+  def get_style_from_artwork_state(status, style_type = 'label')
+    if style_type == 'label'
+      case status
+      when 'pending_artwork_requests' then 'label-danger'
+      when 'in_production' then 'label-success'
+      else 'label-warning'
+      end
+    end
+  end
+  
   def get_style_from_proof_state(status, style_type = 'label')
     if style_type == 'label'
       case status
-      when 'pending_artwork_requests' then 'label-warning'
+      when 'pending_artwork_requests' then 'label-danger'
       when 'pending' then 'label-warning'
       when 'submitted_to_customer' then 'label-warning'
       when 'approved' then 'label-success'

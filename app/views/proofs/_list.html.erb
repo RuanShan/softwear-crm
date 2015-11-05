@@ -1,13 +1,36 @@
 <div class='user-profile-content'>
   <div class="row">
     <div class="col-sm-12">
-      <h3 class="pull-left"><strong>Proofs</strong></h3>
-      <% unless order.freshdesk_proof_ticket_id.blank? %>
-        <%= link_to order.freshdesk_proof_ticket_link, class: 'btn btn-primary pull-right', target: :_blank do %>
-          <i class="softwear-icon-freshdesk-icon"></i> Freshdesk Proof Ticket
+      <div class="text-right">
+        <% unless order.freshdesk_proof_ticket_id.blank? %>
+          <%= link_to order.freshdesk_proof_ticket_link, class: 'btn btn-primary', target: :_blank do %>
+            <i class="softwear-icon-freshdesk-icon"></i> Freshdesk Proof Ticket
+          <% end %>
         <% end %>
-      <% end %>
-      <br clear="all" />
+        
+        <% if order.artwork_state == 'pending_proofs' && !order.missing_proofs?  %>
+          <%= link_to order_path(@order, transition: { artwork_state: :proofs_ready } ), method: :put, class: 'btn btn-primary' do %>
+            <i class='glyphicon glyphicon-check'></i> All Proofs ready
+          <% end %>
+        <% end %>   
+        
+        <% if order.artwork_state == 'pending_proof_submission' && !order.missing_proofs? %>
+          <%= link_to order_path(@order, transition: { artwork_state: :proofs_submitted } ), method: :put, class: 'btn btn-primary' do %>
+            <i class='glyphicon glyphicon-envelope'></i> Pending Proofs Submitted
+          <% end %>
+        <% end %>   
+        
+        <% if order.artwork_state == 'pending_proof_approval' %>
+          <%= link_to order_path(@order, transition: {artwork_state: :proofs_approved } ), method: :put, class: 'btn btn-primary' do %>
+            <i class='glyphicon glyphicon-thumbs-up'></i> All Emailed Proofs Approved
+          <% end %>
+        <% end %>    
+        <% if order.artwork_state_transitions.map(&:event).include? :proofs_rejected %>
+          <%= link_to order_path(@order, transition: {artwork_state: :proofs_rejected } ), method: :put, class: 'btn btn-danger' do %>
+            <i class='glyphicon glyphicon-thumbs-down'></i> Mark All Proofs Rejected
+          <% end %>
+        <% end %>
+      </div>
 
       <div class="proof-list" >
         <% order.proofs.each do |proof| %>
