@@ -24,7 +24,6 @@ feature 'Proof Features', js: true, proof_spec: true do
       find("a[href='/orders/#{order.id}/edit']").click
       find("a[href='#proofs']").click
     end
-    expect(page).to have_selector('h3', text: 'Proofs')
     expect(page).to have_css('div.proof-list')
     expect(page).to have_css("div#proof-#{proof.id}")
   end
