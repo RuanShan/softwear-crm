@@ -3,9 +3,9 @@ class ImprintableVariant < ActiveRecord::Base
 
   acts_as_paranoid
 
-  belongs_to :color
-  belongs_to :imprintable
-  belongs_to :size
+  belongs_to :color, inverse_of: :imprintable_variants
+  belongs_to :imprintable, inverse_of: :imprintable_variants
+  belongs_to :size, inverse_of: :imprintable_variants
 
   validates :color, presence: true
   validates :color_id, uniqueness: { scope: [:size_id, :imprintable_id] }

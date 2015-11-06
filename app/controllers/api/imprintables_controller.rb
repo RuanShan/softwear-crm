@@ -21,7 +21,9 @@ module Api
             end
           end
         else
-          @imprintables = Imprintable.where(retail: true)
+          @imprintables = Imprintable
+            .includes(imprintable_variants: [:color, :size])
+            .where(retail: true)
         end
       end
     end
