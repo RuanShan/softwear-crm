@@ -58,51 +58,49 @@ class ArtworkRequest < ActiveRecord::Base
   after_create :enqueue_create_freshdesk_proof_ticket if Rails.env.production?
   after_save :advance_state
 
+  attr_accessor :current_user
+
   state_machine :state, initial: :unassigned do
     after_transition any => any do |artwork_request|
       artwork_request.touch
     end
 
-    after_transition on: :reject do |artwork_request| 
+    after_transition on: :reject do |artwork_request|
       artwork_request.approved_by = nil
     end
 
-    after_transition on: :approved do |artwork_request| 
-      artwork_request.approved_by = current_user
-    end
-
-    event :assigned do 
+    event :assigned do
       transition :unassigned => :pending_artwork
     end
-    
-    event :unassigned do 
+
+    event :unassigned do
       transition any => :unassigned
     end
 
-    event :artwork_added do 
+    event :artwork_added do
       transition :pending_artwork => :pending_manager_approval
     end
-    
-    event :artwork_removed do 
+
+    event :artwork_removed do
       transition :pending_manager_approval => :pending_manager_approval,  :unless => lambda{ |artwork_request| artwork_request.artworks.empty? }
       transition :approved => :pending_manager_approval,  :unless => lambda{ |artwork_request| artwork_request.artworks.empty? }
       transition :pending_manager_approval => :pending_artwork,  :if =>  lambda{ |artwork_request| artwork_request.artworks.empty? }
     end
 
-    event :approved do 
+    event :approved do
       transition :pending_manager_approval => :manager_approved
     end
 
-    event :reject do 
+    event :reject do
       transition :pending_manager_approval => :pending_artwork
       transition :manager_approved => :pending_artwork
     end
 
-    state :pending_manager_approval, :manager_approved do 
+    state :pending_manager_approval, :manager_approved do
       validates :artworks, presence: true
     end
 
-    state :approved do 
+    state :approved do
       validates :manager_id, presence: true
     end
 
@@ -204,7 +202,7 @@ class ArtworkRequest < ActiveRecord::Base
   def imprintables_for_job_with_proofing_template(job, proofing_template_name)
     job.imprintables_for_order.where(proofing_template_name: proofing_template_name)
   end
-  
+
   def colors_for_imprintable_for_job(imprintable, job)
     job.imprintable_variants
       .where(imprintable_id: imprintable.id)
@@ -223,7 +221,7 @@ class ArtworkRequest < ActiveRecord::Base
   def print_location
     print_locations.first
   end
- 
+
   def imprint_method
     imprint_methods.first
   end
@@ -317,16 +315,16 @@ class ArtworkRequest < ActiveRecord::Base
   def has_proof_pending_approval?
     proofs.where(status: 'emailed customer').exists?
   end
-  
+
   def has_approved_proof?
     proofs.where(status: 'approved').exists?
   end
 
-  private 
+  private
 
   def advance_state
     assigned if state == 'unassigned' and !artist.blank?
     artwork_added if state == 'pending_artwork' and !artworks.empty?
-    approved if state == 'pending_manager_approval' and !approved_by.blank? 
+    approved if state == 'pending_manager_approval' and !approved_by.blank?
   end
 end
