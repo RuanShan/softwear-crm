@@ -7,7 +7,7 @@ class Size < ActiveRecord::Base
 
   before_validation :set_sort_order
 
-  has_many :imprintable_variants, dependent: :destroy
+  has_many :imprintable_variants, dependent: :destroy, inverse_of: :size
 
   validates :name, presence: true, uniqueness: true
   validates :sku, length: { is: 2 }, if: :is_retail?

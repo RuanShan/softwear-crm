@@ -90,7 +90,7 @@ class Imprintable < ActiveRecord::Base
   has_many :compatible_imprint_methods, -> { uniq }, through: :print_locations, source: :imprint_method
   has_many :imprintable_categories
   has_many :imprintable_stores
-  has_many :imprintable_variants, dependent: :destroy
+  has_many :imprintable_variants, dependent: :destroy, inverse_of: :imprintable
   has_many :mirrored_coordinates,
            through: :mirrored_coordinate_imprintables,
            source: :imprintable
