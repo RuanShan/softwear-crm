@@ -1,0 +1,44 @@
+<% if defined?(full) %>
+  <div class="col-sm-6">
+<% end %>
+  <dl>
+    <dt><%= "Job".pluralize(artwork_request.jobs) %>:</dt>
+    <dd><%= artwork_request.jobs.map(&:id_and_name).join(', ') %></dd>
+    <dt>State:</dt>
+    <dd><%= artwork_request.human_state_name %></dd>
+    <dt><%= "Imprint Method".pluralize(artwork_request.imprint_method_names.count) %>:</dt>
+    <dd><%= artwork_request.imprint_method_names.join(", ") %></dd>
+    <dt>Max Print Area:</dt>
+    <dd><%= artwork_request.max_print_area(artwork_request.print_location) %></dd>
+    <dt>Ink Colors:</dt>
+    <dd><%= artwork_request.ink_colors.map(&:display_name).join(', ') %></dd>
+    <dt>No. of Pieces:</dt>
+    <dd><%= artwork_request.imprintable_variant_count %></dd>
+    <dt>Exact Recreation:</dt>
+    <dd><%= human_boolean artwork_request.exact_recreation? %>
+    </dd>
+    
+    <% if artwork_request.amount_paid_for_artwork > 0.0 %>
+      <span style="color: #C00">
+      <dt>Customer Paid For Artwork:</dt>
+      <dd><%= number_to_currency artwork_request.amount_paid_for_artwork %></dd>
+      </span>
+    <% end %>
+  </dl>
+<% if defined?(full) %>
+</di>
+<div class="col-sm-6 ">
+  <dl>
+    <dt>Priority:</dt>
+    <dd><%= ArtworkRequest::PRIORITIES[artwork_request.priority.to_i] %></dd>
+    <dt>Deadline:</dt>
+    <dd><%= display_time(artwork_request.deadline) %></dd>
+    <dt>Order Salesperson:</dt>
+    <dd><%= artwork_request.order.salesperson.full_name rescue 'unassigned' %></dd>
+    <dt>Request Created By:</dt>
+    <dd><%= artwork_request.salesperson.full_name rescue 'unassigned' %></dd>
+    <dt>Artist:</dt>
+    <dd><%= artwork_request.artist.full_name rescue 'unassigned' %></dd>
+  </dl>
+</div>
+<% end %>

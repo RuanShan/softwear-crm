@@ -36,6 +36,10 @@ class Job < ActiveRecord::Base
   validate :assure_name_and_description, on: :create
   validates :name, uniqueness: { scope: [:jobbable_id] }, if: ->(j) { j.jobbable_type == 'Order' }
 
+  def id_and_name
+    "##{id} #{name}"
+  end
+
   def imprintable_line_items_total
     line_items.where.not(imprintable_object_id: nil).sum(:quantity)
   end
