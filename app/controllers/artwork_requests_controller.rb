@@ -48,6 +48,18 @@ class ArtworkRequestsController < InheritedResources::Base
     end
   end
 
+  def show
+    respond_to do |format|
+      format.html do
+        order = Order.joins(:artwork_requests).where(artwork_requests: { id: params[:id] }).first
+        raise "Couldn't find order including artwork request of ID #{params[:id]}" if order.nil?
+        redirect_to edit_order_path(order, anchor: 'artwork')
+      end
+      format.js
+      format.json
+    end
+  end
+
   def manager_dashboard
     @unassigned = ArtworkRequest.search do 
       with :state, :unassigned

@@ -104,6 +104,11 @@ feature 'Artwork Request Features', js: true, artwork_request_spec: true do
     expect(ArtworkRequest.where(description: 'hello').first.ink_colors.first.name)
       .to eq imprint_method.ink_colors.first.name
   end
+
+  scenario 'A user is redirectd to the order path when visiting show', bugfix: true do
+    visit artwork_request_path(artwork_request)
+    expect(page).to have_content order.name
+  end
   
   scenario 'a proofing manager can approve artwork requests that are pending_approval'
   scenario 'a proofigng manager can reject artwork requests that are pending_approval'
