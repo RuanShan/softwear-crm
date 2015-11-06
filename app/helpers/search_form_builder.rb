@@ -212,8 +212,13 @@ class SearchFormBuilder
     display_method = options.delete(:display) || :name
 
     proc do |total, item|
-      name  = item.try(display_method) || item.to_s
-      value = "#{item.class.name}##{item.id}" rescue item.to_s
+      if item.is_a?(Array)
+        name  = item[0]
+        value = item[1]
+      else
+        name  = item.try(display_method) || item.to_s
+        value = "#{item.class.name}##{item.id}" rescue item.to_s
+      end
 
       next total if value.empty?
 
