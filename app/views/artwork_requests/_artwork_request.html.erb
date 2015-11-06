@@ -34,6 +34,10 @@
               <dd><%= artwork_request.ink_colors.map(&:display_name).join(', ') %></dd>
               <dt>No. of Pieces:</dt>
               <dd><%= artwork_request.imprintable_variant_count %></dd>
+              <% if artwork_request.amount_paid_for_artwork > 0.0 %>
+                <dt>Customer Paid For Artwork:</dt>
+                <dd><%= number_to_currency artwork_request.amount_paid_for_artwork %></dd>
+              <% end %>
             </dl>
           </div>
 

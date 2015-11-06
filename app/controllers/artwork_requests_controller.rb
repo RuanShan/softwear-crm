@@ -118,6 +118,7 @@ class ArtworkRequestsController < InheritedResources::Base
                     :id, :priority, :description, :artist_id,
                     :imprint_method_id, :salesperson_id, :reorder, 
                     :exact_or_approximate, :deadline, :state, 
+                    :amount_paid_for_artwork,
                     ink_color_ids: [],
                     artwork_ids: [],
                     imprint_ids: [],

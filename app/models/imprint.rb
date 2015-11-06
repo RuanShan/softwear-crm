@@ -31,7 +31,7 @@ class Imprint < ActiveRecord::Base
   end
 
   def job_and_name
-    "#{job.name} - #{name}"
+    "##{job.id} - #{job.name} - #{name}"
   end
 
   def count
