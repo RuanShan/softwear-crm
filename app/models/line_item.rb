@@ -73,6 +73,10 @@ class LineItem < ActiveRecord::Base
     super || imprintable.try(:supplier_link)
   end
 
+  def job
+    line_itemable
+  end
+
   def imprintable_and_in_an_order?
     imprintable? && line_itemable.try(:jobbable_type) == 'Order'
   end
