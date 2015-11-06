@@ -15,7 +15,7 @@
     </div>
 
     <div class='col-sm-4'>
-      <%= s.select :artwork_state, @artwork_request_states %>
+      <%= s.select :artwork_state, ArtworkRequest.state_machine.states.map{|x| [x.human_name.humanize, x.name] } %>
     </div>
   </div>
 

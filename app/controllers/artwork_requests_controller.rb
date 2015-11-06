@@ -2,7 +2,6 @@ class ArtworkRequestsController < InheritedResources::Base
   before_filter :assign_order
   before_filter :format_deadline, only: [:create, :update]
   before_filter :set_current_action
-  before_filter :assign_artwork_request_states
 
   respond_to :js
 
@@ -49,7 +48,7 @@ class ArtworkRequestsController < InheritedResources::Base
   end
 
   def show
-    respond_to do |format|
+    super do |format|
       format.html do
         order = Order.joins(:artwork_requests).where(artwork_requests: { id: params[:id] }).first
         raise "Couldn't find order including artwork request of ID #{params[:id]}" if order.nil?
@@ -118,6 +117,7 @@ class ArtworkRequestsController < InheritedResources::Base
                     :id, :priority, :description, :artist_id,
                     :imprint_method_id, :salesperson_id, :reorder, 
                     :exact_or_approximate, :deadline, :state, 
+                    :amount_paid_for_artwork,
                     ink_color_ids: [],
                     artwork_ids: [],
                     imprint_ids: [],
@@ -125,10 +125,6 @@ class ArtworkRequestsController < InheritedResources::Base
                       :file, :description, :id, :_destroy
                     ]
                   ])
-  end
-
-  def assign_artwork_request_states
-    @artwork_request_states = ArtworkRequest.state_machine.states.map{|x| [x.human_name.humanize, x.name] }
   end
 
 end

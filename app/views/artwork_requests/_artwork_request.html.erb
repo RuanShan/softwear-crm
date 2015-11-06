@@ -22,35 +22,7 @@
             </p>
           <% end %>
 
-          <div class="col-sm-6">
-            <dl>
-              <dt>State:</dt>
-              <dd><%= artwork_request.state %></dd>
-              <dt><%= "Imprint Method".pluralize(artwork_request.imprint_method_names.count) %>:</dt>
-              <dd><%= artwork_request.imprint_method_names.join(", ") %></dd>
-              <dt>Max Print Area:</dt>
-              <dd><%= artwork_request.max_print_area(artwork_request.print_location) %></dd>
-              <dt>Ink Colors:</dt>
-              <dd><%= artwork_request.ink_colors.map(&:display_name).join(', ') %></dd>
-              <dt>No. of Pieces:</dt>
-              <dd><%= artwork_request.imprintable_variant_count %></dd>
-            </dl>
-          </div>
-
-          <div class="col-sm-6 ">
-            <dl>
-              <dt>Priority:</dt>
-              <dd><%= ArtworkRequest::PRIORITIES[artwork_request.priority.to_i] %></dd>
-              <dt>Deadline:</dt>
-              <dd><%= display_time(artwork_request.deadline) %></dd>
-              <dt>Order Salesperson:</dt>
-              <dd><%= artwork_request.order.salesperson.full_name rescue 'unassigned' %></dd>
-              <dt>Request Created By:</dt>
-              <dd><%= artwork_request.salesperson.full_name rescue 'unassigned' %></dd>
-              <dt>Artist:</dt>
-              <dd><%= artwork_request.artist.full_name rescue 'unassigned' %></dd>
-            </dl>
-          </div>
+          <%= render 'artwork_requests/show/basic_details', { artwork_request: artwork_request, full: true} %>
         
         <h4 class='artwork-request-title'> Imprints for this Artwork Request</h4>
         </div>
@@ -97,7 +69,7 @@
                 <td rowspan="<%= imprintables.size %>">
                   <%= ipt.blank? ? "No Template Defined" : ipt %>
                 <% imprintables.each_with_index do |imprintable, j| %>
-                  <td><%= "#{imprintable.brand_name} #{imprintable.style_catalog_no}" %>
+                  <td><%= link_to "#{imprintable.brand_name} #{imprintable.style_catalog_no}", imprintable.supplier_link %>
                   </td>
                   <td><%= raw artwork_request.colors_for_imprintable_for_job(imprintable, job).join("<br />") %>
                   </td>
@@ -111,9 +83,6 @@
           <dl>
             <dt>Description:</dt><br>
             <dd><%= artwork_request.description.html_safe %></dd>
-            <dt>Exact Recreation:</dt><br>
-            <dd><%= human_boolean artwork_request.exact_recreation? %>
-            </dd>
             <br />
             <dt>Attachments:</dt>
             <% if artwork_request.assets.empty? %>

@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20151105152235) do
+ActiveRecord::Schema.define(version: 20151106161917) do
 
   create_table "activities", force: :cascade do |t|
     t.integer  "trackable_id",   limit: 4
@@ -68,20 +68,21 @@ ActiveRecord::Schema.define(version: 20151105152235) do
   end
 
   create_table "artwork_requests", force: :cascade do |t|
-    t.text     "description",       limit: 65535
-    t.integer  "artist_id",         limit: 4
-    t.integer  "imprint_method_id", limit: 4
-    t.integer  "print_location_id", limit: 4
-    t.integer  "salesperson_id",    limit: 4
+    t.text     "description",             limit: 65535
+    t.integer  "artist_id",               limit: 4
+    t.integer  "imprint_method_id",       limit: 4
+    t.integer  "print_location_id",       limit: 4
+    t.integer  "salesperson_id",          limit: 4
     t.datetime "deadline"
     t.datetime "deleted_at"
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.string   "priority",          limit: 255
-    t.string   "state",             limit: 255
+    t.string   "priority",                limit: 255
+    t.string   "state",                   limit: 255
     t.boolean  "reorder"
-    t.integer  "approved_by_id",    limit: 4
+    t.integer  "approved_by_id",          limit: 4
     t.boolean  "exact_recreation"
+    t.decimal  "amount_paid_for_artwork",               precision: 10, scale: 2, default: 0.0
   end
 
   create_table "artworks", force: :cascade do |t|
