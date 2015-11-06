@@ -170,6 +170,10 @@ class ArtworkRequest < ActiveRecord::Base
   def imprintable_proofing_templates
     jobs.map(&:imprintables_for_order).flatten.map(&:proofing_template_name).uniq
   end
+  
+  def imprintable_proofing_templates_for_job(job)
+    job.imprintables_for_order.map(&:proofing_template_name).uniq
+  end
 
   def print_location_names_for_job(job)
     print_locations_for_job(job).map(&:name)
