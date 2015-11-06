@@ -9,24 +9,24 @@
         <% end %>
         
         <% if order.artwork_state == 'pending_proofs' && !order.missing_proofs?  %>
-          <%= link_to order_path(@order, transition: { artwork_state: :proofs_ready } ), method: :put, class: 'btn btn-primary' do %>
+          <%= link_to order_path(order, transition: { artwork_state: :proofs_ready } ), method: :put, class: 'btn btn-primary' do %>
             <i class='glyphicon glyphicon-check'></i> All Proofs ready
           <% end %>
         <% end %>   
         
         <% if order.artwork_state == 'pending_proof_submission' && !order.missing_proofs? %>
-          <%= link_to order_path(@order, transition: { artwork_state: :proofs_submitted } ), method: :put, class: 'btn btn-primary' do %>
+          <%= link_to order_path(order, transition: { artwork_state: :proofs_submitted } ), method: :put, class: 'btn btn-primary' do %>
             <i class='glyphicon glyphicon-envelope'></i> Pending Proofs Submitted
           <% end %>
         <% end %>   
         
         <% if order.artwork_state == 'pending_proof_approval' %>
-          <%= link_to order_path(@order, transition: {artwork_state: :proofs_approved } ), method: :put, class: 'btn btn-primary' do %>
+          <%= link_to order_path(order, transition: {artwork_state: :proofs_approved } ), method: :put, class: 'btn btn-primary' do %>
             <i class='glyphicon glyphicon-thumbs-up'></i> All Emailed Proofs Approved
           <% end %>
         <% end %>    
         <% if order.artwork_state_transitions.map(&:event).include? :proofs_rejected %>
-          <%= link_to order_path(@order, transition: {artwork_state: :proofs_rejected } ), method: :put, class: 'btn btn-danger' do %>
+          <%= link_to order_path(order, transition: {artwork_state: :proofs_rejected } ), method: :put, class: 'btn btn-danger' do %>
             <i class='glyphicon glyphicon-thumbs-down'></i> Mark All Proofs Rejected
           <% end %>
         <% end %>

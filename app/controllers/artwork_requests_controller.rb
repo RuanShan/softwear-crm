@@ -61,9 +61,17 @@ class ArtworkRequestsController < InheritedResources::Base
       with :state, :pending_manager_approval
     end.results
 
-    @ready_to_proof = []
-    @proofs_awaiting_approval = []
-    @pending_production = []
+    @ready_to_proof = Order.search do 
+      with :artwork_state, :pending_proof_submission
+    end.results
+
+    @proofs_awaiting_approval = Order.search do 
+      with :artwork_state, :pending_proof_approval
+    end.results
+
+    @pending_production = Order.search do 
+      with :artwork_state, :ready_for_production
+    end.results
   end
 
   protected

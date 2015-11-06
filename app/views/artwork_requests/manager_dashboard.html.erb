@@ -82,7 +82,7 @@
                     There are currently <span class='pending-manager-approval-count'><%= @pending_manager_approval.count %> 
                     </span>Artwork requests pending
                   </h2>
-                   <%= render partial: 'table', locals: { artwork_requests: @pending_manager_approval } %>
+                   <%= render 'table', artwork_requests: @pending_manager_approval %>
                  <% end %>
               </div>
               
@@ -97,7 +97,7 @@
                     There are currently <span class='pending-proofs-count'><%= @ready_to_proof.count %> 
                     </span> orders ready to proof
                   </h2>
-                   <%= render partial: 'proofs/table', locals: { proofs: @ready_to_proof } %>
+                   <%= render 'proofs/order_table', orders: @ready_to_proof %>
                  <% end %>
               </div>
               
@@ -112,11 +112,11 @@
                     There are currently <span class='pending-proofs-count'><%= @proofs_awaiting_approval.count %> 
                     </span> proofs awaiting approval
                   </h2>
-                   <%= render partial: 'proofs/table', locals: { proofs: @proofs_awaiting_approval } %>
+                   <%= render 'proofs/order_table', orders: @proofs_awaiting_approval %>
                  <% end %>
               </div>
 
-              <div class="tab-pane animated  fadeInRight" id="proofs_awaiting_approval">
+              <div class="tab-pane animated  fadeInRight" id="pending_production">
                 <% if @pending_production.empty? %>
                   
                   <p class="alert alert-success col-xs-12">
@@ -127,7 +127,7 @@
                     There are currently <span class='pending-proofs-count'><%= @pending_production.count %> 
                     </span> artworks pending production
                   </h2>
-                   <%= render partial: 'proofs/table', locals: { proofs: @pending_production } %>
+                   <%= render 'proofs/order_table', orders: @pending_production %>
                  <% end %>
                </div>
 

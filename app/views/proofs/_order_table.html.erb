@@ -1,0 +1,66 @@
+<div class="box-info full">
+  <div class="table-responsive table-striped">
+    <table data-sortable class="table" id="artwork-request-table">
+      <thead>
+        <tr>
+          <th>Order</th>
+          <th>Proofs</th>
+          <th>Delivery Deadline</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+
+      <tbody>
+        <% orders.each do |order| %>
+          <tr>
+            <td>
+              <%= order.id %> <%= order.name %>
+            </td>
+            <td>
+              <ul>
+              <% order.proofs.each do |proof| %>
+                <li><%= proof.id %></li>
+              <% end %>
+              </ul>
+            </td>
+            <td>
+              <%= display_date order.in_hand_by %>
+            </td>
+            <td>
+            <div class="btn-group btn-group-xs">
+              <% if order.artwork_state == 'pending_proof_submission' && !order.missing_proofs? %>
+                <%= link_to order_path(order, transition: { artwork_state: :proofs_submitted } ), 
+                  method: :put, class: 'btn btn-primary', data: { confirm: "Are you sure you want to confirm that all proofs have been submitted to the customer?", toggle: :tooltip, 
+                    title: 'Mark Proofs Submitted'
+                } do %>
+                  <i class='glyphicon glyphicon-envelope'></i>
+                <% end %>
+              <% end %>   
+              
+              <% if order.artwork_state == 'pending_proof_approval' %>
+                <%= link_to order_path(order, transition: {artwork_state: :proofs_approved } ), method: :put, class: 'btn btn-primary' do %>
+                  <i class='glyphicon glyphicon-thumbs-up'></i>
+                <% end %>
+              <% end %>    
+              
+              <% if order.artwork_state_transitions.map(&:event).include? :proofs_rejected %>
+                <%= link_to order_path(order, transition: {artwork_state: :proofs_rejected } ), method: :put, class: 'btn btn-danger' do %>
+                  <i class='glyphicon glyphicon-thumbs-down'></i>
+                <% end %>
+              <% end %>
+              
+              <% if order.artwork_state == 'ready_for_production' %>
+                <%= link_to order_path(order, transition: {artwork_state: :put_into_production} ), method: :put, class: 'btn btn-success' do %>
+                  <i class='glyphicon glyphicon-check'></i>
+                <% end %>
+              <% end %>   
+
+
+            </div>
+            </td>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+  </div>
+</div>

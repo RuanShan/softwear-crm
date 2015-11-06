@@ -188,7 +188,7 @@ class Order < ActiveRecord::Base
     end
 
     event :proofs_ready do 
-      transition :pending_proofs => :pending_proof_submission, :unless => lambda{ |x| x.missing_proofs }
+      transition :pending_proofs => :pending_proof_submission, :unless => lambda{ |x| x.missing_proofs? }
     end
 
     event :proofs_submitted do 
