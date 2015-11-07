@@ -14,23 +14,68 @@
         <% orders.each do |order| %>
           <tr>
             <td>
-              <%= order.id %> <%= order.name %>
+              <%= link_to order.name, "#{edit_order_path(order)}#artwork"%><br />
+              <%= order.full_name %><br /><br />
+              <dl>
+                <dt>Order Salesperson:</dt>
+                <dd><%= order.salesperson.full_name rescue 'unassigned' %></dd>
+              </dl>
+              <dl>
+                <dt>Payment State
+                </dt>
+                <dd><%= render 'orders/state', which: 'payment_state', state: order.payment_status %>
+                </dd>
+                <dt>Artwork State</dt>
+                <dd><%= render 'orders/state', which: 'artwork_state', state: order.artwork_state %>
+                </dt>
+              </dl>
             </td>
             <td>
-              <ul>
               <% order.proofs.each do |proof| %>
-                <li><%= proof.id %></li>
+                <dl>
+                  <dt>Status
+                  </dt>
+                  <dd><%= proof.status %>
+                  </dd>
+                  <dt>Approval By
+                  </dt>
+                  <dd><%= display_time proof.approve_by %></dd>
+                  </dd>
+                </dl>
+                <h4>Mockups
+                </h4>
+                
+                <% proof.mockups.each do |mockup| %>
+                  <%= link_to(image_tag(mockup.file.url(:thumb)), mockup.file.url, target: "_blank") %><br />
+                  <%= link_to "View", mockup.file.url %><br /><br />
+                <% end %>
+                
+                <h4>Artworks
+                </h4>
+                
+                <% proof.artworks.each do |artwork| %>
+                  <div class="pull-left">
+                    <%= link_to(image_tag(artwork.preview.file.url(:thumb)), artwork.preview.file.url, target: "_blank") %><br />
+                    <%= link_to "View", artwork.preview.file.url %><br /><br />
+                  </div>  
+                <% end %>
+                <br clear="all" />
               <% end %>
-              </ul>
             </td>
             <td>
               <%= display_date order.in_hand_by %>
             </td>
             <td>
             <div class="btn-group btn-group-xs">
+              <% unless order.freshdesk_proof_ticket_id.blank? %>
+                <%= link_to order.freshdesk_proof_ticket_link, class: 'btn btn-success', target: :_blank do %>
+                  <i class="softwear-icon-freshdesk-icon"></i>
+                <% end %>
+              <% end %>
               <% if order.artwork_state == 'pending_proof_submission' && !order.missing_proofs? %>
                 <%= link_to order_path(order, transition: { artwork_state: :proofs_submitted } ), 
-                  method: :put, class: 'btn btn-primary', data: { confirm: "Are you sure you want to confirm that all proofs have been submitted to the customer?", toggle: :tooltip, 
+                  method: :put, class: 'btn btn-primary', 
+                data: { confirm: "Are you sure you want to confirm that all proofs have been submitted to the customer?", toggle: :tooltip, 
                     title: 'Mark Proofs Submitted'
                 } do %>
                   <i class='glyphicon glyphicon-envelope'></i>
@@ -38,13 +83,19 @@
               <% end %>   
               
               <% if order.artwork_state == 'pending_proof_approval' %>
-                <%= link_to order_path(order, transition: {artwork_state: :proofs_approved } ), method: :put, class: 'btn btn-primary' do %>
+                <%= link_to order_path(order, transition: {artwork_state: :proofs_approved } ), method: :put, class: 'btn btn-primary',
+                  data: { confirm: "Are you sure you want to confirm that all submitted proofs are approved??", toggle: :tooltip, 
+                      title: 'Mark Proofs Approved'
+                  } do %>
                   <i class='glyphicon glyphicon-thumbs-up'></i>
                 <% end %>
               <% end %>    
               
               <% if order.artwork_state_transitions.map(&:event).include? :proofs_rejected %>
-                <%= link_to order_path(order, transition: {artwork_state: :proofs_rejected } ), method: :put, class: 'btn btn-danger' do %>
+                <%= link_to order_path(order, transition: {artwork_state: :proofs_rejected } ), method: :put, class: 'btn btn-danger',
+                  data: { confirm: "Are you sure you want to confirm that all proofs are rejected?", toggle: :tooltip, 
+                    title: 'Mark Proofs Rejected'
+                  }  do %>
                   <i class='glyphicon glyphicon-thumbs-down'></i>
                 <% end %>
               <% end %>
