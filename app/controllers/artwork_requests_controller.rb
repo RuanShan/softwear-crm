@@ -73,7 +73,7 @@ class ArtworkRequestsController < InheritedResources::Base
     end.results
 
     @ready_to_proof = Order.search do 
-      with :artwork_state, :pending_proof_submission
+      with :artwork_state, [:pending_proofs, :pending_proof_submission]
     end.results
 
     @proofs_awaiting_approval = Order.search do 

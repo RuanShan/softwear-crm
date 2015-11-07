@@ -25,7 +25,7 @@
               </li>
               <li>
                 <a href="#ready_to_proof" data-toggle="tab">
-                  <i class="fa fa-tasks"></i> Ready To Proof
+                  <i class="fa fa-tasks"></i> Pending Proofs or Submission
                 </a>
               </li>
               <li>
@@ -95,7 +95,7 @@
                 <% else %> 
                   <h2 class="alert alert-warning">
                     There are currently <span class='pending-proofs-count'><%= @ready_to_proof.count %> 
-                    </span> orders ready to proof
+                    </span> pending proof or proof submission
                   </h2>
                    <%= render 'proofs/order_table', orders: @ready_to_proof %>
                  <% end %>
