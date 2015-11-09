@@ -1,7 +1,7 @@
 <% if defined?(full) %>
   <div class="col-sm-6">
 <% end %>
-  <dl>
+  <dl class='basic-artwork-request-details-short'>
     <dt><%= "Job".pluralize(artwork_request.jobs) %>:</dt>
     <dd><%= artwork_request.jobs.map(&:id_and_name).join(', ') %></dd>
     <dt>State:</dt>
@@ -28,7 +28,7 @@
 <% if defined?(full) %>
 </div>  
 <div class="col-sm-6 ">
-  <dl>
+  <dl class='basic-artwork-request-details-full'>
     <dt>Priority:</dt>
     <dd><%= ArtworkRequest::PRIORITIES[artwork_request.priority.to_i] %></dd>
     <dt>Deadline:</dt>

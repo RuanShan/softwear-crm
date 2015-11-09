@@ -1,46 +1,28 @@
-<div class="js-removeable clearfix">
-  <div class="col-xs-11">
-    <br clear="all"/>
-    <div class="form-group">
-      <div class="row">
-        <%= f.label :file, class: 'col-sm-2 control-label' %>
 
-        <div class="col-sm-10">
-          <%= (f.object.file_file_name.nil?) ? (f.file_field :file) : (f.object.file_file_name) %>
-        </div>
-      </div>
+<div class="js-removeable" style="border-bottom: solid 1px #CECECE; margin-bottom: 10px;">
 
-      <% if f.object.errors.include?(:file) %>
-        <% f.object.errors.full_messages_for(:file).each do |message| %>
-          <p class="text-danger"><%= message %></p>
-        <% end %>
-      <% end %>
+  
+  <% if (f.object.file_file_name.nil?) %>
+    <div class="pull-right">
+      <%= f.hidden_field :_destroy %>
+      <%= link_to('X', '#', class: 'btn btn-danger js-remove-fields') %>
     </div>
+    <%= f.file_field :file, label_col: 'col-sm-2', control_col: 'col-sm-8'  %>
+  <% else %>
 
-    <div class="form-group">
-      <div class="row">
-        <%= f.label :description, class: 'col-sm-2 control-label' %>
-
-        <div class="col-sm-10">
-          <%= f.text_area :description, class: 'form-control',
-                          placeholder: 'The description of the attached file' %>
-        </div>
-      </div>
-
-      <% if f.object.errors.include?(:description) %>
-        <% f.object.errors.full_messages_for(:description).each do |message| %>
-          <p class="text-danger"><%= message %></p>
-        <% end %>
-      <% end %>
+    <div class="col-sm-2 text-right">
+      <%= f.label :file %>
     </div>
-  </div>
-
-  <div class="col-xs-1">
-    <%= f.hidden_field :_destroy %>
-
-    <%= link_to 'x', '#', class: 'btn btn-danger js-remove-fields pull-right' %>
-  </div>
-
+    <div class="col-sm-9">
+      <%= f.object.file_file_name %>
+    </div>
+    <div class="pull-right">
+      <%= f.hidden_field :_destroy %>
+      <%= link_to('X', '#', class: 'btn btn-danger js-remove-fields') %>
+    </div>
+    <br clear="all" />
+  <% end %>
+  
+  <%= f.text_area :description %>
   <br clear="all">
-  <hr>
 </div>

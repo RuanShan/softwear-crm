@@ -1,0 +1,55 @@
+ <% cache(["show/_artist_job_and_style_table", artwork_request]) do %>
+ <h4 class='artwork-request-title'> Imprints for this Artwork Request</h4>
+
+ <table class="table table-condensed table-bordered artist-job-and-style">
+  <tr>
+    <th>Job ID
+    </th>
+    <th>Quantity
+    </th>
+    <th>Imprint Location
+    </th>
+    <th>Max Ideal Size
+    </th>
+    <th>Template
+    </th>
+    <th>Style
+    </th>
+    <th>Colors
+    </th>
+  </tr>
+  <% artwork_request.jobs.each do |job| %>
+    <% background_color = cycle('background-color: #fff', 'background-color: #f9f9f9') %>
+    <tr style="<%= background_color %>">
+      <% rowspan = job.imprintables_for_order.count %>
+      <td rowspan="<%= rowspan %>"><%= job.id %>
+      </td>
+      <td rowspan="<%= rowspan %>"><%= job.imprintable_variant_count %>
+      </td>
+      <td rowspan="<%= rowspan %>"><%= artwork_request.print_location_names_for_job(job).join(", ") %>
+      </td>
+      <td rowspan="<%= rowspan %>">
+        <% max = artwork_request.max_ideal_print_location_size_for_job(job) %>
+        <%= max[:width] %>" wide X <%= max[:height] %>" tall
+      </td>
+      <% imprintable_proofing_templates = artwork_request.imprintable_proofing_templates_for_job(job) %>
+      <% imprintable_proofing_templates.each_with_index do |ipt, i| %>
+        <% imprintables = artwork_request.imprintables_for_job_with_proofing_template(job, ipt) %> 
+        <% if imprintable_proofing_templates.size > 1 && i > 0 %>
+          <tr style="<%= background_color %>">
+        <% end %>
+
+        <td rowspan="<%= imprintables.size %>"><%= ipt.blank? ? "No Template Defined" : ipt %>
+        </td>
+        <% imprintables.each_with_index do |imprintable, j| %>
+          <td>
+            <%= link_to "#{imprintable.brand_name} #{imprintable.style_catalog_no}", imprintable.supplier_link %>
+          </td>
+          <td><%= raw artwork_request.colors_for_imprintable_for_job(imprintable, job).join("<br />") %>
+          </td>
+        </tr>
+      <% end %>
+    <% end %>
+  <% end %>
+</table>
+<% end %>

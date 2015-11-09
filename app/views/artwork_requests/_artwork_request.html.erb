@@ -27,59 +27,9 @@
       <%= render 'artwork_requests/show/basic_details', { artwork_request: artwork_request, full: true} %>
     </div>
 
-    <h4 class='artwork-request-title'> Imprints for this Artwork Request</h4>
-
-    <table class="table table-condensed table-bordered">
-      <tr>
-        <th>Job ID
-        </th>
-        <th>Quantity
-        </th>
-        <th>Imprint Location
-        </th>
-        <th>Max Ideal Size
-        </th>
-        <th>Template
-        </th>
-        <th>Style
-        </th>
-        <th>Colors
-        </th>
-      </tr>
-      <% artwork_request.jobs.each do |job| %>
-        <% background_color = cycle('background-color: #fff', 'background-color: #f9f9f9') %>
-        <tr style="<%= background_color %>">
-          <% rowspan = job.imprintables_for_order.count %>
-          <td rowspan="<%= rowspan %>"><%= job.id %>
-          </td>
-          <td rowspan="<%= rowspan %>"><%= job.imprintable_variant_count %>
-          </td>
-          <td rowspan="<%= rowspan %>"><%= artwork_request.print_location_names_for_job(job).join(", ") %>
-          </td>
-          <td rowspan="<%= rowspan %>">
-            <% max = artwork_request.max_ideal_print_location_size_for_job(job) %>
-            <%= max[:width] %>" wide X <%= max[:height] %>" tall
-          </td>
-          <% imprintable_proofing_templates = artwork_request.imprintable_proofing_templates_for_job(job) %>
-          <% imprintable_proofing_templates.each_with_index do |ipt, i| %>
-            <% imprintables = artwork_request.imprintables_for_job_with_proofing_template(job, ipt) %> 
-            <% if imprintable_proofing_templates.size > 1 && i > 0 %>
-              <tr style="<%= background_color %>">
-            <% end %>
-
-            <td rowspan="<%= imprintables.size %>"><%= ipt.blank? ? "No Template Defined" : ipt %>
-            </td>
-            <% imprintables.each_with_index do |imprintable, j| %>
-              <td>
-                <%= link_to "#{imprintable.brand_name} #{imprintable.style_catalog_no}", imprintable.supplier_link %>
-              </td>
-              <td><%= raw artwork_request.colors_for_imprintable_for_job(imprintable, job).join("<br />") %>
-              </td>
-            </tr>
-          <% end %>
-        <% end %>
-      <% end %>
-    </table>
+    <div class="row">
+      <%= render 'artwork_requests/show/artist_job_and_style_table', {artwork_request: artwork_request} %>
+    </div>
 
     <div class="row artwork-request-actions">
       <dl>
@@ -118,17 +68,19 @@
 
     <div class="row">
       <div class="col-sm-12">
-        <%= link_to edit_order_artwork_request_path(order, artwork_request) do %>
-          <i class="fa fa-2x fa-edit"></i> Edit &nbsp
+        <%= link_to edit_order_artwork_request_path(order, artwork_request), class: 'btn btn-primary' do %>
+          <i class="glyphicon glyphicon-pencil"></i> Edit
         <% end %>
-
-        <%= link_to order_artwork_request_path(order, artwork_request), method: :delete, remote: true do %>
-          <i class="fa fa-2x danger fa-times-circle"></i> Delete &nbsp
+        
+        <% if params[:disable_buttons].nil? %>
+          <%= link_to artworks_path(artwork_request_id: artwork_request.id), remote: true, class: 'btn btn-success' do %>
+            <i class="glyphicon glyphicon-plus-sign"></i> Add Artwork
+          <% end %>
         <% end %>
 
         <% if artwork_request.state == 'pending_manager_approval' %>
           <%= link_to order_artwork_request_path(artwork_request.order, artwork_request, artwork_request: { state: 'manager_approved'} ), 
-            method: :put, data: {action: :update, toggle: :tooltip,
+            method: :put, class: 'btn btn-success', data: {action: :update, toggle: :tooltip,
             title: 'Approve',  confirm: "Confirm Manager Approval" } do %>
           <i class="glyphicon glyphicon-thumbs-up"></i> Approve
           <% end %>
@@ -136,17 +88,25 @@
 
         <% if artwork_request.state == 'pending_manager_approval' || artwork_request.state == 'manager_approved' %>
           <%= link_to order_artwork_request_path(artwork_request.order, artwork_request, artwork_request: { state: 'pending_artwork' }), 
-            method: :put, method: :put, data: {action: :update, toggle: :tooltip,
-            title: 'Rejext',  confirm: "Confirm Rejection" } do %>
-            <i class="glyphicon glyphicon-thumbs-down"></i> Reject
+            method: :put, method: :put, class: 'btn btn-danger',  data: {action: :update, toggle: :tooltip,
+            title: 'Reject Artwork',  confirm: "Confirm Rejection" } do %>
+            <i class="glyphicon glyphicon-thumbs-down"></i> Reject Artwork
           <% end %>
         <% end %>
 
-        <% if params[:disable_buttons].nil? %>
-          <%= link_to artworks_path(artwork_request_id: artwork_request.id), remote: true do %>
-            <i class="fa fa-2x success fa-plus-circle"></i> Add Artwork &nbsp
+        <% unless artwork_request.state == "approved" %>
+          <%= link_to order_artwork_request_path(artwork_request.order, artwork_request, artwork_request: { state: 'reject_request'} ), 
+            method: :put, class: 'btn btn-warning', data: {action: :update, toggle: :tooltip,
+            title: 'Reject Artwork Request',  confirm: "Confirm Manager Approval" } do %>
+          <i class="glyphicon glyphicon-thumbs-down"></i> Reject Artwork Request
           <% end %>
         <% end %>
+
+        <%= link_to order_artwork_request_path(order, artwork_request), class: 'btn btn-danger',
+             method: :delete, remote: true do %>
+          <i class="glyphicon glyphicon-remove-circle"></i> Delete
+        <% end %>
+
       </div><!-- end of col-sm-12 -->
     </div><!-- end of row -->
 

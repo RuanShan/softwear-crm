@@ -1,221 +1,58 @@
-<div id="horizontal-form artwork-request-form" class="collapse in">
-  <div class="form-group">
-    <div class="row">
-      <%= f.label :imprint_ids, 'Imprints', class: 'col-sm-2 control-label' %>
+<%= render 'shared/modal_errors', object: artwork_request %>
 
-      <div class="col-sm-10">
-        <%= f.select :imprint_ids, options_from_collection_for_select(order.imprints, :id, :job_and_name, f.object.imprint_ids.map(&:to_s)), {}, multiple: true, class: 'select2', style: 'width: 100%;' %>
+<%= bootstrap_form_for [order, artwork_request], multipart: true, 
+      layout: :horizontal, label_col: 'col-sm-2', control_col: 'col-sm-10'  do |f| %>
 
-        <% if artwork_request.errors.include?(:imprint) %>
-          <% artwork_request.errors.full_messages_for(:imprint).each do |message| %>
-            <p class="text-danger"><%= message %></p>
-          <% end %>
-        <% end %>
-      </div>
-    </div>
-  </div>
+  <div>
+    <%= f.select :imprint_ids, options_from_collection_for_select(order.imprints, :id, :job_and_name, f.object.imprint_ids.map(&:to_s)), {label: 'Imprints'}, multiple: true, class: 'select2'  %>
 
-  <div class="form-group">
-    <div class="row">
-      <%= f.label :priority, class: 'col-sm-2 control-label' %>
+    <%= f.select :priority, ArtworkRequest::PRIORITIES.map{ |level, label| [label, level] }, 
+        selected: (artwork_request.priority.nil? ? ArtworkRequest::PRIORITIES.invert['Normal']  : artwork_request.priority) %>
 
-      <div class="col-sm-10">
-        <% selected =
-                   if artwork_request && !artwork_request.priority.nil?
-                     { selected: artwork_request.priority }
-                   else
-                     { selected: ArtworkRequest::PRIORITIES.invert['Normal'] }
-                   end
-        %>
-
-        <%= f.select :priority, ArtworkRequest::PRIORITIES.map{ |level, label| [label, level] }, selected %>
-
-        <% if artwork_request.errors.include?(:priority) %>
-          <% artwork_request.errors.full_messages_for(:priority).each do |message| %>
-            <p class="text-danger"><%= message %></p>
-          <% end %>
-        <% end %>
-      </div>
-    </div>
-  </div>
-
-
-  <div class="form-group" id="imprint_method_print_locations_and_ink_colors">
     <% unless artwork_request.imprints.blank? %>
         <%= render partial: 'artwork_imprint_method_fields',
                    locals: { artwork_request: artwork_request,
                              ink_colors: artwork_request.compatible_ink_colors } %>
     <% end %>
-  </div>
 
-  <div class="form-group js-pending-select">
-    <div class="row">
-      <%= f.label :state, class: 'col-sm-2 control-label' %>
+    <%= f.select :state, ['unassigned', 'pending_artwork'] %>
 
-      <div class="col-sm-10">
-        <%= f.select :state, ['unassigned', 'pending_artwork'] %>
+    <%= f.text_field :deadline, value: value_time(artwork_request.deadline), 
+      append: raw("<i class='glyphicon glyphicon-calendar'></i>") %>
 
-        <% if artwork_request.errors.include?(:state) %>
-          <% artwork_request.errors.full_messages_for(:state).each do |message| %>
-            <p class="text-danger"><%= message %></p>
-          <% end %>
-        <% end %>
-      </div>
-    </div>
-  </div>
+    <%= f.select :reorder, [["No", false], ["Yes", true]], label: 'Reorder?',
+        help: raw("Is this an <i>exact</i> reorder of a previous order?") %>
 
-  <div class="form-group">
-    <div class="row">
-      <%= f.label :deadline, class: 'col-sm-2 control-label' %>
+    <%= f.select :exact_recreation, [["No", false], ["Yes", true]], help: "Are the descriptions and uploads"\
+      " you're providing exactly what the customer wants or do they represent ideas and approximations "\
+      " of what the customer wants?" %>
 
-      <div class="col-sm-10">
-        <div class="input-group date js-datetimepicker">
-          <%= f.text_field :deadline, value: value_time(artwork_request.deadline) %>
+    <%= f.text_field :amount_paid_for_artwork, placeholder: '0.0', 
+      prepend: "$", label: 'Amount Paid for Artwork', 
+      help: "Did the customer pay for the artwork? This does not include deposits paid to get artwork made before quotes become paid orders." %>
 
-          <span class="input-group-addon">
-            <span class="glyphicon glyphicon-calendar"></span>
-          </span>
-        </div>
+      <%= f.hidden_field :salesperson_id, value: current_user.id %>
 
-        <% if artwork_request.errors.include?(:deadline) %>
-          <% artwork_request.errors.full_messages_for(:deadline).each do |message| %>
-            <p class="text-danger"><%= message %></p>
-          <% end %>
-        <% end %>
-      </div>
-    </div>
-  </div>
+    <% unless f.object.new_record? %>
+      <%= f.select :artist_id, 
+      options_from_collection_for_select(User.all, :id, :full_name, artwork_request.artist_id ),
+      include_blank: true %>
+    <% end %>
 
-  <div class="form-group">
-    <div class="row">
-      <%= f.label :reorder, 'Reoder?', class: 'col-sm-2 control-label' %>
+    <%= f.text_area :description %>
 
-      <div class="col-sm-10">
+    <p class="help-block col-sm-10 col-sm-offset-2"><%= max_file_size_message %></p>
 
-        <%= f.select :reorder, [["No", false], ["Yes", true]] %>
-        <p class='help-block'>Is this an <i>exact</i> reorder of a previous order?</p>
-        <% if artwork_request.errors.include?(:reorder) %>
-          <% artwork_request.errors.full_messages_for(:reorder).each do |message| %>
-            <p class="text-danger"><%= message %></p>
-          <% end %>
-        <% end %>
-      </div>
-    </div>
-  </div>
+    <%= f.fields_for :assets, multipart: true do |ff| %>
+      <%= render partial: 'asset_fields', locals: { f: ff } %>
+    <% end %>
 
-  <div class="form-group">
-    <div class="row">
-      <%= f.label :exact_recreation, 'Exact Recreation?', class: 'col-sm-2 control-label' %>
+    <p>
+      <%= link_to_add_fields "<i class='fa fa-plus artwork-assets'></i> Add Attachment".html_safe, f, :assets %>
+    </p>
 
-      <div class="col-sm-10">
-
-        <%= f.select :exact_recreation, [["No", false], ["Yes", true]] %>
-        <p class='help-block'>Are the descriptions and uploads you're providing exactly 
-        what the customer wants or do they represent ideas and approximations of what the customer wants?</p>
-        <% if artwork_request.errors.include?(:exact_recreation) %>
-          <% artwork_request.errors.full_messages_for(:exact_recreation).each do |message| %>
-            <p class="text-danger"><%= message %></p>
-          <% end %>
-        <% end %>
-      </div>
-    </div>
-  </div>
-
-  <div class="form-group">
-    <div class="row">
-      <%= f.label :amount_paid_for_artwork, 'Amount Paid for Artwork', class: 'col-sm-2 control-label' %>
-
-      <div class="col-sm-10">
-        
-        <div class="input-group">
-          <div class="input-group-addon">$</div>
-          <%= f.text_field :amount_paid_for_artwork, placeholder: '0.0', class: 'form-control' %>
-        </div>
-        <p class='help-block'>Did the customer pay for the artwork? This does not include deposits 
-          paid to get artwork made before quotes become paid orders.</p> 
-        <% if artwork_request.errors.include?(:amount_paid_for_artwork) %>
-          <% artwork_request.errors.full_messages_for(:amount_paid_for_artwork).each do |message| %>
-            <p class="text-danger"><%= message %></p>
-          <% end %>
-        <% end %>
-      </div>
-    </div>
-  </div>
-  
-  <div class="form-group hide">
-    <div class="row">
-      <%= f.label :salesperson_id, 'Salesperson', class: 'col-sm-2 control-label' %>
-
-      <div class="col-sm-10">
-        <%= f.select :salesperson_id, [current_user.id] %>
-
-        <% if artwork_request.errors.include?(:salesperson_id) %>
-          <% artwork_request.errors.full_messages_for(:salesperson_id).each do |message| %>
-            <p class="text-danger"><%= message %></p>
-          <% end %>
-        <% end %>
-      </div>
-    </div>
-  </div>
-
-  <div class="form-group">
-    <div class="row">
-      <% unless f.object.new_record? %>
-        <%= f.label :artist_id, 'Artist', class: 'col-sm-2 control-label' %>
-
-        <div class="col-sm-10">
-
-          <%= f.select :artist_id, options_from_collection_for_select(User.all, :id, :full_name, artwork_request.artist_id ), include_blank: true %>
-
-          <% if artwork_request.errors.include?(:artist_id) %>
-            <% artwork_request.errors.full_messages_for(:artist_id).each do |message| %>
-              <p class="text-danger"><%= message %></p>
-            <% end %>
-          <% end %>
-        </div>
-      <% end %>
-    </div>
-  </div>
-
-  <div class="form-group">
-    <div class="row">
-      <%= f.label :description, class: 'col-sm-2 control-label' %>
-      <div class="col-sm-10">
-        <%= f.text_area :description, class: 'form-control summernote',
-                         data: { 'no-wrap' => true } %>
-
-        <% if artwork_request.errors.include?(:description) %>
-          <% artwork_request.errors.full_messages_for(:description).each do |message| %>
-            <p class="text-danger"><%= message %></p>
-          <% end %>
-        <% end %>
-      </div>
-    </div>
-  </div>
-
-  <div class="form-group">
-    <p class="help-block"><%= max_file_size_message %></p>
-
-        <%= f.fields_for :assets, multipart: true do |ff| %>
-          <%= render partial: 'asset_fields', locals: { f: ff } %>
-        <% end %>
-
-        <% if artwork_request.errors.include?(:assets) %>
-          <% artwork_request.errors.full_messages_for(:assets).each do |message| %>
-            <p class="text-danger"><%= message %></p>
-          <% end %>
-        <% end %>
-
-        <%= link_to_add_fields "<i class='fa fa-plus artwork-assets'></i> Add Attachment".html_safe, f, :assets %>
-    </div>
-  </div>
-
-  <hr>
-
-  <div class="form-group">
-    <div class="row">
-      <div class="col-sm-6">
-        <%= f.submit "#{create_or_edit_text(artwork_request)} Artwork Request" %>
-      </div>
-    </div>
-  </div>
+    <p class="text-center">
+      <%= f.submit class: 'btn btn-success' %>
+    </p>
+</div>
+<% end %>
