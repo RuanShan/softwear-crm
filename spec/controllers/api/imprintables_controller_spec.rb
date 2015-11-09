@@ -5,5 +5,4 @@ describe Api::ImprintablesController, api_imprintable_spec: true, api_spec: true
   before(:each) { sign_in valid_user }
 
   it_behaves_like 'api_controller create'
-  it_behaves_like 'a retailable api controller'
 end
