@@ -30,6 +30,10 @@ class Imprint < ActiveRecord::Base
     "#{imprint_method.try(:name) || 'n\a'} - #{print_location.try(:name) || 'n\a'} - #{description}"
   end
 
+  def name_changed?
+    description_changed?
+  end
+
   def job_and_name
     "#{job.id_and_name} - #{name}"
   end
