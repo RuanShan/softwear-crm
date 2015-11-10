@@ -11,7 +11,7 @@ var shineEditingIn = function ($container) {
   }
 };
 
-<% @imprints.each do |imprint| %>
+<% @imprints.try(:each) do |imprint| %>
 
   var $container = $(".imprint-entry[data-id='<%= imprint.id %>']");
   var $printLocation = $container.find('.print-location-container');
@@ -30,7 +30,7 @@ var shineEditingIn = function ($container) {
   <% end %>
 <% end %>
 
-<% @new_imprints.each do |new_imprint| %>
+<% @new_imprints.try(:each) do |new_imprint| %>
 
   var $container = $(".imprint-entry[data-id='<%= new_imprint.attributes_key %>']");
   var $printLocation = $container.find('.print-location-container');
@@ -55,12 +55,14 @@ var shineEditingIn = function ($container) {
 
 <% end %>
 
-<% if @imprints.size + @new_imprints.size == 0 %>
-  raise "What the fuck?"
+<% if @imprints && @new_imprints %>
+  <% if @imprints.size + @new_imprints.size == 0 %>
+    raise "What the fuck?"
+  <% end %>
+
+  <%= update_name_number_table(@job) %>
+
+  <%= update_order_timeline(@job.order) %>
+
+  registerImprintEvents($('body'));
 <% end %>
-
-<%= update_name_number_table(@job) %>
-
-<%= update_order_timeline(@job.order) %>
-
-registerImprintEvents($('body'));
