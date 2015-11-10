@@ -4,6 +4,12 @@
   <thead>
     <tr>
       <th>
+        Created At
+      </th>
+      <th>
+        Due By
+      </th>
+      <th>
         ID
       </th>
       <th>
@@ -39,6 +45,12 @@
     <% data[:orders].each do |order| %> 
       <% cache(["order_reports/_revenue_by_store", order]) do %>
       <tr>
+        <td>
+          <%= order.created_at.strftime("%F") %>
+        </td>
+        <td>
+          <%= order.in_hand_by.strftime("%F") %>
+        </td>
         <td>
           <%= order.id %>
         </td>
