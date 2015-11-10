@@ -1,2 +1,7 @@
-csv,file,here
-etc,here,yadda
+<% begin %>
+<%= render params[:report_type],
+           report: @report,
+           data: @data %>
+<% rescue %>
+Not Implemented
+<% end %>

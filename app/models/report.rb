@@ -2,7 +2,8 @@ class Report
   include ActiveModel::Model
   SALES_REPORTS = [
       ['Quote Request Success Report', 'quote_request_success'], 
-      ['Payments Report', 'payments']
+      ['Payments Report', 'payments'], 
+      ['Revenue', 'revenue']
   ]
 
   attr_accessor :start_time, :end_time, :report_data
@@ -20,6 +21,13 @@ class Report
     return_hash = {}
     return_hash[:payments] = Payment.where(created_at: time_range)
     return_hash[:totals] = Payment.where(created_at: time_range).group(:store_id, :payment_method).sum(:amount)
+    return_hash
+  end
+
+  def revenue
+    time_range = DateTime.strptime(start_time, time_format)..(DateTime.strptime(end_time, time_format) + 1.day)
+    return_hash = {}
+    return_hash[:orders] = Order.where(created_at: time_range)
     return_hash
   end
 
