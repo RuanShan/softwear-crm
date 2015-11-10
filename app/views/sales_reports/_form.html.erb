@@ -1,0 +1,28 @@
+<div class="row clearfix">
+<%= form_tag sales_reports_path, method: :post, id: 'sales_report_form' do %>
+  <!-- the following data-date-format are for use with datetimepicker-rails -->
+  <div class="form-group col-sm-2">
+    <%= label_tag "Start Date (Inclusive)" %>
+    <%= text_field_tag :start_time, params[:start_time], 'data-date-format' => 'YYYY-MM-DD', placeholder: 'Start Time', class: 'form-control' %>
+  </div>
+  <div class="form-group col-sm-2">
+    <%= label_tag "End Date (Inclusive)" %>
+    <%= text_field_tag :end_time, params[:end_time], 'data-date-format' => 'YYYY-MM-DD', placeholder: 'End Time', class: 'form-control' %>
+  </div>
+  <div class="form-group col-sm-3">
+    <%= label_tag 'Report Type' %>
+    <%= select_tag :report_type, options_for_select(@reports, selected: params[:report_type]), include_blank: true, class: 'form-control' %>
+  </div>
+  <div class="form-group col-sm-2">
+    <%= label_tag 'Format' %>
+    <%= select_tag :format, options_for_select(["csv"], selected: params[:format]), include_blank: true, class: 'form-control' %>
+  </div>
+  <div class="form-group col-sm-3">
+    <br />
+    <%= button_tag class: 'btn btn-primary' do %>
+      <i class="fa fa-bar-chart-o"></i> Run Report
+    <% end %>
+  </div>
+<% end %>
+</div>
+

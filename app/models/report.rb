@@ -3,7 +3,7 @@ class Report
   SALES_REPORTS = [
       ['Quote Request Success Report', 'quote_request_success'], 
       ['Payments Report', 'payments'], 
-      ['Revenue By Store Report', 'revenue_by_store']
+      ['Revenue', 'revenue']
   ]
 
   attr_accessor :start_time, :end_time, :report_data
@@ -24,7 +24,7 @@ class Report
     return_hash
   end
 
-  def revenue_by_store
+  def revenue
     time_range = DateTime.strptime(start_time, time_format)..(DateTime.strptime(end_time, time_format) + 1.day)
     return_hash = {}
     return_hash[:orders] = Order.where(created_at: time_range)

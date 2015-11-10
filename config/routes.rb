@@ -158,7 +158,7 @@ CrmSoftwearcrmCom::Application.routes.draw do
 
 
   resources :sales_reports, only: [:index, :create]
-  get '/sales_reports/:report_type/:start_time...:end_time', to: 'sales_reports#show', as: :sales_reports_show
+  get '/sales_reports/:report_type/:start_time...:end_time(.:format)', to: 'sales_reports#show', as: :sales_reports_show
 
   namespace 'api', defaults: { format: :json } do
     match '*path', to: 'api#options', via: :options
