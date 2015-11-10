@@ -1,0 +1,4 @@
+Order ID,Order Name,Subtotal,Tax,Shipping,Discounts,Total,Balance,Store
+<%- data[:orders].each do |order| %>
+<%= order.id %>,<%= order.name %>,<%= order.subtotal.round(2) %>,<%= order.tax.round(2) %>,<%= order.shipping_price.round(2) %>,<%= order.discount_total.round(2) %>,<%= order.total.round(2) %>,<%= order.balance.round(2) %>,<%=order.store.name %>
+<% end %>

@@ -1,0 +1,70 @@
+<h1>Revenue By Store Report for <%= params[:start_time] %> through <%= params[:end_date] %></h1>
+
+<table class='table table-striped table-sortable sortable'>
+  <thead>
+    <tr>
+      <th>
+        ID
+      </th>
+      <th>
+        Order
+      </th>
+      <th>
+        Subtotal
+      </th>
+      <th>
+        Tax
+      </th>
+      <th>
+        Shipping
+      </th>
+      <th>
+        Discounts
+      </th>
+      <th>
+        Total
+      </th>
+      <th>
+        Balance
+      </th>
+      <th>
+        Store
+      </th>
+    </tr>
+  </thead>
+  <tbody>
+    <% data[:orders].each do |order| %> 
+      <% cache(["order_reports/_revenue_by_store", order]) do %>
+      <tr>
+        <td>
+          <%= order.id %>
+        </td>
+        <td>
+          <%= order.name %>
+        </td>
+        <td>
+          <%= number_to_currency order.subtotal %>
+        </td>
+        <td>
+          <%= number_to_currency order.tax %>
+        </td>
+        <td>
+          <%= number_to_currency order.shipping_price %>
+        </td>
+        <td>
+          <%= number_to_currency order.discount_total %>
+        </td>
+        <td>
+          <%= number_to_currency order.total %>
+        </td>
+        <td>
+          <%= number_to_currency order.balance %>
+        </td>
+        <td>
+          <%= order.store.name %>
+        </td>
+      </tr>
+    <% end %>
+  <% end %>
+  </tbody>
+</table>
