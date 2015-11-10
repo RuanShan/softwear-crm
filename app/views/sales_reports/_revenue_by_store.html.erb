@@ -10,6 +10,9 @@
         Order
       </th>
       <th>
+        Salesperson
+      </th>
+      <th>
         Subtotal
       </th>
       <th>
@@ -41,6 +44,9 @@
         </td>
         <td>
           <%= order.name %>
+        </td>
+        <td>
+          <%= order.salesperson.full_name %>
         </td>
         <td>
           <%= number_to_currency order.subtotal %>
