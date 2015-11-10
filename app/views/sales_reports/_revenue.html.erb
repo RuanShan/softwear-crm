@@ -1,5 +1,13 @@
 <h1>Revenue Report</h1>
 <h2><%= params[:start_time] %> through <%= params[:end_time] %></h2>
+<% totals = {
+  subtotal: 0,
+  tax: 0,
+  shipping_price: 0,
+  discount_total: 0,
+  total: 0,
+  balance: 0,
+} %>
 
 <table class='table table-striped table-sortable sortable'>
   <thead>
@@ -62,21 +70,27 @@
           <%= order.salesperson.full_name %>
         </td>
         <td>
+          <% totals[:subtotal] += order.subtotal %>
           <%= number_to_currency order.subtotal %>
         </td>
         <td>
+          <% totals[:tax] += order.tax %>
           <%= number_to_currency order.tax %>
         </td>
         <td>
+          <% totals[:shipping_price] += order.shipping_price %>
           <%= number_to_currency order.shipping_price %>
         </td>
         <td>
+          <% totals[:discount_total] += order.discount_total %>
           <%= number_to_currency order.discount_total %>
         </td>
         <td>
+          <% totals[:total] += order.total %>
           <%= number_to_currency order.total %>
         </td>
         <td>
+          <% totals[:balance] += order.balance %>
           <%= number_to_currency order.balance %>
         </td>
         <td>
@@ -86,4 +100,54 @@
     <% end %>
   <% end %>
   </tbody>
+  <tfoot>
+    <tr>
+      <th colspan="5">
+      </th>
+      <th>
+        Subtotal
+      </th>
+      <th>
+        Tax
+      </th>
+      <th>
+        Shipping
+      </th>
+      <th>
+        Discounts
+      </th>
+      <th>
+        Total
+      </th>
+      <th>
+        Balance
+      </th>
+      <th>
+      </th>
+    </tr>
+    <tr>
+      <td colspan="5">
+      </td>
+      <td>
+        <%= number_to_currency totals[:subtotal] %>
+      </td>
+      <td>
+        <%= number_to_currency totals[:tax] %>
+      </td>
+      <td>
+        <%= number_to_currency totals[:shipping_price] %>
+      </td>
+      <td>
+        <%= number_to_currency totals[:discount_total] %>
+      </td>
+      <td>
+        <%= number_to_currency totals[:total] %>
+      </td>
+      <td>
+        <%= number_to_currency totals[:balance] %>
+      </td>
+      <td>
+      </td>
+    </tr>
+  </tfoot>
 </table>
