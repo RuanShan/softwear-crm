@@ -65,7 +65,8 @@ module ProductionCounterpart
         c_field = field
       end
 
-      if send("#{c_field}_changed?")
+      field_was_changed = "#{c_field}_changed?"
+      if !respond_to?(field_was_changed) || send(field_was_changed)
         production.send("#{p_field}=", send(c_field))
         changed = true
       end
