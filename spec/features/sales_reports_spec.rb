@@ -22,7 +22,7 @@ feature 'Sales Reports management', sales_report_spec: true, js: true do
     fill_in 'end_time', with: '2014-11-11'
     sleep 10
     select 'Quote Request Success Report', from: 'report_type'
-    click_button 'Generate Report'
+    click_button 'Run Report'
     expect(page).to have_content('Quote Request Success Report from 2014-11-10 to 2014-11-11')
     expect(page).to have_content('Total Quote Requests Received: 0')
     expect(page).to have_content('Total Quotes from Requests: 0')

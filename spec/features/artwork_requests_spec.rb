@@ -48,7 +48,7 @@ feature 'Artwork Request Features', js: true, artwork_request_spec: true do
     fill_in 'artwork_request_deadline', with: '01/23/1992 8:55 PM'
     fill_in 'Description', with: 'hello'
 
-    click_button 'Create Artwork Request'
+    click_button 'Create Artwork request'
     sleep 1
     find(:css, 'button.close').click
     expect(ArtworkRequest.where(description: 'hello')).to exist
@@ -60,7 +60,7 @@ feature 'Artwork Request Features', js: true, artwork_request_spec: true do
     find("a[href='/orders/1/artwork_requests/#{artwork_request.id}/edit']").click
     fill_in 'Description', with: 'edited'
     select 'Normal', from: 'Priority'
-    click_button 'Update Artwork Request'
+    click_button 'Update Artwork request'
     sleep 1
     find(:css, "button.close").click
     expect(ArtworkRequest.where(description: 'edited')).to exist
@@ -97,7 +97,7 @@ feature 'Artwork Request Features', js: true, artwork_request_spec: true do
     fill_in 'artwork_request_deadline', with: '01/23/1992 8:55 PM'
     fill_in 'Description', with: 'hello'
 
-    click_button 'Create Artwork Request'
+    click_button 'Create Artwork request'
     sleep 1
     find(:css, 'button.close').click
     expect(ArtworkRequest.where(description: 'hello')).to exist
