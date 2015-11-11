@@ -9,15 +9,17 @@
     <%= f.select :priority, ArtworkRequest::PRIORITIES.map{ |level, label| [label, level] }, 
         selected: (artwork_request.priority.nil? ? ArtworkRequest::PRIORITIES.invert['Normal']  : artwork_request.priority) %>
 
+    <div id="imprint_method_print_locations_and_ink_colors">
     <% unless artwork_request.imprints.blank? %>
         <%= render partial: 'artwork_imprint_method_fields',
                    locals: { artwork_request: artwork_request,
                              ink_colors: artwork_request.compatible_ink_colors } %>
-    <% end %>
+        <% end %>
+    </div>
 
     <%= f.select :state, ['unassigned', 'pending_artwork'] %>
 
-    <%= f.text_field :deadline, value: value_time(artwork_request.deadline), 
+    <%= f.text_field :deadline, value: value_time(artwork_request.deadline), class: 'date js-datetimepicker', 
       append: raw("<i class='glyphicon glyphicon-calendar'></i>") %>
 
     <%= f.select :reorder, [["No", false], ["Yes", true]], label: 'Reorder?',
