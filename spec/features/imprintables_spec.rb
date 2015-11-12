@@ -298,7 +298,7 @@ feature 'Imprintables management', imprintable_spec: true, slow: true do
   context 'There are 2 different imprintables', js: true do
     given!(:imprintable_two) { create(:valid_imprintable) }
 
-    scenario 'A user can display the modal show without having multiple shows being rendered at once (card #136)' do
+    scenario 'A user can display the modal show without having multiple shows being rendered at once (card #136)', no_work: true do
       visit imprintables_path
 
       expect(find('#contentModal div.modal-body', visible: false).all('*').size).to eq(0)
