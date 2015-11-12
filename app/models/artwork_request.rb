@@ -43,7 +43,8 @@ class ArtworkRequest < ActiveRecord::Base
   has_many   :jobs,                  through: :imprints
   has_many   :imprint_methods,       through: :imprints
   has_many   :print_locations,       through: :imprints
-  has_many   :potential_ink_colors, through: :imprint_methods, source: :ink_colors
+  has_many   :potential_ink_colors,  through: :imprint_methods, source: :ink_colors
+  has_one    :order,                 through: :jobs
 
   accepts_nested_attributes_for :assets, allow_destroy: true
 
@@ -170,7 +171,7 @@ class ArtworkRequest < ActiveRecord::Base
   def imprintable_proofing_templates
     jobs.map(&:imprintables_for_order).flatten.map(&:proofing_template_name).uniq
   end
-  
+
   def imprintable_proofing_templates_for_job(job)
     job.imprintables_for_order.map(&:proofing_template_name).uniq
   end
@@ -238,10 +239,6 @@ class ArtworkRequest < ActiveRecord::Base
     InkColor.compatible_with(imprint_methods)
   end
 
-  def order
-    imprints.first.try(:job).try(:order)
-  end
-
   def no_proof_ticket_id_entered?
     freshdesk_proof_ticket_id.blank?
   end
@@ -256,7 +253,7 @@ class ArtworkRequest < ActiveRecord::Base
   end
 
   def enqueue_create_freshdesk_proof_ticket
-    self.delay(queue: 'api').create_freshdesk_proof_ticket if
+    delay(queue: 'api').create_freshdesk_proof_ticket if
             (should_access_third_parties? && order.freshdesk_proof_ticket_id.blank?)
   end
   warn_on_failure_of :enqueue_create_freshdesk_proof_ticket
@@ -286,12 +283,12 @@ class ArtworkRequest < ActiveRecord::Base
   end
 
   def create_freshdesk_proof_ticket
-    return if freshdesk.nil? || !self.order.freshdesk_proof_ticket_id.blank?
+    return if freshdesk.nil? || !order.freshdesk_proof_ticket_id.blank?
 
     requester_info = {
-      email: self.order.email,
-      phone: format_phone(self.order.phone_number),
-      name: self.order.full_name
+      email: order.email,
+      phone: format_phone(order.phone_number),
+      name:  order.full_name
     }
 
     ticket = JSON.parse(freshdesk.post_tickets(
@@ -299,19 +296,19 @@ class ArtworkRequest < ActiveRecord::Base
           source: 2,
           group_id: FD_ART_GROUP_ID,
           ticket_type: 'Proofing Convo',
-          subject: "Your Ann Arbor T-Shirt Company Order Proof(s) for \"#{self.order.name}\" ##{self.order.id} Are Ready",
+          subject: "Your Ann Arbor T-Shirt Company Order Proof(s) for \"#{order.name}\" ##{order.id} Are Ready",
           custom_field: {
             FD_PROOF_CREATION_STATUS => 'Proof(s) Not Ready',
-            FD_NO_OF_DECORATIONS_FIELD => self.order.imprints.count,
-            FD_NO_OF_PROOFS => self.order.jobs.count,
-            FD_ORDER_QTY => self.order.jobs.map(&:imprintable_line_items_total).inject(:+)
+            FD_NO_OF_DECORATIONS_FIELD => order.imprints.count,
+            FD_NO_OF_PROOFS => order.jobs.count,
+            FD_ORDER_QTY => order.jobs.map(&:imprintable_line_items_total).inject(:+)
           }
         }
          .merge(requester_info)
       ))
       .try(:[], 'helpdesk_ticket')
 
-    self.order.update_column(:freshdesk_proof_ticket_id, ticket.try(:[], 'display_id'))
+    order.update_column(:freshdesk_proof_ticket_id, ticket.try(:[], 'display_id'))
     ticket
   end
   warn_on_failure_of :create_freshdesk_proof_ticket, raise_anyway: true
