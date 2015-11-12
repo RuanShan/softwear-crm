@@ -1,210 +1,210 @@
 <%= render_error_modal_for @order %>
 
 <div class="row-fluid">
-    <div class="page-heading animated fadeInDownBig pull-left">
-      <h1>Edit <strong>Order #<%= @order.id %></strong></h1>
-      <h2>
-        <% if @order.fba? %>
-          <span class="label label-warning">FBA</span>
+  <div class="page-heading animated fadeInDownBig pull-left">
+    <h1>Edit <strong>Order #<%= @order.id %></strong></h1>
+    <h2>
+      <% if @order.fba? %>
+        <span class="label label-warning">FBA</span>
+      <% end %>
+      <%= @order.name %>
+    </h2>
+  </div>
+
+  <div class="pull-right text-right">
+
+    <%= link_to order_report_order_path(@order), class: 'btn btn-primary',
+                'data-action' => 'show' do %>
+        <i class="glyphicon glyphicon-list-alt"></i> Order Report
+    <% end %>
+
+    <%= link_to imprintable_order_sheets_order_path(@order), class: 'btn btn-primary',
+                'data-action' => 'show' do %>
+        <i class="softwear-icon-t-shirt"></i> Imprintable Sheets
+    <% end %>
+
+    <%= link_to order_path(@order), class: 'btn btn-primary',
+      data: {action: :show, toggle: :tooltip, title: 'Printable Invoice', placement: :bottom } do %>
+        <i class="fa fa-print"></i>
+    <% end %>
+
+    <% unless @order.notification_state == 'picked_up' %>
+      <span ".edit-notification-buttons">
+      <%= link_to state_order_path(@order, :notification_state), remote: true,
+        data: {toggle: :tooltip, :title => 'Notify Customer', placement: :bottom},
+        class: 'btn btn-primary'  do %>
+          <i class="glyphicon glyphicon-phone-alt"></i>
+      <% end %>
+
+      <%= link_to transition_order_path(@order, :notification_state,  :picked_up), remote: true,
+        method: :post, data: { toggle: :tooltip, title: 'Mark Picked Up', placement: :bottom,
+        confirm: 'Are you sure you want to mark this order as picked up?'},
+        class: 'btn btn-primary' do %>
+          <i class="glyphicon glyphicon-thumbs-up"></i>
         <% end %>
-        <%= @order.name %>
-      </h2>
-    </div>
+      </span>
+    <% end %>
 
-    <div class="pull-right text-right">
-
-      <%= link_to order_report_order_path(@order), class: 'btn btn-primary',
-                  'data-action' => 'show' do %>
-          <i class="glyphicon glyphicon-list-alt"></i> Order Report
-      <% end %>
-
-      <%= link_to imprintable_order_sheets_order_path(@order), class: 'btn btn-primary',
-                  'data-action' => 'show' do %>
-          <i class="softwear-icon-t-shirt"></i> Imprintable Sheets
-      <% end %>
-
-      <%= link_to order_path(@order), class: 'btn btn-primary',
-        data: {action: :show, toggle: :tooltip, title: 'Printable Invoice', placement: :bottom } do %>
-          <i class="fa fa-print"></i>
-      <% end %>
-
-      <% unless @order.notification_state == 'picked_up' %>
-        <span ".edit-notification-buttons">
-        <%= link_to state_order_path(@order, :notification_state), remote: true,
-          data: {toggle: :tooltip, :title => 'Notify Customer', placement: :bottom},
-          class: 'btn btn-primary'  do %>
-            <i class="glyphicon glyphicon-phone-alt"></i>
-        <% end %>
-
-        <%= link_to transition_order_path(@order, :notification_state,  :picked_up), remote: true,
-          method: :post, data: { toggle: :tooltip, title: 'Mark Picked Up', placement: :bottom,
-          confirm: 'Are you sure you want to mark this order as picked up?'},
-          class: 'btn btn-primary' do %>
-            <i class="glyphicon glyphicon-thumbs-up"></i>
-          <% end %>
-        </span>
-      <% end %>
-
-      <%= link_to order_warnings_path(@order.id), class: 'btn btn-warning' do %>
-        <i class="fa fa-exclamation-triangle"></i> Warnings
-        <%= @order.warnings.active.any? ? "(#{@order.warnings.active.size})" : '' %>
-      <% end %>
-
-    </div>
+    <%= link_to order_warnings_path(@order.id), class: 'btn btn-warning' do %>
+      <i class="fa fa-exclamation-triangle"></i> Warnings
+      <%= @order.warnings.active.any? ? "(#{@order.warnings.active.size})" : '' %>
+    <% end %>
 
   </div>
-  <br clear="all" />
-  <table class="table table-condensed">
-    <thead>
-      <% if @order.fba? %>
-        <th>Production State</th>
-      <% else %>
-        <th>Payment State
-        </th>
-        <th>Invoice State
-        </th>
-        <th>Production State
-        </th>
-        <th>Artwork State
-        </th>
-        <th>Proof State
-        </th>
-        <th>Notification State
-        </th>
-      <% end %>
-    </thead>
-    <tbody>
-      <tr id="order_<%= @order.id %>">
-        <% if @order.fba? %>
-          <td class='production-state'>
-            <div class='col-sm-1'>
-              <span class="label <%= get_style_from_production_state(@order.production_state)%>"><%= @order.production_state.humanize %></span>
-            </div>
 
-            <div class='col-sm-2'>
-              <% if @order.production_url && @order.production_state != 'pending' %>
-                <%= link_to 'View in Production', @order.production_url, class: 'btn btn-success', target: :_blank %>
-              <% else %>
-                <%= button_to 'Send to Production', send_to_production_order_path(@order), class: 'btn btn-primary' %>
-              <% end %>
-            </div>
-          </td>
-        <% else %>
-          <td class='payment-state'>
-            <span class="label <%= get_style_from_status(@order.payment_status)%>"><%= @order.payment_status %></span>
-          </td>
-          <td class='invoice-state'>
-            <span class="label <%= get_style_from_invoice_state(@order.invoice_state)%>"><%= @order.invoice_state.humanize %></span>
-          </td>
-          <td class='production-state'>
+</div>
+<br clear="all" />
+<table class="table table-condensed">
+  <thead>
+    <% if @order.fba? %>
+      <th>Production State</th>
+    <% else %>
+      <th>Payment State
+      </th>
+      <th>Invoice State
+      </th>
+      <th>Production State
+      </th>
+      <th>Artwork State
+      </th>
+      <th>Proof State
+      </th>
+      <th>Notification State
+      </th>
+    <% end %>
+  </thead>
+  <tbody>
+    <tr id="order_<%= @order.id %>">
+      <% if @order.fba? %>
+        <td class='production-state'>
+          <div class='col-sm-1'>
             <span class="label <%= get_style_from_production_state(@order.production_state)%>"><%= @order.production_state.humanize %></span>
-            <br /> 
-              <% if @order.production_url && @order.production_state != 'pending' %>
-                <%= link_to 'View in Production', @order.production_url, target: :_blank %>
-              <% else %>
-                <%= link_to 'Send to Production', send_to_production_order_path(@order), method: :post  %>
-              <% end %>
-          </td>
-          <td class='artwork-state'>
+          </div>
+
+          <div class='col-sm-2'>
+            <% if @order.production_url && @order.production_state != 'pending' %>
+              <%= link_to 'View in Production', @order.production_url, class: 'btn btn-success', target: :_blank %>
+            <% else %>
+              <%= button_to 'Send to Production', send_to_production_order_path(@order), class: 'btn btn-primary' %>
+            <% end %>
+          </div>
+        </td>
+      <% else %>
+        <td class='payment-state'>
+          <span class="label <%= get_style_from_status(@order.payment_status)%>"><%= @order.payment_status %></span>
+        </td>
+        <td class='invoice-state'>
+          <span class="label <%= get_style_from_invoice_state(@order.invoice_state)%>"><%= @order.invoice_state.humanize %></span>
+        </td>
+        <td class='production-state'>
+          <span class="label <%= get_style_from_production_state(@order.production_state)%>"><%= @order.production_state.humanize %></span>
+          <br /> 
+            <% if @order.production_url && @order.production_state != 'pending' %>
+              <%= link_to 'View in Production', @order.production_url, target: :_blank %>
+            <% else %>
+              <%= link_to 'Send to Production', send_to_production_order_path(@order), method: :post  %>
+            <% end %>
+        </td>
+        <td class='artwork-state'>
           <span class="label label-primary <%= get_style_from_artwork_state(@order.artwork_state) %>"><%=  @order.artwork_state.humanize %></span>
-          </td>
-          <td class='proof-state'>
-            <span class="label <%= get_style_from_proof_state(@order.proof_state) %>"><%= @order.proof_state.humanize %></span>
-          </td>
-          <td class='notification-state'>
-            <span class="label <%= get_style_from_notification_state(@order.notification_state)%>"><%= @order.notification_state.humanize %></span>
-          </td>
-        <% end %>
-      </tr>
-    </tbody>
-  </table>
+        </td>
+        <td class='proof-state'>
+          <span class="label <%= get_style_from_proof_state(@order.proof_state) %>"><%= @order.proof_state.humanize %></span>
+        </td>
+        <td class='notification-state'>
+          <span class="label <%= get_style_from_notification_state(@order.notification_state)%>"><%= @order.notification_state.humanize %></span>
+        </td>
+      <% end %>
+    </tr>
+  </tbody>
+</table>
 
 <%= content_tag(:div, id: 'order-page', 'data-order-id' => @order.id) {} %>
 
 <div class="row">
-    <div class="col-sm-12">
-        <div class="box-info full">
-            <ul class="nav nav-tabs nav-justified">
-              <li class="active">
-                <%= order_tab(:jobs) do %>
-                  <i class="fa fa-tasks"></i> Jobs
-                <% end %>
-              </li>
-              <li>
-                <%= order_tab(:details) do %>
-                  <i class="fa fa-shopping-cart"></i> Details
-                <% end %>
-              </li>
-              <li>
-                <%= order_tab(:payments, @order.fba?) do %>
-                  <i class="fa fa-money"></i> Payments
-                <% end %>
-              </li>
-              <li>
-                <%= order_tab(:shipments, @order.fba?) do %>
-                  <i class="fa fa-archive"></i> Shipments
-                <% end %>
-              </li>
-              <li>
-                <%= order_tab(:artwork, @order.fba?) do %>
-                  <i class="fa fa-picture-o"></i> Artwork
-                <% end %>
-              </li>
-              <li>
-                <%= order_tab(:proofs, @order.fba?) do %>
-                  <i class="fa fa-file-text-o"></i> Proofs
-                <% end %>
-                </a>
-              </li>
-              <li>
-                <%= order_tab(:comments) do %>
-                  <i class="fa fa-bars"></i> Comments
-                <% end %>
-              </li>
-              <li>
-                <%= order_tab(:timeline) do %>
-                  <i class="fa fa-clock-o"></i> Timeline
-                <% end %>
-              </li>
-            </ul>
+  <div class="col-sm-12">
+      <div class="box-info full">
+          <ul class="nav nav-tabs nav-justified">
+            <li class="active">
+              <%= order_tab(:jobs) do %>
+                <i class="fa fa-tasks"></i> Jobs
+              <% end %>
+            </li>
+            <li>
+              <%= order_tab(:details) do %>
+                <i class="fa fa-shopping-cart"></i> Details
+              <% end %>
+            </li>
+            <li>
+              <%= order_tab(:payments, @order.fba?) do %>
+                <i class="fa fa-money"></i> Payments
+              <% end %>
+            </li>
+            <li>
+              <%= order_tab(:shipments, @order.fba?) do %>
+                <i class="fa fa-archive"></i> Shipments
+              <% end %>
+            </li>
+            <li>
+              <%= order_tab(:artwork, @order.fba?) do %>
+                <i class="fa fa-picture-o"></i> Artwork
+              <% end %>
+            </li>
+            <li>
+              <%= order_tab(:proofs, @order.fba?) do %>
+                <i class="fa fa-file-text-o"></i> Proofs
+              <% end %>
+              </a>
+            </li>
+            <li>
+              <%= order_tab(:comments) do %>
+                <i class="fa fa-bars"></i> Comments
+              <% end %>
+            </li>
+            <li>
+              <%= order_tab(:timeline) do %>
+                <i class="fa fa-clock-o"></i> Timeline
+              <% end %>
+            </li>
+          </ul>
 
-            <div class="tab-content">
-              <div class="tab-pane animated fadeInRight active" id="jobs">
-                <%= render partial: 'jobs/jobs', locals: { order: @order } %>
-              </div>
-
-              <div class="tab-pane animated fadeInRight" id="timeline">
-                <%= render partial: 'shared/timeline',
-                           locals: {activities: @activities} %>
-              </div>
-
-              <div class="tab-pane animated  fadeInRight" id="details">
-                <%= render partial: 'details', locals: { order: @order } %>
-              </div>
-
-              <div class="tab-pane animated fadeInRight" id="payments">
-                <%= render partial: 'payments/payments', locals: { order: @order }%>
-              </div>
-
-              <div class="tab-pane animated fadeInRight" id="shipments">
-                <%= render partial: 'shipments', locals: { order: @order } %>
-              </div>
-
-              <div class="tab-pane animated fadeInRight" id="artwork">
-                <%= render partial: 'artwork_requests/list',
-                           locals: { order: @order } %>
-              </div>
-
-              <div class="tab-pane animated fadeInRight" id="proofs">
-                <%= render partial: 'proofs/list', locals: { order: @order } %>
-              </div>
-
-              <div class="tab-pane animated fadeInRight" id="comments">
-                  <%= render 'comments', order: @order %>
-              </div>
+          <div class="tab-content">
+            <div class="tab-pane animated fadeInRight active" id="jobs">
+              <%= render partial: 'jobs/jobs', locals: { order: @order } %>
             </div>
-        </div>
-    </div>
+
+            <div class="tab-pane animated fadeInRight" id="timeline">
+              <%= render partial: 'shared/timeline',
+                         locals: {activities: @activities} %>
+            </div>
+
+            <div class="tab-pane animated  fadeInRight" id="details">
+              <%= render partial: 'details', locals: { order: @order } %>
+            </div>
+
+            <div class="tab-pane animated fadeInRight" id="payments">
+              <%= render partial: 'payments/payments', locals: { order: @order }%>
+            </div>
+
+            <div class="tab-pane animated fadeInRight" id="shipments">
+              <%= render partial: 'shipments', locals: { order: @order } %>
+            </div>
+
+            <div class="tab-pane animated fadeInRight" id="artwork">
+              <%= render partial: 'artwork_requests/list',
+                         locals: { order: @order } %>
+            </div>
+
+            <div class="tab-pane animated fadeInRight" id="proofs">
+              <%= render partial: 'proofs/list', locals: { order: @order } %>
+            </div>
+
+            <div class="tab-pane animated fadeInRight" id="comments">
+                <%= render 'comments', order: @order %>
+            </div>
+          </div>
+      </div>
+  </div>
 </div>
 
 <% # WEIRD BUGFIX: see defintion of this method in quote_helper.rb %>
