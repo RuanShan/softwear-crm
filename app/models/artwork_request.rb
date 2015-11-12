@@ -113,7 +113,7 @@ class ArtworkRequest < ActiveRecord::Base
     if jobs.respond_to?(:where)
       @order ||= jobs.where.not(jobbable_id: nil).first.try(:jobbable)
     else
-      @order ||= jobs.find { |j| !j.jobbable_id.nil }.try(:jobbable)
+      @order ||= jobs.find { |j| !j.jobbable_id.nil? }.try(:jobbable)
     end
   end
 
