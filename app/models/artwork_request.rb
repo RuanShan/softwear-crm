@@ -44,7 +44,6 @@ class ArtworkRequest < ActiveRecord::Base
   has_many   :imprint_methods,       through: :imprints
   has_many   :print_locations,       through: :imprints
   has_many   :potential_ink_colors,  through: :imprint_methods, source: :ink_colors
-  has_one    :order,                 through: :jobs
 
   accepts_nested_attributes_for :assets, allow_destroy: true
 
@@ -108,6 +107,10 @@ class ArtworkRequest < ActiveRecord::Base
   end
 
   def name
+  end
+
+  def order
+    @order ||= jobs.where.not(jobbable_id: nil).first.try(:order)
   end
 
   def artist_full_name

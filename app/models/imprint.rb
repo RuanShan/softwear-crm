@@ -13,6 +13,7 @@ class Imprint < ActiveRecord::Base
   belongs_to :production, class_name: 'Production::Imprint', foreign_key: :softwear_prod_id
   has_many :name_numbers
   has_one :imprint_method, through: :print_location
+  has_one :order, through: :job
   has_many :ink_colors, through: :imprint_method
   has_many :artwork_request_imprints
   has_many :artwork_requests, through: :artwork_request_imprints
