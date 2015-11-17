@@ -7,7 +7,7 @@ Sidekiq.configure_client do |config|
   config.client_middleware do |chain|
     chain.add Sidekiq::Status::ClientMiddleware
   end
-  config.redis = { namespace: 'softwear-crm', url: redis_url }
+  config.redis = { namespace: 'softwear-crm', url: redis_url, network_timeout: 10 }
 end
 
 Sidekiq.configure_server do |config|
