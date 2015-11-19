@@ -7,6 +7,10 @@
 
   <div class='row form-group'>
     <div class='col-sm-4'>
+      <%= s.select :artwork_state, ArtworkRequest.state_machine.states.map{|x| [x.human_name.humanize, x.name] }, multiple: true %>
+    </div>
+    
+    <div class='col-sm-4'>
       <%= s.text_field :deadline, greater_than: true, placeholder: 'Deadline after...', class: 'js-datetimepicker' %>
     </div>
 
@@ -14,12 +18,13 @@
       <%= s.text_field :deadline, less_than: true, placeholder: 'Deadline before...', class: 'js-datetimepicker' %>
     </div>
 
-    <div class='col-sm-4'>
-      <%= s.select :artwork_state, ArtworkRequest.state_machine.states.map{|x| [x.human_name.humanize, x.name] } %>
-    </div>
   </div>
 
   <div class='row form-group'>
+    <div class='col-sm-4'>
+      <%= s.select :artist_full_name, User.all.map{|x| x.full_name }, multiple: true %>
+    </div>
+
     <div class='col-sm-4'>
       <%= s.text_field :order_in_hand_by, greater_than: true, placeholder: 'Order Deadline after...', class: 'js-datetimepicker' %>
     </div>

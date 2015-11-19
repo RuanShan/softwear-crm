@@ -1,17 +1,3 @@
-<% if activity.trackable_type %>
-  Artwork request added by 
-  <% if activity.owner %>
-    by <%= activity.owner.full_name rescue "User removed" %>
-  <% else %>
-      which has since been removed
-  <% end %>
-<% else %>
-  Added some art...
-<% end %>
-<% if activity.recipient %>
-  to
-  <%= activity.recipient_type.underscore.humanize.downcase %>
-  <%= link_to activity.recipient.name, activity.recipient %>
-<% else %>
-  a deleted order
-<% end %>
+<%= activity_owner_or_removed(activity) %> added 
+<%= activity_trackable_or_removed(activity) %> to 
+<%= activity_recipient_or_removed(activity) %>

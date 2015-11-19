@@ -46,5 +46,4 @@ class Proof < ActiveRecord::Base
     Sunspot.index order
   end
 
-
 end

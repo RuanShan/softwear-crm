@@ -17,8 +17,6 @@
         <% end %>
     </div>
 
-    <%= f.select :state, ['unassigned', 'pending_artwork'] %>
-
     <%= f.text_field :deadline, value: value_time(artwork_request.deadline), class: 'date js-datetimepicker', 
       append: raw("<i class='glyphicon glyphicon-calendar'></i>") %>
 

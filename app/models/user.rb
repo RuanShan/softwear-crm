@@ -22,6 +22,8 @@ class User < ActiveRecord::Base
   validates :first_name, presence: true
   validates :last_name, presence: true
   validates :freshdesk_email, email: true, allow_blank: true
+  
+  default_scope { order(:first_name, :last_name) }
 
   after_save :assign_image_assetables
 

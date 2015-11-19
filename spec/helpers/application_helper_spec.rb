@@ -66,4 +66,16 @@ describe ApplicationHelper, application_helper_spec: true do
       end
     end
   end
+  
+  describe '#activity_trackable_or_removed' do 
+    it 'returns the trackable object and id'
+  end
+  
+  describe '#activity_owner_or_removed' do 
+    it 'returns the trackable object and id'
+  end
+
+  describe '#activity_recipient_or_removed' do 
+    it 'returns the trackable object and id'
+  end
 end

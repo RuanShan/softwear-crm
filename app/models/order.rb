@@ -174,21 +174,35 @@ class Order < ActiveRecord::Base
   
   state_machine :artwork_state, :initial => :pending_artwork_requests do
   
+    after_transition on: :artwork_complete, do: :mark_proofs_pending_manager_approval
     after_transition on: :proofs_submitted, do: :mark_proofs_submitted
     after_transition on: :proofs_rejected, do: :mark_proofs_rejected
     after_transition on: :proofs_approved, do: :mark_proofs_approved
+
+    after_transition on: :artwork_complete do |order|
+      order.artwork_requests.each{|ar| ar.artwork_added }
+    end
     
     event :artwork_requests_complete do
-      transition :pending_artwork_requests => :pending_artwork, :unless => lambda{ |x| x.missing_artwork_requests? }
+      transition :pending_artwork_requests => :pending_artwork_and_proofs, :unless => lambda{ |x| x.missing_artwork_requests? }
+      transition :pending_artwork_requests => :pending_artwork, :unless => lambda{ |x| x.missing_artwork_requests? && !x.missing_proofs? }
     end
 
     event :artwork_complete do 
-      transition :pending_artwork => :pending_proofs, :if => lambda{ |x| x.missing_proofs? }
-      transition :pending_artwork => :pending_proof_submission
+      transition :pending_artwork_and_proofs => :pending_proofs, :if => lambda{ |x| x.missing_proofs? }
+      transition :pending_artwork_and_proofs => :pending_manager_approval
+    end
+
+    event :artwork_rejected do 
+      transition any => :pending_artwork_and_proofs
     end
 
     event :proofs_ready do 
-      transition :pending_proofs => :pending_proof_submission, :unless => lambda{ |x| x.missing_proofs? }
+      transition :pending_proofs => :pending_manager_approval, :unless => lambda{ |x| x.missing_proofs? }
+    end
+
+    event :manager_approved do 
+      transition :pending_manager_approval => :pending_proof_submission
     end
 
     event :proofs_submitted do 
@@ -445,7 +459,8 @@ class Order < ActiveRecord::Base
   end
 
   def missing_artwork_requests?
-    imprints.map{|i| i.artwork_requests.empty? }.include? true
+    imprints.map{|i| i.artwork_requests.empty? }.include?(true) || 
+      artwork_requests.map(&:state).include?('artwork_request_rejected')
   end
 
   def missing_proofs?
@@ -621,6 +636,12 @@ class Order < ActiveRecord::Base
   def mark_proofs_rejected
     proofs.each do |proof|
       proof.update_attribute(:status, 'Rejected')
+    end
+  end
+  
+  def mark_proofs_pending_manager_approval
+    proofs.each do |proof|
+      proof.update_attribute(:status, '')
     end
   end
 

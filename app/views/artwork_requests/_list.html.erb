@@ -2,20 +2,21 @@
   <div class='text-right hidden-print clearfix'>
 
     <% if order.artwork_state == 'pending_artwork_requests' && !order.missing_artwork_requests? %>
-      <%= link_to order_path(order, transition: {artwork_state: :artwork_requests_complete}), method: :put, class: 'btn btn-primary' do %>
-        <i class='glyphicon glyphicon-check'></i> Mark Art Requests Complete
+      <%= link_to transition_order_path(order, :artwork_state, :artwork_requests_complete ), method: :post, class: 'btn btn-primary' do %>
+        <i class='glyphicon glyphicon-check'></i> Mark Artwork Requests Complete
       <% end %>
     <% end %>   
     
-    <% if order.artwork_state == 'pending_artwork' %>
-      <%= link_to order_path(order, transition: {artwork_state: :artwork_complete} ), method: :put, class: 'btn btn-primary' do %>
-        <i class='glyphicon glyphicon-check'></i> Mark Art Complete
+    
+    <% if order.artwork_state == 'pending_artwork_and_proofs' && !order.artwork_requests.map(&:state).include?('unassigned') %>
+      <%= link_to transition_order_path(order, :artwork_state, :artwork_complete ), method: :post, class: 'btn btn-primary' do %>
+        <i class='glyphicon glyphicon-check'></i> Mark Artwork Complete
       <% end %>
     <% end %>   
     
     <% if order.artwork_state == 'ready_for_production' %>
-      <%= link_to order_path(order, transition: {artwork_state: :put_into_production} ), method: :put, class: 'btn btn-success' do %>
-        <i class='glyphicon glyphicon-check'></i> Mark Art In Production
+      <%= link_to transition_order_path(order, :artwork_state, :artwork_complete ), method: :post, class: 'btn btn-primary' do %>
+        <i class='glyphicon glyphicon-check'></i> Mark Artwork In Production
       <% end %>
     <% end %>   
     
@@ -27,6 +28,10 @@
   <% if order.missing_artwork_requests? %>
     <div class="alert alert-danger clearfix ">
       This order is missing artwork requests. Artwork can not proceed until all imprints have an artwork request associated with them.  
+    </div>
+  <% elsif order.artwork_state == 'pending_artwork_and_proofs' && order.artwork_requests.map(&:state).include?('unassigned') %>
+    <div class="alert alert-danger clearfix ">
+      This order has unassigned artwork requests. Artwork can not proceed until all artwork requests.  
     </div>
   <% end %>
     

@@ -56,8 +56,8 @@ class ArtworkRequest < ActiveRecord::Base
   validates :salesperson,    presence: true
 
   after_create :enqueue_create_freshdesk_proof_ticket if Rails.env.production?
-  after_save :advance_state
-
+  after_save :transition_to_assigned if "state == 'unassigned'"
+  
   attr_accessor :current_user
 
   state_machine :state, initial: :unassigned do
@@ -65,15 +65,36 @@ class ArtworkRequest < ActiveRecord::Base
       artwork_request.touch
     end
 
-    after_transition on: :reject do |artwork_request|
+    after_transition on: [:reject_artwork, :reject_artwork_request] do |artwork_request|
       artwork_request.approved_by = nil
     end
+    
+    after_transition on: :reject_artwork do |artwork_request|
+      artwork_request.order.artwork_rejected
+    end
 
-    event :assigned do
+    before_transition on: :unassigned_artist do |artwork_request|
+      artwork_request.update_column(:artist_id, nil)
+    end
+
+    after_transition on: :reject_artwork_request do |artwork_request|
+      artwork_request.order.issue_warning(
+        "Bad Artwork Request", 
+        "Artwork Request ##{artwork_request.id} was determined to be inadequate."\
+        " A reason for rejection is available on the order timeline."\
+        " Please revise it and mark it as revised."
+      )
+    end
+
+    after_transition on: :revise_artwork_request do |artwork_request|
+      artwork_request.order.artwork_requests_complete unless artwork_request.order.missing_artwork_requests?
+    end
+
+    event :assigned_artist do
       transition :unassigned => :pending_artwork
     end
 
-    event :unassigned do
+    event :unassigned_artist do
       transition any => :unassigned
     end
 
@@ -91,9 +112,19 @@ class ArtworkRequest < ActiveRecord::Base
       transition :pending_manager_approval => :manager_approved
     end
 
-    event :reject do
-      transition :pending_manager_approval => :pending_artwork
-      transition :manager_approved => :pending_artwork
+    event :reject_artwork_request do 
+      transition all => :artwork_request_rejected
+    end
+
+    event :revise_artwork_request do 
+      transition :artwork_request_rejected => :unassigned, :if => lambda{|artwork_request| artwork_request.artist.blank? }
+      transition :artwork_request_rejected => :pending_artwork, :if => lambda{|artwork_request| artwork_request.artworks.empty? && !artwork_request.artist.blank? }
+      transition :artwork_request_rejected => :pending_manager_approval, :unless => lambda{|artwork_request| artwork_request.artworks.empty? || artwork_request.artist.blank? }
+    end
+
+    event :reject_artwork do
+      transition :pending_manager_approval => :artwork_rejected
+      transition :manager_approved => :artwork_rejected
     end
 
     state :pending_manager_approval, :manager_approved do
@@ -104,6 +135,11 @@ class ArtworkRequest < ActiveRecord::Base
       validates :manager_id, presence: true
     end
 
+  end
+
+  def assigned_artist(artist)
+    update_column(:artist_id, (artist.id rescue artist))
+    super
   end
 
   def name
@@ -324,11 +360,8 @@ class ArtworkRequest < ActiveRecord::Base
     proofs.where(status: 'approved').exists?
   end
 
-  private
-
-  def advance_state
-    assigned if state == 'unassigned' and !artist.blank?
-    artwork_added if state == 'pending_artwork' and !artworks.empty?
-    approved if state == 'pending_manager_approval' and !approved_by.blank?
+  def transition_to_assigned
+    assigned_artist(artist) if artist_id_changed? && artist_id_was == nil
   end
+
 end

@@ -6,7 +6,7 @@
     
     <br clear="all" />
     <div class="row">
-      <h4 class="artwork-request-title">Artwork Request for <%= artwork_request.jobs.map(&:name).join(', ') %>
+      <h4 class="artwork-request-title">#<%= artwork_request.id %>Artwork Request for <%= artwork_request.jobs.map(&:name).join(', ') %>
       </h4>
 
       <% if artwork_request.reorder? %>
@@ -79,25 +79,33 @@
         <% end %>
 
         <% if artwork_request.state == 'pending_manager_approval' %>
-          <%= link_to order_artwork_request_path(artwork_request.order, artwork_request, artwork_request: { state: 'manager_approved'} ), 
-            method: :put, class: 'btn btn-success', data: {action: :update, toggle: :tooltip,
+          <%= link_to transition_artwork_request_path(artwork_request, :state, :approved), 
+            method: :post, class: 'btn btn-success', data: {action: :update, toggle: :tooltip,
             title: 'Approve',  confirm: "Confirm Manager Approval" } do %>
-          <i class="glyphicon glyphicon-thumbs-up"></i> Approve
+          <i class="glyphicon glyphicon-thumbs-up"></i> Approve Artwork
           <% end %>
         <% end %>
 
+        <% if artwork_request.state == "artwork_request_rejected" %>
+          <%= link_to transition_artwork_request_path(artwork_request, :state, :revise_artwork_request), 
+            method: :post, class: 'btn btn-success', data: {action: :update, toggle: :tooltip,
+            title: 'Mark Artwork Request Revised'} do %>
+            <i class="glyphicon glyphicon-thumbs-up"></i> Mark Artwork Request Revised
+          <% end %>  
+        <% end %>
+        
         <% if artwork_request.state == 'pending_manager_approval' || artwork_request.state == 'manager_approved' %>
-          <%= link_to order_artwork_request_path(artwork_request.order, artwork_request, artwork_request: { state: 'pending_artwork' }), 
-            method: :put, method: :put, class: 'btn btn-danger',  data: {action: :update, toggle: :tooltip,
-            title: 'Reject Artwork',  confirm: "Confirm Rejection" } do %>
+          <%= link_to '#', class: 'btn btn-warning reject-artwork-request', 
+            data: { transition: :reject_artwork, 'id' => artwork_request.id,  
+            toggle: :tooltip, title: 'Reject Artwork'} do %>
             <i class="glyphicon glyphicon-thumbs-down"></i> Reject Artwork
           <% end %>
         <% end %>
 
-        <% unless artwork_request.state == "approved" %>
-          <%= link_to order_artwork_request_path(artwork_request.order, artwork_request, artwork_request: { state: 'reject_request'} ), 
-            method: :put, class: 'btn btn-warning', data: {action: :update, toggle: :tooltip,
-            title: 'Reject Artwork Request',  confirm: "Confirm Manager Approval" } do %>
+        <% unless artwork_request.state == "approved" || artwork_request.state == 'artwork_request_rejected' %>
+          <%= link_to '#', class: 'btn btn-warning reject-artwork-request', 
+            data: { transition: :reject_artwork_request, 'id' => artwork_request.id,  
+            toggle: :tooltip, title: 'Reject Artwork Request'} do %>
           <i class="glyphicon glyphicon-thumbs-down"></i> Reject Artwork Request
           <% end %>
         <% end %>
@@ -109,6 +117,22 @@
 
       </div><!-- end of col-sm-12 -->
     </div><!-- end of row -->
+
+    <div class="row reject-artwork-request" data-id="<%= artwork_request.id %>" style="display: none">
+      <div class="col-sm-12">
+        <%= form_tag transition_artwork_request_path(artwork_request, :state), class: 'reject-artwork-request-form', 
+          data: {'id' => artwork_request.id } do %>
+          <div class="alert alert-danger">
+            <h3>Reject Artwork Request</h3>
+            <%= text_area_tag :details, '', placeholder: 'Include a reason for rejecting', 
+              class: 'form-control', required: true %>
+            <%= hidden_field_tag :transition, nil, class: 'transition' %>  
+            <%= submit_tag "Reject", class: 'btn btn-danger reject-button' %>
+            <%= link_to 'Cancel', '#', class: 'btn btn-warning reject-cancel' %>
+          </div>
+        <% end %>
+      </div>
+    </div>
 
   </div><!-- END OF THE ARTWORK REQUEST -->
 </div><!-- END OF THE NOTES -->

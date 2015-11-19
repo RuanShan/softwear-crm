@@ -1,6 +1,7 @@
 FactoryGirl.define do
   factory :blank_imprint_method, class: ImprintMethod do
-
+    initialize_with { ImprintMethod.find_or_create_by(name: name)}
+    
     factory :valid_imprint_method do
       sequence(:name) { |n| "name_#{n}" }
 

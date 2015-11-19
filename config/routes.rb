@@ -32,7 +32,14 @@ CrmSoftwearcrmCom::Application.routes.draw do
 
   get 'tags/:tag', to: 'imprintables#index', as: :tag
 
-  resources :brands, :colors, :users, :artwork_requests, :artworks
+  resources :brands, :colors, :users, :artworks
+
+  resources :artwork_requests do 
+    member do 
+      post 'transition(/:state_machine(/:transition))' => :state, as: :transition
+    end
+  end
+
   get 'proofing_manager_dashboard', to: 'artwork_requests#manager_dashboard', as: :proofing_manager_dashboard
 
   resources :prices, only: [:create, :new, :destroy, :index] do

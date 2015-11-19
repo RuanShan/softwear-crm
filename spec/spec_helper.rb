@@ -61,6 +61,7 @@ RSpec.configure do |config|
   config.include FormBuilderHelpers
   config.include SimulateDragSortable, type: :feature
   config.include Softwear::Lib::Spec
+  config.include OrderHelpers
 
   PublicActivity.enabled = false
 

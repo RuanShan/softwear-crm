@@ -1,4 +1,6 @@
 class ArtworkRequestsController < InheritedResources::Base
+  include StateMachine
+  
   before_filter :assign_order
   before_filter :format_deadline, only: [:create, :update]
   before_filter :set_current_action
