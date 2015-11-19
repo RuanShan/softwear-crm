@@ -23,6 +23,10 @@ class Shipment < ActiveRecord::Base
     [name, company, attn, address_1, address_2, address_3, "#{city}, #{state} #{zipcode}", country].reject(&:blank?)
   end
 
+  def time_in_transit
+    super || 0.0
+  end
+
   protected
 
   def assign_proper_status

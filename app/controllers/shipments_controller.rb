@@ -42,7 +42,7 @@ class ShipmentsController < InheritedResources::Base
         :shipping_method_id, :shipped_by_id, :shippable_id, :shippable_type,
         :shipping_cost, :shipped_at, :tracking_number, :state, :name, :company,
         :attn, :address_1, :address_2, :address_3, :city, :state, :zipcode, :country,
-        :notes
+        :notes, :time_in_transit
       ]
     )
   end
