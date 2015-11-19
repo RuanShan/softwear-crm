@@ -541,7 +541,7 @@ describe Order, order_spec: true do
   end
 
   describe "#screen_print_artwork_requests"  do
-    context 'order has artwork request with Screen Print or Large Format Screen Print imprints' do 
+    context 'order has artwork request with Screen Print or Large Format Screen Print imprints', ar_order: true do 
       let(:artwork_request) { create(:valid_artwork_request) }
       let(:order) { artwork_request.order }
       before(:each) { allow_any_instance_of(ArtworkRequest).to receive(:imprint_method) {build_stubbed(:screen_print_imprint_method) } }
