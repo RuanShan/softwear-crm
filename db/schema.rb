@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20151119201921) do
+ActiveRecord::Schema.define(version: 20151123160005) do
 
   create_table "activities", force: :cascade do |t|
     t.integer  "trackable_id",   limit: 4
@@ -366,6 +366,7 @@ ActiveRecord::Schema.define(version: 20151119201921) do
     t.decimal  "package_length",                       precision: 10
     t.string   "tag",                    limit: 255,                            default: "Not Specified"
     t.string   "marketplace_name",       limit: 255
+    t.string   "sizing_chart_url",       limit: 255
   end
 
   add_index "imprintables", ["deleted_at"], name: "index_imprintables_on_deleted_at", using: :btree
