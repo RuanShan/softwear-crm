@@ -4,6 +4,16 @@
   <dl class="left-right-pretty">
     <dt>Common Name</dt>
     <dd><%= imprintable.common_name %></dd>
+    <dt>Marketplace Name</dt>
+    <dd><%= imprintable.marketplace_name || imprintable.common_name %></dd>
+    <dt>Sizing Chart</dt>
+    <dd>
+      <% if imprintable.sizing_chart_url.blank? %>
+        &lt;NONE&gt;
+      <% else %>
+        <%= link_to imprintable.sizing_chart_url %>
+      <% end %>
+    </dd>
     <dt>SKU</dt>
     <dd><%= imprintable.sku %></dd>
   </dl>

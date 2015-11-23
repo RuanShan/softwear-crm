@@ -38,6 +38,7 @@ module Api
         :default_photo_url, :photo_urls, :supplier_link, :brand_name,
         :coordinate_ids, :similar_imprintable_ids,
         :imprintable_category_names, :tag, :marketplace_name,
+        :sizing_chart_url,
 
         :water_resistance_level, :sleeve_type, :sleeve_length, :neck_style,
         :neck_size, :fabric_type, :is_stain_resistant, :fit_type, :fabric_wash,

@@ -20,25 +20,31 @@
         <%= f.label :common_name, 'Common Name', class: 'control-label' %>
         <%= f.error_for :common_name %>
         <%= f.text_field :common_name %>
-          <p class="help-block">
-            The common name of the imprintable to be used in retail product synchronization.
-            Additionally, it's the imprintable name presented to the retail customer.
-          </p>
+        <p class="help-block">
+          The common name of the imprintable to be used in retail product synchronization.
+          Additionally, it's the imprintable name presented to the retail customer.
+        </p>
       </div>
 
       <div class="form-group">
         <%= f.label :marketplace_name, 'Marketplace Name', class: 'control-label' %>
         <%= f.error_for :marketplace_name %>
         <%= f.text_field :marketplace_name %>
-          <p class="help-block">
-            Marketplace name is appended to the end of product titles in Channel Advisor.
-          </p>
+        <p class="help-block">
+          Marketplace name is appended to the end of product titles in Channel Advisor.
+        </p>
       </div>
 
       <div class="form-group">
         <%= f.label :sku, class: 'control-label' %>
-          <%= f.text_field :sku, class: 'form-control' %>
-          <p class="help-block">4-Character Retail SKU Used to Identify the Imprintable</p>
+        <%= f.text_field :sku, class: 'form-control' %>
+        <p class="help-block">4-Character Retail SKU Used to Identify the Imprintable</p>
+      </div>
+
+      <div class="form-group">
+        <%= f.label :sizing_chart_url, 'Sizing Chart URL', class: 'control-label' %>
+        <%= f.error_for :sizing_chart_url %>
+        <%= f.text_field :sizing_chart_url %>
       </div>
 
       <div class="form-group">

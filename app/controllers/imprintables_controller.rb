@@ -168,7 +168,7 @@ class ImprintablesController < InheritedResources::Base
         :xxxxxxl_price, :xxl_upcharge, :xxxl_upcharge, :xxxxl_upcharge,
         :xxxxxl_upcharge, :xxxxxxl_upcharge, :tag_list, :standard_offering,
         :proofing_template_name, :sizing_category, :common_name, :discontinued, :tag,
-        :marketplace_name,
+        :marketplace_name, :sizing_chart_url,
         sample_location_ids: [],
         coordinate_ids: [],
         compatible_imprint_method_ids: [],
