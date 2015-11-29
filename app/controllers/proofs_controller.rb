@@ -1,4 +1,6 @@
 class ProofsController < InheritedResources::Base
+  include StateMachine
+  
   before_filter :approved?, only: [:update]
   before_filter :format_approve_by, only: [:create, :update]
 

@@ -87,6 +87,7 @@ class Order < ActiveRecord::Base
   belongs_to :store
   has_many :jobs, as: :jobbable, dependent: :destroy
   has_many :artwork_requests, through: :jobs, dependent: :destroy
+  has_many :artworks, through: :artwork_requests
   has_many :imprints, through: :jobs
   has_many :payments
   has_many :proofs, dependent: :destroy
@@ -171,57 +172,94 @@ class Order < ActiveRecord::Base
       transition :notified => :picked_up
     end
   end
-  
-  state_machine :artwork_state, :initial => :pending_artwork_requests do
-  
-    after_transition on: :artwork_complete, do: :mark_proofs_pending_manager_approval
-    after_transition on: :proofs_submitted, do: :mark_proofs_submitted
-    after_transition on: :proofs_rejected, do: :mark_proofs_rejected
-    after_transition on: :proofs_approved, do: :mark_proofs_approved
 
+  state_machine :artwork_state, :initial => :pending_artwork_requests do
+
+    ########################
+    # Artwork Phase Callbacks
+    #########################
     after_transition on: :artwork_complete do |order|
       order.artwork_requests.each{|ar| ar.artwork_added }
     end
-    
+
+    ########################
+    # Proof Phase Callbacks
+    #########################
+    after_transition on: :proofs_ready do |order|
+      order.proofs.where(state: 'not_ready').each(&:ready)
+    end
+
+    after_transition on: :proofs_manager_approved do |order|
+      order.proofs.where(state: 'pending_manager_approval').each(&:manager_approved)
+    end
+
+    after_transition on: :emailed_customer_proofs do |order|
+      order.proofs.where.not(state: ['manager_rejected', 'customer_rejected']).each(&:emailed_customer)
+    end
+
+    after_transition on: :proofs_manager_rejected do |order|
+      order.proofs.where.not(state: ['manager_rejected', 'customer_rejected']).each(&:manager_rejected)
+    end
+
+    after_transition on: :proofs_customer_approved do |order|
+      order.proofs.where(state: 'pending_customer_approval').each(&:customer_approved)
+    end
+
+    after_transition on: :proofs_customer_rejected do |order|
+      order.proofs.where.not(state: ['manager_rejected', 'customer_rejected']).each(&:customer_rejected)
+    end
+
+    ############################
+    # Artwork Phase Transitions
+    ############################
     event :artwork_requests_complete do
-      transition :pending_artwork_requests => :pending_artwork_and_proofs, :unless => lambda{ |x| x.missing_artwork_requests? }
-      transition :pending_artwork_requests => :pending_artwork, :unless => lambda{ |x| x.missing_artwork_requests? && !x.missing_proofs? }
+      transition :pending_artwork_requests => :pending_artwork_and_proofs,
+                 :unless => lambda{ |x| x.missing_artwork_requests? }
+      transition :pending_artwork_requests => :pending_artwork,
+                 :unless => lambda{ |x| x.missing_artwork_requests? && !x.missing_proofs? }
     end
 
-    event :artwork_complete do 
-      transition :pending_artwork_and_proofs => :pending_proofs, :if => lambda{ |x| x.missing_proofs? }
-      transition :pending_artwork_and_proofs => :pending_manager_approval
+    event :artwork_complete do
+      transition :pending_artwork_and_proofs => :pending_proofs,
+                 :if => lambda{ |x| x.missing_proofs? && !x.missing_assigned_artwork_requests? }
+      transition :pending_artwork_and_proofs => :pending_manager_approval,
+                 :if => lambda{ |x| !x.missing_proofs? && !x.missing_assigned_artwork_requests? }
     end
 
-    event :artwork_rejected do 
+    event :artwork_rejected do
       transition any => :pending_artwork_and_proofs
     end
 
-    event :proofs_ready do 
+    ############################
+    # Proof Phase Transitions
+    ############################
+    event :proofs_ready do
       transition :pending_proofs => :pending_manager_approval, :unless => lambda{ |x| x.missing_proofs? }
     end
 
-    event :manager_approved do 
+    event :proofs_manager_approved do
       transition :pending_manager_approval => :pending_proof_submission
     end
 
-    event :proofs_submitted do 
-      transition :pending_proof_submission => :pending_proof_approval
+    event :proofs_manager_rejected do
+      transition any => :pending_proofs
     end
 
-    event :proofs_rejected do 
-      transition :pending_proof_approval => :pending_artwork
-      transition :pending_proof_submission => :pending_artwork
-      transition :ready_for_production => :pending_artwork
+    event :emailed_customer_proofs do
+      transition :pending_proof_submission => :pending_customer_approval
     end
 
-    event :proofs_approved do 
-      transition :pending_proof_approval => :ready_for_production
+    event :proofs_customer_rejected do
+      transition any => :pending_proofs
     end
 
-    event :put_into_production do 
+    event :proofs_customer_approved do
+      transition :pending_customer_approval => :ready_for_production
+    end
+
+    event :put_artwork_into_production do
       transition :ready_for_production => :in_production
-    end 
+    end
 
   end
 
@@ -459,14 +497,18 @@ class Order < ActiveRecord::Base
   end
 
   def missing_artwork_requests?
-    imprints.map{|i| i.artwork_requests.empty? }.include?(true) || 
+    imprints.map{|i| i.artwork_requests.empty? }.include?(true) ||
       artwork_requests.map(&:state).include?('artwork_request_rejected')
   end
 
-  def missing_proofs?
-    artwork_requests.map{|ar| ar.proofs.empty? }.include? true
+  def missing_assigned_artwork_requests?
+    artwork_requests.map(&:state).include?('unassigned')
   end
-  
+
+  def missing_proofs?
+    artwork_requests.map{|ar| ar.proofs.where.not(state: ['customer_rejected', 'manager_rejected']).empty? }.include? true
+  end
+
   def missing_approved_proofs?
     artwork_requests.map{|ar| ar.has_approved_proof? }.include? false
   end
@@ -475,20 +517,21 @@ class Order < ActiveRecord::Base
     artwork_requests.map{|ar| ar.has_proof_pending_approval? }.include? true
   end
 
+
   def warnings_count
     warnings.active.count
   end
 
-  def prod_api_confirm_job_counts  
+  def prod_api_confirm_job_counts
     if jobs.count != production.jobs.count
-      message = "API Job counts don't match for CRM(#{id})=#{jobs.count} PRODUCTION(#{softwear_prod_id})=#{production.jobs.count}" 
+      message = "API Job counts don't match for CRM(#{id})=#{jobs.count} PRODUCTION(#{softwear_prod_id})=#{production.jobs.count}"
       logger.error message
-      
+
       warnings << Warning.new(
-        source: 'API Production Configuration Report', 
+        source: 'API Production Configuration Report',
          message: message
       )
-      
+
       Sunspot.index(self)
     end
   end
@@ -497,113 +540,113 @@ class Order < ActiveRecord::Base
     case delivery_method
     when 'Pick up in Ann Arbor'
       unless production.post_production_trains.map(&:train_class).include?("stage_for_pickup_train")
-        message = "API Order StageForPickupTrain missing PRODUCTION(#{softwear_prod_id}) CRM(#{id})" 
+        message = "API Order StageForPickupTrain missing PRODUCTION(#{softwear_prod_id}) CRM(#{id})"
         logger.error message
-        
+
         warnings << Warning.new(
-          source: 'API Production Configuration Report', 
+          source: 'API Production Configuration Report',
            message: message
-        )    
+        )
       end
     when 'Pick up in Ypsilanti'
       unless production.post_production_trains.map(&:train_class).include?("store_delivery_train")
-        message = "API Order StoreDeliveryTrain missing PRODUCTION(#{softwear_prod_id}) CRM(#{id})" 
+        message = "API Order StoreDeliveryTrain missing PRODUCTION(#{softwear_prod_id}) CRM(#{id})"
         logger.error message
-        
+
         warnings << Warning.new(
-          source: 'API Production Configuration Report', 
+          source: 'API Production Configuration Report',
            message: message
-        )    
+        )
       end
     when 'Ship to one location'
-      if shipments.empty? 
+      if shipments.empty?
         message =  "API Can't confirm shipment configured correctly without shipments being created"
         logger.error message
-        
+
         self.warnings << Warning.new(
-          source: 'API Production Configuration Report', 
+          source: 'API Production Configuration Report',
           message: message
         )
       else
         shipments.each do |shipment|
           if shipment.shipping_method.name == 'Ann Arbor Tees Delivery'
             if !production.post_production_trains.map(&:train_class).include?("local_delivery_train")
-              message = "API Order LocalDeliveryTrain missing PRODUCTION(#{softwear_prod_id}) CRM(#{id})" 
+              message = "API Order LocalDeliveryTrain missing PRODUCTION(#{softwear_prod_id}) CRM(#{id})"
               logger.error message
-              
+
               warnings << Warning.new(
-                source: 'API Production Configuration Report', 
+                source: 'API Production Configuration Report',
                  message: message
               )
             end
           else
             if !production.post_production_trains.map(&:train_class).include?("shipment_train")
-              message = "API Order ShipmentTrain missing PRODUCTION(#{softwear_prod_id}) CRM(#{id})" 
+              message = "API Order ShipmentTrain missing PRODUCTION(#{softwear_prod_id}) CRM(#{id})"
               logger.error message
-              
+
               warnings << Warning.new(
-                source: 'API Production Configuration Report', 
+                source: 'API Production Configuration Report',
                  message: message
               )
             end
-          end  
+          end
         end
-      end      
+      end
     when 'Ship to multiple locations'
       message =  "CRM Production isn't capable of multiple shipment location"
       logger.error message
-      
+
       self.warnings << Warning.new(
-        source: 'API Production Configuration Report', 
+        source: 'API Production Configuration Report',
         message: message
       )
-    end  
+    end
     Sunspot.index(self)
   end
 
   def prod_api_confirm_artwork_preprod
-    unless screen_print_artwork_requests.empty? 
+    unless screen_print_artwork_requests.empty?
       screen_train_count = production.pre_production_trains.map(&:train_class).delete_if{|x| x != 'screen_train' }.count
       unless screen_train_count == screen_print_artwork_requests.count
         message = "API Order ScreenTrain counts are off CRM(#{id}} has #{screen_print_artwork_requests.count} screen print requests"\
-          ", PRODUCTION(#{softwear_prod_id}) has #{screen_train_count} screen_trains" 
+          ", PRODUCTION(#{softwear_prod_id}) has #{screen_train_count} screen_trains"
         logger.error message
-        
+
         warnings << Warning.new(
-          source: 'API Production Configuration Report', 
+          source: 'API Production Configuration Report',
            message: message
-        )    
+        )
       end
     end
-    
-    unless dtg_artwork_requests.empty? 
+
+    unless dtg_artwork_requests.empty?
       ar3_train_count = production.pre_production_trains.map(&:train_class).delete_if{|x| x != 'ar3_train' }.count
       unless ar3_train_count == dtg_artwork_requests.count
         message = "API Order Ar3Train counts are off CRM(#{id}} has #{dtg_artwork_requests.count} dtg requests"\
-          ", PRODUCTION(#{softwear_prod_id}) has #{ar3_train_count} ar3_trains" 
+          ", PRODUCTION(#{softwear_prod_id}) has #{ar3_train_count} ar3_trains"
         logger.error message
-        
+
         warnings << Warning.new(
-          source: 'API Production Configuration Report', 
+          source: 'API Production Configuration Report',
            message: message
-        )    
+        )
       end
     end
-    
-    unless embroidery_artwork_requests.empty? 
+
+    unless embroidery_artwork_requests.empty?
       digitization_train_count = production.pre_production_trains.map(&:train_class).delete_if{|x| x != 'digitization_train' }.count
       unless digitization_train_count == embroidery_artwork_requests.count
         message = "API Order DigitizationTrain counts are off CRM(#{id}} has #{embroidery_artwork_requests.count} digitization requests"\
-          ", PRODUCTION(#{softwear_prod_id}) has #{digitization_train_count} digitization_trains" 
+          ", PRODUCTION(#{softwear_prod_id}) has #{digitization_train_count} digitization_trains"
         logger.error message
-        
+
         warnings << Warning.new(
-          source: 'API Production Configuration Report', 
+          source: 'API Production Configuration Report',
            message: message
-        )    
+        )
       end
     end
-    
+
     Sunspot.index(self)
   end
 
@@ -614,35 +657,9 @@ class Order < ActiveRecord::Base
   def screen_print_artwork_requests
     artwork_requests.to_a.delete_if{|x| !['Screen Print', 'Large Format Screen Print'].include? x.imprint_method.name}
   end
-  
+
   def embroidery_artwork_requests
     artwork_requests.to_a.delete_if{|x| !['In-House Embroidery', 'Outsourced Embroidery', 'In-House Applique EMB'].include? x.imprint_method.name}
-  end
-
-  private
-
-  def mark_proofs_submitted
-    proofs.where(status: 'Pending').each do |proof|
-      proof.update_attribute(:status, 'Emailed Customer')
-    end
-  end
-  
-  def mark_proofs_approved
-    proofs.where(status: 'Emailed Customer').each do |proof|
-      proof.update_attribute(:status, 'Approved')
-    end
-  end
-  
-  def mark_proofs_rejected
-    proofs.each do |proof|
-      proof.update_attribute(:status, 'Rejected')
-    end
-  end
-  
-  def mark_proofs_pending_manager_approval
-    proofs.each do |proof|
-      proof.update_attribute(:status, '')
-    end
   end
 
 end

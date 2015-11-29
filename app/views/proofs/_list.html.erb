@@ -2,33 +2,47 @@
   <div class="row">
     <div class="col-sm-12">
       <div class="text-right">
+        <% if order.can_proofs_ready? %>
+          <%= link_to transition_order_path(order, :artwork_state, :proofs_ready), method: :post, class: 'btn btn-success' do %>
+            <i class='glyphicon glyphicon-ok'></i> All Proofs Ready for Manager Approval
+          <% end %>
+        <% end %>
+
+        <% if order.can_proofs_manager_approved? %>
+          <%= link_to transition_order_path(order, :artwork_state, :proofs_manager_approved ), method: :post, class: 'btn btn-success' do %>
+            <i class='glyphicon glyphicon-thumbs-up'></i> All Proofs Manager Approved
+          <% end %>
+        <% end %>
+
+        <% if order.can_proofs_manager_rejected? %>
+          <%= link_to transition_order_path(order, :artwork_state, :proofs_manager_rejected ),
+                      method: :post, class: 'btn btn-warning', data: {confirm: "Confirm all proofs manager rejected?"} do %>
+            <i class='glyphicon glyphicon-thumbs-down'></i> All Proofs Manager Rejected
+          <% end %>
+        <% end %>
+
+        <% if order.can_emailed_customer_proofs? %>
+          <%= link_to transition_order_path(order, :artwork_state, :emailed_customer_proofs ), method: :post, class: 'btn btn-primary' do %>
+            <i class='glyphicon glyphicon-envelope'></i> Emailed Customer All Proofs
+          <% end %>
+        <% end %>
+
+        <% if order.can_proofs_customer_approved? %>
+          <%= link_to transition_order_path(order, :artwork_state, :proofs_customer_approved ), method: :post, class: 'btn btn-primary' do %>
+            <i class='glyphicon glyphicon-thumbs-up'></i> Emailed Proofs Approved
+          <% end %>
+        <% end %>
+
+        <% if order.can_proofs_customer_rejected? %>
+            <%= link_to transition_order_path(order, :artwork_state, :proofs_customer_rejected ),
+                        method: :post, class: 'btn btn-warning', data: {confirm: "Confirm all proofs customer rejected?"} do %>
+                <i class='glyphicon glyphicon-thumbs-down'></i> All Proofs Customer Rejected
+            <% end %>
+        <% end %>
+
         <% unless order.freshdesk_proof_ticket_id.blank? %>
           <%= link_to order.freshdesk_proof_ticket_link, class: 'btn btn-primary', target: :_blank do %>
             <i class="softwear-icon-freshdesk-icon"></i> Freshdesk Proof Ticket
-          <% end %>
-        <% end %>
-        
-        <% if order.artwork_state == 'pending_proofs' && !order.missing_proofs?  %>
-          <%= link_to transition_order_path(order, :artwork_state, :proofs_ready ), method: :post, class: 'btn btn-primary' do %>
-            <i class='glyphicon glyphicon-check'></i> All Proofs ready
-          <% end %>
-        <% end %>   
-        
-        <% if order.artwork_state == 'pending_proof_submission' && !order.missing_proofs? %>
-          <%= link_to transition_order_path(order, :artwork_state, :proofs_submitted ), method: :post, class: 'btn btn-primary' do %>
-            <i class='glyphicon glyphicon-envelope'></i> Pending Proofs Submitted
-          <% end %>
-        <% end %>   
-        
-        <% if order.artwork_state == 'pending_proof_approval' %>
-          <%= link_to transition_order_path(order, :artwork_state, :proofs_approved ), method: :post, class: 'btn btn-primary' do %>
-            <i class='glyphicon glyphicon-thumbs-up'></i> All Emailed Proofs Approved
-          <% end %>
-        <% end %>   
-
-        <% if order.artwork_state_transitions.map(&:event).include? :proofs_rejected %>
-          <%= link_to transition_order_path(order, :artwork_state, :proofs_rejected ), method: :post, class: 'btn btn-primary' do %>
-            <i class='glyphicon glyphicon-thumbs-down'></i> Mark All Proofs Rejected
           <% end %>
         <% end %>
       </div>
@@ -42,7 +56,7 @@
 
       <%= link_to new_order_proof_path(order),
                   class: 'btn btn-info btn-lg btn-block' do %>
-        <i class="fa fa-list-alt"> </i>Add Proof
+        <i class="fa fa-file-text-o "> </i> Add Proof
       <% end %>
     </div>
   </div>

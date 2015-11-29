@@ -1,91 +1,110 @@
-<div id="proof-<%= proof.id %>" class="row">
+<div id="proof-<%= proof.id %>">
   <div class="the-notes info proof-notes">
-    <div class="col-sm-12">
-      <div class="row">
-        <div class="col-sm-2">
-          <h4 class="proof-title">Proof</h4>
-
+    <div class="row">
+      <div class="col-sm-3">
+        <h4>Proof #<%= proof.id %></h4>
           <dl>
-            <dt>Proof Status:</dt>
-            <dd><%= proof.status %></dd>
+            <dt>Proof State:</dt>
+            <dd><%= proof.human_state_name %></dd>
             <dt>Approve By:</dt>
             <dd><%= display_time(proof.approve_by) %></dd>
             <dt>Job:</dt>
             <dd><%= proof.job.try(:name) || 'unassigned' %></dd>
           </dl>
-        </div>
-
-        <div class="col-sm-2 ">
-          <h4> &nbsp</h4>
-
-          <dl>
-            <dt>Artworks:</dt>
-              <% proof.artworks.each do |artwork| %>
-                <dd><%= image_tag artwork.preview.file.url(:thumb) %></dd>
-                <dd><%= link_to "Download File", artwork.artwork.file.url %></dd>
-              <% end %>
-          </dl>
-        </div>
-
-      <div class="col-sm-8 ">
-        <h4> &nbsp</h4>
-
-        <dl>
-          <dt>Mockups:</dt>
-            <% proof.mockups.each do |mockup| %>
-              <dd><%= image_tag mockup.file.url(:thumb) %></dd>
-              <dd><%= link_to "Download File", mockup.file.url %></dd>
-            <% end %>
-        </dl>
       </div>
-     </div>
+
+      <div class="col-sm-5">
+        <h4>Mockups</h4>
+        <% proof.mockups.each do |mockup| %>
+          <div class="text-center col-xs-12">
+          <%= link_to mockup.file.url, target: :_blank do %>
+            <%= image_tag mockup.file.url(:large), class: 'img-responsive center-block' %>
+            Open in New Tab
+          <% end %>
+          </div>
+        <% end %>
+      </div>
+
+      <div class="col-sm-4">
+        <h4>Artworks</h4>
+        <% proof.artworks.each do |artwork| %>
+          <div class="text-center col-xs-6">
+          <%= link_to artwork.preview.file.url, target: :_blank do %>
+            <%= image_tag artwork.preview.file.url(:thumb), class: 'img-responsive center-block' %>
+            Open in New Tab
+          <% end %>
+          </div>
+        <% end %>
+      </div>
     </div>
+    <br clear="all" />
 
-    <div class="row">
-      <% if params[:disable_buttons].nil? %>
-        <div class="col-sm-12  clear text-left">
-          <%= link_to edit_order_proof_path(order, proof) do %>
-            <i class="fa fa-2x fa-edit"></i> Edit &nbsp
-          <% end %>
+    <% unless params[:disable_buttons] %>
+    <div class="col-xs-12">
+      <%= link_to edit_order_proof_path(order, proof), class: 'btn btn-primary' do %>
+        <i class="glyphicon glyphicon-pencil"></i> Edit
+      <% end %>
 
-          <%= link_to order_proof_path(order, proof), method: :delete,
-                      remote: true do %>
-            <i class="fa fa-2x danger fa-times-circle"></i> Delete &nbsp
-          <% end %>
-          <!--
-          TODO: Need to work through process with artists
-          <% if proof.approved_at.nil? and proof.status != 'Rejected' %>
-            <%= link_to email_customer_order_proofs_path(order_id: order.id, id: proof.id, reminder: 'false') do %>
-              <i class="fa fa-2x fa-envelope"></i> Email Customer Proof Approval Request &nbsp
-            <% end %>
+      <% if proof.can_ready? %>
+        <%= link_to transition_order_proof_path(order, proof, :state, :ready),
+            method: :post, class: 'btn btn-success', data: {action: :update, toggle: :tooltip,
+            title: 'Approve' } do %>
+          <i class="glyphicon glyphicon-ok"></i> Ready For Manager Approval
+        <% end %>
+      <% end %>
 
-            <% if proof.status == 'Emailed Customer' %>
-              <%= link_to email_customer_order_proofs_path(order_id: order.id, id: proof.id, reminder: 'true'),
-                          data: { confirm: 'This will send a proof approval reminder for this proof to the customer, are you sure?' },
-                          method: :post do %>
-                <i class="fa fa-2x warning fa-envelope"></i> Email Customer Proof Approval Reminder &nbsp
-              <% end %>
-            <% end %>
-            -->
-            <%= link_to order_proof_path(order_id: order.id, id: proof.id, status: 'Approved', ),
-                        data: { confirm: 'Approving this proof will queue up production processes, are you sure you want to proceed?' },
-                        method: :put, remote: true do %>
-              <i class="fa fa-2x success fa-thumbs-up"></i> Accept Proof &nbsp
-            <% end %>
+      <% if proof.can_manager_approved? %>
+        <%= link_to transition_order_proof_path(order, proof, :state, :manager_approved),
+            method: :post, class: 'btn btn-success', data: {action: :update, toggle: :tooltip,
+            title: 'Approve' } do %>
+          <i class="glyphicon glyphicon-thumbs-up"></i> Manager Approved
+        <% end %>
+      <% end %>
 
-            <%= link_to order_proof_path(order_id: order.id, id: proof.id, status: 'Rejected', ),
-                        data: { confirm: 'Are you sure you want to reject this proof? Remember to create a new artwork request for revisions if you do reject this proof' },
-                        method: :put, remote: true do %>
-              <i class="fa fa-2x danger fa-thumbs-down"></i> Reject Proof &nbsp
-            <% end %>
-          <% end %>
-        </div>
+      <% if proof.can_manager_rejected? %>
+        <%= link_to transition_order_proof_path(order, proof, :state, :manager_rejected),
+            method: :post, class: 'btn btn-warning', data: {action: :update, toggle: :tooltip,
+            title: 'Approve',  confirm: "Confirm Manager Rejection?" } do %>
+          <i class="glyphicon glyphicon-thumbs-down"></i> Manager Rejected
+        <% end %>
+      <% end %>
+
+      <% if proof.can_emailed_customer? %>
+        <%= link_to transition_order_proof_path(order, proof, :state, :emailed_customer),
+            method: :post, class: 'btn btn-success', data: {action: :update, toggle: :tooltip,
+            title: 'Approve' } do %>
+          <i class="glyphicon glyphicon-envelope"></i> Emailed Customer
+        <% end %>
+      <% end %>
+
+      <% if proof.can_customer_approved? %>
+        <%= link_to transition_order_proof_path(order, proof, :state, :customer_approved),
+            method: :post, class: 'btn btn-success', data: {action: :update, toggle: :tooltip,
+            title: 'Approve' } do %>
+          <i class="glyphicon glyphicon-thumbs-up"></i> Customer Approved
+        <% end %>
+      <% end %>
+
+      <% if proof.can_customer_rejected?  %>
+        <%= link_to transition_order_proof_path(order, proof, :state, :customer_rejected),
+          method: :post, class: 'btn btn-danger', data: {action: :update, toggle: :tooltip,
+          title: 'Approve',  confirm: "Confirm Customer Rejection" } do %>
+        <i class="glyphicon glyphicon-thumbs-down"></i> Customer Rejected
+      <% end %>
+      <% end %>
+
+      <% if %w(customer_rejected manager_rejected).include? proof.state %>
+        <%= link_to order_proof_path(order, proof), method: :delete, class: 'btn btn-danger',
+          remote: true, data: {confirm: 'Are you sure you want to delete this proof?'} do %>
+          <i class="glyphicon glyphicon-remove-circle"></i> Delete
+        <% end %>
       <% end %>
     </div>
+    <% end %>
+
   </div>
-
-  <br clear="all"/>
-
-  <hr>
-
 </div>
+<br clear="all" />
+
+
+

@@ -129,6 +129,10 @@ CrmSoftwearcrmCom::Application.routes.draw do
     resources :payments, :discounts, shallow: true
     resources :artwork_requests
     resources :proofs do
+      member do 
+        post 'transition/(:state_machine/:transition)' => :state, as: :transition
+      end 
+
       collection do
         get 'email_customer'
         post 'email_customer'

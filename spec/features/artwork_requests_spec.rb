@@ -118,14 +118,14 @@ feature 'Artwork Request Features', js: true, artwork_request_spec: true do
       end
 
       context 'an artwork request exists for every imprint' do
-        scenario "I can mark an order as 'Artwork Requests Complete'" do 
+        scenario "I can mark an order as 'Artwork Requests Complete'" do
           PublicActivity.with_tracking do
             visit edit_order_path(order)
-            navigate_to_tab 'Artwork'  
+            navigate_to_tab 'Artwork'
             click_link("Mark Artwork Requests Complete")
             sleep 1.5
             close_flash_modal
-            navigate_to_tab 'Timeline' 
+            navigate_to_tab 'Timeline'
             expect(order.reload.artwork_state).to eq('pending_artwork_and_proofs')
             expect(page).to have_text("#{valid_user.full_name} changed order artwork_state"\
                       " from pending_artwork_requests to pending_artwork_and_proofs")
@@ -133,62 +133,62 @@ feature 'Artwork Request Features', js: true, artwork_request_spec: true do
         end
       end
 
-      context 'an imprint is missing an artwork request' do 
+      context 'an imprint is missing an artwork request' do
         background{ order.artwork_requests.first.destroy }
-        
+
         scenario "I see a warning that includes the imprint that's missing an artwork request" do
           visit edit_order_path(order)
           navigate_to_tab 'Artwork'
           expect(page).to have_no_link("Mark Artwork Requests Complete")
           expect(page).to have_css ".alert-danger", text: "This order is missing artwork requests."\
                                     " Artwork can not proceed until all imprints have an artwork"\
-                                    " request associated with them."  
+                                    " request associated with them."
         end
       end
 
       context 'An artwork request is rejected' do
         background{ order.artwork_requests.each{|ar| ar.update_column(:state, :artwork_request_rejected) } }
 
-        scenario 'A salesperson can revise it, and mark it as revised', redo: false do 
+        scenario 'A salesperson can revise it, and mark it as revised' do
           visit edit_order_path(order)
           navigate_to_tab 'Artwork'
           click_link 'Mark Artwork Request Revised'
           close_flash_modal
           sleep 1.5
-          expect(artwork_request.reload.state).to_not eq('artwork_request_rejected') 
-          expect(order.reload.artwork_state).to eq('pending_artwork_and_proofs') 
+          expect(artwork_request.reload.state).to_not eq('artwork_request_rejected')
+          expect(order.reload.artwork_state).to eq('pending_artwork_and_proofs')
         end
       end
     end
 
     context 'as an artist' do
       context 'given an artwork request' do
-        context 'every artwork request has artwork attached to it' do 
-         
+        context 'every artwork request has artwork attached to it' do
+
           let(:artwork) { create(:valid_artwork) }
-          
+
           background do
-            order.update_column(:artwork_state, 'pending_artwork_and_proofs')  
-            order.artwork_requests.each do |ar| 
+            order.update_column(:artwork_state, 'pending_artwork_and_proofs')
+            order.artwork_requests.each do |ar|
               ar.assigned_artist(valid_user)
               ar.artworks << artwork
               ar.save
             end
-          end          
-        
+          end
+
           context 'but artwork request artist is not assigned'  do
             background{ order.artwork_requests.each{|ar| ar.unassigned_artist} }
 
-            scenario 'I am notified that I cannot mark artwork complete without artwork being assigned' do   
+            scenario 'I am notified that I cannot mark artwork complete without artwork being assigned' do
               visit edit_order_path(order)
               navigate_to_tab 'Artwork'
               expect(page).to have_no_link("Mark Artwork Complete")
               expect(page).to have_css ".alert-danger", text: "This order has unassigned artwork requests."
-            end 
+            end
           end
 
           context ' I have not added proofs' do
-            scenario 'I can mark the order as Artwork Complete transitioning it to pending_proofs' do  
+            scenario 'I can mark the order as Artwork Complete transitioning it to pending_proofs' do
               PublicActivity.with_tracking do
                 visit edit_order_path(order)
                 navigate_to_tab 'Artwork'
@@ -204,11 +204,11 @@ feature 'Artwork Request Features', js: true, artwork_request_spec: true do
           end
 
           context 'every artwork request has a proof associated with it' do
-           
-            given!(:proof) { create(:valid_proof, order: order, artworks: [artwork]) }
-            given!(:artwork_proof) { create(:artwork_proof, artwork: artwork, proof: proof) } 
 
-            scenario 'I can mark the order as Artwork Complete transitioning it to pending_manager_approval' do 
+            given!(:proof) { create(:valid_proof, order: order, artworks: [artwork]) }
+            given!(:artwork_proof) { create(:artwork_proof, artwork: artwork, proof: proof) }
+
+            scenario 'I can mark the order as Artwork Complete transitioning it to pending_manager_approval' do
               PublicActivity.with_tracking do
                 visit_edit_order_tab(order, 'artwork')
                 click_link("Mark Artwork Complete")
@@ -228,9 +228,9 @@ feature 'Artwork Request Features', js: true, artwork_request_spec: true do
 
     context 'as a proofing manager' do
       context 'given an artwork request' do
-        scenario 'I can reject the artwork request' do 
+        scenario 'I can reject the artwork request' do
           visit_edit_order_tab(order, 'artwork')
-          within("#artwork-request-#{artwork_request.id}") do 
+          within("#artwork-request-#{artwork_request.id}") do
             click_link "Reject Artwork Request"
             fill_in "details", with: "This is a reason"
             find('.reject-button').click
@@ -238,8 +238,8 @@ feature 'Artwork Request Features', js: true, artwork_request_spec: true do
           sleep 1.5
           close_flash_modal
           navigate_to_tab 'Timeline'
-          expect(artwork_request.reload.state).to eq("artwork_request_rejected") 
-          expect(order.reload.artwork_state).to eq("pending_artwork_requests") 
+          expect(artwork_request.reload.state).to eq("artwork_request_rejected")
+          expect(order.reload.artwork_state).to eq("pending_artwork_requests")
           expect(page).to have_text("to artwork_request_rejected via transition reject_artwork_request")
           expect(page).to have_text("This is a reason")
           expect(order.warnings.map(&:source)).to include("Bad Artwork Request")
@@ -247,31 +247,31 @@ feature 'Artwork Request Features', js: true, artwork_request_spec: true do
         end
 
         scenario 'I can assign the artwork request to an artist'
-          scenario 'I can assign artwork to it by changing the artist in the edit form', wip: true do 
-            visit edit_order_artwork_request_path(order, artwork_request)
-            select(valid_user.full_name, from: 'Artist')
-            click_button "Update Artwork request"
-            sleep(1.5)
-            expect(artwork_request.reload.state).to eq('pending_artwork') 
-          end
 
+        scenario 'I can assign artwork to it by changing the artist in the edit form' do
+          visit edit_order_artwork_request_path(order, artwork_request)
+          select(valid_user.full_name, from: 'Artist')
+          click_button "Update Artwork request"
+          sleep(1.5)
+          expect(artwork_request.reload.state).to eq('pending_artwork')
+        end
 
         context 'and the artwork_request is pending_approval or approved'  do
           let(:artwork) { create(:valid_artwork) }
-          
+
           background do
-            order.update_column(:artwork_state, :pending_manager_approval)  
-            order.artwork_requests.each do |ar| 
+            order.update_column(:artwork_state, :pending_manager_approval)
+            order.artwork_requests.each do |ar|
               ar.update_attribute(:artist_id, valid_user.id)
-              ar.update_attribute(:state, :pending_manager_approval)
+              ar.update_attribute(:state, 'pending_manager_approval')
               ar.artworks << artwork
               ar.save
             end
-          end          
-         
-          scenario 'I can reject the artwork for a request' do 
+          end
+
+          scenario 'I can reject the artwork for a request' do
             visit_edit_order_tab(order, 'artwork')
-            within("#artwork-request-#{artwork_request.id}") do 
+            within("#artwork-request-#{artwork_request.id}") do
               click_link "Reject Artwork"
               fill_in "details", with: "This is another reason"
               find('.reject-button').click
@@ -279,44 +279,13 @@ feature 'Artwork Request Features', js: true, artwork_request_spec: true do
             sleep 1.5
             close_flash_modal
             navigate_to_tab 'Timeline'
-            expect(artwork_request.reload.state).to eq("artwork_rejected") 
-            expect(order.reload.artwork_state).to eq("pending_artwork_and_proofs") 
+            expect(artwork_request.reload.state).to eq("artwork_rejected")
+            expect(order.reload.artwork_state).to eq("pending_artwork_and_proofs")
             expect(page).to have_text("to artwork_rejected via transition reject_artwork")
             expect(page).to have_text("This is another reason")
           end
         end
-
-        context 'given a proof and the order#artwork_state is pending_manager_approval' do
-          scenario 'I can approve all the proofs' do  
-            visit_edit_order_tab(order, 'proofs')
-            click_link 'Proofs Manager Approved' 
-          end
-
-            # it will mark the artwork requests as approved
-            # it will mark the order#artwork_state as pending_customer_submission
-
-          scenario 'I can reject a proof on an individual basis'
-            # rejecting a proof prompts me with a screen that asks
-            # which artwork_requests associated with the proofs are whack
-            # then I add a reason to the artwork requests
-            # artwork_requests become rejected
-            # order artwork_state becomes pending_artwork_and_proofs
-        end
       end
-
-      context 'given an order#artwork_state is pending_customer_submission' do
-        scenario 'I can reject a proof'
-        scenario 'I can mark all the non-rejected proofs as submitted to the customer'
-      end
-
-      context 'given an order#artwork_state is pending_customer_approval' do
-        scenario 'I can reject a proof'
-        scenario 'I can mark all the proofs approved'
-          # Press one button
-          # All proofs are marked as approved
-          # Order#artwor_state is pending_production
-      end
-
     end
 
   end

@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20151106161917) do
+ActiveRecord::Schema.define(version: 20151119202816) do
 
   create_table "activities", force: :cascade do |t|
     t.integer  "trackable_id",   limit: 4
@@ -568,7 +568,7 @@ ActiveRecord::Schema.define(version: 20151106161917) do
   add_index "print_locations", ["imprint_method_id"], name: "index_print_locations_on_imprint_method_id", using: :btree
 
   create_table "proofs", force: :cascade do |t|
-    t.string   "status",      limit: 255
+    t.string   "state",       limit: 255
     t.integer  "order_id",    limit: 4
     t.datetime "approve_by"
     t.datetime "approved_at"
