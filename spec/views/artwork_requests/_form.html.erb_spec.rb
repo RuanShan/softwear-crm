@@ -11,7 +11,6 @@ describe 'artwork_requests/_form.html.erb', artwork_request_spec: true do
     within_form_for ArtworkRequest do
       expect(rendered).to have_selector('select#artwork_request_imprint_ids')
       expect(rendered).to have_selector('select#artwork_request_priority')
-      expect(rendered).to have_selector('select#artwork_request_state')
       expect(rendered).to have_selector('input#artwork_request_deadline')
       expect(rendered).to have_selector('i.artwork-assets')
     end

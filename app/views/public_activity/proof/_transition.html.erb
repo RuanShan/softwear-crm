@@ -1,0 +1,11 @@
+<p><%= activity.owner.full_name rescue "(User Unavailable)" %> changed
+<%= link_to "proof ##{activity.trackable_id}", order_proof_path(activity.trackable.order, activity.trackable)  %>
+<b><%= activity.parameters['machine'] %></b> from
+  <b><%= activity.parameters['old_state'] %></b> to
+  <b><%= activity.parameters['new_state'] %></b> via transition
+  <b><%= activity.parameters['transition'] %></b>
+  <% unless activity.parameters['details'].blank? %>
+    with the following details <br />
+    <blockquote><%= activity.parameters['details'] %></blockquote>
+  <% end %>
+</p>

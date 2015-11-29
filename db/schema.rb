@@ -569,7 +569,7 @@ ActiveRecord::Schema.define(version: 20151123160005) do
   add_index "print_locations", ["imprint_method_id"], name: "index_print_locations_on_imprint_method_id", using: :btree
 
   create_table "proofs", force: :cascade do |t|
-    t.string   "status",      limit: 255
+    t.string   "state",       limit: 255
     t.integer  "order_id",    limit: 4
     t.datetime "approve_by"
     t.datetime "approved_at"

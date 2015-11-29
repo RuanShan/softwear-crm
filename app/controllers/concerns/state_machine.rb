@@ -30,21 +30,23 @@ module StateMachine
       old_state = @object.send(@machine)
       PublicActivity.enabled = false
       @object.send("fire_#{@machine}_event",  @transition)
-      PublicActivity.enabled = true
-      transition_params = {
-        old_state: old_state,
-        new_state: @object.send(@machine),
-        machine: params[:state_machine],
-        transition: params[:transition],
-        details: params[:details]
-      }
-      @object.create_activity(
-            action:     :transition,
-            parameters: transition_params,
-            owner:      current_user
-      )
-      @object.reload
       @successful_transition = true if @object.valid?
+      if @successful_transition
+        PublicActivity.enabled = true
+        transition_params = {
+          old_state: old_state,
+          new_state: @object.send(@machine),
+          machine: params[:state_machine],
+          transition: params[:transition],
+          details: params[:details]
+        }
+        @object.create_activity(
+              action:     :transition,
+              parameters: transition_params,
+              owner:      current_user
+        )
+      end
+      @object.reload
     else
       @object.errors.add(:base, "Invalid transition '#{@transition.to_s.humanize}' for
                         '#{@machine.to_s.humanize}' from state '#{@object.send(@machine).humanize}'")

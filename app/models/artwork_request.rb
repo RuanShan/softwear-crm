@@ -357,11 +357,11 @@ class ArtworkRequest < ActiveRecord::Base
   warn_on_failure_of :create_freshdesk_proof_ticket, raise_anyway: true
 
   def has_proof_pending_approval?
-    proofs.where(status: 'emailed customer').exists?
+    proofs.where(state: 'emailed_customer').exists?
   end
 
   def has_approved_proof?
-    proofs.where(status: 'approved').exists?
+    proofs.where(state: 'customer_approved').exists?
   end
 
   def transition_to_assigned

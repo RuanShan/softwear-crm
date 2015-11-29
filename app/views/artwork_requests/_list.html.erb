@@ -1,21 +1,21 @@
 <div class='user-profile-content'>
   <div class='text-right hidden-print clearfix'>
 
-    <% if order.artwork_state == 'pending_artwork_requests' && !order.missing_artwork_requests? %>
+    <% if order.can_artwork_requests_complete? %>
       <%= link_to transition_order_path(order, :artwork_state, :artwork_requests_complete ), method: :post, class: 'btn btn-primary' do %>
         <i class='glyphicon glyphicon-check'></i> Mark Artwork Requests Complete
       <% end %>
     <% end %>   
     
     
-    <% if order.artwork_state == 'pending_artwork_and_proofs' && !order.artwork_requests.map(&:state).include?('unassigned') %>
+    <% if order.can_artwork_complete? %>
       <%= link_to transition_order_path(order, :artwork_state, :artwork_complete ), method: :post, class: 'btn btn-primary' do %>
         <i class='glyphicon glyphicon-check'></i> Mark Artwork Complete
       <% end %>
     <% end %>   
     
-    <% if order.artwork_state == 'ready_for_production' %>
-      <%= link_to transition_order_path(order, :artwork_state, :artwork_complete ), method: :post, class: 'btn btn-primary' do %>
+    <% if order.can_put_artwork_into_production? %>
+      <%= link_to transition_order_path(order, :artwork_state, :put_artwork_into_production ), method: :post, class: 'btn btn-primary' do %>
         <i class='glyphicon glyphicon-check'></i> Mark Artwork In Production
       <% end %>
     <% end %>   

@@ -3,7 +3,7 @@
     <%= f.label :file, title, class: 'col-sm-3 control-label' %>
 
     <div class="col-sm-9">
-      <%= (f.object.file_file_name.nil?) ? (f.file_field :file) : (f.object.file_file_name) %>
+      <%= f.file_field :file  %>
 
       <p class="help-block"><%= file_constraints %></p>
     </div>

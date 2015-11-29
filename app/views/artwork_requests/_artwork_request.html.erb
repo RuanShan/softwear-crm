@@ -3,7 +3,7 @@
     <% unless artwork_request.artwork_ids.empty? %>
       <%= render 'artwork_requests/artworks', artwork_request: artwork_request %>
     <% end %>
-    
+
     <br clear="all" />
     <div class="row">
       <h4 class="artwork-request-title">#<%= artwork_request.id %>Artwork Request for <%= artwork_request.jobs.map(&:name).join(', ') %>
@@ -31,7 +31,7 @@
       <%= render 'artwork_requests/show/artist_job_and_style_table', {artwork_request: artwork_request} %>
     </div>
 
-    <div class="row artwork-request-actions">
+    <div>
       <dl>
         <dt>Description:
         </dt><br />
@@ -64,47 +64,47 @@
           </dl>
         </div>
       <% end %>
-    </div><!-- end of .artwork-request-actions  -->
+    </div>
 
     <div class="row">
       <div class="col-sm-12">
         <%= link_to edit_order_artwork_request_path(order, artwork_request), class: 'btn btn-primary' do %>
           <i class="glyphicon glyphicon-pencil"></i> Edit
         <% end %>
-        
+
         <% if params[:disable_buttons].nil? %>
           <%= link_to artworks_path(artwork_request_id: artwork_request.id), remote: true, class: 'btn btn-success' do %>
             <i class="glyphicon glyphicon-plus-sign"></i> Add Artwork
           <% end %>
         <% end %>
 
-        <% if artwork_request.state == 'pending_manager_approval' %>
-          <%= link_to transition_artwork_request_path(artwork_request, :state, :approved), 
+        <% if artwork_request.can_approved? %>
+          <%= link_to transition_artwork_request_path(artwork_request, :state, :approved),
             method: :post, class: 'btn btn-success', data: {action: :update, toggle: :tooltip,
             title: 'Approve',  confirm: "Confirm Manager Approval" } do %>
           <i class="glyphicon glyphicon-thumbs-up"></i> Approve Artwork
           <% end %>
         <% end %>
 
-        <% if artwork_request.state == "artwork_request_rejected" %>
-          <%= link_to transition_artwork_request_path(artwork_request, :state, :revise_artwork_request), 
+        <% if artwork_request.can_revise_artwork_request? %>
+          <%= link_to transition_artwork_request_path(artwork_request, :state, :revise_artwork_request),
             method: :post, class: 'btn btn-success', data: {action: :update, toggle: :tooltip,
             title: 'Mark Artwork Request Revised'} do %>
             <i class="glyphicon glyphicon-thumbs-up"></i> Mark Artwork Request Revised
-          <% end %>  
+          <% end %>
         <% end %>
-        
-        <% if artwork_request.state == 'pending_manager_approval' || artwork_request.state == 'manager_approved' %>
-          <%= link_to '#', class: 'btn btn-warning reject-artwork-request', 
-            data: { transition: :reject_artwork, 'id' => artwork_request.id,  
+
+        <% if artwork_request.can_reject_artwork? %>
+          <%= link_to '#', class: 'btn btn-warning reject-artwork-request',
+            data: { transition: :reject_artwork, 'id' => artwork_request.id,
             toggle: :tooltip, title: 'Reject Artwork'} do %>
             <i class="glyphicon glyphicon-thumbs-down"></i> Reject Artwork
           <% end %>
         <% end %>
 
-        <% unless artwork_request.state == "approved" || artwork_request.state == 'artwork_request_rejected' %>
-          <%= link_to '#', class: 'btn btn-warning reject-artwork-request', 
-            data: { transition: :reject_artwork_request, 'id' => artwork_request.id,  
+        <% if artwork_request.can_reject_artwork_request? %>
+          <%= link_to '#', class: 'btn btn-warning reject-artwork-request',
+            data: { transition: :reject_artwork_request, 'id' => artwork_request.id,
             toggle: :tooltip, title: 'Reject Artwork Request'} do %>
           <i class="glyphicon glyphicon-thumbs-down"></i> Reject Artwork Request
           <% end %>
@@ -120,13 +120,13 @@
 
     <div class="row reject-artwork-request" data-id="<%= artwork_request.id %>" style="display: none">
       <div class="col-sm-12">
-        <%= form_tag transition_artwork_request_path(artwork_request, :state), class: 'reject-artwork-request-form', 
+        <%= form_tag transition_artwork_request_path(artwork_request, :state), class: 'reject-artwork-request-form',
           data: {'id' => artwork_request.id } do %>
           <div class="alert alert-danger">
             <h3>Reject Artwork Request</h3>
-            <%= text_area_tag :details, '', placeholder: 'Include a reason for rejecting', 
+            <%= text_area_tag :details, '', placeholder: 'Include a reason for rejecting',
               class: 'form-control', required: true %>
-            <%= hidden_field_tag :transition, nil, class: 'transition' %>  
+            <%= hidden_field_tag :transition, nil, class: 'transition' %>
             <%= submit_tag "Reject", class: 'btn btn-danger reject-button' %>
             <%= link_to 'Cancel', '#', class: 'btn btn-warning reject-cancel' %>
           </div>

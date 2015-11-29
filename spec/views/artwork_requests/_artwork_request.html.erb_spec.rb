@@ -7,59 +7,27 @@ describe 'artwork_requests/_artwork_request.html.erb', artwork_request_spec: tru
 
   before(:each) do
     artwork_request.artist = artist
-    render partial: 'artwork_requests/artwork_request', locals: { artwork_request: artwork_request, order: order }
   end
 
-  context 'given a single artwork request' do
-
-    it 'renders the full basic details, renders the artist job and style table' do 
+  context 'regardless of available transitions' do
+    before { render 'artwork_requests/artwork_request', {artwork_request: artwork_request, order: order} }
+    it 'renders the full basic details, renders the artist job and style table' do
       expect(rendered).to have_css('table.artist-job-and-style')
       expect(rendered).to have_css('dl.basic-artwork-request-details-short')
       expect(rendered).to have_css('dl.basic-artwork-request-details-full')
     end
 
-    it 'renders a link to edit, to delete, reject artwork request, and add artwork' do 
-      expect(rendered).to have_link('Delete', href: order_artwork_request_path(order, artwork_request) )
-      expect(rendered).to have_link('Add Artwork', 
+    it 'renders a link to edit, to delete, reject artwork request, and add artwork' do
+      expect(rendered).to have_link('Edit',
+                                    href: edit_order_artwork_request_path(order, artwork_request) )
+      expect(rendered).to have_link('Add Artwork',
         href: artworks_path(artwork_request_id: artwork_request.id) )
-      expect(rendered).to have_link('Reject Artwork Request', 
-        href: order_artwork_request_path(artwork_request.order, artwork_request, 
-          artwork_request: { state: 'reject_request'} ))
     end
 
-
-    context 'state is pending_manager_approval' do
-      before { allow(artwork_request).to receive(:state){'pending_manager_approval'} }
-
-      it 'Renders a link to approve artwork or reject artwork', pending: 'Pending Manager Approval thing' do 
-        expect(rendered).to have_link('Approve', 
-        href: order_artwork_request_path(artwork_request.order, artwork_request, 
-          artwork_request: { state: 'manager_approved'} ))
-
-        expect(rendered).to have_link('Reject Artwork', 
-        href: order_artwork_request_path(artwork_request.order, artwork_request, 
-          artwork_request: { state: 'pending_artwork'} ))
-      end
-    end
-
-    context 'state is not approved' do
-      it 'Renders a link to reject artwork request' do 
-        expect(rendered).to have_link('Reject Artwork Request', 
-        href: order_artwork_request_path(artwork_request.order, artwork_request, 
-          artwork_request: { state: 'reject_request'} ))
-      end
-    end
-
-    context 'state is pending_manager_approval or manager_approved'
-
-    context 'buttons are disabled fora modal' do
-      it "doesn't render the add artwork button" 
-    end
-
-    context 'when it is an exact reorder' do 
+    context 'when it is an exact reorder' do
       let(:artwork_request) { create(:valid_artwork_request, reorder: true) }
 
-      it 'renders a warning that it is an exact reorder' do 
+      it 'renders a warning that it is an exact reorder' do
         expect(rendered).to have_css('.alert-warning', text: "This artwork request is for an exact reorder")
       end
     end
@@ -91,6 +59,40 @@ describe 'artwork_requests/_artwork_request.html.erb', artwork_request_spec: tru
         expect(rendered).to have_css('dt', text: 'Description:')
         expect(rendered).to have_css('dd', text: "#{artwork_request.artworks.first.description}")
       end
+    end
+  end
+
+  context "when it can't transition to a given state" do
+    before do
+      allow(artwork_request).to receive(:can_approved?) { false }
+      allow(artwork_request).to receive(:can_revise_artwork_request?) { false }
+      allow(artwork_request).to receive(:can_reject_artwork?) { false }
+      allow(artwork_request).to receive(:can_reject_artwork_request?) { false }
+      render 'artwork_requests/artwork_request', {artwork_request: artwork_request, order: order}
+    end
+
+    it "doesn't render the links to transition" do
+      expect(rendered).to_not have_link 'Approve Artwork'
+      expect(rendered).to_not have_link 'Mark Artwork Request Revised'
+      expect(rendered).to_not have_css(:href, 'Reject Artwork')
+      expect(rendered).to_not have_css(:href, 'Reject Artwork Request')
+    end
+  end
+
+  context 'when it can transition to a given state' do
+    before do
+      allow_any_instance_of(ArtworkRequest).to receive(:can_approved?) { true }
+      allow_any_instance_of(ArtworkRequest).to receive(:can_revise_artwork_request?) { true }
+      allow_any_instance_of(ArtworkRequest).to receive(:can_reject_artwork?) { true }
+      allow_any_instance_of(ArtworkRequest).to receive(:can_reject_artwork_request?) { true }
+      render 'artwork_requests/artwork_request', {artwork_request: artwork_request, order: order}
+    end
+
+    it 'does render the links to transition' do
+      expect(rendered).to have_link 'Approve Artwork'
+      expect(rendered).to have_link 'Mark Artwork Request Revised'
+      expect(rendered).to have_link 'Reject Artwork'
+      expect(rendered).to have_link 'Reject Artwork Request'
     end
   end
 end
