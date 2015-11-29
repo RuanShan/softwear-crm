@@ -159,7 +159,7 @@ feature 'Imprintables management', imprintable_spec: true, slow: true do
       expect(ImprintableCategory.where(imprintable_id: imprintable.id)).to_not be_nil
     end
 
-    context 'there is already an associated imprintable category', js: true, wip: true do
+    context 'there is already an associated imprintable category', js: true do
       given!(:category) { create(:imprintable_category, imprintable_id: imprintable.id) }
 
       scenario 'A user can delete an imprintable category', story_692: true do

@@ -16,7 +16,7 @@
       <div class="col-sm-5">
         <h4>Mockups</h4>
         <% proof.mockups.each do |mockup| %>
-          <div class="text-center col-xs-12">
+          <div class="text-center col-xs-12" data-mockup-id="<%= mockup.id %>">
           <%= link_to mockup.file.url, target: :_blank do %>
             <%= image_tag mockup.file.url(:large), class: 'img-responsive center-block' %>
             Open in New Tab
@@ -28,7 +28,7 @@
       <div class="col-sm-4">
         <h4>Artworks</h4>
         <% proof.artworks.each do |artwork| %>
-          <div class="text-center col-xs-6">
+          <div class="text-center col-xs-6" data-artwork-id="<%= artwork.id %>">
           <%= link_to artwork.preview.file.url, target: :_blank do %>
             <%= image_tag artwork.preview.file.url(:thumb), class: 'img-responsive center-block' %>
             Open in New Tab
