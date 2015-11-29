@@ -38,6 +38,14 @@
     </div>
 
     <%= f.text_field :tracking_number %>
+    <%= f.label :time_in_transit %>
+    <div class="input-group">
+      <%= f.text_field :time_in_transit, hide_label: true %>
+
+      <span class="input-group-addon">
+        days
+      </span>
+    </div>
   </div>
 
   <div class='form-group'>

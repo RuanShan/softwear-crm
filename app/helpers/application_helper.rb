@@ -113,7 +113,7 @@ module ApplicationHelper
 
   def max_file_size_message
     if ApplicationController.respond_to?(:max_file_upload_size)
-      "Max file size: #{ApplicationController.max_file_upload_size}"
+      "The total size of all uploaded files cannot exceed #{ApplicationController.max_file_upload_size}"
     else
       "You're probably in development and don't care about max file upload size"
     end

@@ -100,7 +100,6 @@
   </div>
 
   <div class="form-group">
-    <p class="help-block"><%= max_file_size_message %></p>
     <%= f.fields_for :artwork, multipart: true do |ff| %>
       <%= render partial: 'asset_fields',
                  locals: { f: ff,
@@ -117,7 +116,6 @@
   </div>
 
   <div class="form-group">
-    <p class="help-block"><%= max_file_size_message %></p>
     <%= f.fields_for :preview, multipart: true do |ff| %>
       <%= render partial: 'asset_fields',
                  locals: { f: ff,
@@ -133,6 +131,8 @@
     <% end %>
   </div>
 </div>
+
+<p class="help-block"><%= max_file_size_message %></p>
 
 <hr>
 
