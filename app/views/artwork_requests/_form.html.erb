@@ -1,12 +1,12 @@
 <%= render 'shared/modal_errors', object: artwork_request %>
 
-<%= bootstrap_form_for [order, artwork_request], multipart: true, 
+<%= bootstrap_form_for [order, artwork_request], multipart: true,
       layout: :horizontal, label_col: 'col-sm-2', control_col: 'col-sm-10'  do |f| %>
 
   <div>
-    <%= f.select :imprint_ids, options_from_collection_for_select(order.imprints, :id, :job_and_name, f.object.imprint_ids.map(&:to_s)), {label: 'Imprints'}, multiple: true, class: 'select2'  %>
+    <%= f.select :imprint_ids, options_from_collection_for_select(order.imprints, :id, :job_and_name, f.object.imprint_ids.map(&:to_s)), {label: 'Imprints'}, multiple: true, class: 'select2', style: 'width: 100%;'  %>
 
-    <%= f.select :priority, ArtworkRequest::PRIORITIES.map{ |level, label| [label, level] }, 
+    <%= f.select :priority, ArtworkRequest::PRIORITIES.map{ |level, label| [label, level] },
         selected: (artwork_request.priority.nil? ? ArtworkRequest::PRIORITIES.invert['Normal']  : artwork_request.priority) %>
 
     <div id="imprint_method_print_locations_and_ink_colors">
@@ -17,7 +17,7 @@
         <% end %>
     </div>
 
-    <%= f.text_field :deadline, value: value_time(artwork_request.deadline), class: 'date js-datetimepicker', 
+    <%= f.text_field :deadline, value: value_time(artwork_request.deadline), class: 'date js-datetimepicker',
       append: raw("<i class='glyphicon glyphicon-calendar'></i>") %>
 
     <%= f.select :reorder, [["No", false], ["Yes", true]], label: 'Reorder?',
@@ -27,14 +27,14 @@
       " you're providing exactly what the customer wants or do they represent ideas and approximations "\
       " of what the customer wants?" %>
 
-    <%= f.text_field :amount_paid_for_artwork, placeholder: '0.0', 
-      prepend: "$", label: 'Amount Paid for Artwork', 
+    <%= f.text_field :amount_paid_for_artwork, placeholder: '0.0',
+      prepend: "$", label: 'Amount Paid for Artwork',
       help: "Did the customer pay for the artwork? This does not include deposits paid to get artwork made before quotes become paid orders." %>
 
       <%= f.hidden_field :salesperson_id, value: current_user.id %>
 
     <% unless f.object.new_record? %>
-      <%= f.select :artist_id, 
+      <%= f.select :artist_id,
       options_from_collection_for_select(User.all, :id, :full_name, artwork_request.artist_id ),
       include_blank: true %>
     <% end %>

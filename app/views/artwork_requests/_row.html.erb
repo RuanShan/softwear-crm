@@ -28,7 +28,7 @@
       <% end %>
     </td>
     <td>
-      <%= render 'artwork_requests/show/basic_details', artwork_request: artwork_request %> 
+      <%= render 'artwork_requests/show/basic_details', artwork_request: artwork_request %>
     </td>
     <td><%= display_date(artwork_request.deadline) %>
     </td>
@@ -40,49 +40,86 @@
       <% end %>
     </td>
     <td>
-    <div class="btn-group btn-group-xs">
       <% if artwork_request.order.nil? || artwork_request.jobs.empty? %>
-        <p class="alert alert-danger">This artwork request has no order or jobs, and should be deleted</p>
+        <p class="alert alert-danger text-center">This artwork request has no order or jobs, and should be deleted
+          <br />
+          <%= link_to artwork_request_path(artwork_request), class: 'btn btn-danger',
+                      method: :delete, remote: true do %>
+              <i class="glyphicon glyphicon-remove-circle"></i> Destroy
+          <% end %>
+        </p>
+
       <% else %>
-        <% unless artwork_request.jobs.empty? %>
-        <%= link_to edit_order_artwork_request_path(artwork_request.jobs.first.order, artwork_request),
-                    class: 'btn btn-default', remote: true,
-                    'data-toggle' => 'tooltip', 'title' => 'Edit' do %>
-          <i class="fa fa-edit"></i>
-        <% end %>
+          <div class="btn-group btn-group-sm">
+          <%= link_to "#{order_artwork_request_path(artwork_request.jobs.first.order, artwork_request)}?disable_buttons=true",
+                      class: 'btn btn-primary', remote: true,
+                      'data-toggle' => 'tooltip', 'title' => 'Show' do %>
+              <i class="fa fa-eye"></i> Show
+          <% end %>
 
-        <%= link_to "#{order_artwork_request_path(artwork_request.jobs.first.order, artwork_request)}?disable_buttons=true",
-                    class: 'btn btn-default', remote: true,
-                    'data-toggle' => 'tooltip', 'title' => 'Show' do %>
-          <i class="fa fa-eye"></i>
-        <% end %>
-      <% end %>
+          <%= link_to edit_order_artwork_request_path(artwork_request.order, artwork_request),
+                      class: 'btn btn-warning', remote: true do %>
+              <i class="glyphicon glyphicon-pencil"></i> Edit
+          <% end %>
 
-      <% if artwork_request.state == 'pending_manager_approval' %>
-        <%= link_to order_artwork_request_path(artwork_request.order, artwork_request, artwork_request: { state: 'manager_approved'} ),
-          class: 'btn btn-default', method: :put, data: {action: :update, toggle: :tooltip,
-            title: 'Approve',  confirm: "Confirm Manager Approval" } do %>
-        <i class="glyphicon glyphicon-thumbs-up"></i> 
-        <% end %>
-      <% end %>
-  
+          <%= link_to order_artwork_request_path(artwork_request.order, artwork_request), class: 'btn btn-danger',
+                      method: :delete, remote: true do %>
+              <i class="glyphicon glyphicon-remove-circle"></i> Destroy
+          <% end %>
+          </div>
+          <br />
+          <br />
+          <div class="btn-group btn-group-sm">
 
-      <% if artwork_request.state == 'pending_manager_approval' || artwork_request.state == 'manager_approved' %>
-        <%= link_to order_artwork_request_path(artwork_request.order, artwork_request, artwork_request: { state: 'pending_artwork' }), method: :put,
-          class: 'btn btn-default', method: :put, data: {action: :update, toggle: :tooltip,
-            title: 'Rejext',  confirm: "Confirm Rejection" } do %>
-          <i class="glyphicon glyphicon-thumbs-down"></i>
-        <% end %>
-      <% end %>
-    <% end %>
+          <% if artwork_request.can_reject_artwork_request? %>
+              <%= link_to '#', class: 'btn btn-warning reject-artwork-request',
+                          data: { transition: :reject_artwork_request, 'id' => artwork_request.id,
+                                  toggle: :tooltip, title: 'Reject Artwork Request'} do %>
+                  <i class="glyphicon glyphicon-thumbs-down"></i> Reject Artwork Request
+              <% end %>
+          <% end %>
 
-      <%= link_to artwork_request_path(artwork_request),
-        class: 'btn btn-default', method: :delete, remote: true,
-          data: {confirm: 'Are you sure you want to destroy this artwork request?', action: :destroy, 
-            toggle: :tooltip, title: 'Destroy'} do %>
-        <i class="fa fa-times"></i>
+          <% if artwork_request.can_approved? %>
+              <%= link_to transition_artwork_request_path(artwork_request, :state, :approved),
+                          method: :post, class: 'btn btn-success', data: {action: :update, toggle: :tooltip,
+                                                                          title: 'Approve',  confirm: "Confirm Manager Approval" } do %>
+                  <i class="glyphicon glyphicon-thumbs-up"></i> Approve Artwork
+              <% end %>
+          <% end %>
+
+          <% if artwork_request.can_revise_artwork_request? %>
+              <%= link_to transition_artwork_request_path(artwork_request, :state, :revise_artwork_request),
+                          method: :post, class: 'btn btn-success', data: {action: :update, toggle: :tooltip,
+                                                                          title: 'Mark Artwork Request Revised'} do %>
+                  <i class="glyphicon glyphicon-thumbs-up"></i> Mark Artwork Request Revised
+              <% end %>
+          <% end %>
+
+          <% if artwork_request.can_reject_artwork? %>
+              <%= link_to '#', class: 'btn btn-warning reject-artwork-request',
+                          data: { transition: :reject_artwork, 'id' => artwork_request.id,
+                                  toggle: :tooltip, title: 'Reject Artwork'} do %>
+                  <i class="glyphicon glyphicon-thumbs-down"></i> Reject Artwork
+              <% end %>
+          <% end %>
       <% end %>
-    </div>
+      </div>
+
+      <div class="row reject-artwork-request" data-id="<%= artwork_request.id %>" style="display: none">
+        <div class="col-sm-12">
+          <%= form_tag transition_artwork_request_path(artwork_request, :state), class: 'reject-artwork-request-form',
+                       data: {'id' => artwork_request.id } do %>
+              <div class="alert alert-danger">
+                <h3 data-id="<%= artwork_request.id %>">Reject Artwork Request</h3>
+                <%= text_area_tag :details, '', placeholder: 'Include a reason for rejecting',
+                                  class: 'form-control', required: true %>
+                <%= hidden_field_tag :transition, nil, class: 'transition' %>
+                <%= submit_tag "Reject", class: 'btn btn-danger reject-button' %>
+                <%= link_to 'Cancel', '#', class: 'btn btn-warning reject-cancel' %>
+              </div>
+          <% end %>
+        </div>
+      </div>
   </td>
   </tr>
 <% end %>

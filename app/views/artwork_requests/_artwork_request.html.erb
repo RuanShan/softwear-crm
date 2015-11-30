@@ -123,7 +123,7 @@
         <%= form_tag transition_artwork_request_path(artwork_request, :state), class: 'reject-artwork-request-form',
           data: {'id' => artwork_request.id } do %>
           <div class="alert alert-danger">
-            <h3>Reject Artwork Request</h3>
+            <h3 data-id="<%= artwork_request.id %>">Reject Artwork Request</h3>
             <%= text_area_tag :details, '', placeholder: 'Include a reason for rejecting',
               class: 'form-control', required: true %>
             <%= hidden_field_tag :transition, nil, class: 'transition' %>

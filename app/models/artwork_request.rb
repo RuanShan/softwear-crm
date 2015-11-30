@@ -92,6 +92,11 @@ class ArtworkRequest < ActiveRecord::Base
 
     event :assigned_artist do
       transition :unassigned => :pending_artwork
+      transition :artwork_request_rejected => :artwork_request_rejected
+      transition :artwork_rejected => :artwork_rejected
+      transition :pending_artwork => :pending_artwork
+      transition :pending_manager_approval => :pending_manager_approval
+      transition :manager_approved => :manager_approved
     end
 
     event :unassigned_artist do
