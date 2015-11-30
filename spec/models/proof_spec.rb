@@ -15,6 +15,5 @@ describe Proof, proof_spec: true do
   describe 'Validations' do
     it { is_expected.to validate_presence_of(:approve_by) }
     it { is_expected.to validate_presence_of(:artworks) }
-    it { is_expected.to validate_presence_of(:status) }
   end
 end

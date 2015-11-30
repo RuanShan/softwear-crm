@@ -1,7 +1,7 @@
 require 'spec_helper'
 include ApplicationHelper
 
-feature 'Proof Features', js: true, proof_spec: true do
+feature 'Proof Features', js: true, proof_spec: true, retry: 3 do
   given!(:artwork_request) { create(:valid_artwork_request_with_artwork) }
   given!(:order) { create(:order_with_proofs) }
   given!(:proof) { order.proofs.first }
@@ -44,7 +44,7 @@ feature 'Proof Features', js: true, proof_spec: true do
     }.to change{ Proof.count }.by(1)
   end
 
-  scenario 'A user can edit and update an Proof from the Proof List', retry: 2, story_692: true do
+  scenario 'A user can edit and update an Proof from the Proof List', story_692: true do
     visit_edit_order_tab(order, 'proofs')
     within("#proof-#{proof.id}") do
       click_link 'Edit'

@@ -1,6 +1,6 @@
 class ArtworkRequestsController < InheritedResources::Base
   include StateMachine
-  
+
   before_filter :assign_order
   before_filter :format_deadline, only: [:create, :update]
   before_filter :set_current_action
@@ -62,27 +62,27 @@ class ArtworkRequestsController < InheritedResources::Base
   end
 
   def manager_dashboard
-    @unassigned = ArtworkRequest.search do 
+    @unassigned = ArtworkRequest.search do
       with :state, :unassigned
     end.results
 
-    @pending_artwork = ArtworkRequest.search do 
-      with :state, :pending_artwork
+    @pending_artwork = ArtworkRequest.search do
+      with :state, [:pending_artwork, :artwork_rejected]
     end.results
 
-    @pending_manager_approval = ArtworkRequest.search do 
+    @pending_manager_approval = ArtworkRequest.search do
       with :state, :pending_manager_approval
     end.results
 
-    @ready_to_proof = Order.search do 
-      with :artwork_state, [:pending_proofs, :pending_proof_submission]
+    @ready_to_proof = Order.search do
+      with :artwork_state, [:pending_proofs, :pending_manager_approval, :pending_proof_submission]
     end.results
 
-    @proofs_awaiting_approval = Order.search do 
-      with :artwork_state, :pending_proof_approval
+    @proofs_awaiting_approval = Order.search do
+      with :artwork_state, :pending_customer_approval
     end.results
 
-    @pending_production = Order.search do 
+    @pending_production = Order.search do
       with :artwork_state, :ready_for_production
     end.results
   end
@@ -117,8 +117,8 @@ class ArtworkRequestsController < InheritedResources::Base
     params.permit(:order_id, :id,
                   artwork_request:[
                     :id, :priority, :description, :artist_id,
-                    :imprint_method_id, :salesperson_id, :reorder, 
-                    :exact_or_approximate, :deadline, :state, 
+                    :imprint_method_id, :salesperson_id, :reorder,
+                    :exact_or_approximate, :deadline, :state,
                     :amount_paid_for_artwork,
                     ink_color_ids: [],
                     artwork_ids: [],

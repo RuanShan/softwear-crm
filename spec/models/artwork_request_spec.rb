@@ -27,43 +27,27 @@ describe ArtworkRequest, artwork_request_spec: true do
   end
 
   describe 'callbacks'  do
-    describe 'after_save' do 
-      let(:artwork_request) { create(:valid_artwork_request) }
+    describe 'after_save' do
+      let(:artwork_request) { create(:valid_artwork_request, state: 'unassigned') }
 
-      context 'when state is pending and newly assigning artist_id is not null' do 
-        before do 
+      context 'when state is unassigned and artist_id is no longer null' do
+        before do
           artwork_request.artist = create(:user)
           artwork_request.save
         end
 
         it 'advances to pending_artwork state' do
-          expect(artwork_request.state).to eq('pending_artwork') 
-        end
-      end
-      
-      context 'when state is pending_artwork and newly assigning artist_id is not null' do 
-        before do 
-          artwork_request.artist = create(:user)
-          artwork_request.save
           expect(artwork_request.state).to eq('pending_artwork')
-          artwork_request.artworks << create(:valid_artwork)
-          artwork_request.save
-        end
-
-        it 'advances to pending_artwork state' do
-          artwork_request.artist = create(:user)
-          artwork_request.save
-          expect(artwork_request.state).to eq('pending_manager_approval') 
         end
       end
     end
-  end 
+  end
 
   context 'after_creation'  do
-    
+
     let(:artwork_request) { build(:artwork_request) }
 
-    it 'default state is unassigned' do 
+    it 'default state is unassigned' do
       expect(artwork_request.state).to eq("unassigned")
     end
 
@@ -204,8 +188,8 @@ describe ArtworkRequest, artwork_request_spec: true do
       expect(subject.compatible_ink_colors.map(&:name)).to eq ['Red', 'Blue']
     end
   end
-  
-  describe '' do 
+
+  describe '' do
   end
 
 

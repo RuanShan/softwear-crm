@@ -57,7 +57,7 @@ class ArtworkRequest < ActiveRecord::Base
 
   after_create :enqueue_create_freshdesk_proof_ticket if Rails.env.production?
   after_save :transition_to_assigned if "state == 'unassigned'"
-  
+
   attr_accessor :current_user
 
   state_machine :state, initial: :unassigned do
@@ -68,7 +68,7 @@ class ArtworkRequest < ActiveRecord::Base
     after_transition on: [:reject_artwork, :reject_artwork_request] do |artwork_request|
       artwork_request.approved_by = nil
     end
-    
+
     after_transition on: :reject_artwork do |artwork_request|
       artwork_request.order.artwork_rejected
     end
@@ -79,7 +79,7 @@ class ArtworkRequest < ActiveRecord::Base
 
     after_transition on: :reject_artwork_request do |artwork_request|
       artwork_request.order.issue_warning(
-        "Bad Artwork Request", 
+        "Bad Artwork Request",
         "Artwork Request ##{artwork_request.id} was determined to be inadequate."\
         " A reason for rejection is available on the order timeline."\
         " Please revise it and mark it as revised."
@@ -104,7 +104,7 @@ class ArtworkRequest < ActiveRecord::Base
 
     event :artwork_removed do
       transition :pending_manager_approval => :pending_manager_approval,  :unless => lambda{ |artwork_request| artwork_request.artworks.empty? }
-      transition :approved => :pending_manager_approval,  :unless => lambda{ |artwork_request| artwork_request.artworks.empty? }
+      transition :manager_approved => :pending_manager_approval,  :unless => lambda{ |artwork_request| artwork_request.artworks.empty? }
       transition :pending_manager_approval => :pending_artwork,  :if =>  lambda{ |artwork_request| artwork_request.artworks.empty? }
     end
 
@@ -112,11 +112,11 @@ class ArtworkRequest < ActiveRecord::Base
       transition :pending_manager_approval => :manager_approved
     end
 
-    event :reject_artwork_request do 
+    event :reject_artwork_request do
       transition all => :artwork_request_rejected
     end
 
-    event :revise_artwork_request do 
+    event :revise_artwork_request do
       transition :artwork_request_rejected => :unassigned, :if => lambda{|artwork_request| artwork_request.artist.blank? }
       transition :artwork_request_rejected => :pending_artwork, :if => lambda{|artwork_request| artwork_request.artworks.empty? && !artwork_request.artist.blank? }
       transition :artwork_request_rejected => :pending_manager_approval, :unless => lambda{|artwork_request| artwork_request.artworks.empty? || artwork_request.artist.blank? }
@@ -131,7 +131,7 @@ class ArtworkRequest < ActiveRecord::Base
       validates :artworks, presence: true
     end
 
-    state :approved do
+    state :manager_approved do
       validates :manager_id, presence: true
     end
 
