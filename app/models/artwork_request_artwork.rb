@@ -9,7 +9,7 @@ class ArtworkRequestArtwork < ActiveRecord::Base
   after_create :transition_artwork_request
 
   def transition_artwork_request
-    artwork_request.artwork_added
+    artwork_request.artwork_added unless ( artwork_request.nil? || artwork_request.can_artwork_added? )
   end
 
 end
