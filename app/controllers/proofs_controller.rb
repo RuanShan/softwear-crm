@@ -1,7 +1,6 @@
 class ProofsController < InheritedResources::Base
   include StateMachine
-  
-  before_filter :approved?, only: [:update]
+
   before_filter :format_approve_by, only: [:create, :update]
 
   belongs_to :order
@@ -40,22 +39,6 @@ class ProofsController < InheritedResources::Base
   end
 
   private
-
-  def approved?
-    @proof = Proof.find(params[:id])
-    case params[:status]
-    when 'Approved'
-      @proof.approved_at = DateTime.now
-      @proof.status = 'Approved'
-      @proof.create_activity :approved_proof, owner: current_user
-    when 'Rejected'
-      @proof.approved_at = nil
-      @proof.status = 'Rejected'
-      @proof.create_activity :rejected_proof, owner: current_user
-    else
-      @proof.approved_at = nil
-    end
-  end
 
   def email_body(order, reminder)
     if reminder

@@ -56,7 +56,7 @@ class ArtworkRequest < ActiveRecord::Base
   validates :salesperson,    presence: true
 
   after_create :enqueue_create_freshdesk_proof_ticket if Rails.env.production?
-  before_save :transition_to_assigned if :should_assign?
+  after_save :transition_to_assigned if :should_assign?
 
   attr_accessor :current_user
 
@@ -145,7 +145,7 @@ class ArtworkRequest < ActiveRecord::Base
 
   def assigned_artist(artist)
     update_column(:artist_id, (artist.id rescue artist))
-    super
+    update_attribute(:state, :pending_artwork) if state == 'unassigned'
   end
 
   def name
@@ -371,11 +371,11 @@ class ArtworkRequest < ActiveRecord::Base
   end
 
   def transition_to_assigned
-    assigned_artist(artist) if artist_id_changed? && artist_id_was == nil
+    assigned_artist(artist)
   end
 
   def should_assign?
-    artist_id_was.nil? && !artist_id.nil?
+    artist_id_was.nil? && artist_id_changed? && state == 'unassigned'
   end
 
 end
