@@ -98,7 +98,7 @@
         </td>
         <td class='production-state'>
           <span class="label <%= get_style_from_production_state(@order.production_state)%>"><%= @order.production_state.humanize %></span>
-          <br /> 
+          <br />
             <% if @order.production_url && @order.production_state != 'pending' %>
               <%= link_to 'View in Production', @order.production_url, target: :_blank %>
             <% else %>
@@ -107,9 +107,6 @@
         </td>
         <td class='artwork-state'>
           <span class="label label-primary <%= get_style_from_artwork_state(@order.artwork_state) %>"><%=  @order.artwork_state.humanize %></span>
-        </td>
-        <td class='proof-state'>
-          <span class="label <%= get_style_from_proof_state(@order.proof_state) %>"><%= @order.proof_state.humanize %></span>
         </td>
         <td class='notification-state'>
           <span class="label <%= get_style_from_notification_state(@order.notification_state)%>"><%= @order.notification_state.humanize %></span>

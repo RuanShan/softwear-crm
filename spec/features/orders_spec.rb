@@ -1,7 +1,7 @@
 require 'spec_helper'
 include ApplicationHelper
 
-feature 'Order management', order_spec: true,  js: true do
+feature 'Order management', order_spec: true, js: true do
   given!(:valid_user) { create(:user) }
   background(:each) { login_as valid_user }
 
@@ -34,12 +34,9 @@ feature 'Order management', order_spec: true,  js: true do
     wait_for_ajax
 
     fill_in 'Name', with: 'Whatever this should be'
-    date_array = DateTime.current.to_s.split(/\W|T/)
-    in_hand_by = "#{ (date_array[1].to_i + 1).to_s }/#{ date_array[2] }"\
-                 "/#{ date_array.first } 4:00 PM"
-    fill_in 'In Hand By Date', with: in_hand_by
+    fill_in 'In Hand By Date', with: '12/25/2025 12:00 AM'
     select User.find(order.salesperson_id).full_name, from: 'Salesperson'
-    sleep 15
+    wait_for_ajax
     select order.store.name, from: 'Store'
     select 'Half down on purchase', from: 'Payment terms'
 
@@ -80,9 +77,7 @@ feature 'Order management', order_spec: true,  js: true do
 
     scenario 'A user can create an order from a quote', retry: 3 do
       select 'Paid in full on purchase', from: 'Payment terms'
-      date_array = DateTime.current.to_s.split(/\W|T/)
-      fill_in 'In Hand By Date', with:  "#{ (date_array[1].to_i + 1).to_s }/#{ date_array[2] }"\
-                                        "/#{ date_array.first } 4:00 PM"
+      fill_in 'In Hand By Date', with: '12/25/2025 12:00 AM'
       click_button 'Next'
 
       select 'Pick up in Ann Arbor', from: 'Delivery method'
@@ -104,8 +99,7 @@ feature 'Order management', order_spec: true,  js: true do
         close_error_modal
         click_button 'Next'
 
-        fill_in 'In Hand By Date', with:  "#{ (date_array[1].to_i + 1).to_s }/#{ date_array[2] }"\
-                                          "/#{ date_array.first } 4:00 PM"
+        fill_in 'In Hand By Date', with: '12/25/2025 12:00 AM'
         sleep 0.1
         select 'Net 30', from: 'order_terms'
         click_button 'Next'

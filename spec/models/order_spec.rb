@@ -158,28 +158,6 @@ describe Order, order_spec: true do
     end
   end
 
-  describe '#proof_state' do
-    context "There isn't an artwork request for every imprint" do
-      it 'returns :pending_arwork_requests'
-    end
-
-    context "There isn't a proof for every artwork request" do
-      it 'returns :pending'
-    end
-
-    context "There is at least one proof pending approval for an artwork request" do
-      it 'returns :submitted_to_customer'
-    end
-
-    context "There aren't any missing artwork requests, but missing approved ones" do
-      it 'returns rejected'
-    end
-
-    context "There's an approved proof for every artwork request" do
-      it 'returns approved'
-    end
-  end
-
   # TODO implement this
   describe 'get_salesperson_id'
 

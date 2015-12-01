@@ -23,11 +23,7 @@
     <div class="col-sm-3">
       <%= s.select :artwork_state, Order.state_machines[:artwork_state].states.map{|s| s.name.to_s}, display: :humanize, multiple: true %>
     </div>
-    
-    <div class="col-sm-3">
-      <%= s.select :proof_state, Order::VALID_PROOF_STATES.map{|s| s.to_s}, display: :humanize, multiple: true %>
-    </div>
-    
+
     <div class="col-sm-3">
       <%= s.select :production_state, Order::VALID_PRODUCTION_STATES, multiple: true %>
     </div>
@@ -37,7 +33,7 @@
     <div class='col-sm-3'>
       <%= s.select :salesperson_full_name, User.all.map{|x| x.full_name }, multiple: true %>
     </div>
-    
+
     <div class='col-sm-3'>
       <%= s.text_field :in_hand_by, greater_than: true, placeholder: 'Deadline after...', class: 'js-datetimepicker' %>
     </div>
