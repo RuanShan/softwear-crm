@@ -448,8 +448,6 @@ class Order < ActiveRecord::Base
     sync[deadline: :in_hand_by]
   end
 
-
-
   def production_jobs_attributes
     attrs = {}
 

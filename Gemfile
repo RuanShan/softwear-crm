@@ -122,7 +122,7 @@ gem 'simple_token_authentication'
 gem 'sinatra', require: false
 gem 'sidekiq'
 gem 'sidekiq-status'
-gem 'sidekiq-failures'
+gem 'sidekiq-failures', github: 'AnnArborTees/sidekiq-failures'
 gem 'x-editable-rails'
 gem 'jquery-fileupload-rails'
 gem 'php-serialize'
