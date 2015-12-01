@@ -100,12 +100,16 @@ $(document).ready ->
 
   initializeEditable()
 
+  $(document).on 'click', '.hide-loading-spinner', (event) ->
+    $('.hide-loading-spinner').on 'click', $('#loading').fadeOut("slow")
+    event.preventDefault()
+
 
 $(document).ajaxStart ->
-  $('#js-ajax-loading').show()
+  $('#loading').fadeIn("fast")
 
 $(document).ajaxStop ->
-  $('#js-ajax-loading').hide()
+  $('#loading').fadeOut("fast")
 
 @after = (ms, func) ->
   setTimeout(func, ms)

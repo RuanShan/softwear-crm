@@ -5,11 +5,18 @@
 </head>
 
 <body class="tooltips">
-<div class="hidden-print" id="loading">
+<div class="hidden-print" id="loading" style="display: none">
   <div class="loading-inner">
-    <div class="spinner">
-      <div class="cube1"></div>
-      <div class="cube2"></div>
+    <div class="spinner-box text-center">
+        <div class="spinner">
+            <div class="cube1"></div>
+            <div class="cube2"></div>
+        </div>
+        <br />
+        <p>
+          Waiting For Response
+        </p>
+        <p class="small"><a href="#" class="hide-loading-spinner">Click To Hide</a></p>
     </div>
   </div>
 </div>
@@ -28,17 +35,6 @@
         <%= render 'shared/content_header'  %>
 
         <div class="body content rows scroll-y">
-            <div id="js-ajax-loading" tabindex="-1" style="display: none;">
-              <div class="spinner">
-                <div class="cube1"></div>
-                <div class="cube2"></div>
-                <br><br>
-                <p><strong>Loading...</strong></p>
-              </div>
-              <div class='clearfix'></div>
-            </div>
-
-
             <%= yield %>
             <%= render 'shared/footer'  %>
             <% begin %>
