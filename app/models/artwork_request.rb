@@ -13,6 +13,7 @@ class ArtworkRequest < ActiveRecord::Base
          :artist_full_name, :salesperson_full_name
 
     string :state
+    string :salesperson_full_name
 
     date :deadline
     date :order_in_hand_by
