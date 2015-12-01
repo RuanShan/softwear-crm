@@ -196,12 +196,12 @@ feature 'Imprints Management', imprint_spec: true, js: true do
 
       expect(NameNumber.find_by(name: 'Test name')).to_not be_nil
       # make sure the table was updated
-      expect(page).to have_css('#js-name-number-table tbody tr td', text: /Test name/)
+      expect(page).to have_css("#js-name-number-table-#{job.id} tbody tr td", text: /Test name/)
 
     end
 
     scenario 'a user can remove a name/number from the list', name_number_spec: true, story_190: true do
-      expect(page).to have_css('#js-name-number-table tbody tr td', text: /#{imprint_two.name}/)
+      expect(page).to have_css("#js-name-number-table-#{job.id} tbody tr td", text: /#{imprint_two.name}/)
       find("#destroy-name-number-#{ name_number.id }").click
       sleep 2 
       page.driver.browser.switch_to.alert.accept
@@ -209,7 +209,7 @@ feature 'Imprints Management', imprint_spec: true, js: true do
       # TODO not sure if there is a better way of doing this
       # after deleting the item i just check that capybara can't find the td element
       # that contained its name...
-      expect(page).to_not have_css('#js-name-number-table tbody tr td', text: /#{imprint_two.name}/)
+      expect(page).to_not have_css("#js-name-number-table-#{job.id} tbody tr td", text: /#{imprint_two.name}/)
     end
   end
 
@@ -219,7 +219,7 @@ feature 'Imprints Management', imprint_spec: true, js: true do
       visit edit_order_path(order.id, anchor: 'jobs')
       wait_for_ajax
 
-      expect(page).to_not have_css '#js-name-number-table'
+      expect(page).to_not have_css "#js-name-number-table-#{job.id}"
     end
 
     scenario 'a user does not see the download name/number csv button' do
