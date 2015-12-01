@@ -1,6 +1,6 @@
 module StateMachine
   extend ActiveSupport::Concern
-  
+
   def state
     @object = resource_class.find(params[:id])
     if @object.is_a?(Order)
@@ -13,7 +13,7 @@ module StateMachine
     transition_state if (@machine && @transition)
     respond_to do |format|
       format.js
-      format.html do 
+      format.html do
         if @successful_transition
           redirect_to edit_order_path(@order), notice: "Successfully transitioned #{@machine.humanize}"
         else
@@ -24,11 +24,12 @@ module StateMachine
   end
 
   private
-  
+
   def transition_state
     if @object.send("#{@machine}_events").include? @transition
       old_state = @object.send(@machine)
       PublicActivity.enabled = false
+      @object.update_column(:approved_by_id, current_user.id) if @object.respond_to?(:approved_by) && @transition == :approved
       @object.send("fire_#{@machine}_event",  @transition)
       @successful_transition = true if @object.valid?
       if @successful_transition

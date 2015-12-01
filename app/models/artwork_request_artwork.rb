@@ -6,4 +6,10 @@ class ArtworkRequestArtwork < ActiveRecord::Base
 
   validates :artwork_request_id, uniqueness: { scope: :artwork_id }
 
+  after_create :transition_artwork_request
+
+  def transition_artwork_request
+    artwork_request.artwork_added
+  end
+
 end

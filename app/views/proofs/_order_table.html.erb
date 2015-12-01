@@ -28,6 +28,15 @@
                 <dt>Artwork State</dt>
                 <dd><%= render 'orders/state', which: 'artwork_state', state: order.artwork_state %>
                 </dt>
+                <dt>Invoice State
+                </dt>
+                <dd><%= render 'orders/state', which: 'invoice_state', state: order.invoice_state %>
+                </dd>
+                <dt>Production State
+                </dt>
+                <dd><%= render 'orders/state', which: 'production_state', state: order.production_state %>
+                </dd>
+                </dt>
               </dl>
             </td>
             <td>
