@@ -72,7 +72,7 @@ module ProductionCounterpart
       end
     })
 
-    @production.save! if changed?
+    @production.save! if changed
     @production = nil
   end
 end
