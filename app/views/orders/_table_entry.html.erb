@@ -45,13 +45,6 @@
       </td>
     </tr>
     <tr>
-      <th>Proof
-      </th>
-      <td class='proof-state'>
-        <%= render 'orders/state', which: 'proof_state', state: order.proof_state %>
-      </td>
-    </tr>
-    <tr>
       <th>Production
       </th>
       <td class='production-state'>
@@ -92,7 +85,7 @@
                   'data-action' => 'edit', 'data-toggle' => 'tooltip', 'title' => 'Edit' do %>
         <i class="fa fa-edit"></i>
       <% end %>
-      
+
       <%= link_to order_path(order), class: 'btn btn-default', title: 'Print Invoice', data: {toggle: 'tooltip'} do %>
         <i class="fa fa-print"></i>
       <% end %>

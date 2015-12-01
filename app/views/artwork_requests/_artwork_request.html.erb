@@ -6,7 +6,7 @@
 
     <br clear="all" />
     <div class="row">
-      <h4 class="artwork-request-title">#<%= artwork_request.id %>Artwork Request for <%= artwork_request.jobs.map(&:name).join(', ') %>
+      <h4 class="artwork-request-title">#<%= artwork_request.id %> Artwork Request for <%= artwork_request.jobs.map(&:name).join(', ') %>
       </h4>
 
       <% if artwork_request.reorder? %>
@@ -78,10 +78,18 @@
           <% end %>
         <% end %>
 
+        <% if artwork_request.can_artwork_added? && !artwork_request.artworks.empty? %>
+            <%= link_to transition_artwork_request_path(artwork_request, :state, :artwork_added),
+                        method: :post, class: 'btn btn-success', data: {action: :update, toggle: :tooltip,
+                                                                        title: 'Approve',  confirm: "Confirm Manager Approval" } do %>
+                <i class="glyphicon"></i> Mark Artwork Added
+            <% end %>
+        <% end %>
+
         <% if artwork_request.can_approved? %>
           <%= link_to transition_artwork_request_path(artwork_request, :state, :approved),
             method: :post, class: 'btn btn-success', data: {action: :update, toggle: :tooltip,
-            title: 'Approve',  confirm: "Confirm Manager Approval" } do %>
+            title: 'Approve'} do %>
           <i class="glyphicon glyphicon-thumbs-up"></i> Approve Artwork
           <% end %>
         <% end %>

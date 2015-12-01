@@ -109,7 +109,6 @@ feature 'Artwork Request Features', js: true, artwork_request_spec: true do
           click_button 'Create Artwork request'
           sleep 1.5
           find(:css, 'button.close').click
-
           expect(ArtworkRequest.where(description: 'hello')).to exist
           expect(ArtworkRequest.find_by(description: 'hello').state).to eq("unassigned")
           navigate_to_tab 'Timeline'

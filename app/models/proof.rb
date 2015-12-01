@@ -11,13 +11,6 @@ class Proof < ActiveRecord::Base
 
   tracked by_current_user + on_order
 
-  VALID_PROOF_STATUSES = [
-      'Pending',
-      'Emailed Customer',
-      'Approved',
-      'Rejected'
-  ]
-
   belongs_to :order
   belongs_to :job
   has_many :artwork_proofs

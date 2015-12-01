@@ -9,6 +9,7 @@
         <%= link_to artwork_request.order.name, "#{edit_order_path(artwork_request.order.id)}#artwork"%><br />
         <%= artwork_request.order.full_name %><br /><br />
         <dl>
+          <dt>Artwork Request #<%= artwork_request.id %></dt>
           <dt>Order Salesperson:</dt>
           <dd><%= artwork_request.order.salesperson.full_name rescue 'unassigned' %></dd>
           <dt>Request Created By:</dt>
@@ -23,6 +24,15 @@
           </dd>
           <dt>Artwork State</dt>
           <dd><%= render 'orders/state', which: 'artwork_state', state: artwork_request.order.artwork_state %>
+          </dt>
+          <dt>Invoice State
+          </dt>
+          <dd><%= render 'orders/state', which: 'invoice_state', state: artwork_request.order.invoice_state %>
+          </dd>
+          <dt>Production State
+          </dt>
+          <dd><%= render 'orders/state', which: 'production_state', state: artwork_request.order.production_state %>
+          </dd>
           </dt>
         </dl>
       <% end %>
