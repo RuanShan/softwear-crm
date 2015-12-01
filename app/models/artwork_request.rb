@@ -66,7 +66,7 @@ class ArtworkRequest < ActiveRecord::Base
     end
 
     after_transition on: [:reject_artwork, :reject_artwork_request] do |artwork_request|
-      artwork_request.approved_by = nil
+      artwork_request.update_column(:approved_by_id, nil)
     end
 
     after_transition on: :reject_artwork do |artwork_request|
@@ -138,7 +138,7 @@ class ArtworkRequest < ActiveRecord::Base
     end
 
     state :manager_approved do
-      validates :manager_id, presence: true
+      validates :approved_by, presence: true
     end
 
   end
