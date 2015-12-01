@@ -23,8 +23,6 @@ class Proof < ActiveRecord::Base
   validates :approve_by, presence: true
   validates :artworks, presence: true
 
-  after_save :update_order_proof_state
-
   state_machine :state, initial: :not_ready do
 
     ########################
@@ -90,10 +88,6 @@ class Proof < ActiveRecord::Base
         mockup.file.url
       ]
     end
-  end
-
-  def update_order_proof_state
-    Sunspot.index order
   end
 
 end
