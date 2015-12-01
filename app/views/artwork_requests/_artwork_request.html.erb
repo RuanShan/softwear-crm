@@ -1,5 +1,5 @@
 <div id="artwork-request-<%= artwork_request.id %>" class="row">
-  <div class="the-notes info artwork-request-notes">
+  <div class="the-notes  artwork-request-notes <% if artwork_request.state == 'artwork_request_rejected' %>danger<% else %>info<% end %>" >
     <% unless artwork_request.artwork_ids.empty? %>
       <%= render 'artwork_requests/artworks', artwork_request: artwork_request %>
     <% end %>
@@ -143,5 +143,6 @@
     </div>
 
   </div><!-- END OF THE ARTWORK REQUEST -->
+  <hr />
 </div><!-- END OF THE NOTES -->
 

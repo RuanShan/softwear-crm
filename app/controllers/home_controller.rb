@@ -1,9 +1,14 @@
 class HomeController < ApplicationController
   def index
-    @order_warnings = Order.search do 
-      with(:warnings_count).greater_than 0 
+    @order_warnings = Order.search do
+      with(:warnings_count).greater_than 0
       with(:salesperson_full_name,  current_user.full_name)
-    end.results 
+    end.results
+
+    @rejected_artwork_requests = ArtworkRequest.search do
+      with(:state, :artwork_request_rejected)
+      with(:salesperson_full_name,  current_user.full_name)
+    end.results
   end
 
   def undock
@@ -32,42 +37,42 @@ class HomeController < ApplicationController
     orders_in_production = Order.where("production_state = ? and updated_at > ? and updated_at < ?", :in_production, @starting, @ending)
     puts "Processing #{orders_in_production.count} orders"
     orders_in_production.each do |o|
-    
+
       begin
         o.prod_api_confirm_job_counts
         o.prod_api_confirm_shipment
         o.prod_api_confirm_artwork_preprod
-      
+
       rescue ActiveResource::ResourceNotFound => e
-        message = "API Failed to find PRODUCTION(#{o.softwear_prod_id}) for CRM(#{o.id})" 
-        puts message 
+        message = "API Failed to find PRODUCTION(#{o.softwear_prod_id}) for CRM(#{o.id})"
+        puts message
 
         o.warnings << Warning.new(
-          source: 'API Production Configuration Report', 
+          source: 'API Production Configuration Report',
           message: message
         )
-        
+
         Sunspot.index(o)
         next
-      end   
+      end
 
-      o.jobs.each do |j| 
+      o.jobs.each do |j|
         begin
 #          j.prod_api_confirm_preproduction_trains
           j.prod_api_confirm_imprintable_train
         rescue ActiveResource::ResourceNotFound => e
-          message = "API Failed to find PRODUCTION_JOB(#{j.softwear_prod_id}) for CRM_ORDER(#{o.id}) CRM_JOB(#{j.id})" 
-          puts message 
+          message = "API Failed to find PRODUCTION_JOB(#{j.softwear_prod_id}) for CRM_ORDER(#{o.id}) CRM_JOB(#{j.id})"
+          puts message
 
           o.warnings << Warning.new(
-            source: 'API Production Configuration Report', 
+            source: 'API Production Configuration Report',
             message: message
           )
-          
+
           Sunspot.index(o)
           next
-        end  
-      end    
+        end
+      end
     end
   end
 

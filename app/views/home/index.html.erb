@@ -1,26 +1,47 @@
 <div class="page-heading">
   <h1>Dashboard For <%= @current_user.full_name %></h1>
 </div>
+<div class="col-sm-6">
+  <% if @rejected_artwork_requests.empty? %>
+      <div class="alert alert-success">
+        <h3>None of your Artwork Requests have been rejected</h3>
+        <p>The art staff appreciates you!</p>
+      </div>
+  <% else %>
+      <div class="alert alert-danger">
+        <h3>You have artwork requests that have been rejected</h3>
+        <ul>
+          <% @rejected_artwork_requests.each do |ar| %>
+              <li><%= link_to ar.order.name, [edit_order_path(ar.order), "#artworks"].join %>
+              </li>
+          <% end %>
+        </ul>
+      </div>
+  <% end %>
+</div>
 
-<% if @order_warnings.empty? %>
-  <div class="alert alert-success">
-    <p>None of your orders appear to have any issues at this time</p>
-  </div>
-<% else %>
-  <div class="alert alert-danger">
-    <h3>You have orders that have issues that need to be addressed</h3>
-    <ul>
-      <% @order_warnings.each do |o| %>
-        <% if o.warnings_count == 0
-          Sunspot.index o
-          next 
-         end %>
-        <li><%= link_to "#{o.name} (#{pluralize(o.warnings_count, 'warning')})", order_warnings_path(o, active_only: 'true') %>
-      </li>
+<div class="col-sm-6">
+    <% if @order_warnings.empty? %>
+      <div class="alert alert-success">
+        <h3>None of your orders have warnings</h3>
+        <p>Pat yourself on the back, <%= @current_user.first_name %>!</p>
+      </div>
+    <% else %>
+      <div class="alert alert-danger">
+        <h3>You have orders that have any that need to be addressed</h3>
+        <ul>
+          <% @order_warnings.each do |o| %>
+            <% if o.warnings_count == 0
+              Sunspot.index o
+              next
+             end %>
+            <li><%= link_to "#{o.name} (#{pluralize(o.warnings_count, 'warning')})", order_warnings_path(o, active_only: 'true') %>
+          </li>
+        <% end %>
+        </ul>
+      </div>
     <% end %>
-    </ul>
-  </div>
-<% end %>
+</div>
 
 <% if !current_user.pending_quote_requests.empty? %>
     <div class="box-info row clear">
