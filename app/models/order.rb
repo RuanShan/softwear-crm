@@ -446,6 +446,9 @@ class Order < ActiveRecord::Base
   def sync_with_production(sync)
     sync[:name]
     sync[deadline: :in_hand_by]
+    if firstname_changed? || lastname_changed?
+      production.customer_name = "#{firstname} #{lastname}"
+    end
   end
 
   def production_jobs_attributes
