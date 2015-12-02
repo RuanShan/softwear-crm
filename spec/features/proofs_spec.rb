@@ -70,6 +70,7 @@ feature 'Proof Features', js: true, proof_spec: true, retry: 3 do
         within("#proof-#{proof.id}") do
           click_link 'Delete'
         end
+        sleep 2
         page.driver.browser.switch_to.alert.accept
         expect(page).to_not have_css("div#proof-#{proof.id}")
       }.to change{ Proof.count }.by(-1)
@@ -226,8 +227,9 @@ feature 'Proof Features', js: true, proof_spec: true, retry: 3 do
           scenario 'I can manager reject all the proofs' do
             visit_edit_order_tab(order, 'proofs')
             click_link 'All Proofs Manager Rejected'
+            sleep 2
             page.driver.browser.switch_to.alert.accept
-            sleep(1.5)
+            sleep 1.5
             close_flash_modal
             navigate_to_tab 'Timeline'
             expect(page).to have_text("#{valid_user.full_name} changed order artwork_state"\
@@ -240,6 +242,7 @@ feature 'Proof Features', js: true, proof_spec: true, retry: 3 do
             visit_edit_order_tab(order, 'proofs')
             within("#proof-#{proof.id}") do
               click_link 'Manager Rejected'
+              sleep 1.5
               page.driver.browser.switch_to.alert.accept
             end
             close_flash_modal
