@@ -1,5 +1,5 @@
 <p><%= activity.owner.full_name rescue "(User Unavailable)" %> changed
-<%= link_to "proof ##{activity.trackable_id}", order_proof_path(activity.trackable.order, activity.trackable)  %>
+<%= link_to "proof ##{activity.trackable_id}", order_proof_path(activity.trackable.try(:order), activity.trackable)  %>
 <b><%= activity.parameters['machine'] %></b> from
   <b><%= activity.parameters['old_state'] %></b> to
   <b><%= activity.parameters['new_state'] %></b> via transition
