@@ -23,6 +23,8 @@ class Job < ActiveRecord::Base
   has_many :shipments, as: :shippable
   has_many :proofs
   has_many :discounts, as: :discountable
+  has_many :print_locations, through: :imprints
+  has_many :imprint_methods, through: :print_locations
 
   accepts_nested_attributes_for :line_items, :imprints, allow_destroy: true
 
@@ -89,6 +91,45 @@ class Job < ActiveRecord::Base
       { state: 'ready_to_order' }
     else
       nil
+    end
+  end
+
+  def self.create_trains_from_artwork_request(job_id, artwork_request_id)
+    Job.find(job_id).create_trains_from_artwork_request(ArtworkRequest.find(artwork_request_id))
+  end
+  def create_trains_from_artwork_request(artwork_request)
+    return unless production?
+
+    imprint_method_names = imprint_methods.pluck(:name)
+    failed_imprint_methods = {}
+
+    digital_print_count = imprint_method_names.select { |im| /Digital\s+Print/ =~ im }.size
+    digital_print_count.times do
+      unless Production::Ar3Train.create(order_id: order.softwear_prod_id, crm_artwork_request_id: artwork_request.id)
+        failed_imprint_methods['Digital Print'] = true
+      end
+    end
+
+    screen_print_count = imprint_method_names.select { |im| /Screen\s+Print/ =~ im }.size
+    screen_print_count.times do
+      unless Production::ScreenTrain.create(order_id: order.softwear_prod_id, crm_artwork_request_id: artwork_request.id)
+        failed_imprint_methods['Screen Print'] = true
+      end
+    end
+
+    embroidery_count = imprint_method_names.select { |im| im.include?('Embroidery') }.size
+    embroidery_count.times do
+      unless Production::DigitizationTrain.create(order_id: order.softwear_prod_id, crm_artwork_request_id: artwork_request.id)
+        failed_imprint_methods['Embroidery'] = true
+      end
+    end
+
+    unless failed_imprint_methods.empty?
+      order.issue_warning(
+        'Job#create_trains_from_artwork_request',
+        "Failed to send trains to production for the following imprint methods: "\
+        "#{failed_imprint_methods.keys.join(', ')}"
+      )
     end
   end
 
@@ -326,14 +367,14 @@ class Job < ActiveRecord::Base
   end
 
   def prod_api_confirm_imprintable_train
-    return if imprintables.empty?  
-    
+    return if imprintables.empty?
+
     unless production.pre_production_trains.map(&:train_class).include?("imprintable_train")
-      message = "API Job missing imprintable train CRM_ORDER(#{order.id}) CRM_JOB(#{id}) PRODUCTION(#{order.softwear_prod_id})=#{production.id}" 
+      message = "API Job missing imprintable train CRM_ORDER(#{order.id}) CRM_JOB(#{id}) PRODUCTION(#{order.softwear_prod_id})=#{production.id}"
       logger.error message
-    
+
       order.warnings << Warning.new(
-        source: 'Production Configuration Report', 
+        source: 'Production Configuration Report',
         message: message
       )
 

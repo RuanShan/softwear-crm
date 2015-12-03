@@ -91,6 +91,10 @@ class ArtworkRequest < ActiveRecord::Base
       artwork_request.order.artwork_requests_complete unless artwork_request.order.missing_artwork_requests?
     end
 
+    after_transition any => :manager_approved do |artwork_request|
+      artwork_request.job_ids.uniq.each { |job_id| Job.delay.create_trains_from_artwork_request(job_id, artwork_request.id) }
+    end
+
     event :assigned_artist do
       transition :unassigned => :pending_artwork
       transition :artwork_request_rejected => :artwork_request_rejected

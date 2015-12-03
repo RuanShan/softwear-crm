@@ -41,6 +41,42 @@ describe ArtworkRequest, artwork_request_spec: true do
         end
       end
     end
+
+    describe 'when approved', artwork_request_approved: true do
+      let!(:order) { create(:order_with_job) }
+      let(:job) { order.jobs.first }
+      let!(:artwork_request) { create(:valid_artwork_request_with_asset_and_artwork) }
+
+      before do
+        job.imprints << create(:valid_imprint).tap do |i|
+          i.print_location.update_attributes imprint_method_id: create(:screen_print_imprint_method).id
+        end
+        job.imprints << create(:valid_imprint).tap do |i|
+          i.print_location.update_attributes imprint_method_id: create(:dtg_imprint_method).id
+        end
+        artwork_request.imprints = job.imprints
+
+        allow(job).to receive(:production?).and_return true
+        allow(Job).to receive(:find).and_return job
+        allow(Job).to receive(:delay).and_return Job
+        allow(ArtworkRequest).to receive(:find).and_return artwork_request
+        allow_any_instance_of(Order).to receive(:softwear_prod_id).and_return 666
+
+        artwork_request.update_column :state, :pending_manager_approval
+      end
+
+      specify 'trains are created based on relevant imprints' do
+        expect(Production::Ar3Train).to receive(:create)
+          .with(order_id: order.softwear_prod_id, crm_artwork_request_id: artwork_request.id)
+        expect(Production::ScreenTrain).to receive(:create)
+          .with(order_id: order.softwear_prod_id, crm_artwork_request_id: artwork_request.id)
+        expect(Production::DigitizationTrain).to_not receive(:create)
+
+        artwork_request.approved_by = create(:user)
+        artwork_request.approved
+        artwork_request.save!
+      end
+    end
   end
 
   context 'after_creation'  do
@@ -65,13 +101,13 @@ describe ArtworkRequest, artwork_request_spec: true do
   end
 
   context '#imprintable_variant_count' do
-     before do
-       jobs = [build_stubbed(:blank_job), build_stubbed(:blank_job), build_stubbed(:blank_job)]
-       allow(jobs.first).to receive(:imprintable_variant_count).and_return(10)
-       allow(jobs[1]).to receive(:imprintable_variant_count).and_return(0)
-       allow(jobs[2]).to receive(:imprintable_variant_count).and_return(20)
-       allow(subject).to receive(:jobs).and_return(jobs)
-     end
+    before do
+      jobs = [build_stubbed(:blank_job), build_stubbed(:blank_job), build_stubbed(:blank_job)]
+      allow(jobs.first).to receive(:imprintable_variant_count).and_return(10)
+      allow(jobs[1]).to receive(:imprintable_variant_count).and_return(0)
+      allow(jobs[2]).to receive(:imprintable_variant_count).and_return(20)
+      allow(subject).to receive(:jobs).and_return(jobs)
+    end
 
     it 'returns the sum of all imprintable line item quantities from the artwork requests jobs' do
       expect(subject.imprintable_variant_count).to eq(30)

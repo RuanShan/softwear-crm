@@ -20,7 +20,7 @@ FactoryGirl.define do
         artwork_request.artwork_request_ink_colors << ArtworkRequestInkColor.new(artwork_request_id: artwork_request.id, ink_color_id: create(:ink_color).id)
       end
 
-      factory:valid_artwork_request_with_artist do
+      factory :valid_artwork_request_with_artist do
         before(:create) do |artwork_request|
           artwork_request.artist = create(:user)
         end 
