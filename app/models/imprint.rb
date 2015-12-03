@@ -56,6 +56,18 @@ class Imprint < ActiveRecord::Base
     counts
   end
 
+  def production_type
+    case imprint_method.try(:name)
+    when /Screen\s+Print/  then 'ScreenPrint'
+    when /Digital\s+Print/ then 'DigitalPrint'
+    when /Embroidery/      then 'EmbroideryPrint'
+    when /Transfer/        then 'TransferPrint'
+    when "Name/Number"     then 'TransferPrint'
+    when "Equipment Sanitizing" then 'EquipmentCleaningPrint'
+    else 'Print'
+    end
+  end
+
   private
 
   def touch_associations

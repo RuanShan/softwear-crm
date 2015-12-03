@@ -75,7 +75,7 @@ class Job < ActiveRecord::Base
         name:            imprint.name,
         description:     imprint.job_and_name,
         count:           imprintable_line_items_total,
-        type:            'Print'
+        type:            imprint.production_type
       }
       attrs[index].delete_if { |_,v| v.nil? }
     end
