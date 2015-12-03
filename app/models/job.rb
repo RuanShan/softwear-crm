@@ -105,21 +105,30 @@ class Job < ActiveRecord::Base
 
     digital_print_count = imprint_method_names.select { |im| /Digital\s+Print/ =~ im }.size
     digital_print_count.times do
-      unless Production::Ar3Train.create(order_id: order.softwear_prod_id, crm_artwork_request_id: artwork_request.id)
+      unless Production::Ar3Train.create(
+        order_id: order.softwear_prod_id,
+        crm_artwork_request_id: artwork_request.id
+      )
         failed_imprint_methods['Digital Print'] = true
       end
     end
 
     screen_print_count = imprint_method_names.select { |im| /Screen\s+Print/ =~ im }.size
     screen_print_count.times do
-      unless Production::ScreenTrain.create(order_id: order.softwear_prod_id, crm_artwork_request_id: artwork_request.id)
+      unless Production::ScreenTrain.create(
+        order_id: order.softwear_prod_id,
+        crm_artwork_request_id: artwork_request.id
+      )
         failed_imprint_methods['Screen Print'] = true
       end
     end
 
     embroidery_count = imprint_method_names.select { |im| im.include?('Embroidery') }.size
     embroidery_count.times do
-      unless Production::DigitizationTrain.create(order_id: order.softwear_prod_id, crm_artwork_request_id: artwork_request.id)
+      unless Production::DigitizationTrain.create(
+        order_id: order.softwear_prod_id,
+        crm_artwork_request_id: artwork_request.id
+      )
         failed_imprint_methods['Embroidery'] = true
       end
     end

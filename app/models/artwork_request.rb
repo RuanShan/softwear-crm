@@ -95,6 +95,10 @@ class ArtworkRequest < ActiveRecord::Base
       artwork_request.job_ids.uniq.each { |job_id| Job.delay.create_trains_from_artwork_request(job_id, artwork_request.id) }
     end
 
+    after_transition :manager_approved => any do |artwork_request|
+      ArtworkRequest.delay.destroy_trains(artwork_request.id)
+    end
+
     event :assigned_artist do
       transition :unassigned => :pending_artwork
       transition :artwork_request_rejected => :artwork_request_rejected
@@ -383,4 +387,12 @@ class ArtworkRequest < ActiveRecord::Base
     artist_id_was.nil? && artist_id_changed? && state == 'unassigned'
   end
 
+  def self.destroy_trains(id)
+    Production::Ar3Train.where(crm_artwork_request_id: id).each(&:destroy)
+    Production::ScreenTrain.where(crm_artwork_request_id: id).each(&:destroy)
+    Production::DigitizationTrain.where(crm_artwork_request_id: id).each(&:destroy)
+  end
+  def destroy_trains
+    self.class.destroy_trains(id)
+  end
 end

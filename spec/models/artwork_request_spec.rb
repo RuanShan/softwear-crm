@@ -42,10 +42,13 @@ describe ArtworkRequest, artwork_request_spec: true do
       end
     end
 
-    describe 'when approved', artwork_request_approved: true do
+    describe 'approval', artwork_request_approved: true do
       let!(:order) { create(:order_with_job) }
       let(:job) { order.jobs.first }
       let!(:artwork_request) { create(:valid_artwork_request_with_asset_and_artwork) }
+      let(:dummy_ar3_1) { double('Ar3Train') }
+      let(:dummy_ar3_2) { double('Ar3Train') }
+      let(:dummy_digitization) { double('DigitizationTrain') }
 
       before do
         job.imprints << create(:valid_imprint).tap do |i|
@@ -59,13 +62,14 @@ describe ArtworkRequest, artwork_request_spec: true do
         allow(job).to receive(:production?).and_return true
         allow(Job).to receive(:find).and_return job
         allow(Job).to receive(:delay).and_return Job
+        allow(ArtworkRequest).to receive(:delay).and_return ArtworkRequest
         allow(ArtworkRequest).to receive(:find).and_return artwork_request
         allow_any_instance_of(Order).to receive(:softwear_prod_id).and_return 666
 
         artwork_request.update_column :state, :pending_manager_approval
       end
 
-      specify 'trains are created based on relevant imprints' do
+      specify 'trains are created based on relevant imprints when approved' do
         expect(Production::Ar3Train).to receive(:create)
           .with(order_id: order.softwear_prod_id, crm_artwork_request_id: artwork_request.id)
         expect(Production::ScreenTrain).to receive(:create)
@@ -74,6 +78,26 @@ describe ArtworkRequest, artwork_request_spec: true do
 
         artwork_request.approved_by = create(:user)
         artwork_request.approved
+        artwork_request.save!
+      end
+
+      specify 'trains are destroyed when un-approved' do
+        expect(dummy_ar3_1).to receive(:destroy)
+        expect(dummy_ar3_2).to receive(:destroy)
+        expect(dummy_digitization).to receive(:destroy)
+
+        expect(Production::Ar3Train).to receive(:where)
+          .with(crm_artwork_request_id: artwork_request.id)
+          .and_return [dummy_ar3_1, dummy_ar3_2]
+        expect(Production::DigitizationTrain).to receive(:where)
+          .with(crm_artwork_request_id: artwork_request.id)
+          .and_return [dummy_digitization]
+        expect(Production::ScreenTrain).to receive(:where)
+          .with(crm_artwork_request_id: artwork_request.id)
+          .and_return []
+
+        artwork_request.update_column :state, :manager_approved
+        artwork_request.unassigned_artist
         artwork_request.save!
       end
     end
