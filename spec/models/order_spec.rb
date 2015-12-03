@@ -72,6 +72,7 @@ describe Order, order_spec: true do
 
       before do
         allow_any_instance_of(Order).to receive(:enqueue_create_production_order, &:create_production_order)
+        allow_any_instance_of(Job).to receive(:create_trains_from_artwork_request)
       end
 
       it 'creates a Softwear Production order', create_production_order: true, pending: 'Todo for nigel' do

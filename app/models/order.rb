@@ -430,6 +430,8 @@ class Order < ActiveRecord::Base
       job.imprints.each do |imprint|
         imprint.update_column :softwear_prod_id, imprint_hash[imprint.id].id
       end
+
+      job.artwork_requests.each(&job.method(:create_trains_from_artwork_request))
     end
   end
 
