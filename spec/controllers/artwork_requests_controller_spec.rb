@@ -12,8 +12,7 @@ describe ArtworkRequestsController, js: true, artwork_request_spec: true do
   describe 'POST create' do
     let(:imprint_method) { create(:valid_imprint_method_with_color_and_location) }
     let(:artwork_request) { attributes_for(:valid_artwork_request)
-      .merge(artist_id: create(:user).id,
-             salesperson_id: create(:alternate_user).id,
+      .merge(salesperson_id: create(:alternate_user).id,
              imprint_ids: order.imprint_ids,
              ink_color_ids: imprint_method.ink_color_ids) }
 
