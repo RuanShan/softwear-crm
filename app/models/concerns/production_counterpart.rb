@@ -5,7 +5,7 @@ module ProductionCounterpart
     cattr_accessor :production_class
     self.production_class = "Production::#{name}".constantize
 
-    after_save :enqueue_update_production, if: :production?
+    before_save :enqueue_update_production, if: :should_update_production?
 
     try :warn_on_failure_of, :update_production unless Rails.env.test?
 
@@ -52,6 +52,10 @@ module ProductionCounterpart
     return if base.blank? || !production?
 
     "#{base}/#{model_name.collection}/#{softwear_prod_id}"
+  end
+
+  def should_update_production?
+    production? && valid?
   end
 
   def update_production
