@@ -21,6 +21,7 @@ class SearchFormBuilder
     @current_user = current_user
     @locals       = locals
     @field_count  = 0
+    @field_initial_values = Hash.new(0)
   end
 
   # Remember to define self.permitted_search_locals in your controller
@@ -270,8 +271,18 @@ class SearchFormBuilder
   def hash_initial_value(field_name)
     return nil unless @last_search.is_a?(Hash)
 
+    find_count = 0
     traverse @last_search[model_name] do |k,v|
-      return v == 'nil' ? nil : v if k.to_s == field_name.to_s
+      # @field_initial_values
+      if k.to_s == field_name.to_s
+        if @field_initial_values[k.to_s] > find_count
+          find_count += 1
+          next
+        end
+
+        @field_initial_values[k.to_s] += 1
+        return v == 'nil' ? nil : v
+      end
     end
   end
 

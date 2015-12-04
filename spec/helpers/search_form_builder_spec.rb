@@ -6,15 +6,15 @@ describe 'SearchFormBuilder', search_spec: true do
   let!(:object) { mock_model('DummyObject', name: 'test', do_it: true) }
 
   let(:dummy_object_class) { object.class }
-  
+
   let!(:f) do
     test_form_for object, builder: SearchFormBuilder do |_name, object, buffer|
       [object.class, nil, buffer]
     end
   end
-  
+
   let(:template) { f.instance_variable_get(:@template) }
-  
+
   let(:query) do
     build_stubbed(:search_query).tap do |query|
       allow(query)
@@ -98,7 +98,7 @@ describe 'SearchFormBuilder', search_spec: true do
       it 'calls text_area_tag with name as search[model][fulltext]' do
         expect(template).to receive(:text_area_tag)
           .with('search[dummy_object][fulltext]', anything, anything)
-          
+
         f.fulltext textarea: true
       end
     end
@@ -142,7 +142,7 @@ describe 'SearchFormBuilder', search_spec: true do
 
     it 'renders option tags for each given select option' do
       result = f.select(:name, options)
-      
+
       options.each do |option|
         expect(result)
           .to include %(<option value="#{option}">#{option}</option>)
@@ -272,9 +272,9 @@ describe 'SearchFormBuilder', search_spec: true do
   end
 
   describe '@field_count' do
-    %i(text_field text_area number_field 
+    %i(text_field text_area number_field
        select yes_or_no check_box).each do |method_name|
-      
+
       it "should be incremented by ##{method_name}" do
         before = f.instance_variable_get(:@field_count)
         if method_name == :select
