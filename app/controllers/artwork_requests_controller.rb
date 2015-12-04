@@ -65,14 +65,17 @@ class ArtworkRequestsController < InheritedResources::Base
     @unassigned = ArtworkRequest.search do
       with :state, :unassigned
     end.results
+      .reject(&:deleted_at)
 
     @pending_artwork = ArtworkRequest.search do
       with :state, [:pending_artwork, :artwork_rejected]
     end.results
+      .reject(&:deleted_at)
 
     @pending_manager_approval = ArtworkRequest.search do
       with :state, :pending_manager_approval
     end.results
+      .reject(&:deleted_at)
 
     @ready_to_proof = Order.search do
       with :artwork_state, [:pending_proofs, :pending_manager_approval, :pending_proof_submission]

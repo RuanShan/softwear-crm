@@ -21,6 +21,11 @@
           <br clear="all" />
         </div>
       <% end %>
+      <% if order.nil? && artwork_request.order.nil? %>
+        <div class="alert alert-danger">
+          This artwork request has been removed from its order and should be deleted.
+        </div>
+      <% end %>
     </div>
 
     <div class="row">
@@ -68,8 +73,10 @@
 
     <div class="row">
       <div class="col-sm-12">
-        <%= link_to edit_order_artwork_request_path(order, artwork_request), class: 'btn btn-primary' do %>
-          <i class="glyphicon glyphicon-pencil"></i> Edit
+        <% unless order.nil? && artwork_request.order.nil? %>
+          <%= link_to edit_order_artwork_request_path(order || artwork_request.order, artwork_request), class: 'btn btn-primary' do %>
+            <i class="glyphicon glyphicon-pencil"></i> Edit
+          <% end %>
         <% end %>
 
         <% if params[:disable_buttons].nil? %>
@@ -118,9 +125,11 @@
           <% end %>
         <% end %>
 
-        <%= link_to order_artwork_request_path(order, artwork_request), class: 'btn btn-danger',
-             method: :delete, remote: true do %>
-          <i class="glyphicon glyphicon-remove-circle"></i> Delete
+        <% unless order.nil? && artwork_request.order.nil? %>
+          <%= link_to order_artwork_request_path(order || artwork_request.order, artwork_request), class: 'btn btn-danger',
+               method: :delete, remote: true do %>
+            <i class="glyphicon glyphicon-remove-circle"></i> Delete
+          <% end %>
         <% end %>
 
       </div><!-- end of col-sm-12 -->
