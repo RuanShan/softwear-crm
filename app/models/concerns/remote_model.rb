@@ -14,7 +14,12 @@ module RemoteModel
 
         begin
           begin
-            self.site = api_settings["#{slug}_endpoint"] || "http://invalid-#{slug.to_s.dasherize}.com/api"
+            site = api_settings["#{slug}_endpoint"] || "http://invalid-#{slug.to_s.dasherize}.com/api"
+            if /\w+Train$/ =~ name
+              self.site = site + '/trains'
+            else
+              self.site = site
+            end
 
           rescue ActiveRecord::StatementInvalid => e
             Rails.logger.error "WARNING: *********************************************"
