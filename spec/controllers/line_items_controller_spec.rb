@@ -43,12 +43,12 @@ describe LineItemsController, line_item_spec: true do
 
       it 'only fires one public activity activity', activity_spec: true do
         PublicActivity.with_tracking do
-          expect(PublicActivity::Activity.all.size).to eq 0
+          initial_size = PublicActivity::Activity.all.size
           post :create, format: :json,
                         job_id: job.id,
                         imprintable_id: shirt.id,
                         color_id: white.id
-          expect(PublicActivity::Activity.all.size).to eq 1
+          expect(PublicActivity::Activity.all.size).to eq initial_size + 1
         end
       end
 
@@ -93,9 +93,9 @@ describe LineItemsController, line_item_spec: true do
 
       it 'only fires one activity', activity_spec: true do
         PublicActivity.with_tracking do
-          expect(PublicActivity::Activity.all.count).to eq 0
+          initial_size = PublicActivity::Activity.all.size
           delete :destroy, format: :json, id: job.line_items.map(&:id).join('/')
-          expect(PublicActivity::Activity.all.count).to eq 1
+          expect(PublicActivity::Activity.all.size).to eq initial_size + 1
         end
       end
     end
