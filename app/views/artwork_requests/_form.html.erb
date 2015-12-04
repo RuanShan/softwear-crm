@@ -31,7 +31,7 @@
       prepend: "$", label: 'Amount Paid for Artwork',
       help: "Did the customer pay for the artwork? This does not include deposits paid to get artwork made before quotes become paid orders." %>
 
-      <%= f.hidden_field :salesperson_id, value: current_user.id %>
+      <%= f.hidden_field :salesperson_id, value: current_user.id if f.object.new_record? %>
 
     <% unless f.object.new_record? %>
       <%= f.select :artist_id,
