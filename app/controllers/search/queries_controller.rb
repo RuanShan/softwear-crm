@@ -152,6 +152,8 @@ module Search
     # inside the context of the search proc if passed as a block parameter.
     #
     # Hopefully that makes sense!
+    #
+    # UPDATE none of this makes sense. Sorry folks.
     def compose_search_proc(search)
       default_fulltext = search['fulltext']
 
@@ -200,7 +202,11 @@ module Search
 
       return if field_is_nil? string_value
 
-      field       = Field[model, field_name]
+      field = Field[model, field_name]
+      if field.nil?
+        Rails.logger.error "Couldn't find search field #{model}##{field_name}"
+        return
+      end
       filter_type = FilterType.of field
       field_value = filter_type.assure_value(string_value)
 
