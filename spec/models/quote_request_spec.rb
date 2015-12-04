@@ -364,7 +364,7 @@ describe QuoteRequest, quote_request_spec: true, story_78: true do
     end
   end
 
-  describe 'when status is changed', story_271: true do
+  describe 'when status is changed', no_ci: true, story_271: true do
     it 'creates a public activity with params s: status_changed_from/to', retry: 2 do
       quote_request.status = 'requested_info'
       PublicActivity.with_tracking do
