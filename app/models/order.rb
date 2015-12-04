@@ -346,6 +346,10 @@ class Order < ActiveRecord::Base
     "#{firstname} #{lastname}"
   end
 
+  def full_name_changed?
+    firstname_changed? || lastname_changed?
+  end
+
   def payment_total
     payments.reduce(0) do |total, p|
       p && !p.is_refunded? ? total + p.amount : total
@@ -447,10 +451,8 @@ class Order < ActiveRecord::Base
 
   def sync_with_production(sync)
     sync[:name]
-    sync[deadline: :in_hand_by]
-    if firstname_changed? || lastname_changed?
-      production.customer_name = "#{firstname} #{lastname}"
-    end
+    sync[deadline:      :in_hand_by]
+    sync[customer_name: :full_name]
   end
 
   def production_jobs_attributes

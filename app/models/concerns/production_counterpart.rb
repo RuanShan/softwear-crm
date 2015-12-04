@@ -11,7 +11,7 @@ module ProductionCounterpart
 
     if Rails.env.production?
       def enqueue_update_production
-        delay(queue: 'api').update_production
+        delay(queue: 'api').update_production(update_production_fields)
       end
     else
       alias_method :enqueue_update_production, :update_production
@@ -45,6 +45,7 @@ module ProductionCounterpart
 
   def sync_with_production(sync)
     # Override this!
+    # See order.rb, job.rb, or imprint.rb for examples.
   end
 
   def production_url
@@ -58,8 +59,23 @@ module ProductionCounterpart
     production? && valid?
   end
 
-  def update_production
-    changed = false
+  def update_production(fields = nil)
+    fields = update_production_fields if fields.nil?
+    return if fields.empty?
+
+    fields.each do |f|
+      p_field, c_field = f.first
+      production.send("#{p_field}=", send(c_field))
+    end
+
+    @production.save!
+    @production = nil
+  end
+
+  protected
+
+  def update_production_fields
+    results = []
 
     sync_with_production(->(field) {
       if field.is_a?(Hash)
@@ -71,12 +87,10 @@ module ProductionCounterpart
 
       field_was_changed = "#{c_field}_changed?"
       if !respond_to?(field_was_changed) || send(field_was_changed)
-        production.send("#{p_field}=", send(c_field))
-        changed = true
+        results << { p_field => c_field }
       end
     })
 
-    @production.save! if changed
-    @production = nil
+    results
   end
 end
