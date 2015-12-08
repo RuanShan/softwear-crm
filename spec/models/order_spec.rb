@@ -96,7 +96,7 @@ describe Order, order_spec: true do
         expect(Production::Imprint.where(softwear_crm_id: imprint_1_2.id)).to be_any
         expect(Production::Imprint.where(softwear_crm_id: imprint_2_1.id)).to be_any
 
-        expect(order.production.name).to eq order.name
+        expect(order.production.name).to eq order.name_in_production
         expect(job_1.production.name).to eq job_1.name
         expect(job_2.production.name).to eq job_2.name
         expect(imprint_1_1.production.name).to eq imprint_1_1.name
@@ -120,13 +120,13 @@ describe Order, order_spec: true do
 
   describe 'with a production order', story_932: true do
     let!(:prod_order) { create(:production_order) }
-    let!(:order) { create(:order, softwear_prod_id: prod_order.id) }
+    let!(:order) { create(:order, softwear_prod_id: prod_order.id, firstname: 'first', lastname: 'last') }
 
     it 'updates the name and deadline in production when changed' do
       order.name = "NEW order name"
       order.save!
 
-      expect(prod_order.reload.name).to eq "NEW order name"
+      expect(prod_order.reload.name).to eq "first last - NEW order name"
     end
 
     specify '#create_production_order(force: false) fails', story_961: true do

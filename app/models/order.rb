@@ -449,8 +449,16 @@ class Order < ActiveRecord::Base
     alias_method :enqueue_create_production_order, :create_production_order
   end
 
+  def name_in_production
+    "#{full_name} - #{name}"
+  end
+
+  def name_in_production_changed?
+    name_changed? || full_name_changed?
+  end
+
   def sync_with_production(sync)
-    sync[:name]
+    sync[name:          :name_in_production]
     sync[deadline:      :in_hand_by]
     sync[customer_name: :full_name]
   end
