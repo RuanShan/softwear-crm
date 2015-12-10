@@ -4,7 +4,7 @@ FactoryGirl.define do
     factory :valid_payment do
       order { |o| o.association(:order) }
       store { |s| s.association(:valid_store) }
-      amount '10.00'
+      amount '0.00'
       payment_method Payment::VALID_PAYMENT_METHODS.key('Cash') 
       salesperson { |p| p.association(:user) } 
       
@@ -12,7 +12,11 @@ FactoryGirl.define do
       end
 
       factory :swiped_credit_card_payment do
-        payment_method Payment::VALID_PAYMENT_METHODS.key('Swiped Credit Card') 
+        payment_method Payment::VALID_PAYMENT_METHODS.key('Credit Card') 
+      end
+
+      factory :credit_card_payment do
+        payment_method Payment::VALID_PAYMENT_METHODS.key('Credit Card') 
       end
 
       factory :check_payment do

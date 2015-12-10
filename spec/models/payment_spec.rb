@@ -15,27 +15,41 @@ describe Payment, payment_spec: true do
     it { is_expected.to validate_presence_of(:payment_method) }
     it { is_expected.to validate_presence_of(:salesperson) }
     it { is_expected.to validate_presence_of(:amount) }
-    
-    context 'when payment_method = 5' do 
+
+    context 'when payment_method = 5' do
       before { subject.payment_method = 5 }
-      
+
       it { is_expected.to validate_presence_of :t_name }
       it { is_expected.to validate_presence_of :t_company_name }
       it { is_expected.to validate_presence_of :tf_number }
     end
-    
-    context 'when payment_method = 4' do 
+
+    context 'when payment_method = 4' do
       before { subject.payment_method = 4 }
-      
+
       it { is_expected.to validate_presence_of :pp_transaction_id }
     end
-    
-    context 'when payment_method = 6' do 
+
+    context 'when payment_method = 6' do
       before { subject.payment_method = 6 }
-       
+
       it { is_expected.to validate_presence_of :t_name }
       it { is_expected.to validate_presence_of :t_company_name }
       it { is_expected.to validate_presence_of :t_description }
+    end
+
+    context 'when the amount overflows the order balance', amount_overflow: true do
+      let!(:order) { create(:order_with_job) }
+      subject { build(:credit_card_payment, order_id: order.id, amount: 5.00) }
+
+      before do
+        allow_any_instance_of(Order).to receive(:balance_excluding).and_return 3.50
+      end
+
+      it 'is invalid' do
+        expect(subject).to_not be_valid
+        expect(subject.errors[:amount]).to include "overflows the order's balance by $1.50"
+      end
     end
   end
 

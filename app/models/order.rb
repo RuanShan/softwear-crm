@@ -293,7 +293,11 @@ class Order < ActiveRecord::Base
   end
 
   def balance
-    balance = total - payment_total
+    balance_excluding([])
+  end
+
+  def balance_excluding(exclude)
+    balance = total - payment_total_excluding(exclude)
     balance.round(2)
   end
 
@@ -351,8 +355,18 @@ class Order < ActiveRecord::Base
   end
 
   def payment_total
+    payment_total_excluding([])
+  end
+
+  def payment_total_excluding(exclude)
+    exclude = exclude.map { |e| e.is_a?(Fixnum) ? e : e.id }
+
     payments.reduce(0) do |total, p|
-      p && !p.is_refunded? ? total + p.amount : total
+      next total if p.nil?
+      next total if exclude.include?(p.id)
+      next total if p.is_refunded?
+
+      p.amount
     end
   end
 

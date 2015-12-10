@@ -1,13 +1,14 @@
 class Payment < ActiveRecord::Base
+  include ActionView::Helpers::NumberHelper
   include PublicActivity::Common
 
   VALID_PAYMENT_METHODS = {
     1 => 'Cash',
-    2 => 'Swiped Credit Card',
-    3 => 'Check', 
-    4 => 'PayPal', 
-    5 => 'Trade First', 
-    6 => 'Trade', 
+    2 => 'Credit Card',
+    3 => 'Check',
+    4 => 'PayPal',
+    5 => 'Trade First',
+    6 => 'Trade',
     7 => 'Wire Transfer'
   }
 
@@ -28,11 +29,23 @@ class Payment < ActiveRecord::Base
   belongs_to :salesperson, class_name: User
 
   validates :store, :payment_method, :amount, :salesperson, presence: true
-  validates :pp_transaction_id, presence: true, if: Proc.new{ |p| p.payment_method == 4 || p.payment_method == 7 }
-  validates :t_name, :t_company_name, :tf_number, presence: true, if: Proc.new{ |p| p.payment_method == 5 }
-  validates :t_name, :t_company_name, :t_description, presence: true, if: Proc.new{ |p| p.payment_method == 6 }
+  validates :pp_transaction_id, presence: true, if: -> p { p.payment_method == 4 || p.payment_method == 7 }
+  validates :t_name, :t_company_name, :tf_number, presence: true, if: -> p { p.payment_method == 5 }
+  validates :t_name, :t_company_name, :t_description, presence: true, if: -> p { p.payment_method == 6 }
+  validate :amount_doesnt_overflow_order_balance
 
   def is_refunded?
     refunded
+  end
+
+  private
+
+  def amount_doesnt_overflow_order_balance
+    return if order_id.blank?
+
+    new_balance = order.balance_excluding(self) - amount
+    if new_balance < 0
+      errors.add(:amount, "overflows the order's balance by #{number_to_currency(-new_balance)}")
+    end
   end
 end
