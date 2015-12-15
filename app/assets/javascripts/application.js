@@ -41,5 +41,6 @@
 //= require jquery.minicolors
 //= require list
 //= require list.fuzzysearch
+//= require jquery/jquery.creditCardValidator.js
 
 //= require_tree .

@@ -20,6 +20,19 @@ class Payment < ActiveRecord::Base
     7 => [:pp_transaction_id]
   }
 
+  CREDIT_CARD_TYPES = {
+    amex:                      'American Express',
+    diners_club_carte_blanche: 'Diners Club Carte Blanche',
+    diners_club_international: 'Diners Club International',
+    mastercard:                'MasterCard',
+    discover:                  'Discover Card',
+    jcp:                       'JCB',
+    laser:                     'Laser',
+    maestro:                   'Maestro',
+    visa:                      'Visa',
+    visa_electron:             'Visa electron'
+  }
+
   acts_as_paranoid
 
   default_scope { order(:created_at) }

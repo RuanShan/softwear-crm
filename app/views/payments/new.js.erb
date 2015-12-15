@@ -5,6 +5,84 @@ var setContent = function() {
   $('#payment-form').data('current', "<%=j params[:payment_method] %>");
   setTimeout(function() { $('#payment-form').collapse('show'); }, 100);
   $('#payment-form').off('hidden.bs.collapse', setContent);
+
+  <% if params[:payment_method].to_i == Payment::VALID_PAYMENT_METHODS.key('Credit Card') %>
+  var updateIcon = function(type) {
+    var icon = $('#credit-card-icon');
+    var iconPostfix = type.replace(/_/g, '-');
+    <% # Classes for each credit card type are defined in orders.css.scss %>
+    icon.prop('class', "input-group-addon cc-icon cc-icon-"+iconPostfix);
+  };
+
+  $('#payment_cc_number').validateCreditCard(function(result) {
+    if (result.card_type) {
+      <% # Update card type automatically %>
+      $('#payment_cc_type').val(result.card_type.name);
+      updateIcon(result.card_type.name);
+    }
+    else {
+      <% # Cannot infer card type %>
+      $('#payment_cc_type').val('null');
+      updateIcon('empty');
+    }
+
+    var statusCheck = $('#credit-card-status');
+    var statusWarning = $('#credit-card-warning');
+
+    if (result.luhn_valid) {
+      <% # Set status icon to check mark %>
+      if (statusCheck.hasClass('fa-times')) {
+        statusCheck.removeClass('fa-times');
+        statusCheck.addClass('fa-check');
+      }
+    }
+    else {
+      <% # Set status icon to X %>
+      if (statusCheck.hasClass('fa-check')) {
+        statusCheck.removeClass('fa-check');
+        statusCheck.addClass('fa-times');
+      }
+    }
+    if (result.length_valid && !result.luhn_valid) {
+      <% # Credit card is the right length but appears invalid %>
+      statusWarning.html('Double check that number! <br />');
+      statusWarning.show();
+    }
+    else {
+      statusWarning.text('');
+      statusWarning.hide();
+    }
+  });
+
+  <% # Auto format expiration date %>
+  var expLastVal = '';
+  $('#payment_cc_expiration').on('input', function(event) {
+    var val = event.target.value;
+    if (val.length === 2 && val.length > expLastVal.length)
+      $(this).val(val + '/');
+
+    expLastVal = $(this).val();
+  });
+
+  <% # Auto format card number %>
+  var numLastVal = '';
+  $('#payment_cc_number').on('input', function(event) {
+    var val = event.target.value;
+    var valNoSpace = val.replace(/\s+/g, '');
+    if ((valNoSpace.length % 4) === 0 && val.length > numLastVal.length)
+      if (val.length < 19)
+        $(this).val(val + ' ');
+
+    numLastVal = $(this).val();
+  });
+
+  <% # Update card icon when manually selecting card type %>
+  $('#payment_cc_type').change(function(event) {
+    if (event.target.value == null) return;
+    updateIcon(event.target.value);
+  });
+
+  <% end %>
 }
 
 if ($('#payment-form').data('current') != null) {

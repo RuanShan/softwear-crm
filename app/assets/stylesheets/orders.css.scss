@@ -135,3 +135,52 @@ ul.shipments-list {
   }
 
 }
+
+.cc-exp {
+  float: left;
+  width: 60%;
+}
+
+.cc-cvc {
+  float: right;
+  width: 40%;
+}
+
+.cc-icon {
+  background-size: cover;
+  background-repeat: no-repeat;
+  width: 53px;
+}
+.cc-icon-empty {
+  background-image: image-url("creditcard/empty-curved-64px.png")
+}
+.cc-icon-amex {
+  background-image: image-url("creditcard/american-express-curved-64px.png")
+}
+.cc-icon-diners-club-carte-blanche {
+  background-image: image-url("creditcard/empty-curved-64px.png")
+}
+.cc-icon-diners-club-international {
+  background-image: image-url("creditcard/empty-curved-64px.png")
+}
+.cc-icon-mastercard {
+  background-image: image-url("creditcard/mastercard-curved-64px.png")
+}
+.cc-icon-discover {
+  background-image: image-url("creditcard/discover-curved-64px.png")
+}
+.cc-icon-jcp {
+  background-image: image-url("creditcard/empty-curved-64px.png")
+}
+.cc-icon-laser {
+  background-image: image-url("creditcard/empty-curved-64px.png")
+}
+.cc-icon-maestro {
+  background-image: image-url("creditcard/maestro-curved-64px.png")
+}
+.cc-icon-visa {
+  background-image: image-url("creditcard/visa-curved-64px.png")
+}
+.cc-icon-visa-electron {
+  background-image: image-url("creditcard/visa-electron-curved-64px.png")
+}

@@ -10,7 +10,7 @@
 
     <p><%= f.label :salesperson %>
     </p>
-    
+
     <p><%= @current_user.full_name %>
     <%= link_to '(Not You? Sign Out)', destroy_user_session_path, class: 'md-trigger',
                 method: :delete, 'data-model'=>'logout-modal-alt' %>
@@ -25,21 +25,55 @@
     <%= f.text_field :amount, prepend: '$' %>
 
     <% if english_payment_method == 'Check' %>
-        <%= f.text_field :check_dl_no, label: 'Customer Drivers License' %>
-        <%= f.text_field :check_phone_no, label: 'Customer Phone Number' %>
+      <%= f.text_field :check_dl_no, label: 'Customer Drivers License' %>
+      <%= f.text_field :check_phone_no, label: 'Customer Phone Number' %>
+
     <% elsif english_payment_method == 'PayPal' || payment_method == 'Wire Transfer' %>
-        <%= f.text_field :pp_transaction_id, label: 'Transaction ID' %>
+      <%= f.text_field :pp_transaction_id, label: 'Transaction ID' %>
+
     <% elsif english_payment_method == 'Trade First' %>
-        <%= f.text_field :t_name, label: 'Trade First Cardmember Name' %>
-        <%= f.text_field :t_company_name, label: 'Trade First Company Name' %>
-        <%= f.text_field :tf_number, label: 'Trade First Card Number' %>
+      <%= f.text_field :t_name, label: 'Trade First Cardmember Name' %>
+      <%= f.text_field :t_company_name, label: 'Trade First Company Name' %>
+      <%= f.text_field :tf_number, label: 'Trade First Card Number' %>
+
     <% elsif english_payment_method == 'Trade' %>
-        <%= f.text_field :t_name, label: 'Trade Partner Name' %>
-        <%= f.text_field :t_company_name, label: 'Trade Partner Company' %>
-        <%= f.text_area :t_description, label: 'Description of traded goods' %>
+      <%= f.text_field :t_name, label: 'Trade Partner Name' %>
+      <%= f.text_field :t_company_name, label: 'Trade Partner Company' %>
+      <%= f.text_area :t_description, label: 'Description of traded goods' %>
+
+    <% elsif english_payment_method == 'Credit Card' %>
+      <div class='form-group well'>
+        <%= f.text_field :cc_name, label: 'Name on Card', value: @payment.cc_name || @order.full_name %>
+        <%= f.text_field :cc_company, label: 'Company', value: @payment.cc_company || @order.full_name %>
+        <%= f.label :cc_number do %>
+          Card Number <i id='credit-card-status' class='fa fa-times'></i>
+        <% end %>
+
+        <div class='input-group'>
+          <div class='input-group-addon cc-icon cc-icon-empty' id='credit-card-icon'>
+          </div>
+          <%= f.text_field :cc_number, hide_label: true %>
+        </div>
+        <div class='text-danger' id='credit-card-warning' style='display: none;'>
+        </div>
+
+        <%= f.select :cc_type, Payment::CREDIT_CARD_TYPES.to_a.map(&:reverse), include_blank: true, label: 'Card Type' %>
+        <div class='form-inline'>
+          <div class='input-group cc-exp'>
+            <div class='input-group-addon'><%= f.label :cc_expiration, 'Expiration' %></div>
+            <%= f.text_field :cc_expiration, label: 'Expiration', hide_label: true, placeholder: 'MM/YY', maxlength: 5 %>
+          </div>
+          <div class='input-group cc-cvc'>
+            <div class='input-group-addon'><%= f.label :cc_cvc, 'CVC' %></div>
+            <%= f.text_field :cc_cvc, label: 'CVC', hide_label: true, maxlength: 4 %>
+          </div>
+        </div>
+
+        <div class='clearfix'></div>
+      </div>
     <% end %>
 
-    <%= f.submit 'Apply Payment', class: 'btn btn-success', id: 'submit_payment_button', 
+    <%= f.submit 'Apply Payment', class: 'btn btn-success', id: 'submit_payment_button',
       data: {confirm: 'Are you sure you would like to add this payment?'} %>
 
   <% end %>

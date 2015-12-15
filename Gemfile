@@ -53,7 +53,7 @@ group :test do
   gem 'rspec-retry'
   gem 'email_spec'
   gem 'selenium-webdriver'
-  gem 'shoulda-matchers'
+  gem 'shoulda-matchers', '2.8.0'
 end
 # === END SOFTWEAR LIB GEMS === #
 

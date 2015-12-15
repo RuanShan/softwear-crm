@@ -617,7 +617,7 @@ DEPENDENCIES
   sass-rails
   sdoc
   selenium-webdriver
-  shoulda-matchers
+  shoulda-matchers (= 2.8.0)
   sidekiq
   sidekiq-failures!
   sidekiq-status
