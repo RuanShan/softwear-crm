@@ -45,27 +45,26 @@
       <div class='form-group well'>
         <%= f.text_field :cc_name, label: 'Name on Card', value: @payment.cc_name || @order.full_name %>
         <%= f.text_field :cc_company, label: 'Company', value: @payment.cc_company || @order.full_name %>
-        <%= f.label :cc_number do %>
-          Card Number <i id='credit-card-status' class='fa fa-times'></i>
-        <% end %>
 
-        <div class='input-group'>
-          <div class='input-group-addon cc-icon cc-icon-empty' id='credit-card-icon'>
+        <%= f.form_group :cc_number,
+          label: { text: "Card Number <i id='credit-card-status' class='fa fa-times'></i>".html_safe } do %>
+          <div class='input-group'>
+            <span class='input-group-addon cc-icon cc-icon-empty' id='credit-card-icon'>
+            </span>
+            <% # There's no way to omit the label with bootstrap_form, so we use text_field_tag here.. %>
+            <%= text_field_tag 'payment[cc_number]', nil, class: 'form-control' %>
           </div>
-          <%= f.text_field :cc_number, hide_label: true %>
-        </div>
+        <% end %>
         <div class='text-danger' id='credit-card-warning' style='display: none;'>
         </div>
 
         <%= f.select :cc_type, Payment::CREDIT_CARD_TYPES.to_a.map(&:reverse), include_blank: true, label: 'Card Type' %>
         <div class='form-inline'>
-          <div class='input-group cc-exp'>
-            <div class='input-group-addon'><%= f.label :cc_expiration, 'Expiration' %></div>
-            <%= f.text_field :cc_expiration, label: 'Expiration', hide_label: true, placeholder: 'MM/YY', maxlength: 5 %>
+          <div class='cc-exp'>
+            <%= f.text_field :cc_expiration, label: 'Expiration', hide_label: true, placeholder: 'MM/YY', size: 5, maxlength: 5, prepend: '<strong>Expiration</strong>'.html_safe %>
           </div>
-          <div class='input-group cc-cvc'>
-            <div class='input-group-addon'><%= f.label :cc_cvc, 'CVC' %></div>
-            <%= f.text_field :cc_cvc, label: 'CVC', hide_label: true, maxlength: 4 %>
+          <div class='cc-cvc'>
+            <%= f.text_field :cc_cvc, label: 'CVC', hide_label: true, size: 4, maxlength: 4, prepend: '<strong>CVC</strong>'.html_safe %>
           </div>
         </div>
 

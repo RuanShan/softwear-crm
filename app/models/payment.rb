@@ -48,6 +48,7 @@ class Payment < ActiveRecord::Base
   validates :t_name, :t_company_name, :t_description, presence: true, if: -> p { p.payment_method == 6 }
   validates :cc_number, :cc_name, presence: true, if: :credit_card?
   validate :amount_doesnt_overflow_order_balance
+  validate :credit_card_is_valid, if: :credit_card?
 
   # NOTE These are all transient and only ever exist on the instance of a CC payment being made
   attr_reader :actual_cc_number
@@ -64,6 +65,7 @@ class Payment < ActiveRecord::Base
 
   def cc_number=(new_cc_number)
     return super if new_cc_number.blank?
+    return super if /x+/ =~ new_cc_number
 
     stored_value = ''
     new_cc_number.each_char.with_index do |c, i|
@@ -82,7 +84,53 @@ class Payment < ActiveRecord::Base
     super(stored_value)
   end
 
+  def credit_card
+    return @credit_card if @credit_card
+    return if actual_cc_number.blank? || cc_expiration.blank? || cc_cvc.blank?
+
+    # (first_name: nonwhitespace)(whitespace)(last_name: nonwhitespace)
+    /^(?<first_name>\S+)\s+(?<last_name>.+)$/ =~ cc_name
+    # (month: 1 or 2 digits)(slash)(year: 2 digits)
+    /(?<month>\d\d?)\/(?<year>\d\d)/ =~ cc_expiration
+
+    current_year = Time.now.year.to_s
+    if current_year.size > 4
+      raise "8000 years have past since the creation of this software!!!"
+    end
+    # "20" from current year + "19" (for example) from input value for "2019"
+    year = current_year[0...2] + year
+
+    @credit_card = ActiveMerchant::Billing::CreditCard.new(
+      first_name:         first_name,
+      last_name:          last_name,
+      number:             actual_cc_number.gsub(/\s+/, ''),
+      month:              month,
+      year:               year,
+      verification_value: cc_cvc
+    )
+  end
+
   private
+
+  def credit_card_is_valid
+    if credit_card.nil?
+      errors.add(:cc_expiration, 'required') if cc_expiration.blank?
+      errors.add(:cc_cvc, 'required') if cc_cvc.blank?
+      errors.add(:cc_number, 'must be re-entered') if /x+/ =~ cc_number
+      return
+    end
+
+    card_errors = credit_card.validate
+    unless card_errors.empty?
+      if card_errors[:year] || card_errors[:month]
+        errors.add(:cc_expiration, [card_errors.delete(:year), card_errors.delete(:month)].compact.uniq)
+      end
+      unless card_errors.empty?
+        errors.add(:cc_number, card_errors.to_a.map { |e| "#{e[0]} #{e[1]}" }.join(', '))
+      end
+      return
+    end
+  end
 
   def amount_doesnt_overflow_order_balance
     return if order_id.blank? || amount.blank?

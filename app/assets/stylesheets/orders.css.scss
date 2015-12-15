@@ -86,7 +86,7 @@ ul.shipments-list {
 
 .imprintable-order-sheet-table {
   width: 100%;
-  
+
 
   th, td {
     text-align: center;
@@ -96,7 +96,7 @@ ul.shipments-list {
 
  .size-col {
     width: 50px;
-  } 
+  }
 }
 
 .order-invoice {
@@ -114,7 +114,7 @@ ul.shipments-list {
     margin: 0;
     text-align: left;
   }
-   
+
   .page-heading {
     margin: 6px;
     padding: 6px;
@@ -137,13 +137,25 @@ ul.shipments-list {
 }
 
 .cc-exp {
-  float: left;
-  width: 60%;
+  .form-group {
+    float: left;
+    width: 60%;
+
+    input {
+      width: 7em;
+    }
+  }
 }
 
 .cc-cvc {
-  float: right;
-  width: 40%;
+  .form-group {
+    float: right;
+    width: 40%;
+
+    input {
+      width: 6em;
+    }
+  }
 }
 
 .cc-icon {

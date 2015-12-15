@@ -62,7 +62,7 @@ $('#payment_cc_number').on('input', function(event) {
   var valNoSpace = val.replace(/\s+/g, '');
   if ((valNoSpace.length % 4) === 0 && val.length > numLastVal.length)
     if (val.length < 19)
-      event
+      $(this).val(val + ' ');
 
   numLastVal = $(this).val();
 });
