@@ -53,6 +53,23 @@ describe Payment, payment_spec: true do
     end
   end
 
+  describe '#cc_number=', cc_number: true do
+    subject { build(:credit_card_payment) }
+
+    it 'turns all but the last 4 digits into "x"' do
+      subject.cc_number = '1234 5678 4321 1122'
+      expect(subject.cc_number).to eq 'xxxx xxxx xxxx 1122'
+
+      subject.cc_number = '123456784211122'
+      expect(subject.cc_number).to eq 'xxxxxxxxxxx1122'
+    end
+
+    it 'stores the whole thing in an instance variable (not saved to db)' do
+      subject.cc_number = '1234 5678 4321 1122'
+      expect(subject.instance_variable_get(:@actual_cc_number)).to eq '1234 5678 4321 1122'
+    end
+  end
+
   describe '#is_refunded?' do
     context 'the payment has been refunded' do
       let(:refunded_payment) { build_stubbed(:blank_payment, refunded: true, refund_reason: 'reason') }

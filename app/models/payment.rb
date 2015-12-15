@@ -26,7 +26,7 @@ class Payment < ActiveRecord::Base
     diners_club_international: 'Diners Club International',
     mastercard:                'MasterCard',
     discover:                  'Discover Card',
-    jcp:                       'JCB',
+    jcb:                       'JCB',
     laser:                     'Laser',
     maestro:                   'Maestro',
     visa:                      'Visa',
@@ -49,6 +49,28 @@ class Payment < ActiveRecord::Base
 
   def is_refunded?
     refunded
+  end
+
+  def credit_card?
+    payment_method == 2
+  end
+
+  def cc_number=(new_cc_number)
+    stored_value = ''
+    new_cc_number.each_char.with_index do |c, i|
+      if /\s/ =~ c
+        stored_value << c
+      elsif i >= new_cc_number.size - 4
+        stored_value << c
+      else
+        stored_value << 'x'
+      end
+    end
+
+    # Only store this in memory
+    @actual_cc_number = new_cc_number
+
+    super(stored_value)
   end
 
   private
