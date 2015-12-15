@@ -4,7 +4,8 @@ class AddCcFieldsToPayments < ActiveRecord::Migration
     add_column :payments, :cc_company, :string
     add_column :payments, :cc_number, :string
     add_column :payments, :cc_type, :string
-    add_column :payments, :cc_expiration, :string
-    add_column :payments, :cc_cvc, :string
+    add_column :payments, :cc_transaction, :string
+    # add_column :payments, :cc_expiration, :string
+    # add_column :payments, :cc_cvc, :string
   end
 end

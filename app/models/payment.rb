@@ -13,6 +13,7 @@ class Payment < ActiveRecord::Base
   }
 
   FIELDS_TO_RENDER_FOR_METHOD = {
+    2 => [:cc_name, :cc_company, :cc_number, :cc_transaction],
     3 => [:check_dl_no, :check_phone_no],
     4 => [:pp_transaction_id],
     5 => [:t_name, :t_company_name, :tf_number],
@@ -45,7 +46,13 @@ class Payment < ActiveRecord::Base
   validates :pp_transaction_id, presence: true, if: -> p { p.payment_method == 4 || p.payment_method == 7 }
   validates :t_name, :t_company_name, :tf_number, presence: true, if: -> p { p.payment_method == 5 }
   validates :t_name, :t_company_name, :t_description, presence: true, if: -> p { p.payment_method == 6 }
+  validates :cc_number, :cc_name, presence: true, if: :credit_card?
   validate :amount_doesnt_overflow_order_balance
+
+  # NOTE These are all transient and only ever exist on the instance of a CC payment being made
+  attr_reader :actual_cc_number
+  attr_accessor :cc_expiration
+  attr_accessor :cc_cvc
 
   def is_refunded?
     refunded
@@ -56,6 +63,8 @@ class Payment < ActiveRecord::Base
   end
 
   def cc_number=(new_cc_number)
+    return super if new_cc_number.blank?
+
     stored_value = ''
     new_cc_number.each_char.with_index do |c, i|
       if /\s/ =~ c
@@ -76,11 +85,16 @@ class Payment < ActiveRecord::Base
   private
 
   def amount_doesnt_overflow_order_balance
-    return if order_id.blank?
+    return if order_id.blank? || amount.blank?
 
-    new_balance = order.balance_excluding(self) - amount
+    order_balance = order.balance_excluding(self)
+    new_balance = order_balance - amount
     if new_balance < 0
-      errors.add(:amount, "overflows the order's balance by #{number_to_currency(-new_balance)}")
+      errors.add(
+        :amount,
+        "overflows the order's balance by #{number_to_currency(-new_balance)} "\
+        "(set to #{number_to_currency(order_balance)} to complete payment)"
+      )
     end
   end
 end

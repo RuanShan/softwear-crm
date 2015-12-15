@@ -3,3 +3,5 @@
 <%= render 'shared/modal_errors', object: @payment %>
 
 <%= render 'payments/payment_form', payment_method: @payment.payment_method %> 
+
+<%= javascript_tag render 'credit_card.js' %>

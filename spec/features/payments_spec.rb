@@ -8,6 +8,10 @@ feature 'Payments management', js: true, payment_spec: true, retry: 2 do
   given!(:order) { create(:order) }
   given!(:payment) { create(:valid_payment, order_id: order.id) }
 
+  background do
+    allow_any_instance_of(Order).to receive(:balance_excluding).and_return 1000
+  end
+
   # No ci because interacting with the dashboard appears to not work there.
   scenario 'A salesperson can visit the payments tab from root', no_ci: true do
     visit root_path

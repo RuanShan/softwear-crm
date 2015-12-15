@@ -10,13 +10,12 @@
       <dd class='date'><%= payment.created_at.strftime('%a, %b %d, %Y %I:%M%p') %></dd>
       <dt>Amount: </dt>
       <dd class='amount'><%= number_to_currency payment.amount %></dd>
-      <% unless Payment::FIELDS_TO_RENDER_FOR_METHOD[payment.payment_method].nil? %>
-        <% Payment::FIELDS_TO_RENDER_FOR_METHOD[payment.payment_method].each do |field| %>
-          <dt><%= field.to_s.humanize %></dt>
-          <dd class="<%= field.to_s.gsub('_', '-') %>"><%= payment.send(field) %></dd>
-        <% end %>
+      <% Payment::FIELDS_TO_RENDER_FOR_METHOD[payment.payment_method].try(:each) do |field| %>
+        <% /^\w\w?_(?<field_display>.+)$/ =~ field.to_s %>
+        <dt><%= field_display.humanize %></dt>
+        <dd class="<%= field.to_s.gsub('_', '-') %>"><%= payment.send(field) || '<blank>' %></dd>
       <% end %>
-      
+
       <dd class='refund'>
         <%= link_to 'Refund Payment', edit_payment_path(payment, refund: true, order_id: payment.order_id),
                      class: 'order_payment_refund_link', remote: true %>

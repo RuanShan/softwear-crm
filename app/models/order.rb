@@ -359,7 +359,11 @@ class Order < ActiveRecord::Base
   end
 
   def payment_total_excluding(exclude)
-    exclude = exclude.map { |e| e.is_a?(Fixnum) ? e : e.id }
+    if exclude
+      exclude = Array(exclude) { |e| e.is_a?(Fixnum) ? e : e.id }
+    else
+      exclude = []
+    end
 
     payments.reduce(0) do |total, p|
       next total if p.nil?

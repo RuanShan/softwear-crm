@@ -16,6 +16,13 @@ describe Payment, payment_spec: true do
     it { is_expected.to validate_presence_of(:salesperson) }
     it { is_expected.to validate_presence_of(:amount) }
 
+    context 'when payment_method = 2' do
+      before { subject.payment_method = 2 }
+
+      it { is_expected.to validate_presence_of :cc_name }
+      it { is_expected.to validate_presence_of :cc_number }
+    end
+
     context 'when payment_method = 5' do
       before { subject.payment_method = 5 }
 
@@ -43,12 +50,13 @@ describe Payment, payment_spec: true do
       subject { build(:credit_card_payment, order_id: order.id, amount: 5.00) }
 
       before do
-        allow_any_instance_of(Order).to receive(:balance_excluding).and_return 3.50
+        allow_any_instance_of(Order).to receive(:balance_excluding).with(subject).and_return 3.50
       end
 
       it 'is invalid' do
         expect(subject).to_not be_valid
-        expect(subject.errors[:amount]).to include "overflows the order's balance by $1.50"
+        expect(subject.errors[:amount].first).to include "overflows the order's balance by $1.50"
+        expect(subject.errors[:amount].first).to include "set to $3.50 to complete payment"
       end
     end
   end

@@ -505,9 +505,9 @@ ActiveRecord::Schema.define(version: 20151210225348) do
     t.decimal  "shipping_price",                        precision: 10, scale: 2, default: 0.0
     t.string   "invoice_state",             limit: 255
     t.string   "production_state",          limit: 255
-    t.integer  "softwear_prod_id",          limit: 4
     t.string   "notification_state",        limit: 255
     t.integer  "freshdesk_proof_ticket_id", limit: 4
+    t.integer  "softwear_prod_id",          limit: 4
     t.string   "artwork_state",             limit: 255
   end
 
@@ -537,8 +537,7 @@ ActiveRecord::Schema.define(version: 20151210225348) do
     t.string   "cc_company",        limit: 255
     t.string   "cc_number",         limit: 255
     t.string   "cc_type",           limit: 255
-    t.string   "cc_expiration",     limit: 255
-    t.string   "cc_cvc",            limit: 255
+    t.string   "cc_transaction",    limit: 255
   end
 
   create_table "platen_hoops", force: :cascade do |t|
@@ -629,8 +628,8 @@ ActiveRecord::Schema.define(version: 20151210225348) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.decimal  "shipping",                                     precision: 10, scale: 2
-    t.datetime "initialized_at"
     t.string   "quote_source",                     limit: 255
+    t.datetime "initialized_at"
     t.string   "freshdesk_ticket_id",              limit: 255
     t.boolean  "informal"
     t.integer  "insightly_category_id",            limit: 4
