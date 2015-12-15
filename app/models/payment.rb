@@ -2,6 +2,9 @@ class Payment < ActiveRecord::Base
   include ActionView::Helpers::NumberHelper
   include PublicActivity::Common
 
+  class PaymentError < StandardError
+  end
+
   VALID_PAYMENT_METHODS = {
     1 => 'Cash',
     2 => 'Credit Card',
@@ -34,6 +37,8 @@ class Payment < ActiveRecord::Base
     visa_electron:             'Visa electron'
   }
 
+  CREDIT_CARD_GATEWAY = ActiveMerchant::Billing::PayflowGateway
+
   acts_as_paranoid
 
   default_scope { order(:created_at) }
@@ -41,6 +46,8 @@ class Payment < ActiveRecord::Base
   belongs_to :order, touch: true
   belongs_to :store
   belongs_to :salesperson, class_name: User
+
+  after_validation :purchase!, on: :create
 
   validates :store, :payment_method, :amount, :salesperson, presence: true
   validates :pp_transaction_id, presence: true, if: -> p { p.payment_method == 4 || p.payment_method == 7 }
@@ -86,7 +93,8 @@ class Payment < ActiveRecord::Base
 
   def credit_card
     return @credit_card if @credit_card
-    return if actual_cc_number.blank? || cc_expiration.blank? || cc_cvc.blank?
+    return nil unless credit_card?
+    return nil if actual_cc_number.blank? || cc_expiration.blank? || cc_cvc.blank?
 
     # (first_name: nonwhitespace)(whitespace)(last_name: nonwhitespace)
     /^(?<first_name>\S+)\s+(?<last_name>.+)$/ =~ cc_name
@@ -99,6 +107,7 @@ class Payment < ActiveRecord::Base
     end
     # "20" from current year + "19" (for example) from input value for "2019"
     year = current_year[0...2] + year
+    # 'cause this code will definitely still be used 100 years from now lol
 
     @credit_card = ActiveMerchant::Billing::CreditCard.new(
       first_name:         first_name,
@@ -108,6 +117,44 @@ class Payment < ActiveRecord::Base
       year:               year,
       verification_value: cc_cvc
     )
+  end
+
+  def gateway
+    return @gateway if @gateway
+    return nil unless credit_card?
+
+    @gateway = CREDIT_CARD_GATEWAY.new(
+      login:    Setting.payflow_login,
+      password: Setting.payflow_password,
+      test:     !Rails.env.production?
+    )
+  end
+
+  def purchase!
+    return unless credit_card?
+    return if credit_card.nil?
+    return if amount.blank?
+    return if order_id.blank?
+    return if salesperson_id.blank?
+
+    result = gateway.purchase(
+      (amount * 100).round, # CENTS RIGHT????
+      credit_card,
+
+      order_id: order.id,
+      description: "SoftWEAR CRM Payment ##{id} for #{order.name} by #{salesperson.full_name}"
+    )
+
+    if result.success?
+      # NOTE pn_ref is the transaction ID from Payflow
+      self.cc_transaction = result.params['pn_ref']
+      true
+    else
+      msg = "Failed to charge card: #{result.message}"
+      errors.add(:cc_number, msg)
+      self.cc_transaction = 'ERROR'
+      raise PaymentError, msg
+    end
   end
 
   private
@@ -123,9 +170,15 @@ class Payment < ActiveRecord::Base
     card_errors = credit_card.validate
     unless card_errors.empty?
       if card_errors[:year] || card_errors[:month]
+        # Year and month errors go to cc_expiration
         errors.add(:cc_expiration, [card_errors.delete(:year), card_errors.delete(:month)].compact.uniq)
       end
+      if card_errors[:verification_value]
+        # Verification value errors go to cc_cvc
+        errors.add(:cc_cvc, card_errors.delete(:verification_value))
+      end
       unless card_errors.empty?
+        # The rest will go into cc_number
         errors.add(:cc_number, card_errors.to_a.map { |e| "#{e[0]} #{e[1]}" }.join(', '))
       end
       return

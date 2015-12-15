@@ -15,12 +15,17 @@ class SettingsController < InheritedResources::Base
      email: Setting.find_or_create_by(name: 'softwear_production_email'),
      token: Setting.find_or_create_by(name: 'softwear_production_token')
     }
+    @payflow_settings = {
+     login:    Setting.find_or_create_by(name: 'payflow_login'),
+     password: Setting.find_or_create_by(name: 'payflow_password')
+    }
   end
 
   def update
     Setting.update(params[:fd_settings].keys, params[:fd_settings].values)
     Setting.update(params[:in_settings].keys, params[:in_settings].values)
     Setting.update(params[:production_crm_settings].keys, params[:production_crm_settings].values)
+    Setting.update(params[:payflow_settings].keys, params[:payflow_settings].values)
     redirect_to integrated_crms_path
   end
 

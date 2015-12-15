@@ -4,9 +4,15 @@ class PaymentsController < InheritedResources::Base
   def create
     super do |success, failure|
       @payment.create_activity(:applied_payment, owner: current_user, recipient: @payment.order) if @payment.valid?
-      success.html { redirect_to edit_order_path(params[:order_id], anchor: 'payments') }
+
+      success.html do
+        redirect_to edit_order_path(params[:order_id], anchor: 'payments')
+      end
       failure.html { render 'payments/new' }
     end
+
+  rescue Payment::PaymentError => e
+    render 'payments/new'
   end
 
   def update

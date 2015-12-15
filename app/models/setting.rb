@@ -35,6 +35,22 @@ class Setting < ActiveRecord::Base
     end
   end
 
+  def self.payflow_login
+    if (setting = Setting.where(name: 'payflow_login')).exists?
+      return setting.first.val
+    else
+      Setting.create(name: 'payflow_login', val: nil, encrypted: false).val
+    end
+  end
+
+  def self.payflow_password
+    if (setting = Setting.where(name: 'payflow_password')).exists?
+      return setting.first.val
+    else
+      Setting.create(name: 'payflow_password', val: nil, encrypted: true).val
+    end
+  end
+
 private
 
   def self.configured?(records)
