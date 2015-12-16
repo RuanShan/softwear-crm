@@ -7,7 +7,7 @@
   </div>
 
   <div class="form-group refund-discountable-type">
-    <%= f.label :discountable_type, 'Apply to..' %>
+    <%= f.label :discountable_type, 'Apply to' %>
     <%= f.select :discountable_type,
       options_for_select(
         [['This order', 'Order'], ['A job', 'Job'], ['A payment', 'Payment']],
@@ -21,7 +21,7 @@
     <%= f.label :discountable_id, 'Job' %>
     <%= f.select :discountable_id, options_from_collection_for_select(@order.jobs, :id, :name) %>
   </div>
-  <div class="form-group refund-payment-select" style="display: none;">
+  <div class="form-group refund-payment-select" style<%= '="display: none;"' unless @discount.discountable_type == 'Payment' %>>
     <%= f.label :discountable_id, 'Payment' %>
     <%= f.select :discountable_id, options_with_data_attr(@order.payments.where.not(cc_transaction: nil), :id, :identifier, { transaction: :cc_transaction }) %>
   </div>

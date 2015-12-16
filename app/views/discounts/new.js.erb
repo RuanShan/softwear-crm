@@ -1,4 +1,4 @@
-var discountHtml = "<br/><%= j(render 'form').html_safe %>";
+var discountHtml = "<br/><%= j(render 'discounts/form').html_safe %>";
 
 var setContent = function() {
   $('#discount-form').html(discountHtml);
@@ -50,10 +50,32 @@ var setContent = function() {
 
     paymentSelect.change(setTransactionId);
   <% end %>
+
+  <% if @scroll %>
+    var doScroll = function() {
+      $('.scroll-y').scrollTo(
+        '#discount-form',
+        {
+          duration: 1000,
+          offsetTop: 100
+        },
+
+        function() {
+          $('#discount_amount').focus();
+          shine('#new_discount', true, 1000);
+        }
+      );
+    }
+    setTimeout(doScroll, 1300);
+  <% end %>
 }
 
 if ($('#discount-form').data('current') != null) {
   if ($('#discount-form').data('current') == "<%=j params[:form] %>") {
+    <% if @scroll %>
+      $('#discount-form').on('hidden.bs.collapse', setContent);
+    <% end %>
+
     $('#discount-form').collapse('hide');
     $('#discount-form').data('current', null);
   }

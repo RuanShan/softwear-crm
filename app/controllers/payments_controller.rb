@@ -33,7 +33,19 @@ class PaymentsController < InheritedResources::Base
 
   def edit
     super do |format|
-      format.js
+      format.js do
+        @order = @payment.order
+        @discount = Discount.new(
+          applicator_type: 'refund',
+          discountable:    @payment,
+          discount_method: 'RefundPayment',
+          transaction_id:  @payment.cc_transaction
+        )
+        @scroll = true
+        params[:form] = 'refund'
+
+        render 'discounts/new'
+      end
       format.html
     end
   end

@@ -11,7 +11,7 @@
                   method: :delete, 'data-model'=>'logout-modal-alt' %>
     </div>
 
-    <%= render params[:form], f: f, order: @order %>
+    <%= render "discounts/#{params[:form] || @discount.discount_type}", f: f, order: @order %>
 
     <%= f.submit 'Apply Discount', class: 'btn btn-info' %>
   </div>
