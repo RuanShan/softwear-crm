@@ -1,3 +1,6 @@
+<%= f.hidden_field :discountable_type, value: 'Order' %>
+<%= f.hidden_field :discountable_id, value: @order.id %>
+
 <div class='input-group'>
   <%= text_field_tag :in_store_credit_search, '', class: 'form-control in-store-credit-search' %>
   <span class='input-group-btn'>

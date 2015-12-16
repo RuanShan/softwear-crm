@@ -370,7 +370,7 @@ class Order < ActiveRecord::Base
       next total if exclude.include?(p.id)
       next total if p.totally_refunded?
 
-      total + p.amount - (p.refund_amount || 0)
+      total + p.amount - p.refunded_amount
     end
   end
 

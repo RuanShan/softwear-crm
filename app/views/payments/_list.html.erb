@@ -13,8 +13,8 @@
     <dt>Amount: </dt>
     <dd class='amount'>
       <%= number_to_currency payment.amount %>
-      <% if payment.refund_amount %>
-        <span class='text-danger'>- <%= number_to_currency payment.refund_amount %></span>
+      <% if payment.refunded? %>
+        <span class='text-danger'>- <%= number_to_currency payment.refunded_amount %></span>
       <% end %>
     </dd>
 

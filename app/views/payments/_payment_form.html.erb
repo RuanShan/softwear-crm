@@ -83,7 +83,10 @@
     <% end %>
 
     <%= f.submit 'Apply Payment', class: 'btn btn-success', id: 'submit_payment_button',
-      data: {confirm: 'Are you sure you would like to add this payment?'} %>
+      data: {
+      confirm: "Are you sure you would like to add this payment?" +
+      (@payment.will_charge_card? ? ' This will charge the provided credit card.' : '')
+      } %>
 
   <% end %>
 </div>

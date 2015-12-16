@@ -46,6 +46,7 @@ class Payment < ActiveRecord::Base
   belongs_to :order, touch: true
   belongs_to :store
   belongs_to :salesperson, class_name: User
+  has_many :discounts, as: :discountable # Only refunds
 
   after_validation :purchase!, on: :create
   after_validation :refund!, on: :update,  if: :refunded?
@@ -66,16 +67,25 @@ class Payment < ActiveRecord::Base
   attr_accessor :cc_expiration
   attr_accessor :cc_cvc
 
+  def refunded?
+    discounts.any?
+  end
+  alias_method :refunded, :refunded?
+
   def is_refunded?
     refunded
   end
 
   def totally_refunded?
-    refunded? && (refund_amount.blank? || refund_amount == amount)
+    refunded? && (refunded_amount == amount)
   end
 
   def credit_card?
     payment_method == 2
+  end
+
+  def identifier
+    "##{id} #{created_at.strftime('%m/%d/%Y')} #{number_to_currency(amount)}"
   end
 
   def cc_number=(new_cc_number)
@@ -138,6 +148,12 @@ class Payment < ActiveRecord::Base
     )
   end
 
+  def will_charge_card?
+    credit_card? &&
+      !Setting.payflow_login.blank? &&
+      !Setting.payflow_password.blank?
+  end
+
   def purchase!
     return unless errors.full_messages.empty?
     return unless credit_card?
@@ -168,11 +184,11 @@ class Payment < ActiveRecord::Base
     end
   end
 
-  def refund!
+  def refund!(refund_amount)
     return unless errors.full_messages.empty?
+    # TODO no
     return unless refunded?
     return unless credit_card?
-    return unless refund_amount_changed?
     return if Setting.payflow_login.blank?
     return if Setting.payflow_password.blank?
     return if cc_transaction.blank? || cc_transaction == 'ERROR'
@@ -185,12 +201,32 @@ class Payment < ActiveRecord::Base
     )
 
     if result.success?
-      self.cc_transaction += " (refunded)" if cc_transaction
       true
     else
       msg = "- Failed to refund: #{result.message}"
       errors.add(:refund_amount, msg)
       raise PaymentError, msg
+    end
+  end
+
+  def refunded_amount
+    discounts.pluck(:amount).reduce(0, :+)
+  end
+
+  # Called by Discount during its validation
+  def validate_refund(refund)
+    refund_total = 0
+    came_across_passed_refund = false
+
+    discounts.each do |discount|
+      refund_total += discount.amount
+      came_across_passed_refund ||= discount.id == refund.id
+    end
+
+    refund_total += refund.amount unless came_across_passed_refund
+
+    if refund_total > amount
+      refund.errors.add(:amount, "exceeds the payment amount (#{amount})")
     end
   end
 

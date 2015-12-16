@@ -1,18 +1,20 @@
 class Discount < ActiveRecord::Base
-  PAYMENT_METHODS = %w(PayPal Cash CreditCard Check)
+  PAYMENT_METHODS = %w(PayPal Cash CreditCard Check RefundPayment)
 
   belongs_to :discountable, polymorphic: true
   belongs_to :applicator, polymorphic: true
   belongs_to :user
 
   validates :discount_method, inclusion: { in: PAYMENT_METHODS, message: "is not any of #{PAYMENT_METHODS.join(', ')}" }, if: :refund?
-  validates :discountable, presence: { message: "(order or job) must be assigned" }
+  validates :discountable, presence: { message: " must be assigned" }
   validates :amount, presence: true
   validate :coupon_is_valid
   validates :reason, presence: true, if: :needs_reason?
+  validate :refund_is_valid, if: :refund?
 
   before_validation :calculate_amount, if: :coupon?
   before_validation :set_amount, if: :in_store_credit?
+  before_validation :set_transaction_id, if: :refund?
 
   acts_as_paranoid
 
@@ -45,6 +47,8 @@ class Discount < ActiveRecord::Base
       discountable
     elsif discountable_type == 'Job'
       discountable.jobbable
+    elsif discountable_type == 'Payment'
+      discountable.order
     end
   end
 
@@ -97,6 +101,17 @@ class Discount < ActiveRecord::Base
     return if applicator.nil?
 
     self.amount = applicator.amount
+  end
+
+  def set_transaction_id
+    return if discountable.nil?
+
+    self.transaction_id = discountable.cc_transaction
+  end
+
+  # Payment implements validate_refund
+  def refund_is_valid
+    discountable.try(:validate_refund, self)
   end
 
   def coupon_is_valid

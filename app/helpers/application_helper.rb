@@ -162,4 +162,24 @@ module ApplicationHelper
     %w(a e i o u).include?(string.downcase.first) ? "an #{self}" : "a #{self}" 
   end 
 
+  def options_with_data_attr(collection, val_method, text_method, data_attrs)
+    buf = ''.html_safe
+
+    collection.each do |element|
+      data = {}
+      data_attrs.each do |key, val_method|
+        data[key] = element.send(val_method)
+      end
+
+      buf += content_tag(
+        :option,
+        element.send(text_method),
+
+        value: element.send(val_method),
+        data:  data
+      )
+    end
+
+    buf
+  end
 end

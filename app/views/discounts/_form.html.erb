@@ -2,9 +2,6 @@
   <div id="horizontal-form" class="collapse in">
     <%= f.hidden_field :user_id, value: @current_user.id %>
 
-    <%= f.hidden_field :discountable_type, value: 'Order' %>
-    <%= f.hidden_field :discountable_id, value: @order.id %>
-
     <div class="form-group">
       <%= f.label :user %><br>
 
