@@ -25,7 +25,6 @@ gem 'paranoia', '~> 2.0'
 gem 'paperclip'
 gem 'kaminari'
 gem 'whenever'
-gem 'dumpsync', git: 'git://github.com/AnnArborTees/dumpsync.git'
 gem 'bootstrap_form'
 gem 'acts_as_warnable', git: 'git://github.com/AnnArborTees/acts_as_warnable.git'
 
@@ -36,6 +35,7 @@ group :development do
   gem 'capistrano-bundler', github: 'AnnArborTees/bundler'
   gem 'better_errors', '>= 0.3.2'
   gem 'binding_of_caller'
+  gem 'dumpsync', git: 'git://github.com/AnnArborTees/dumpsync.git'
 end
 
 group :development, :test do
