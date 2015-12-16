@@ -16,9 +16,11 @@
                 method: :delete, 'data-model'=>'logout-modal-alt' %>
     </p>
 
-    <p><%= f.label :method %>
+    <p>
+      <%= f.label :payment_method, 'Method' %>
     </p>
-    <p><%= english_payment_method = Payment::VALID_PAYMENT_METHODS[payment_method.to_i] %>
+    <p>
+      <%= english_payment_method = Payment::VALID_PAYMENT_METHODS[payment_method.to_i] %>
     </p>
 
     <%= f.select :store_id, Store.order(:name).map{|s| [s.name, s.id] }, { selected: @current_user.store_id}, { } %>
@@ -42,6 +44,14 @@
       <%= f.text_area :t_description, label: 'Description of traded goods' %>
 
     <% elsif english_payment_method == 'Credit Card' %>
+      <% if (errors = f.object.errors[:payment_method]) && !errors.blank? %>
+        <div class='alert alert-danger'>
+          <% errors.each do |error| %>
+            <p><%= error %></p>
+          <% end %>
+        </div>
+      <% end %>
+
       <div class='form-group well'>
         <%= f.text_field :cc_name, label: 'Name on Card', value: @payment.cc_name || @order.full_name %>
         <%= f.text_field :cc_company, label: 'Company', value: @payment.cc_company || @order.full_name %>

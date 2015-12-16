@@ -254,7 +254,7 @@ feature 'Order management', order_spec: true, js: true do
       click_button 'Search'
 
       expect(Sunspot.session).to be_a_search_for Order
-      expect(Sunspot.session).to have_search_params(:with, :invoice_state, 'pending')
+      expect(Sunspot.session).to have_search_params(:with, :invoice_state, ['pending'])
     end
 
     scenario 'user can filter on payment status', story_914: true do
@@ -262,7 +262,7 @@ feature 'Order management', order_spec: true, js: true do
       click_button 'Search'
 
       expect(Sunspot.session).to be_a_search_for Order
-      expect(Sunspot.session).to have_search_params(:with, :payment_status, 'Payment Terms Met')
+      expect(Sunspot.session).to have_search_params(:with, :payment_status, ['Payment Terms Met'])
     end
 
     scenario 'user can filter on delivery deadline before', story_926: true do

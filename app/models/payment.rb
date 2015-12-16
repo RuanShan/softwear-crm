@@ -48,22 +48,30 @@ class Payment < ActiveRecord::Base
   belongs_to :salesperson, class_name: User
 
   after_validation :purchase!, on: :create
+  after_validation :refund!, on: :update,  if: :refunded?
 
   validates :store, :payment_method, :amount, :salesperson, presence: true
   validates :pp_transaction_id, presence: true, if: -> p { p.payment_method == 4 || p.payment_method == 7 }
   validates :t_name, :t_company_name, :tf_number, presence: true, if: -> p { p.payment_method == 5 }
   validates :t_name, :t_company_name, :t_description, presence: true, if: -> p { p.payment_method == 6 }
   validates :cc_number, :cc_name, presence: true, if: :credit_card?
+  validates :refund_reason, presence: true, if: :refunded?
+  validates :refund_amount, presence: true, if: -> p { p.credit_card? && p.refunded? }
   validate :amount_doesnt_overflow_order_balance
   validate :credit_card_is_valid, if: :credit_card?
+  validate :refund_amount_doesnt_exceed_amount
 
-  # NOTE These are all transient and only ever exist on the instance of a CC payment being made
+  # NOTE These are all transient and only ever exist on the instance of a CC payment being created
   attr_reader :actual_cc_number
   attr_accessor :cc_expiration
   attr_accessor :cc_cvc
 
   def is_refunded?
     refunded
+  end
+
+  def totally_refunded?
+    refunded? && (refund_amount.blank? || refund_amount == amount)
   end
 
   def credit_card?
@@ -131,14 +139,17 @@ class Payment < ActiveRecord::Base
   end
 
   def purchase!
+    return unless errors.full_messages.empty?
     return unless credit_card?
     return if credit_card.nil?
     return if amount.blank?
     return if order_id.blank?
     return if salesperson_id.blank?
+    return if Setting.payflow_login.blank?
+    return if Setting.payflow_password.blank?
 
     result = gateway.purchase(
-      (amount * 100).round, # CENTS RIGHT????
+      (amount * 100).round, # In cents
       credit_card,
 
       order_id: order.id,
@@ -146,20 +157,57 @@ class Payment < ActiveRecord::Base
     )
 
     if result.success?
-      # NOTE pn_ref is the transaction ID from Payflow
+      # NOTE pn_ref is basically the transaction ID from Payflow
       self.cc_transaction = result.params['pn_ref']
       true
     else
-      msg = "Failed to charge card: #{result.message}"
-      errors.add(:cc_number, msg)
+      msg = "- Failed to charge card: #{result.message}"
+      errors.add(:payment_method, msg)
       self.cc_transaction = 'ERROR'
+      raise PaymentError, msg
+    end
+  end
+
+  def refund!
+    return unless errors.full_messages.empty?
+    return unless refunded?
+    return unless credit_card?
+    return unless refund_amount_changed?
+    return if Setting.payflow_login.blank?
+    return if Setting.payflow_password.blank?
+    return if cc_transaction.blank? || cc_transaction == 'ERROR'
+
+    result = gateway.refund(
+      (refund_amount * 100).round, # In cents
+      cc_transaction,
+
+      description: "SoftWEAR CRM Refund by #{salesperson.full_name}. Reason: \"#{refund_reason}\"."
+    )
+
+    if result.success?
+      self.cc_transaction += " (refunded)" if cc_transaction
+      true
+    else
+      msg = "- Failed to refund: #{result.message}"
+      errors.add(:refund_amount, msg)
       raise PaymentError, msg
     end
   end
 
   private
 
+  def refund_amount_doesnt_exceed_amount
+    return if refund_amount.blank? || amount.blank?
+
+    if refund_amount.round(2) > amount.round(2)
+      errors.add(:refund_amount, "cannot exceed payment amount (#{number_to_currency(amount)})")
+    end
+  end
+
   def credit_card_is_valid
+    # This validation is only for newly created credit card payments (to validate the transient stuff)
+    return true if persisted? || !cc_transaction.blank?
+
     if credit_card.nil?
       errors.add(:cc_expiration, 'required') if cc_expiration.blank?
       errors.add(:cc_cvc, 'required') if cc_cvc.blank?
@@ -191,10 +239,15 @@ class Payment < ActiveRecord::Base
     order_balance = order.balance_excluding(self)
     new_balance = order_balance - amount
     if new_balance < 0
+      if order_balance == 0
+        remark = "(the order's balance is $0.00)"
+      else
+        remark = "(set to #{number_to_currency(order_balance)} to complete payment)"
+      end
+
       errors.add(
         :amount,
-        "overflows the order's balance by #{number_to_currency(-new_balance)} "\
-        "(set to #{number_to_currency(order_balance)} to complete payment)"
+        "overflows the order's balance by #{number_to_currency(-new_balance)} #{remark}"
       )
     end
   end

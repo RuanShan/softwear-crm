@@ -15,6 +15,41 @@
         </div>
       </div>
 
+      <% if payment.credit_card? %>
+        <div class='clearfix'></div>
+        <div class='row well'>
+          <div class='col-sm-4'><strong>Name on Card</strong></div>
+          <div class='col-sm-8'><%= payment.cc_name %></div>
+
+          <div class='col-sm-4'><strong>Company</strong></div>
+          <div class='col-sm-8'><%= payment.cc_company %></div>
+
+          <div class='col-sm-4'><strong>Card Number</strong></div>
+          <div class='col-sm-8'><%= payment.cc_number %></div>
+
+          <div class='col-sm-4'><strong>Transaction</strong></div>
+          <div class='col-sm-8'><%= payment.cc_transaction || '???' %></div>
+        </div>
+
+        <div class="form-group">
+          <%= f.label :refund_amount, 'Refund Amount' %>
+
+          <%= f.error_for :refund_amount %>
+
+          <div class="col-sm-10 max-width">
+            <div class='input-group'>
+              <span class='input-group-addon'>$</span>
+              <%= f.text_field :refund_amount, class: 'col-sm-2 control-label' %>
+              <span class='input-group-addon'>
+                of <%= number_to_currency payment.amount %>
+              </span>
+            </div>
+
+            <p class="help-block">Amount to refund from this payment</p>
+          </div>
+        </div>
+      <% end %>
+
       <%= f.hidden_field :refunded, value: true %>
 
       <%= f.hidden_field :order_id, value: params[:order_id] %>

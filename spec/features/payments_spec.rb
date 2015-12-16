@@ -7,6 +7,7 @@ feature 'Payments management', js: true, payment_spec: true, retry: 2 do
 
   given!(:order) { create(:order) }
   given!(:payment) { create(:valid_payment, order_id: order.id) }
+  given(:cc_payment) { create(:credit_card_payment, amount: 10, order_id: order.id) }
 
   background do
     allow_any_instance_of(Order).to receive(:balance_excluding).and_return 1000
@@ -73,6 +74,46 @@ feature 'Payments management', js: true, payment_spec: true, retry: 2 do
     page.driver.browser.switch_to.alert.accept
     expect(page).to have_content 'Payment was successfully created.'
     expect(Payment.find(2)).to be_truthy
+  end
+
+  scenario 'A salesperson can make a credit card payment', actual_payment: true do
+    visit (edit_order_path order.id) + '#payments'
+    find(:css, '#cc-button').click
+
+    fill_in 'payment_amount', with: '100'
+    fill_in 'Name on Card', with: 'TEST GUY'
+    fill_in 'Company', with: 'aatc'
+    # Spaces in the card number should be automatically inserted
+    fill_in 'Card Number', with: '4111111111111111'
+    # The slash in expiration date should be automatically inserted
+    fill_in 'Expiration', with: '1229'
+    fill_in 'CVC', with: '123'
+
+    click_button 'Apply Payment'
+    sleep 2
+    page.driver.browser.switch_to.alert.accept
+    expect(page).to have_content 'Payment was successfully created.'
+    expect(Payment.find(2)).to be_truthy
+  end
+
+  scenario 'A salesperson can partially refund a credit card payment', actual_payment: true do
+    payment.destroy
+    cc_payment.update_column :amount, '10.00'
+
+    visit (edit_order_path order.id) + '#payments'
+    find(:css, '.order_payment_refund_link').click
+
+    fill_in 'Refund Reason', with: 'Gaga can\'t handle this shit'
+    fill_in 'Refund Amount', with: '5.00'
+
+    click_button 'Refund Payment'
+    sleep 2 
+    page.driver.browser.switch_to.alert.accept
+
+    expect(page).to have_content 'Payment was successfully updated.'
+    expect(page).to have_content '$10.00 - $5.00'
+
+    expect(Payment.find(cc_payment.id).is_refunded?).to eq true
   end
 
   scenario 'A salesperson can refund a payment', retry: 2, story_692: true do

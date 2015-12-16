@@ -95,4 +95,115 @@ describe Payment, payment_spec: true do
       end
     end
   end
+
+  describe 'creating a credit card payment', creation: true, actual_payment: true do
+    subject { build(:valid_payment, amount: 10.00, payment_method: 2, cc_name: 'Test Guy') }
+    let(:mock_gateway) { double('ActiveMerchant::Gateway') }
+    let(:mock_card) { double('ActiveMerchant::Billing::CreditCard', validate: {}) }
+
+    before do
+      allow_any_instance_of(Order).to receive(:balance_excluding).and_return 1000
+      allow_any_instance_of(Payment).to receive(:gateway) { mock_gateway }
+      allow(Setting).to receive(:payflow_login).and_return 'TestLogin'
+      allow(Setting).to receive(:payflow_password).and_return 'pflowpas4wrod91jd'
+    end
+
+    context 'given all valid credit card info' do
+      before do
+        subject.cc_number     = '4111 1111 1111 1111'
+        subject.cc_type       = 'visa'
+        subject.cc_expiration = '12/22'
+        subject.cc_cvc        = '123'
+        expect(ActiveMerchant::Billing::CreditCard).to receive(:new).and_return mock_card
+      end
+
+      it 'is created, a purchase is made, and the PNRef is stored' do
+        expect(mock_gateway).to receive(:purchase)
+          .with(1000, mock_card, hash_including(order_id: subject.order_id))
+          .and_return double('Purchase result', success?: true, params: { 'pn_ref' => 'abc123' })
+
+        subject.save
+        expect(subject.errors.full_messages).to be_empty
+
+        expect(subject.cc_transaction).to eq 'abc123'
+      end
+
+      context 'but activemerchant fails to make the purcahse' do
+        it 'raises a PaymentError' do
+          expect(mock_gateway).to receive(:purchase)
+            .and_return double('Purchase result', success?: false, message: 'poopoo problem')
+
+          expect{ subject.save }.to raise_error Payment::PaymentError
+        end
+      end
+    end
+
+    context 'given a bad card number' do
+      it 'adds an error to the card number field' do
+        subject.cc_number     = '123 lol'
+        subject.cc_type       = 'visa'
+        subject.cc_expiration = '12/22'
+        subject.cc_cvc        = '123'
+
+        expect(subject).to_not be_valid
+
+        expect(subject.errors[:cc_number]).to_not be_empty
+      end
+    end
+
+    context 'given a bad expiration' do
+      it 'adds an error to the cc_expiration field' do
+        subject.cc_number     = '4111 1111 1111 1111'
+        subject.cc_type       = 'visa'
+        subject.cc_expiration = 1.year.ago.strftime("%y/%m")
+        subject.cc_cvc        = '123'
+
+        expect(subject).to_not be_valid
+
+        expect(subject.errors[:cc_expiration]).to_not be_empty
+      end
+    end
+  end
+
+  describe 'refunding a credit card payment', refunding: true, actual_payment: true do
+    let(:mock_gateway) { double('ActiveMerchant::Gateway') }
+
+    before do
+      allow_any_instance_of(Order).to receive(:balance_excluding).and_return 1000
+      allow_any_instance_of(Payment).to receive(:gateway) { mock_gateway }
+      allow(Setting).to receive(:payflow_login).and_return 'TestLogin'
+      allow(Setting).to receive(:payflow_password).and_return 'pflowpas4wrod91jd'
+    end
+
+    context 'when the refund amount is greater than the payment amount' do
+      subject { create(:credit_card_payment, amount: 10.00) }
+
+      it 'is invalid and not refunded' do
+        expect(mock_gateway).to_not receive(:refund)
+
+        subject.refunded = true
+        subject.refund_reason = 'bad boy'
+        subject.refund_amount = 20.00
+
+        expect(subject).to_not be_valid
+        expect(subject.errors[:refund_amount].first).to include "cannot exceed payment amount"
+      end
+    end
+
+    context 'when the refund amount is the same as the payment amount' do
+      subject { create(:credit_card_payment, amount: 10.00, cc_transaction: 'abc123') }
+
+      it 'is valid and gets refunded' do
+        expect(mock_gateway).to receive(:refund)
+          .with(1000, 'abc123', anything)
+          .and_return double('Gateway response', success?: true)
+
+        subject.refunded = true
+        subject.refund_reason = 'bad boy'
+        subject.refund_amount = 10.00
+
+        expect(subject).to be_valid
+      end
+    end
+  end
 end

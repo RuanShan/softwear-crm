@@ -1,26 +1,36 @@
 <ul id='payments-list'>
   <% payments.each do |payment| %>
-    <% unless payment.is_refunded? %>
-      <dt>Payment <%= payment.id %></dt>
-      <dt>Method:</dt>
-      <dd class='method'><%= Payment::VALID_PAYMENT_METHODS[payment.payment_method] %></dd>
-      <dt>Salesperson:</dt>
-      <dd class='salesperson'><%= payment.salesperson.full_name rescue 'No Salesperson' %></dd>
-      <dt>Date:</dt>
-      <dd class='date'><%= payment.created_at.strftime('%a, %b %d, %Y %I:%M%p') %></dd>
-      <dt>Amount: </dt>
-      <dd class='amount'><%= number_to_currency payment.amount %></dd>
-      <% Payment::FIELDS_TO_RENDER_FOR_METHOD[payment.payment_method].try(:each) do |field| %>
-        <% /^\w\w?_(?<field_display>.+)$/ =~ field.to_s %>
-        <dt><%= field_display.humanize %></dt>
-        <dd class="<%= field.to_s.gsub('_', '-') %>"><%= payment.send(field) || '<blank>' %></dd>
-      <% end %>
+    <% next if payment.totally_refunded? %>
 
+    <dt>Payment <%= payment.id %></dt>
+    <dt>Method:</dt>
+    <dd class='method'><%= Payment::VALID_PAYMENT_METHODS[payment.payment_method] %></dd>
+    <dt>Salesperson:</dt>
+    <dd class='salesperson'><%= payment.salesperson.full_name rescue 'No Salesperson' %></dd>
+    <dt>Date:</dt>
+    <dd class='date'><%= payment.created_at.strftime('%a, %b %d, %Y %I:%M%p') %></dd>
+
+    <dt>Amount: </dt>
+    <dd class='amount'>
+      <%= number_to_currency payment.amount %>
+      <% if payment.refund_amount %>
+        <span class='text-danger'>- <%= number_to_currency payment.refund_amount %></span>
+      <% end %>
+    </dd>
+
+    <% Payment::FIELDS_TO_RENDER_FOR_METHOD[payment.payment_method].try(:each) do |field| %>
+      <% /^\w\w?_(?<field_display>.+)$/ =~ field.to_s %>
+      <dt><%= field_display.humanize %></dt>
+      <dd class="<%= field.to_s.gsub('_', '-') %>"><%= payment.send(field) || '<blank>' %></dd>
+    <% end %>
+
+    <% # TODO refunding an already refunded payment might make sense... %>
+    <% unless payment.refunded? %>
       <dd class='refund'>
         <%= link_to 'Refund Payment', edit_payment_path(payment, refund: true, order_id: payment.order_id),
                      class: 'order_payment_refund_link', remote: true %>
       </dd>
-      <br>
     <% end %>
+    <br>
    <% end %>
 </ul>

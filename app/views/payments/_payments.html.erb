@@ -1,4 +1,14 @@
 <div class="user-profile-content">
+  <% if Setting.payflow_login.blank? || Setting.payflow_password.blank? %>
+    <div class='col-sm-12'>
+      <div class='alert alert-danger'>
+        Payflow credentials are not all set.
+        Credit card payments and refunds will NOT charge the
+        customer's card. Go <%= link_to 'here', integrated_crms_path %>.
+      </div>
+    </div>
+  <% end %>
+
   <div class="col-sm-6">
     <div class="box-info">
       <div class="alert <%= get_style_from_status(order.payment_status, 'alert')%>">

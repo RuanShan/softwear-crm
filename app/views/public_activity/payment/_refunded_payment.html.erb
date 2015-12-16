@@ -1,4 +1,5 @@
 <% if activity.trackable_type %>
+  <p>
   Refunded payment of <%= activity.trackable.amount %>
   <% if activity.recipient && activity.recipient != activity.trackable %>
     to
@@ -7,6 +8,13 @@
   <% end %>
   because
   <%= activity.trackable.refund_reason %>
+  </p>
+
+  <% if (p = activity.parameters) && p['refund_amount'] %>
+  <p>
+    Amount refunded: <%= number_to_currency(p['refund_amount']) %>
+  </p>
+  <% end %>
 <% else %>
   Added something...
 <% end %>
