@@ -7,5 +7,10 @@ FactoryGirl.define do
     factory :discount_with_order do
       discountable { |x| x.association(:order_with_job) }
     end
+
+    factory :refund do
+      discount_method 'RefundPayment'
+      applicator_type 'Refund'
+    end
   end
 end

@@ -122,6 +122,7 @@ class Discount < ActiveRecord::Base
     if discountable.respond_to?(:refund!)
       @credited_for_refund = discountable.refund!(amount)
     end
+    nil
   end
 
   def coupon_is_valid
