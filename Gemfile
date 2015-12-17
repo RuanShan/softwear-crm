@@ -35,7 +35,6 @@ group :development do
   gem 'capistrano-bundler', github: 'AnnArborTees/bundler'
   gem 'better_errors', '>= 0.3.2'
   gem 'binding_of_caller'
-  gem 'dumpsync', git: 'git://github.com/AnnArborTees/dumpsync.git'
 end
 
 group :development, :test do
