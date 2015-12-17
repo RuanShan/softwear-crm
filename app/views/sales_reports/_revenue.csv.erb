@@ -1,4 +1,4 @@
-Created At, In Hand By,Order ID,Order Name,Salesperson,Subtotal,Tax,Shipping,Discounts,Total,Balance,Store
+Created At, In Hand By,Order ID,Order Name,Payment,Invoice,Artwork,Production,Notification,Salesperson,Subtotal,Tax,Shipping,Discounts,Total,Balance,Store
 <%- data[:orders].each do |order| %>
-  <%= order.created_at.strftime("%F") %>,<%= order.in_hand_by.strftime("%F") %>,<%= order.id %>,<%= order.name %>,<%= order.salesperson.full_name %>,<%= order.subtotal.round(2) %>,<%= order.tax.round(2) %>,<%= order.shipping_price.round(2) %>,<%= order.discount_total.round(2) %>,<%= order.total.round(2) %>,<%= order.balance.round(2) %>,<%=order.store.name %>
+  <%= order.created_at.strftime("%F") %>,<%= order.in_hand_by.strftime("%F") %>,<%= order.id %>,<%= order.name %>,<%= order.payment_status.humanize %>,<%= order.invoice_state.humanize  %>,<%= order.artwork_state.humanize  %>,<%= order.production_state.humanize  %>,<%= order.notification_state.humanize  %>,<%= order.salesperson.full_name %>,<%= order.subtotal.round(2) %>,<%= order.tax.round(2) %>,<%= order.shipping_price.round(2) %>,<%= order.discount_total.round(2) %>,<%= order.total.round(2) %>,<%= order.balance.round(2) %>,<%=order.store.name %>
 <% end %>
