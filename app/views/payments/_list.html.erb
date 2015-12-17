@@ -18,7 +18,7 @@
 
     <% Payment::FIELDS_TO_RENDER_FOR_METHOD[payment.payment_method].try(:each) do |field| %>
       <% /^\w\w?_(?<field_display>.+)$/ =~ field.to_s %>
-      <dt><%= field_display.humanize %></dt>
+      <dt><%= field_display.try(:humanize) %></dt>
       <dd class="<%= field.to_s.gsub('_', '-') %>"><%= payment.send(field) || '<blank>' %></dd>
     <% end %>
 
