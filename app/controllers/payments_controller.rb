@@ -84,17 +84,6 @@ class PaymentsController < InheritedResources::Base
     )
   end
 
-  def fire_refund_activity(payment)
-    payment.create_activity(
-      :refunded_payment,
-
-      owner: current_user,
-      recipient: payment.order,
-
-      parameters: { 'refund_amount' => payment.refund_amount }
-    )
-  end
-
   def initialize_order
     @order = Order.find(params[:order_id])
   end

@@ -1,5 +1,6 @@
 class DiscountsController < InheritedResources::Base
   include ActionView::Helpers::TextHelper
+  include ActionView::Helpers::NumberHelper
 
   # belongs_to :order, optional: true
   before_filter :grab_order_if_possible
@@ -11,9 +12,32 @@ class DiscountsController < InheritedResources::Base
     return create_from_in_store_credits if params[:in_store_credit_ids]
 
     super do |success, failure|
-      success.js { flash[:notice] = "#{@discount.applicator_type.humanize} was successfully created." }
+      success.js do
+        if @discount.applicator_type == 'Refund' && @discount.discountable_type == 'Payment'
+          fire_refund_activity(@discount)
+
+          if @discount.credited_for_refund?
+            flash[:notice] = "Refund successful! Customer's card (#{@discount.discountable.cc_number}) "\
+                             "was credited #{number_to_currency(@discount.amount)}."
+          elsif @discount.discountable.cc_transaction.blank?
+            flash[:notice] = "Successfully created refund. No cards were credited."
+          else
+            flash[:notice] = nil
+            flash[:error] = "Refund noted, but was UNABLE to add funds to the card. The money will have to be "\
+                            "refunded manually. For reference: discount id = #{@discount.id}, "\
+                            "payment id = #{@discount.discountable_id}."
+          end
+
+        else
+          flash[:notice] = "#{@discount.discount_type.humanize} was successfully created."
+        end
+      end
       failure.js { render 'error' }
     end
+
+  rescue Payment::PaymentError => e
+    flash[:error] = e.message
+    render 'error'
   end
 
   def new
@@ -68,7 +92,20 @@ class DiscountsController < InheritedResources::Base
       @order = Order.find(params[:order_id])
     elsif @discount
       @discount.order
+    elsif @payment
+      @payment.order
     end
+  end
+
+  def fire_refund_activity(discount)
+    discount.discountable.create_activity(
+      :refunded_payment,
+
+      owner: current_user,
+      recipient: discount.discountable.order,
+
+      parameters: { 'refund_amount' => discount.amount }
+    )
   end
 
   def permitted_params

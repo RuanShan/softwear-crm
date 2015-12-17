@@ -1,3 +1,6 @@
+<%= f.hidden_field :discountable_type, value: 'Order' %>
+<%= f.hidden_field :discountable_id, value: @order.id %>
+
 <div class='form-group'>
 <%= f.label :coupon_code %>
 <%= f.text_field :coupon_code %>

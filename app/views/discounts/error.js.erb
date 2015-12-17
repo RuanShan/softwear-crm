@@ -1,1 +1,5 @@
-errorModal("<%=j @discount.errors.full_messages.join(', ').html_safe %>");
+<% if @discount.errors.full_messages.blank? %>
+  errorModal("<%=j(flash[:error]).html_safe %>");
+<% else %>
+  errorModal("<%=j @discount.errors.full_messages.join(', ').html_safe %>");
+<% end %>

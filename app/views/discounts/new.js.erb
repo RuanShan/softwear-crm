@@ -6,6 +6,7 @@ var setContent = function() {
   setTimeout(function() { $('#discount-form').collapse('show'); }, 100);
   $('#discount-form').off('hidden.bs.collapse', setContent);
 
+  <% # Special logic for refund form (select different discountable types) %>
   <% if params[:form] == 'refund' %>
     var paymentSelect = $('.refund-payment-select');
     var jobSelect     = $('.refund-job-select');
@@ -17,6 +18,8 @@ var setContent = function() {
       select.show();
       select.find('input,select').each(function() { $(this).enable(); });
     }
+    var orderId = $('#discountable-order-id');
+
     var setTransactionId = function() {
       var pSelect = paymentSelect.find('select');
 
@@ -35,16 +38,19 @@ var setContent = function() {
       if (select.val() == 'Job') {
         hideSelect(paymentSelect);
         showSelect(jobSelect);
+        orderId.disable();
       }
       else if (select.val() == 'Payment') {
         showSelect(paymentSelect);
         hideSelect(jobSelect);
+        orderId.disable();
 
         setTransactionId();
       }
       else {
         hideSelect(paymentSelect);
         hideSelect(jobSelect);
+        orderId.enable();
       }
     });
 
@@ -77,7 +83,7 @@ else {
       '#discount-form',
       {
         duration: 1000,
-        offsetTop: 100
+        offsetTop: 85
       },
 
       function() {

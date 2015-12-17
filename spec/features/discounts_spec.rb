@@ -17,6 +17,7 @@ feature 'Discounts management', js: true, discount_spec: true, story_859: true d
       visit edit_order_path order, anchor: 'payments'
       click_button 'Refund'
 
+      select 'This order', from: 'Apply to'
       fill_in 'Amount', with: '12.50'
       fill_in 'Reason', with: 'Because I can'
       select 'Cash', from: 'Refund Method'
@@ -29,7 +30,7 @@ feature 'Discounts management', js: true, discount_spec: true, story_859: true d
     end
   end
 
-  context 'Discounts' do
+  context 'discounts' do
     scenario 'A salesperson can add a "discount" discount' do
       visit edit_order_path order, anchor: 'payments'
       click_button 'Discount'
