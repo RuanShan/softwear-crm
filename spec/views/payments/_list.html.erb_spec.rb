@@ -24,8 +24,8 @@ describe "payments/_list", type: :view do
     end 
   end
 
-  context 'there is a swiped credit card payment' do
-    let(:payment){ create(:swiped_credit_card_payment) }   
+  context 'there is a credit card payment' do
+    let(:payment){ create(:credit_card_payment) }   
     
     it 'renders nothing more, just that it was a credit card payment' do       
       expect(rendered).to have_selector("dd.method", text: 'Credit Card')

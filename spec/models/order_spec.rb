@@ -151,7 +151,7 @@ describe Order, order_spec: true do
 
     before do
       allow(order).to receive(:total).and_return(5)
-      allow(order).to receive(:payment_total).and_return(5)
+      allow(order).to receive(:payment_total_excluding).with([]).and_return(5)
     end
 
     it 'returns the order total minus the payment total' do
@@ -355,12 +355,13 @@ describe Order, order_spec: true do
         payments: [
                     build_stubbed(:blank_payment, amount: 5),
                     build_stubbed(:blank_payment, amount: 10),
-                    build_stubbed(:blank_payment, amount: 15, refunded: true)
+                    build_stubbed(:blank_payment, amount: 15)
                   ]
       )
     end
 
     it 'returns the total payment for the order' do
+      allow(subject.payments.last).to receive(:totally_refunded?).and_return true
       expect(subject.payment_total)
         .to eq 15
     end
