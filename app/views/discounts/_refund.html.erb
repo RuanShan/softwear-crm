@@ -23,7 +23,7 @@
     <%= f.label :discountable_id, 'Job' %>
     <%= f.select :discountable_id, options_from_collection_for_select(@order.jobs, :id, :name), disabled: f.object.discountable_type != 'Job' %>
   </div>
-  <div class="form-group refund-payment-select" style<%= '="display: none;"' unless @discount.discountable_type == 'Payment' %>>
+  <div class="form-group refund-payment-select" style="display: none;">
     <%= f.label :discountable_id, 'Payment' %>
     <%= f.select :discountable_id, options_with_data_attr(@order.payments, :id, :identifier, f.object.discountable_id, { transaction: :cc_transaction }), disabled: f.object.discountable_type != 'Payment' %>
   </div>

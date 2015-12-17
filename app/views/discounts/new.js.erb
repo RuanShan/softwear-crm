@@ -12,11 +12,11 @@ var setContent = function() {
     var jobSelect     = $('.refund-job-select');
     var hideSelect = function(select) {
       select.hide();
-      select.find('input,select').each(function() { $(this).disable(); });
+      select.find('input,select').each(function() { $(this).prop('disabled', true); });
     }
     var showSelect = function(select) {
       select.show();
-      select.find('input,select').each(function() { $(this).enable(); });
+      select.find('input,select').each(function() { $(this).prop('disabled', false); });
     }
     var orderId = $('#discountable-order-id');
 
@@ -24,37 +24,39 @@ var setContent = function() {
       var pSelect = paymentSelect.find('select');
 
       var selector = 'option[value="'+pSelect.val()+'"]';
-      console.log(selector)
       var transaction = pSelect.find(selector).data('transaction');
 
       if (transaction && transaction != '')
         $('#discount_transaction_id').val(transaction);
     };
 
-    $('#discount_discountable_type').change(function() {
+    var setSelectVisibility = function() {
       var select = $(this);
 
-      console.log('SELECTED '+select.val());
       if (select.val() == 'Job') {
         hideSelect(paymentSelect);
         showSelect(jobSelect);
-        orderId.disable();
+        orderId.prop('disabled', true);
       }
       else if (select.val() == 'Payment') {
         showSelect(paymentSelect);
         hideSelect(jobSelect);
-        orderId.disable();
+        orderId.prop('disabled', true);
 
-        setTransactionId();
+        setTimeout(setTransactionId, 10);
       }
       else {
         hideSelect(paymentSelect);
         hideSelect(jobSelect);
-        orderId.enable();
+        orderId.prop('disabled', false);
       }
-    });
+    };
+
+    $('#discount_discountable_type').change(setSelectVisibility);
 
     paymentSelect.change(setTransactionId);
+
+    setTimeout(function() { setSelectVisibility.call($('#discount_discountable_type')); }, 50);
   <% end %>
 }
 

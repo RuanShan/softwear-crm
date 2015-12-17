@@ -222,7 +222,7 @@ class Payment < ActiveRecord::Base
 
     refund_total += refund.amount unless came_across_passed_refund
 
-    if refund_total > amount.to_f
+    if refund_total.to_f > amount.to_f
       refund.errors.add(:amount, "exceeds the payment amount (#{number_to_currency amount.to_f})")
     end
   end
