@@ -33,7 +33,19 @@ class PaymentsController < InheritedResources::Base
 
   def edit
     super do |format|
-      format.js
+      format.js do
+        @order = @payment.order
+        @discount = Discount.new(
+          applicator_type: 'refund',
+          discountable:    @payment,
+          discount_method: 'RefundPayment',
+          transaction_id:  @payment.cc_transaction
+        )
+        @scroll = true
+        params[:form] = 'refund'
+
+        render 'discounts/new'
+      end
       format.html
     end
   end
@@ -69,17 +81,6 @@ class PaymentsController < InheritedResources::Base
       recipient: payment.order,
 
       parameters: parameters
-    )
-  end
-
-  def fire_refund_activity(payment)
-    payment.create_activity(
-      :refunded_payment,
-
-      owner: current_user,
-      recipient: payment.order,
-
-      parameters: { 'refund_amount' => payment.refund_amount }
     )
   end
 

@@ -49,7 +49,6 @@ class Payment < ActiveRecord::Base
   has_many :discounts, as: :discountable # Only refunds
 
   after_validation :purchase!, on: :create
-  after_validation :refund!, on: :update,  if: :refunded?
 
   validates :store, :payment_method, :amount, :salesperson, presence: true
   validates :pp_transaction_id, presence: true, if: -> p { p.payment_method == 4 || p.payment_method == 7 }
@@ -60,7 +59,6 @@ class Payment < ActiveRecord::Base
   validates :refund_amount, presence: true, if: -> p { p.credit_card? && p.refunded? }
   validate :amount_doesnt_overflow_order_balance
   validate :credit_card_is_valid, if: :credit_card?
-  validate :refund_amount_doesnt_exceed_amount
 
   # NOTE These are all transient and only ever exist on the instance of a CC payment being created
   attr_reader :actual_cc_number
@@ -77,7 +75,7 @@ class Payment < ActiveRecord::Base
   end
 
   def totally_refunded?
-    refunded? && (refunded_amount == amount)
+    refunded_amount == amount
   end
 
   def credit_card?
@@ -184,14 +182,14 @@ class Payment < ActiveRecord::Base
     end
   end
 
+  # This is called by Discount after_validation on create
   def refund!(refund_amount)
-    return unless errors.full_messages.empty?
-    # TODO no
-    return unless refunded?
-    return unless credit_card?
-    return if Setting.payflow_login.blank?
-    return if Setting.payflow_password.blank?
-    return if cc_transaction.blank? || cc_transaction == 'ERROR'
+    return false unless errors.full_messages.empty?
+    return false unless credit_card?
+    return false if Setting.payflow_login.blank?
+    return false if Setting.payflow_password.blank?
+    return false if cc_transaction.blank? || cc_transaction == 'ERROR'
+    return false if refund_amount == 0
 
     result = gateway.refund(
       (refund_amount * 100).round, # In cents
@@ -204,7 +202,6 @@ class Payment < ActiveRecord::Base
       true
     else
       msg = "- Failed to refund: #{result.message}"
-      errors.add(:refund_amount, msg)
       raise PaymentError, msg
     end
   end
@@ -225,20 +222,12 @@ class Payment < ActiveRecord::Base
 
     refund_total += refund.amount unless came_across_passed_refund
 
-    if refund_total > amount
-      refund.errors.add(:amount, "exceeds the payment amount (#{amount})")
+    if refund_total > amount.to_f
+      refund.errors.add(:amount, "exceeds the payment amount (#{number_to_currency amount.to_f})")
     end
   end
 
   private
-
-  def refund_amount_doesnt_exceed_amount
-    return if refund_amount.blank? || amount.blank?
-
-    if refund_amount.round(2) > amount.round(2)
-      errors.add(:refund_amount, "cannot exceed payment amount (#{number_to_currency(amount)})")
-    end
-  end
 
   def credit_card_is_valid
     # This validation is only for newly created credit card payments (to validate the transient stuff)

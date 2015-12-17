@@ -78,20 +78,25 @@ describe Payment, payment_spec: true do
     end
   end
 
-  describe '#is_refunded?' do
-    context 'the payment has been refunded' do
-      let(:refunded_payment) { build_stubbed(:blank_payment, refunded: true, refund_reason: 'reason') }
+  describe '#is_refunded?', refunding: true do
+    context 'the payment has a refund discount' do
+      before do
+        allow_any_instance_of(Order).to receive(:balance_excluding).and_return 1000
+      end
+
+      let(:refunded_payment) { create(:credit_card_payment, amount: 5.00) }
+      let!(:discount) { create(:refund, discountable: refunded_payment, amount: 1.00) }
+
       it 'returns true' do
-        expect(refunded_payment.is_refunded?).to be_truthy
-        expect(refunded_payment.refund_reason).to_not be_nil
+        expect(refunded_payment.reload.is_refunded?).to be_truthy
       end
     end
 
     context 'the payment has not been refunded' do
-      let(:payment) { build_stubbed(:blank_payment) }
+      let(:payment) { create(:credit_card_payment) }
+
       it 'returns false' do
         expect(payment.is_refunded?).to be_falsey
-        expect(payment.refund_reason).to be_nil
       end
     end
   end
@@ -175,34 +180,19 @@ describe Payment, payment_spec: true do
       allow(Setting).to receive(:payflow_password).and_return 'pflowpas4wrod91jd'
     end
 
-    context 'when the refund amount is greater than the payment amount' do
-      subject { create(:credit_card_payment, amount: 10.00) }
-
-      it 'is invalid and not refunded' do
-        expect(mock_gateway).to_not receive(:refund)
-
-        subject.refunded = true
-        subject.refund_reason = 'bad boy'
-        subject.refund_amount = 20.00
-
-        expect(subject).to_not be_valid
-        expect(subject.errors[:refund_amount].first).to include "cannot exceed payment amount"
-      end
-    end
-
     context 'when the refund amount is the same as the payment amount' do
       subject { create(:credit_card_payment, amount: 10.00, cc_transaction: 'abc123') }
+      let(:refund) { create(:refund, discountable: subject, amount: 10.00) }
 
       it 'is valid and gets refunded' do
         expect(mock_gateway).to receive(:refund)
           .with(1000, 'abc123', anything)
           .and_return double('Gateway response', success?: true)
 
-        subject.refunded = true
-        subject.refund_reason = 'bad boy'
-        subject.refund_amount = 10.00
+        expect(subject.errors.full_messages).to be_empty
+        refund
 
-        expect(subject).to be_valid
+        expect(subject.reload.totally_refunded?).to eq true
       end
     end
   end

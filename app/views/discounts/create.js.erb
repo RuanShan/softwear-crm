@@ -3,11 +3,16 @@
 <% elsif @failure && !@failure.empty? %>
   errorModal("Of <%= @discounts.size %> discounts, <%= @failure.size %> failed to create.");
 <% else %>
-  successModal("<%=j flash[:notice] %>");
+  <% if flash[:notice] %>
+    successModal("<%=j(flash[:notice]).html_safe %>");
+  <% elsif flash[:error] %>
+    errorModal("<%=j(flash[:error]).html_safe %>");
+  <% end %>
   $('#discount-form').collapse('hide');
 
   <% if @order %>
     $('#order-discounts').html("<%=j render 'payments/discounts', order: @order %>");
+    $('#payments').html("<%=j render 'payments/payments', order: @order %>");
     $('#discount-form').data('current', null);
   <% end %>
 <% end %>

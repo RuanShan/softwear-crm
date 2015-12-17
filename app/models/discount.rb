@@ -15,8 +15,12 @@ class Discount < ActiveRecord::Base
   before_validation :calculate_amount, if: :coupon?
   before_validation :set_amount, if: :in_store_credit?
   before_validation :set_transaction_id, if: :refund?
+  after_validation :apply_refund, on: :create, if: :refund?
 
   acts_as_paranoid
+
+  attr_reader :credited_for_refund
+  alias_method :credited_for_refund?, :credited_for_refund
 
   def applicator
     applicator_type == 'Refund' ? nil : super
@@ -104,7 +108,7 @@ class Discount < ActiveRecord::Base
   end
 
   def set_transaction_id
-    return if discountable.nil?
+    return unless discountable.respond_to?(:cc_transaction)
 
     self.transaction_id = discountable.cc_transaction
   end
@@ -112,6 +116,13 @@ class Discount < ActiveRecord::Base
   # Payment implements validate_refund
   def refund_is_valid
     discountable.try(:validate_refund, self)
+  end
+
+  def apply_refund
+    if discountable.respond_to?(:refund!)
+      @credited_for_refund = discountable.refund!(amount)
+    end
+    nil
   end
 
   def coupon_is_valid

@@ -7,7 +7,7 @@
   </div>
 
   <div class="form-group refund-discountable-type">
-    <%= f.label :discountable_type, 'Apply to..' %>
+    <%= f.label :discountable_type, 'Apply to' %>
     <%= f.select :discountable_type,
       options_for_select(
         [['This order', 'Order'], ['A job', 'Job'], ['A payment', 'Payment']],
@@ -17,13 +17,15 @@
     %>
   </div>
 
+  <%= f.hidden_field :discountable_id, value: @order.id, disabled: f.object.discountable_type != 'Order', id: 'discountable-order-id' %>
+
   <div class="form-group refund-job-select" style="display: none;">
     <%= f.label :discountable_id, 'Job' %>
-    <%= f.select :discountable_id, options_from_collection_for_select(@order.jobs, :id, :name) %>
+    <%= f.select :discountable_id, options_from_collection_for_select(@order.jobs, :id, :name), disabled: f.object.discountable_type != 'Job' %>
   </div>
-  <div class="form-group refund-payment-select" style="display: none;">
+  <div class="form-group refund-payment-select" style<%= '="display: none;"' unless @discount.discountable_type == 'Payment' %>>
     <%= f.label :discountable_id, 'Payment' %>
-    <%= f.select :discountable_id, options_with_data_attr(@order.payments.where.not(cc_transaction: nil), :id, :identifier, { transaction: :cc_transaction }) %>
+    <%= f.select :discountable_id, options_with_data_attr(@order.payments, :id, :identifier, f.object.discountable_id, { transaction: :cc_transaction }), disabled: f.object.discountable_type != 'Payment' %>
   </div>
 
   <div class="form-group">
@@ -42,6 +44,12 @@
 
   <div class="form-group">
     <%= f.label :transaction_id, 'Transaction ID' %>
-    <%= f.text_area :transaction_id %>
+    <%= f.text_field :transaction_id %>
+
+    <% if can_charge_card? %>
+      <div class='help-block'>
+        If Transaction ID is filled out, the card used for the selected payment will be credited.
+      </div>
+    <% end %>
   </div>
 </div>
