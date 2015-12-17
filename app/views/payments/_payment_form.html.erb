@@ -54,7 +54,7 @@
 
       <div class='form-group well'>
         <%= f.text_field :cc_name, label: 'Name on Card', value: @payment.cc_name || @order.full_name %>
-        <%= f.text_field :cc_company, label: 'Company', value: @payment.cc_company || @order.full_name %>
+        <%= f.text_field :cc_company, label: 'Company', value: @payment.cc_company || @order.company %>
 
         <%= f.form_group :cc_number,
           label: { text: "Card Number <i id='credit-card-status' class='fa fa-times'></i>".html_safe } do %>
