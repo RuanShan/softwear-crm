@@ -57,7 +57,6 @@ class Payment < ActiveRecord::Base
   validates :t_name, :t_company_name, :t_description, presence: true, if: -> p { p.payment_method == 6 }
   validates :cc_number, :cc_name, presence: true, if: :credit_card?
   validates :refund_reason, presence: true, if: :refunded?
-  validates :refund_amount, presence: true, if: -> p { p.credit_card? && p.refunded? }
   validate :amount_doesnt_overflow_order_balance
   validate :credit_card_is_valid, if: :credit_card?
 
