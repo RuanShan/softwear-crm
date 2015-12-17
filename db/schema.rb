@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20151216203222) do
+ActiveRecord::Schema.define(version: 20151217215221) do
 
   create_table "activities", force: :cascade do |t|
     t.integer  "trackable_id",   limit: 4
@@ -193,11 +193,11 @@ ActiveRecord::Schema.define(version: 20151216203222) do
     t.integer  "user_id",           limit: 4
     t.integer  "applicator_id",     limit: 4
     t.string   "applicator_type",   limit: 255
-    t.decimal  "amount",                          precision: 10
+    t.decimal  "amount",                          precision: 10, scale: 2
     t.integer  "order_id",          limit: 4
     t.datetime "deleted_at"
-    t.datetime "created_at",                                     null: false
-    t.datetime "updated_at",                                     null: false
+    t.datetime "created_at",                                               null: false
+    t.datetime "updated_at",                                               null: false
   end
 
   create_table "email_templates", force: :cascade do |t|
