@@ -119,7 +119,7 @@ class Discount < ActiveRecord::Base
   end
 
   def apply_refund
-    if discountable.respond_to?(:refund!)
+    if discountable.respond_to?(:refund!) && !transaction_id.blank?
       @credited_for_refund = discountable.refund!(amount)
     end
     nil
