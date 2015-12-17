@@ -46,7 +46,7 @@
     <%= f.label :transaction_id, 'Transaction ID' %>
     <%= f.text_field :transaction_id %>
 
-    <% if can_charge_card? %>
+    <% if @discount.discountable.try(:credit_card?) && can_charge_card? %>
       <div class='help-block'>
         If Transaction ID is filled out, the card used for the selected payment will be credited.
       </div>

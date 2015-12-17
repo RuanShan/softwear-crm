@@ -16,8 +16,8 @@ describe Payment, payment_spec: true do
     it { is_expected.to validate_presence_of(:salesperson) }
     it { is_expected.to validate_presence_of(:amount) }
 
-    context 'when payment_method = 2' do
-      before { subject.payment_method = 2 }
+    context 'when payment_method = 8' do
+      before { subject.payment_method = 8 }
 
       it { is_expected.to validate_presence_of :cc_name }
       it { is_expected.to validate_presence_of :cc_number }
@@ -102,7 +102,7 @@ describe Payment, payment_spec: true do
   end
 
   describe 'creating a credit card payment', creation: true, actual_payment: true do
-    subject { build(:valid_payment, amount: 10.00, payment_method: 2, cc_name: 'Test Guy') }
+    subject { build(:valid_payment, amount: 10.00, payment_method: 8, cc_name: 'Test Guy') }
     let(:mock_gateway) { double('ActiveMerchant::Gateway') }
     let(:mock_card) { double('ActiveMerchant::Billing::CreditCard', validate: {}) }
 

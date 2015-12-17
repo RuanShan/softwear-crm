@@ -49,10 +49,12 @@
         <i class="fa fa-money"></i> Cash
       <% end %>
 
-      <%= button_to new_order_payment_path(order.id) + '?payment_method=2', {
-              class: 'additional-icon btn btn-default payment-button', method: :get,
-              remote: true, 'data-target' => '#payment-form', id: 'cc-button' } do %>
-        <i class="fa fa-credit-card"></i> Credit Card
+      <% if Time.now.year >= 2016 || /^ricky@|^nigel@/ =~ current_user.email || Rails.env.test? %>
+        <%= button_to new_order_payment_path(order.id) + '?payment_method=8', {
+                class: 'additional-icon btn btn-default payment-button', method: :get,
+                remote: true, 'data-target' => '#payment-form', id: 'cc-button' } do %>
+          <i class="fa fa-cc-visa"></i> Credit Card
+        <% end %>
       <% end %>
 
       <%= button_to new_order_payment_path(order.id) + '?payment_method=3', {
@@ -83,6 +85,12 @@
               class: 'additional-icon btn btn-default payment-button', method: :get,
               remote: true, 'data-target' => '#payment-form', id: 'trade-button' } do %>
         <i class="fa fa-exchange"></i> Trade
+      <% end %>
+
+      <%= button_to new_order_payment_path(order.id) + '?payment_method=2', {
+              class: 'additional-icon btn btn-default payment-button', method: :get,
+              remote: true, 'data-target' => '#payment-form', id: 'swiped-cc-button' } do %>
+        <i class="fa fa-credit-card"></i> Swiped Credit Card
       <% end %>
     </div>
 

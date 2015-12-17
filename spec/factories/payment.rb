@@ -12,7 +12,7 @@ FactoryGirl.define do
       end
 
       factory :swiped_credit_card_payment do
-        payment_method Payment::VALID_PAYMENT_METHODS.key('Credit Card')
+        payment_method Payment::VALID_PAYMENT_METHODS.key('Swiped Credit Card')
       end
 
       factory :credit_card_payment do

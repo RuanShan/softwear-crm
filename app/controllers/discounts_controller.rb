@@ -19,7 +19,7 @@ class DiscountsController < InheritedResources::Base
           if @discount.credited_for_refund?
             flash[:notice] = "Refund successful! Customer's card (#{@discount.discountable.cc_number}) "\
                              "was credited #{number_to_currency(@discount.amount)}."
-          elsif @discount.discountable.cc_transaction.blank?
+          elsif @discount.discountable.cc_transaction.blank? || !@discount.discountable.credit_card?
             flash[:notice] = "Successfully created refund. No cards were credited."
           else
             flash[:notice] = nil

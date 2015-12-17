@@ -7,21 +7,22 @@ class Payment < ActiveRecord::Base
 
   VALID_PAYMENT_METHODS = {
     1 => 'Cash',
-    2 => 'Credit Card',
+    2 => 'Swiped Credit Card',
     3 => 'Check',
     4 => 'PayPal',
     5 => 'Trade First',
     6 => 'Trade',
-    7 => 'Wire Transfer'
+    7 => 'Wire Transfer',
+    8 => 'Credit Card'
   }
 
   FIELDS_TO_RENDER_FOR_METHOD = {
-    2 => [:cc_name, :cc_company, :cc_number, :cc_transaction],
     3 => [:check_dl_no, :check_phone_no],
     4 => [:pp_transaction_id],
     5 => [:t_name, :t_company_name, :tf_number],
     6 => [:t_name, :t_company_name, :t_description],
-    7 => [:pp_transaction_id]
+    7 => [:pp_transaction_id],
+    8 => [:cc_name, :cc_company, :cc_number, :cc_transaction],
   }
 
   CREDIT_CARD_TYPES = {
@@ -79,7 +80,7 @@ class Payment < ActiveRecord::Base
   end
 
   def credit_card?
-    payment_method == 2
+    VALID_PAYMENT_METHODS[payment_method] == 'Credit Card'
   end
 
   def identifier
