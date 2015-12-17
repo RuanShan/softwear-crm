@@ -60,7 +60,6 @@ class Payment < ActiveRecord::Base
   validates :refund_amount, presence: true, if: -> p { p.credit_card? && p.refunded? }
   validate :amount_doesnt_overflow_order_balance
   validate :credit_card_is_valid, if: :credit_card?
-  validate :refund_amount_doesnt_exceed_amount
 
   # NOTE These are all transient and only ever exist on the instance of a CC payment being created
   attr_reader :actual_cc_number
@@ -77,7 +76,7 @@ class Payment < ActiveRecord::Base
   end
 
   def totally_refunded?
-    refunded? && (refunded_amount == amount)
+    refunded_amount == amount
   end
 
   def credit_card?
@@ -226,19 +225,11 @@ class Payment < ActiveRecord::Base
     refund_total += refund.amount unless came_across_passed_refund
 
     if refund_total > amount
-      refund.errors.add(:amount, "exceeds the payment amount (#{amount})")
+      refund.errors.add(:amount, "exceeds the payment amount (#{number_to_currency amount})")
     end
   end
 
   private
-
-  def refund_amount_doesnt_exceed_amount
-    return if refund_amount.blank? || amount.blank?
-
-    if refund_amount.round(2) > amount.round(2)
-      errors.add(:refund_amount, "cannot exceed payment amount (#{number_to_currency(amount)})")
-    end
-  end
 
   def credit_card_is_valid
     # This validation is only for newly created credit card payments (to validate the transient stuff)

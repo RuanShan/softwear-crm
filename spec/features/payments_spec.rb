@@ -25,25 +25,6 @@ feature 'Payments management', js: true, payment_spec: true, retry: 2 do
     expect(current_url).to match((edit_order_path order.id) + '#payments')
   end
 
-  context 'with a refunded payment' do
-    scenario 'balance is still correctly computed and displayed', story_692: true do
-      visit (edit_order_path order.id) + '#payments'
-      find(:css, '#cash-button').click
-      fill_in 'payment_amount', with: '20'
-      click_button 'Apply Payment'
-      sleep 2
-      page.driver.browser.switch_to.alert.accept
-      close_flash_modal
-      find(:css, "a.order_payment_refund_link[href='/payments/#{payment.id}/edit?order_id=#{order.id}&refund=true']").click
-      fill_in 'Refund Reason', with: 'how do i money?'
-      click_button 'Refund Payment'
-      sleep 2
-      page.driver.browser.switch_to.alert.accept
-      expect(page).to have_content 'Payment was successfully updated.'
-      expect(Payment.find(payment.id).is_refunded?).to be_truthy
-    end
-  end
-
   scenario 'A salesperson can toggle a payment type', story_274: true do
     visit edit_order_path order, anchor: 'payments'
     find('#cash-button').click
@@ -103,27 +84,53 @@ feature 'Payments management', js: true, payment_spec: true, retry: 2 do
     visit (edit_order_path order.id) + '#payments'
     find(:css, '.order_payment_refund_link').click
 
-    fill_in 'Refund Reason', with: 'Gaga can\'t handle this shit'
-    fill_in 'Refund Amount', with: '5.00'
+    sleep 3
 
-    click_button 'Refund Payment'
-    sleep 2 
-    page.driver.browser.switch_to.alert.accept
+    fill_in 'Reason', with: 'have some money'
+    fill_in 'Amount', with: '5.00'
+    sleep 2
 
-    expect(page).to have_content 'Payment was successfully updated.'
+    click_button 'Apply Discount'
+
+    expect(page).to have_content 'was successfully created.'
     expect(page).to have_content '$10.00 - $5.00'
 
     expect(Payment.find(cc_payment.id).is_refunded?).to eq true
   end
 
-  scenario 'A salesperson can refund a payment', retry: 2, story_692: true do
+  scenario 'A salesperson cannot refund more than the payment amount', actual_payment: true do
+    payment.destroy
+    cc_payment.update_column :amount, '10.00'
+
     visit (edit_order_path order.id) + '#payments'
     find(:css, '.order_payment_refund_link').click
-    fill_in 'Refund Reason', with: 'Gaga can\'t handle this shit'
-    click_button 'Refund Payment'
-    sleep 2 
-    page.driver.browser.switch_to.alert.accept
-    expect(page).to have_content 'Payment was successfully updated.'
+
+    sleep 3
+
+    fill_in 'Reason', with: 'have some money'
+    fill_in 'Amount', with: '15.00'
+    sleep 2
+
+    click_button 'Apply Discount'
+
+    expect(page).to have_content 'Amount exceeds the payment amount'
+    expect(page).to_not have_content '$10.00 - $5.00'
+
+    expect(Payment.find(cc_payment.id).is_refunded?).to eq false
+  end
+
+  scenario 'A salesperson can refund an entire payment', retry: 2, actual_payment: true do
+    visit (edit_order_path order.id) + '#payments'
+    find(:css, '.order_payment_refund_link').click
+
+    sleep 3
+
+    fill_in 'Reason', with: "Gaga can't handle this shit"
+    click_button 'Apply Discount'
+
+    sleep 2
+
+    expect(page).to have_content 'was successfully created.'
     expect(Payment.find(payment.id).is_refunded?).to be_truthy
   end
 

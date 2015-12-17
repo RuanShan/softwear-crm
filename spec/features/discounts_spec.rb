@@ -24,7 +24,7 @@ feature 'Discounts management', js: true, discount_spec: true, story_859: true d
 
       click_button 'Apply Discount'
 
-      expect(page).to have_content 'Discount was successfully created.'
+      expect(page).to have_content 'was successfully created.'
       expect(Discount.where(amount: 12.5, reason: 'Because I can', discount_method: 'Cash', transaction_id: '123123123')).to exist
     end
   end
@@ -39,7 +39,7 @@ feature 'Discounts management', js: true, discount_spec: true, story_859: true d
 
       click_button 'Apply Discount'
 
-      expect(page).to have_content 'Discount was successfully created.'
+      expect(page).to have_content 'was successfully created.'
       expect(Discount.where(amount: 12.5, reason: 'Because I can')).to exist
     end
   end
@@ -53,7 +53,7 @@ feature 'Discounts management', js: true, discount_spec: true, story_859: true d
 
       click_button 'Apply Discount'
 
-      expect(page).to have_content 'Discount was successfully created.'
+      expect(page).to have_content 'was successfully created.'
       expect(Discount.where(applicator_type: 'Coupon', applicator_id: coupon.id)).to exist
     end
 
@@ -79,7 +79,7 @@ feature 'Discounts management', js: true, discount_spec: true, story_859: true d
 
       click_button 'Apply Discount'
 
-      expect(page).to have_content 'Discount was successfully created.'
+      expect(page).to have_content 'was successfully created.'
       expect(Discount.where(applicator_type: 'Coupon', applicator_id: percent_off_job.id)).to exist
       expect(Discount.where(applicator_type: 'Coupon', applicator_id: percent_off_job.id).first.discountable).to eq job
     end

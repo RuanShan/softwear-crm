@@ -8,6 +8,7 @@
 
   <% if @order %>
     $('#order-discounts').html("<%=j render 'payments/discounts', order: @order %>");
+    $('#payments').html("<%=j render 'payments/payments', order: @order %>");
     $('#discount-form').data('current', null);
   <% end %>
 <% end %>

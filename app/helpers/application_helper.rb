@@ -162,7 +162,11 @@ module ApplicationHelper
     %w(a e i o u).include?(string.downcase.first) ? "an #{self}" : "a #{self}" 
   end 
 
-  def options_with_data_attr(collection, val_method, text_method, data_attrs)
+  def can_charge_card?
+    !Setting.payflow_login.blank? && !Setting.payflow_password.blank?
+  end
+
+  def options_with_data_attr(collection, val_method, text_method, selected, data_attrs)
     buf = ''.html_safe
 
     collection.each do |element|
@@ -175,8 +179,9 @@ module ApplicationHelper
         :option,
         element.send(text_method),
 
-        value: element.send(val_method),
-        data:  data
+        value:    element.send(val_method),
+        data:     data,
+        selected: selected.to_s == element.send(val_method).to_s
       )
     end
 

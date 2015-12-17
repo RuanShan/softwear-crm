@@ -1,7 +1,5 @@
 <ul id='payments-list'>
   <% payments.each do |payment| %>
-    <% next if payment.totally_refunded? %>
-
     <dt>Payment <%= payment.id %></dt>
     <dt>Method:</dt>
     <dd class='method'><%= Payment::VALID_PAYMENT_METHODS[payment.payment_method] %></dd>

@@ -11,7 +11,7 @@ class DiscountsController < InheritedResources::Base
     return create_from_in_store_credits if params[:in_store_credit_ids]
 
     super do |success, failure|
-      success.js
+      success.js { flash[:notice] = "#{@discount.applicator_type.humanize} was successfully created." }
       failure.js { render 'error' }
     end
   end
