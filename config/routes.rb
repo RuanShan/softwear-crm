@@ -34,8 +34,8 @@ CrmSoftwearcrmCom::Application.routes.draw do
 
   resources :brands, :colors, :users, :artworks
 
-  resources :artwork_requests do 
-    member do 
+  resources :artwork_requests do
+    member do
       post 'transition(/:state_machine(/:transition))' => :state, as: :transition
     end
   end
@@ -129,9 +129,9 @@ CrmSoftwearcrmCom::Application.routes.draw do
     resources :payments, :discounts, shallow: true
     resources :artwork_requests
     resources :proofs do
-      member do 
+      member do
         post 'transition/(:state_machine/:transition)' => :state, as: :transition
-      end 
+      end
 
       collection do
         get 'email_customer'
@@ -191,4 +191,11 @@ CrmSoftwearcrmCom::Application.routes.draw do
   get '/undock/:quote_request_id', to: 'home#undock'
 
   post '/error-report', to: 'error_reports#email_report'
+
+  namespace 'customer' do
+    resources :orders, only: [:show], key: :customer_key do
+      resources :payments, only: [:index, :new], key: :id
+    end
+  end
+
 end

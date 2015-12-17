@@ -10,7 +10,7 @@ class Order < ActiveRecord::Base
 
   searchable do
     text :name, :email, :firstname, :lastname, :invoice_state, :proof_state, :artwork_state,
-         :company, :twitter, :terms, :delivery_method, :salesperson_full_name
+         :company, :twitter, :terms, :delivery_method, :salesperson_full_name, :customer_key
 
     text :jobs do
       jobs.map { |j| "#{j.name} #{j.description}" }
@@ -140,6 +140,7 @@ class Order < ActiveRecord::Base
 
   after_initialize -> (o) { o.production_state = 'pending' if o.production_state.blank? }
   after_initialize -> (o) { o.invoice_state = 'pending' if o.invoice_state.blank? }
+  after_initialize -> (o) { o.customer_key = rand(36**6).to_s(36).upcase if o.customer_key.blank? }
   after_save :enqueue_create_production_order, if: :ready_for_production?
 
   alias_method :comments, :all_comments

@@ -1,0 +1,233 @@
+<div class='order-invoice'>
+  <div class="page-heading animated fadeInDownBig row" style="background-color: #fff;">
+    <div class="pull-left">
+      <% if @order.store.logo.file.blank? %>
+          <h1 class='pull-left'>
+            <strong><%= @order.store.name %></strong>
+          </h1>
+      <% else %>
+          <%= image_tag @order.store.logo.file.url(:thumb) %>
+      <% end %>
+      </h1>
+    </div>
+    <div class="pull-right">
+      <h1 class='text-right'><strong>Invoice</strong> #<%= @order.id %>
+        <% unless @order.po.blank? %>
+            <small>P.O. No. <%= @order.po %></small>
+        <% end %>
+      </h1>
+    </div>
+
+  </div>
+
+  <div class="box-info">
+    <div class="col-xs-12">
+      <h2><strong>Order</strong> Details</h2>
+      <table>
+        <tr>
+          <th>Order Name</th>
+          <td><%= @order.name %></td>
+          <th>In Hand By Date:</th>
+          <td><%= display_time @order.in_hand_by  %></td>
+        </tr>
+        <tr>
+          <th>Payment Terms</th>
+          <td><%= @order.terms %></td>
+          <th>Salesperson</th>
+          <td><%= @order.salesperson.full_name %></td>
+        </tr>
+      </table>
+    </div>
+  </div>
+  <div class="box-info">
+    <div class="col-xs-6">
+      <h2><strong>Customer</strong> Details</h2>
+      <table>
+        <tr>
+          <th>Name</th>
+          <td><%= @order.full_name %></td>
+        </tr>
+        <% unless @order.company.blank? %>
+            <tr>
+              <th>Company</th>
+              <td><%= @order.company %></td>
+            </tr>
+        <% end %>
+        <tr>
+          <th>E-mail</th>
+          <td><%= @order.email %></td>
+        </tr>
+        <% unless @order.phone_number.blank? %>
+            <tr>
+              <th>Phone Number</th>
+              <td><%= @order.phone_number %></td>
+            </tr>
+        <% end %>
+      </table>
+    </div>
+
+    <div class="col-xs-6">
+      <h2><strong>Payment and Delivery</strong> Details</h2>
+      <table>
+        <tr>
+          <th>Delivery Method</th>
+          <td><%= @order.delivery_method %></td>
+      </table>
+      <% @order.shipments.each do |shipment| %>
+          <dl>
+            <% if shipment.shippable_type == 'Job' %>
+                <dt>Job</dt>
+                <dd><%= shipment.shippable.name %></dd>
+            <% end %>
+            <dt>Shipping Method </dt>
+            <dd><%= shipment.shipping_method.name %></dd>
+            <dd>
+              <address>
+                <%= shipment.complete_address.join('<br />').html_safe %>
+              </address>
+            </dd>
+            <% unless shipment.tracking_number.blank? %>
+                <dt>Tracking</dt>
+                <dd><%= shipment.tracking_number %></dd>
+            <% end %>
+          </dl>
+      <% end %>
+    </div>
+  </div>
+  <div class="box-info">
+    <div class="col-xs-12">
+      <% @order.jobs.each do |job| %>
+          <h2 class="invoice-job-name">
+            <strong><%= job.name %></strong>: <%= job.description %><br />
+            <strong>Imprints</strong>: <%= job.imprints.map{|i| "#{i.name} (#{i.description})" }.join(", ") %>
+          </h2>
+
+          <% job.sort_line_items(@order).tap do |sorted_line_items| %>
+              <% unless sorted_line_items.empty? %>
+                  <% sorted_line_items.each do |_imprintable_name, by_color| %>
+                      <% by_color.each do |color_name, line_items| %>
+                          <%= render 'line_items/imprintable_show', line_items: line_items %>
+                      <% end # by_color %>
+                  <% end #sorted_line_items %>
+              <% end #unless_sorted  %>
+          <% end #sort_line_items %>
+          <% unless job.standard_line_items.empty? %>
+              <table class="non-imprintables table table-condensed">
+                <thead>
+                <tr>
+                  <th>
+                    Name
+                  </th>
+                  <th>
+                    Description
+                  </th>
+                  <th>
+                    Price
+                  </th>
+                  <th style="width: 100px">
+                    Quantity
+                  </th>
+                  <th style="width: 100px" class="text-right">
+                    Total
+                  </th>
+                </tr>
+                </thead>
+                <% job.standard_line_items.each do |li| %>
+                    <tr>
+                      <td>
+                        <%= li.name %>
+                      </td>
+                      <td>
+                        <%= li.description %>
+                      </td>
+                      <td>
+                        <%= number_to_currency li.unit_price %>
+                      </td>
+                      <td>
+                        <%= li.quantity %>
+                      </td>
+                      <td class="text-right">
+                        <%= number_to_currency li.total_price %>
+                      </td>
+                    </tr>
+                <% end %>
+              </table>
+          <% end %>
+      <% end #jobs.each %>
+    </div>
+    <div class="col-xs-12">
+      <table class="col-xs-12 table order-totals">
+        <tbody>
+        <tr>
+          <td colspan="4"></td>
+        </tr>
+        <tr id="subtotal">
+          <td colspan='2'></td>
+          <td style="width: 100px"><strong>Subtotal:</strong></td>
+          <td style="width: 150px" class="text-right"><%= number_to_currency(@order.subtotal) %></td>
+        </tr>
+        <% unless @order.all_discounts.empty? %>
+            <tr id="discounts">
+              <td colspan='2'></td>
+              <td style="width: 100px"><strong>Discounts:</strong></td>
+              <td style="width: 150px" class="text-right">(<%= number_to_currency(@order.discount_total) %>)</td>
+            </tr>
+        <% end %>
+        <tr id="tax">
+          <td colspan='2'></td>
+          <td><strong>Tax:</strong></td>
+          <td class="text-right"><%= number_to_currency(@order.tax) %></td>
+        </tr>
+
+        <% if @order.shipping_price > 0 %>
+            <tr id="shipping">
+              <td colspan='2'></td>
+              <td><strong>Shipping:</strong></td>
+              <td class="text-right"><%= number_to_currency(@order.shipping_price) %></td>
+            </tr>
+        <% end %>
+
+        <tr id="total">
+          <td colspan='2'></td>
+          <td><strong>Total:</strong></td>
+          <td class="text-right"><%= number_to_currency(@order.total) %></td>
+        </tr>
+
+        <% @order.payments.each do |payment| %>
+            <tr id="payments">
+              <td colspan="3" class="text-right">
+                <strong><%= Payment::VALID_PAYMENT_METHODS[payment.payment_method]%> Payment on <%= payment.created_at.strftime('%a, %b %d, %I:%M%p') %></strong></td>
+              <td class="text-right">(<%= number_to_currency(payment.amount) %>)</td>
+            </tr>
+        <% end %>
+        <tr id="total">
+          <td colspan='2'>
+          <td><strong>Balance:</strong></td>
+          <td class="text-right"><%= number_to_currency(@order.balance) %></td>
+        </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <% if @order.comments.public_comments.any? %>
+        <div class="col-xs-12">
+          <% @order.comments.public_comments.each do |comment| %>
+              <%= render 'comments/basic', comment: comment, hide_destroy: true %>
+          <% end %>
+        </div>
+        <br clear="all" />
+    <% end %>
+
+
+    <%= render('name_numbers/table', {order: @order}) if @order.imprints.name_number.any? %>
+
+    <div class="col-xs-12 text-center" id="invoice_footer">
+      <h3>Thank you for your business!</h3>
+      <p>
+        <%= @order.store.name %><br />
+        <%= @order.store.address_array.join(" - ") %><br />
+        <%= @order.store.phone %> - <%= @order.store.sales_email %>
+      </p>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,21 @@
+<div class="container-fluid">
+  <div class="col-sm-3 hidden-print ">
+    <h3>State</h3>
+    <dl>
+      <dt>Payment</dt>
+      <dd><%= @order.payment_status %></dd>
+      <dt>Invoice</dt>
+      <dd><%= @order.invoice_state %></dd>
+    </dl>
+    <h3>Actions</h3>
+    <ul>
+      <li>
+        <%= link_to "Print", "#" %>
+      </li>
+    </ul>
+  </div>
+  <div class="col-sm-9">
+    <%= render 'orders/show' %>
+  </div>
+
+</div>

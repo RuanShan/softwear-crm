@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20151217215221) do
+ActiveRecord::Schema.define(version: 20151217230854) do
 
   create_table "activities", force: :cascade do |t|
     t.integer  "trackable_id",   limit: 4
@@ -505,10 +505,11 @@ ActiveRecord::Schema.define(version: 20151217215221) do
     t.decimal  "shipping_price",                        precision: 10, scale: 2, default: 0.0
     t.string   "invoice_state",             limit: 255
     t.string   "production_state",          limit: 255
-    t.integer  "softwear_prod_id",          limit: 4
     t.string   "notification_state",        limit: 255
     t.integer  "freshdesk_proof_ticket_id", limit: 4
+    t.integer  "softwear_prod_id",          limit: 4
     t.string   "artwork_state",             limit: 255
+    t.string   "customer_key",              limit: 255
   end
 
   add_index "orders", ["deleted_at"], name: "index_orders_on_deleted_at", using: :btree
@@ -627,8 +628,8 @@ ActiveRecord::Schema.define(version: 20151217215221) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.decimal  "shipping",                                     precision: 10, scale: 2
-    t.datetime "initialized_at"
     t.string   "quote_source",                     limit: 255
+    t.datetime "initialized_at"
     t.string   "freshdesk_ticket_id",              limit: 255
     t.boolean  "informal"
     t.integer  "insightly_category_id",            limit: 4
