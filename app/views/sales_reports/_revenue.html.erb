@@ -25,6 +25,21 @@
         Order
       </th>
       <th>
+        Payment
+      </th>
+      <th>
+        Invoice
+      </th>
+      <th>
+        Artwork
+      </th>
+      <th>
+        Production
+      </th>
+      <th>
+        Notification
+      </th>
+      <th>
         Salesperson
       </th>
       <th>
@@ -51,7 +66,7 @@
     </tr>
   </thead>
   <tbody>
-    <% data[:orders].each do |order| %> 
+    <% data[:orders].each do |order| %>
       <% cache(["order_reports/_revenue_by_store", order]) do %>
       <tr>
         <td>
@@ -65,6 +80,21 @@
         </td>
         <td>
           <%= order.name %>
+        </td>
+        <td>
+          <%= order.payment_status.humanize %>
+        </td>
+        <td>
+          <%= order.invoice_state.humanize  %>
+        </td>
+        <td>
+          <%= order.artwork_state.humanize  %>
+        </td>
+        <td>
+          <%= order.production_state.humanize  %>
+        </td>
+        <td>
+          <%= order.notification_state.humanize  %>
         </td>
         <td>
           <%= order.salesperson.full_name %>
