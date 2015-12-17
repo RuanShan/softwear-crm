@@ -16,6 +16,12 @@ GIT
       sshkit (~> 1.2)
 
 GIT
+  remote: git://github.com/AnnArborTees/dumpsync.git
+  revision: 8244088c7f9c5647b941ae2268c1045ba5e03ac9
+  specs:
+    dumpsync (0.0.1)
+
+GIT
   remote: git://github.com/AnnArborTees/endpoint_stub.git
   revision: a1ff49bbb291af6cc4789cb139e6515d67c01745
   branch: master
@@ -567,6 +573,7 @@ DEPENDENCIES
   coffee-rails (~> 4.0.0)
   database_cleaner
   devise
+  dumpsync!
   email_spec
   endpoint_stub!
   factory_girl_rails (>= 4.2.0)
