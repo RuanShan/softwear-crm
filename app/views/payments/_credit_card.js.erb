@@ -36,7 +36,7 @@ $('#payment_cc_number').validateCreditCard(function(result) {
   }
   if (result.length_valid && !result.luhn_valid) {
     <% # Credit card is the right length but appears invalid %>
-    statusWarning.html('Double check that number! <br />');
+    statusWarning.html('Might wanna double check that number <br />');
     statusWarning.show();
   }
   else {

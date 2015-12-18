@@ -44,42 +44,7 @@
       <%= f.text_area :t_description, label: 'Description of traded goods' %>
 
     <% elsif english_payment_method == 'Credit Card' %>
-      <% if (errors = f.object.errors[:payment_method]) && !errors.blank? %>
-        <div class='alert alert-danger'>
-          <% errors.each do |error| %>
-            <p><%= error %></p>
-          <% end %>
-        </div>
-      <% end %>
-
-      <div class='form-group well'>
-        <%= f.text_field :cc_name, label: 'Name on Card', value: @payment.cc_name || @order.full_name %>
-        <%= f.text_field :cc_company, label: 'Company', value: @payment.cc_company || @order.full_name %>
-
-        <%= f.form_group :cc_number,
-          label: { text: "Card Number <i id='credit-card-status' class='fa fa-times'></i>".html_safe } do %>
-          <div class='input-group'>
-            <span class='input-group-addon cc-icon cc-icon-empty' id='credit-card-icon'>
-            </span>
-            <% # There's no way to omit the label with bootstrap_form, so we use text_field_tag here.. %>
-            <%= text_field_tag 'payment[cc_number]', nil, class: 'form-control' %>
-          </div>
-        <% end %>
-        <div class='text-danger' id='credit-card-warning' style='display: none;'>
-        </div>
-
-        <%= f.select :cc_type, Payment::CREDIT_CARD_TYPES.to_a.map(&:reverse), include_blank: true, label: 'Card Type' %>
-        <div class='form-inline'>
-          <div class='cc-exp'>
-            <%= f.text_field :cc_expiration, label: 'Expiration', hide_label: true, placeholder: 'MM/YY', size: 5, maxlength: 5, prepend: '<strong>Expiration</strong>'.html_safe %>
-          </div>
-          <div class='cc-cvc'>
-            <%= f.text_field :cc_cvc, label: 'CVC', hide_label: true, size: 4, maxlength: 4, prepend: '<strong>CVC</strong>'.html_safe %>
-          </div>
-        </div>
-
-        <div class='clearfix'></div>
-      </div>
+      <%= render 'customer/payments/_credit_card_form', payment: @payment, order: @order %>
     <% end %>
 
     <%= f.submit 'Apply Payment', class: 'btn btn-success', id: 'submit_payment_button',

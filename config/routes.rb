@@ -194,7 +194,7 @@ CrmSoftwearcrmCom::Application.routes.draw do
 
   namespace 'customer' do
     resources :orders, only: [:show], key: :customer_key do
-      resources :payments, only: [:index, :new], key: :id
+      resources :payments, only: [:index, :new, :create], key: :id
     end
   end
 

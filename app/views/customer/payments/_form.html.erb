@@ -1,0 +1,19 @@
+<% # render partial: 'shared/modal_errors', locals: { object: payment } %>
+
+<div id="horizontal-form" class="collapse in">
+<%= bootstrap_form_for [order, payment] do |f| %>
+    <%= f.hidden_field :salesperson_id, value: current_user.id %>
+    <%= f.hidden_field :payment_method, value: Payment::VALID_PAYMENT_METHODS.key('Credit Card') %>
+    <%= f.hidden_field :Store_id, value: order.store_id %>
+
+    <div id="data_supply" data-total="<%= order.total %>" aria-hidden="true"></div>
+
+    <%= f.text_field :amount, prepend: '$', value: payment.amount || order.balance %>
+
+    <%= render 'customer/payments/_credit_card_form', payment: payment, order: order %>
+
+    <%= f.submit 'Apply Payment', class: 'btn btn-success', id: 'submit_payment_button',
+      data: { confirm: "Are you sure you would like to add this payment?" } %>
+
+  <% end %>
+</div>

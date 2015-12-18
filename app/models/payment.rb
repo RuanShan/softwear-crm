@@ -58,6 +58,7 @@ class Payment < ActiveRecord::Base
   validates :cc_number, :cc_name, presence: true, if: :credit_card?
   validates :refund_reason, presence: true, if: :refunded?
   validate :amount_doesnt_overflow_order_balance
+  validate :amount_greater_than_zero
   validate :credit_card_is_valid, if: :credit_card?
 
   # NOTE These are all transient and only ever exist on the instance of a CC payment being created
@@ -275,5 +276,9 @@ class Payment < ActiveRecord::Base
         "overflows the order's balance by #{number_to_currency(-new_balance)} #{remark}"
       )
     end
+  end
+
+  def amount_greater_than_zero
+    errors.add(:amount, "cannot be negative") if amount < 0
   end
 end
