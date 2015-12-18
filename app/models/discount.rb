@@ -14,7 +14,10 @@ class Discount < ActiveRecord::Base
 
   before_validation :calculate_amount, if: :coupon?
   before_validation :set_amount, if: :in_store_credit?
-  before_validation :set_transaction_id, if: :refund?
+  # The javascript will set transaction_id automatically.
+  # By not doing this callback, one can choose not to have the refund to through payflow.
+  #
+  # before_validation :set_transaction_id, if: :refund?
   after_validation :apply_refund, on: :create, if: :refund?
 
   acts_as_paranoid
@@ -119,7 +122,7 @@ class Discount < ActiveRecord::Base
   end
 
   def apply_refund
-    if discountable.respond_to?(:refund!)
+    if discountable.respond_to?(:refund!) && !transaction_id.blank?
       @credited_for_refund = discountable.refund!(amount)
     end
     nil

@@ -124,7 +124,7 @@ describe Payment, payment_spec: true do
 
       it 'is created, a purchase is made, and the PNRef is stored' do
         expect(mock_gateway).to receive(:purchase)
-          .with(1000, mock_card, hash_including(order_id: subject.order_id))
+          .with(1000, mock_card, hash_including(order_id: subject.id))
           .and_return double('Purchase result', success?: true, params: { 'pn_ref' => 'abc123' })
 
         subject.save

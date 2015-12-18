@@ -225,7 +225,7 @@ feature 'Payments management', js: true, payment_spec: true, retry: 2 do
       expect(activity).to_not be_nil
     end
 
-    scenario 'refunding a payment', retry: 2 do
+    scenario 'refunding a payment', huh: true, retry: 2 do
       visit (edit_order_path order.id) + '#payments'
       sleep 0.5
       find(:css, '.order_payment_refund_link').click

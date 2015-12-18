@@ -167,8 +167,8 @@ class Payment < ActiveRecord::Base
       (amount * 100).round, # In cents
       credit_card,
 
-      order_id: order.id,
-      description: "SoftWEAR CRM Payment ##{id} for #{order.name} by #{salesperson.full_name}"
+      order_id: id, # "invoice" id
+      description: "SoftWEAR CRM Payment for #{order.name} (##{order.id}) by #{salesperson.full_name}"
     )
 
     if result.success?

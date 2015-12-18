@@ -1,5 +1,9 @@
 <p><%= activity.owner.full_name rescue "(User Unavailable)" %> changed 
-<%= link_to "artwork request ##{activity.trackable_id}", order_artwork_request_path(activity.trackable.order, activity.trackable)  %> 
+<% if activity.trackable %>
+  <%= link_to "artwork request ##{activity.trackable_id}", order_artwork_request_path(activity.trackable.order, activity.trackable)  %> 
+<% else %>
+  unknown artwork request
+<% end %>
 <b><%= activity.parameters['machine'] %></b> from 
   <b><%= activity.parameters['old_state'] %></b> to 
   <b><%= activity.parameters['new_state'] %></b> via transition 
