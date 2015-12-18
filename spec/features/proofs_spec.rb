@@ -77,7 +77,7 @@ feature 'Proof Features', js: true, proof_spec: true, retry: 3 do
     end
   end
 
-  context 'State Transitions', current: true do
+  context 'State Transitions' do
     context 'as an artist' do
       context 'assuming an order with artwork requests that are assigned and approved' do
         background { order.artwork_requests.each{|x| x.assigned_artist(valid_user) } }

@@ -9,7 +9,9 @@
       <%= order.firstname %> <%= order.lastname %><br>
       <%= order.email %><br />
     <% end %>
-    <b>In Hand By</b> <%= order.in_hand_by.try(:strftime, "%a, %b %d, %I:%M%p") || 'NOT SET' %>
+    <b>In Hand By</b> <%= order.in_hand_by.try(:strftime, "%a, %b %d, %I:%M%p") || 'NOT SET' %><br />
+    Customer URL:<br />
+    <%= link_to customer_order_url(order.customer_key),  customer_order_path(order.customer_key), target: "_blank" %>
   </td>
   <td><%= order.salesperson.full_name %></td>
   <td>

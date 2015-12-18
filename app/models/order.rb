@@ -141,6 +141,7 @@ class Order < ActiveRecord::Base
   after_initialize -> (o) { o.production_state = 'pending' if o.production_state.blank? }
   after_initialize -> (o) { o.invoice_state = 'pending' if o.invoice_state.blank? }
   after_initialize -> (o) { o.customer_key = rand(36**6).to_s(36).upcase while o.customer_key.blank? || Order.where(customer_key: o.customer_key).where.not(id: id).exists? }
+
   after_save :enqueue_create_production_order, if: :ready_for_production?
 
   alias_method :comments, :all_comments

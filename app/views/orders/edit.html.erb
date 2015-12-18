@@ -9,6 +9,7 @@
       <% end %>
       <%= @order.name %>
     </h2>
+    Customer URL: <%= link_to customer_order_url(@order.customer_key),  customer_order_path(@order.customer_key), target: "_blank" %>
   </div>
 
   <div class="pull-right text-right">

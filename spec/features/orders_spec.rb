@@ -243,6 +243,16 @@ feature 'Order management', order_spec: true, js: true do
     end
   end
 
+  scenario 'a salesperson can see and click the customer portal link to the order', js: true do
+    visit orders_path
+    expect(page).to have_text(customer_order_path(order.customer_key))
+    click_link customer_order_path(order.customer_key)
+    new_window = page.driver.browser.window_handles.last
+    page.within_window new_window do
+      expect(page).to have_text("Invoice ##{order.id}")
+    end
+  end
+
 
   context 'search', search: true, no_ci: true  do
     background do
