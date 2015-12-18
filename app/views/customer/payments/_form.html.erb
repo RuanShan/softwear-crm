@@ -1,19 +1,46 @@
 <% # render partial: 'shared/modal_errors', locals: { object: payment } %>
 
-<div id="horizontal-form" class="collapse in">
-<%= bootstrap_form_for [order, payment] do |f| %>
-    <%= f.hidden_field :salesperson_id, value: current_user.id %>
-    <%= f.hidden_field :payment_method, value: Payment::VALID_PAYMENT_METHODS.key('Credit Card') %>
-    <%= f.hidden_field :Store_id, value: order.store_id %>
+<div class='col-sm-6'>
+  <div class='box-info'>
+    <div class="icon-box">
+      <span class="fa-stack">
+        <i class="fa fa-circle fa-stack-2x success"></i>
+        <i class="fa fa-dollar fa-stack-1x fa-inverse"></i>
+      </span>
+    </div>
 
-    <div id="data_supply" data-total="<%= order.total %>" aria-hidden="true"></div>
+    <div class="text-box">
+      <h3><%= order.balance %></h3>
 
-    <%= f.text_field :amount, prepend: '$', value: payment.amount || order.balance %>
+      <p>Order Balance</p>
+    </div>
 
-    <%= render 'customer/payments/_credit_card_form', payment: payment, order: order %>
+    <div class="clear"></div>
 
-    <%= f.submit 'Apply Payment', class: 'btn btn-success', id: 'submit_payment_button',
-      data: { confirm: "Are you sure you would like to add this payment?" } %>
+    <div class="progress progress-xs">
+      <div class="progress-bar progress-bar-success" role="progressbar" aria-valuenow="<%= order.percent_paid %>" aria-valuemin="0" aria-valuemax="100" style="width: <%= order.percent_paid %>%">
+        <span class="sr-only"><%= order.percent_paid %>&#37; Paid</span>
+      </div>
+    </div>
+  </div>
+</div>
 
-  <% end %>
+<div class='col-sm-6'>
+  <div id="horizontal-form" class="collapse in">
+    <%= bootstrap_form_for [order, payment] do |f| %>
+      <%= f.hidden_field :salesperson_id, value: current_user.id %>
+      <%= f.hidden_field :payment_method, value: Payment::VALID_PAYMENT_METHODS.key('Credit Card') %>
+      <%= f.hidden_field :Store_id, value: order.store_id %>
+
+      <div id="data_supply" data-total="<%= order.total %>" aria-hidden="true"></div>
+
+      <%= f.text_field :amount, prepend: '$', value: payment.amount || order.balance %>
+
+      <%= render 'customer/payments/credit_card_form', payment: payment, order: order, f: f %>
+
+      <%= f.submit 'Apply Payment', class: 'btn btn-success', id: 'submit_payment_button',
+        data: { confirm: "Are you sure you would like to add this payment?" } %>
+
+    <% end %>
+  </div>
 </div>
