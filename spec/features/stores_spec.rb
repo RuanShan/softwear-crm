@@ -13,7 +13,7 @@ feature 'Stores management', store_spec: true do
     expect(page).to have_css("tr##{model_table_row_id(store)}")
   end
 
-  scenario 'User creates a new store', current: true do
+  scenario 'User creates a new store' do
     visit stores_path
     click_link 'show_new_link'
     fill_in 'Name', with: 'New Store'

@@ -436,7 +436,7 @@ describe Order, order_spec: true do
     end
   end
 
-  describe '#missing_approved_proofs?', current: true do
+  describe '#missing_approved_proofs?' do
 
     let(:artwork_request) { build_stubbed(:artwork_request) }
     let(:order) { create(:order) }

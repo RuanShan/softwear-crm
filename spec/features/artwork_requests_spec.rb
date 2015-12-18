@@ -96,7 +96,7 @@ feature 'Artwork Request Features', js: true, artwork_request_spec: true do
     expect(page).to have_content order.name
   end
 
-  context 'State Transitions', current: true, retry: 3 do
+  context 'State Transitions', retry: 3 do
     context 'as a salesperson' do
       scenario 'A user can add an artwork request, and its initial status is unassigned', add_ar: true, story_692: true do
         PublicActivity.with_tracking do

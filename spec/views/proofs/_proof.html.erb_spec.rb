@@ -9,7 +9,7 @@ describe 'proofs/_proof.html.erb', proof_spec: true do
   context 'regardless of what transitions a proof can make' do
     before { render 'proofs/proof', { order: order, proof: proof } }
 
-    it 'displays all of the info for a proof and an edit link', wip: true do
+    it 'displays all of the info for a proof and an edit link' do
       expect(rendered).to have_selector("div#proof-#{proof.id}")
       expect(rendered).to have_css('h4', text: "Proof ##{proof.id}")
       expect(rendered).to have_css('h4', text: "Mockups")

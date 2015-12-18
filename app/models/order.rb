@@ -140,7 +140,8 @@ class Order < ActiveRecord::Base
 
   after_initialize -> (o) { o.production_state = 'pending' if o.production_state.blank? }
   after_initialize -> (o) { o.invoice_state = 'pending' if o.invoice_state.blank? }
-  after_initialize -> (o) { o.customer_key = rand(36**6).to_s(36).upcase while o.customer_key.blank? || Order.where(customer_key: o.customer_key).exists? }
+  after_initialize :initialize_customer_key
+
   after_save :enqueue_create_production_order, if: :ready_for_production?
 
   alias_method :comments, :all_comments
@@ -692,6 +693,15 @@ class Order < ActiveRecord::Base
 
   def embroidery_artwork_requests
     artwork_requests.to_a.delete_if{|x| !['In-House Embroidery', 'Outsourced Embroidery', 'In-House Applique EMB'].include? x.imprint_method.name}
+  end
+
+  def initialize_customer_key
+    if self.customer_key.blank?
+      loop do
+        self.customer_key = rand(36**6).to_s(36).upcase
+        break if Order.count(customer_key: customer_key) == 0
+      end
+    end
   end
 
 end
