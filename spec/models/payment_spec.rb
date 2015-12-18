@@ -127,13 +127,14 @@ describe Payment, payment_spec: true do
           .with(1000, mock_card, hash_including(order_id: subject.id))
           .and_return double('Purchase result', success?: true, params: { 'pn_ref' => 'abc123' })
 
+
         subject.save
         expect(subject.errors.full_messages).to be_empty
 
         expect(subject.cc_transaction).to eq 'abc123'
       end
 
-      context 'but activemerchant fails to make the purcahse' do
+      context 'but activemerchant fails to make the purchase' do
         it 'raises a PaymentError' do
           expect(mock_gateway).to receive(:purchase)
             .and_return double('Purchase result', success?: false, message: 'poopoo problem')
@@ -182,12 +183,26 @@ describe Payment, payment_spec: true do
 
     context 'when the refund amount is the same as the payment amount' do
       subject { create(:credit_card_payment, amount: 10.00, cc_transaction: 'abc123') }
-      let(:refund) { create(:refund, discountable: subject, amount: 10.00) }
+      let(:refund) { create(:refund, discountable: subject, amount: 10.00, transaction_id: 'abc123') }
 
       it 'is valid and gets refunded' do
         expect(mock_gateway).to receive(:refund)
           .with(1000, 'abc123', anything)
           .and_return double('Gateway response', success?: true)
+
+        expect(subject.errors.full_messages).to be_empty
+        refund
+
+        expect(subject.reload.totally_refunded?).to eq true
+      end
+    end
+
+    context 'when the refund does not have transaction_id set' do
+      subject { create(:credit_card_payment, amount: 10.00, cc_transaction: 'abc123') }
+      let(:refund) { create(:refund, discountable: subject, amount: 10.00, transaction_id: nil) }
+
+      specify 'the refund does not happen' do
+        expect(mock_gateway).to_not receive(:refund)
 
         expect(subject.errors.full_messages).to be_empty
         refund

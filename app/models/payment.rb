@@ -263,9 +263,6 @@ class Payment < ActiveRecord::Base
       end
       return
     end
-
-  ensure
-    @credit_card = nil
   end
 
   def amount_doesnt_overflow_order_balance
@@ -288,6 +285,6 @@ class Payment < ActiveRecord::Base
   end
 
   def amount_greater_than_zero
-    errors.add(:amount, "cannot be negative") if amount < 0
+    errors.add(:amount, "cannot be negative") if amount && amount < 0
   end
 end
