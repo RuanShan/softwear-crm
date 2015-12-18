@@ -1,3 +1,4 @@
+<% if show_breakdown %>
 <div class="col-xs-12" style="page-break-after: always">
   <% order.jobs.map{|j| j.name_number_imprints }.flatten.each do |imprint| %>
     <h3>Number Breakdown for <%= imprint.name %>
@@ -28,6 +29,7 @@
     <% end %>
   <% end %>
 </div>
+<% end %>
 
 <div class="col-xs-12" style="page-break-after: always">
   <h3><%= order.name %> Names/Numbers</h3>

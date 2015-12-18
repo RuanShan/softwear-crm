@@ -1,0 +1,26 @@
+<div id="sidebar-menu">
+  <ul>
+    <%= content_tag :li, class: 'active' do %>
+      <a href="#fakelink"><i class="fa fa-shopping-cart"></i><i class="fa fa-angle-double-down i-right"></i> Order Actions</a>
+
+      <%= content_tag :ul, class: 'visible' do %>
+
+        <%= content_tag :li do %>
+          <%= link_to orders_path do %><i class="fa fa-angle-right"></i> Print Invoice<% end %>
+        <% end %>
+
+
+        <%= content_tag :li do %>
+            <%= link_to fba_orders_path do %><i class="fa fa-angle-right"></i> Print Receipts<% end %>
+        <% end %>
+
+        <%= content_tag :li do %>
+          <%= link_to new_order_path do %><i class="fa fa-angle-right"></i> Make Payment<% end %>
+        <% end %>
+
+      <% end %>
+    <% end %>
+
+  </ul>
+  <div class="clear"></div>
+</div>

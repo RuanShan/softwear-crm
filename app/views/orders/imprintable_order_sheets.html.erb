@@ -4,7 +4,7 @@
       <strong>Order:</strong> <%= @order.full_name %> - <%= @order.name %><br />
       <strong>Salesperson:</strong> <%= @order.salesperson.full_name %><br />
       Job: <%= index + 1 %> of <%= @order.jobs.size %> - #<%= job.id %> - <%= job.name %><br />
-      <span class="h2"><%= job.imprintable_line_items_total %> Total Pieces</span></p> 
+      <span class="h2"><%= job.imprintable_line_items_total %> Total Pieces</span></p>
 
       <% job.sort_line_items(@order).tap do |sorted_line_items| %>
         <% unless sorted_line_items.empty? %>
@@ -20,5 +20,5 @@
     </p>
   <% end %>
 
-<%= render('name_numbers/table', {order: @order}) if @order.imprints.name_number.any? %>
+<%= render('name_numbers/table', {order: @order, show_breakdown: true}) if @order.imprints.name_number.any? %>
 
