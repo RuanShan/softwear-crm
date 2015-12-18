@@ -219,7 +219,7 @@
     <% end %>
 
 
-    <%= render('name_numbers/table', {order: @order}) if @order.imprints.name_number.any? %>
+    <%= render('name_numbers/table', {order: @order, show_breakdown: false}) if @order.imprints.name_number.any? %>
 
     <div class="col-xs-12 text-center" id="invoice_footer">
       <h3>Thank you for your business!</h3>
