@@ -144,6 +144,10 @@ describe Order, order_spec: true do
     it 'sets production_state to pending' do
       expect(subject.production_state).to eq('pending')
     end
+
+    it 'generates a customer key' do
+      expect(subject.customer_key.blank?).to_not be_truthy
+    end
   end
 
   describe '#balance' do
