@@ -51,8 +51,6 @@ class ApplicationController < ActionController::Base
   def assign_current_user
     if current_user
       @current_user = current_user
-    else
-      @current_user = User.new(first_name: 'Error', last_name: 'User', email: 'error@error.com')
     end
   end
 

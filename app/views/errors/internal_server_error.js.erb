@@ -1,4 +1,4 @@
-<% if user_signed_in? %>
+<% if current_user %>
 
 setupContentModal(function(modal) {
   modal.find('.modal-content').addClass('modal-content-error');
@@ -8,7 +8,4 @@ showContentModal({
   title: 'You have encountered an error!',
   body: $("<%=j render 'errors/error', error: @error, additional_info: @additional_info %>")
 });
-
-<% else %>
-alert('500 internal server error');
 <% end %>

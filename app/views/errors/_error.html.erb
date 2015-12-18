@@ -1,20 +1,22 @@
 <div>
-  Fortunately, information about this error has been collected, and can
-  be reported to the dev team.
+  Fortunately, a report of this error can be sent to the dev team.
 </div>
-<div>
-  <%= link_to 'Show error details', '#', id: 'show-error-details-btn', onclick: '$("#error-details").toggle(); return false;', class: 'btn btn-info' %>
-  <div id='error-details' style='display: none;'>
-    <p><%= error.class.name %>: <%= error.message %></p>
-    <% error.backtrace.each do |line| %>
-      <% if backtrace_is_from_app?(line) %>
-        <strong><%= line %></strong><br />
-      <% else %>
-        <%= line %><br />
+
+<% if current_user %>
+  <div>
+    <%= link_to 'Show error details', '#', id: 'show-error-details-btn', onclick: '$("#error-details").toggle(); return false;', class: 'btn btn-info' %>
+    <div id='error-details' style='display: none;'>
+      <p><%= error.class.name %>: <%= error.message %></p>
+      <% error.backtrace.each do |line| %>
+        <% if backtrace_is_from_app?(line) %>
+          <strong><%= line %></strong><br />
+        <% else %>
+          <%= line %><br />
+        <% end %>
       <% end %>
-    <% end %>
+    </div>
   </div>
-</div>
+<% end %>
 
 <%= form_tag error_report_path, method: :post do %>
   <%= hidden_field_tag 'error_class', error.class.name %>
@@ -22,6 +24,7 @@
   <%= hidden_field_tag 'backtrace', error.backtrace.join("\n") %>
   <%= hidden_field_tag 'user_id', current_user.try(:id) %>
   <%= hidden_field_tag 'additional_info', additional_info %>
+  <%= hidden_field_tag 'order_id', @order.try(:id) %>
 
   <div class='form-group'>
     <%= label_tag 'user_message', 'Describe how you reached this error.' %>

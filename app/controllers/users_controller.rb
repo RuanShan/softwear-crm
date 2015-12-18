@@ -15,7 +15,7 @@ class UsersController < InheritedResources::Base
     user.confirm
     user.save
 
-    if user_signed_in?
+    if current_user
       hash = {new_user: user, password: password, granter: current_user}
       NewUserMailer.confirm_user(hash).deliver
     else

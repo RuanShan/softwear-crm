@@ -16,8 +16,8 @@ module ErrorCatcher
 
     begin
       respond_to do |format|
-        format.html { render 'errors/internal_server_error', status: 500 }
-        format.js   { render 'errors/internal_server_error', status: 500 }
+        format.html { render 'errors/internal_server_error', layout: layout_for_error, status: 500 }
+        format.js   { render 'errors/internal_server_error', layout: layout_for_error, status: 500 }
         format.json { render json: '{}', status: 500 }
       end
     rescue AbstractController::DoubleRenderError => e
@@ -31,5 +31,9 @@ module ErrorCatcher
       .reject { |v| /^@_/ =~ v.to_s || %i(@view_renderer @output_buffer @view_flow @error).include?(v) }
       .map { |v| "#{v}: #{instance_variable_get(v).inspect}" }
       .join("|||")
+  end
+
+  def layout_for_error
+    current_user ? 'application' : 'no_overlay'
   end
 end

@@ -3,7 +3,7 @@ class Users::SessionsController < Devise::SessionsController
 
   def create
     super do |resource|
-      if user_signed_in?
+      if current_user
         if session[:lock] && session[:lock][:email] == current_user.email
           location = session[:lock][:location] || root_path
           session[:lock] = nil
