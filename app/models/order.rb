@@ -367,7 +367,7 @@ class Order < ActiveRecord::Base
     end
 
     payments.reduce(0) do |total, p|
-      next total if p.nil?
+      next total if p.nil? || p.amount.nil?
       next total if exclude.include?(p.id)
       next total if p.totally_refunded?
 
