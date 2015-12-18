@@ -11,15 +11,14 @@
 
   <div class="left side-menu hidden-print">
 
-    <div class="body rows scroll-y">
-      <div>
-        <h2>Order #<%= @order.id %></h2>
-        <h3>State:</h3>
+    <div class="body rows">
+      <div class="sidebar-order-info">
+        <h3>Order #<%= @order.id %></h3>
         <dl>
-          <dt>Payment:</dt>
-          <dd><%= @order.payment_status %></dd>
-          <dt>Invoice:</dt>
-          <dd><%= @order.invoice_state %></dd>
+          <dt>Payment State:</dt>
+          <dd><%= @order.payment_status.humanize %></dd>
+          <dt>Invoice State:</dt>
+          <dd><%= @order.invoice_state.humanize %></dd>
         </dl>
       </div>
       <br clear="all" />
@@ -31,6 +30,23 @@
   </div>
 
   <div class="right content-page">
+    <div class="header content rows-content-header hidden-print">
+      <button class="button-menu-mobile show-sidebar">
+        <i class="fa fa-bars"></i>
+      </button>
+      <div class="navbar navbar-default" role="navigation">
+        <div class="container">
+          <div class="navbar-header">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+              <i class="fa fa-angle-double-down"></i>
+            </button>
+          </div>
+          <div class="navbar-collapse collapse">
+          </div>
+        </div>
+      </div>
+    </div>
+
     <div class="body content rows scroll-y">
       <%= render 'orders/show' %>
       <%= render 'shared/footer'  %>

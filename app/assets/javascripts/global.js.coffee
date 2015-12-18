@@ -47,6 +47,9 @@ $(window).load ->
       mode: $(this).data('mode') or 'popup'
 
 $(document).ready ->
+  $('a.print-page').click ->
+    window.print()
+
   $('.colorpicker').minicolors
     theme:      'bootstrap',
     letterCase: 'uppercase'
