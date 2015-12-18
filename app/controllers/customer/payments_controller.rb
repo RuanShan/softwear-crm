@@ -14,8 +14,9 @@ module Customer
         failure.js { render 'failure' }
       end
     rescue Payment::PaymentError => e
-      # TODO inform user and send email
-      raise
+      # The error message will be displayed via @payment's payment_method errors
+      # (check out views/customer/payments/_credit_card_form.html.erb)
+      render 'failure'
     end
 
 

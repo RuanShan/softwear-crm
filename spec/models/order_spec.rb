@@ -377,7 +377,7 @@ describe Order, order_spec: true do
     end
     before do
       allow(subject).to receive(:total).and_return(5)
-      allow(subject).to receive(:payment_total).and_return(5)
+      allow(subject).to receive(:payment_total_excluding).and_return(5)
     end
 
     it 'returns the percentage of the payment total over the order total' do

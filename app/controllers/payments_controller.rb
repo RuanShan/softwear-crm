@@ -12,6 +12,8 @@ class PaymentsController < InheritedResources::Base
     end
 
   rescue Payment::PaymentError => e
+    # The error message will be displayed via @payment's payment_method errors
+    # (check out views/customer/payments/_credit_card_form.html.erb)
     render 'payments/new'
   end
 
