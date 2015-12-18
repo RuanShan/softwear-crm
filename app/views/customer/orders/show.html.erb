@@ -16,8 +16,8 @@
         <h3>Order #<%= @order.id %></h3>
         <dl>
           <dt>Payment State:</dt>
-          <dd><%= @order.payment_status.humanize %></dd>
-          <dt>Invoice State:</dt>
+          <dd id='order-payment-status'><%= @order.payment_status.humanize %></dd>
+          <dt id='order-invoice-state'>Invoice State:</dt>
           <dd><%= @order.invoice_state.humanize %></dd>
         </dl>
       </div>

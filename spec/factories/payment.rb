@@ -21,6 +21,12 @@ FactoryGirl.define do
         cc_name 'Dwayne Johnson'
         cc_company 'Easy'
         cc_transaction 'asdfjfawjawe'
+
+        before(:create) do |payment|
+          def payment.purchase!
+            true
+          end
+        end
       end
 
       factory :check_payment do

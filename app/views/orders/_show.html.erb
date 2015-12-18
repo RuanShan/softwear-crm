@@ -197,7 +197,12 @@
             <tr id="payments">
               <td colspan="3" class="text-right">
                 <strong><%= Payment::VALID_PAYMENT_METHODS[payment.payment_method]%> Payment on <%= payment.created_at.strftime('%a, %b %d, %I:%M%p') %></strong></td>
-              <td class="text-right">(<%= number_to_currency(payment.amount) %>)</td>
+              <td class="text-right">
+                (<%= number_to_currency(payment.amount) %>
+                <% if payment.refunded? %>
+                  <span class='text-danger'>- <%= number_to_currency payment.refunded_amount %></span>
+                <% end %>)
+              </td>
             </tr>
         <% end %>
         <tr id="total">

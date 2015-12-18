@@ -17,6 +17,7 @@ module GeneralHelpers
     find(selector).click
     sleep 1
   end
+  alias_method :toggle_dashboard, :unhide_dashboard
 
   def queries_after(&block)
   	count = 0

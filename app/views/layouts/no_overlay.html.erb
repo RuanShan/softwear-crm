@@ -18,7 +18,9 @@
       <p>
         Waiting For Response
       </p>
-      <p class="small"><a href="#" class="hide-loading-spinner">Click To Hide</a></p>
+      <% if @current_user %>
+        <p class="small"><a href="#" class="hide-loading-spinner">Click To Hide</a></p>
+      <% end %>
     </div>
   </div>
 </div>
@@ -30,7 +32,8 @@
       <%= render partial: 'shared/footer'  %>
     </div>
 
-  <%= render partial: 'shared/modal_flash' %>
+  <%= render 'shared/modal_flash' %>
+  <%= render 'shared/modal_content' %>
 </div>
 
 <% if Rails.env.development? %>

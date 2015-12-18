@@ -1,5 +1,6 @@
 require 'spec_helper'
 include ApplicationHelper
+include ActionView::Helpers::NumberHelper
 
 feature 'Payments management', js: true, payment_spec: true, retry: 2 do
   given!(:valid_user) { create(:alternate_user) }
@@ -10,7 +11,7 @@ feature 'Payments management', js: true, payment_spec: true, retry: 2 do
   given(:cc_payment) { create(:credit_card_payment, amount: 10, order_id: order.id) }
 
   background do
-    allow_any_instance_of(Order).to receive(:balance_excluding).and_return 1000
+    allow_any_instance_of(Order).to receive(:total).and_return 1000
   end
 
   # No ci because interacting with the dashboard appears to not work there.
@@ -148,6 +149,108 @@ feature 'Payments management', js: true, payment_spec: true, retry: 2 do
       payment.destroy
       cc_payment.update_column :amount, '10.00'
       cc_payment.update_column :cc_transaction, 'abc123'
+    end
+
+    feature 'customer payments', customer: true do
+      background do
+        allow(gateway).to receive(:purchase)
+          .and_return double("success", success?: true, params: { 'pn_ref' => 'abc123' })
+      end
+
+      scenario 'A customer with valid information can make a payment' do
+        visit customer_order_path(order.customer_key)
+        expect(page).to have_content number_to_currency order.balance
+
+        toggle_dashboard
+        find('#makepayment').click
+
+        fill_in 'payment_amount', with: '100'
+        fill_in 'Name on Card',   with: 'TEST GUY'
+        fill_in 'Company',        with: 'aatc'
+        # Spaces in the card number should be automatically inserted
+        fill_in 'Card Number',    with: '4111111111111111'
+        # The slash in expiration date should be automatically inserted
+        fill_in 'Expiration',     with: '1229'
+        fill_in 'CVC',            with: '123'
+
+        click_button 'Apply Payment'
+        sleep 2
+        page.driver.browser.switch_to.alert.accept
+
+        expect(page).to have_content 'Thank you!'
+        expect(page).to have_content 'Your payment has been processed'
+        click_button 'OK'
+        toggle_dashboard
+        expect(page).to have_content number_to_currency order.reload.balance
+        expect(
+          order.payments.where(
+            cc_name: 'TEST GUY',
+            cc_number: 'xxxx xxxx xxxx 1111',
+            cc_transaction: 'abc123' # pn_ref from gateway stuf success
+          )
+        ).to exist
+      end
+
+      scenario 'A customer sees errors for trying to pay too much (and can correct)' do
+        visit customer_order_path(order.customer_key)
+        toggle_dashboard
+        find('#makepayment').click
+
+        fill_in 'payment_amount', with: '50000' # way too much
+        fill_in 'Name on Card',   with: 'TEST GUY'
+        fill_in 'Company',        with: 'aatc'
+        fill_in 'Card Number',    with: '4111111111111111'
+        fill_in 'Expiration',     with: '1229'
+        fill_in 'CVC',            with: '123'
+
+        click_button 'Apply Payment'
+        sleep 2
+        page.driver.browser.switch_to.alert.accept
+
+        expect(page).to have_content "overflows the order's balance"
+        sleep 1
+
+        fill_in 'payment_amount', with: order.reload.balance
+        # Card info should need to be re-entered
+        fill_in 'Card Number',    with: '4111111111111111'
+        fill_in 'Expiration',     with: '1229'
+        fill_in 'CVC',            with: '123'
+
+        click_button 'Apply Payment'
+        sleep 2
+        page.driver.browser.switch_to.alert.accept
+
+        expect(page).to have_content 'Thank you!'
+        expect(page).to have_content 'Your payment has been processed'
+
+        expect(
+          order.payments.where(
+            cc_name: 'TEST GUY',
+            cc_number: 'xxxx xxxx xxxx 1111',
+            cc_transaction: 'abc123' # pn_ref from gateway stuf success
+          )
+        ).to exist
+      end
+
+      scenario 'A customer sees an error for entering bad information' do
+        visit customer_order_path(order.customer_key)
+        toggle_dashboard
+        find('#makepayment').click
+
+        fill_in 'payment_amount', with: '100'
+        fill_in 'Name on Card',   with: 'tEST friend'
+        fill_in 'Card Number',    with: '551823123' # too short
+        fill_in 'Expiration',     with: '1201' # expired
+        # missing cvc
+
+        click_button 'Apply Payment'
+        sleep 2
+        page.driver.browser.switch_to.alert.accept
+
+        expect(page).to have_content 'is not a valid credit card number'
+        expect(page).to have_content 'expired'
+        expect(page).to have_content 'CVC is required'
+      end
     end
 
     scenario "A salesperson refunding a payment credits the payment's card", actual_payment: true do

@@ -1,0 +1,15 @@
+<%# update invoice dynamically %>
+$('.order-invoice').replaceWith("<%=j render 'orders/show' %>");
+$('#order-payment-status').text("<%= @order.payment_status.humanize %>");
+$('#order-invoice-state').text("<%= @order.invoice_state.humanize %>");
+
+<%# show success modal, which will close the content modal %>
+successModal(
+  "Thank you!",
+  "Your payment has been processed" +
+  <% if @order.balance <= 0 %>
+    " and the order is paid off!"
+  <% else %>
+    " - <%= number_to_currency @order.balance %> to go."
+  <% end %>
+);

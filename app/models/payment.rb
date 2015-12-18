@@ -111,25 +111,25 @@ class Payment < ActiveRecord::Base
   def credit_card
     return @credit_card if @credit_card
     return nil unless credit_card?
-    return nil if actual_cc_number.blank? || cc_expiration.blank? || cc_cvc.blank?
+    # return nil if actual_cc_number.blank? || cc_expiration.blank? || cc_cvc.blank?
 
     # (first_name: nonwhitespace)(whitespace)(last_name: nonwhitespace)
     /^(?<first_name>\S+)\s+(?<last_name>.+)$/ =~ cc_name
-    # (month: 1 or 2 digits)(slash)(year: 2 digits)
-    /(?<month>\d\d?)\/(?<year>\d\d)/ =~ cc_expiration
+    # (month: 2 digits)(slash)(year: 2 digits)
+    /(?<month>.{2})\/(?<year>.{2})/ =~ cc_expiration
 
     current_year = Time.now.year.to_s
     if current_year.size > 4
       raise "8000 years have past since the creation of this software!!!"
     end
     # "20" from current year + "19" (for example) from input value for "2019"
-    year = current_year[0...2] + year
-    # 'cause this code will definitely still be used 100 years from now lol
+    year = "#{current_year[0...2]}#{year}"
+    # 'cause this code will definitely still be used 100 years from now.
 
     @credit_card = ActiveMerchant::Billing::CreditCard.new(
       first_name:         first_name,
       last_name:          last_name,
-      number:             actual_cc_number.gsub(/\s+/, ''),
+      number:             actual_cc_number.try(:gsub, /\s+/, ''),
       month:              month,
       year:               year,
       verification_value: cc_cvc
@@ -253,10 +253,19 @@ class Payment < ActiveRecord::Base
       end
       unless card_errors.empty?
         # The rest will go into cc_number
-        errors.add(:cc_number, card_errors.to_a.map { |e| "#{e[0]} #{e[1]}" }.join(', '))
+        card_errors.each do |category, problems|
+          if category.to_sym == :number
+            problems.each { |problem| errors.add(:cc_number, problem) }
+          else
+            errors.add(:cc_number, "#{category}: #{problems.join(', ')}")
+          end
+        end
       end
       return
     end
+
+  ensure
+    @credit_card = nil
   end
 
   def amount_doesnt_overflow_order_balance

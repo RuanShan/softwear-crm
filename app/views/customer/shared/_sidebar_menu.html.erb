@@ -14,8 +14,10 @@
             <%= link_to '#' do %><i class="fa fa-angle-right"></i> Print Receipts<% end %>
         <% end %>
 
-        <%= content_tag :li do %>
-          <%= link_to new_customer_order_payment_path(@order) do %><i class="fa fa-angle-right"></i> Make Payment<% end %>
+        <% if can_charge_card? %>
+          <%= content_tag :li do %>
+            <%= link_to new_customer_order_payment_path(@order.customer_key), remote: true, id: 'makepayment' do %><i class="fa fa-angle-right"></i> Make Payment<% end %>
+          <% end %>
         <% end %>
 
       <% end %>
