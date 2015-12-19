@@ -193,7 +193,7 @@ CrmSoftwearcrmCom::Application.routes.draw do
   post '/error-report', to: 'error_reports#email_report'
 
   namespace 'customer' do
-    resources :orders, only: [:show], key: :customer_key do
+    resources :orders, only: [:show, :edit, :update], key: :customer_key do
       resources :payments, only: [:index, :new, :create], key: :id
     end
   end

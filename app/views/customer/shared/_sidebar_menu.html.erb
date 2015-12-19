@@ -9,9 +9,12 @@
           <%= link_to '#', class: 'print-page' do %><i class="fa fa-angle-right"></i> Print Invoice<% end %>
         <% end %>
 
-
         <%= content_tag :li do %>
             <%= link_to '#' do %><i class="fa fa-angle-right"></i> Print Receipts<% end %>
+        <% end %>
+
+        <%= content_tag :li do %>
+          <%= link_to edit_customer_order_path(@order.customer_key), remote: true, id: 'invoiceapprove' do %><i class="fa fa-angle-right"></i> Approve/Reject Invoice<% end %>
         <% end %>
 
         <% if can_charge_card? %>

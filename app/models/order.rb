@@ -153,6 +153,7 @@ class Order < ActiveRecord::Base
   scope :fba, -> { where(terms: 'Fulfilled by Amazon') }
 
   attr_accessor :bad_variant_ids
+  attr_accessor :invoice_reject_reason
 
   state_machine :notification_state, :initial => :pending do
 
