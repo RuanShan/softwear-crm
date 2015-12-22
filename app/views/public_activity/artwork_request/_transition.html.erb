@@ -1,5 +1,5 @@
 <p><%= activity.owner.full_name rescue "(User Unavailable)" %> changed 
-<% if activity.trackable %>
+<% if activity.trackable.try(:order) %>
   <%= link_to "artwork request ##{activity.trackable_id}", order_artwork_request_path(activity.trackable.order, activity.trackable)  %> 
 <% else %>
   unknown artwork request
