@@ -74,7 +74,9 @@
   </thead>
   <tbody>
     <tr id="order_<%= @order.id %>">
+
       <% if @order.fba? %>
+
         <td class='production-state'>
           <div class='col-sm-1'>
             <span class="label <%= get_style_from_production_state(@order.production_state)%>"><%= @order.production_state.humanize %></span>
@@ -88,7 +90,9 @@
             <% end %>
           </div>
         </td>
+
       <% else %>
+
         <td class='payment-state'>
           <span class="label <%= get_style_from_status(@order.payment_status)%>"><%= @order.payment_status %></span>
         </td>
@@ -110,10 +114,27 @@
         <td class='notification-state'>
           <span class="label <%= get_style_from_notification_state(@order.notification_state)%>"><%= @order.notification_state.humanize %></span>
         </td>
+
       <% end %>
+
     </tr>
   </tbody>
 </table>
+
+<% if @order.invoice_rejected? %>
+  <div class='alert alert-danger'>
+    <div class='col-sm-10'>
+      <strong>Invoice rejected:</strong> &quot;<%= @order.invoice_reject_reason || 'ERROR (this is a bug, customer should be required to specify a reason for rejection)' %>&quot;
+    </div>
+    <div class='col-sm-2'>
+      <%= form_for @order do |f| %>
+        <%= f.hidden_field :invoice_state, value: 'pending' %>
+        <%= button_tag 'Reset Invoice State', class: 'btn btn-warning' %>
+      <% end %>
+    </div>
+    <div class='clearfix'></div>
+  </div>
+<% end %>
 
 <%= content_tag(:div, id: 'order-page', 'data-order-id' => @order.id) {} %>
 

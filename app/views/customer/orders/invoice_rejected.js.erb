@@ -1,5 +1,8 @@
 showContentModal({
   title: "Thanks for your feedback.",
-  body: "<%= @order.salesperson.first_name %> will address your concerns as soon as possible.",
+  body: "<%= @order.salesperson.first_name %> has been informed and will address your concerns as soon as possible.",
   footer: $("<button data-dismiss='modal'>OK</button>")
 });
+
+<%= render 'customer/orders/invoice_form_js', order: @order if @order.errors.empty? %>
+$('#accept-or-reject-invoice-btn').remove();

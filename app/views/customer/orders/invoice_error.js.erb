@@ -1,1 +1,4 @@
-errorModal("Something went wrong in the software - you can try again or just contact the salesperson directly. Sorry about that!");
+$('#contentBody').html("<%=j render 'customer/orders/invoice_form', order: @order %>");
+<%= render 'customer/orders/invoice_form_js', order: @order %>
+
+shine('.has-error .help-block', true, 1200, 'red');

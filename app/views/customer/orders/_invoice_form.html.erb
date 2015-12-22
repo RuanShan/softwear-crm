@@ -1,8 +1,20 @@
-<%= bootstrap_form_for order, url: customer_order_path(order), remote: true do |f| %>
+<%= bootstrap_form_for order, url: customer_order_path(order.customer_key), remote: true do |f| %>
   <%= f.form_group :invoice_state, label: { text: 'Do you approve?' } do %>
     <%= f.radio_button :invoice_state, 'approved',
-      label: "I approve of this invoice and acknowledge that my approval puts this order into production, and changes after this time may cause delays or additional charges to the order", checked: true %>
+      label: "I approve of this invoice and acknowledge that my approval puts this order into production, and changes after this time may cause delays or additional charges to the order", checked: !order.invoice_rejected? %>
 
-    <%= f.radio_button :invoice_state, 'pending', label: "I disapprove of the invoice", checked: false %>
+    <%= f.radio_button :invoice_state, 'rejected', label: "I disapprove of the invoice" %>
   <% end %>
+
+  <div class='form-group' id='reject-reason'>
+    <%= f.text_area :invoice_reject_reason, label: "Reason for disapproval" %>
+    <div class='help-block'>
+      <span class='text-danger'>
+        While we resolve any order entry problems without delaying order processing, any customer changes
+        not agreed upon at the time of the sale could delay order processing.
+      </span>
+    </div>
+  </div>
+
+  <%= f.submit value: 'Submit', class: 'btn btn-success' %>
 <% end %>

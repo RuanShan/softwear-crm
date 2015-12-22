@@ -37,6 +37,7 @@ module OrderHelper
       case status
       when 'pending' then 'label-warning'
       when 'approved' then 'label-success'
+      when 'rejected' then 'label-danger'
       else nil
       end
     end

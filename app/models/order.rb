@@ -44,7 +44,8 @@ class Order < ActiveRecord::Base
 
   VALID_INVOICE_STATES = [
     'pending',
-    'approved'
+    'approved',
+    'rejected'
   ]
 
   VALID_PRODUCTION_STATES = %w(
@@ -137,6 +138,7 @@ class Order < ActiveRecord::Base
   validates :store, presence: true
   validates :terms, presence: true
   validates :in_hand_by, presence: true
+  validates :invoice_reject_reason, presence: true, if: :invoice_rejected?
 
   after_initialize -> (o) { o.production_state = 'pending' if o.production_state.blank? }
   after_initialize -> (o) { o.invoice_state = 'pending' if o.invoice_state.blank? }
@@ -153,7 +155,6 @@ class Order < ActiveRecord::Base
   scope :fba, -> { where(terms: 'Fulfilled by Amazon') }
 
   attr_accessor :bad_variant_ids
-  attr_accessor :invoice_reject_reason
 
   state_machine :notification_state, :initial => :pending do
 
@@ -281,6 +282,10 @@ class Order < ActiveRecord::Base
     (payment_status == 'Payment Terms Met' ||
     payment_status == 'Payment Complete') and
     invoice_state  == 'approved'
+  end
+
+  def invoice_rejected?
+    invoice_state == 'rejected'
   end
 
   def all_shipments

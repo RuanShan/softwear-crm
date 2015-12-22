@@ -86,7 +86,7 @@
   <div class="form-group">
     <%= f.label :invoice_state %>
     <%= f.error_for :invoice_state %>
-    <%= f.select :invoice_state, Order::VALID_INVOICE_STATES %>
+    <%= f.select :invoice_state, Order::VALID_INVOICE_STATES - ['rejected'] %>
   </div>
   <% end %>
 
