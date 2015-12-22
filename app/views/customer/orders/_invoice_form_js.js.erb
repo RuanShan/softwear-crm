@@ -1,0 +1,12 @@
+var rejectReason = $('#reject-reason');
+
+<% unless local_assigns[:order].try(:invoice_rejected?) %>
+  rejectReason.hide();
+<% end %>
+
+$('input[type=radio]').on('click', function() {
+  if ($(this).val() === 'approved')
+    rejectReason.hide();
+  else
+    rejectReason.show();
+});

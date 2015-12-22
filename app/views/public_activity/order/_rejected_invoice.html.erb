@@ -1,0 +1,6 @@
+Customer rejected invoice
+<% if activity.parameters['reason'] %>
+  with reason &quot;<%= activity.parameters['reason'] %>&quot;
+<% else %>
+  - reason unknown
+<% end %>
