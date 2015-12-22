@@ -194,7 +194,11 @@ CrmSoftwearcrmCom::Application.routes.draw do
 
   namespace 'customer' do
     resources :orders, only: [:show, :edit, :update], key: :customer_key do
-      resources :payments, only: [:index, :new, :create], key: :id
+      resources :payments, only: [:index, :new, :create], key: :id do
+        collection do
+          get 'paypal_express'
+        end
+      end
     end
   end
 

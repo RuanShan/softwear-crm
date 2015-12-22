@@ -17,6 +17,10 @@ describe SettingsController, setting_spec: true do
       production_crm_token = Setting.create name: 'softwear_production_token', val: '123'
       payflow_login = Setting.create name: 'payflow_login', val: 'me'
       payflow_password = Setting.create name: 'payflow_password', val: 'okokok'
+      paypal_username = Setting.create name: 'paypal_login', val: 'pypalsir'
+      paypal_password = Setting.create name: 'paypal_password', val: 'pppass'
+      paypal_signature = Setting.create name: 'paypal_signature', val: 'ppsig'
+      payment_logo_url = Setting.create name: 'payment_logo_url', val: 'http://pic.png'
 
       get :edit
       expect(assigns[:freshdesk_settings]).to eq(
@@ -35,6 +39,12 @@ describe SettingsController, setting_spec: true do
       expect(assigns[:payflow_settings]).to eq(
         login: payflow_login,
         password: payflow_password
+      )
+      expect(assigns[:paypal_settings]).to eq(
+        username: paypal_username,
+        password: paypal_password,
+        signature: paypal_signature,
+        payment_logo_url: payment_logo_url
       )
     end
   end

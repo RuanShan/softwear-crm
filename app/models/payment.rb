@@ -153,6 +153,12 @@ class Payment < ActiveRecord::Base
       !Setting.payflow_password.blank?
   end
 
+  def can_do_paypal_express?
+    !Setting.paypal_username.blank? &&
+    !Setting.paypal_password.blank? &&
+    !Setting.paypal_signature.blank?
+  end
+
   def purchase!
     return unless errors.full_messages.empty?
     return unless credit_card?

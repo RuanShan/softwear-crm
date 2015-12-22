@@ -19,6 +19,9 @@ module Customer
       render 'failure'
     end
 
+    def paypal_express
+    end
+
 
     def permitted_params
       params.permit(payment: [:amount, :store_id, :salesperson_id, :order_id, :cc_name, :payment_method,
