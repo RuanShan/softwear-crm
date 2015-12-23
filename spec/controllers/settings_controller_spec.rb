@@ -44,7 +44,7 @@ describe SettingsController, setting_spec: true do
         username: paypal_username,
         password: paypal_password,
         signature: paypal_signature,
-        payment_logo_url: payment_logo_url
+        logo_url: payment_logo_url
       )
     end
   end
@@ -52,7 +52,7 @@ describe SettingsController, setting_spec: true do
   describe 'PUT update' do
     it 'calls update' do
       expect(Setting).to receive(:update).and_return(nil).exactly(4).times
-      expect(post :update, fd_settings: {}, in_settings: {}, production_crm_settings: {}, payflow_settings: {}).to redirect_to integrated_crms_path
+      expect(post :update, fd_settings: {}, in_settings: {}, production_crm_settings: {}, payflow_settings: {}, paypal_settings: {}).to redirect_to integrated_crms_path
     end
   end
 end
