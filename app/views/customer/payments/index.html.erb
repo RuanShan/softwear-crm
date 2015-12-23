@@ -1,0 +1,13 @@
+<div class='hidden-print text-right animated fadeInDownBig row'>
+  <br clear="all" />
+  <%= link_to customer_order_path(@order), class: 'btn btn-primary' do %>
+      <i class="glyphicon glyphicon-circle-arrow-left"></i> Return To Order
+  <% end %>
+  <%= link_to '#', class: 'btn btn-success print-page' do  %>
+      <i class="fa fa-print"></i> Print
+  <% end %>
+</div>
+
+<% @payments.each do |payment| %>
+    <%= render 'payments/receipt', payment: payment %>
+<% end %>
