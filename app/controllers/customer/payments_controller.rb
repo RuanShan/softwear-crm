@@ -3,7 +3,6 @@ module Customer
     belongs_to :order, finder: :find_by_customer_key
     defaults route_prefix: 'customer'
     respond_to :js
-    # rescue_from Paypal::Exception::APIError, with: :paypal_api_error
 
     def method_for_association_build
       :new
@@ -65,7 +64,8 @@ module Customer
         email:                @order.email,
         no_shipping:          true,
         locale:               'en',
-        brand_name:           @order.store.try(:name) || 'Ann Arbor Tees'
+        brand_name:           @order.store.try(:name) || 'Ann Arbor Tees',
+        allow_note:           false
       )
       @redirect_uri = gateway.redirect_url_for(response.token)
 
@@ -137,21 +137,6 @@ module Customer
       }
       ActiveMerchant::Billing::PaypalExpressGateway.new(paypal_auth)
     end
-
-    def paypal_api_error(e)
-      errors = e.response.details.map(&:long_message)
-      flash[:error] = "PAYPAL API ERROR: <br />".html_safe + errors.join("<br />".html_safe)
-
-      logger.error "+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++"
-      logger.error "=======================PAYPAL ERROR: #{errors.join(', ')}"
-      logger.error "+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++"
-
-      respond_to do |format|
-        format.html { redirect_to customer_order_path(@order.customer_key) }
-        format.js { render 'customer/orders/show', id: @order.customer_key }
-      end
-    end
-
 
     def permitted_params
       params.permit(payment: [:amount, :store_id, :salesperson_id, :order_id, :cc_name, :payment_method,
