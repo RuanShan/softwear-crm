@@ -4,7 +4,7 @@ setupContentModal(function(modal) {
 });
 <% end %>
 showContentModal({
-  title:  "Pay for your order, <%= @order.name %>",
+  title:  $("<span>Pay for your order, <%= @order.name %></span>"),
   body:   $("<%=j render 'customer/payments/form', payment: @payment, order: @order %>"),
   footer: $("<button data-dismiss='modal' class='btn btn-default'>Close</button>"),
   then:   function() { <%= render 'payments/credit_card.js' %> }
