@@ -142,10 +142,10 @@ class Order < ActiveRecord::Base
 
   after_initialize -> (o) { o.production_state = 'pending' if o.production_state.blank? }
   after_initialize -> (o) { o.invoice_state = 'pending' if o.invoice_state.blank? }
-  after_initialize lambda do |o|
-    while o.customer_key.blank? ||
-          Order.where(customer_key: o.customer_key).where.not(id: id).exists?
-      o.customer_key = rand(36**6).to_s(36).upcase 
+  after_initialize do
+    while customer_key.blank? ||
+          Order.where(customer_key: customer_key).where.not(id: id).exists?
+      self.customer_key = rand(36**6).to_s(36).upcase 
     end
   end
 

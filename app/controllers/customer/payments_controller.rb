@@ -37,8 +37,8 @@ module Customer
 
       # Item information
       item = {
-        description: "#{@order.store.try(:name) || 'Ann Arbor Tees'} payment for "\
-                     "Order ##{@order.name} \"#{@order.name}\"",
+        description: "Payment for #{@order.store.try(:name) || 'Ann Arbor Tees'} "\
+                     "Order ##{@order.id} \"#{@order.name}\"",
         quantity: 1,
         amount: @payment.amount_in_cents
       }
@@ -63,12 +63,14 @@ module Customer
         logo_img:             Setting.payment_logo_url,
         max_amount:           (@order.balance_excluding(@payment) * 100).round,
         email:                @order.email,
-        no_shipping:          true
+        no_shipping:          true,
+        locale:               'en',
+        brand_name:           @order.store.try(:name) || 'Ann Arbor Tees'
       )
       @redirect_uri = gateway.redirect_url_for(response.token)
 
       respond_to do |format|
-        format.html { redirect_to response.redirect_uri }
+        format.html { redirect_to @redirect_uri }
         format.js
       end
     end
@@ -78,7 +80,7 @@ module Customer
 
       gateway        = paypal_express_gateway
       express_token  = params[:token]
-      payment_amount = params[:amount]
+      payment_amount = params[:amount].to_i
 
       details = gateway.details_for(express_token)
 
@@ -90,6 +92,12 @@ module Customer
         payer_id:      details.payer_id
       )
 
+      # Check for duplicate request
+      if response.params['error_codes'].try(:include?, "11607")
+        flash[:notice] = "Your payment has already been processed!"
+        redirect_to customer_order_path(@order.customer_key) and return
+      end
+
       @payment = Payment.new(
         order_id:       @order.id,
         store_id:       @order.store_id,
@@ -98,12 +106,12 @@ module Customer
         payment_method: Payment::VALID_PAYMENT_METHODS.key('PayPal')
       )
 
-      if response.success? && (@payment.pp_transaction_id = response.transaction_id) && @payment.save
+      if response.success? && (@payment.pp_transaction_id = response.authorization) && @payment.save
         flash[:success] = "Your payment has been processed. Thanks!"
       else
         problems = []
         if !response.success?
-          problems << "PayPal error"
+          problems << response.message
         end
         if !@payment.errors.empty?
           problems += @payment.errors.full_messages
@@ -114,6 +122,7 @@ module Customer
 
         flash[:error] = "We were unable to process your payment: #{problems.join(', ')}"
       end
+
       redirect_to customer_order_path(@order.customer_key)
     end
 

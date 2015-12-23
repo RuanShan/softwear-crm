@@ -81,5 +81,6 @@ $('#paypal-express').click(function(event) {
   var form = button.closest('form');
   form.prop('action', button.attr('href'));
   form.prop('method', 'get');
+  form.removeAttr("data-remote");
   form.submit();
 });
