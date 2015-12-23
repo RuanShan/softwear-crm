@@ -54,7 +54,7 @@ var setContent = function() {
 
     $('#discount_discountable_type').change(setSelectVisibility);
 
-    paymentSelect.change(setTransactionId);
+    paymentSelect.find('select').change(setTransactionId);
 
     setTimeout(function() { setSelectVisibility.call($('#discount_discountable_type')); }, 50);
   <% end %>

@@ -17,7 +17,7 @@ describe SettingsController, setting_spec: true do
       production_crm_token = Setting.create name: 'softwear_production_token', val: '123'
       payflow_login = Setting.create name: 'payflow_login', val: 'me'
       payflow_password = Setting.create name: 'payflow_password', val: 'okokok'
-      paypal_username = Setting.create name: 'paypal_login', val: 'pypalsir'
+      paypal_username = Setting.create name: 'paypal_username', val: 'pypalsir'
       paypal_password = Setting.create name: 'paypal_password', val: 'pppass'
       paypal_signature = Setting.create name: 'paypal_signature', val: 'ppsig'
       payment_logo_url = Setting.create name: 'payment_logo_url', val: 'http://pic.png'
@@ -51,7 +51,7 @@ describe SettingsController, setting_spec: true do
 
   describe 'PUT update' do
     it 'calls update' do
-      expect(Setting).to receive(:update).and_return(nil).exactly(4).times
+      expect(Setting).to receive(:update).and_return(nil).exactly(5).times
       expect(post :update, fd_settings: {}, in_settings: {}, production_crm_settings: {}, payflow_settings: {}, paypal_settings: {}).to redirect_to integrated_crms_path
     end
   end

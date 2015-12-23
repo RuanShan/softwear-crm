@@ -4,7 +4,7 @@ module Customer
     defaults route_prefix: 'customer'
     respond_to :js
     # rescue_from Paypal::Exception::APIError, with: :paypal_api_error
- 
+
     def method_for_association_build
       :new
     end
@@ -55,8 +55,8 @@ module Customer
         ip:                   request.remote_ip,
         cancel_return_url:    customer_order_url(@order.customer_key),
         return_url:           paypal_express_success_customer_order_payments_url(
-          @order.customer_key, amount: @payment.amount_in_cents
-        ),
+                                @order.customer_key, amount: @payment.amount_in_cents
+                              ),
         currency:             'USD',
         allow_guest_checkout: true,
         items:                [item],
@@ -99,10 +99,22 @@ module Customer
       )
 
       if response.success? && (@payment.pp_transaction_id = response.transaction_id) && @payment.save
-        render 'success'
+        flash[:success] = "Your payment has been processed. Thanks!"
       else
-        render 'failure'
+        problems = []
+        if !response.success?
+          problems << "PayPal error"
+        end
+        if !@payment.errors.empty?
+          problems += @payment.errors.full_messages
+        end
+        if problems.empty?
+          problems << "unknown error"
+        end
+
+        flash[:error] = "We were unable to process your payment: #{problems.join(', ')}"
       end
+      redirect_to customer_order_path(@order.customer_key)
     end
 
     private
@@ -111,7 +123,8 @@ module Customer
       paypal_auth = {
         login:     Setting.paypal_username,
         password:  Setting.paypal_password,
-        signature: Setting.paypal_signature
+        signature: Setting.paypal_signature,
+        test:      !Rails.env.production?
       }
       ActiveMerchant::Billing::PaypalExpressGateway.new(paypal_auth)
     end
