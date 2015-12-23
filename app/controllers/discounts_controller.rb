@@ -17,9 +17,14 @@ class DiscountsController < InheritedResources::Base
           fire_refund_activity(@discount)
 
           if @discount.credited_for_refund?
-            flash[:notice] = "Refund successful! Customer's card (#{@discount.discountable.cc_number}) "\
-                             "was credited #{number_to_currency(@discount.amount)}."
-          elsif @discount.discountable.cc_transaction.blank? || !@discount.discountable.credit_card?
+            if @discount.discountable.credit_card?
+              flash[:notice] = "Refund successful! Customer's card (#{@discount.discountable.cc_number}) "\
+                               "was credited #{number_to_currency(@discount.amount)}."
+            else
+              flash[:notice] = "Refund successful! Customer's PayPal account was credited "\
+                              "#{number_to_currency(@discount.amount)}."
+            end
+          elsif @discount.discountable.transaction_id.blank? || !@discount.discountable.credit_card?
             flash[:notice] = "Successfully created refund. No cards were credited."
           else
             flash[:notice] = nil

@@ -19,6 +19,12 @@ class SettingsController < InheritedResources::Base
      login:    Setting.find_or_create_by(name: 'payflow_login'),
      password: Setting.find_or_create_by(name: 'payflow_password')
     }
+    @paypal_settings = {
+     username:  Setting.find_or_create_by(name: 'paypal_username'),
+     password:  Setting.find_or_create_by(name: 'paypal_password'),
+     signature: Setting.find_or_create_by(name: 'paypal_signature'),
+     logo_url:  Setting.find_or_create_by(name: 'payment_logo_url')
+    }
   end
 
   def update
@@ -26,6 +32,7 @@ class SettingsController < InheritedResources::Base
     Setting.update(params[:in_settings].keys, params[:in_settings].values)
     Setting.update(params[:production_crm_settings].keys, params[:production_crm_settings].values)
     Setting.update(params[:payflow_settings].keys, params[:payflow_settings].values)
+    Setting.update(params[:paypal_settings].keys, params[:paypal_settings].values)
     redirect_to integrated_crms_path
   end
 

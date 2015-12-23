@@ -37,4 +37,6 @@ CrmSoftwearcrmCom::Application.configure do
 
   #for Paperclip
   Paperclip.options[:command_path] = '/usr/bin/convert/'
+
+  ActiveMerchant::Billing::Base.mode = :test
 end

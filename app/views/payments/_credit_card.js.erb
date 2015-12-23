@@ -72,3 +72,15 @@ $('#payment_cc_type').change(function(event) {
   if (event.target.value == null) return;
   updateIcon(event.target.value);
 });
+
+<% # So, clicking the paypal button will submit the form (so that we have the amount), but to a different url %>
+$('#paypal-express').click(function(event) {
+  event.preventDefault();
+
+  var button = $(this);
+  var form = button.closest('form');
+  form.prop('action', button.attr('href'));
+  form.prop('method', 'get');
+  form.removeAttr("data-remote");
+  form.submit();
+});

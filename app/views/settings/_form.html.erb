@@ -54,7 +54,7 @@
     <% end %>
 
     <% unless payflow_settings.nil? %>
-        <h2>PalPal Payflow</h2>
+        <h2>PalPal Payflow (for credit card payments)</h2>
         <% payflow_settings.each do |key, value| %>
           <% next if value.nil? %>
           <%= fields_for 'payflow_settings[]', value do |f| %>
@@ -62,6 +62,21 @@
               <%= f.label :name, key.to_s.titleize, class: 'col-sm-2 control-label' %>
               <div class="col-sm-10">
                 <%= f.text_field :val, class: 'form-control', type: (key.to_s.include?("password") ? :password : "") %>
+              </div>
+            </div>
+          <% end %>
+        <% end %>
+    <% end %>
+
+    <% unless paypal_settings.nil? %>
+        <h2>PayPal Express</h2>
+        <% paypal_settings.each do |key, value| %>
+          <% next if value.nil? %>
+          <%= fields_for 'paypal_settings[]', value do |f| %>
+            <div class="form-group">
+              <%= f.label :name, key.to_s.titleize, class: 'col-sm-2 control-label' %>
+              <div class="col-sm-10">
+                <%= f.text_field :val, class: 'form-control', type: ((/password|signature/ =~ key.to_s) ? :password : "") %>
               </div>
             </div>
           <% end %>

@@ -35,12 +35,36 @@
 
       <div id="data_supply" data-total="<%= order.total %>" aria-hidden="true"></div>
 
-      <%= f.text_field :amount, prepend: '$', label: 'Amount to Pay' %>
+      <%= f.text_field :amount, prepend: '$', label: 'Amount to Pay', value: payment.amount || order.balance_excluding(payment) %>
 
-      <%= render 'customer/payments/credit_card_form', payment: payment, order: order, f: f %>
+      <hr />
 
-      <%= f.submit 'Apply Payment', class: 'btn btn-success', id: 'submit_payment_button',
-        data: { confirm: "Are you sure you would like to add this payment?" } %>
+      <% if can_do_paypal_express? %>
+        <div class='row'>
+          <div class='col-sm-8'>
+            <strong>Pay with Credit Card</strong>
+            <%= render 'customer/payments/credit_card_form', payment: payment, order: order, f: f %>
+
+            <%= f.submit 'Apply Payment', class: 'btn btn-success', id: 'submit_payment_button',
+              data: { confirm: "Are you sure you would like to add this payment?" } %>
+          </div>
+          <div class='col-sm-1'>
+            <em>OR</em>
+          </div>
+          <div class='col-sm-3'>
+            <%= link_to paypal_express_customer_order_payments_path(order.customer_key), id: 'paypal-express' do %>
+              <img src="https://www.paypal.com/en_US/i/btn/btn_xpressCheckout.gif" align="left" style="margin-right:7px;" alt="PayPal Check out">
+            <% end %>
+          </div>
+        </div>
+
+      <% else %>
+
+        <%= render 'customer/payments/credit_card_form', payment: payment, order: order, f: f %>
+
+        <%= f.submit 'Apply Payment', class: 'btn btn-success', id: 'submit_payment_button',
+          data: { confirm: "Are you sure you would like to add this payment?" } %>
+      <% end %>
 
     <% end %>
   </div>

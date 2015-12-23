@@ -39,6 +39,7 @@ class Payment < ActiveRecord::Base
   }
 
   CREDIT_CARD_GATEWAY = ActiveMerchant::Billing::PayflowGateway
+  PAYPAL_GATEWAY = ActiveMerchant::Billing::PaypalExpressGateway
 
   acts_as_paranoid
 
@@ -52,7 +53,8 @@ class Payment < ActiveRecord::Base
   after_validation :purchase!, on: :create
 
   validates :store, :payment_method, :amount, :salesperson, presence: true
-  validates :pp_transaction_id, presence: true, if: -> p { p.payment_method == 4 || p.payment_method == 7 }
+  validates :pp_transaction_id, presence: true, uniqueness: true,
+               if: -> p { p.payment_method == 4 || p.payment_method == 7 }
   validates :t_name, :t_company_name, :tf_number, presence: true, if: -> p { p.payment_method == 5 }
   validates :t_name, :t_company_name, :t_description, presence: true, if: -> p { p.payment_method == 6 }
   validates :cc_number, :cc_name, presence: true, if: :credit_card?
@@ -65,6 +67,14 @@ class Payment < ActiveRecord::Base
   attr_reader :actual_cc_number
   attr_accessor :cc_expiration
   attr_accessor :cc_cvc
+
+  def transaction_id
+    case VALID_PAYMENT_METHODS[payment_method]
+    when 'Credit Card' then cc_transaction
+    when 'PayPal'      then pp_transaction_id
+    else nil
+    end
+  end
 
   def refunded?
     discounts.any?
@@ -81,6 +91,10 @@ class Payment < ActiveRecord::Base
 
   def credit_card?
     VALID_PAYMENT_METHODS[payment_method] == 'Credit Card'
+  end
+
+  def paypal?
+    VALID_PAYMENT_METHODS[payment_method] == 'PayPal'
   end
 
   def identifier
@@ -138,19 +152,38 @@ class Payment < ActiveRecord::Base
 
   def gateway
     return @gateway if @gateway
-    return nil unless credit_card?
 
-    @gateway = CREDIT_CARD_GATEWAY.new(
-      login:    Setting.payflow_login,
-      password: Setting.payflow_password,
-      test:     !Rails.env.production?
-    )
+    if credit_card?
+      @gateway = CREDIT_CARD_GATEWAY.new(
+        login:    Setting.payflow_login,
+        password: Setting.payflow_password,
+        test:     !Rails.env.production?
+      )
+    elsif paypal?
+      @gateway = PAYPAL_GATEWAY.new(
+        login:     Setting.paypal_username,
+        password:  Setting.paypal_password,
+        signature: Setting.paypal_signature,
+        test:      !Rails.env.production?
+      )
+    else nil
+    end
   end
 
   def will_charge_card?
     credit_card? &&
       !Setting.payflow_login.blank? &&
       !Setting.payflow_password.blank?
+  end
+
+  def can_do_paypal_express?
+    !Setting.paypal_username.blank? &&
+    !Setting.paypal_password.blank? &&
+    !Setting.paypal_signature.blank?
+  end
+
+  def amount_in_cents
+    (amount * 100).round
   end
 
   def purchase!
@@ -164,7 +197,7 @@ class Payment < ActiveRecord::Base
     return if Setting.payflow_password.blank?
 
     result = gateway.purchase(
-      (amount * 100).round, # In cents
+      amount_in_cents,
       credit_card,
 
       order_id: id, # "invoice" id
@@ -183,18 +216,17 @@ class Payment < ActiveRecord::Base
     end
   end
 
-  # This is called by Discount after_validation on create
+  # This is called by Discount after_validation on create (refund_amount should be in dollars)
   def refund!(refund_amount)
+    return false unless can_do_refund?
     return false unless errors.full_messages.empty?
-    return false unless credit_card?
-    return false if Setting.payflow_login.blank?
-    return false if Setting.payflow_password.blank?
-    return false if cc_transaction.blank? || cc_transaction == 'ERROR'
+    return false unless credit_card? || paypal?
+    return false if transaction_id.blank? || transaction_id == 'ERROR'
     return false if refund_amount == 0
 
     result = gateway.refund(
       (refund_amount * 100).round, # In cents
-      cc_transaction,
+      transaction_id,
 
       description: "SoftWEAR CRM Refund by #{salesperson.full_name}. Reason: \"#{refund_reason}\"."
     )
@@ -204,6 +236,19 @@ class Payment < ActiveRecord::Base
     else
       msg = "- Failed to refund: #{result.message}"
       raise PaymentError, msg
+    end
+  end
+
+  def can_do_refund?
+    if credit_card?
+      !Setting.payflow_login.blank? &&
+      !Setting.payflow_password.blank?
+    elsif paypal?
+      !Setting.paypal_username.blank? &&
+      !Setting.paypal_password.blank? &&
+      !Setting.paypal_signature.blank?
+    else
+      false
     end
   end
 

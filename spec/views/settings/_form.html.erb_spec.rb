@@ -11,7 +11,8 @@ describe 'settings/_form.html.erb', setting_spec: true do
       freshdesk_settings: freshdesk_settings,
       insightly_settings: nil,
       production_crm_settings: nil,
-      payflow_settings: nil
+      payflow_settings: nil,
+      paypal_settings: nil
   end
 
   it 'has a form with appropriate fields' do

@@ -35,19 +35,20 @@ class Setting < ActiveRecord::Base
     end
   end
 
-  def self.payflow_login
-    if (setting = Setting.where(name: 'payflow_login')).exists?
-      return setting.first.val
-    else
-      Setting.create(name: 'payflow_login', val: nil, encrypted: false).val
-    end
-  end
-
-  def self.payflow_password
-    if (setting = Setting.where(name: 'payflow_password')).exists?
-      return setting.first.val
-    else
-      Setting.create(name: 'payflow_password', val: nil, encrypted: true).val
+  %w(
+    payflow_login payflow_password paypal_username paypal_password paypal_signature
+    payment_logo_url
+  ).each do |method_name|
+    define_singleton_method method_name do
+      if (setting = Setting.where(name: method_name)).exists?
+        return setting.first.val
+      else
+        Setting.create(
+          name:      method_name,
+          val:       nil,
+          encrypted: /password|signature/ =~ method_name
+        ).val
+      end
     end
   end
 

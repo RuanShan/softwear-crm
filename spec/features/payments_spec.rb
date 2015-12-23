@@ -9,6 +9,7 @@ feature 'Payments management', js: true, payment_spec: true, retry: 2 do
   given!(:order) { create(:order) }
   given!(:payment) { create(:valid_payment, order_id: order.id) }
   given(:cc_payment) { create(:credit_card_payment, amount: 10, order_id: order.id) }
+  given(:pp_payment) { create(:paypal_payment, amount: 10, order_id: order.id) }
 
   background do
     allow_any_instance_of(Order).to receive(:total).and_return 1000
@@ -98,6 +99,28 @@ feature 'Payments management', js: true, payment_spec: true, retry: 2 do
     expect(page).to have_content '$10.00 - $5.00'
 
     expect(Payment.find(cc_payment.id).is_refunded?).to eq true
+  end
+
+  scenario 'A salesperson can partially refund a paypal payment', actual_payment: true do
+    payment.destroy
+    pp_payment.update_column :amount, '10.00'
+    pp_payment.update_column :pp_transaction_id, nil
+
+    visit (edit_order_path order.id) + '#payments'
+    find(:css, '.order_payment_refund_link').click
+
+    sleep 3
+
+    fill_in 'Reason', with: 'have some money'
+    fill_in 'Amount', with: '5.00'
+    sleep 2
+
+    click_button 'Apply Discount'
+
+    expect(page).to have_content 'Successfully created refund. No cards were credited.'
+    expect(page).to have_content '$10.00 - $5.00'
+
+    expect(Payment.find(pp_payment.id).is_refunded?).to eq true
   end
 
   scenario 'A salesperson cannot refund more than the payment amount', actual_payment: true do
@@ -313,6 +336,43 @@ feature 'Payments management', js: true, payment_spec: true, retry: 2 do
       expect(page).to have_content "Refund noted, but was UNABLE to add funds to the card."
 
       expect(Payment.find(cc_payment.id).is_refunded?).to eq true
+    end
+  end
+
+  context 'when paypal credentials are set up' do
+    given(:gateway) { double('activemerchant gateway') }
+
+    background do
+      allow(Setting).to receive(:paypal_username).and_return 'good'
+      allow(Setting).to receive(:paypal_password).and_return 'yeafhweawefawe'
+      allow(Setting).to receive(:paypal_signature).and_return 'sigsigsigsigsig'
+      allow_any_instance_of(Payment).to receive(:gateway).and_return gateway
+      allow_any_instance_of(Discount).to receive(:discountable).and_return pp_payment
+
+      payment.destroy
+      pp_payment.update_column :amount, '10.00'
+      pp_payment.update_column :pp_transaction_id, 'abc123'
+    end
+
+    scenario "A salesperson refunding a payment registers the refund with PayPal", actual_payment: true do
+      expect(gateway).to receive(:refund).with(500, 'abc123', anything)
+        .and_return double('success', success?: true)
+
+      visit (edit_order_path order.id) + '#payments'
+      find(:css, '.order_payment_refund_link').click
+
+      sleep 3
+
+      fill_in 'Reason', with: 'have some money'
+      fill_in 'Amount', with: '5.00'
+      sleep 2
+
+      click_button 'Apply Discount'
+
+      expect(page).to have_content "Refund successful! Customer's PayPal account was credited"
+      expect(page).to have_content '$10.00 - $5.00'
+
+      expect(Payment.find(pp_payment.id).is_refunded?).to eq true
     end
   end
 

@@ -166,6 +166,12 @@ module ApplicationHelper
     !Setting.payflow_login.blank? && !Setting.payflow_password.blank?
   end
 
+  def can_do_paypal_express?
+    !Setting.paypal_username.blank? &&
+    !Setting.paypal_password.blank? &&
+    !Setting.paypal_signature.blank?
+  end
+
   def options_with_data_attr(collection, val_method, text_method, selected, data_attrs)
     buf = ''.html_safe
 

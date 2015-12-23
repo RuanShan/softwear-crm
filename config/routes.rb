@@ -193,8 +193,13 @@ CrmSoftwearcrmCom::Application.routes.draw do
   post '/error-report', to: 'error_reports#email_report'
 
   namespace 'customer' do
-    resources :orders, only: [:show, :edit, :update], key: :customer_key do
-      resources :payments, only: [:index, :new, :create], key: :id
+    resources :orders, only: [:show, :edit, :update] do
+      resources :payments, only: [:index, :new, :create] do
+        collection do
+          match 'paypal_express', via: [:get, :post]
+          match 'paypal_express_success', via: [:get, :post]
+        end
+      end
     end
   end
 
