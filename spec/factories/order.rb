@@ -13,6 +13,10 @@ FactoryGirl.define do
   end
 
   factory :blank_order, class: Order do
+    subtotal 0
+    taxable_total 0
+    discount_total 0
+    payment_total 0
 
     factory :order do
       name { generate :name }
@@ -27,6 +31,10 @@ FactoryGirl.define do
       phone_number '123-456-7890'
       salesperson { |t| t.association(:user, email: "order_#{Random.rand}_guy@gmail.com")} 
       store { |t| t.association(:valid_store) }
+      subtotal 0
+      taxable_total 0
+      discount_total 0
+      payment_total 0
 
       factory :order_with_job do
         after(:create) { |o| o.jobs << create(:job) }

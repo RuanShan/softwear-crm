@@ -41,7 +41,8 @@ module Customer
         quantity: 1,
         amount: @payment.amount_in_cents
       }
-      if Payment.where(order_id: @order.id).exists? || @order.balance_excluding(@payment) - @payment.amount != 0
+      order_balance = @order.balance_excluding(@payment)
+      if Payment.where(order_id: @order.id).exists? || order_balance - @payment.amount != 0
         item[:name] = "Order ##{@order.id} partial payment"
       else
         item[:name] = "Order ##{@order.id} complete payment"
@@ -60,7 +61,7 @@ module Customer
         allow_guest_checkout: true,
         items:                [item],
         logo_img:             Setting.payment_logo_url,
-        max_amount:           (@order.balance_excluding(@payment) * 100).round,
+        max_amount:           (order_balance * 100).round,
         email:                @order.email,
         no_shipping:          true,
         locale:               'en',

@@ -145,8 +145,14 @@ class Order < ActiveRecord::Base
   after_initialize do
     while customer_key.blank? ||
           Order.where(customer_key: customer_key).where.not(id: id).exists?
-      self.customer_key = rand(36**6).to_s(36).upcase 
+      self.customer_key = rand(36**6).to_s(36).upcase
     end
+  end
+  after_initialize do
+    self.subtotal ||= 0
+    self.taxable_total ||= 0
+    self.discount_total ||= 0
+    self.payment_total ||= 0
   end
 
   after_save :enqueue_create_production_order, if: :ready_for_production?
@@ -272,6 +278,24 @@ class Order < ActiveRecord::Base
 
   end
 
+  # Use method_missing to catch calls to recalculate_* (for subtotal, tax, etc)
+  def respond_to?(method_name)
+    if /^re(?<calc_method>calculate_\w+)!?$/ =~ method_name.to_s
+      super(calc_method)
+    else
+      super
+    end
+  end
+  def method_missing(method_name, *args, &block)
+    if /^recalculate_(?<field_to_recalc>\w+)!?$/ =~ method_name.to_s && respond_to?(field_to_recalc)
+      send "#{field_to_recalc}=", send("calculate_#{field_to_recalc}")
+      save! if /.*!$/ =~ method_name
+    else
+      super
+    end
+  end
+  # order.recalculate_tax => { order.tax = order.calculate_tax }
+
   def id=(new_id)
     return if new_id.blank?
     super
@@ -367,11 +391,7 @@ class Order < ActiveRecord::Base
     firstname_changed? || lastname_changed?
   end
 
-  def payment_total
-    payment_total_excluding([])
-  end
-
-  def payment_total_excluding(exclude = [])
+  def calculate_payment_total(exclude = [])
     exclude = Array(exclude)
 
     payments.reduce(0) do |total, p|
@@ -381,6 +401,11 @@ class Order < ActiveRecord::Base
 
       total + p.amount - p.refunded_amount
     end
+  end
+
+  def payment_total_excluding(exclude = [])
+    return payment_total if Array(exclude).empty?
+    calculate_payment_total(exclude)
   end
 
   def percent_paid
@@ -395,19 +420,25 @@ class Order < ActiveRecord::Base
     User.find(salesperson_id).full_name
   end
 
-  def discount_total
+  def calculate_discount_total
     all_discounts.map { |d| d.amount.to_f }.reduce(0, :+)
   end
 
-  def subtotal
-    line_items.map(&:total_price).map(&:to_f).reduce(0, :+)
+  def calculate_subtotal
+    line_items.map { |li| li.total_price.to_f }.reduce(0, :+)
   end
 
   def tax
+    if tax_exempt?
+      0
+    else
+      (taxable_total - discount_total) * tax_rate
+    end
+  end
+
+  def calculate_taxable_total
     return 0 if tax_exempt?
-    (
-      line_items.where(taxable: true).map(&:total_price).map(&:to_f).reduce(0, :+) - discount_total
-    ) * tax_rate
+    line_items.taxable.map { |li| li.total_price.to_f }.reduce(0, :+)
   end
 
   def tax_rate

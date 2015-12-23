@@ -51,6 +51,9 @@ class Payment < ActiveRecord::Base
   has_many :discounts, as: :discountable # Only refunds
 
   after_validation :purchase!, on: :create
+  after_save do
+    order.try(:recalculate_payment_total!) if amount_changed?
+  end
 
   validates :store, :payment_method, :amount, :salesperson, presence: true
   validates :pp_transaction_id, presence: true, uniqueness: true,
@@ -311,7 +314,7 @@ class Payment < ActiveRecord::Base
   end
 
   def amount_doesnt_overflow_order_balance
-    return if order_id.blank? || amount.blank?
+    return if order.blank? || amount.blank?
 
     order_balance = order.balance_excluding(self)
     new_balance = order_balance - amount

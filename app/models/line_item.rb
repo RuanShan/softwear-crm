@@ -17,6 +17,7 @@ class LineItem < ActiveRecord::Base
 
   scope :non_imprintable, -> { where imprintable_object_id: nil }
   scope :imprintable, -> { where.not imprintable_object_id: nil }
+  scope :taxable, -> { where(taxable: true) }
 
   belongs_to :imprintable_object, polymorphic: true
   belongs_to :line_itemable, polymorphic: true, touch: true
@@ -37,6 +38,13 @@ class LineItem < ActiveRecord::Base
     scope: [:line_itemable_id], message: 'is a duplicate in this group' }, if: :imprintable_and_in_job?
 
   before_validation :set_sort_order, if: :markup_or_option?
+  after_save do
+    if order
+      order.recalculate_subtotal
+      order.recalculate_taxable_total if taxable?
+      order.save!
+    end
+  end
 
   def self.create_imprintables(line_itemable, imprintable, color, options = {})
     new_imprintables(line_itemable, imprintable, color, options)

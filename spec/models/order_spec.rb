@@ -59,6 +59,19 @@ describe Order, order_spec: true do
     end
   end
 
+  describe 'recalculate_*', story_1068: true do
+    subject { build_stubbed(:order) }
+    it { is_expected.to respond_to :recalculate_subtotal }
+    it { is_expected.to respond_to :recalculate_taxable_total }
+    it { is_expected.to respond_to :recalculate_discount_total }
+    it { is_expected.to respond_to :recalculate_payment_total }
+
+    it { is_expected.to respond_to :recalculate_subtotal! }
+    it { is_expected.to respond_to :recalculate_taxable_total! }
+    it { is_expected.to respond_to :recalculate_discount_total! }
+    it { is_expected.to respond_to :recalculate_payment_total! }
+  end
+
   describe '#create_production_order' do
     describe 'when payment_status reaches "Payment Terms Met" and invoice_status reaches "approved"', story_96: true do
       let!(:order) { create(:order) }
@@ -155,7 +168,8 @@ describe Order, order_spec: true do
 
     before do
       allow(order).to receive(:total).and_return(5)
-      allow(order).to receive(:payment_total_excluding).with([]).and_return(5)
+      allow(order).to receive(:calculate_payment_total).with(anything).and_return(5)
+      order.recalculate_payment_total
     end
 
     it 'returns the order total minus the payment total' do
@@ -366,6 +380,7 @@ describe Order, order_spec: true do
 
     it 'returns the total payment for the order' do
       allow(subject.payments.last).to receive(:totally_refunded?).and_return true
+      subject.recalculate_payment_total
       expect(subject.payment_total)
         .to eq 15
     end
@@ -377,7 +392,8 @@ describe Order, order_spec: true do
     end
     before do
       allow(subject).to receive(:total).and_return(5)
-      allow(subject).to receive(:payment_total_excluding).and_return(5)
+      allow(subject).to receive(:calculate_payment_total).and_return(5)
+      subject.recalculate_payment_total
     end
 
     it 'returns the percentage of the payment total over the order total' do
@@ -386,19 +402,24 @@ describe Order, order_spec: true do
     end
   end
 
-  describe '#subtotal' do
+  describe '#calculate_subtotal' do
     subject do
       build_stubbed(:blank_order)
     end
     before do
       allow(subject).to receive(:line_items)
         .and_return(
-          [build_stubbed(:blank_line_item, quantity: 5, unit_price: 5)]
+          [
+            build_stubbed(:blank_line_item, quantity: 5, unit_price: 5),
+            build_stubbed(:blank_line_item, quantity: 5, unit_price: 1)
+          ]
         )
+
+      subject.recalculate_subtotal
     end
 
     it 'returns the sum of all the orders line item prices' do
-      expect(subject.subtotal.to_i).to eq(25)
+      expect(subject.subtotal.to_i).to eq(30)
     end
   end
 

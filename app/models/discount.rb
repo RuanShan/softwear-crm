@@ -19,6 +19,7 @@ class Discount < ActiveRecord::Base
   #
   # before_validation :set_transaction_id, if: :refund?
   after_validation :apply_refund, on: :create, if: :refund?
+  after_save { order.try(:recalculate_discount_total!) if amount_changed? }
 
   acts_as_paranoid
 
