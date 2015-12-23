@@ -1,0 +1,140 @@
+<div class='order-invoice' style="page-break-after: always;">
+  <div class="page-heading row" style="background-color: #fff;">
+    <div class="pull-left">
+      <% if @order.store.logo.file.blank? %>
+          <h1 class='pull-left'>
+            <strong><%= @order.store.name %></strong>
+          </h1>
+      <% else %>
+          <%= image_tag @order.store.logo.file.url(:thumb) %>
+      <% end %>
+      </h1>
+    </div>
+    <div class="pull-right">
+      <h1 class='text-right'><strong>Payment Receipt</strong> #<%= payment.id %>
+      </h1>
+    </div>
+
+  </div>
+
+  <div class="box-info">
+    <div class="col-xs-12">
+      <h2><strong>Order</strong> Details</h2>
+      <table>
+        <tr>
+          <th>Order Name</th>
+          <td><%= @order.name %></td>
+          <th>In Hand By Date:</th>
+          <td><%= display_time @order.in_hand_by  %></td>
+        </tr>
+        <tr>
+          <th>Payment Terms</th>
+          <td><%= @order.terms %></td>
+          <th>Salesperson</th>
+          <td><%= @order.salesperson.full_name %></td>
+        </tr>
+      </table>
+    </div>
+  </div>
+  <div class="box-info">
+    <div class="col-xs-6">
+      <h2><strong>Customer</strong> Details</h2>
+      <table>
+        <tr>
+          <th>Name</th>
+          <td><%= @order.full_name %></td>
+        </tr>
+        <% unless @order.company.blank? %>
+            <tr>
+              <th>Company</th>
+              <td><%= @order.company %></td>
+            </tr>
+        <% end %>
+        <tr>
+          <th>E-mail</th>
+          <td><%= @order.email %></td>
+        </tr>
+        <% unless @order.phone_number.blank? %>
+            <tr>
+              <th>Phone Number</th>
+              <td><%= @order.phone_number %></td>
+            </tr>
+        <% end %>
+      </table>
+    </div>
+
+    <div class="col-xs-6">
+      <h2><strong>Delivery</strong> Details</h2>
+      <table>
+        <tr>
+          <th>Delivery Method</th>
+          <td><%= @order.delivery_method %></td>
+      </table>
+      <% @order.shipments.each do |shipment| %>
+          <dl>
+            <% if shipment.shippable_type == 'Job' %>
+                <dt>Job</dt>
+                <dd><%= shipment.shippable.name %></dd>
+            <% end %>
+            <dt>Shipping Method </dt>
+            <dd><%= shipment.shipping_method.name %></dd>
+            <dd>
+              <address>
+                <%= shipment.complete_address.join('<br />').html_safe %>
+              </address>
+            </dd>
+            <% unless shipment.tracking_number.blank? %>
+                <dt>Tracking</dt>
+                <dd><%= shipment.tracking_number %></dd>
+            <% end %>
+          </dl>
+      <% end %>
+    </div>
+  </div>
+
+  <div class="box-info">
+    <div class="col-xs-12">
+      <h2><strong>Payment</strong> Details</h2>
+      <table class="table">
+        <tbody>
+        <tr>
+          <td></td>
+          <th style="width: 100px">Method</th>
+          <td style="width: 200px"><%= Payment::VALID_PAYMENT_METHODS[payment.payment_method] %></td>
+        </tr>
+        <% unless payment.salesperson.nil? %>
+        <tr>
+          <td></td>
+          <th>Salesperson</th>
+          <td><%= payment.salesperson.full_name rescue 'No Salesperson' %></td>
+        </tr>
+        <% end %>
+        <tr>
+          <td></td>
+          <th>Time</th>
+          <td><%= payment.created_at.strftime('%a, %b %d, %Y %I:%M%p') %></td>
+        </tr>
+        <tr>
+          <td></td>
+          <th>Amount</th>
+          <td>
+            <%= number_to_currency payment.amount %>
+            <% if payment.refunded? %>
+                <span class='text-danger'>- <%= number_to_currency payment.refunded_amount %></span>
+            <% end %>
+          </td>
+        </tr>
+        <% Payment::FIELDS_TO_RENDER_FOR_METHOD[payment.payment_method].try(:each) do |field| %>
+        <tr>
+          <td></td>
+            <% /^\w\w?_(?<field_display>.+)$/ =~ field.to_s %>
+            <th><%= field_display.try(:humanize) %></th>
+            <td><%= payment.send(field) || '<blank>' %></td>
+        </tr>
+        <% end %>
+        </tbody>
+      </table>
+    </div>
+  </div>
+  <br clear="all" />
+</div>
