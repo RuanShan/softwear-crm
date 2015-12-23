@@ -1,0 +1,5 @@
+showContentModal({
+  title:  "Redirecting",
+  body:   $("<p>Redirecting to paypal... If this takes too long, click <a href=\"<%= @redirect_uri %>\">here</a>.</p>")
+});
+window.location.replace("<%= @redirect_uri.downcase %>");

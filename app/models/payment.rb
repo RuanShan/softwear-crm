@@ -159,6 +159,10 @@ class Payment < ActiveRecord::Base
     !Setting.paypal_signature.blank?
   end
 
+  def amount_in_cents
+    (amount * 100).round
+  end
+
   def purchase!
     return unless errors.full_messages.empty?
     return unless credit_card?
@@ -170,7 +174,7 @@ class Payment < ActiveRecord::Base
     return if Setting.payflow_password.blank?
 
     result = gateway.purchase(
-      (amount * 100).round, # In cents
+      amount_in_cents,
       credit_card,
 
       order_id: id, # "invoice" id

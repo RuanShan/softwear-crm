@@ -1,3 +1,8 @@
+<% if can_do_paypal_express? %>
+setupContentModal(function(modal) {
+  modal.find('.modal-dialog').addClass('modal-lg');
+});
+<% end %>
 showContentModal({
   title:  "Pay for your order, <%= @order.name %>",
   body:   $("<%=j render 'customer/payments/form', payment: @payment, order: @order %>"),
