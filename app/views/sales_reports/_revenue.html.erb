@@ -67,7 +67,6 @@
   </thead>
   <tbody>
     <% data[:orders].each do |order| %>
-      <% cache(["order_reports/_revenue_by_store", order]) do %>
       <tr>
         <td>
           <%= order.created_at.strftime("%F") %>
@@ -127,7 +126,6 @@
           <%= order.store.name %>
         </td>
       </tr>
-    <% end %>
   <% end %>
   </tbody>
   <tfoot>
