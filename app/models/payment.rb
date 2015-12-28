@@ -52,7 +52,7 @@ class Payment < ActiveRecord::Base
 
   after_validation :purchase!, on: :create
   after_save do
-    order.try(:recalculate_payment_total!) if amount_changed?
+    order.try(:recalculate_payment_total!)
   end
 
   validates :store, :payment_method, :amount, :salesperson, presence: true
