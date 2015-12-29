@@ -288,13 +288,23 @@ class Order < ActiveRecord::Base
   end
   def method_missing(method_name, *args, &block)
     if /^recalculate_(?<field_to_recalc>\w+)!?$/ =~ method_name.to_s && respond_to?(field_to_recalc)
-      send "#{field_to_recalc}=", send("calculate_#{field_to_recalc}")
+      send "#{field_to_recalc}=", send("calculate_#{field_to_recalc}", *args)
       save! if /.*!$/ =~ method_name
     else
       super
     end
   end
   # order.recalculate_tax => { order.tax = order.calculate_tax }
+
+  def recalculate_all
+    methods.grep(/^calculate_\w+$/).map do |method_name|
+      send "re#{method_name}"
+    end
+  end
+  def recalculate_all!
+    recalculate_all
+    save!
+  end
 
   def id=(new_id)
     return if new_id.blank?

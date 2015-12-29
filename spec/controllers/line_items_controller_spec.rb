@@ -11,6 +11,8 @@ describe LineItemsController, line_item_spec: true do
       let!(:job) { create(:job) }
       let!(:white) { create(:valid_color, name: 'white') }
       let!(:shirt) { create(:valid_imprintable) }
+      let(:activities) { PublicActivity::Activity.where(trackable_type: 'LineItem') }
+
       make_variants :white, :shirt, [:S, :M, :L, :XL], not: [:job, :line_items]
 
       it 'creates line items for each relevant size' do
@@ -43,12 +45,12 @@ describe LineItemsController, line_item_spec: true do
 
       it 'only fires one public activity activity', activity_spec: true do
         PublicActivity.with_tracking do
-          initial_size = PublicActivity::Activity.all.size
+          initial_size = activities.size
           post :create, format: :json,
                         job_id: job.id,
                         imprintable_id: shirt.id,
                         color_id: white.id
-          expect(PublicActivity::Activity.all.size).to eq initial_size + 1
+          expect(activities.reload.size).to eq initial_size + 1
         end
       end
 
@@ -93,9 +95,9 @@ describe LineItemsController, line_item_spec: true do
 
       it 'only fires one activity', activity_spec: true do
         PublicActivity.with_tracking do
-          initial_size = PublicActivity::Activity.all.size
+          initial_size = PublicActivity::Activity.where(trackable_type: 'LineItem').size
           delete :destroy, format: :json, id: job.line_items.map(&:id).join('/')
-          expect(PublicActivity::Activity.all.size).to eq initial_size + 1
+          expect(PublicActivity::Activity.where(trackable_type: 'LineItem').size).to eq initial_size + 1
         end
       end
     end
