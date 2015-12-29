@@ -333,10 +333,10 @@ class Order < ActiveRecord::Base
 
   def all_discounts(reload = false)
     if reload
-      discounts.reload
-      job_discounts.reload
+      discounts.reload + job_discounts.reload
+    else
+      discounts + job_discounts
     end
-    discounts + job_discounts
   end
 
   def fba?
