@@ -16,4 +16,16 @@ class OrderMailer < ActionMailer::Base
       body:    "Good job!\n\n#{link}"
     )
   end
+
+  def payment_made(order, payment, link)
+    @order = order
+    @payment = payment
+    @link = link
+
+    mail(
+      from:    'sales@annarbortees.com',
+      to:      order.email,
+      subject: %(Thank you for your payment on Order ##{order.id} "#{order.name}")
+    )
+  end
 end

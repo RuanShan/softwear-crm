@@ -321,7 +321,11 @@ class Order < ActiveRecord::Base
     jobs.map{|job| job.shipments }.concat(shipments.to_a).flatten
   end
 
-  def all_discounts
+  def all_discounts(reload = false)
+    if reload
+      discounts.reload
+      job_discounts.reload
+    end
     discounts + job_discounts
   end
 
@@ -394,7 +398,7 @@ class Order < ActiveRecord::Base
   def calculate_payment_total(exclude = [])
     exclude = Array(exclude)
 
-    payments.reduce(0) do |total, p|
+    payments.reload.reduce(0) do |total, p|
       next total if p.nil? || p.amount.nil?
       next total if exclude.include?(p.id) || exclude.include?(p)
       next total if p.totally_refunded?
@@ -421,11 +425,11 @@ class Order < ActiveRecord::Base
   end
 
   def calculate_discount_total
-    all_discounts.map { |d| d.amount.to_f }.reduce(0, :+)
+    all_discounts(:reload).map { |d| d.amount.to_f }.reduce(0, :+)
   end
 
   def calculate_subtotal
-    line_items.map { |li| li.total_price.to_f }.reduce(0, :+)
+    line_items.reload.map { |li| li.total_price.to_f }.reduce(0, :+)
   end
 
   def tax
@@ -438,7 +442,7 @@ class Order < ActiveRecord::Base
 
   def calculate_taxable_total
     return 0 if tax_exempt?
-    line_items.taxable.map { |li| li.total_price.to_f }.reduce(0, :+)
+    line_items.reload.taxable.map { |li| li.total_price.to_f }.reduce(0, :+)
   end
 
   def tax_rate

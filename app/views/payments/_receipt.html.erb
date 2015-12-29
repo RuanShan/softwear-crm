@@ -8,7 +8,6 @@
       <% else %>
           <%= image_tag @order.store.logo.file.url(:thumb) %>
       <% end %>
-      </h1>
     </div>
     <div class="pull-right">
       <h1 class='text-right'><strong>Payment Receipt</strong> #<%= payment.id %>
@@ -25,7 +24,7 @@
           <th>Order Name</th>
           <td><%= @order.name %></td>
           <th>In Hand By Date:</th>
-          <td><%= display_time @order.in_hand_by  %></td>
+          <td><%= @order.in_hand_by.strftime('%b %d, %Y, %I:%M %p')  %></td>
         </tr>
         <tr>
           <th>Payment Terms</th>
