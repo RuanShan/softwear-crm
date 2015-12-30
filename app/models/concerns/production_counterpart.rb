@@ -6,6 +6,7 @@ module ProductionCounterpart
     self.production_class = "Production::#{name}".constantize
 
     before_save :enqueue_update_production, if: :should_update_production?
+    after_destroy :enqueue_destroy_production, if: :should_update_production?
 
     try :warn_on_failure_of, :update_production unless Rails.env.test?
 
@@ -13,8 +14,13 @@ module ProductionCounterpart
       def enqueue_update_production
         delay(queue: 'api').update_production(update_production_fields)
       end
+
+      def enqueue_destroy_production
+        delay(queue: 'api').destroy_production
+      end
     else
       alias_method :enqueue_update_production, :update_production
+      alias_method :enqueue_destroy_production, :destroy_production
     end
 
     def self.fetch_production_ids(start_date = nil)
@@ -70,6 +76,10 @@ module ProductionCounterpart
 
     @production.save!
     @production = nil
+  end
+
+  def destroy_production
+    production.destroy
   end
 
   protected
