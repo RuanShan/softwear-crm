@@ -24,14 +24,16 @@
   </div>
 </div>
 <div class="row">
-  <div class="col-sm-4 box-info">
+  <div class="col-sm-4 box-info" style="page-break-after: always">
     <div class="box-info">
       <h3>Payment Total Breakdown</h3>
-      <table class="table-striped table table-responsive">
+      <table class="table-striped table table-responsive table-condensed">
         <thead>
         <tr>
           <th class="text-right">Method</th>
           <th>Amount</th>
+          <th>Confirmed Amount</th>
+          <th>Initials</th>
         </tr>
         </thead>
         <tbody>
@@ -39,6 +41,8 @@
             <tr>
               <td class="text-right"><%= name %></td>
               <td><%= number_to_currency @payment_drop.total_amount_for_payment_method(id) %></td>
+              <td></td>
+              <td></td>
             </tr>
         <% end %>
         </tbody>
@@ -46,16 +50,25 @@
         <tr>
           <th class="text-right">Total:</th>
           <td><%= number_to_currency @payment_drop.total_amount %></td>
+          <td></td>
+          <td></td>
+        </tr>
+        <thead>
+        <tr>
+          <th class="text-right">Signature:</th>
+          <td></td>
+          <td></td>
+          <td></td>
         </tr>
         </thead>
       </table>
     </div>
   </div>
 
-  <div class="col-sm-8">
+  <div class="col-sm-8" style="page-break-before: always">
     <div class="box-info">
       <h3>Payment Breakdown</h3>
-      <table class="table-striped table table-responsive">
+      <table class="table-striped table table-responsive table-condensed">
         <thead>
             <tr>
               <th>

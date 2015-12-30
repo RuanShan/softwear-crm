@@ -2,6 +2,7 @@ class PaymentDropsController < InheritedResources::Base
   before_action :populate_salesperson_id, only: :create
   before_action :set_current_action
   before_action :populate_undropped_payments
+  layout 'no_overlay', only: [:show]
 
   def index
     super do
@@ -37,4 +38,5 @@ class PaymentDropsController < InheritedResources::Base
                       payment_ids: []
                 ])
   end
+
 end
