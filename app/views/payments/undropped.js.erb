@@ -1,0 +1,12 @@
+<% html_content = "" %>
+<% if @payments.empty? %>
+    <%
+    html_content = %q(
+    <p class='alert alert-warning'>The store you selected doesn't have any undropped payments</p>
+    )
+    %>
+<% else %>
+    <% html_content = render 'payment_drops/undropped_payments', payments: @payments %>
+<% end %>
+$('#payment-drop-undropped-payments-list').html("<%= j html_content.html_safe %>");
+prepare_payments_for_drop();

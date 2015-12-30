@@ -123,9 +123,9 @@
             <%= link_to in_store_credits_path do %><i class="fa fa-angle-right"></i> In-Store Credit<% end %>
          <% end %>
 
-         <li>
-           <a href="gallery.html"><i class="fa fa-dollar"></i> Cash Drawer</a>
-         </li>
+        <%= content_tag :li, class:('active' if current_action == 'in_store_credits') do %>
+            <%= link_to payment_drops_path do %><i class="fa fa-dollar"></i> Payment Drops<% end %>
+        <% end %>
       <% end %>
     <% end %>
 

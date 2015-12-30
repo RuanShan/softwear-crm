@@ -1,0 +1,44 @@
+<table class="table table-responsive">
+  <thead>
+  <tr>
+    <th>
+      Include?
+    </th>
+    <th>Order</th>
+    <th>Store</th>
+    <th>Payment Method</th>
+    <th>Amount</th>
+  </tr>
+  </thead>
+  <tbody>
+  <% payments.each do |payment| %>
+      <tr>
+        <%
+           checked = false
+           checked = true if
+                   params[:payment_drop] &&
+                   params[:payment_drop][:payment_ids] &&
+                   params[:payment_drop][:payment_ids].include?(payment.id.to_s)
+        %>
+        <td>
+          <%= check_box_tag "payment_drop[payment_ids][]", payment.id, checked, class: 'undropped-payment', data: {'payment-amount' => payment.amount, 'payment-method' => payment.payment_method}  %>
+        </td>
+        <td>
+          <%= link_to("##{payment.order.id} #{payment.order.name}", payment.order, target: "_blank") rescue 'n/a' %>
+        </td>
+        <td>
+          <%= payment.store.name %>
+        </td>
+        <td>
+          <%= payment.salesperson.full_name %>
+        </td>
+        <td>
+          <%= payment.display_payment_method %>
+        </td>
+        <td>
+          <%= number_to_currency payment.amount %>
+        </td>
+      </tr>
+  <% end %>
+  </tbody>
+</table>

@@ -5,15 +5,26 @@ class Payment < ActiveRecord::Base
   class PaymentError < StandardError
   end
 
+  searchable do
+    integer :payment_method
+    integer :store_id
+    string :display_payment_method
+
+    boolean :undropped do
+      payment_drop_payments.blank?
+    end
+
+  end
+
   VALID_PAYMENT_METHODS = {
-    1 => 'Cash',
-    2 => 'Swiped Credit Card',
+  1 => 'Cash  ',
+  8 => 'Credit Card',
     3 => 'Check',
     4 => 'PayPal',
     5 => 'Trade First',
     6 => 'Trade',
     7 => 'Wire Transfer',
-    8 => 'Credit Card'
+      2 => 'Swiped Credit Card'
   }
 
   FIELDS_TO_RENDER_FOR_METHOD = {
@@ -44,11 +55,14 @@ class Payment < ActiveRecord::Base
   acts_as_paranoid
 
   default_scope { order(:created_at) }
+  scope :undropped, -> { includes(:payment_drop_payments).where(payment_drop_payments: { payment_id: nil } ) }
+  scope :dropped, -> { includes(:payment_drop_payments).where.not(payment_drop_payments: { payment_id: nil } ) }
 
   belongs_to :order, touch: true
   belongs_to :store
   belongs_to :salesperson, class_name: User
   has_many :discounts, as: :discountable # Only refunds
+  has_many :payment_drop_payments
 
   after_validation :purchase!, on: :create
   after_save do
@@ -276,6 +290,11 @@ class Payment < ActiveRecord::Base
     end
   end
 
+
+  def display_payment_method
+    VALID_PAYMENT_METHODS[payment_method]
+  end
+
   private
 
   def credit_card_is_valid
@@ -335,4 +354,5 @@ class Payment < ActiveRecord::Base
   def amount_greater_than_zero
     errors.add(:amount, "cannot be negative") if amount && amount < 0
   end
+
 end
