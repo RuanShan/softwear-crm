@@ -288,13 +288,23 @@ class Order < ActiveRecord::Base
   end
   def method_missing(method_name, *args, &block)
     if /^recalculate_(?<field_to_recalc>\w+)!?$/ =~ method_name.to_s && respond_to?(field_to_recalc)
-      send "#{field_to_recalc}=", send("calculate_#{field_to_recalc}")
+      send "#{field_to_recalc}=", send("calculate_#{field_to_recalc}", *args)
       save! if /.*!$/ =~ method_name
     else
       super
     end
   end
   # order.recalculate_tax => { order.tax = order.calculate_tax }
+
+  def recalculate_all
+    methods.grep(/^calculate_\w+$/).map do |method_name|
+      send "re#{method_name}"
+    end
+  end
+  def recalculate_all!
+    recalculate_all
+    save!
+  end
 
   def id=(new_id)
     return if new_id.blank?
@@ -321,8 +331,12 @@ class Order < ActiveRecord::Base
     jobs.map{|job| job.shipments }.concat(shipments.to_a).flatten
   end
 
-  def all_discounts
-    discounts + job_discounts
+  def all_discounts(reload = false)
+    if reload
+      discounts.reload + job_discounts.reload
+    else
+      discounts + job_discounts
+    end
   end
 
   def fba?
@@ -394,7 +408,7 @@ class Order < ActiveRecord::Base
   def calculate_payment_total(exclude = [])
     exclude = Array(exclude)
 
-    payments.reduce(0) do |total, p|
+    payments.reload.reduce(0) do |total, p|
       next total if p.nil? || p.amount.nil?
       next total if exclude.include?(p.id) || exclude.include?(p)
       next total if p.totally_refunded?
@@ -421,11 +435,11 @@ class Order < ActiveRecord::Base
   end
 
   def calculate_discount_total
-    all_discounts.map { |d| d.amount.to_f }.reduce(0, :+)
+    all_discounts(:reload).map { |d| d.amount.to_f }.reduce(0, :+)
   end
 
   def calculate_subtotal
-    line_items.map { |li| li.total_price.to_f }.reduce(0, :+)
+    line_items.reload.map { |li| li.total_price.to_f }.reduce(0, :+)
   end
 
   def tax
@@ -438,7 +452,7 @@ class Order < ActiveRecord::Base
 
   def calculate_taxable_total
     return 0 if tax_exempt?
-    line_items.taxable.map { |li| li.total_price.to_f }.reduce(0, :+)
+    line_items.reload.taxable.map { |li| li.total_price.to_f }.reduce(0, :+)
   end
 
   def tax_rate

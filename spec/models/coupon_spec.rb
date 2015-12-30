@@ -8,9 +8,12 @@ describe Coupon do
       subject { create :percent_off_order, value: 10.0 }
       before do
         allow(order).to receive(:line_items).and_return [double('LineItem', total_price: 12.5)] * 3
+        allow(order.line_items).to receive(:reload).and_return order.line_items
+        allow(order.line_items).to receive(:taxable).and_return order.line_items
       end
 
       it "reduces the order's subtotal by #value %", percent_off_order: true do
+        order.recalculate_all
         expect(order.subtotal).to eq 12.5*3
         expect(subject.calculate(order)).to eq (12.5*3)*0.10
       end
@@ -49,6 +52,7 @@ describe Coupon do
 
       it "reduces the total price of a single job from the order's subtotal" do
         expect(order.jobs.size).to eq 2
+        order.recalculate_all
         expect(order.subtotal).to eq (1*7.0) + (2*5.0 + 1*10.0)
         expect(subject.calculate(order, job_2)).to eq (2*5.0 + 1*10.0)*0.10
       end

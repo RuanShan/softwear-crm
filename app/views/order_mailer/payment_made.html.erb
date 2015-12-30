@@ -1,0 +1,11 @@
+<%= link_to @link do %>
+  Order #<%= @order.id %>
+<% end %>
+<br />
+
+<% begin %>
+  <%= render 'payments/receipt', payment: @payment %>
+<% rescue StandardError => e %>
+  Payment amount: <%= @payment.amount %> <br />
+  Order balance: <%= @order.balance %>
+<% end %>

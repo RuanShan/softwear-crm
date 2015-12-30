@@ -10,7 +10,11 @@ module Customer
 
     def create
       super do |success, failure|
-        success.js { render 'success' }
+        success.js do
+          @order = @payment.order.reload
+          email_receipt_to_customer(@payment)
+          render 'success'
+        end
         failure.js { render 'failure' }
       end
     rescue Payment::PaymentError => e
@@ -108,6 +112,8 @@ module Customer
       )
 
       if response.success? && (@payment.pp_transaction_id = response.authorization) && @payment.save
+        @order = @payment.order.reload
+        email_receipt_to_customer(@payment)
         flash[:success] = "Your payment has been processed. Thanks!"
       else
         problems = []
@@ -137,6 +143,10 @@ module Customer
         test:      !Rails.env.production?
       }
       ActiveMerchant::Billing::PaypalExpressGateway.new(paypal_auth)
+    end
+
+    def email_receipt_to_customer(payment)
+      OrderMailer.payment_made(payment.order, payment, customer_order_url(payment.order)).deliver
     end
 
     def permitted_params

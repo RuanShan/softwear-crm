@@ -168,7 +168,7 @@ describe Order, order_spec: true do
 
     before do
       allow(order).to receive(:total).and_return(5)
-      allow(order).to receive(:calculate_payment_total).with(anything).and_return(5)
+      allow(order).to receive(:calculate_payment_total).and_return(5)
       order.recalculate_payment_total
     end
 
@@ -380,6 +380,8 @@ describe Order, order_spec: true do
 
     it 'returns the total payment for the order' do
       allow(subject.payments.last).to receive(:totally_refunded?).and_return true
+      allow(subject.payments).to receive(:reload).and_return subject.payments
+
       subject.recalculate_payment_total
       expect(subject.payment_total)
         .to eq 15
@@ -414,6 +416,7 @@ describe Order, order_spec: true do
             build_stubbed(:blank_line_item, quantity: 5, unit_price: 1)
           ]
         )
+      allow(subject.line_items).to receive(:reload).and_return subject.line_items
 
       subject.recalculate_subtotal
     end
