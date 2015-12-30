@@ -9,6 +9,7 @@ FactoryGirl.define do
       salesperson { |p| p.association(:user) }
 
       factory :cash_payment do
+
       end
 
       factory :swiped_credit_card_payment do

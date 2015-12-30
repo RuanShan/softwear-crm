@@ -11,7 +11,5 @@ describe PaymentDropPayment, payment_drop_payment_spec: true do
 
   describe 'Validations' do
     it { is_expected.to validate_uniqueness_of(:payment_id) }
-    it { is_expected.to validate_presence_of(:payment) }
-    it { is_expected.to validate_presence_of(:payment_drop) }
   end
 end

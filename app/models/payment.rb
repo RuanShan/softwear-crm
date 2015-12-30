@@ -17,14 +17,14 @@ class Payment < ActiveRecord::Base
   end
 
   VALID_PAYMENT_METHODS = {
-  1 => 'Cash  ',
-  8 => 'Credit Card',
+    1 => 'Cash',
+    8 => 'Credit Card',
     3 => 'Check',
     4 => 'PayPal',
     5 => 'Trade First',
     6 => 'Trade',
     7 => 'Wire Transfer',
-      2 => 'Swiped Credit Card'
+    2 => 'Swiped Credit Card'
   }
 
   FIELDS_TO_RENDER_FOR_METHOD = {

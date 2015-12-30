@@ -14,9 +14,11 @@ describe PaymentDrop, payment_drop_spec: true do
   describe 'Validations' do
     it { is_expected.to validate_presence_of(:store) }
     it { is_expected.to validate_presence_of(:salesperson) }
-    it { is_expected.to validate_presence_of(:payment_drop_payments) }
 
     context 'amount of cash dropped is different than total amount of cash' do
+      before(:each) do
+        allow(subject).to receive(:cash_included_matches_total_cash?) { false }
+      end
 
       it {is_expected.to validate_presence_of(:difference_reason) }
     end

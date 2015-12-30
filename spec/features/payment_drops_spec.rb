@@ -7,17 +7,9 @@ feature 'Payment Drops management', payment_drop_spec: true do
 
   background(:each) { login_as(valid_user) }
 
-  scenario 'Sales Manager can access list of payment drops' do
-    visit root_path
-    click_link 'Payment Drops'
-    expect(page).to have_css("tr##{model_table_row_id(store)}")
-  end
-
-  scenario 'Sales Manager can create a payment drop' do
-    visit root_path
-    click_link 'Payment Drops'
-    expect(page).to have_css("tr##{model_table_row_id(store)}")
-  end
+  scenario 'Sales Manager can access list of payment drops'
+  scenario 'Sales Manager can create a payment drop'
+  scenario "Sales manager must enter a reason when cash doesn't match expected cash"
 
 
 end
