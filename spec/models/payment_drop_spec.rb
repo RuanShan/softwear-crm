@@ -14,6 +14,8 @@ describe PaymentDrop, payment_drop_spec: true do
   describe 'Validations' do
     it { is_expected.to validate_presence_of(:store) }
     it { is_expected.to validate_presence_of(:salesperson) }
+    it { is_expected.to validate_presence_of(:cash_included) }
+    it { is_expected.to validate_presence_of(:check_included) }
 
     context 'amount of cash dropped is different than total amount of cash' do
       before(:each) do

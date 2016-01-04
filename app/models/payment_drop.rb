@@ -11,8 +11,9 @@ class PaymentDrop < ActiveRecord::Base
   has_many :payment_drop_payments, dependent: :destroy
   has_many :payments, through: :payment_drop_payments
 
-  validates :salesperson, :store, :cash_included, presence: true
+  validates :salesperson, :store, :cash_included, :check_included, presence: true
   validates :difference_reason, presence: true, unless: :included_matches_total?
+  validates :payments, presence: true
 
   accepts_nested_attributes_for :payment_drop_payments, allow_destroy: true
 
