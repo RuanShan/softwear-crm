@@ -14,6 +14,9 @@
           <%= f.select :store_id, Store.all.map{|s| [s.name, s.id] }, include_blank: true %>
             <%= f.text_field :cash_included, prepend: "$", value: @payment_drop.cash_included || 0.0 %>
             <p id="expected-cash-included"></p>
+
+          <%= f.text_field :check_included, prepend: "$", value: @payment_drop.cash_included || 0.0 %>
+          <p id="expected-check-included"></p>
             <%= f.text_area :difference_reason, disabled: true %>
           <%= f.submit ( f.object.new_record? ? "Create Payment Drop" : "Update Payment Drop"), class: "btn btn-primary" %>
         </div>

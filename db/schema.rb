@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20151228182016) do
+ActiveRecord::Schema.define(version: 20160104190233) do
 
   create_table "activities", force: :cascade do |t|
     t.integer  "trackable_id",   limit: 4
@@ -505,9 +505,9 @@ ActiveRecord::Schema.define(version: 20151228182016) do
     t.decimal  "shipping_price",                          precision: 10, scale: 2, default: 0.0
     t.string   "invoice_state",             limit: 255
     t.string   "production_state",          limit: 255
-    t.integer  "softwear_prod_id",          limit: 4
     t.string   "notification_state",        limit: 255
     t.integer  "freshdesk_proof_ticket_id", limit: 4
+    t.integer  "softwear_prod_id",          limit: 4
     t.string   "artwork_state",             limit: 255
     t.string   "customer_key",              limit: 255
     t.text     "invoice_reject_reason",     limit: 65535
@@ -538,6 +538,7 @@ ActiveRecord::Schema.define(version: 20151228182016) do
     t.datetime "deleted_at"
     t.datetime "created_at",                                               null: false
     t.datetime "updated_at",                                               null: false
+    t.decimal  "check_included",                  precision: 10, scale: 2
   end
 
   add_index "payment_drops", ["salesperson_id"], name: "index_payment_drops_on_salesperson_id", using: :btree
@@ -657,8 +658,8 @@ ActiveRecord::Schema.define(version: 20151228182016) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.decimal  "shipping",                                     precision: 10, scale: 2
-    t.datetime "initialized_at"
     t.string   "quote_source",                     limit: 255
+    t.datetime "initialized_at"
     t.string   "freshdesk_ticket_id",              limit: 255
     t.boolean  "informal"
     t.integer  "insightly_category_id",            limit: 4

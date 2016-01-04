@@ -8,14 +8,16 @@
       <dd><%= @payment_drop.salesperson.full_name %></dd>
       <dt>Store</dt>
       <dd><%= @payment_drop.store.name %></dd>
+      <dt>Date</dt>
+      <dd><%= display_time @payment_drop.created_at %></dd>
     </dl>
   </div>
   <div class="col-xs-6">
     <dl>
-      <dt>Date</dt>
-      <dd><%= display_time @payment_drop.created_at %></dd>
       <dt>Cash Included</dt>
       <dd><%= number_to_currency @payment_drop.cash_included %></dd>
+      <dt>Check Included</dt>
+      <dd><%= number_to_currency @payment_drop.check_included %></dd>
       <% unless @payment_drop.difference_reason.blank? %>
           <dt>Difference Reason</dt>
           <dd><%= number_to_currency @payment_drop.difference_reason %></dd>
@@ -56,9 +58,9 @@
         <thead>
         <tr>
           <th class="text-right">Signature:</th>
-          <td></td>
-          <td></td>
-          <td></td>
+          <th></th>
+          <th></th>
+          <th></th>
         </tr>
         </thead>
       </table>

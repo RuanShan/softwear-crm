@@ -34,7 +34,7 @@ class PaymentDropsController < InheritedResources::Base
 
   def permitted_params
     params.permit(payment_drop: [
-                      :salesperson_id, :store_id, :cash_included, :difference_reason,
+                      :salesperson_id, :store_id, :cash_included, :check_included, :difference_reason,
                       payment_ids: []
                 ])
   end
