@@ -37,6 +37,7 @@ feature 'Payment Drops management', payment_drop_spec: true do
             find("input[value='#{payment.id}']").click
           end
           click_button "Create Payment Drop"
+          sleep 1.5
         }.to change{ PaymentDrop.count }.by(1)
       end
 
@@ -50,6 +51,7 @@ feature 'Payment Drops management', payment_drop_spec: true do
           end
           fill_in "Difference reason", with: 'A likely excuse'
           click_button "Create Payment Drop"
+          sleep 1.5
         }.to change{ PaymentDrop.count }.by(1)
       end
 
