@@ -27,6 +27,10 @@ Array.class_eval do
   def pluck(attr)
     map(&attr)
   end
+
+  def reload
+    self
+  end
 end
 
 # Requires supporting ruby files with custom matchers and macros, etc, in
