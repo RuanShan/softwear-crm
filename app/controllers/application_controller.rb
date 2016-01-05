@@ -94,21 +94,23 @@ class ApplicationController < ActionController::Base
     @title = ""
     @title += "#{Rails.env.upcase} - " unless Rails.env.production?
     @title += "CRM - "
+    begin
+      # resource segment
+      if defined?(resource_class) && (resource rescue nil).nil?
+        @title += "#{resource_class.to_s.underscore.humanize.pluralize} - "
+      elsif defined?(resource_class) && (resource rescue nil).persisted?
+        @title += "#{resource_class.to_s.underscore.humanize} ##{resource.id} - "
+      elsif defined?(resource_class) && !(resource rescue nil).persisted?
+        @title += "#{resource_class.to_s.underscore.humanize} - "
+      end
 
-    # resource segment
-    if defined?(resource_class) && (resource rescue nil).nil?
-      @title += "#{resource_class.to_s.underscore.humanize.pluralize} - "
-    elsif defined?(resource_class) && (resource rescue nil).persisted?
-      @title += "#{resource_class.to_s.underscore.humanize} ##{resource.id} - "
-    elsif defined?(resource_class) && !(resource rescue nil).persisted?
-      @title += "#{resource_class.to_s.underscore.humanize} - "
+      unless (resource rescue nil).nil?
+        @title += "#{resource.name} - " if resource.respond_to?(:name) && !resource.name.blank?
+      end
+
+      @title += "#{action_name.humanize} - " unless (action_name rescue nil).nil?
+    rescue
     end
-
-    unless (resource rescue nil).nil?
-      @title += "#{resource.name} - " if resource.respond_to?(:name) && !resource.name.blank?
-    end
-
-    @title += "#{action_name.humanize} - " unless (action_name rescue nil).nil?
 
     @title += "SoftWEAR"
     @title
