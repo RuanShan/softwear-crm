@@ -1,0 +1,37 @@
+<div class="box-info full">
+  <div class="table-responsive">
+    <table class="table table-hover" id="payment_drops_list">
+      <thead>
+      <tr>
+        <th>ID</th>
+        <th>Date</th>
+        <th>Store</th>
+        <th>Salesperson</th>
+        <th>Total Payments</th>
+        <th>Total Amount</th>
+        <th>Actions</th>
+      </tr>
+      </thead>
+
+      <tbody>
+      <% payment_drops.each do |payment_drop| %>
+          <tr id="<%= model_table_row_id payment_drop %>">
+            <td><%= payment_drop.id %></td>
+            <td><%= display_time payment_drop.created_at %></td>
+            <td><%= payment_drop.store.name %></td>
+            <td><%= payment_drop.salesperson.full_name %></td>
+            <td><%= payment_drop.payments.count %></td>
+            <td><%= number_to_currency payment_drop.total_amount %></td>
+            <td>
+              <div class="btn-group btn-group-xs">
+                <%= link_to payment_drop, class: 'btn btn-primary' do %>
+                    <i class="fa fa-eye"></i>
+                <% end %>
+              </div>
+            </td>
+          </tr>
+      <% end %>
+      </tbody>
+    </table>
+  </div>
+</div>

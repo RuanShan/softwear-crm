@@ -1,0 +1,106 @@
+<div class="page-heading animated fadeInDownBig col-lg-9 clear hidden-print">
+  <h1>Payment Drop #<%= @payment_drop.id %></h1>
+</div>
+<div class="row">
+  <div class="col-xs-6">
+    <dl>
+      <dt>Salesperson</dt>
+      <dd><%= @payment_drop.salesperson.full_name %></dd>
+      <dt>Store</dt>
+      <dd><%= @payment_drop.store.name %></dd>
+      <dt>Date</dt>
+      <dd><%= display_time @payment_drop.created_at %></dd>
+    </dl>
+  </div>
+  <div class="col-xs-6">
+    <dl>
+      <dt>Cash Included</dt>
+      <dd><%= number_to_currency @payment_drop.cash_included %></dd>
+      <dt>Check Included</dt>
+      <dd><%= number_to_currency @payment_drop.check_included %></dd>
+      <% unless @payment_drop.difference_reason.blank? %>
+          <dt>Difference Reason</dt>
+          <dd><%= number_to_currency @payment_drop.difference_reason %></dd>
+      <% end %>
+    </dl>
+  </div>
+</div>
+<div class="row">
+  <div class="col-sm-4 box-info" style="page-break-after: always">
+    <div class="box-info">
+      <h3>Payment Total Breakdown</h3>
+      <table class="table-striped table table-responsive table-condensed">
+        <thead>
+        <tr>
+          <th class="text-right">Method</th>
+          <th>Amount</th>
+          <th>Confirmed Amount</th>
+          <th>Initials</th>
+        </tr>
+        </thead>
+        <tbody>
+        <% Payment::VALID_PAYMENT_METHODS.each do |id, name| %>
+            <tr>
+              <td class="text-right"><%= name %></td>
+              <td><%= number_to_currency @payment_drop.total_amount_for_payment_method(id) %></td>
+              <td></td>
+              <td></td>
+            </tr>
+        <% end %>
+        </tbody>
+        <thead>
+        <tr>
+          <th class="text-right">Total:</th>
+          <td><%= number_to_currency @payment_drop.total_amount %></td>
+          <td></td>
+          <td></td>
+        </tr>
+        <thead>
+        <tr>
+          <th class="text-right">Signature:</th>
+          <th></th>
+          <th></th>
+          <th></th>
+        </tr>
+        </thead>
+      </table>
+    </div>
+  </div>
+
+  <div class="col-sm-8" style="page-break-before: always">
+    <div class="box-info">
+      <h3>Payment Breakdown</h3>
+      <table class="table-striped table table-responsive table-condensed">
+        <thead>
+            <tr>
+              <th>
+                Order
+              </th>
+              <th>
+                Method
+              </th>
+              <th>
+                Amount
+              </th>
+            </tr>
+        </thead>
+        <% @payment_drop.payments.each do |payment| %>
+            <tr>
+              <td>
+                <%= link_to("##{payment.order.id} #{payment.order.name}", payment.order) rescue 'n/a' %>
+              </td>
+              <td>
+                <%= payment.display_payment_method %>
+              </td>
+              <td>
+                <%= payment.salesperson.full_name %>
+              </td>
+              <td>
+                <%= number_to_currency payment.amount %>
+              </td>
+            </tr>
+        <% end %>
+      </table>
+    </div>
+  </div>
+</div>

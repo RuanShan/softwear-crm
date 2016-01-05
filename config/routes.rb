@@ -103,9 +103,11 @@ CrmSoftwearcrmCom::Application.routes.draw do
     resources :in_store_credits do
       collection { get :search }
     end
+    resources :payment_drops
   end
 
   resources :shipments
+  get 'payments/undropped', to: 'payments#undropped'
 
   resources :orders do
     member do

@@ -61,6 +61,17 @@ class PaymentsController < InheritedResources::Base
     end
   end
 
+  def undropped
+    @payments = Payment.search do
+      with(:undropped, true)
+      with(:store_id, params[:store_id]) if params[:store_id]
+    end.results
+
+    respond_to do |format|
+      format.js
+    end
+  end
+
   private
 
   def fire_applied_activity(payment)

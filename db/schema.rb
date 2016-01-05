@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20151223205601) do
+ActiveRecord::Schema.define(version: 20160104190233) do
 
   create_table "activities", force: :cascade do |t|
     t.integer  "trackable_id",   limit: 4
@@ -518,6 +518,31 @@ ActiveRecord::Schema.define(version: 20151223205601) do
   end
 
   add_index "orders", ["deleted_at"], name: "index_orders_on_deleted_at", using: :btree
+
+  create_table "payment_drop_payments", force: :cascade do |t|
+    t.integer  "payment_id",      limit: 4
+    t.integer  "payment_drop_id", limit: 4
+    t.datetime "deleted_at"
+    t.datetime "created_at",                null: false
+    t.datetime "updated_at",                null: false
+  end
+
+  add_index "payment_drop_payments", ["payment_drop_id"], name: "index_payment_drop_payments_on_payment_drop_id", using: :btree
+  add_index "payment_drop_payments", ["payment_id"], name: "index_payment_drop_payments_on_payment_id", using: :btree
+
+  create_table "payment_drops", force: :cascade do |t|
+    t.decimal  "cash_included",                   precision: 10, scale: 2
+    t.text     "difference_reason", limit: 65535
+    t.integer  "salesperson_id",    limit: 4
+    t.integer  "store_id",          limit: 4
+    t.datetime "deleted_at"
+    t.datetime "created_at",                                               null: false
+    t.datetime "updated_at",                                               null: false
+    t.decimal  "check_included",                  precision: 10, scale: 2
+  end
+
+  add_index "payment_drops", ["salesperson_id"], name: "index_payment_drops_on_salesperson_id", using: :btree
+  add_index "payment_drops", ["store_id"], name: "index_payment_drops_on_store_id", using: :btree
 
   create_table "payments", force: :cascade do |t|
     t.integer  "order_id",          limit: 4
