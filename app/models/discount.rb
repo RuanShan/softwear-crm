@@ -19,13 +19,8 @@ class Discount < ActiveRecord::Base
   #
   # before_validation :set_transaction_id, if: :refund?
   after_validation :apply_refund, on: :create, if: :refund?
-  after_save do
-    if discountable_type == 'Payment'
-      order.try(:recalculate_payment_total!)
-    else
-      order.try(:recalculate_discount_total!)
-    end
-  end
+  after_save :recalculate_order_fields
+  after_destroy :recalculate_order_fields
 
   acts_as_paranoid
 
@@ -150,6 +145,14 @@ class Discount < ActiveRecord::Base
       errors.add(:coupon, "expired on #{coupon.valid_until.strftime('%m/%d/%Y %I:%M%p')}")
     else
       true
+    end
+  end
+
+  def recalculate_order_fields
+    if discountable_type == 'Payment'
+      order.try(:recalculate_payment_total!)
+    else
+      order.try(:recalculate_discount_total!)
     end
   end
 end

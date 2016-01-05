@@ -65,9 +65,8 @@ class Payment < ActiveRecord::Base
   has_many :payment_drop_payments
 
   after_validation :purchase!, on: :create
-  after_save do
-    order.try(:recalculate_payment_total!)
-  end
+  after_save :recalculate_order_fields
+  after_destroy :recalculate_order_fields
 
   validates :store, :payment_method, :amount, :salesperson, presence: true
   validates :pp_transaction_id, presence: true, uniqueness: true,
@@ -355,4 +354,7 @@ class Payment < ActiveRecord::Base
     errors.add(:amount, "cannot be negative") if amount && amount < 0
   end
 
+  def recalculate_order_fields
+    order.try(:recalculate_payment_total!)
+  end
 end

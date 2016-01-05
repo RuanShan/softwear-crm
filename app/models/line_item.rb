@@ -38,13 +38,8 @@ class LineItem < ActiveRecord::Base
     scope: [:line_itemable_id], message: 'is a duplicate in this group' }, if: :imprintable_and_in_job?
 
   before_validation :set_sort_order, if: :markup_or_option?
-  after_save do
-    if order
-      order.recalculate_subtotal
-      order.recalculate_taxable_total if taxable?
-      order.save!
-    end
-  end
+  after_save :recalculate_order_fields
+  after_destroy :recalculate_order_fields
 
   def self.create_imprintables(line_itemable, imprintable, color, options = {})
     new_imprintables(line_itemable, imprintable, color, options)
@@ -223,6 +218,14 @@ class LineItem < ActiveRecord::Base
 
     if !quantity.nil? && quantity < 0
       errors.add :quantity, 'cannot be negative'
+    end
+  end
+
+  def recalculate_order_fields
+    if order
+      order.recalculate_subtotal
+      order.recalculate_taxable_total if taxable?
+      order.save!
     end
   end
 end

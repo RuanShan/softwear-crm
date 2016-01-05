@@ -22,7 +22,7 @@ class CreatePaymentDropPayments < ActiveRecord::Migration
           store_id: store.id
         )
         payments.each{|p| payment_drop.payment_drop_payments << PaymentDropPayment.new(payment_id: p.id, payment_drop_id: payment_drop.id)}
-        payment_drop.save!
+        payment_drop.save(validate: false)
         payment_drop.update_columns(created_at: ending_of_drops, updated_at: ending_of_drops)
       end
       ending_of_drops = ending_of_drops - 1.day
