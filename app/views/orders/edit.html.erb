@@ -191,8 +191,19 @@
             </div>
 
             <div class="tab-pane animated fadeInRight" id="timeline">
-              <%= render partial: 'shared/timeline',
-                         locals: {activities: @activities} %>
+              <% if @order.quotes.empty? %>
+                <%= render 'shared/timeline', activities: @activities %>
+              <% else %>
+                <div class="col-sm-4">
+                  <%= render 'shared/timeline', activities: @activities %>
+                </div>
+                <div class="col-sm-8">
+                  <% @order.quotes.each do |quote| %>
+                    <h4>From quote: <%= link_to quote.name, quote %></h4>
+                    <%= render 'shared/freshdesk_ticket', quote: quote, current_user: @current_user %>
+                  <% end %>
+                </div>
+              <% end %>
             </div>
 
             <div class="tab-pane animated  fadeInRight" id="details">
