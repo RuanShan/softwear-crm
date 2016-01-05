@@ -33,10 +33,6 @@ class Shipment < ActiveRecord::Base
   protected
 
   def assign_proper_status
-    unless tracking_number.blank?
-      self.status = 'shipped'
-    else
-      self.status = 'pending'
-    end
+    self.status = tracking_number.blank? ? 'pending' : 'shipped'
   end
 end

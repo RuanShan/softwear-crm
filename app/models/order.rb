@@ -757,8 +757,9 @@ class Order < ActiveRecord::Base
 
   def check_if_shipped!
     return unless delivery_method.include?('Ship')
-    return if all_shipments.reload.empty?
     return if notification_state == 'shipped'
+    jobs.reload; shipments.reload
+    return if all_shipments.empty?
 
     if all_shipments.all?(&:shipped?)
       shipped
