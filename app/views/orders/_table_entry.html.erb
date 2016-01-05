@@ -104,6 +104,15 @@
                   remote: true, 'data-toggle'=> 'tooltip', title: 'Show Order Timeline' do  %>
         <i class="fa fa-clock-o"></i>
       <% end %>
+
+      <% unless order.quotes.empty? %>
+        <%= link_to order.quotes.first.freshdesk_ticket_link, class: 'btn btn-default order-freshdesk-link',
+          title: "Freshdesk ticket#{'s' if order.quotes.size > 1} ##{order.quotes.map(&:freshdesk_ticket_id).join(',')}",
+          data: { toggle: 'tooltip', links: order.quotes.map(&:freshdesk_ticket_link), ordername: order.name } do %>
+
+          <i class="softwear-icon-freshdesk-icon"></i>
+        <% end %>
+      <% end %>
     </div>
     <br />
       <% unless order.notification_state == 'picked_up' %>

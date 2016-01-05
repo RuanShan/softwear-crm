@@ -90,6 +90,19 @@ $(window).load ->
       processResults: (data, page) -> { results: data.map (q) -> { text: q.name, id: q.id } }
       cache: true
 
+  $('.order-freshdesk-link').click (e) ->
+    links = $(this).data('links')
+    if links.length > 1
+      e.preventDefault()
+      body = "<ul>"
+      for link in links
+        body += "<li><a href='"+link+"'>"+link+"</a></li>"
+      body += "</ul>"
+
+      showContentModal
+        title: $("<strong>"+$(this).data('ordername') + " Freshdesk tickets</strong>")
+        body:  $(body)
+        footer: $('<button class="btn btn-default" data-dismiss="modal">Close</button>')
 
   # TODO instead of Nigel's 'hack' 
   # possibly create a show for Job that would present relevant info
