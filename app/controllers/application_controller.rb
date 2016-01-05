@@ -15,6 +15,7 @@ class ApplicationController < ActionController::Base
   before_action :assign_current_url
   before_action :assign_current_action
   before_action :assign_request_time
+  before_action :set_title
 
   # Quicker way to render to a string using the previous function
   def render_string(*args)
@@ -87,5 +88,29 @@ class ApplicationController < ActionController::Base
 
   def last_search
     session[:last_search]
+  end
+
+  def set_title
+    @title = ""
+    @title += "#{Rails.env.upcase} - " unless Rails.env.production?
+    @title += "CRM - "
+
+    # resource segment
+    if defined?(resource_class) && (resource rescue nil).nil?
+      @title += "#{resource_class.to_s.underscore.humanize.pluralize} - "
+    elsif defined?(resource_class) && (resource rescue nil).persisted?
+      @title += "#{resource_class.to_s.underscore.humanize} ##{resource.id} - "
+    elsif defined?(resource_class) && !(resource rescue nil).persisted?
+      @title += "#{resource_class.to_s.underscore.humanize} - "
+    end
+
+    unless (resource rescue nil).nil?
+      @title += "#{resource.name} - " if resource.respond_to?(:name) && !resource.name.blank?
+    end
+
+    @title += "#{action_name.humanize} - " unless (action_name rescue nil).nil?
+
+    @title += "SoftWEAR"
+    @title
   end
 end
