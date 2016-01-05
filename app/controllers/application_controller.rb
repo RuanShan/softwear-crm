@@ -93,7 +93,7 @@ class ApplicationController < ActionController::Base
   def set_title
     @title = ""
     @title += "#{Rails.env.upcase} - " unless Rails.env.production?
-    @title += "Customer Resources - "
+    @title += "CRM - "
 
     # resource segment
     if defined?(resource_class) && (resource rescue nil).nil?
