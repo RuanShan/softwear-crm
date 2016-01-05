@@ -61,6 +61,7 @@ module OrderHelper
       when 'attempted' then 'label-danger'
       when 'notified' then 'label-warning'
       when 'picked_up' then 'label-success'
+      when 'shipped' then 'label-success'
       else nil
       end
     end

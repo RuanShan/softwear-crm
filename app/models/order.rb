@@ -186,6 +186,10 @@ class Order < ActiveRecord::Base
       transition :attempted => :picked_up
       transition :notified => :picked_up
     end
+
+    event :shipped do
+      transition any => :shipped
+    end
   end
 
   state_machine :artwork_state, :initial => :pending_artwork_requests do
@@ -751,4 +755,14 @@ class Order < ActiveRecord::Base
     artwork_requests.to_a.delete_if{|x| !['In-House Embroidery', 'Outsourced Embroidery', 'In-House Applique EMB'].include? x.imprint_method.name}
   end
 
+  def check_if_shipped!
+    return unless delivery_method.include?('Ship')
+    return if all_shipments.reload.empty?
+    return if notification_state == 'shipped'
+
+    if all_shipments.all?(&:shipped?)
+      shipped
+      save!
+    end
+  end
 end

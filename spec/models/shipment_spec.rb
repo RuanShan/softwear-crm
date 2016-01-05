@@ -22,4 +22,15 @@ describe Shipment do
       end
     end
   end
+
+  describe 'when status gets changed to shipped', story_1076: true do
+    subject { create(:shipment) }
+
+    it 'has its order update notification state' do
+      expect(subject.shippable.notification_state).to_not eq 'shipped'
+      subject.tracking_number = 'tracking'
+      subject.save!
+      expect(subject.shippable.reload.notification_state).to eq 'shipped'
+    end
+  end
 end

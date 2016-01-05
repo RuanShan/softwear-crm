@@ -10,6 +10,9 @@ class Shipment < ActiveRecord::Base
   validates :name, :address_1, :city, :state, :zipcode, presence: true
 
   before_validation :assign_proper_status
+  after_save do
+    shippable.try(:check_if_shipped!)
+  end
 
   def shipped?
     status == 'shipped'
