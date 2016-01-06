@@ -19,10 +19,6 @@
   ajax.fail (jqXHR, textStatus) ->
     alert "Failed to re-render job #{jobId}. Refresh the page to view changes."
 
-# TODO For now, leaving job collapse as coffeescript.
-# May be unable to mix bootstrap collapse toggle with
-# Rails remote: true, at which point we are stuck with
-# listening for collapse events anyways.
 jobCollapse = (id, collapsed) ->
   ajax = $.ajax
     type: 'PUT'
@@ -57,6 +53,12 @@ jobCollapse = (id, collapsed) ->
 
 $(window).load ->
   registerJobEvents($('body'))
+
+  # Submit editable forms when clicking outside them
+  $('#jobs').on 'mouseup', (e) ->
+    # form.editableform
+    if $('input:focus').length is 0
+      $('form.editableform').submit()
 
 #jQuery ->
 #  $('.chosen-select').chosen
