@@ -16,7 +16,9 @@
   <%= render partial: 'orders/search' %>
 </div>
 
+<%= clearfix %>
 <%= paginate @orders %>
+<%= search_results_count %>
 
 <div class="box-info full clear">
   <div class="table-responsive">

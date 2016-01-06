@@ -107,6 +107,12 @@ blockquote.freshdesk_quote {
   width: 100%;
 }
 
+.search-results-count {
+  color: rgb(0, 75, 143);
+  float: left;
+  margin-top: -33px;
+}
+
 @import "font-awesome-sprockets";
 @import "font-awesome";
 @import "jquery.minicolors";

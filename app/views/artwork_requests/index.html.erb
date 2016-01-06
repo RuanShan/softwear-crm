@@ -6,7 +6,9 @@
   <%= render partial: 'artwork_requests/search' %>
 </div>
 
+<%= clearfix %>
 <%= paginate @artwork_requests %>
+<%= search_results_count %>
 
 <div class="box-info full clear">
   <%= render partial: 'artwork_requests/table', locals: { artwork_requests: @artwork_requests } %>

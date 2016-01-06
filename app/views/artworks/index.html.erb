@@ -19,7 +19,9 @@
              locals: { artwork_request: @artwork_request } %>
 </div>
 
+<%= clearfix %>
 <%= paginate @artworks %>
+<%= search_results_count %>
 
 <div class="box-info row clear">
   <%= render partial: 'artworks/table',

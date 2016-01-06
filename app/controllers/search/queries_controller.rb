@@ -118,6 +118,7 @@ module Search
         locals = permitted_locals_for(models.first)
 
         instance_variable_set "@#{plural}", @search.first.results
+        @search_result_count = @search.first.results.total_entries
         destination = "#{plural}/index.#{format}"
 
         render destination, locals: locals

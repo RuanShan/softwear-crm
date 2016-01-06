@@ -193,4 +193,20 @@ module ApplicationHelper
 
     buf
   end
+
+  def search_results_count(options = {})
+    return unless @search_result_count
+    options[:class] ||= ''
+    options[:class] += 'search-results-count'
+
+    content_tag(:h5, "#{@search_result_count || '0'} results", options)
+  end
+
+  def search?
+    defined? @search_result_count
+  end
+
+  def clearfix
+    content_tag(:div, "", class: 'clearfix')
+  end
 end

@@ -12,7 +12,9 @@
   <%= render 'imprintables/search' %>
 </div>
 
+<%= clearfix %>
 <%= paginate @imprintables %>
+<%= search_results_count %>
 
 <div class="box-info row clear">
   <%= render 'imprintables/table', imprintables: @imprintables %>
