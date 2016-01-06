@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160105180515) do
+ActiveRecord::Schema.define(version: 20160106222106) do
 
   create_table "activities", force: :cascade do |t|
     t.integer  "trackable_id",   limit: 4
@@ -598,6 +598,7 @@ ActiveRecord::Schema.define(version: 20160105180515) do
     t.datetime "deleted_at"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.integer  "popularity",        limit: 4,                           default: 0
   end
 
   add_index "print_locations", ["deleted_at"], name: "index_print_locations_on_deleted_at", using: :btree
@@ -807,6 +808,7 @@ ActiveRecord::Schema.define(version: 20160105180515) do
     t.datetime "deleted_at"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.integer  "popularity",   limit: 4,   default: 0
   end
 
   add_index "shipping_methods", ["deleted_at"], name: "index_shipping_methods_on_deleted_at", using: :btree

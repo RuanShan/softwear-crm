@@ -24,6 +24,8 @@ class Imprint < ActiveRecord::Base
   validates :print_location, presence: true, uniqueness: { scope: :job_id }
 
   after_save :touch_associations
+  after_save :enqueue_update_print_location_popularity
+  after_destroy :enqueue_update_print_location_popularity
 
   scope :name_number, -> { joins(:imprint_method).where(imprint_methods: { name: 'Name/Number' }) }
 
@@ -66,6 +68,12 @@ class Imprint < ActiveRecord::Base
     when "Equipment Sanitizing" then 'EquipmentCleaningPrint'
     else 'Print'
     end
+  end
+
+  def enqueue_update_print_location_popularity
+    return if print_location_id.blank?
+    target = Rails.env.production? ? PrintLocation.delay : PrintLocation
+    target.update_popularity(print_location_id)
   end
 
   private

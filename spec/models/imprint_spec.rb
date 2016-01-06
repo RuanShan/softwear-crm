@@ -2,6 +2,7 @@ require 'spec_helper'
 
 describe Imprint, imprint_spec: true do
   let(:imprint) { create :valid_imprint }
+  let(:print_location) { imprint.print_location }
 
   it { is_expected.to be_paranoid }
 
@@ -20,6 +21,20 @@ describe Imprint, imprint_spec: true do
     it { is_expected.to validate_presence_of :print_location }
     # FIXME why doesn't this work?
     # it { is_expected.to validate_uniqueness_of(:print_location).scoped_to(:job_id) }
+  end
+
+  describe 'when updated', update: true do
+    before do
+      allow_any_instance_of(PrintLocation).to receive(:update_popularity)
+    end
+
+    it 'updates print location popularity', popularity: true do
+      allow(PrintLocation).to receive(:find).with(print_location.id).and_return print_location
+      expect(print_location).to receive(:update_popularity)
+
+      imprint.description = 'New desc'
+      imprint.save!
+    end
   end
 
   describe '#name' do
