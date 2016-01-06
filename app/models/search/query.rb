@@ -27,7 +27,7 @@ module Search
       query_models.empty? ? Models.all : query_models.map(&:model)
     end
 
-    # You can pass either field_name, model_name 
+    # You can pass either field_name, model_name
     # or an instance of Search::Field.
     def filter_for(*args)
       field = field_from_args(args)
@@ -35,15 +35,14 @@ module Search
       return nil if field.nil?
 
       query_model = query_models.find do |m|
-        m.name.to_sym == field.model_name
+        m.name.to_sym == field.model_name.to_sym
       end
 
       return nil if query_model.nil?
 
       filter = query_model.filter
-      
-      case filter.type
-      when FilterGroup
+
+      if filter.type.is_a?(FilterGroup)
         return filter.type.find_field(field)
       else
         return filter if filter.field.to_sym == field.name.to_sym
@@ -54,56 +53,57 @@ module Search
     # Here it is. The almighty search function. Stuff like this gets a little
     # hairy, due to the nature of Sunspot's DSL. If you're unfamiliar with
     # how Sunspot looks in action, check out https://github.com/sunspot/sunspot.
-    # 
+    #
     # You may notice that Sunspot works similar to RSpec, in that is looks
     # very english and reads well. Technically speaking, however, it's a bit
-    # odd, since somehow the 'with' and 'all_of' etc. methods are all of a 
+    # odd, since somehow the 'with' and 'all_of' etc. methods are all of a
     # sudden available even though you never defined them or included them.
     # This is because it uses instance_eval(&block), which actually sets the
     # context (self) for the block body.
     # Here's an example of what this can do:
-    # 
+    #
     # a = [1, 2, 3].join(', ')
     # # is equivalent to:
     # a = [1, 2, 3].instance_eval { join(', ') }
-    # 
-    # In the second part, the context of the { join(', ') } block is set 
+    #
+    # In the second part, the context of the { join(', ') } block is set
     # to the array. Here's another interesting example.
     # Consider this method definition:
-    # 
+    #
     # def something
     #   'man'
     # end
-    # 
+    #
     # Now, let's do this:
-    # 
+    #
     # str = "hey there ".concat(something)
-    # 
+    #
     # Kind of stupid, but it would assign str to "hey there man".
     # Now, let's try using instance_eval like in the last example
     # to make it even more stupid:
     #
     # str = "hey there ".instance_eval { concat(something) }
-    # 
+    #
     # This would actually raise a NoMethodError, because 'something' is
     # not defined within String. This is largely why it's inevidably
     # messy to interact with these DSL procs required for Sunspot.
     # It seems impossible to do anything dynamic since you can't access
     # your methods, but oddly enough, local variables actually do carry
     # over:
-    # 
+    #
     # local_thing = something
     # str = "hey there ".instance_eval { concat(local_thing) }
-    # 
+    #
     # That will actually have the desired effect, dang!
-    # 
+    #
     # As much as it is pretty cool that we can carry over our data, it
     # makes it difficult to split up our functionality into functions
     # after a certain point.
-    # 
+    #
     # QueriesController contains an interesting workaround that may
     # be hard to grasp at first, but is much easier to work with
     # once you do.
+    # (psych it's confusing as piss always)
     def search(*args, &block)
       options = args.last.is_a?(Hash) ? args.last : {}
 
@@ -119,7 +119,7 @@ module Search
           # Phrase filter requires the base scope so it can add
           # fulltext calls to the search, so we pass it around.
           base_scope = self
-          
+
           if text && !text.empty?
             if text_fields && !text_fields.empty?
               fulltext(text) do
@@ -146,7 +146,7 @@ module Search
 
     def fulltext_from_args(args, query_model)
       args.first.is_a?(String) ? args.first : query_model.default_fulltext
-    end 
+    end
 
     def field_from_args(args)
       return args.first if args.size == 1

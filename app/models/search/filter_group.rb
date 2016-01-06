@@ -21,15 +21,14 @@ module Search
     # Find the filter for the given field recursively within this group.
     def find_field(field)
       filters.each do |f|
-        case f.type
-        when FilterGroup
+        if f.type.is_a?(FilterGroup)
           result = f.type.find_field(field)
           return result if result
-        
         else
           return f if f.field.to_sym == field.name.to_sym
         end
       end
+
       nil
     end
   end

@@ -15,7 +15,7 @@ class SearchFormBuilder
   def initialize(model, query, template, current_user=nil,
                  last_search=nil, locals={})
     @model        = model
-    @query        = query
+    @query        = query if query
     @template     = template
     @last_search  = last_search
     @current_user = current_user
@@ -289,7 +289,11 @@ class SearchFormBuilder
   def initial_value_for(field_name)
     unless @query.nil?
       existing_filter = @query.filter_for(@model, field_name)
-      return existing_filter.try(:value)
+      if existing_filter.nil? || existing_filter.value.blank?
+        return
+      else
+        return existing_filter.type.assure_value(existing_filter.value)
+      end
     end
 
     query_initial_value(field_name) || hash_initial_value(field_name)
