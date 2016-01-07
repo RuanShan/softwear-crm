@@ -23,7 +23,7 @@ class OrderMailer < ActionMailer::Base
     @link = link
 
     mail(
-      from:    'sales@annarbortees.com',
+      from:    'noreply@softwearcrm.com',
       to:      order.email,
       subject: %(Thank you for your payment on Order ##{order.id} "#{order.name}")
     )

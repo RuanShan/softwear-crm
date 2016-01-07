@@ -26,7 +26,7 @@ class ErrorReportMailer < ActionMailer::Base
     @additional_info = params[:additional_info]
 
     mail(
-      from:     from_customer ? 'customer-report@annarbortees.com' : @user.email,
+      from:     from_customer ? 'customer-report@softwearcrm.com' : @user.email,
       reply_to: @user.email,
       to:       'devteam@annarbortees.com',
       subject:  "Softwear CRM Error Report From #{@user.full_name}"

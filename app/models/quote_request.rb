@@ -48,7 +48,7 @@ class QuoteRequest < ActiveRecord::Base
   before_save { self.status = 'assigned' if salesperson_id_changed? && salesperson_id_was.nil? }
 
   def send_assigned_email(user_id)
-    return if user_id != salesperson_id
+    return if user_id != salesperson_id || salesperson_id.nil?
     QuoteRequestMailer.notify_salesperson_of_quote_request_assignment(self).deliver
   end
 
@@ -236,7 +236,7 @@ class QuoteRequest < ActiveRecord::Base
   private
 
   def notify_salesperson_if_assigned
-    self.delay.send_assigned_email(salesperson_id) if salesperson_id_changed?
+    self.send_assigned_email(salesperson_id) if salesperson_id_changed?
   end
 
   def enqueue_link_integrated_crm_contacts

@@ -32,7 +32,8 @@ module CrmSoftwearcrmCom
     # This will be default in Rails 5.
     config.active_record.raise_in_transactional_callbacks = true
 
-    if ENV['action_mailer_delivery_method'] == 'smtp'
+    delivery_method = ENV['action_mailer_delivery_method']
+    if delivery_method == 'smtp'
       smtp_settings = {}
       config.action_mailer.delivery_method = :smtp
       smtp_settings[:address] = ENV['smtp_address'] unless !ENV.key? 'smtp_address'

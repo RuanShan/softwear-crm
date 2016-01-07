@@ -6,7 +6,7 @@ class QuoteRequestMailer < ActionMailer::Base
     @errors = errors
     mail(to: 'sales@annarbortees.com',
          subject: "Bad Quotes Requests within Wordpress #{Time.now.strftime('%Y-%m-%d %H:%M')}",
-         from: Figaro.env.smtp_user_name )
+         from: 'noreply@softwearcrm.com' )
 
   end
 
@@ -15,7 +15,7 @@ class QuoteRequestMailer < ActionMailer::Base
     @quote_request = quote_request
 
     mail(
-      from: Figaro.env.smtp_user_name,
+      from: 'noreply@softwearcrm.com',
       to: @salesperson.email,
       subject: "You've been assigned quote request ##{@quote_request.id}"
     )
