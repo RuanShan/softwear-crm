@@ -119,7 +119,7 @@ feature 'Users', user_spec: true, js: true do
       expect(page).to have_content 'success'
     end
 
-    scenario 'I can change my password' do
+    scenario 'I can change my password', retry: 3 do
       visit edit_user_path(valid_user)
       click_link 'Change password'
       fill_in 'Password',              with: 'NewPassword'
