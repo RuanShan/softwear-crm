@@ -4,6 +4,7 @@ class QuoteRequest < ActiveRecord::Base
 
   tracked by_current_user + { parameters: { s: ->(_c, r) { r.track_state_changes } } }
   acts_as_warnable
+  acts_as_commentable
 
   get_insightly_api_key_from { Setting.insightly_api_key }
 

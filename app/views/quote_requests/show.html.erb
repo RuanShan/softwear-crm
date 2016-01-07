@@ -203,9 +203,38 @@
             <%= link_to quote.name, quote_path(quote) %>
           </div>
         <% end %>
+      <% else %>
+          None
       <% end %>
     </div>
 
+  </div>
+
+  <div class='row'>
+    <div class='col-sm-8'>
+      <strong>Comments:</strong>
+
+      <ul id='comments-list'>
+        <% @quote_request.comments.each do |comment| %>
+          <%= render 'comments/basic', comment: comment %>
+        <% end %>
+      </ul>
+    </div>
+    <div class='col-sm-4'></div>
+  </div>
+  <div class='row' id='qr-notes'>
+    <div class='col-sm-2'></div>
+    <div class='col-sm-8'>
+
+
+      <%= bootstrap_form_for [@quote_request, Comment.new], id: 'comment-form', remote: true do |f| %>
+        <%= f.hidden_field :user_id, value: current_user.id %>
+        <%= f.text_field :title, maxlength: 140 %>
+        <%= f.text_area :comment, maxlength: 65500, label: 'Comment *' %>
+        <%= f.submit 'Add Comment', class: 'btn btn-success' %>
+      <% end %>
+    </div>
+    <div class='col-sm-2'></div>
   </div>
 </div>
 

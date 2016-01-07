@@ -68,7 +68,7 @@ CrmSoftwearcrmCom::Application.routes.draw do
   resources :quote_requests do
     get :dock
     post :create_freshdesk_ticket
-    resource :emails
+    resources :emails, :comments
 
     collection do
       post :filter

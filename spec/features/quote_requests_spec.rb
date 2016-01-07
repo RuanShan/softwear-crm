@@ -98,6 +98,19 @@ feature 'Quote Requests Management', js: true, quote_request_spec: true do
     expect(current_path).to eq quote_request_path(quote_request_2)
   end
 
+  scenario 'A user can add comments to a quote request', comments: true do
+    visit quote_request_path(quote_request)
+    fill_in 'Title', with: 'What is'
+    fill_in 'Comment *', with: 'up, dude'
+    click_button 'Add Comment'
+
+    expect(page).to have_content "What is up, dude"
+    visit quote_request_path(quote_request)
+    expect(page).to have_content "What is up, dude"
+
+    expect(quote_request.reload.comments.pluck(:comment)).to eq ['up, dude']
+  end
+
   context 'In escalating a quote request to a quote' do
     background(:each) do
       visit quote_requests_path

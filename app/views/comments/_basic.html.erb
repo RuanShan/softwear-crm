@@ -1,11 +1,21 @@
-
 <li class="the-notes <%= comment_class(comment) %>" id="comment-<%= comment.id %>">
+  <% if comment.user %>
+    <div class='pull-left'>
+      <%= profile_picture_of comment.user, class: 'half-width' %>
+    </div>
+  <% end %>
+
   <% unless defined?(hide_destroy) %>
     <%= link_to comment_path(comment), class: 'delete-comment pull-right', method: :delete, remote: true do %>
       <i class="fa fa-2x danger fa-times-circle"></i>
     <% end %>
   <% end %>
-  <h4><%= comment.title %> <i><%= comment.role %></i></h4>
+  <h4>
+    <%= comment.title %>
+    <% if comment.role != 'comments' %>
+      <i><%= comment.role %></i>
+    <% end %>
+  </h4>
   <p>
     <%= comment.comment %>
   </p>
