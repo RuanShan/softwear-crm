@@ -1,5 +1,10 @@
 class ShippingMethod < ActiveRecord::Base
+  include Popularity
+
   acts_as_paranoid
+  popularity_rated_from :shipments
+
+  has_many :shipments
   
   validates :name, uniqueness: true, presence: true
   # TODO: custom validator?

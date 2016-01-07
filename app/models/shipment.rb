@@ -1,4 +1,8 @@
 class Shipment < ActiveRecord::Base
+  include Popularity
+
+  rates_popularity_of :shipping_method
+
   belongs_to :shipping_method
   belongs_to :shippable, polymorphic: true
   belongs_to :shipped_by, class_name: 'User'

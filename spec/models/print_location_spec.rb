@@ -17,6 +17,27 @@ describe PrintLocation do
     it { is_expected.to validate_presence_of(:name) }
   end
 
+  describe 'default scope' do
+    let!(:pl1) { create(:valid_print_location) }
+    let!(:pl2) { create(:valid_print_location) }
+    let!(:pl3) { create(:valid_print_location) }
+
+    before do
+      create(:valid_imprint, print_location: pl1)
+
+      create(:valid_imprint, print_location: pl2)
+      create(:valid_imprint, print_location: pl2)
+      create(:valid_imprint, print_location: pl2)
+
+      create(:valid_imprint, print_location: pl3)
+      create(:valid_imprint, print_location: pl3)
+    end
+
+    it 'is sorted by popularity (highest first)', popularity: true do
+      expect(PrintLocation.all).to eq [pl2, pl3, pl1]
+    end
+  end
+
   describe '#update_popularity', popularity: true do
     subject { create(:valid_print_location) }
 
