@@ -56,15 +56,16 @@ class OrdersController < InheritedResources::Base
 
   def create
     unless params[:order].try(:[], 'terms') == 'Fulfilled by Amazon'
-      super do
+      super do |success, failure|
         if session.has_key? :quote_id
           unless OrderQuote.new(quote_id: session[:quote_id], order_id: @order.id).save
-            flash[:error] = 'Something went wrong creating your order!'
+            flash[:error] = "Couldn't attach quote to order"
           end
           session[:quote_id] = nil
         end
+        success.html { redirect_to edit_order_path(@order) }
+        failure.html { render action: :new }
       end
-      redirect_to edit_order_path(@order) if @order.valid?
       return
     end
 

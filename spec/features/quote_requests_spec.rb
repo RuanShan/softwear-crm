@@ -68,12 +68,15 @@ feature 'Quote Requests Management', js: true, quote_request_spec: true do
 
     visit quote_request_path(quote_request_3)
     find(previous_button).click
+    sleep 1
     expect(current_path).to eq quote_request_path(quote_request_4)
 
     find(next_button).click
+    sleep 1
     expect(current_path).to eq quote_request_path(quote_request_3)
 
     find(next_button).click
+    sleep 1
     expect(current_path).to eq quote_request_path(quote_request)
 
     expect(page).to_not have_selector previous_button
@@ -87,14 +90,16 @@ feature 'Quote Requests Management', js: true, quote_request_spec: true do
 
     visit quote_request_path(quote_request_4)
     find(next_button).click
+    sleep 1
     expect(current_path).to eq quote_request_path(quote_request_2)
 
     find(next_button).click
+    sleep 1
     expect(current_path).to eq quote_request_path(quote_request)
-
     expect(page).to_not have_selector next_button
 
     find(previous_button).click
+    sleep 1
     expect(current_path).to eq quote_request_path(quote_request_2)
   end
 
