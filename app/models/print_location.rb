@@ -14,4 +14,8 @@ class PrintLocation < ActiveRecord::Base
   def qualified_name
     "#{name} (#{imprint_method.name})"
   end
+
+  def name_and_popularity
+    "#{name} (*#{popularity})"
+  end
 end
