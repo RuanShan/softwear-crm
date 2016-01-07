@@ -228,7 +228,7 @@
 
 
       <%= bootstrap_form_for [@quote_request, Comment.new], id: 'comment-form', remote: true do |f| %>
-        <%= f.hidden_field :user_id, value: current_user.id %>
+        <%= f.hidden_field :user_id, value: current_user.try(:id) %>
         <%= f.text_field :title, maxlength: 140 %>
         <%= f.text_area :comment, maxlength: 65500, label: 'Comment *' %>
         <%= f.submit 'Add Comment', class: 'btn btn-success' %>
