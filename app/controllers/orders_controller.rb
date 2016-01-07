@@ -64,6 +64,7 @@ class OrdersController < InheritedResources::Base
           session[:quote_id] = nil
         end
       end
+      redirect_to edit_order_path(@order) if @order.valid?
       return
     end
 
