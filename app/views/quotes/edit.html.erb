@@ -1,7 +1,6 @@
 <div class="row-fluid">
-    <div class="page-heading animated fadeInDownBig pull-left">
-      <h1>Edit<strong> Quote</strong> <%= @quote.id %></h1>
-      <h2><%= @quote.name  %></h2>
+    <div class="pull-left">
+      <%= profile_picture_of @quote.salesperson %>
     </div>
 
     <div class="pull-right text-right">
@@ -34,6 +33,11 @@
         <i class="fa fa-exclamation-triangle"></i> Warnings
         <%= @quote.warnings.active.any? ? "(#{@quote.warnings.active.size})" : '' %>
       <% end %>
+    </div>
+
+    <div class="page-heading animated fadeInDownBig pull-left">
+      <h1>Edit<strong> Quote</strong> <%= @quote.id %></h1>
+      <h2><%= @quote.name  %></h2>
     </div>
 </div>
 <br clear="all" />

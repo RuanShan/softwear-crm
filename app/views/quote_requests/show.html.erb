@@ -31,6 +31,10 @@
   <div class='user-profile-content'>
 
     <div class='row'>
+      <%= profile_picture_of @quote_request.salesperson if @quote_request.salesperson %>
+    </div>
+
+    <div class='row'>
       <div class='col-sm-2'>
         <strong>Salesperson:</strong>
       </div>
@@ -200,10 +204,22 @@
           </div>
         <% end %>
       <% end %>
-      <div id='edit-quote-request-quotes-button' class='indent-field'>
-        <%= link_to 'Assign Quotes', edit_quote_request_path(@quote_request, edit_quotes: true), class: 'btn btn-info', remote: true, disabled: true %>
-      </div>
     </div>
 
   </div>
 </div>
+
+<% if @quote_request.unassigned? || @quote_request.salesperson_id == current_user.id %>
+  <div class='row'>
+    <div class='pull-left'>
+      <% if @quote_request.previous %>
+        <%= quote_request_button(@quote_request, :previous) %>
+      <% end %>
+    </div>
+    <div class='pull-right'>
+      <% if @quote_request.next %>
+        <%= quote_request_button(@quote_request, :next) %>
+      <% end %>
+    </div>
+  </div>
+<% end %>

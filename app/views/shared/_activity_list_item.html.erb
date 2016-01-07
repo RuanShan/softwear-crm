@@ -9,7 +9,7 @@
         <%= source %>
       <% elsif activity.owner %>
         <%= link_to(activity.owner) do %>
-          <%= image_tag activity.owner.try(:profile_picture).try(:file).try(:url, :icon) || 'avatar/masarie.jpg', class: 'media-object img-circle', alt: 'Avatar' %>
+          <%= profile_picture_of activity.owner %>
           <span class='pull-right'><%= activity.owner.full_name %></span>
         <% end %>
       <% else %>

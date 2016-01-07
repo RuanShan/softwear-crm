@@ -209,4 +209,13 @@ module ApplicationHelper
   def clearfix
     content_tag(:div, "", class: 'clearfix')
   end
+
+  def profile_picture_of(user = nil, options = {})
+    options[:class] ||= ''
+    options[:class] += ' media-object img-circle'
+    options[:alt] ||= "#{user.try(:full_name) || 'Default'}'s Avatar"
+
+    image_url = user.try(:profile_picture).try(:file).try(:url, :icon)
+    image_tag image_url || 'avatar/masarie.jpg', options
+  end
 end

@@ -39,6 +39,7 @@
     <dd><%= artwork_request.salesperson.full_name rescue 'unassigned' %></dd>
     <dt>Artist:</dt>
     <dd><%= artwork_request.artist.full_name rescue 'unassigned' %></dd>
+    <%= profile_picture_of artwork_request.artist, class: 'tiny' %>
   </dl>
 </div>
 <% end %>

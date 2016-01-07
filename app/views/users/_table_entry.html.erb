@@ -1,5 +1,6 @@
 <tr id="user_<%= user.id %>">
   <td><%= user.id %></td>
+  <td><%= profile_picture_of user, class: 'half-width' %></td>
   <td><%= user.first_name %> <%= user.last_name %></td>
   <td><%= user.email %></td>
   <td>

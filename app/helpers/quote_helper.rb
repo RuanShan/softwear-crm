@@ -110,6 +110,27 @@ module QuoteHelper
     )
   end
 
+  def quote_request_button(quote_request, next_or_previous)
+    next_or_previous = next_or_previous.to_sym
+    raise "gotta send :next or :previous" unless [:next, :previous].include?(next_or_previous)
+
+    case quote_request.salesperson_id
+    when current_user.id then text = "Your #{next_or_previous.capitalize} Quote Request"
+    when nil             then text = "#{next_or_previous.capitalize} Unassigned Quote Request"
+
+    else text = "Their Next Quote Request"
+    end
+
+    if next_or_previous == :next
+      text = text + " <i class='fa fa-arrow-right'></i>"
+    else
+      text = "<i class='fa fa-arrow-left'></i> " + text
+    end
+
+    link_to text.html_safe, quote_request_path(quote_request.send(next_or_previous)),
+      class: "btn btn-primary quote-request-#{next_or_previous}-button"
+  end
+
   # HACK/DEBUG this "fixes" an issue with quotes breaking when imprintables are removed
   # quote_line_items.js uses this span.
   def cleanup_imprintableless_line_item!(source, line_item)

@@ -13,7 +13,12 @@
     Customer URL:<br />
     <%= link_to customer_order_url(order.customer_key),  customer_order_path(order.customer_key), target: "_blank" %>
   </td>
-  <td><%= order.salesperson.full_name %></td>
+  <td>
+    <%= order.salesperson.full_name %>
+    <div class='row'>
+      <%= profile_picture_of order.salesperson if order.salesperson %>
+    </div>
+  </td>
   <td>
     <table class='table table-striped table-condensed'>
       <tr>

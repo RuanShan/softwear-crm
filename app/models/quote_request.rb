@@ -7,6 +7,9 @@ class QuoteRequest < ActiveRecord::Base
 
   get_insightly_api_key_from { Setting.insightly_api_key }
 
+  scope :of_interest, -> { where.not status: 'could_not_quote' }
+  scope :assigned, -> { where status: 'assigned' }
+  scope :unassigned, -> { where.not status: 'assigned' }
   default_scope { order('quote_requests.created_at DESC') }
 
   paginates_per 50
@@ -42,19 +45,28 @@ class QuoteRequest < ActiveRecord::Base
   before_validation(on: :create) { self.status = 'pending' if status.nil? }
   before_create :enqueue_link_integrated_crm_contacts
   before_save :notify_salesperson_if_assigned
-
-  def self.of_interest
-    where.not status: 'could_not_quote'
-  end
-
-  def salesperson_id=(id)
-    super
-    self.status = 'assigned'
-  end
+  before_save { self.status = 'assigned' if salesperson_id_changed? && salesperson_id_was.nil? }
 
   def send_assigned_email(user_id)
     return if user_id != salesperson_id
     QuoteRequestMailer.notify_salesperson_of_quote_request_assignment(self).deliver
+  end
+
+  def assigned?
+    status == 'assigned'
+  end
+  def unassigned?
+    status != 'assigned'
+  end
+
+  def others_with_same_status
+    QuoteRequest.where(salesperson_id: salesperson_id)
+  end
+  def next
+    @next ||= others_with_same_status.where('id < ?', id).order(id: :desc).first
+  end
+  def previous
+    @previous ||= others_with_same_status.where('id > ?', id).order(id: :asc).first
   end
 
   def reason_needed?

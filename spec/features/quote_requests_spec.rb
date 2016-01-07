@@ -4,7 +4,11 @@ include ApplicationHelper
 feature 'Quote Requests Management', js: true, quote_request_spec: true do
   given!(:quote_request) { create(:valid_quote_request_with_salesperson) }
   given(:quote_request_2) { create(:quote_request, name: 'aux') }
+  given(:quote_request_3) { create(:quote_request, name: 'other') }
+  given(:quote_request_4) { create(:quote_request, name: 'even more') }
   given!(:valid_user) { create(:alternate_user) }
+  given(:next_button) { '.quote-request-next-button' }
+  given(:previous_button) { '.quote-request-previous-button' }
   before(:each) { login_as(valid_user) }
 
   scenario 'A user can view a list of quote requests' do
@@ -54,6 +58,44 @@ feature 'Quote Requests Management', js: true, quote_request_spec: true do
     wait_for_ajax
     expect(QuoteRequest.where(salesperson_id: valid_user.id)).to exist
     expect(quote_request.reload.status).to eq 'assigned'
+  end
+
+  scenario 'A user can click next and previous unassigned quote request', next_and_previous: true do
+    quote_request.update_attributes salesperson_id:   nil
+    quote_request_2.update_attributes salesperson_id: valid_user.id
+    quote_request_3.update_attributes salesperson_id: nil
+    quote_request_4.update_attributes salesperson_id: nil
+
+    visit quote_request_path(quote_request_3)
+    find(previous_button).click
+    expect(current_path).to eq quote_request_path(quote_request_4)
+
+    find(next_button).click
+    expect(current_path).to eq quote_request_path(quote_request_3)
+
+    find(next_button).click
+    expect(current_path).to eq quote_request_path(quote_request)
+
+    expect(page).to_not have_selector previous_button
+  end
+
+  scenario 'A user can click through their assigned quote requests', next_and_previous: true do
+    quote_request.update_attributes salesperson_id:   valid_user.id
+    quote_request_2.update_attributes salesperson_id: valid_user.id
+    quote_request_3.update_attributes salesperson_id: nil
+    quote_request_4.update_attributes salesperson_id: valid_user.id
+
+    visit quote_request_path(quote_request_4)
+    find(next_button).click
+    expect(current_path).to eq quote_request_path(quote_request_2)
+
+    find(next_button).click
+    expect(current_path).to eq quote_request_path(quote_request)
+
+    expect(page).to_not have_selector next_button
+
+    find(previous_button).click
+    expect(current_path).to eq quote_request_path(quote_request_2)
   end
 
   context 'In escalating a quote request to a quote' do

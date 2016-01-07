@@ -106,8 +106,8 @@ describe QuoteRequest, quote_request_spec: true, story_78: true do
           subject.email = 'test@test.com'
           subject.organization = 'test org'
           subject.salesperson_id = create(:user).id
-          expect(subject.status).to eq 'assigned'
           subject.save
+          expect(subject.status).to eq 'assigned'
           expect(subject).to be_valid
           expect(subject.reload.freshdesk_contact_id).to eq 123
         end
@@ -152,8 +152,8 @@ describe QuoteRequest, quote_request_spec: true, story_78: true do
           subject.email = 'test@test.com'
           subject.organization = 'test org'
           subject.salesperson_id = create(:user).id
-          expect(subject.status).to eq 'assigned'
           subject.save
+          expect(subject.status).to eq 'assigned'
           expect(subject).to be_valid
           expect(subject.reload.freshdesk_contact_id).to eq 123
         end
@@ -189,8 +189,8 @@ describe QuoteRequest, quote_request_spec: true, story_78: true do
           subject.phone_number = '(123)-123-1233'
           subject.organization = 'test org'
           subject.salesperson_id = create(:user).id
-          expect(subject.status).to eq 'assigned'
           subject.save
+          expect(subject.status).to eq 'assigned'
           expect(subject).to be_valid
           expect(subject.reload.insightly_contact_id).to eq 123
         end
@@ -246,8 +246,8 @@ describe QuoteRequest, quote_request_spec: true, story_78: true do
 
           it 'creates one and links it' do
             subject.organization = 'test org'
-            expect(subject.status).to eq 'assigned'
             subject.save
+            expect(subject.status).to eq 'assigned'
             expect(subject).to be_valid
             expect(subject.reload.insightly_contact_id).to eq 321
           end
@@ -297,8 +297,8 @@ describe QuoteRequest, quote_request_spec: true, story_78: true do
 
           it 'links it' do
             subject.organization = 'test org'
-            expect(subject.status).to eq 'assigned'
             subject.save
+            expect(subject.status).to eq 'assigned'
             expect(subject).to be_valid
             expect(subject.reload.insightly_contact_id).to eq 321
           end
