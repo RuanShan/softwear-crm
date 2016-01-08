@@ -42,6 +42,10 @@ class Job < ActiveRecord::Base
     "##{id} #{name}"
   end
 
+  def all_shipments
+    shipments
+  end
+
   def imprintable_line_items_total
     line_items.where.not(imprintable_object_id: nil).sum(:quantity)
   end
