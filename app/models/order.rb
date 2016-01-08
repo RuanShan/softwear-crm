@@ -239,6 +239,10 @@ class Order < ActiveRecord::Base
     end
 
     event :artwork_complete do
+      transition :pending_artwork => :pending_proofs,
+                 :if => lambda{ |x| x.missing_proofs? && !x.missing_assigned_artwork_requests? }
+      transition :pending_artwork => :pending_manager_approval,
+                 :if => lambda{ |x| !x.missing_proofs? && !x.missing_assigned_artwork_requests? }
       transition :pending_artwork_and_proofs => :pending_proofs,
                  :if => lambda{ |x| x.missing_proofs? && !x.missing_assigned_artwork_requests? }
       transition :pending_artwork_and_proofs => :pending_manager_approval,
