@@ -27,6 +27,12 @@
         <%= s.yes_or_no_select :retail %>
       </div>
       <div class="col-sm-4">
+        <%= s.yes_or_no_select :discontinued %>
+      </div>
+    </div>
+    <div class="row form-group">
+      <div class='col-sm-4'>
+        <%= s.text_field :created_at, greater_than: true, placeholder: 'Created After...', class: 'js-datetimepicker' %>
       </div>
     </div>
 

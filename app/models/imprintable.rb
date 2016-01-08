@@ -69,6 +69,7 @@ class Imprintable < ActiveRecord::Base
     boolean :standard_offering
     boolean :retail
     boolean :discontinued
+    date :created_at
   end
 
   SIZING_CATEGORIES = [
