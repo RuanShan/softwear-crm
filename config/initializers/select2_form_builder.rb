@@ -8,6 +8,6 @@ ActionView::Helpers::FormBuilder.class_eval do
     else
       html_options = html_options.merge(class: 'select2')
     end
-    select(method, choices, options, html_options, &block) + @template.javascript_tag("$('.select2').select2();")
+    select(method, choices, options, html_options, &block) + @template.javascript_tag("$('select.select2').select2();")
   end
 end
