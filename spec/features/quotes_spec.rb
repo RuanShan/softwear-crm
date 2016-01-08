@@ -671,6 +671,26 @@ feature 'Quotes management', quote_spec: true, js: true, retry: 3 do
     expect(line_item.unit_price.to_f).to eq 99.99
   end
 
+  scenario 'A user adding an optional option/markup without a price is told to enter a price', story_705: true do
+    quote.update_attributes informal: true
+    quote.jobs << create(:quote_job, line_items: [create(:imprintable_quote_line_item)])
+    visit edit_quote_path quote
+
+    find('a', text: "Line Items").click
+
+    click_link 'Add An Option or Markup'
+    sleep 0.5
+
+    fill_in 'Name', with: 'Special sauce'
+    sleep 0.05
+    fill_in 'Description', with: 'improved taste'
+    fill_in 'Url', with: 'http://lmgtfy.com/?q=secret+sauce'
+
+    click_button 'Add Option or Markup'
+    sleep 1
+    expect(page).to_not have_content 'Quote was successfully updated.'
+  end
+
   scenario 'A user can sort options and markups on a quote', revamp: true, story_797: true do
     quote.jobs << create(:quote_job, line_items: [create(:imprintable_quote_line_item)])
     quote.markups_and_options_job.line_items << standard_line_item_1
