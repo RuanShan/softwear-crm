@@ -333,7 +333,7 @@ describe QuoteRequest, quote_request_spec: true, story_78: true do
       expect(quote_request.reload.status).to eq 'assigned'
     end
 
-    it 'delays a task that sends out an email to the new salesperson', story_725: true do
+    it 'delays a task that sends out an email to the new salesperson', pending: "delaying emails has been temporarily removed", story_725: true do
       expect(delayed_send_assigned_email).to receive(:send_assigned_email).with(user.id)
       expect(quote_request).to receive(:delay).and_return delayed_send_assigned_email
 
