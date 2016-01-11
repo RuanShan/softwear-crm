@@ -140,6 +140,7 @@ class Imprintable < ActiveRecord::Base
   validates :department_name, inclusion: { in: DEPARTMENT_NAMES, message: "is not a valid department name" }, if: :department_name
 
   before_save :discontinue_imprintable, if: :discontinued?
+  after_initialize { self.tag ||= "Not Specified" }
 
   def self.find(param)
     unscoped.where(deleted_at: nil).find(param)
