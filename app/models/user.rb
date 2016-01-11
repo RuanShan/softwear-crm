@@ -1,4 +1,6 @@
 class User < ActiveRecord::Base
+  CUSTOMER_EMAIL = "customer@softwearcrm.com"
+
   acts_as_paranoid
   acts_as_token_authenticatable
 
@@ -26,6 +28,21 @@ class User < ActiveRecord::Base
   default_scope { order(:first_name, :last_name) }
 
   after_save :assign_image_assetables
+
+  def self.customer
+    customer_user = find_by(email: CUSTOMER_EMAIL)
+    return customer_user unless customer_user.nil?
+
+    User.create(
+      email: CUSTOMER_EMAIL,
+      first_name: 'Ann Arbor Tees',
+      last_name: 'Customer'
+    )
+  end
+
+  def customer?
+    email == CUSTOMER_EMAIL
+  end
 
   def full_name
     "#{first_name} #{last_name}"
