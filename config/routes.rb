@@ -117,6 +117,7 @@ CrmSoftwearcrmCom::Application.routes.draw do
       get 'state/:state_machine' => :state,  as: :state
       post 'transition/(:state_machine/:transition)' => :state, as: :transition
       post :send_to_production
+      get :instore_credit
     end
 
     resources :comments

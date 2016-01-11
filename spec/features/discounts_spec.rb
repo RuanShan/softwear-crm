@@ -116,7 +116,7 @@ feature 'Discounts management', js: true, discount_spec: true, story_859: true d
 
     scenario 'A salesperson can add an "in-store credit" discount', isc: true do
       visit edit_order_path order, anchor: 'payments'
-      click_button 'In-Store Credit'
+      click_button 'Apply In-Store Credit'
 
       find('.in-store-credit-search').set('search terms')
       click_button 'Search'

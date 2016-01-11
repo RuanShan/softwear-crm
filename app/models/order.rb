@@ -453,11 +453,10 @@ class Order < ActiveRecord::Base
   end
 
   def tax
-    if tax_exempt?
-      0
-    else
-      (taxable_total - discount_total) * tax_rate
-    end
+    return 0 if tax_exempt?
+    return 0 if discount_total >= taxable_total
+
+    (taxable_total - discount_total) * tax_rate
   end
 
   def calculate_taxable_total
