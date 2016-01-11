@@ -8,6 +8,7 @@ feature 'Discounts management', js: true, discount_spec: true, story_859: true d
   given(:job) { order.jobs.first }
   given(:coupon) { create(:flat_rate) }
   given(:percent_off_job) { create(:percent_off_job) }
+  given(:fifty_percent_off_order) { create(:percent_off_order, value: 50) }
 
   given(:credit_1) { create(:in_store_credit) }
   given(:credit_2) { create(:in_store_credit) }
@@ -56,6 +57,27 @@ feature 'Discounts management', js: true, discount_spec: true, story_859: true d
 
       expect(page).to have_content 'was successfully created.'
       expect(Discount.where(applicator_type: 'Coupon', applicator_id: coupon.id)).to exist
+    end
+
+    scenario 'An existing coupon updates its amount when the order subtotal is changed', recalculating: true, story_1124: true do
+      order.tax_exempt = true
+      order.jobs.first.line_items << create(:non_imprintable_line_item, unit_price: 100.00, quantity: 1, taxable: false)
+      order.save!
+      expect(order.reload.balance).to eq 100
+      create(:discount, applicator: fifty_percent_off_order, discountable: order)
+      expect(order.reload.balance).to eq 50
+      visit edit_order_path order
+
+      find('.line-item-button[title="Edit"]').click
+      sleep 0.5
+      fill_in "line_item[#{order.jobs.first.line_items.first.id}[unit_price]]", with: '50.00'
+      find('.update-line-items').click
+      wait_for_ajax
+      visit edit_order_path order
+      find('a[href="#payments"]').click
+
+      expect(order.reload.balance).to eq 25
+      expect(page).to have_content "25.0 Balance"
     end
 
     scenario 'A salesperson sees an error when entering a bad coupon code' do

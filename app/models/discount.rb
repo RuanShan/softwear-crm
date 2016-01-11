@@ -24,6 +24,8 @@ class Discount < ActiveRecord::Base
 
   acts_as_paranoid
 
+  scope :coupon, -> { where(applicator_type: 'Coupon') }
+
   attr_reader :credited_for_refund
   alias_method :credited_for_refund?, :credited_for_refund
 
@@ -92,8 +94,6 @@ class Discount < ActiveRecord::Base
     code
   end
 
-  protected
-
   def calculate_amount
     return if applicator.nil? || discountable.nil?
 
@@ -105,6 +105,8 @@ class Discount < ActiveRecord::Base
       raise "Unsupported discountable type #{discountable_type} with coupon"
     end
   end
+
+  protected
 
   def set_amount
     return if applicator.nil?
@@ -149,6 +151,8 @@ class Discount < ActiveRecord::Base
   end
 
   def recalculate_order_fields
+    order.try(:recalculate_coupons) if coupon?
+
     if discountable_type == 'Payment'
       order.try(:recalculate_payment_total!)
     else

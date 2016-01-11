@@ -61,11 +61,11 @@ class Coupon < ActiveRecord::Base
     order.subtotal * value/100
   end
 
-  def flat_rate(order)
+  def flat_rate(_order)
     value
   end
 
-  def percent_off_job(order, job)
+  def percent_off_job(_order, job)
     job.total_price * value/100
   end
 
@@ -75,6 +75,7 @@ class Coupon < ActiveRecord::Base
 
   protected
 
+  # unused, pretty sure
   def modify_method(order, method_name, &block)
     stack = order.instance_variable_get("@#{method_name}_mods")
     if stack.nil?

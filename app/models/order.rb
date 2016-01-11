@@ -155,6 +155,8 @@ class Order < ActiveRecord::Base
     self.payment_total ||= 0
   end
 
+  # subtotal will be changed when a line item price is changed and it calls recalculate_subtotal on the order.
+  before_save :recalculate_coupons, if: :subtotal_changed?
   after_save :enqueue_create_production_order, if: :ready_for_production?
 
   alias_method :comments, :all_comments
@@ -289,7 +291,7 @@ class Order < ActiveRecord::Base
   # Use method_missing to catch calls to recalculate_* (for subtotal, tax, etc)
   def respond_to?(method_name)
     if /^re(?<calc_method>calculate_\w+)!?$/ =~ method_name.to_s
-      super(calc_method)
+      super || super(calc_method)
     else
       super
     end
@@ -469,6 +471,26 @@ class Order < ActiveRecord::Base
 
   def total
     subtotal + tax + shipping_price - discount_total
+  end
+
+  def recalculate_coupons
+    new_instance_order = self
+    discounts.reload.coupon.each do |discount|
+      discount.define_singleton_method(:discountable) { new_instance_order }
+      discount.update_column :amount, discount.calculate_amount
+    end
+
+    jobs.reload.each do |job|
+      job.define_singleton_method(:jobbable) { new_instance_order }
+      new_instance_job = job
+
+      job.discounts.coupon.each do |discount|
+        discount.define_singleton_method(:discountable) { new_instance_job }
+        discount.update_column :amount, discount.calculate_amount
+      end
+    end
+
+    recalculate_discount_total
   end
 
   def name_and_numbers
