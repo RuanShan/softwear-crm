@@ -17,6 +17,8 @@ class ApplicationController < ActionController::Base
   before_action :assign_request_time
   before_action :set_title
 
+  helper_method :salesperson_or_customer
+
   # Quicker way to render to a string using the previous function
   def render_string(*args)
     s = nil
@@ -57,6 +59,10 @@ class ApplicationController < ActionController::Base
 
   def assign_current_url
     @current_url = request.original_url
+  end
+
+  def salesperson_or_customer
+    current_user or User.customer
   end
 
   def assign_current_action

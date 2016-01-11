@@ -106,7 +106,7 @@ module Customer
       @payment = Payment.new(
         order_id:       @order.id,
         store_id:       @order.store_id,
-        salesperson_id: User.customer.id,
+        salesperson_id: salesperson_or_customer.id,
         amount:         payment_amount.to_f / 100.0,
         payment_method: Payment::VALID_PAYMENT_METHODS.key('PayPal')
       )

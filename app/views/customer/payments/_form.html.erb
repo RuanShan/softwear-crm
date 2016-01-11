@@ -28,7 +28,7 @@
 <div class='col-xl-6'>
   <div id="horizontal-form" class="collapse in">
     <%= bootstrap_form_for [order, payment], url: customer_order_payments_path(order.customer_key), remote: true do |f| %>
-      <%= f.hidden_field :salesperson_id, value: User.customer.id %>
+      <%= f.hidden_field :salesperson_id, value: salesperson_or_customer.id %>
       <%= f.hidden_field :payment_method, value: Payment::VALID_PAYMENT_METHODS.key('Credit Card') %>
       <%= f.hidden_field :order_id, value: order.id %>
       <%= f.hidden_field :store_id, value: order.store_id %>
