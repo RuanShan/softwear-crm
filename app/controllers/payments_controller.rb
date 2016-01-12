@@ -46,6 +46,7 @@ class PaymentsController < InheritedResources::Base
           transaction_id:  @payment.cc_transaction
         )
         @scroll = true
+        @target = '#refund-form'
         params[:form] = 'refund'
 
         render 'discounts/new'

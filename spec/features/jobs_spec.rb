@@ -73,6 +73,7 @@ feature 'Jobs management', js: true, job_spec: true do
   end
 
   scenario 'a job can be created and deleted without refreshing the page' do
+    last_job = order.jobs.last
     visit edit_order_path(order, anchor: 'jobs')
     click_button 'New Job'
     sleep 1
@@ -80,14 +81,10 @@ feature 'Jobs management', js: true, job_spec: true do
     order.jobs.inspect
 
     all('a', text: 'Delete Job').last.click
-    sleep 0.5
-    # find('a', text: 'Confirm').click
+    wait_for_ajax
 
-    order.jobs.inspect
-
-    sleep 1
-    expect(page).to have_css("#job-#{order.jobs.second.id}", :visible => false)
-    expect(order.jobs.count).to eq 1
+    expect(page).to have_css("#job-#{last_job.id}", :visible => false)
+    expect(order.jobs.reload.count).to eq 1
   end
 
   scenario 'a job can be hidden and collapsed' do

@@ -145,8 +145,9 @@ feature 'Payments management', js: true, payment_spec: true, retry: 2 do
     expect(Payment.find(cc_payment.id).is_refunded?).to eq false
   end
 
-  scenario 'A salesperson can refund an entire payment', retry: 2, actual_payment: true do
+  scenario 'A salesperson can refund an entire payment', working_on: true, retry: 2, actual_payment: true do
     visit (edit_order_path order.id) + '#payments'
+    sleep 0.5
     find(:css, '.order_payment_refund_link').click
 
     sleep 3
@@ -408,7 +409,7 @@ feature 'Payments management', js: true, payment_spec: true, retry: 2 do
       expect(activity).to_not be_nil
     end
 
-    scenario 'refunding a payment', huh: true, retry: 2 do
+    scenario 'refunding a payment', retry: 2 do
       visit (edit_order_path order.id) + '#payments'
       sleep 0.5
       find(:css, '.order_payment_refund_link').click

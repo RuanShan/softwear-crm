@@ -12,7 +12,7 @@
 
     <div class="input-group">
       <span class="input-group-addon">$</span>
-      <%= f.text_field :amount %>
+      <%= f.text_field :amount, value: @discount.amount || @discount.discountable.try(:amount) %>
     </div>
   </div>
 

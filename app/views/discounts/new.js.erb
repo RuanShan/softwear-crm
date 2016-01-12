@@ -1,5 +1,5 @@
 var discountHtml = "<br/><%= j(render @form_partial || 'discounts/form').html_safe %>";
-var discountForm = "<%= @target %>";
+var discountForm = "<%= @target || '#discount-form' %>";
 
 var setContent = function() {
   $(discountForm).html(discountHtml);
