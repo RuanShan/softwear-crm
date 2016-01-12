@@ -48,6 +48,7 @@ class DiscountsController < InheritedResources::Base
   def new
     super do |format|
       raise "Invalid form" unless ACCEPTED_FORMS.include? params[:form]
+      @target = params[:form] == 'refund' ? '#refund-form' : '#discount-form'
       format.js
     end
   end

@@ -13,6 +13,6 @@
 
     <%= render "discounts/#{params[:form] || @discount.discount_type}", f: f, order: @order %>
 
-    <%= f.submit 'Apply Discount', class: 'btn btn-info' %>
+    <%= f.submit params[:form] == 'refund' ? 'Issue Refund' : 'Apply Discount', class: 'btn btn-info' %>
   </div>
 <% end %>

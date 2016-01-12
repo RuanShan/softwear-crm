@@ -14,20 +14,23 @@ feature 'Discounts management', js: true, discount_spec: true, story_859: true d
   given(:credit_2) { create(:in_store_credit) }
 
   context 'refunds' do
-    scenario 'A salesperson can add a "refund" discount', refund: true do
+    background do
+      order.jobs.first.line_items << create(:non_imprintable_line_item, unit_price: 100.00, quantity: 1, taxable: false)
+      create(:cash_payment, amount: 10, order: order)
+    end
+
+    scenario 'A salesperson cannot add a "refund" discount to an order payment', refund: true do
       visit edit_order_path order, anchor: 'payments'
       click_button 'Refund'
 
-      select 'This order', from: 'Apply to'
-      fill_in 'Amount', with: '12.50'
+      select payment.identifier, from: 'Payment'
+      fill_in 'Amount', with: '5.00'
       fill_in 'Reason', with: 'Because I can'
-      select 'Cash', from: 'Refund Method'
-      fill_in 'Transaction ID', with: '123123123'
 
-      click_button 'Apply Discount'
+      click_button 'Issue Refund'
 
       expect(page).to have_content 'was successfully created.'
-      expect(Discount.where(amount: 12.5, reason: 'Because I can', discount_method: 'Cash', transaction_id: '123123123')).to exist
+      expect(Discount.where(amount: 5, reason: 'Because I can', discount_method: 'RefundPayment')).to exist
     end
   end
 

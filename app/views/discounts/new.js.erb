@@ -1,12 +1,14 @@
-var discountHtml = "<br/><%= j(render 'discounts/form').html_safe %>";
+var discountHtml = "<br/><%= j(render @form_partial || 'discounts/form').html_safe %>";
+var discountForm = "<%= @target %>";
 
 var setContent = function() {
-  $('#discount-form').html(discountHtml);
-  $('#discount-form').data('current', "<%=j params[:form] %>");
-  setTimeout(function() { $('#discount-form').collapse('show'); }, 100);
-  $('#discount-form').off('hidden.bs.collapse', setContent);
+  $(discountForm).html(discountHtml);
+  $(discountForm).data('current', "<%=j params[:form] %>");
+  setTimeout(function() { $(discountForm).collapse('show'); }, 100);
+  $(discountForm).off('hidden.bs.collapse', setContent);
+  initializeDateTimePicker();
 
-  <% # Special logic for refund form (select different discountable types) %>
+  <% # I think most of this stuff is not used anymore %>
   <% if params[:form] == 'refund' %>
     var paymentSelect = $('.refund-payment-select');
     var jobSelect     = $('.refund-job-select');
@@ -60,19 +62,19 @@ var setContent = function() {
   <% end %>
 }
 
-if ($('#discount-form').data('current') != null) {
-  if ($('#discount-form').data('current') == "<%=j params[:form] %>") {
+if ($(discountForm).data('current') != null) {
+  if ($(discountForm).data('current') == "<%=j params[:form] %>") {
     <% if @scroll %>
-      $('#discount-form').on('hidden.bs.collapse', setContent);
+      $(discountForm).on('hidden.bs.collapse', setContent);
     <% else %>
-      $('#discount-form').data('current', null);
+      $(discountForm).data('current', null);
     <% end %>
 
-    $('#discount-form').collapse('hide');
+    $(discountForm).collapse('hide');
   }
   else {
-    $('#discount-form').on('hidden.bs.collapse', setContent);
-    $('#discount-form').collapse('hide');
+    $(discountForm).on('hidden.bs.collapse', setContent);
+    $(discountForm).collapse('hide');
   }
 }
 else {
@@ -81,21 +83,7 @@ else {
 
 <% if @scroll %>
   var doScroll = function() {
-    $('.scroll-y').scrollTo(
-      '#discount-form',
-      {
-        duration: 1000,
-        offsetTop: 85
-      },
-
-      function() {
-        <% if @payment %>
-          $('#discount_amount').val(<%= @payment.amount %>);
-        <% end %>
-        $('#discount_amount').focus();
-        shine('#discount_amount', true, 1000, '#FFFF00');
-      }
-    );
+    $('.scroll-y').scrollTo(discountForm);
   }
   setTimeout(doScroll, 100);
 <% end %>

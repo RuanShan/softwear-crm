@@ -1,8 +1,10 @@
 disableFor('.js-new-job', 1000);
+$('#refund-form').collapse('hide');
 
 <% if @job.valid? %>
+  $('a[href="#jobs"]').click();
 
-  var $newJob = $("<%= j(render partial: 'job', locals: { job: @job }).html_safe %>");
+  var $newJob = $("<%= j(render partial: 'jobs/job', locals: { job: @job }).html_safe %>");
 
   $('#jobs').children().last().before($newJob);
 

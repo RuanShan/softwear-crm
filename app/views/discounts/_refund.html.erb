@@ -1,29 +1,8 @@
 <div class='form-group'>
   <%= f.hidden_field :applicator_type, value: 'Refund' %>
-
-  <div class="form-group">
-    <%= f.label :discount_method, 'Refund Method' %>
-    <%= f.select :discount_method, options_for_select(Discount::PAYMENT_METHODS, @discount.discount_method || 'RefundPayment'), {} %>
-  </div>
-
-  <div class="form-group refund-discountable-type">
-    <%= f.label :discountable_type, 'Apply to' %>
-    <%= f.select :discountable_type,
-      options_for_select(
-        [['This order', 'Order'], ['A job', 'Job'], ['A payment', 'Payment']],
-        @discount.discountable_type
-      ),
-      include_blank: true
-    %>
-  </div>
-
-  <%= f.hidden_field :discountable_id, value: @order.id, disabled: f.object.discountable_type != 'Order', id: 'discountable-order-id' %>
-
-  <div class="form-group refund-job-select" style="display: none;">
-    <%= f.label :discountable_id, 'Job' %>
-    <%= f.select :discountable_id, options_from_collection_for_select(@order.jobs, :id, :name), disabled: f.object.discountable_type != 'Job' %>
-  </div>
-  <div class="form-group refund-payment-select" style="display: none;">
+  <%= f.hidden_field :discount_method, value: 'RefundPayment' %>
+  <%= f.hidden_field :discountable_type, value: 'Payment' %>
+  <div class="form-group refund-payment-select">
     <%= f.label :discountable_id, 'Payment' %>
     <%= f.select :discountable_id, options_with_data_attr(@order.payments, :id, :identifier, f.object.discountable_id, { transaction: :transaction_id }), disabled: f.object.discountable_type != 'Payment' %>
   </div>
