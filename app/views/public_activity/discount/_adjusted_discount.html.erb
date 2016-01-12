@@ -1,0 +1,14 @@
+<% p = activity.parameters.with_indifferent_access %>
+
+<p>
+<% if info = p[:info] %>
+  Changed <%= info[:type].titleize %> #<%= activity.trackable_id %> from <%= number_to_currency(info[:before_amount]) %>
+  to <%= number_to_currency(info[:after_amount]) %>, bringing the order &quot;<%= info[:order_name] %>&quot; of total
+  <%= number_to_currency(info[:order_total]) %> balance from <%= number_to_currency(info[:order_balance_before]) %>
+  to <%= number_to_currency(info[:order_balance_after]) %>.
+
+<% else %>
+
+  Changed some <%= activity.trackable.try(:discount_type) || 'type of discount' %>
+<% end %>
+</p>

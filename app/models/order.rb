@@ -354,12 +354,16 @@ class Order < ActiveRecord::Base
   end
 
   def balance
-    balance_excluding([])
+    balance_excluding([], [])
   end
 
-  def balance_excluding(exclude)
-    balance = total - payment_total_excluding(exclude)
+  def balance_excluding(exclude_payments = [], exclude_discounts = [])
+    balance = total_excluding_discounts(exclude_discounts) - payment_total_excluding(exclude_payments)
     balance.round(2)
+  end
+
+  def balance_excluding_discounts(exclude = [])
+    balance_excluding([], exclude)
   end
 
   def get_salesperson_id(id, current_user)
@@ -444,20 +448,27 @@ class Order < ActiveRecord::Base
     User.find(salesperson_id).full_name
   end
 
-  def calculate_discount_total
-    all_discounts(:reload).map { |d| d.amount.to_f }.reduce(0, :+)
+  def discount_total(exclude = [])
+    exclude.empty? ? super() : calculate_discount_total(exclude)
+  end
+
+  def calculate_discount_total(exclude = [])
+    all_discounts(:reload)
+      .reject { |d| exclude.include?(d) || exclude.include?(d.try(:id)) }
+      .map { |d| d.amount.to_f }.reduce(0, :+)
   end
 
   def calculate_subtotal
     line_items.reload.map { |li| li.total_price.to_f }.reduce(0, :+)
   end
 
-  def tax
+  def tax(exclude_discounts = [])
     return 0 if tax_exempt?
     return 0 if discount_total >= taxable_total
 
-    (taxable_total - discount_total) * tax_rate
+    (taxable_total - discount_total(exclude_discounts)) * tax_rate
   end
+  alias_method :tax_excluding_discounts, :tax
 
   def calculate_taxable_total
     return 0 if tax_exempt?
@@ -468,9 +479,15 @@ class Order < ActiveRecord::Base
     0.06
   end
 
-  def total
-    subtotal + tax + shipping_price - discount_total
+  def total(exclude_discounts = [])
+    t = subtotal + tax_excluding_discounts(exclude_discounts) + shipping_price
+    if exclude_discounts == :all
+      return t
+    else
+      t - discount_total(exclude_discounts)
+    end
   end
+  alias_method :total_excluding_discounts, :total
 
   def recalculate_coupons
     new_instance_order = self

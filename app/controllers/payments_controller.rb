@@ -21,9 +21,7 @@ class PaymentsController < InheritedResources::Base
 
   def update
     super do |format|
-      if @payment.valid?
-        fire_refund_activity(@payment) if @payment.refunded?
-      else
+      unless @payment.valid?
         flash[:error] = @payment.errors.full_messages.join(', ')
       end
 

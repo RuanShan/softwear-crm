@@ -2,7 +2,7 @@
 
 <p>
 <% if info = p[:info] %>
-  Applied payment #<%= activity.trackable_id %> of <%= number_to_currency(info[:amount].to_f) %>
+  Applied payment #<%= activity.trackable_id %> of <%= number_to_currency(info[:amount]) %>
   to the order &quot;<%= info[:order_name] %>&quot; that has a total
   of <%= number_to_currency(info[:order_total]) %>, bringing the balance from
   <%= number_to_currency(info[:order_balance_before]) %> to <%= number_to_currency(info[:order_balance_after]) %>.

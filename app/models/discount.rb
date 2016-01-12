@@ -1,4 +1,6 @@
 class Discount < ActiveRecord::Base
+  include PublicActivity::Common
+
   PAYMENT_METHODS = %w(PayPal Cash CreditCard Check RefundPayment)
 
   belongs_to :discountable, polymorphic: true

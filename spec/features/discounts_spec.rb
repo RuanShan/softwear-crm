@@ -47,6 +47,28 @@ feature 'Discounts management', js: true, discount_spec: true, story_859: true d
       expect(page).to have_content 'was successfully created.'
       expect(Discount.where(amount: 12.5, reason: 'Because I can')).to exist
     end
+
+    scenario 'Adding a "discount" discount is tracked', public_activity: true do
+      PublicActivity.with_tracking do
+        visit edit_order_path order, anchor: 'payments'
+        click_button 'Discount'
+
+        fill_in 'Amount', with: '12.50'
+        fill_in 'Reason', with: 'Because I can'
+
+        click_button 'Apply Discount'
+
+        expect(page).to have_content 'was successfully created.'
+
+        visit edit_order_path order
+        find('a[href="#timeline"]').click
+
+        expect(page).to have_content 'Applied discount'
+        expect(page).to have_content 'of $12.50 to the order "'
+        expect(page).to have_content 'bringing the total from $0.00 to -$12.50'
+        expect(page).to have_content 'Reason: "Because I can"'
+      end
+    end
   end
 
   context 'coupons' do
@@ -81,6 +103,27 @@ feature 'Discounts management', js: true, discount_spec: true, story_859: true d
 
       expect(order.reload.balance).to eq 25
       expect(page).to have_content "25.0 Balance"
+    end
+
+    scenario 'Removing a coupon is tracked', public_activity: true, remove: true do
+      PublicActivity.with_tracking do
+        order.tax_exempt = true
+        order.jobs.first.line_items << create(:non_imprintable_line_item, unit_price: 100.00, quantity: 1, taxable: false)
+        order.save!
+        expect(order.reload.balance).to eq 100
+        create(:discount, applicator: fifty_percent_off_order, discountable: order)
+        expect(order.reload.balance).to eq 50
+
+        visit edit_order_path order, anchor: 'payments'
+
+        click_link 'Remove'
+
+        visit edit_order_path order
+        find('a[href="#timeline"]').click
+
+        expect(page).to have_content "Removed coupon of $50.00"
+        expect(page).to have_content "bringing its balance from $50.00 to $100.00"
+      end
     end
 
     scenario 'A salesperson sees an error when entering a bad coupon code' do

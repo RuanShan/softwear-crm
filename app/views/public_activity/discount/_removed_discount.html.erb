@@ -1,0 +1,23 @@
+<% p = activity.parameters.with_indifferent_access %>
+
+<p>
+<% if info = p[:info] %>
+  Removed <%= info[:type] %> of <%= number_to_currency(info[:amount]) %> and reason &quot;<%= info[:reason] %>&quot; from
+  order <%= info[:order_name] %>, bringing its balance from <%= number_to_currency(info[:order_balance_before]) %>
+  to <%= number_to_currency(info[:order_balance_after]) %>
+
+<% else %>
+
+  <% if activity.trackable %>
+    Removed <%= activity.trackable.try(:discount_type) || 'some type of discount' %> of <%= activity.trackable.try(:amount) %>
+  <% else %>
+    Applied some discount
+  <% end %>
+  <% if activity.recipient && activity.recipient != activity.trackable %>
+    to
+    <%= activity.recipient_type.underscore.humanize.downcase %>
+    <%= link_to activity.recipient.name, activity.recipient if activity.recipient %>
+  <% end %>
+
+<% end %>
+</p>
