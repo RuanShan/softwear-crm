@@ -1,20 +1,28 @@
+<% p = activity.parameters.with_indifferent_access %>
+
 <p>
-<% if activity.trackable_type %>
-  Applied payment of <%= activity.trackable.amount %>
+<% if info = p[:info] %>
+  Applied payment #<%= activity.trackable_id %> of <%= number_to_currency(info[:amount].to_f) %>
+  to the order &quot;<%= info[:order_name] %>&quot; that has a total
+  of <%= number_to_currency(info[:order_total]) %>, bringing the balance from
+  <%= number_to_currency(info[:order_balance_before]) %> to <%= number_to_currency(info[:order_balance_after]) %>.
+
 <% else %>
-  Applied a payment of some sort
-<% end %>
-<% if activity.recipient && activity.recipient != activity.trackable %>
-  to
-  <%= activity.recipient_type.underscore.humanize.downcase %>
-  <%= link_to activity.recipient.name, activity.recipient %>
+
+  <% if activity.trackable_type %>
+    Applied payment of <%= activity.trackable.amount %>
+  <% else %>
+    Applied a payment of some sort
+  <% end %>
+  <% if activity.recipient && activity.recipient != activity.trackable %>
+    to
+    <%= activity.recipient_type.underscore.humanize.downcase %>
+    <%= link_to activity.recipient.name, activity.recipient %>
+  <% end %>
+
 <% end %>
 </p>
 
 <p>
-<% if (p = activity.parameters) && p['transaction'] %>
-  <%= p['transaction'] %>
-<% else %>
-    No transaction information
-<% end %>
+  <%= p[:transaction] || "No transaction information recorded." %>
 </p>

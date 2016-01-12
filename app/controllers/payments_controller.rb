@@ -1,4 +1,6 @@
 class PaymentsController < InheritedResources::Base
+  include Activity
+
   before_filter :initialize_order, only: [:index, :new, :create]
 
   def create
@@ -73,29 +75,6 @@ class PaymentsController < InheritedResources::Base
   end
 
   private
-
-  def fire_applied_activity(payment)
-    parameters = {}
-
-    if payment.credit_card?
-      if payment.cc_transaction.blank?
-        parameters['transaction'] = "No actual transaction made"
-      elsif payment.cc_transaction == 'ERROR'
-        parameters['transaction'] = "Transaction error"
-      else
-        parameters['transaction'] = "Payflow transaction PNRef: #{payment.cc_transaction}"
-      end
-    end
-
-    payment.create_activity(
-      :applied_payment,
-
-      owner:     current_user,
-      recipient: payment.order,
-
-      parameters: parameters
-    )
-  end
 
   def initialize_order
     @order = Order.find(params[:order_id])

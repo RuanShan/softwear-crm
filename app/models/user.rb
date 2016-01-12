@@ -36,7 +36,9 @@ class User < ActiveRecord::Base
     User.create(
       email: CUSTOMER_EMAIL,
       first_name: 'Ann Arbor Tees',
-      last_name: 'Customer'
+      last_name: 'Customer',
+      password: "Aa7cCust0m4rP455",
+      password_confirmation: "Aa7cCust0m4rP455"
     )
   end
 

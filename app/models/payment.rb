@@ -112,6 +112,10 @@ class Payment < ActiveRecord::Base
     VALID_PAYMENT_METHODS[payment_method] == 'PayPal'
   end
 
+  def cash?
+    VALID_PAYMENT_METHODS[payment_method] == 'Cash'
+  end
+
   def identifier
     "##{id} #{created_at.strftime('%m/%d/%Y')} #{number_to_currency(amount)}"
   end

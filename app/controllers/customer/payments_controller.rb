@@ -1,5 +1,7 @@
 module Customer
   class PaymentsController < BaseController
+    include ::PaymentsController::Activity
+
     belongs_to :order, finder: :find_by_customer_key
     defaults route_prefix: 'customer'
     respond_to :js
@@ -12,7 +14,10 @@ module Customer
       super do |success, failure|
         success.js do
           @order = @payment.order.reload
+
+          fire_applied_activity(@payment)
           email_receipt_to_customer(@payment)
+
           render 'success'
         end
         failure.js { render 'failure' }
@@ -113,6 +118,7 @@ module Customer
 
       if response.success? && (@payment.pp_transaction_id = response.authorization) && @payment.save
         @order = @payment.order.reload
+        fire_applied_activity(@payment)
         email_receipt_to_customer(@payment)
         flash[:success] = "Your payment has been processed. Thanks!"
       else
