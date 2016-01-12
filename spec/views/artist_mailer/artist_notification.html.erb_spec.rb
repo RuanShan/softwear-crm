@@ -2,9 +2,9 @@ require 'spec_helper'
 
 describe 'artist_mailer/artist_notification.html.erb', artist_mailer_spec: true do
   let!(:salesperson) { create(:user) }
-  let!(:order) { create :order, jobs: [create(:job)] }
+  let!(:order) { create :order_with_job }
   let!(:artwork_request) { create(:valid_artwork_request,
-                                        imprints: [create(:valid_imprint, job: order.jobs.first)],
+                                        imprints: [build(:valid_imprint, job: order.jobs.first)],
                                         deadline: DateTime.now) }
   let!(:action_name) { 'update' }
 
