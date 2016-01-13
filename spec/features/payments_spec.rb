@@ -6,14 +6,11 @@ feature 'Payments management', js: true, payment_spec: true, retry: 2 do
   given!(:valid_user) { create(:alternate_user) }
   background(:each) { login_as(valid_user) }
 
-  given!(:order) { create(:order) }
+  given!(:order) { create(:order_with_job) }
+  given!(:line_item) { create(:non_imprintable_line_item, unit_price: 1000, line_itemable: order.jobs.first) }
   given!(:payment) { create(:valid_payment, order_id: order.id) }
   given(:cc_payment) { create(:credit_card_payment, amount: 10, order_id: order.id) }
   given(:pp_payment) { create(:paypal_payment, amount: 10, order_id: order.id) }
-
-  background do
-    allow_any_instance_of(Order).to receive(:total).and_return 1000
-  end
 
   # No ci because interacting with the dashboard appears to not work there.
   scenario 'A salesperson can visit the payments tab from root', no_ci: true do

@@ -449,6 +449,7 @@ class Order < ActiveRecord::Base
   end
 
   def discount_total(exclude = [])
+    return 0 if exclude == :all
     exclude.empty? ? super() : calculate_discount_total(exclude)
   end
 
