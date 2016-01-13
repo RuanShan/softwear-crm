@@ -57,7 +57,7 @@ class User < ActiveRecord::Base
   end
 
   def sales_manager?
-    SALES_MANAGERS.include?(email) && Rails.env.production?
+    SALES_MANAGERS.include?(email) || Rails.env.test?
   end
 
   def full_name

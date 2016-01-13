@@ -1,4 +1,5 @@
 class SalesReportsController < ApplicationController
+  before_filter :sales_manager_only
   before_filter :initialize_reports
   
   def index

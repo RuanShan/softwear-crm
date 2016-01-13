@@ -28,6 +28,12 @@ class ApplicationController < ActionController::Base
 
   protected
 
+  def sales_manager_only
+    if current_user.nil? || !current_user.sales_manager?
+      redirect_to not_allowed_path
+    end
+  end
+
   def sanitize_filename(filename)
     filename.gsub(/[^0-9A-z.\-]/, '_')
   end

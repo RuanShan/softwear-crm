@@ -1,4 +1,5 @@
 class CouponsController < InheritedResources::Base
+  before_filter :sales_manager_only, only: [:create, :update, :destroy, :edit]
   before_action :set_current_action
   before_action :format_dates, only: [:create, :update]
 

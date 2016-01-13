@@ -1,4 +1,5 @@
 class SettingsController < InheritedResources::Base
+  before_filter :sales_manager_only
   before_action :set_current_action
 
   def edit

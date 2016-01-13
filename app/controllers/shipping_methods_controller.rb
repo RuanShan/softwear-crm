@@ -1,4 +1,5 @@
 class ShippingMethodsController < InheritedResources::Base
+  before_filter :sales_manager_only, only: [:create, :update, :destroy, :edit]
   before_action :set_current_action
 
   def show

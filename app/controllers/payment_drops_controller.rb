@@ -1,4 +1,5 @@
 class PaymentDropsController < InheritedResources::Base
+  before_filter :sales_manager_only
   before_action :populate_salesperson_id, only: :create
   before_action :set_current_action
   before_action :populate_undropped_payments

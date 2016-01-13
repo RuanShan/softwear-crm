@@ -1,4 +1,6 @@
 class LineItemTemplatesController < InheritedResources::Base
+  before_filter :sales_manager_only, only: [:create, :update, :destroy, :edit]
+
   def index
     if (query = params[:q])
       @line_item_templates = LineItemTemplate.search do
