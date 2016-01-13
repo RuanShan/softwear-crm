@@ -75,6 +75,7 @@
       <% end %>
     <% end %>
 
+    <% if current_user.sales_manager? %>
       <%= content_tag :li, class: ('active' if current_url.include?('reports')) do %>
         <a href="#fakelink"><i class="fa fa-bar-chart-o"></i><i class="fa fa-angle-double-down i-right"></i>Reports</a>
 
@@ -86,6 +87,7 @@
 
         <% end %>
       <% end %>
+    <% end %>
 
     <%= content_tag :li, class: ('active' if current_url.include?('artwork')) do %>
       <a href="#fakelink"><i class="fa fa-picture-o"></i><i class="fa fa-angle-double-down i-right"></i>Artwork </a>
@@ -111,55 +113,61 @@
 
       <%= content_tag :ul, class: ('visible' if current_url.include?('users')) do %>
 
-         <%= content_tag :li, class:('active' if current_action == 'users') do %>
-            <%= link_to users_path do %><i class="fa fa-angle-right"></i> Users<% end %>
-         <% end %>
+        <%= content_tag :li, class:('active' if current_action == 'users') do %>
+           <%= link_to users_path do %><i class="fa fa-angle-right"></i> Users<% end %>
+        <% end %>
 
-         <%= content_tag :li, class:('active' if current_action == 'coupons') do %>
-            <%= link_to coupons_path do %><i class="fa fa-angle-right"></i> Coupons<% end %>
-         <% end %>
-
-         <%= content_tag :li, class:('active' if current_action == 'in_store_credits') do %>
-            <%= link_to in_store_credits_path do %><i class="fa fa-angle-right"></i> In-Store Credit<% end %>
-         <% end %>
+        <% if current_user.sales_manager? %>
+          <%= content_tag :li, class:('active' if current_action == 'coupons') do %>
+             <%= link_to coupons_path do %><i class="fa fa-angle-right"></i> Coupons<% end %>
+          <% end %>
+        <% end %>
 
         <%= content_tag :li, class:('active' if current_action == 'in_store_credits') do %>
+           <%= link_to in_store_credits_path do %><i class="fa fa-angle-right"></i> In-Store Credit<% end %>
+        <% end %>
+
+        <% if current_user.sales_manager? %>
+          <%= content_tag :li, class:('active' if current_action == 'in_store_credits') do %>
             <%= link_to payment_drops_path do %><i class="fa fa-dollar"></i> Payment Drops<% end %>
+          <% end %>
         <% end %>
       <% end %>
     <% end %>
 
-    <%= content_tag :li, class: ('active' if current_url.include?('configuration')) do %>
-      <a href="#fakelink"><i class="fa fa-gears"></i><i class="fa fa-angle-double-down i-right"></i> Configuration</a>
+    <% if current_user.sales_manager? %>
+      <%= content_tag :li, class: ('active' if current_url.include?('configuration')) do %>
+        <a href="#fakelink"><i class="fa fa-gears"></i><i class="fa fa-angle-double-down i-right"></i> Configuration</a>
 
-      <%= content_tag :ul, class: ('visible' if current_url.include?('configuration')) do %>
+        <%= content_tag :ul, class: ('visible' if current_url.include?('configuration')) do %>
 
-        <%= content_tag :li, class: ('active' if current_url.include?('imprint_methods')) do %>
-          <%= link_to imprint_methods_path do %><i class="fa fa-angle-right"></i> Imprint Methods <% end %>
-        <% end %>
+          <%= content_tag :li, class: ('active' if current_url.include?('imprint_methods')) do %>
+            <%= link_to imprint_methods_path do %><i class="fa fa-angle-right"></i> Imprint Methods <% end %>
+          <% end %>
 
-        <%= content_tag :li, class: ('active' if current_url.include?('shipping_methods')) do %>
-          <%= link_to shipping_methods_path do %><i class="fa fa-angle-right"></i> Shipping Methods<% end %>
-        <% end %>
+          <%= content_tag :li, class: ('active' if current_url.include?('shipping_methods')) do %>
+            <%= link_to shipping_methods_path do %><i class="fa fa-angle-right"></i> Shipping Methods<% end %>
+          <% end %>
 
-        <%= content_tag :li, class: ('active' if current_url.include?('stores')) do %>
-          <%= link_to stores_path do %><i class="fa fa-angle-right"></i> Stores <% end %>
-        <% end %>
+          <%= content_tag :li, class: ('active' if current_url.include?('stores')) do %>
+            <%= link_to stores_path do %><i class="fa fa-angle-right"></i> Stores <% end %>
+          <% end %>
 
-        <%= content_tag :li, class: ('active' if current_action == 'settings') do %>
-          <%= link_to integrated_crms_path do %><i class="fa fa-angle-right"></i> Integrated CRMs <% end %>
-        <% end %>
+          <%= content_tag :li, class: ('active' if current_action == 'settings') do %>
+            <%= link_to integrated_crms_path do %><i class="fa fa-angle-right"></i> Integrated CRMs <% end %>
+          <% end %>
 
-        <%= content_tag :li, class: ('active' if current_action == 'email_templates') do %>
-          <%= link_to email_templates_path do %><i class="fa fa-angle-right"></i> Email Templates <% end %>
-        <% end %>
+          <%= content_tag :li, class: ('active' if current_action == 'email_templates') do %>
+            <%= link_to email_templates_path do %><i class="fa fa-angle-right"></i> Email Templates <% end %>
+          <% end %>
 
-        <%= content_tag :li, class: ('active' if current_action == 'line_item_templates') do %>
-          <%= link_to line_item_templates_path do %><i class="fa fa-angle-right"></i> Line Item Templates <% end %>
-        <% end %>
+          <%= content_tag :li, class: ('active' if current_action == 'line_item_templates') do %>
+            <%= link_to line_item_templates_path do %><i class="fa fa-angle-right"></i> Line Item Templates <% end %>
+          <% end %>
 
-        <%= content_tag :li, class: ('active' if current_action == 'platen_hoops') do %>
-          <%= link_to platen_hoops_path do %><i class="fa fa-angle-right"></i> Platens/Hoops <% end %>
+          <%= content_tag :li, class: ('active' if current_action == 'platen_hoops') do %>
+            <%= link_to platen_hoops_path do %><i class="fa fa-angle-right"></i> Platens/Hoops <% end %>
+          <% end %>
         <% end %>
       <% end %>
     <% end %>
