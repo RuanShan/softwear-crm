@@ -157,6 +157,8 @@ CrmSoftwearcrmCom::Application.routes.draw do
     end
   end
 
+  resources :fba_job_templates
+
   post   'line_items', to: 'line_items#create'
   get    'line_item/select_options', to: 'line_items#select_options'
   put    'line_items/update', to: 'line_items#update'

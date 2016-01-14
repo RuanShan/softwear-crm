@@ -82,6 +82,10 @@ module ApplicationHelper
     comment.role == 'public' ? 'info' : 'danger'
   end
 
+  def fa(icon)
+    content_tag(:i, '', class: "fa fa-#{icon}").html_safe
+  end
+
   def sortable_th(text, sort_by)
     arrow = {}
     data  = {}

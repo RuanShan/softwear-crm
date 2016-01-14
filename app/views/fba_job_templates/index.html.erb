@@ -1,0 +1,53 @@
+<div class="page-heading animated fadeInDownBig col-lg-9">
+  <h1>FBA Job Templates</h1>
+</div>
+<div class="col-lg-2"></div>
+<div class="col-lg-1">
+  <%= link_to '+', new_fba_job_template_path, class: 'btn btn-success' %>
+</div>
+
+<%= search_form_for FbaJobTemplate, class: 'form-horizontal' do |s| %>
+  <div class='form-group'>
+    <%= s.fulltext placeholder: 'Search Terms', class: 'form-control' %>
+  </div>
+  <div class='col-sm-3'></div>
+  <div class="col-sm-6">
+    <%= s.submit class: 'btn-lg btn-block margin-top-10' %>
+  </div>
+  <div class='col-sm-3'></div>
+<% end %>
+<div class='clearfix'></div>
+
+<%= paginate @fba_job_templates %>
+
+<div class='box-info full clear'>
+  <div class='table-responsive'>
+    <table class='table table-hover table-striped'>
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Name</th>
+          <th>Imprints</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+
+      <tbody>
+        <% @fba_job_templates.each do |fba_job_template| %>
+          <tr>
+            <td><%= fba_job_template.id %></td>
+            <td><%= fba_job_template.name %></td>
+            <td><%= fba_job_template.imprints.size %></td>
+            <td>
+              <div class='btn-group btn-group-xs'>
+                <%= link_to fa(:edit), edit_fba_job_template_path(fba_job_template), class: 'btn btn-sm btn-warning' %>
+              </div>
+            </td>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<%= paginate @fba_job_templates %>

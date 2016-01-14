@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160114155931) do
+ActiveRecord::Schema.define(version: 20160114190639) do
 
   create_table "activities", force: :cascade do |t|
     t.integer  "trackable_id",   limit: 4
@@ -227,6 +227,22 @@ ActiveRecord::Schema.define(version: 20160114155931) do
     t.string   "bcc",            limit: 191
     t.text     "plaintext_body", limit: 16777215
     t.boolean  "freshdesk"
+  end
+
+  create_table "fba_job_template_imprints", force: :cascade do |t|
+    t.integer  "fba_job_template_id", limit: 4
+    t.integer  "imprint_id",          limit: 4
+    t.datetime "created_at",                    null: false
+    t.datetime "updated_at",                    null: false
+  end
+
+  add_index "fba_job_template_imprints", ["fba_job_template_id"], name: "index_fba_job_template_imprints_on_fba_job_template_id", using: :btree
+  add_index "fba_job_template_imprints", ["imprint_id"], name: "index_fba_job_template_imprints_on_imprint_id", using: :btree
+
+  create_table "fba_job_templates", force: :cascade do |t|
+    t.string   "name",       limit: 191
+    t.datetime "created_at",             null: false
+    t.datetime "updated_at",             null: false
   end
 
   create_table "freshdesk_local_contacts", force: :cascade do |t|
@@ -925,4 +941,6 @@ ActiveRecord::Schema.define(version: 20160114155931) do
     t.datetime "updated_at"
   end
 
+  add_foreign_key "fba_job_template_imprints", "fba_job_templates"
+  add_foreign_key "fba_job_template_imprints", "imprints"
 end
