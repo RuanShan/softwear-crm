@@ -1,5 +1,34 @@
 <h1>Walk-in Retail Payment</h1>
 
+<div class=''>
+  <h2>Recent retail payments</h2>
+  <table class='table table-striped'>
+    <thead>
+      <tr>
+        <th>Date Created</th>
+        <th>Salesperson</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% if @recent_retail_payments.empty? %>
+
+      <% else %>
+        <% @recent_retail_payments.limit(3).each do |payment| %>
+          <tr>
+            <td><%= payment.created_at.strftime('%m/%d/%Y') %></td>
+            <td><%= payment.salesperson.full_name %></td>
+            <td><%= payment.retail_description %></td>
+          </tr>
+        <% end %>
+        <% if @recent_retail_payments.size > 3 %>
+          <tr><td>...</td></tr>
+        <% end %>
+      <% end %>
+    </tbody>
+  </table>
+</div>
+
 <%= render 'shared/modal_errors', object: @payment %>
 
 <%= button_to new_payment_path + '?payment_method=1',

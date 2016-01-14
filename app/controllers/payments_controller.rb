@@ -64,6 +64,7 @@ class PaymentsController < InheritedResources::Base
   def new
     super do |format|
       @payment = Payment.new(payment_method: params[:payment_method])
+      @recent_retail_payments = Payment.retail.order(id: :desc) if @order.nil?
 
       format.js
       format.html { render 'new_retail' if @order.nil? }

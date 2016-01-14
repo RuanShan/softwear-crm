@@ -13,7 +13,7 @@
       <div id="data_supply" data-total="<%= @order.total %>" aria-hidden="true"></div>
     <% else %>
       <div class='form-group'>
-        <%= f.text_area :retail_description, value: @payment.retail_description || Time.now.strftime("Retail payment on %m/%d/%Y, %I:%M%p"), label: "Description" %>
+        <%= f.text_area :retail_description, value: @payment.retail_description || Time.now.strftime("Retail #{english_payment_method} payment on %m/%d/%Y, %I:%M%p"), label: "Description" %>
       </div>
     <% end %>
 
