@@ -18,14 +18,6 @@
           <%= link_to new_order_path do %><i class="fa fa-angle-right"></i> New<% end %>
         <% end %>
 
-        <%= content_tag :li, class: ('active' if current_action == 'orders#fba') do %>
-          <%= link_to fba_orders_path do %><i class="fa fa-angle-right"></i> FBA<% end %>
-        <% end %>
-
-        <%= content_tag :li, class: ('active' if current_action == 'orders#new_fba') do %>
-          <%= link_to new_fba_orders_path do %><i class="fa fa-angle-right"></i> New (FBA)<% end %>
-        <% end %>
-
       <% end %>
     <% end %>
 
@@ -45,6 +37,22 @@
         <%= content_tag :li, class: ('active' if current_action == 'quote_requests') do %>
           <%= link_to quote_requests_path, id: 'quote_requests_link' do %><i class="fa fa-angle-right"></i> Quote Requests<% end %>
         <% end %>
+      <% end %>
+    <% end %>
+
+    <%= content_tag :li, class: ('active' if current_url.include?('fba')) do %>
+      <a href="#fakelink"><i class="fa fa-amazon"></i><i class="fa fa-angle-double-down i-right"></i> FBA Orders</a>
+
+      <%= content_tag :ul, class: ('visible' if current_url.include?('fba')) do %>
+
+        <%= content_tag :li, class: ('active' if current_action == 'orders#fba') do %>
+          <%= link_to fba_orders_path do %><i class="fa fa-angle-right"></i> List FBA Orders<% end %>
+        <% end %>
+
+        <%= content_tag :li, class: ('active' if current_action == 'orders#new_fba') do %>
+          <%= link_to new_fba_orders_path do %><i class="fa fa-angle-right"></i> New FBA Order<% end %>
+        <% end %>
+
       <% end %>
     <% end %>
 

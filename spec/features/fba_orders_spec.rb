@@ -12,8 +12,8 @@ feature 'FBA Order management', fba_spec: true, story_103: true, js: true, retry
     scenario 'user can view an index of FBA orders from the sidebar' do
       visit root_path
       unhide_dashboard
-      click_link 'Orders'
-      click_link 'FBA'
+      click_link 'FBA Orders'
+      click_link 'List FBA Orders'
     end
   end
 
