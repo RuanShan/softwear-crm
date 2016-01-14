@@ -20,16 +20,24 @@ module PaymentsController::Activity
       parameters['transaction'] = "Transaction made in cash."
     end
 
-    payment.order.reload
 
-    parameters['info'] = {
-      amount:      payment.amount,
-      order_name:  payment.order.name,
-      order_total: payment.order.total,
-      order_balance_before: payment.order.balance_excluding(payment.id),
-      order_balance_after:  payment.order.balance
-    }
-      .stringify_keys
+    if payment.order
+      payment.order.reload
+      parameters['info'] = {
+        amount:      payment.amount,
+        order_name:  payment.order.name,
+        order_total: payment.order.total,
+        order_balance_before: payment.order.balance_excluding(payment.id),
+        order_balance_after:  payment.order.balance
+      }
+        .stringify_keys
+    else
+      parameters['retail'] = {
+        description: payment.retail_description,
+        amount: payment.amount
+      }
+        .stringify_keys
+    end
 
     payment.create_activity(
       :applied_payment,

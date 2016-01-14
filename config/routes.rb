@@ -107,7 +107,7 @@ CrmSoftwearcrmCom::Application.routes.draw do
     resources :payment_drops
   end
 
-  resources :shipments
+  resources :payments, :shipments
   get 'payments/undropped', to: 'payments#undropped'
 
   resources :orders do

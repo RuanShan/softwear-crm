@@ -1,0 +1,61 @@
+<h1>Walk-in Retail Payment</h1>
+
+<%= render 'shared/modal_errors', object: @payment %>
+
+<%= button_to new_payment_path + '?payment_method=1',
+              { class: 'additional-icon btn btn-default payment-button',
+                method: :get, remote: true, 'data-target' => '#payment-form',
+                id: 'cash-button' } do %>
+  <i class="fa fa-money"></i> Cash
+<% end %>
+
+<%= button_to new_payment_path + '?payment_method=8', {
+        class: 'additional-icon btn btn-default payment-button', method: :get,
+        remote: true, 'data-target' => '#payment-form', id: 'cc-button' } do %>
+  <i class="fa fa-cc-visa"></i> Credit Card
+<% end %>
+
+<%= button_to new_payment_path + '?payment_method=3', {
+        class: 'additional-icon btn btn-default payment-button', method: :get,
+        remote: true, 'data-target' => '#payment-form', id: 'check-button' } do %>
+  <i class="fa fa-edit"></i> Check
+<% end %>
+
+<%= button_to new_payment_path + '?payment_method=4', {
+        class: 'additional-icon btn btn-default payment-button', method: :get,
+        remote: true, 'data-target' => '#payment-form', id: 'paypal-button' } do %>
+  <i class="fa fa-paypal"></i> PayPal
+<% end %>
+
+<%= button_to new_payment_path + '?payment_method=1', {
+        class: 'additional-icon btn btn-default payment-button', method: :get,
+        remote: true, 'data-target' => '#payment-form', id: 'wire-button' } do %>
+  <i class="fa fa-code-fork"></i> Wire Transfer
+<% end %>
+
+<%= button_to new_payment_path + '?payment_method=5', {
+        class: 'additional-icon btn btn-default payment-button', method: :get,
+        remote: true, 'data-target' => '#payment-form', id: 'trade-first-button' } do %>
+  <i class="fa fa-asterisk"></i> Trade First
+<% end %>
+
+<%= button_to new_payment_path + '?payment_method=6', {
+        class: 'additional-icon btn btn-default payment-button', method: :get,
+        remote: true, 'data-target' => '#payment-form', id: 'trade-button' } do %>
+  <i class="fa fa-exchange"></i> Trade
+<% end %>
+
+<%= button_to new_payment_path + '?payment_method=2', {
+        class: 'additional-icon btn btn-default payment-button', method: :get,
+        remote: true, 'data-target' => '#payment-form', id: 'swiped-cc-button' } do %>
+  <i class="fa fa-credit-card"></i> Swiped Credit Card
+<% end %>
+
+<div class='clearfix'></div>
+
+<div class='row'>
+  <div class='col-sm-1'></div>
+  <div class='col-sm-11 payment-dropdown'>
+    <div id='payment-form' class='box-info collapse'></div>
+  </div>
+</div>

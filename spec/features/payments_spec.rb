@@ -192,6 +192,37 @@ feature 'Payments management', js: true, payment_spec: true, retry: 2 do
       cc_payment.update_column :cc_transaction, 'abc123'
     end
 
+    scenario 'A salesperson with valid information can make a walk-in retail payment', retail_payment: true do
+      allow(gateway).to receive(:purchase)
+        .and_return double("success", success?: true, params: { 'pn_ref' => 'abc123' })
+
+      visit new_payment_path
+
+      find('#cc-button').click
+      fill_in 'payment_amount', with: '100'
+      fill_in 'Name on Card',   with: 'TEST GUY'
+      fill_in 'Company',        with: 'aatc'
+      # Spaces in the card number should be automatically inserted
+      fill_in 'Card Number',    with: '4111111111111111'
+      # The slash in expiration date should be automatically inserted
+      fill_in 'Expiration',     with: '1229'
+      fill_in 'CVC',            with: '123'
+
+      click_button 'Apply Payment'
+      sleep 2
+      page.driver.browser.switch_to.alert.accept
+
+      expect(page).to have_content 'Payment was successfully created'
+      expect(
+        Payment.retail.where(
+          cc_name: 'TEST GUY',
+          cc_number: 'xxxx xxxx xxxx 1111',
+          cc_transaction: 'abc123', # pn_ref from gateway stuf success
+          amount: 100.00
+        )
+      ).to exist
+    end
+
     feature 'customer payments', customer: true do
       background do
         allow(gateway).to receive(:purchase)

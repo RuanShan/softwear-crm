@@ -7,6 +7,9 @@
   of <%= number_to_currency(info[:order_total]) %>, bringing the balance from
   <%= number_to_currency(info[:order_balance_before]) %> to <%= number_to_currency(info[:order_balance_after]) %>.
 
+<% elsif retail = p[:retail] %>
+    Applied walk-in retail payment of <%= number_to_currency(retail[:amount]) %> with description
+    &quot;<%= retail[:description] %>&quot;
 <% else %>
 
   <% if activity.trackable_type %>

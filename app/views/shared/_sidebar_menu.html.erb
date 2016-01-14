@@ -48,6 +48,16 @@
       <% end %>
     <% end %>
 
+    <%= content_tag :li, class: ('active' if current_url.include?('retail')) do %>
+      <a href="#"><i class="fa fa-money"></i><i class="fa fa-angle-double-down i-right"></i> Retail</a>
+
+      <%= content_tag :ul, class: ('visible' if current_url.include?('payments/new')) do %>
+        <%= content_tag :li, class: ('active' if current_action == 'payments#new') do %>
+          <%= link_to new_payment_path, id: 'new_payment_link' do %><i class="fa fa-angle-right"></i> Take walk-in retail payment<% end %>
+        <% end %>
+      <% end %>
+    <% end %>
+
     <%= content_tag :li, class: ('active' if current_url.include?('imprintables')) do %>
       <a href="#fakelink"><i class="fa fa-archive"></i><i class="fa fa-angle-double-down i-right"></i> Imprintables</a>
 

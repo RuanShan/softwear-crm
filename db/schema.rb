@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160108170517) do
+ActiveRecord::Schema.define(version: 20160114155931) do
 
   create_table "activities", force: :cascade do |t|
     t.integer  "trackable_id",   limit: 4
@@ -545,29 +545,30 @@ ActiveRecord::Schema.define(version: 20160108170517) do
   add_index "payment_drops", ["store_id"], name: "index_payment_drops_on_store_id", using: :btree
 
   create_table "payments", force: :cascade do |t|
-    t.integer  "order_id",          limit: 4
-    t.integer  "salesperson_id",    limit: 4
-    t.integer  "store_id",          limit: 4
-    t.decimal  "amount",                             precision: 10, scale: 2
-    t.text     "refund_reason",     limit: 16777215
+    t.integer  "order_id",           limit: 4
+    t.integer  "salesperson_id",     limit: 4
+    t.integer  "store_id",           limit: 4
+    t.decimal  "amount",                              precision: 10, scale: 2
+    t.text     "refund_reason",      limit: 16777215
     t.datetime "deleted_at"
-    t.string   "cc_invoice_no",     limit: 191
-    t.string   "cc_batch_no",       limit: 191
-    t.string   "check_dl_no",       limit: 191
-    t.string   "check_phone_no",    limit: 191
-    t.string   "pp_transaction_id", limit: 191
-    t.integer  "payment_method",    limit: 4
+    t.string   "cc_invoice_no",      limit: 191
+    t.string   "cc_batch_no",        limit: 191
+    t.string   "check_dl_no",        limit: 191
+    t.string   "check_phone_no",     limit: 191
+    t.string   "pp_transaction_id",  limit: 191
+    t.integer  "payment_method",     limit: 4
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.string   "t_name",            limit: 191
-    t.string   "t_company_name",    limit: 191
-    t.string   "tf_number",         limit: 191
-    t.text     "t_description",     limit: 16777215
-    t.string   "cc_name",           limit: 191
-    t.string   "cc_company",        limit: 191
-    t.string   "cc_number",         limit: 191
-    t.string   "cc_type",           limit: 191
-    t.string   "cc_transaction",    limit: 191
+    t.string   "t_name",             limit: 191
+    t.string   "t_company_name",     limit: 191
+    t.string   "tf_number",          limit: 191
+    t.text     "t_description",      limit: 16777215
+    t.string   "cc_name",            limit: 191
+    t.string   "cc_company",         limit: 191
+    t.string   "cc_number",          limit: 191
+    t.string   "cc_type",            limit: 191
+    t.string   "cc_transaction",     limit: 191
+    t.text     "retail_description", limit: 65535
   end
 
   create_table "platen_hoops", force: :cascade do |t|
