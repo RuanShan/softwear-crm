@@ -19,7 +19,7 @@ module ActiveRecord
     def self.create_table(*args)
       @tables << args.first
       columns = []
-      yield FieldReader.new(columns, %i(string))
+      yield FieldReader.new(columns, %i(text string))
       @columns[args.first] = columns unless columns.empty?
     end
 
