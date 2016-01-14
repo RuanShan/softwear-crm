@@ -37,6 +37,15 @@
         </td>
         <td>
           <%= payment.display_payment_method %>
+          <dl>
+            <% %w(cc_name cc_transaction pp_transaction_id t_company_name tf_number).each do |field| %>
+                <% unless payment.send(field).blank? %>
+                    <% /^\w\w?_(?<field_display>.+)$/ =~ field.to_s %>
+                    <dt><%= field_display.try(:humanize) %></dt>
+                    <dd class="<%= field.to_s.gsub('_', '-') %>"><%= payment.send(field) || '<blank>' %></dd>
+                <% end %>
+            <% end %>
+          </dl>
         </td>
         <td>
           <%= number_to_currency payment.amount %>

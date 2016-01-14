@@ -94,10 +94,5 @@ namespace :warnings do
         message: 'Exception caught while issuing artwork_request warnings'
       )
     end
-
-
-
-
-
   end
 end
