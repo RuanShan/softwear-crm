@@ -1,12 +1,12 @@
 disableFor('#delete-job-<%= @job.id %>', 1000);
 
-<% if @job.destroyed? || @job.jobbable_type == 'Quote' %>
+<% if @job.deleted_at || @job.jobbable_type == 'Quote' %>
 
   $("#job-<%= @job.id %>").fadeOut(500, updateOrderTimeline);
   $(".destroy-job-<%= @job.id %>").remove();
 
 <% else %>
 
-  errorModal("<%= j @job.errors.full_messages.join(', ') %>");
+  errorModal("Errors: <%= j @job.errors.full_messages.join(', ') %>");
 
 <% end %>

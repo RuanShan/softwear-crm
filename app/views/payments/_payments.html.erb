@@ -49,12 +49,10 @@
         <i class="fa fa-money"></i> Cash
       <% end %>
 
-      <% if Time.now.year >= 2016 || /^ricky@|^nigel@/ =~ current_user.email || Rails.env.test? %>
-        <%= button_to new_order_payment_path(order.id) + '?payment_method=8', {
-                class: 'additional-icon btn btn-default payment-button', method: :get,
-                remote: true, 'data-target' => '#payment-form', id: 'cc-button' } do %>
-          <i class="fa fa-cc-visa"></i> Credit Card
-        <% end %>
+      <%= button_to new_order_payment_path(order.id) + '?payment_method=8', {
+              class: 'additional-icon btn btn-default payment-button', method: :get,
+              remote: true, 'data-target' => '#payment-form', id: 'cc-button' } do %>
+        <i class="fa fa-cc-visa"></i> Credit Card
       <% end %>
 
       <%= button_to new_order_payment_path(order.id) + '?payment_method=3', {
@@ -105,26 +103,39 @@
         <i class="fa fa-tag"></i> Coupon
       <% end %>
 
-      <%= button_to new_order_discount_path(order.id) + '?form=in_store_credit', {
-              class: 'additional-icon btn btn-default payment-button', method: :get,
-              remote: true, 'data-target' => '#discount-form', id: 'in-store-credit-button' } do %>
-        <i class="fa fa-plus-square-o"></i> In-Store Credit
-      <% end %>
-
-      <%= button_to new_order_discount_path(order.id) + '?form=refund', {
-              class: 'additional-icon btn btn-default payment-button', method: :get,
-              remote: true, 'data-target' => '#discount-form', id: 'refund-button' } do %>
-        <i class="fa fa-dollar"></i> Refund
-      <% end %>
-
       <%= button_to new_order_discount_path(order.id) + '?form=discount', {
               class: 'additional-icon btn btn-default payment-button', method: :get,
               remote: true, 'data-target' => '#discount-form', id: 'discount-button' } do %>
         <i class="fa fa-dollar"></i> Discount
       <% end %>
+
+      <%= button_to new_order_discount_path(order.id) + '?form=in_store_credit', {
+              class: 'additional-icon btn btn-default payment-button', method: :get,
+              remote: true, 'data-target' => '#discount-form', id: 'in-store-credit-button' } do %>
+        <i class="fa fa-minus-square-o"></i> Apply In-Store Credit
+      <% end %>
     </div>
 
     <div id="discount-form" class="collapse"></div>
+
+    <h3><strong>Issue</strong> Refund</h3>
+
+    <div class="btn-group btn-group-sm max-width">
+      <%= button_to new_order_discount_path(order.id) + '?form=refund', {
+              class: 'additional-icon btn btn-default payment-button', method: :get,
+              remote: true, 'data-target' => '#refund-form', id: 'refund-button' } do %>
+        <i class="fa fa-mail-reply"></i> Monetary Refund
+      <% end %>
+
+      <%= button_to new_in_store_credit_path(order_id: order.id), {
+        class: 'additional-icon btn btn-default payment-button', method: :get,
+        remote: true, 'data-target' => '#refund-form', id: 'issue-in-store-credit-button'
+      } do %>
+        <i class="fa fa-plus-square-o"></i> Issue In-Store Credit
+      <% end %>
+    </div>
+
+    <div id="refund-form" class="collapse"></div>
   </div>
 
   <div class="col-sm-12">

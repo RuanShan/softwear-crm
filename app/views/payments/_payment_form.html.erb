@@ -1,12 +1,21 @@
 <%= render partial: 'shared/modal_errors', locals: { object: @payment } %>
 
 <div id="horizontal-form" class="collapse in">
-<%= bootstrap_form_for [@order, @payment] do |f| %>
+  <%= bootstrap_form_for @order ? [@order, @payment] : @payment do |f| %>
+    <% english_payment_method = Payment::VALID_PAYMENT_METHODS[payment_method.to_i] %>
     <%= f.hidden_field :salesperson_id, value: @current_user.id %>
-    <%= f.hidden_field :order_id, value: @order.id %>
     <%= f.hidden_field :payment_method, value: payment_method %>
 
-    <div id="data_supply" data-total="<%= @order.total %>" aria-hidden="true"></div>
+    <h2><%= english_payment_method %> Payment</h2>
+
+    <% if @order %>
+      <%= f.hidden_field :order_id, value: @order.id %>
+      <div id="data_supply" data-total="<%= @order.total %>" aria-hidden="true"></div>
+    <% else %>
+      <div class='form-group'>
+        <%= f.text_area :retail_description, value: @payment.retail_description || Time.now.strftime("Walk-in #{english_payment_method} payment on %m/%d/%Y, %I:%M%p"), label: "Description" %>
+      </div>
+    <% end %>
 
     <p><%= f.label :salesperson %>
     </p>
@@ -14,13 +23,6 @@
     <p><%= @current_user.full_name %>
     <%= link_to '(Not You? Sign Out)', destroy_user_session_path, class: 'md-trigger',
                 method: :delete, 'data-model'=>'logout-modal-alt' %>
-    </p>
-
-    <p>
-      <%= f.label :payment_method, 'Method' %>
-    </p>
-    <p>
-      <%= english_payment_method = Payment::VALID_PAYMENT_METHODS[payment_method.to_i] %>
     </p>
 
     <%= f.select :store_id, Store.order(:name).map{|s| [s.name, s.id] }, { selected: @current_user.store_id}, { } %>

@@ -25,7 +25,7 @@ feature 'Payment Drops management', payment_drop_spec: true do
                               }
 
       background do
-        allow_any_instance_of(Sunspot::Search::StandardSearch ).to receive(:results) {[payment, check_payment]}
+        allow_any_instance_of(Sunspot::Search::StandardSearch ).to receive(:results) {Payment.undropped}
       end
 
       scenario 'I can create a payment drop' do
@@ -39,6 +39,17 @@ feature 'Payment Drops management', payment_drop_spec: true do
           click_button "Create Payment Drop"
           sleep 1.5
         }.to change{ PaymentDrop.count }.by(1)
+      end
+      
+      scenario 'I can see an undropped retail payment', retail_payment: true do
+        create(:retail_payment, retail_description: 'What is up my man')
+
+        visit new_payment_drop_path
+        select store.name, from: "Store"
+        sleep 1.5
+        within("#payment-drop-undropped-payments-list") do
+          expect(page).to have_content 'Retail: What is up my man'
+        end
       end
 
       scenario "I can enter a reason when cash or check doesn't match expected cash or check"  do

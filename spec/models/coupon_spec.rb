@@ -23,7 +23,7 @@ describe Coupon do
       subject { create :flat_rate, value: 5.0 }
       before do
         allow(order).to receive(:subtotal).and_return 10
-        allow(order).to receive(:tax).and_return 0.2
+        allow(order).to receive(:tax_excluding_discounts).and_return 0.2
         allow(order).to receive(:shipping_price).and_return 0.5
       end
 

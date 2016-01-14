@@ -765,8 +765,8 @@ class Quote < ActiveRecord::Base
   def no_line_item_errors
     return if @line_item_errors.blank?
 
-    @line_item_errors.each do |name, errors|
-      errors.add(:line_items, errors)
+    @line_item_errors.each do |name, li_errors|
+      errors.add(:line_items, li_errors)
     end
 
     @line_item_errors = nil

@@ -1,5 +1,15 @@
 class User < ActiveRecord::Base
   CUSTOMER_EMAIL = "customer@softwearcrm.com"
+  SALES_MANAGERS = %w(
+    ricky@annarbortees.com
+    jack@annarbortees.com
+    jerry@annarbortees.com
+    nate@annarbortees.com
+    michael@annarbortees.com
+    chantal@annarbortees.com
+    kenny@annarbortees.com
+    nigel@annarbortees.com
+  )
 
   acts_as_paranoid
   acts_as_token_authenticatable
@@ -36,12 +46,18 @@ class User < ActiveRecord::Base
     User.create(
       email: CUSTOMER_EMAIL,
       first_name: 'Ann Arbor Tees',
-      last_name: 'Customer'
+      last_name: 'Customer',
+      password: "Aa7cCust0m4rP455",
+      password_confirmation: "Aa7cCust0m4rP455"
     )
   end
 
   def customer?
     email == CUSTOMER_EMAIL
+  end
+
+  def sales_manager?
+    SALES_MANAGERS.include?(email) || Rails.env.test?
   end
 
   def full_name

@@ -57,6 +57,7 @@ class Payment < ActiveRecord::Base
   default_scope { order(:created_at) }
   scope :undropped, -> { includes(:payment_drop_payments).where(payment_drop_payments: { payment_id: nil } ) }
   scope :dropped, -> { includes(:payment_drop_payments).where.not(payment_drop_payments: { payment_id: nil } ) }
+  scope :retail, -> { where.not(retail_description: nil) }
 
   belongs_to :order, touch: true
   belongs_to :store
@@ -74,7 +75,6 @@ class Payment < ActiveRecord::Base
   validates :t_name, :t_company_name, :tf_number, presence: true, if: -> p { p.payment_method == 5 }
   validates :t_name, :t_company_name, :t_description, presence: true, if: -> p { p.payment_method == 6 }
   validates :cc_number, :cc_name, presence: true, if: :credit_card?
-  validates :refund_reason, presence: true, if: :refunded?
   validate :amount_doesnt_overflow_order_balance
   validate :amount_greater_than_zero
   validate :credit_card_is_valid, if: :credit_card?
@@ -111,6 +111,10 @@ class Payment < ActiveRecord::Base
 
   def paypal?
     VALID_PAYMENT_METHODS[payment_method] == 'PayPal'
+  end
+
+  def cash?
+    VALID_PAYMENT_METHODS[payment_method] == 'Cash'
   end
 
   def identifier
@@ -202,12 +206,26 @@ class Payment < ActiveRecord::Base
     (amount * 100).round
   end
 
+  def retail?
+    !retail_description.nil?
+  end
+
+  def description
+    if retail?
+      retail_description.empty? ? "Retail payment" : retail_description
+    elsif order
+      "SoftWEAR CRM Payment for #{order.name} (##{order.id}) by #{salesperson.try(:full_name) || order.salesperson.try(:full_name)}"
+    else
+      "Unknown payment (no order or retail description)"
+    end
+  end
+
   def purchase!
     return unless errors.full_messages.empty?
     return unless credit_card?
     return if credit_card.nil?
     return if amount.blank?
-    return if order_id.blank?
+    return if !retail? && order_id.blank?
     return if salesperson_id.blank?
     return if Setting.payflow_login.blank?
     return if Setting.payflow_password.blank?
@@ -217,7 +235,7 @@ class Payment < ActiveRecord::Base
       credit_card,
 
       order_id: id, # "invoice" id
-      description: "SoftWEAR CRM Payment for #{order.name} (##{order.id}) by #{salesperson.full_name}"
+      description: description
     )
 
     if result.success?

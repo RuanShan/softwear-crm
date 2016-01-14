@@ -19,7 +19,7 @@ class ApplicationController < ActionController::Base
 
   helper_method :salesperson_or_customer
 
-  # Quicker way to render to a string using the previous function
+  # Quicker way to render to a string using the `with_format` function down there
   def render_string(*args)
     s = nil
     with_format(:html) { s = render_to_string(*args) }
@@ -27,6 +27,12 @@ class ApplicationController < ActionController::Base
   end
 
   protected
+
+  def sales_manager_only
+    if current_user.nil? || !current_user.sales_manager?
+      redirect_to not_allowed_path
+    end
+  end
 
   def sanitize_filename(filename)
     filename.gsub(/[^0-9A-z.\-]/, '_')
@@ -83,7 +89,6 @@ class ApplicationController < ActionController::Base
 
   # Pulled this off the internet as a way to render templates to a string
   # without using up your one render in a controller.
-  # TODO: Nigel, cite resource and merge with render string
   def with_format(format)
     old_formats = formats
     self.formats = [format]

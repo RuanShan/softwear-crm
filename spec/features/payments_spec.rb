@@ -6,14 +6,11 @@ feature 'Payments management', js: true, payment_spec: true, retry: 2 do
   given!(:valid_user) { create(:alternate_user) }
   background(:each) { login_as(valid_user) }
 
-  given!(:order) { create(:order) }
+  given!(:order) { create(:order_with_job) }
+  given!(:line_item) { create(:non_imprintable_line_item, unit_price: 1000, line_itemable: order.jobs.first) }
   given!(:payment) { create(:valid_payment, order_id: order.id) }
   given(:cc_payment) { create(:credit_card_payment, amount: 10, order_id: order.id) }
   given(:pp_payment) { create(:paypal_payment, amount: 10, order_id: order.id) }
-
-  background do
-    allow_any_instance_of(Order).to receive(:total).and_return 1000
-  end
 
   # No ci because interacting with the dashboard appears to not work there.
   scenario 'A salesperson can visit the payments tab from root', no_ci: true do
@@ -93,7 +90,7 @@ feature 'Payments management', js: true, payment_spec: true, retry: 2 do
     fill_in 'Amount', with: '5.00'
     sleep 2
 
-    click_button 'Apply Discount'
+    click_button 'Issue Refund'
 
     expect(page).to have_content 'Successfully created refund. No cards were credited.'
     expect(page).to have_content '$10.00 - $5.00'
@@ -115,7 +112,7 @@ feature 'Payments management', js: true, payment_spec: true, retry: 2 do
     fill_in 'Amount', with: '5.00'
     sleep 2
 
-    click_button 'Apply Discount'
+    click_button 'Issue Refund'
 
     expect(page).to have_content 'Successfully created refund. No cards were credited.'
     expect(page).to have_content '$10.00 - $5.00'
@@ -137,7 +134,7 @@ feature 'Payments management', js: true, payment_spec: true, retry: 2 do
     fill_in 'Amount', with: '15.00'
     sleep 2
 
-    click_button 'Apply Discount'
+    click_button 'Issue Refund'
 
     expect(page).to have_content 'Amount exceeds the payment amount'
     expect(page).to_not have_content '$10.00 - $5.00'
@@ -145,19 +142,40 @@ feature 'Payments management', js: true, payment_spec: true, retry: 2 do
     expect(Payment.find(cc_payment.id).is_refunded?).to eq false
   end
 
-  scenario 'A salesperson can refund an entire payment', huh: true, retry: 2, actual_payment: true do
+  scenario 'A salesperson can refund an entire payment', working_on: true, retry: 2, actual_payment: true do
     visit (edit_order_path order.id) + '#payments'
+    sleep 0.5
     find(:css, '.order_payment_refund_link').click
 
     sleep 3
 
     fill_in 'Reason', with: "Gaga can't handle this shit"
-    click_button 'Apply Discount'
+    click_button 'Issue Refund'
 
     sleep 2
 
     expect(page).to have_content 'Successfully created refund. No cards were credited.'
     expect(Payment.find(payment.id).is_refunded?).to be_truthy
+  end
+
+  scenario 'A salesperson can issue in-store credit', retry: 1, issue_in_store_credit: true do
+    visit edit_order_path order, anchor: 'payments'
+    find('#issue-in-store-credit-button').click
+
+    fill_in 'Title', with: "credit for me sucking"
+    fill_in 'Amount', with: 20.00
+    fill_in 'Reason', with: "i suck at sales"
+    click_button 'Issue Refund'
+    wait_for_ajax
+
+    expect(order.reload.jobs.pluck(:name)).to include "In-Store Credit"
+    line_item = order.jobs.find_by(name: 'In-Store Credit').line_items.first
+    expect(line_item.name).to match /^In-Store Credit #\d+$/
+    expect(line_item.description).to eq %(In-store credit of $20.00 issued because "i suck at sales")
+    expect(InStoreCredit.where(name: "credit for me sucking")).to exist
+
+    expect(page).to have_content 'In-Store Credit'
+    expect(page).to have_content 'i suck at sales'
   end
 
   context 'when payflow credentials are set up', payflow: true do
@@ -172,6 +190,37 @@ feature 'Payments management', js: true, payment_spec: true, retry: 2 do
       payment.destroy
       cc_payment.update_column :amount, '10.00'
       cc_payment.update_column :cc_transaction, 'abc123'
+    end
+
+    scenario 'A salesperson with valid information can make a walk-in retail payment', retail_payment: true do
+      allow(gateway).to receive(:purchase)
+        .and_return double("success", success?: true, params: { 'pn_ref' => 'abc123' })
+
+      visit new_payment_path
+
+      find('#cc-button').click
+      fill_in 'payment_amount', with: '100'
+      fill_in 'Name on Card',   with: 'TEST GUY'
+      fill_in 'Company',        with: 'aatc'
+      # Spaces in the card number should be automatically inserted
+      fill_in 'Card Number',    with: '4111111111111111'
+      # The slash in expiration date should be automatically inserted
+      fill_in 'Expiration',     with: '1229'
+      fill_in 'CVC',            with: '123'
+
+      click_button 'Apply Payment'
+      sleep 2
+      page.driver.browser.switch_to.alert.accept
+
+      expect(page).to have_content 'Payment was successfully created'
+      expect(
+        Payment.retail.where(
+          cc_name: 'TEST GUY',
+          cc_number: 'xxxx xxxx xxxx 1111',
+          cc_transaction: 'abc123', # pn_ref from gateway stuf success
+          amount: 100.00
+        )
+      ).to exist
     end
 
     feature 'customer payments', customer: true do
@@ -289,7 +338,7 @@ feature 'Payments management', js: true, payment_spec: true, retry: 2 do
       fill_in 'Amount', with: '5.00'
       sleep 2
 
-      click_button 'Apply Discount'
+      click_button 'Issue Refund'
 
       expect(page).to have_content "Refund successful! Customer's card"
       expect(page).to have_content "was credited"
@@ -311,7 +360,7 @@ feature 'Payments management', js: true, payment_spec: true, retry: 2 do
       fill_in 'Amount', with: '5.00'
       sleep 2
 
-      click_button 'Apply Discount'
+      click_button 'Issue Refund'
 
       expect(page).to have_content "banned!!!"
 
@@ -331,7 +380,7 @@ feature 'Payments management', js: true, payment_spec: true, retry: 2 do
       fill_in 'Amount', with: '5.00'
       sleep 2
 
-      click_button 'Apply Discount'
+      click_button 'Issue Refund'
 
       expect(page).to have_content "Refund noted, but was UNABLE to add funds to the card."
 
@@ -367,7 +416,7 @@ feature 'Payments management', js: true, payment_spec: true, retry: 2 do
       fill_in 'Amount', with: '5.00'
       sleep 2
 
-      click_button 'Apply Discount'
+      click_button 'Issue Refund'
 
       expect(page).to have_content "Refund successful! Customer's PayPal account was credited"
       expect(page).to have_content '$10.00 - $5.00'
@@ -388,13 +437,13 @@ feature 'Payments management', js: true, payment_spec: true, retry: 2 do
       expect(activity).to_not be_nil
     end
 
-    scenario 'refunding a payment', huh: true, retry: 2 do
+    scenario 'refunding a payment', retry: 2 do
       visit (edit_order_path order.id) + '#payments'
       sleep 0.5
       find(:css, '.order_payment_refund_link').click
       sleep 3
       fill_in 'Reason', with: 'Muh spoon is too big'
-      click_button 'Apply Discount'
+      click_button 'Issue Refund'
       sleep 2
       activity = order.all_activities.to_a.select{ |a| a[:key] = 'payment.refunded_payment' }
       expect(activity).to_not be_nil

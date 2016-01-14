@@ -1,0 +1,31 @@
+<% p = activity.parameters.with_indifferent_access %>
+
+<p>
+<% if info = p[:info] %>
+  Applied <%= info[:type] %> (#<%= activity.trackable_id %>) of <%= number_to_currency(info[:amount]) %>
+  to the order &quot;<%= info[:order_name] %>&quot; bringing the total from
+  <%= number_to_currency(info[:order_total_before]) %> to <%= number_to_currency(info[:order_total_after]) %>,
+  and the balance from <%= number_to_currency(info[:order_balance_before]) %> to
+  <%= number_to_currency(info[:order_balance_after]) %>.
+
+  <% unless info[:reason].blank? %>
+    </p>
+    <p>
+    Reason: &quot;<%= info[:reason] %>&quot;
+  <% end %>
+
+<% else %>
+
+  <% if activity.trackable_type %>
+    Applied <%= activity.trackable.try(:discount_type) || 'some type of discount' %> of <%= activity.trackable.try(:amount) %>
+  <% else %>
+    Applied some discount
+  <% end %>
+  <% if activity.recipient && activity.recipient != activity.trackable %>
+    to
+    <%= activity.recipient_type.underscore.humanize.downcase %>
+    <%= link_to activity.recipient.name, activity.recipient if activity.recipient %>
+  <% end %>
+
+<% end %>
+</p>

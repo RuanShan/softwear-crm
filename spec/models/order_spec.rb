@@ -163,11 +163,12 @@ describe Order, order_spec: true do
     end
   end
 
-  describe '#balance' do
+  describe '#balance', balance: true do
     let(:order) { build_stubbed(:blank_order) }
 
     before do
       allow(order).to receive(:total).and_return(5)
+      allow(order).to receive(:total_excluding_discounts).and_return(5)
       allow(order).to receive(:calculate_payment_total).and_return(5)
       order.recalculate_payment_total
     end

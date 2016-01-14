@@ -19,6 +19,9 @@ class HomeController < ApplicationController
     end
   end
 
+  def not_allowed
+  end
+
   def api_warnings
     @api_warnings = Warning.active.where("message like 'API%'").page(params[:page] || 1)
 

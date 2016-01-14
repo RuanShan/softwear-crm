@@ -62,10 +62,22 @@
     <% data[:payments].each do |payment| %> 
       <tr>
         <td>
-          <%= payment.order.id %>
+          <% if payment.order %>
+            <%= payment.order_id %>
+          <% elsif payment.retail? %>
+            Retail
+          <% else %>
+            ???
+          <% end %>
         </td>
         <td>
-          <%= payment.order.name %>
+          <% if payment.order %>
+            <%= link_to payment.order.name, edit_order_path(payment.order, anchor: 'payments'), target: :_blank %>
+          <% elsif payment.retail? %>
+            <%= payment.retail_description %>
+          <% else %>
+            Unknown payment (no retail description or order)
+          <% end %>
         </td>
         <td>
           <%= payment.salesperson.full_name %>

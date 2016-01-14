@@ -1,4 +1,6 @@
 class PaymentsController < InheritedResources::Base
+  include Activity
+
   before_filter :initialize_order, only: [:index, :new, :create]
 
   def create
@@ -6,22 +8,28 @@ class PaymentsController < InheritedResources::Base
       fire_applied_activity(@payment) if @payment.valid?
 
       success.html do
-        redirect_to edit_order_path(params[:order_id], anchor: 'payments')
+        if params[:order_id]
+          redirect_to edit_order_path(params[:order_id], anchor: 'payments')
+        else
+          redirect_to new_payment_path
+        end
       end
-      failure.html { render 'payments/new' }
+      failure.html { render params[:order_id] ? 'payments/new' : 'payments/new_retail' }
     end
 
   rescue Payment::PaymentError => e
     # The error message will be displayed via @payment's payment_method errors
     # (check out views/customer/payments/_credit_card_form.html.erb)
-    render 'payments/new'
+    if params[:order_id]
+      render 'payments/new'
+    else
+      render 'payments/new_retail'
+    end
   end
 
   def update
     super do |format|
-      if @payment.valid?
-        fire_refund_activity(@payment) if @payment.refunded?
-      else
+      unless @payment.valid?
         flash[:error] = @payment.errors.full_messages.join(', ')
       end
 
@@ -44,6 +52,7 @@ class PaymentsController < InheritedResources::Base
           transaction_id:  @payment.cc_transaction
         )
         @scroll = true
+        @target = '#refund-form'
         params[:form] = 'refund'
 
         render 'discounts/new'
@@ -55,9 +64,10 @@ class PaymentsController < InheritedResources::Base
   def new
     super do |format|
       @payment = Payment.new(payment_method: params[:payment_method])
-      @order = Order.find(params[:order_id])
+      @recent_retail_payments = Payment.retail.order(id: :desc) if @order.nil?
 
       format.js
+      format.html { render 'new_retail' if @order.nil? }
     end
   end
 
@@ -74,36 +84,13 @@ class PaymentsController < InheritedResources::Base
 
   private
 
-  def fire_applied_activity(payment)
-    parameters = {}
-
-    if payment.credit_card?
-      if payment.cc_transaction.blank?
-        parameters['transaction'] = "No actual transaction made"
-      elsif payment.cc_transaction == 'ERROR'
-        parameters['transaction'] = "Transaction error"
-      else
-        parameters['transaction'] = "Payflow transaction PNRef: #{payment.cc_transaction}"
-      end
-    end
-
-    payment.create_activity(
-      :applied_payment,
-
-      owner:     current_user,
-      recipient: payment.order,
-
-      parameters: parameters
-    )
-  end
-
   def initialize_order
-    @order = Order.find(params[:order_id])
+    @order = Order.find(params[:order_id]) if params[:order_id]
   end
 
   def permitted_params
     params.permit(payment: [:amount, :store_id, :salesperson_id, :order_id, :t_company_name, :pp_transaction_id,
                             :refunded, :refund_reason, :payment_method, :t_name, :t_description, :tf_number,
-                            :cc_name, :cc_company, :cc_number, :cc_type, :cc_expiration, :cc_cvc, :refund_amount])
+                            :cc_name, :cc_company, :cc_number, :cc_type, :cc_expiration, :cc_cvc, :retail_description])
   end
 end

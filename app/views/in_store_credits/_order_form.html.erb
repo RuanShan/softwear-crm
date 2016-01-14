@@ -1,0 +1,34 @@
+<%= form_for @in_store_credit, builder: LancengFormBuilder, remote: true do |f| %>
+  <div id="horizontal-form" class="collapse in">
+    <%= f.hidden_field :user_id, value: @current_user.id %>
+    <%= f.hidden_field :order_id, value: params[:order_id] %>
+
+    <div class="form-group">
+      <%= f.label :user %><br>
+
+      <%= @current_user.full_name %>
+
+      <%= link_to '(Change user)', destroy_user_session_path, class: 'md-trigger',
+                  method: :delete, 'data-model'=>'logout-modal-alt' %>
+    </div>
+
+    <div class='form-group'>
+      <%= f.label :name, 'Title' %>
+      <%= f.text_field :name %>
+
+      <%= f.label :amount %>
+      <div class="input-group">
+        <span class="input-group-addon">$</span>
+        <%= f.text_field :amount %>
+      </div>
+
+      <%= f.label :description, 'Reason' %>
+      <%= f.text_area :description %>
+
+      <%= f.label :valid_until %>
+      <%= f.text_field :valid_until, value: value_time(3.months.from_now), class: 'date js-datetimepicker' %>
+    </div>
+
+    <%= f.submit 'Issue Refund', class: 'btn btn-info' %>
+  </div>
+<% end %>

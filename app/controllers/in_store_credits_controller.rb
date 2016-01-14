@@ -17,6 +17,41 @@ class InStoreCreditsController < InheritedResources::Base
     end
   end
 
+  def new
+    super do |format|
+      if params[:order_id]
+        @target = '#refund-form'
+        @form_partial = 'in_store_credits/order_form'
+        format.js { render 'discounts/new' }
+      end
+      format.html
+    end
+  end
+
+  def create
+    super do |success, failure|
+      if @in_store_credit.order_id
+        @job = @in_store_credit.job
+
+        success.html { redirect_to edit_order_path(@in_store_credit.order_id) }
+        success.js { render 'jobs/create' }
+
+        failure.html do
+          flash[:error] = @in_store_credit.errors.full_messages.join(', ')
+          redirect_to edit_order_path(@in_store_credit.order_id)
+        end
+        failure.js do
+          # FIXME Kinda sloppy reuse of code here
+          @discount = @in_store_credit
+          render 'discounts/error'
+        end
+      else
+        success.html
+        failure.html
+      end
+    end
+  end
+
   protected
 
   def set_current_action
@@ -29,7 +64,7 @@ class InStoreCreditsController < InheritedResources::Base
     params.permit(
       in_store_credit: [
         :name, :customer_first_name, :customer_last_name, :customer_email,
-        :amount, :description, :user_id, :valid_until
+        :amount, :description, :user_id, :valid_until, :order_id
       ]
     )
   end

@@ -13,8 +13,9 @@ class DiscountsController < InheritedResources::Base
 
     super do |success, failure|
       success.js do
+        fire_new_discount_activity(@discount)
+
         if @discount.applicator_type == 'Refund' && @discount.discountable_type == 'Payment'
-          fire_refund_activity(@discount)
 
           if @discount.credited_for_refund?
             if @discount.discountable.credit_card?
@@ -45,15 +46,27 @@ class DiscountsController < InheritedResources::Base
     render 'error'
   end
 
+  def update
+    super do |success, failure|
+      success.html { fire_changed_discount_activity(@discount) }
+      success.js   { fire_changed_discount_activity(@discount) }
+
+      failure.html
+      failure.js
+    end
+  end
+
   def new
     super do |format|
       raise "Invalid form" unless ACCEPTED_FORMS.include? params[:form]
+      @target = params[:form] == 'refund' ? '#refund-form' : '#discount-form'
       format.js
     end
   end
 
   def destroy
     super do |format|
+      fire_removed_discount_activity(@discount)
       format.js
     end
   end
@@ -102,14 +115,85 @@ class DiscountsController < InheritedResources::Base
     end
   end
 
-  def fire_refund_activity(discount)
-    discount.discountable.create_activity(
-      :refunded_payment,
+  def fire_new_discount_activity(discount)
+    parameters = { 'refund_amount' => discount.amount }
+
+    if order = discount.order.try(:reload)
+      parameters['info'] = {
+        type:        discount.discount_type.humanize.downcase,
+        amount:      discount.amount,
+        order_name:  order.name,
+        reason:      discount.reason,
+        order_total_before:   order.total_excluding_discounts([discount.id]),
+        order_total_after:    order.total,
+        order_balance_before: order.balance_excluding_discounts([discount.id]),
+        order_balance_after:  order.balance
+      }
+        .stringify_keys
+    end
+
+    discount.create_activity(
+      :applied_discount,
+
+      owner: current_user,
+      recipient: discount.order,
+
+      parameters: parameters
+    )
+  end
+
+  def fire_removed_discount_activity(discount)
+    parameters = {}
+
+    # Minor hack to make absolutly sure our balance values are correct.
+    order = discount.order.reload
+    order_discounts = (order.all_discounts + [discount]).uniq
+    order.define_singleton_method(:all_discounts) { |*| order_discounts }
+    order.recalculate_discount_total
+
+    parameters['info'] = {
+      type:       discount.discount_type.humanize.downcase,
+      amount:     discount.amount,
+      reason:     discount.reason,
+      order_name: discount.order.try(:name),
+      order_balance_before: order.balance,
+      order_balance_after: order.balance_excluding_discounts([discount.id]),
+    }
+
+    discount.create_activity(
+      :removed_discount,
+
+      owner: current_user,
+      recipient: discount.order,
+
+      parameters: parameters
+    )
+  end
+
+  def fire_changed_discount_activity(discount)
+    parameters = {}
+
+    if order = discount.order.try(:reload)
+      parameters['info'] = {
+        type:          discount.discount_type.humanize.downcase,
+        reason:        discount.reason,
+        before_amount: discount.amount_was,
+        after_amount:  discount.amount,
+        order_name:    order.name,
+        order_total:   order.total,
+        order_balance_before: order.balance_excluding_discounts([discount.id]),
+        order_balance_after:  order.balance
+      }
+        .stringify_keys
+    end
+
+    discount.create_activity(
+      :adjusted_discount,
 
       owner: current_user,
       recipient: discount.discountable.order,
 
-      parameters: { 'refund_amount' => discount.amount }
+      parameters: parameters
     )
   end
 
