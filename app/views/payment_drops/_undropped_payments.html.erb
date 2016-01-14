@@ -15,17 +15,19 @@
   <% payments.each do |payment| %>
       <tr>
         <%
-           checked = false
-           checked = true if
-                   params[:payment_drop] &&
-                   params[:payment_drop][:payment_ids] &&
-                   params[:payment_drop][:payment_ids].include?(payment.id.to_s)
+           checked = params[:payment_drop] &&
+                     params[:payment_drop][:payment_ids] &&
+                     params[:payment_drop][:payment_ids].include?(payment.id.to_s)
         %>
         <td>
           <%= check_box_tag "payment_drop[payment_ids][]", payment.id, checked, class: 'undropped-payment', data: {'payment-amount' => payment.amount, 'payment-method' => payment.payment_method}  %>
         </td>
         <td>
-          <%= link_to("##{payment.order.id} #{payment.order.name}", payment.order, target: "_blank") rescue 'n/a' %>
+          <% if payment.retail? %>
+            <strong>Retail:</strong> <%= payment.retail_description %>
+          <% else %>
+            <%= link_to("##{payment.order.id} #{payment.order.name}", payment.order, target: "_blank") rescue 'n/a' %>
+          <% end %>
         </td>
         <td>
           <%= payment.store.name %>

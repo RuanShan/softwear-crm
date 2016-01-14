@@ -1,6 +1,14 @@
 FactoryGirl.define do
   factory :blank_payment, class: Payment do
 
+    factory :retail_payment do
+      store { |s| s.association(:valid_store) }
+      amount '0.00'
+      payment_method Payment::VALID_PAYMENT_METHODS.key('Cash')
+      salesperson { |p| p.association(:user) }
+      retail_description "Walk-in factorygirl payment"
+    end
+
     factory :valid_payment do
       order { |o| o.association(:order) }
       store { |s| s.association(:valid_store) }
