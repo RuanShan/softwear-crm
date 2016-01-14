@@ -17,7 +17,6 @@ describe Imprint, imprint_spec: true do
   end
 
   describe 'Validations' do
-    it { is_expected.to validate_presence_of :job }
     it { is_expected.to validate_presence_of :print_location }
     # FIXME why doesn't this work?
     # it { is_expected.to validate_uniqueness_of(:print_location).scoped_to(:job_id) }

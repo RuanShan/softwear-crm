@@ -56,7 +56,7 @@ feature 'FBA Order management', fba_spec: true, story_103: true, js: true, retry
 
     scenario 'user can create a new FBA order', retry: 3 do
       visit fba_orders_path
-      click_link 'New FBA Order'
+      find('.new-fba').click
 
       fill_in 'Name', with: 'Test FBA'
       fill_in 'Deadline', with: 'Feb 04, 2015, 12:00 PM'
@@ -94,7 +94,7 @@ feature 'FBA Order management', fba_spec: true, story_103: true, js: true, retry
 
       it 'creates a separate job for the toddler/infant/onesie imprintable', no_ci: true, pending: 'Nigel todo' do
         visit fba_orders_path
-        click_link 'New FBA Order'
+        find('.new-fba').click
 
         fill_in 'Name', with: 'Test FBA'
         fill_in 'Deadline', with: 'Feb 04, 2015, 12:00 PM'
@@ -157,7 +157,7 @@ feature 'FBA Order management', fba_spec: true, story_103: true, js: true, retry
 
       scenario 'user can create a new FBA order', create: true do
         visit fba_orders_path
-        click_link 'New FBA Order'
+        find('.new-fba').click
 
         fill_in 'Name', with: 'Test FBA'
         fill_in 'Deadline', with: 'Feb 04, 2015, 12:00 PM'
@@ -194,7 +194,7 @@ feature 'FBA Order management', fba_spec: true, story_103: true, js: true, retry
 
         scenario 'user is informed', color: true, retry: 3 do
           visit fba_orders_path
-          click_link 'New FBA Order'
+          find('.new-fba').click
 
           fill_in 'Name', with: 'Test FBA'
           fill_in 'Deadline', with: 'Feb 04, 2015, 12:00 PM'
@@ -242,7 +242,7 @@ feature 'FBA Order management', fba_spec: true, story_103: true, js: true, retry
 
     scenario 'user is informed that the size could not be found', retry: 3 do
       visit fba_orders_path
-      click_link 'New FBA Order'
+      find('.new-fba').click
 
       fill_in 'Name', with: 'Test FBA'
       fill_in 'Deadline', with: 'Feb 04, 2015, 12:00 PM'
