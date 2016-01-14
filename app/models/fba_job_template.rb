@@ -1,6 +1,6 @@
 class FbaJobTemplate < ActiveRecord::Base
-  has_many :fba_job_template_imprints, inverse_of: :fba_job_template
-  has_many :imprints, through: :fba_job_template_imprints
+  has_many :fba_job_template_imprints, inverse_of: :fba_job_template, dependent: :destroy
+  has_many :imprints, through: :fba_job_template_imprints, dependent: :destroy
 
   validates :name, presence: true, uniqueness: true
 

@@ -1,9 +1,9 @@
 <div class="page-heading animated fadeInDownBig col-lg-9">
-  <h1>FBA Job Templates</h1>
+  <h1>FBA Job Products</h1>
 </div>
 <div class="col-lg-2"></div>
 <div class="col-lg-1">
-  <%= link_to '+', new_fba_job_template_path, class: 'btn btn-success' %>
+  <%= link_to '+', new_fba_product_path, class: 'btn btn-success' %>
 </div>
 
 <%= search_form_for FbaJobTemplate, class: 'form-horizontal' do |s| %>
@@ -18,7 +18,7 @@
 <% end %>
 <div class='clearfix'></div>
 
-<%= paginate @fba_job_templates %>
+<%= paginate @fba_products %>
 
 <div class='box-info full clear'>
   <div class='table-responsive'>
@@ -27,21 +27,23 @@
         <tr>
           <th>ID</th>
           <th>Name</th>
-          <th>Imprints</th>
+          <th>Master SKU</th>
+          <th>Child SKUs</th>
           <th>Actions</th>
         </tr>
       </thead>
 
       <tbody>
-        <% @fba_job_templates.each do |fba_job_template| %>
+        <% @fba_products.each do |fba_product| %>
           <tr>
-            <td><%= fba_job_template.id %></td>
-            <td><%= fba_job_template.name %></td>
-            <td><%= fba_job_template.imprints.size %></td>
+            <td><%= fba_product.id %></td>
+            <td><%= fba_product.name %></td>
+            <td><%= fba_product.sku %></td>
+            <td><%= fba_product.fba_skus.size %></td>
             <td>
               <div class='btn-group btn-group-xs'>
-                <%= link_to fa(:edit), edit_fba_job_template_path(fba_job_template), class: 'btn btn-sm btn-warning' %>
-                <%= link_to fa('times-circle'), fba_job_template_path(fba_job_template), method: :delete, 'data-action' => 'destroy', class: 'btn btn-sm btn-danger', data: { confirm: %(Delete job template "#{fba_job_template.name}"?) } %>
+                <%= link_to fa(:edit), edit_fba_product_path(fba_product), class: 'btn btn-sm btn-warning' %>
+                <%= link_to fa('times-circle'), fba_product_path(fba_product), method: :delete, 'data-action' => 'destroy', class: 'btn btn-sm btn-danger', data: { confirm: %(Delete FBA product "#{fba_product.name}"?) } %>
               </div>
             </td>
           </tr>
@@ -51,4 +53,4 @@
   </div>
 </div>
 
-<%= paginate @fba_job_templates %>
+<%= paginate @fba_products %>

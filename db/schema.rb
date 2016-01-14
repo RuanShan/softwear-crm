@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160114210019) do
+ActiveRecord::Schema.define(version: 20160114214931) do
 
   create_table "activities", force: :cascade do |t|
     t.integer  "trackable_id",   limit: 4
@@ -244,6 +244,26 @@ ActiveRecord::Schema.define(version: 20160114210019) do
     t.datetime "created_at",             null: false
     t.datetime "updated_at",             null: false
   end
+
+  create_table "fba_products", force: :cascade do |t|
+    t.string   "name",       limit: 191
+    t.string   "sku",        limit: 191
+    t.datetime "created_at",             null: false
+    t.datetime "updated_at",             null: false
+  end
+
+  create_table "fba_skus", force: :cascade do |t|
+    t.integer  "fba_product_id",         limit: 4
+    t.string   "sku",                    limit: 191
+    t.integer  "imprintable_variant_id", limit: 4
+    t.integer  "fba_job_template_id",    limit: 4
+    t.datetime "created_at",                         null: false
+    t.datetime "updated_at",                         null: false
+  end
+
+  add_index "fba_skus", ["fba_job_template_id"], name: "index_fba_skus_on_fba_job_template_id", using: :btree
+  add_index "fba_skus", ["fba_product_id"], name: "index_fba_skus_on_fba_product_id", using: :btree
+  add_index "fba_skus", ["imprintable_variant_id"], name: "index_fba_skus_on_imprintable_variant_id", using: :btree
 
   create_table "freshdesk_local_contacts", force: :cascade do |t|
     t.string   "name",         limit: 191
@@ -943,4 +963,7 @@ ActiveRecord::Schema.define(version: 20160114210019) do
 
   add_foreign_key "fba_job_template_imprints", "fba_job_templates"
   add_foreign_key "fba_job_template_imprints", "imprints"
+  add_foreign_key "fba_skus", "fba_job_templates"
+  add_foreign_key "fba_skus", "fba_products"
+  add_foreign_key "fba_skus", "imprintable_variants"
 end
