@@ -292,7 +292,7 @@ class SearchFormBuilder
       if existing_filter.nil? || existing_filter.value.blank?
         return
       else
-        return existing_filter.type.assure_value(existing_filter.value)
+        return existing_filter.filter_type_type.constantize.assure_value(existing_filter.value)
       end
     end
 

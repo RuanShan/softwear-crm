@@ -7,7 +7,7 @@ module Search
       if value.is_a? String
         value == 'true' ? true : false
       else
-        super
+        value
       end
     end
   end

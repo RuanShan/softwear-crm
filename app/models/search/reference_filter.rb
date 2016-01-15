@@ -16,7 +16,7 @@ module Search
 
         model.find(id)
       else
-        super
+        value
       end
     end
   end
