@@ -5,8 +5,12 @@ $(window).load ->
   $("#errorsModal").modal "show"
   $("#dock").zIndex(1000)
 
-@initializeSelect2 = ->
-  $('select.select2').each ->
+@initializeSelect2 = (opts) ->
+  scope = $('body')
+  if opts isnt undefined and opts.scope
+    scope = opts.scope
+
+  scope.find('select.select2').each ->
     placeholder = $(this).data('placeholder')
     if placeholder
       resetVal = $(this).data('isblank')
@@ -19,13 +23,13 @@ $(window).load ->
     else
       $(this).select2()
 
-  $('.select2-tags').select2
+  scope.find('.select2-tags').select2
     allowClear: true
     tags: true
     tokenSeparators: [','],
     placeholder: $(this).data('placeholder')
 
-  $('.ink-color-select2').each ->
+  scope.find('.ink-color-select2').each ->
     self = $(this)
 
     self.select2
@@ -53,6 +57,8 @@ $(document).ready ->
   $('.colorpicker').minicolors
     theme:      'bootstrap',
     letterCase: 'uppercase'
+
+  $(document).on 'nested:fieldAdded', (e)-> initializeSelect2(e.field)
 
   $(document).on 'click', 'button[type=submit],input[type=submit],a[data-remote]', (e) ->
     e.preventDefault() if $(this).closest('[data-fading-out]').length isnt 0

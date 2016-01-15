@@ -96,6 +96,12 @@ module FormHelpers
       "")
   end
 
+  def fuzzy_select(selector, text)
+    find("#{selector}+span").click
+    find('input.select2-search__field').set(text)
+    first('li.select2-results__option').click
+  end
+
   # NOTE we actually just use select2 now.
   def select_from_chosen(item_text, options)
     raise 'TODO implement this for select2'

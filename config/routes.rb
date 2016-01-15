@@ -157,7 +157,12 @@ CrmSoftwearcrmCom::Application.routes.draw do
     end
   end
 
-  resources :fba_job_templates, :fba_products
+  resources :fba_job_templates
+  resources :fba_products do
+    collection do
+      get :variant_fields
+    end
+  end
 
   post   'line_items', to: 'line_items#create'
   get    'line_item/select_options', to: 'line_items#select_options'

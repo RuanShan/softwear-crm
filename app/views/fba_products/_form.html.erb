@@ -1,0 +1,63 @@
+<div class='box-info'>
+  <%= render partial: 'shared/modal_errors', locals: {object: fba_product} %>
+
+  <%= nested_form_for fba_product do |f| %>
+    <div id="horizontal-form" class="collapse in">
+      <div class="form-group row">
+        <%= f.label :name, class: 'col-sm-2 control-label form-right' %>
+
+        <div class="col-sm-10">
+          <% if fba_product.errors.include?(:name) %>
+            <% fba_product.errors.full_messages_for(:name).each do |message| %>
+              <p class="text-danger"><%= message %></p>
+            <% end %>
+          <% end %>
+
+          <%= f.text_field :name, class: 'form-control' %>
+        </div>
+      </div>
+
+      <div class="form-group row">
+        <%= f.label :sku, 'Master SKU', class: 'col-sm-2 control-label form-right' %>
+
+        <div class="col-sm-10">
+          <% if fba_product.errors.include?(:sku) %>
+            <% fba_product.errors.full_messages_for(:sku).each do |message| %>
+              <p class="text-danger"><%= message %></p>
+            <% end %>
+          <% end %>
+
+          <%= f.text_field :sku, class: 'form-control' %>
+        </div>
+      </div>
+
+      <div class="form-group row fba-skus">
+        <div class='fba-sku-labels'>
+          <%= f.label :fba_skus, 'Child SKUs', class: 'col-sm-2 control-label form-right' %>
+
+          <div class='col-sm-10'>
+            <div class='col-sm-4'>
+              <%= label_tag 'SKU', 'SKU' %>
+            </div>
+
+            <div class='col-sm-4'>
+              <%= label_tag 'Imprintable Variant', 'Imprintable Variant' %>
+            </div>
+
+            <div class='col-sm-4'>
+              <%= label_tag 'FBA Job Template', 'FBA Job Template' %>
+            </div>
+          </div>
+        </div>
+
+        <%= f.fields_for :fba_skus do |ff| %>
+          <%= render 'fba_products/fba_sku_fields', f: ff %>
+        <% end %>
+        <div class='clearfix'></div>
+        <%= f.link_to_add "Add Child SKU", :fba_skus, class: 'btn btn-success pull-right' %>
+      </div>
+    </div>
+
+    <%= f.submit "#{create_or_edit_text(f.object)} FBA Product", class: 'btn btn-primary' %>
+  <% end %>
+</div>

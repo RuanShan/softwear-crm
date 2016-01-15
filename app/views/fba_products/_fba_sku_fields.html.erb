@@ -1,0 +1,36 @@
+<div class='clear fba-sku-fields'>
+  <div class='col-sm-2'></div>
+  <div class='col-sm-10'>
+    <div class='col-sm-4'>
+      <%= f.text_field :sku, class: 'form-control fba-sku-sku' %>
+      <%= f.link_to_remove "Remove SKU", class: 'btn btn-danger margin-top-10' %>
+    </div>
+
+    <div class='col-sm-4' style='min-height: 145px;'>
+      <%= select_tag 'fba-sku-brand',
+        options_from_collection_for_select(Brand.all, :id, :name, f.object.imprintable_variant.try(:brand_id)),
+        include_blank: true, class: 'select2 fba-sku-brand width-100'
+      %>
+      <%= select_tag 'fba-sku-style',
+        imprintable_options_for_select(f.object),
+        include_blank: true, class: 'select2 fba-sku-style width-100'
+      %>
+      <%= select_tag 'fba-sku-color',
+        color_options_for_select(f.object),
+        include_blank: true, class: 'select2 fba-sku-color width-100'
+      %>
+      <%= f.select :imprintable_variant_id,
+        size_options_for_select(f.object),
+        { include_blank: true }, class: 'select2 fba-sku-size width-100'
+      %>
+    </div>
+
+    <div class='col-sm-4'>
+      <%= f.select :fba_job_template_id,
+        options_from_collection_for_select(FbaJobTemplate.all, :id, :name, f.object.fba_job_template_id),
+        { include_blank: true },
+        include_blank: true, class: 'select2 fba-sku-job-template width-100'
+      %>
+    </div>
+  </div>
+</div>

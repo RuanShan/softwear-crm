@@ -6,6 +6,7 @@ class Color < ActiveRecord::Base
   default_scope { order(:name) }
 
   has_many :imprintable_variants, dependent: :destroy, inverse_of: :color
+  has_many :imprintables, through: :imprintable_variants
 
   validates :name, uniqueness: true, presence: true
   validates :sku, length: { is: 3 }, if: :is_retail?

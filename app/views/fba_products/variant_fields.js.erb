@@ -1,0 +1,12 @@
+<% @results.each do |result| %>
+  var skuTextField = $('.fba-sku-sku[name="<%= result.id %>"]');
+  var fields = skuTextField.closest('.fba-sku-fields');
+  var selectField = fields.find('<%= result.target %>')
+  selectField.next().show();
+  selectField.find('option').remove();
+  selectField.select2({ data: <%= ([{id: '', text: ''}] + result.collection).to_json.html_safe %> });
+
+  <% result.hide.each do |hide_field| %>
+    fields.find('<%= hide_field %>').next().hide();
+  <% end %>
+<% end %>

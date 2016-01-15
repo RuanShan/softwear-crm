@@ -37,7 +37,7 @@
   margin-top: 20px;
 }
 
-.btn-fullwidth {
+.btn-fullwidth,.width-100 {
   width: 100%;
 }
 
@@ -107,10 +107,18 @@ blockquote.freshdesk_quote {
   width: 100%;
 }
 
+.max-height-550 {
+  max-height: 550px;
+}
+
 .search-results-count {
   color: rgb(0, 75, 143);
   float: left;
   margin-top: -33px;
+}
+
+.form-right {
+  text-align: right;
 }
 
 @import "font-awesome-sprockets";

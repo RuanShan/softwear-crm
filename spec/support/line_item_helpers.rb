@@ -31,7 +31,7 @@ module LineItemHelpers
 
     sizes.each do |size|
       letfunc.(:size).("size_#{size.to_s.downcase}") do
-        create(:valid_size, name: size)
+        create(:valid_size, name: size, display_value: size)
       end
 
       letfunc.(:imprintable_variant)

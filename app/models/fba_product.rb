@@ -1,5 +1,5 @@
 class FbaProduct < ActiveRecord::Base
-  has_many :fba_skus
+  has_many :fba_skus, dependent: :destroy
 
   accepts_nested_attributes_for :fba_skus, allow_destroy: true
 

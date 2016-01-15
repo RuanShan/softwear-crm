@@ -21,6 +21,10 @@ class ImprintableVariant < ActiveRecord::Base
     )
   end
 
+  def brand_id
+    imprintable.brand_id
+  end
+
   def brand
     imprintable.brand
   end
@@ -31,6 +35,10 @@ class ImprintableVariant < ActiveRecord::Base
 
   def full_name
     "#{brand.name} #{imprintable.style_catalog_no} #{color.name} #{size.name}"
+  end
+
+  def fancy_name
+    "#{brand.name} - #{imprintable.style_catalog_no} - #{color.name} - #{size.display_value}"
   end
 
   def name
@@ -47,5 +55,9 @@ class ImprintableVariant < ActiveRecord::Base
 
   def sku
     "#{imprintable.sku}#{size.sku}#{color.sku}"
+  end
+
+  def size_display
+    size.display_value || size.name
   end
 end
