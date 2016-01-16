@@ -72,6 +72,20 @@ describe Order, order_spec: true do
     it { is_expected.to respond_to :recalculate_payment_total! }
   end
 
+  describe 'after_update' do
+    let!(:order) { create(:order) }
+
+    describe 'if the invoice_state changes from pending to approved' do
+      it 'creates an activity with the key approved_invoice' do
+        PublicActivity.with_tracking do
+          order.invoice_state = 'approved'
+          order.save
+          expect(order.activities.where(key: 'order.approved_invoice').count).to eq(1)
+        end
+      end
+    end
+  end
+
   describe '#create_production_order' do
     describe 'when payment_status reaches "Payment Terms Met" and invoice_status reaches "approved"', story_96: true do
       let!(:order) { create(:order) }
