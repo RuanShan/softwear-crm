@@ -158,6 +158,7 @@ class Order < ActiveRecord::Base
   # subtotal will be changed when a line item price is changed and it calls recalculate_subtotal on the order.
   before_save :recalculate_coupons, if: :subtotal_changed?
   after_save :enqueue_create_production_order, if: :ready_for_production?
+  after_save :create_invoice_approval_activity, if: :invoice_state_changed?
 
   alias_method :comments, :all_comments
   alias_method :comments=, :all_comments=
@@ -570,6 +571,12 @@ class Order < ActiveRecord::Base
     end
   else
     alias_method :enqueue_create_production_order, :create_production_order
+  end
+
+  def create_invoice_approval_activity
+    if invoice_state_changed?(from: 'pending', to: 'approved')
+      create_activity key: 'order.approved_invoice'
+    end
   end
 
   def name_in_production
