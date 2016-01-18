@@ -3,7 +3,8 @@ class FbaProduct < ActiveRecord::Base
 
   accepts_nested_attributes_for :fba_skus, allow_destroy: true
 
-  validates :name, :sku, presence: true, uniqueness: true
+  validates :name, presence: true, uniqueness: true
+  validates :sku, presence: true
 
   searchable do
     text :name, :sku, :fba_sku_skus

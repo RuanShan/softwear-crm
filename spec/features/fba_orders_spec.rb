@@ -6,6 +6,7 @@ feature 'FBA Order management', fba_spec: true, story_103: true, js: true, retry
 
   given(:packing_slip_path) { "#{Rails.root}/spec/fixtures/fba/TestPackingSlip.txt" }
   given(:multi_packing_slip_path) { "#{Rails.root}/spec/fixtures/fba/PackingSlipMulti.txt" }
+  given(:bad_sku_packing_slip_path) { "#{Rails.root}/spec/fixtures/fba/PackingSlipBadSku.txt" }
 
   # Dashboard doesn't even work on ci
   unless ci?
@@ -17,246 +18,160 @@ feature 'FBA Order management', fba_spec: true, story_103: true, js: true, retry
     end
   end
 
-  context 'given multiple valid imprintables', story_957: true do
-    before(:each) do
-      Capybara.ignore_hidden_elements = false
-    end
+  given!(:shirt) { create(:associated_imprintable) }
+  given!(:sweater) { create(:associated_imprintable) }
 
-    after(:each) do
-      Capybara.ignore_hidden_elements = true
-    end
+  given!(:red) { create(:valid_color, name: 'Red') }
 
-    given!(:size_xs) { create :valid_size, sku: '01' }
-    given!(:size_s) { create :valid_size, sku: '02' }
-    given!(:size_m) { create :valid_size, sku: '03' }
-    given!(:size_l) { create :valid_size, sku: '04' }
-    given!(:size_xl) { create :valid_size, sku: '05' }
-    given!(:size_2xl) { create :valid_size, sku: '06' }
-    given!(:size_3xl) { create :valid_size, sku: '07' }
-    given!(:color) { create :valid_color, sku: '003' }
-    given!(:imprintable_1) { create :valid_imprintable, sku: '0100' }
-    given!(:imprintable_2) { create :valid_imprintable, sku: '1000' }
+  make_variants :red, :shirt,   [:XS, :S, :M, :L, :XL, :XXL, :XXXL], not: %i(line_item job)
+  make_variants :red, :sweater, [:XS, :S, :M, :L, :XL, :XXL, :XXXL], not: %i(line_item job)
 
-    background do
-      [size_xs, size_s, size_m, size_l, size_xl, size_2xl, size_3xl].each do |size|
-        ImprintableVariant.create!(
-          imprintable_id: imprintable_1.id,
-          size_id:  size.id,
-          color_id: color.id
-        )
-        unless size == size_xs || size == size_3xl
-          ImprintableVariant.create!(
-            imprintable_id: imprintable_2.id,
-            size_id:  size.id,
-            color_id: color.id
-          )
-        end
-      end
-    end
+  given!(:job_template) { create(:fba_job_template) }
 
-    scenario 'user can create a new FBA order', retry: 3 do
-      visit fba_orders_path
-      find('.new-fba').click
+  given(:scuba_doitdeeper_shirt) do
+    create(
+      :fba_product,
+      name: 'Scooba Shirt', sku: 'scuba_doitdeeper',
+      fba_skus_attributes: {
+        0 => {
+          sku: '0-scuba_doitdeeper-2010001003',
+          imprintable_variant_id: red_shirt_xs.id,
+          fba_job_template_id: job_template.id
+        },
+        1 => {
+          sku: '0-scuba_doitdeeper-2010002003',
+          imprintable_variant_id: red_shirt_s.id,
+          fba_job_template_id: job_template.id
+        },
+        2 => {
+          sku: '0-scuba_doitdeeper-2010003003',
+          imprintable_variant_id: red_shirt_m.id,
+          fba_job_template_id: job_template.id
+        },
+        3 => {
+          sku: '0-scuba_doitdeeper-2010004003',
+          imprintable_variant_id: red_shirt_l.id,
+          fba_job_template_id: job_template.id
+        },
+        4 => {
+          sku: '0-scuba_doitdeeper-2010005003',
+          imprintable_variant_id: red_shirt_xl.id,
+          fba_job_template_id: job_template.id
+        },
+        5 => {
+          sku: '0-scuba_doitdeeper-2010006003',
+          imprintable_variant_id: red_shirt_xxl.id,
+          fba_job_template_id: job_template.id
+        },
+        6 => {
+          sku: '0-scuba_doitdeeper-2010007003',
+          imprintable_variant_id: red_shirt_xxxl.id,
+          fba_job_template_id: job_template.id
+        }
+      }
+    )
+  end
 
-      fill_in 'Name', with: 'Test FBA'
-      fill_in 'Deadline', with: 'Feb 04, 2015, 12:00 PM'
+  given(:scuba_doitdeeper_sweater) do
+    create(
+      :fba_product,
+      name: 'Scooba Sweater', sku: 'scuba_doitdeeper',
+      fba_skus_attributes: {
+        0 => {
+          sku: '0-scuba_doitdeeper-2100002003',
+          imprintable_variant_id: red_sweater_s.id,
+          fba_job_template_id: job_template.id
+        },
+        1 => {
+          sku: '0-scuba_doitdeeper-2100003003',
+          imprintable_variant_id: red_sweater_m.id,
+          fba_job_template_id: job_template.id
+        },
+        2 => {
+          sku: '0-scuba_doitdeeper-2100004003',
+          imprintable_variant_id: red_sweater_l.id,
+          fba_job_template_id: job_template.id
+        },
+        3 => {
+          sku: '0-scuba_doitdeeper-2100005003',
+          imprintable_variant_id: red_sweater_xl.id,
+          fba_job_template_id: job_template.id
+        },
+        4 => {
+          sku: '0-scuba_doitdeeper-2100006003',
+          imprintable_variant_id: red_sweater_xxl.id,
+          fba_job_template_id: job_template.id
+        }
+      }
+    )
+  end
+
+  context 'when matching FBA Products are present,' do
+    background { scuba_doitdeeper_shirt; scuba_doitdeeper_sweater }
+
+    scenario 'a user can create an FBA order with the jobs and line items specified by a packing slip' do
+      visit new_fba_orders_path
+      fill_in 'Name', with: 'An FBA Order'
+      fill_in 'Deadline', with: '12/25/2025 12:00 AM'
 
       click_button 'Next'
-      sleep 0.2
-
-      find('#js-upload-packing-slips-button').click
-      wait_for_ajax
+      click_link 'Upload Packing Slip(s)'
       attach_file 'packing_slips_', multi_packing_slip_path
+
       click_button 'Upload'
+      wait_for_ajax
 
-      sleep 1
-
+      expect(page).to have_content 'PackingSlipMulti.txt'
       expect(page).to have_content 'Job and line items will be generated'
 
       click_button 'Next'
-      sleep 0.5
-      all('input[value="Submit"]').first.click
+      click_button 'Submit'
 
-      sleep 2
-      expect(Order.fba.where(name: 'Test FBA')).to exist
-      order = Order.fba.find_by(name: 'Test FBA')
-      expect(order.jobs.count).to eq 1
-      expect(order.jobs.first.line_items.count).to eq 12
-      expect(order.jobs.first.line_items.first.quantity).to eq 1
+      order = Order.fba.where(name: 'An FBA Order')
+      expect(order).to exist
+      order = order.first
+      expect(
+        order.jobs.joins(:imprints).where(imprints: { print_location_id: fba_job_template.imprints.first.id }).size
+      ).to eq 2
 
-      expect(page).to have_content 'Test FBA'
-    end
+      expect(order.jobs.where(name: 'Scooba Sweater - FBA312LM3T')).to exist
+      expect(order.jobs.where(name: 'Scooba Shirt - FBA312LM3T')).to exist
 
-    context 'when one imprintable has "toddler" (or "onesie" or "infant") in the name' do
-      background do
-        imprintable_1.update_column :style_name, 'Some Kind of Onesie'
-      end
-
-      it 'creates a separate job for the toddler/infant/onesie imprintable', no_ci: true, pending: 'Nigel todo' do
-        visit fba_orders_path
-        find('.new-fba').click
-
-        fill_in 'Name', with: 'Test FBA'
-        fill_in 'Deadline', with: 'Feb 04, 2015, 12:00 PM'
-
-        click_button 'Next'
-        sleep 0.2
-
-        find('#js-upload-packing-slips-button').click
-        wait_for_ajax
-        attach_file 'packing_slips_', multi_packing_slip_path
-        click_button 'Upload'
-
-        sleep 1
-
-        expect(page).to have_content 'Job and line items will be generated'
-
-        click_button 'Next'
-        sleep 0.5
-        all('input[value="Submit"]').first.click
-
-        sleep 2
-        expect(Order.fba.where(name: 'Test FBA')).to exist
-        order = Order.fba.find_by(name: 'Test FBA')
-        expect(order.jobs.count).to eq 2
-        expect(order.line_items.count).to eq 12
-        expect(order.line_items.first.quantity).to eq 1
-
-        expect(page).to have_content 'Test FBA'
-      end
+      expect(order.jobs.joins(:line_items).where(line_items: { imprintable_variant_id: red_sweater_xs.id, quantity: 1 })).to exist
+      expect(order.jobs.joins(:line_items).where(line_items: { imprintable_variant_id: red_sweater_s.id, quantity: 1 })).to exist
+      expect(order.jobs.joins(:line_items).where(line_items: { imprintable_variant_id: red_sweater_m.id, quantity: 1 })).to exist
+      expect(order.jobs.joins(:line_items).where(line_items: { imprintable_variant_id: red_sweater_l.id, quantity: 1 })).to exist
+      expect(order.jobs.joins(:line_items).where(line_items: { imprintable_variant_id: red_sweater_xl.id, quantity: 1 })).to exist
+      expect(order.jobs.joins(:line_items).where(line_items: { imprintable_variant_id: red_sweater_xxl.id, quantity: 1 })).to exist
+      expect(order.jobs.joins(:line_items).where(line_items: { imprintable_variant_id: red_sweater_xxxl.id, quantity: 1 })).to exist
+      expect(order.jobs.joins(:line_items).where(line_items: { imprintable_variant_id: red_shirt_s.id, quantity: 1 })).to exist
+      expect(order.jobs.joins(:line_items).where(line_items: { imprintable_variant_id: red_shirt_m.id, quantity: 1 })).to exist
+      expect(order.jobs.joins(:line_items).where(line_items: { imprintable_variant_id: red_shirt_l.id, quantity: 1 })).to exist
+      expect(order.jobs.joins(:line_items).where(line_items: { imprintable_variant_id: red_shirt_xl.id, quantity: 1 })).to exist
+      expect(order.jobs.joins(:line_items).where(line_items: { imprintable_variant_id: red_shirt_xxl.id, quantity: 1 })).to exist
     end
   end
 
-  context 'given valid imprintables, sizes, and colors' do
-    given!(:size_s) { create :valid_size, sku: '02' }
-    given!(:size_m) { create :valid_size, sku: '03' }
-    given!(:size_l) { create :valid_size, sku: '04' }
-    given!(:size_xl) { create :valid_size, sku: '05' }
-    given!(:color) { create :valid_color, sku: '000' }
-    given!(:imprintable) { create :valid_imprintable, sku: '0705' }
-
-    [:size_s, :size_m, :size_l, :size_xl].each do |size|
-      before :each do
-        create(
-          :blank_imprintable_variant,
-          size_id: send(size).id,
-          color_id: color.id,
-          imprintable_id: imprintable.id
-        )
-      end
-    end
-
-    describe 'creation' do
-      before(:each) do
-        Capybara.ignore_hidden_elements = false
-      end
-
-      after(:each) do
-        Capybara.ignore_hidden_elements = true
-      end
-
-      scenario 'user can create a new FBA order', create: true do
-        visit fba_orders_path
-        find('.new-fba').click
-
-        fill_in 'Name', with: 'Test FBA'
-        fill_in 'Deadline', with: 'Feb 04, 2015, 12:00 PM'
-
-        click_button 'Next'
-        sleep 0.2
-
-        find('#js-upload-packing-slips-button').click
-        wait_for_ajax
-        attach_file 'packing_slips_', packing_slip_path
-        click_button 'Upload'
-
-        sleep 1
-
-        expect(page).to have_content 'Job and line items will be generated'
-
-        click_button 'Next'
-        sleep 0.5
-        all('input[value="Submit"]').first.click
-
-        sleep 2
-        expect(Order.fba.where(name: 'Test FBA')).to exist
-        order = Order.fba.find_by(name: 'Test FBA')
-        expect(order.jobs.count).to eq 1
-
-        expect(order.jobs.first.line_items.count).to eq 4
-        expect(page).to have_content 'Test FBA'
-      end
-
-      context 'when a color sku is mismatched' do
-        before(:each) do
-          color.update_attributes sku: '123'
-        end
-
-        scenario 'user is informed', color: true, retry: 3 do
-          visit fba_orders_path
-          find('.new-fba').click
-
-          fill_in 'Name', with: 'Test FBA'
-          fill_in 'Deadline', with: 'Feb 04, 2015, 12:00 PM'
-
-          click_button 'Next'
-
-          find('#js-upload-packing-slips-button').click
-          wait_for_ajax
-          attach_file 'packing_slips_', packing_slip_path
-          click_button 'Upload'
-          wait_for_ajax
-          sleep 0.2
-
-          expect(page).to have_content %(No color with SKU 000 was found)
-        end
-      end
-    end
+  context "when some skus don't match, but can be parsed" do
+    scenario 'the user is informed and provided to create the missing product', pending: 'uhhh'
   end
 
-  context 'given valid imprintable, color, but missing one size', size: true do
-    before(:each) do
-      Capybara.ignore_hidden_elements = false
-    end
-
-    after(:each) do
-      Capybara.ignore_hidden_elements = true
-    end
-
-    given!(:other_size_s) { create :valid_size, sku: '10' }
-    given!(:size_m) { create :valid_size, sku: '03' }
-    given!(:size_l) { create :valid_size, sku: '04' }
-    given!(:size_xl) { create :valid_size, sku: '05' }
-    given!(:color) { create :valid_color, sku: '000' }
-    given!(:imprintable) { create :valid_imprintable, sku: '0705' }
-
-    background do
-      [other_size_s, size_m, size_l, size_xl].each do |size|
-        ImprintableVariant.create!(
-          imprintable_id: imprintable.id,
-          size_id:  size.id,
-          color_id: color.id
-        )
-      end
-    end
-
-    scenario 'user is informed that the size could not be found', retry: 3 do
-      visit fba_orders_path
-      find('.new-fba').click
-
-      fill_in 'Name', with: 'Test FBA'
-      fill_in 'Deadline', with: 'Feb 04, 2015, 12:00 PM'
+  context "when there are some bad skus" do
+    scenario 'the user is informed and linked to the fba products page (target=_blank)' do
+      visit new_fba_orders_path
+      fill_in 'Name', with: 'An FBA Order'
+      fill_in 'Deadline', with: '12/25/2025 12:00 AM'
 
       click_button 'Next'
-      sleep 0.2
+      click_link 'Upload Packing Slip(s)'
+      attach_file 'packing_slips_', bad_sku_packing_slip_path
 
-      find('#js-upload-packing-slips-button').click
-      wait_for_ajax
-      attach_file 'packing_slips_', packing_slip_path
       click_button 'Upload'
       wait_for_ajax
 
-      expect(page).to have_content %(No size with SKU 02 was found)
+      expect(page).to have_content 'PackingSlipBadSku.txt'
+      expect(page).to have_content 'No line items will be generated'
+      expect(page).to have_selector "a[href=#{fba_products_path}]"
     end
   end
 end

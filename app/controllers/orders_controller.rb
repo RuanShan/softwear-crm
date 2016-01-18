@@ -106,13 +106,14 @@ class OrdersController < InheritedResources::Base
   end
 
   def fba_job_info
+    byebug
     packing_slips = params[:packing_slips]
     packing_slip_urls = params[:packing_slip_urls]
 
     @fba_infos = []
 
     if packing_slips
-      @fba_infos += packing_slips.flat_map do |packing_slip|
+      @fba_infos += packing_slips.compact.map do |packing_slip|
         FBA.parse_packing_slip(
           StringIO.new(packing_slip.read),
           filename: packing_slip.original_filename
@@ -121,13 +122,12 @@ class OrdersController < InheritedResources::Base
     end
 
     if packing_slip_urls
-      @fba_infos += packing_slip_urls.split("\n").flat_map do |url|
+      @fba_infos += packing_slip_urls.split("\n").compact.map do |url|
         next if url =~ /^\s*$/
-        url = url.strip
-        uri = URI.parse(url)
+        url.strip!
 
         FBA.parse_packing_slip(
-          StringIO.new(Net::HTTP.get(uri)),
+          StringIO.new(URI.parse(url).read),
           filename: url.split('/').last
         )
       end

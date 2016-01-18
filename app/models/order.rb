@@ -461,7 +461,7 @@ class Order < ActiveRecord::Base
   end
 
   def calculate_subtotal
-    line_items.reload.map { |li| li.total_inprice.to_f }.reduce(0, :+)
+    line_items.reload.map { |li| li.total_price.to_f }.reduce(0, :+)
   end
 
   def tax(exclude_discounts = [])
