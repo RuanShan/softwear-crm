@@ -1,13 +1,13 @@
 <% if @fba_infos %>
 
   <% @fba_infos.each do |fba| %>
-    console.log('ADDED <%=j fba.filename %>');
-    var container = $("<%=j "#{render('fba_upload', filename: fba.filename || fba.job_name)}" %>");
+    console.log('ADDED <%=j fba[:filename] %>');
+    var container = $("<%=j "#{render('fba_upload', filename: fba[:filename])}" %>");
     $('#js-packing-slip-info-zone').append(container);
     container.find('.info')
     .append("<%=j "#{render('fba_job_info_box', fba: fba)}" %>");
   <% end %>
 
 <% else %>
-  errorModal("You've met with a terrible fate, haven't you?");
+  errorModal("le gasp");
 <% end %>

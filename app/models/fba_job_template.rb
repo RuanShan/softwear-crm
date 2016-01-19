@@ -20,6 +20,17 @@ class FbaJobTemplate < ActiveRecord::Base
   end
   attr_writer :imprint_descriptions
 
+  def imprints_attributes
+    hash = {}
+    imprints.each do |imprint|
+      hash[imprint.id] = {
+        print_location_id: imprint.print_location_id,
+        description:       imprint.description
+      }
+    end
+    hash
+  end
+
   private
 
   def assign_imprints

@@ -86,7 +86,8 @@ class Order < ActiveRecord::Base
 
   belongs_to :salesperson, class_name: User
   belongs_to :store
-  has_many :jobs, as: :jobbable, dependent: :destroy
+  has_many :jobs, as: :jobbable, dependent: :destroy, inverse_of: :jobbable
+  has_many :line_items, through: :jobs, source: :line_items
   has_many :artwork_requests, through: :jobs, dependent: :destroy
   has_many :artworks, through: :artwork_requests
   has_many :imprints, through: :jobs
@@ -380,10 +381,6 @@ class Order < ActiveRecord::Base
     salesperson.full_name
   end
 
-  def line_items
-    LineItem.where(line_itemable_id: job_ids, line_itemable_type: 'Job')
-  end
-
   def payment_status
     if balance <= 0
       'Payment Complete'
@@ -611,6 +608,7 @@ class Order < ActiveRecord::Base
     attrs
   end
 
+  # TODO don't need this
   def generate_jobs(fba_job_infos)
     fba_job_infos.map(&:with_indifferent_access).each do |fba|
       fba[:jobs].each do |style, job_info|
