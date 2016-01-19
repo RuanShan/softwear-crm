@@ -30,6 +30,18 @@ ActiveRecord::Schema.define(version: 20160119202740) do
   add_index "activities", ["recipient_id", "recipient_type"], name: "index_activities_on_recipient_id_and_recipient_type", using: :btree
   add_index "activities", ["trackable_id", "trackable_type"], name: "index_activities_on_trackable_id_and_trackable_type", using: :btree
 
+  create_table "admin_proofs", force: :cascade do |t|
+    t.integer  "order_id",      limit: 4
+    t.string   "file_url",      limit: 191
+    t.string   "thumbnail_url", limit: 191
+    t.datetime "created_at",                  null: false
+    t.datetime "updated_at",                  null: false
+    t.string   "name",          limit: 191
+    t.text     "description",   limit: 65535
+  end
+
+  add_index "admin_proofs", ["order_id"], name: "index_admin_proofs_on_order_id", using: :btree
+
   create_table "artwork_proofs", force: :cascade do |t|
     t.integer  "artwork_id", limit: 4
     t.integer  "proof_id",   limit: 4
@@ -540,9 +552,9 @@ ActiveRecord::Schema.define(version: 20160119202740) do
     t.decimal  "shipping_price",                             precision: 10, scale: 2, default: 0.0
     t.string   "invoice_state",             limit: 191
     t.string   "production_state",          limit: 191
-    t.integer  "softwear_prod_id",          limit: 4
     t.string   "notification_state",        limit: 191
     t.integer  "freshdesk_proof_ticket_id", limit: 4
+    t.integer  "softwear_prod_id",          limit: 4
     t.string   "artwork_state",             limit: 191
     t.string   "customer_key",              limit: 191
     t.text     "invoice_reject_reason",     limit: 16777215
@@ -550,6 +562,7 @@ ActiveRecord::Schema.define(version: 20160119202740) do
     t.decimal  "taxable_total",                              precision: 10, scale: 2
     t.decimal  "discount_total",                             precision: 10, scale: 2
     t.decimal  "payment_total",                              precision: 10, scale: 2
+    t.boolean  "imported_from_admin"
   end
 
   add_index "orders", ["deleted_at"], name: "index_orders_on_deleted_at", using: :btree
@@ -695,8 +708,8 @@ ActiveRecord::Schema.define(version: 20160119202740) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.decimal  "shipping",                                     precision: 10, scale: 2
-    t.datetime "initialized_at"
     t.string   "quote_source",                     limit: 191
+    t.datetime "initialized_at"
     t.string   "freshdesk_ticket_id",              limit: 191
     t.boolean  "informal"
     t.integer  "insightly_category_id",            limit: 4

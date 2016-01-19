@@ -223,12 +223,19 @@
             </div>
 
             <div class="tab-pane animated fadeInRight" id="artwork">
-              <%= render partial: 'artwork_requests/list',
-                         locals: { order: @order } %>
+             <% if @order.imported_from_admin %>
+                <%= render 'artwork_tab_disabled', message: "There was no artwork concept in this version." %>
+             <% else %>
+                <%= render 'artwork_requests/list',  order: @order %>
+             <% end %>
             </div>
 
             <div class="tab-pane animated fadeInRight" id="proofs">
-              <%= render partial: 'proofs/list', locals: { order: @order } %>
+             <% if @order.imported_from_admin %>
+               <%= render 'admin_proofs', order: @order %>
+             <% else %>
+               <%= render partial: 'proofs/list', locals: { order: @order } %>
+             <% end %>
             </div>
 
             <div class="tab-pane animated fadeInRight" id="comments">

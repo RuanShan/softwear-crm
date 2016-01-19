@@ -112,6 +112,11 @@
   <div class="form-group">
           <%= f.label :production_state, class: 'text-danger' %>
           <%= f.error_for :production_state %>
-          <%= f.select :production_state, ['pending', 'in_production', 'complete'],
-                       include_blank: true %>
-</div>                       
+          <%= f.select :production_state, ['pending', 'in_production', 'complete'], include_blank: true %>
+  </div>
+
+  <div class="form-group">
+    <%= f.label :imported_from_admin, class: 'text-danger' %>
+    <%= f.error_for :imported_from_admin %>
+    <%= f.select :imported_from_admin, options_for_select([['Yes', 1], ['No', 0]], f.object.imported_from_admin ? 1 : 0) %>
+  </div>
