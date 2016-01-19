@@ -1,8 +1,98 @@
 class FBA
   SKU = Struct.new(:version, :idea, :print, :imprintable, :size, :color)
+  module PendingLineItems
+    def line_items_attributes
+      hash = {}
+      each_with_index do |e, index|
+        hash[index] = {
+          quantity:          e.quantity,
+          unit_price:        0,
+          imprintable_price: 0,
+          decoration_price:  0,
+          imprintable_object_type: 'ImprintableVariant',
+          imprintable_object_id:    e.fba_sku.imprintable_variant_id
+        }
+      end
+      hash
+    end
+  end
 
   class << self
+    # Possible keys:
+    # { :fatal_error => message }     if the file could not be parsed  (check for this first)
+    # { :errors => list_of_messages } if there were some other problems
+    # { :jobs_attributes => jobs_attributes } these attributes will be valid form input
     def parse_packing_slip(packing_slip, options = {})
+      options[:filename] ||= '<unknown file>'
+      routes = options[:context]
+
+      header, data = parse_file(packing_slip)
+      result = {
+        errors: [],
+        jobs_attributes: {},
+        filename: options[:filename]
+      }
+
+      if header.blank? || data.blank?
+        return { fatal_error: "Couldn't parse #{options[:filename]}" }
+      end
+
+      # Pass 1: Just collect (and report bad skus)
+      job_groups = {}
+      data.each do |datum|
+        sku     = datum['Merchant SKU']
+        fba_sku = FbaSku.find_by(sku: sku)
+
+        if fba_sku.nil?
+          result[:errors] << lambda do |view|
+            "No FBA Product was found with a child sku of #{sku}. Configure FBA Products "\
+            "#{view.link_to 'here', view.fba_products_path, target: :_blank}."
+          end
+          next
+        end
+        fba_product      = fba_sku.fba_product
+        fba_job_template = fba_sku.fba_job_template
+
+        if fba_product.nil?
+          # This really shouldn't happen - FbaSku can only be created through the FbaProduct form
+          fba_sku.destroy
+          result[:errors] << lambda do |view|
+            "There was a bug in the entry for sku #{sku}. It will have to be re-added "\
+            "from the #{view.link_to 'FBA Products', view.fba_products_path, target: :_blank} page."
+          end
+          next
+        elsif fba_job_template.nil?
+          result[:errors] << lambda do |view|
+            "The entry for sku #{sku} does not have a job template. You can set one "\
+            "#{view.link_to 'here', view.edit_fba_product_path(fba_product), target: :_blank} and then "\
+            "re-upload the packing slip."
+          end
+          next
+        end
+
+        # The extend thing is only so that I can say "skus.line_items_attributes" in the next pass
+        job_groups[[fba_product, fba_job_template]] ||= [].tap { |a| a.send :extend, PendingLineItems }
+        job_groups[[fba_product, fba_job_template]] << OpenStruct.new(fba_sku: fba_sku, quantity: datum['Shipped'])
+      end
+
+      # Pass 2: Add job attributes
+      job_groups.each do |key, skus|
+        fba_product, fba_job_template = key
+
+        result[:jobs_attributes][key.hash] = {
+          name:        "#{fba_product.name} #{fba_job_template.name} - #{header['Shipment ID']}",
+          description: "Generated from packing slip #{options[:filename]} and FBA Product ##{fba_product.id}, "\
+                       "Job Template ##{fba_job_template.id}",
+          line_items_attributes: skus.line_items_attributes,
+          imprints_attributes:   fba_job_template.imprints_attributes,
+          collapsed: true
+        }
+      end
+
+      result
+    end
+
+    def old_parse_packing_slip(packing_slip, options = {})
       header, data = parse_file(packing_slip)
 
       errors = []

@@ -8,6 +8,7 @@ FactoryGirl.define do
 
       factory :imprint_without_job do
         job nil
+        print_location { |p| p.association(:valid_print_location) }
       end
 
       factory :imprint_with_name_number do
