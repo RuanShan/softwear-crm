@@ -23,7 +23,7 @@ class Imprint < ActiveRecord::Base
   has_many :artworks, through: :proofs
 
   # validates :job, presence: true
-  validates :print_location, presence: true, uniqueness: { scope: :job_id }
+  validates :print_location, presence: true, uniqueness: { scope: :job_id }, if: :job_id
 
   after_save :touch_associations
 

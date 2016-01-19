@@ -18,15 +18,22 @@ class Job < ActiveRecord::Base
 
   belongs_to :jobbable, polymorphic: true
   has_many :artwork_requests, through: :imprints
-  has_many :imprints, dependent: :destroy
-  has_many :line_items, as: :line_itemable, dependent: :destroy
+  has_many :imprints, dependent: :destroy, inverse_of: :job
+  has_many :line_items, as: :line_itemable, dependent: :destroy, inverse_of: :line_itemable
   has_many :shipments, as: :shippable
   has_many :proofs
   has_many :discounts, as: :discountable
   has_many :print_locations, through: :imprints
   has_many :imprint_methods, through: :print_locations
 
-  accepts_nested_attributes_for :line_items, :imprints, allow_destroy: true
+  accepts_nested_attributes_for :line_items, allow_destroy: true
+  accepts_nested_attributes_for :imprints,   allow_destroy: true
+
+  def imprints_attributes=(new)
+    r = super
+    byebug
+    r
+  end
 
   Imprintable::TIERS.each do |tier_num, tier|
     tier_line_items = "#{tier.underscore}_line_items".to_sym
@@ -368,6 +375,8 @@ class Job < ActiveRecord::Base
   end
 
   def create_default_imprint
+    return unless imprints.empty?
+
     screen_print = ImprintMethod.find_by(name: 'Screen Print')
     return if screen_print.nil?
     full_chest = screen_print.print_locations.find_by(name: 'Full chest')
@@ -399,7 +408,7 @@ class Job < ActiveRecord::Base
 
   def placeholder_name
     return unless jobbable_type == 'Order'
-    jobbable.fba? ? 'Shipping Location' : 'New Job'
+    jobbable.try(:fba?) ? 'Shipping Location' : 'New Job'
   end
 
   def assure_name_and_description(force_name = nil)

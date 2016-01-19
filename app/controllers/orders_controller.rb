@@ -55,28 +55,34 @@ class OrdersController < InheritedResources::Base
   end
 
   def create
-    unless params[:order].try(:[], 'terms') == 'Fulfilled by Amazon'
-      super do |success, failure|
-        if session.has_key? :quote_id
-          unless OrderQuote.new(quote_id: session[:quote_id], order_id: @order.id).save
-            flash[:error] = "Couldn't attach quote to order"
-          end
-          session[:quote_id] = nil
+    @order = Order.new(permitted_params[:order])
+    valid = false
+    if params[:order][:jobs_attributes]
+      # TODO I have no idea why the permitted_params doesn't work on its own here.
+      if @order.save
+        byebug
+        @order.jobs_attributes = params.permit![:order][:jobs_attributes]
+        if @order.save
+          valid = true
+        else
+          @order.really_destroy!
         end
-        success.html { redirect_to edit_order_path(@order) }
-        failure.html { render action: :new }
       end
-      return
+    else
+      valid = @order.save
     end
 
-    @order = Order.create(permitted_params[:order])
-
-    if @order.valid?
-      @order.generate_jobs(params[:fba_jobs].map(&JSON.method(:parse))) if params[:fba_jobs]
-      redirect_to edit_order_path @order
+    if valid
+      if session.has_key? :quote_id
+        unless OrderQuote.new(quote_id: session[:quote_id], order_id: @order.id).save
+          flash[:error] = "Couldn't attach quote to order"
+        end
+        session[:quote_id] = nil
+      end
+      redirect_to edit_order_path(@order)
     else
-      @empty = Store.all.empty?
-      render 'new_fba'
+      flash[:error] = @order.errors.full_messages.join("\n")
+      render action: @order.fba? ? :new_fba : :new
     end
   end
 
@@ -106,14 +112,13 @@ class OrdersController < InheritedResources::Base
   end
 
   def fba_job_info
-    byebug
     packing_slips = params[:packing_slips]
     packing_slip_urls = params[:packing_slip_urls]
 
     @fba_infos = []
 
     if packing_slips
-      @fba_infos += packing_slips.compact.map do |packing_slip|
+      @fba_infos += packing_slips.compact.flat_map do |packing_slip|
         FBA.parse_packing_slip(
           StringIO.new(packing_slip.read),
           filename: packing_slip.original_filename
@@ -122,7 +127,7 @@ class OrdersController < InheritedResources::Base
     end
 
     if packing_slip_urls
-      @fba_infos += packing_slip_urls.split("\n").compact.map do |url|
+      @fba_infos += packing_slip_urls.split("\n").compact.flat_map do |url|
         next if url =~ /^\s*$/
         url.strip!
 
@@ -133,7 +138,7 @@ class OrdersController < InheritedResources::Base
       end
     end
 
-    @fba_infos.try(:compact!)
+    @fba_infos.compact!
   end
 
   def imprintable_order_sheets
@@ -188,7 +193,18 @@ class OrdersController < InheritedResources::Base
         :delivery_method, :phone_number, :commission_amount,
         :store_id, :salesperson_id, :total, :shipping_price, :artwork_state,
         :freshdesk_proof_ticket_id, :softwear_prod_id, :production_state,
-        quote_ids: []
+        quote_ids: [],
+        jobs_attributes: [
+          :id, :name, :jobbable_id, :jobbable_type, :description, :_destroy,
+          imprints_attributes: [
+            :print_location_id, :description, :_destroy, :id
+          ],
+          line_items_attributes: [
+            :imprintable_object_id, :imprintable_object_type, :id,
+            :line_itemable_id, :line_itemable_type, :quantity,
+            :unit_price, :decoration_price, :_destroy
+          ]
+        ]
       ]
     )
   end

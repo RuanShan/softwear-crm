@@ -25,11 +25,11 @@ module ApplicationHelper
 
   def modal_flash_class(level)
     case level
-    when :info then 'modal-content-info'
-    when :notice then 'modal-content-success'
+    when :info    then 'modal-content-info'
+    when :notice  then 'modal-content-success'
     when :success then 'modal-content-success'
-    when :error then 'modal-content-error'
-    when :alert then 'modal-content-error'
+    when :error   then 'modal-content-error'
+    when :alert   then 'modal-content-error'
     when :warning then 'modal-content-warning'
     end
   end
@@ -221,5 +221,20 @@ module ApplicationHelper
 
     image_url = user.try(:profile_picture).try(:file).try(:url, :icon)
     image_tag image_url || 'avatar/masarie.jpg', options
+  end
+
+  def hash_to_hidden_fields(hash, scope)
+    buf = ''.html_safe
+
+    hash.each do |key, value|
+      new_scope = "#{scope}[#{key}]"
+      if value.is_a?(Hash)
+        buf += hash_to_hidden_fields(value, new_scope)
+      else
+        buf += hidden_field_tag(new_scope, value.to_s)
+      end
+    end
+
+    buf
   end
 end

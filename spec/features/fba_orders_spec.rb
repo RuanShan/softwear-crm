@@ -1,12 +1,22 @@
 require 'spec_helper'
+include LineItemHelpers
 
-feature 'FBA Order management', fba_spec: true, story_103: true, js: true, retry: 3 do
+feature 'FBA Order management', fba_spec: true, story_103: true, js: true, retry: 0 do
   given!(:valid_user) { create :user }
   background(:each) { login_as valid_user }
 
   given(:packing_slip_path) { "#{Rails.root}/spec/fixtures/fba/TestPackingSlip.txt" }
   given(:multi_packing_slip_path) { "#{Rails.root}/spec/fixtures/fba/PackingSlipMulti.txt" }
   given(:bad_sku_packing_slip_path) { "#{Rails.root}/spec/fixtures/fba/PackingSlipBadSku.txt" }
+
+  before(:each) do
+    Capybara.ignore_hidden_elements = false
+  end
+
+  after(:each) do
+    Capybara.ignore_hidden_elements = true
+  end
+
 
   # Dashboard doesn't even work on ci
   unless ci?
@@ -26,7 +36,7 @@ feature 'FBA Order management', fba_spec: true, story_103: true, js: true, retry
   make_variants :red, :shirt,   [:XS, :S, :M, :L, :XL, :XXL, :XXXL], not: %i(line_item job)
   make_variants :red, :sweater, [:XS, :S, :M, :L, :XL, :XXL, :XXXL], not: %i(line_item job)
 
-  given!(:job_template) { create(:fba_job_template) }
+  given!(:job_template) { create(:fba_job_template_with_imprint, name: 'Test Template') }
 
   given(:scuba_doitdeeper_shirt) do
     create(
@@ -106,7 +116,7 @@ feature 'FBA Order management', fba_spec: true, story_103: true, js: true, retry
     )
   end
 
-  context 'when matching FBA Products are present,' do
+  context 'when matching FBA Products are present,', valid_data: true do
     background { scuba_doitdeeper_shirt; scuba_doitdeeper_sweater }
 
     scenario 'a user can create an FBA order with the jobs and line items specified by a packing slip' do
@@ -122,33 +132,34 @@ feature 'FBA Order management', fba_spec: true, story_103: true, js: true, retry
       wait_for_ajax
 
       expect(page).to have_content 'PackingSlipMulti.txt'
-      expect(page).to have_content 'Job and line items will be generated'
+      expect(page).to have_content 'Job and line items will be added'
 
       click_button 'Next'
-      click_button 'Submit'
+      find('.big-submit-button').click
 
       order = Order.fba.where(name: 'An FBA Order')
       expect(order).to exist
+      expect(page).to have_content 'An FBA Order'
       order = order.first
       expect(
-        order.jobs.joins(:imprints).where(imprints: { print_location_id: fba_job_template.imprints.first.id }).size
+        order.jobs.joins(:imprints).where(imprints: { print_location_id: job_template.imprints.first.id }).size
       ).to eq 2
 
-      expect(order.jobs.where(name: 'Scooba Sweater - FBA312LM3T')).to exist
-      expect(order.jobs.where(name: 'Scooba Shirt - FBA312LM3T')).to exist
+      expect(order.jobs.where(name: 'Scooba Sweater Test Template - FBA312LM3T')).to exist
+      expect(order.jobs.where(name: 'Scooba Shirt Test Template - FBA312LM3T')).to exist
 
-      expect(order.jobs.joins(:line_items).where(line_items: { imprintable_variant_id: red_sweater_xs.id, quantity: 1 })).to exist
-      expect(order.jobs.joins(:line_items).where(line_items: { imprintable_variant_id: red_sweater_s.id, quantity: 1 })).to exist
-      expect(order.jobs.joins(:line_items).where(line_items: { imprintable_variant_id: red_sweater_m.id, quantity: 1 })).to exist
-      expect(order.jobs.joins(:line_items).where(line_items: { imprintable_variant_id: red_sweater_l.id, quantity: 1 })).to exist
-      expect(order.jobs.joins(:line_items).where(line_items: { imprintable_variant_id: red_sweater_xl.id, quantity: 1 })).to exist
-      expect(order.jobs.joins(:line_items).where(line_items: { imprintable_variant_id: red_sweater_xxl.id, quantity: 1 })).to exist
-      expect(order.jobs.joins(:line_items).where(line_items: { imprintable_variant_id: red_sweater_xxxl.id, quantity: 1 })).to exist
-      expect(order.jobs.joins(:line_items).where(line_items: { imprintable_variant_id: red_shirt_s.id, quantity: 1 })).to exist
-      expect(order.jobs.joins(:line_items).where(line_items: { imprintable_variant_id: red_shirt_m.id, quantity: 1 })).to exist
-      expect(order.jobs.joins(:line_items).where(line_items: { imprintable_variant_id: red_shirt_l.id, quantity: 1 })).to exist
-      expect(order.jobs.joins(:line_items).where(line_items: { imprintable_variant_id: red_shirt_xl.id, quantity: 1 })).to exist
-      expect(order.jobs.joins(:line_items).where(line_items: { imprintable_variant_id: red_shirt_xxl.id, quantity: 1 })).to exist
+      expect(order.jobs.joins(:line_items).where(line_items: { imprintable_object_id: red_sweater_xs.id, quantity: 1 })).to exist
+      expect(order.jobs.joins(:line_items).where(line_items: { imprintable_object_id: red_sweater_s.id, quantity: 1 })).to exist
+      expect(order.jobs.joins(:line_items).where(line_items: { imprintable_object_id: red_sweater_m.id, quantity: 1 })).to exist
+      expect(order.jobs.joins(:line_items).where(line_items: { imprintable_object_id: red_sweater_l.id, quantity: 1 })).to exist
+      expect(order.jobs.joins(:line_items).where(line_items: { imprintable_object_id: red_sweater_xl.id, quantity: 1 })).to exist
+      expect(order.jobs.joins(:line_items).where(line_items: { imprintable_object_id: red_sweater_xxl.id, quantity: 1 })).to exist
+      expect(order.jobs.joins(:line_items).where(line_items: { imprintable_object_id: red_sweater_xxxl.id, quantity: 1 })).to exist
+      expect(order.jobs.joins(:line_items).where(line_items: { imprintable_object_id: red_shirt_s.id, quantity: 1 })).to exist
+      expect(order.jobs.joins(:line_items).where(line_items: { imprintable_object_id: red_shirt_m.id, quantity: 1 })).to exist
+      expect(order.jobs.joins(:line_items).where(line_items: { imprintable_object_id: red_shirt_l.id, quantity: 1 })).to exist
+      expect(order.jobs.joins(:line_items).where(line_items: { imprintable_object_id: red_shirt_xl.id, quantity: 1 })).to exist
+      expect(order.jobs.joins(:line_items).where(line_items: { imprintable_object_id: red_shirt_xxl.id, quantity: 1 })).to exist
     end
   end
 
@@ -170,7 +181,7 @@ feature 'FBA Order management', fba_spec: true, story_103: true, js: true, retry
       wait_for_ajax
 
       expect(page).to have_content 'PackingSlipBadSku.txt'
-      expect(page).to have_content 'No line items will be generated'
+      expect(page).to have_content 'No line items will be added'
       expect(page).to have_selector "a[href=#{fba_products_path}]"
     end
   end

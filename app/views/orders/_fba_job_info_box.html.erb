@@ -1,22 +1,26 @@
-<% if fba.errors? %>
+<% if error = fba[:fatal_error] %>
+  <p class='text-danger'>
+    ERROR: <%= error %>
+  </p>
+<% elsif !fba[:errors].empty? %>
   <p class='text-danger'>
     ERRORS:
     <ul>
-      <% fba.errors.uniq.each do |error| %>
-        <li><%= error %></li>
+      <% fba[:errors].each do |error| %>
+        <li><%= error.respond_to?(:call) ? error.call(self).html_safe : error %></li>
       <% end %>
     </ul>
-    <% if fba.jobs.empty? %>
-      No line items will be generated.
+    <% if fba[:jobs_attributes].empty? %>
+      No line items will be added.
     <% else %>
-      Some line items will be generated.
+      Some line items will be added.
     <% end %>
   </p>
 <% else %>
   <p class='text-success'>
     <span class='glyphicon glyphicon-ok'></span>
-    Job and line items will be generated.
+    Job and line items will be added.
   </p>
 <% end %>
 
-<%= hidden_field_tag('fba_jobs[]', fba.to_h.to_json) %>
+<%= hash_to_hidden_fields(fba[:jobs_attributes], 'order[jobs_attributes]') if fba[:jobs_attributes] %>

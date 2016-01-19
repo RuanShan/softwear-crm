@@ -144,11 +144,11 @@ class LineItem < ActiveRecord::Base
   end
 
   def imprintable_and_in_job?
-    imprintable? && !line_itemable.blank?
+    imprintable? && !(line_itemable_type.blank? || line_itemable_id.blank?)
   end
 
   def imprintable?
-    !imprintable_object.blank?
+    !(imprintable_object_type.blank? || imprintable_object_id.blank?)
   end
 
   def imprintable_variant?

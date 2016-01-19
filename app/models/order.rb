@@ -86,7 +86,7 @@ class Order < ActiveRecord::Base
 
   belongs_to :salesperson, class_name: User
   belongs_to :store
-  has_many :jobs, as: :jobbable, dependent: :destroy
+  has_many :jobs, as: :jobbable, dependent: :destroy, inverse_of: :jobbable
   has_many :artwork_requests, through: :jobs, dependent: :destroy
   has_many :artworks, through: :artwork_requests
   has_many :imprints, through: :jobs
@@ -610,6 +610,7 @@ class Order < ActiveRecord::Base
     attrs
   end
 
+  # TODO don't need this
   def generate_jobs(fba_job_infos)
     fba_job_infos.map(&:with_indifferent_access).each do |fba|
       fba[:jobs].each do |style, job_info|
