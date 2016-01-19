@@ -25,7 +25,9 @@ describe 'orders/edit.html.erb', order_spec: true do
   end
 
   context 'when imported_from_admin' do
-    before(:each) do
+    let!(:admin_proof) { create(:admin_proof, order: order) }
+
+    before do
       order.imported_from_admin = true
     end
 
@@ -33,7 +35,25 @@ describe 'orders/edit.html.erb', order_spec: true do
       render
       expect(rendered).to have_content("This order is an ancient relic")
     end
+
+    it 'should display the admin_proofs' do
+      render
+      expect(rendered).to have_content admin_proof.name
+      expect(rendered).to have_content admin_proof.description
+      expect(rendered).to have_css "img[src='#{admin_proof.thumbnail_url}']"
+      expect(rendered).to have_css "a[href='#{admin_proof.file_url}']"
+    end
+
+    context 'when a proof has no thumbnail' do
+      let!(:proof_without_thumbnail) { create(:admin_proof, order: order, thumbnail_url: '') }
+
+      it 'provides a link with the text "View full image" instead of the thumbnail link' do
+        render
+        expect(rendered).to have_css "a[href='#{admin_proof.file_url}']", text: 'View full image'
+      end
+    end
   end
+
   context 'when not imported_from_admin' do
     it 'display the artwork' do
       render

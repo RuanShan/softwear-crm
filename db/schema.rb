@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160119191032) do
+ActiveRecord::Schema.define(version: 20160119194409) do
 
   create_table "activities", force: :cascade do |t|
     t.integer  "trackable_id",   limit: 4
@@ -34,8 +34,10 @@ ActiveRecord::Schema.define(version: 20160119191032) do
     t.integer  "order_id",      limit: 4
     t.string   "file_url",      limit: 191
     t.string   "thumbnail_url", limit: 191
-    t.datetime "created_at",                null: false
-    t.datetime "updated_at",                null: false
+    t.datetime "created_at",                  null: false
+    t.datetime "updated_at",                  null: false
+    t.string   "name",          limit: 191
+    t.text     "description",   limit: 65535
   end
 
   add_index "admin_proofs", ["order_id"], name: "index_admin_proofs_on_order_id", using: :btree
