@@ -57,10 +57,9 @@ class OrdersController < InheritedResources::Base
   def create
     @order = Order.new(permitted_params[:order])
     valid = false
+    # nested attributes assignment does not work with the polymorphic jobs
     if params[:order][:jobs_attributes]
-      # TODO I have no idea why the permitted_params doesn't work on its own here.
       if @order.save
-        byebug
         @order.jobs_attributes = params.permit![:order][:jobs_attributes]
         if @order.save
           valid = true
