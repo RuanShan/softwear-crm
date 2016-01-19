@@ -19,26 +19,19 @@ class Job < ActiveRecord::Base
   belongs_to :jobbable, polymorphic: true
   has_many :artwork_requests, through: :imprints
   has_many :imprints, dependent: :destroy, inverse_of: :job
-  has_many :line_items, as: :line_itemable, dependent: :destroy, inverse_of: :line_itemable
+  has_many :line_items, dependent: :destroy, inverse_of: :job
   has_many :shipments, as: :shippable
   has_many :proofs
   has_many :discounts, as: :discountable
   has_many :print_locations, through: :imprints
   has_many :imprint_methods, through: :print_locations
 
-  accepts_nested_attributes_for :line_items, allow_destroy: true
-  accepts_nested_attributes_for :imprints,   allow_destroy: true
-
-  def imprints_attributes=(new)
-    r = super
-    byebug
-    r
-  end
+  accepts_nested_attributes_for :line_items, :imprints, allow_destroy: true
 
   Imprintable::TIERS.each do |tier_num, tier|
     tier_line_items = "#{tier.underscore}_line_items".to_sym
 
-    has_many tier_line_items, -> { where tier: tier_num }, as: :line_itemable, class_name: 'LineItem'
+    has_many tier_line_items, -> { where tier: tier_num }, class_name: 'LineItem'
     accepts_nested_attributes_for tier_line_items, allow_destroy: true
   end
 
@@ -172,7 +165,7 @@ class Job < ActiveRecord::Base
           end
         else
           line_item = LineItem.new(line_item_attributes)
-          line_item.line_itemable = self
+          line_item.job = self
           line_item.tier = tier_num if tier_num
           line_item.save
         end
@@ -300,7 +293,7 @@ class Job < ActiveRecord::Base
     result = {}
 
     LineItem
-      .where(line_itemable_id: id, line_itemable_type: 'Job')
+      .where(job_id: id)
       .where.not(imprintable_object_id: nil).each do |line_item|
         if line_item.imprintable_variant.nil?
           (order_instance || order).bad_variant_ids << line_item.imprintable_object_id
@@ -322,8 +315,7 @@ class Job < ActiveRecord::Base
   end
 
   def standard_line_items
-    LineItem.non_imprintable.where(line_itemable_id: id,
-                                   line_itemable_type: 'Job')
+    LineItem.non_imprintable.where(job_id: id)
   end
 
   def total_quantity
@@ -358,7 +350,7 @@ class Job < ActiveRecord::Base
     line_items.each do |line_item|
       new_line_item = line_item.dup
       new_line_item.quantity = 0 if new_line_item.imprintable?
-      new_line_item.line_itemable = new_job
+      new_line_item.job = new_job
       new_line_item.save!
     end
 
@@ -432,7 +424,7 @@ class Job < ActiveRecord::Base
   def check_for_line_items
     return if jobbable_type == 'Quote'
 
-    if LineItem.where(line_itemable_id: id, line_itemable_type: 'Job').exists?
+    if LineItem.where(job_id: id).exists?
       self.errors[:deletion_status] =
         'All line items must be manually removed before a job can be deleted'
       false

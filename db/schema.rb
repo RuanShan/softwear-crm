@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160114214931) do
+ActiveRecord::Schema.define(version: 20160119170438) do
 
   create_table "activities", force: :cascade do |t|
     t.integer  "trackable_id",   limit: 4
@@ -490,8 +490,7 @@ ActiveRecord::Schema.define(version: 20160114214931) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.decimal  "unit_price",                               precision: 10, scale: 2
-    t.integer  "line_itemable_id",        limit: 4
-    t.string   "line_itemable_type",      limit: 191
+    t.integer  "job_id",                  limit: 4
     t.string   "url",                     limit: 191
     t.decimal  "decoration_price",                         precision: 10, scale: 2
     t.decimal  "imprintable_price",                        precision: 10, scale: 2
@@ -501,7 +500,7 @@ ActiveRecord::Schema.define(version: 20160114214931) do
     t.string   "imprintable_object_type", limit: 191
   end
 
-  add_index "line_items", ["line_itemable_id", "line_itemable_type"], name: "index_line_items_on_line_itemable_id_and_line_itemable_type", using: :btree
+  add_index "line_items", ["job_id"], name: "index_line_items_on_line_itemable_id_and_line_itemable_type", using: :btree
 
   create_table "name_numbers", force: :cascade do |t|
     t.string  "name",                   limit: 191

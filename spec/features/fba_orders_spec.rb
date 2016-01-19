@@ -31,7 +31,7 @@ feature 'FBA Order management', fba_spec: true, story_103: true, js: true, retry
   given!(:shirt) { create(:associated_imprintable) }
   given!(:sweater) { create(:associated_imprintable) }
 
-  given!(:red) { create(:valid_color, name: 'Red') }
+  given!(:red) { create(:valid_color, name: 'RRed') }
 
   make_variants :red, :shirt,   [:XS, :S, :M, :L, :XL, :XXL, :XXXL], not: %i(line_item job)
   make_variants :red, :sweater, [:XS, :S, :M, :L, :XL, :XXL, :XXXL], not: %i(line_item job)
@@ -148,23 +148,19 @@ feature 'FBA Order management', fba_spec: true, story_103: true, js: true, retry
       expect(order.jobs.where(name: 'Scooba Sweater Test Template - FBA312LM3T')).to exist
       expect(order.jobs.where(name: 'Scooba Shirt Test Template - FBA312LM3T')).to exist
 
-      expect(order.jobs.joins(:line_items).where(line_items: { imprintable_object_id: red_sweater_xs.id, quantity: 1 })).to exist
-      expect(order.jobs.joins(:line_items).where(line_items: { imprintable_object_id: red_sweater_s.id, quantity: 1 })).to exist
-      expect(order.jobs.joins(:line_items).where(line_items: { imprintable_object_id: red_sweater_m.id, quantity: 1 })).to exist
-      expect(order.jobs.joins(:line_items).where(line_items: { imprintable_object_id: red_sweater_l.id, quantity: 1 })).to exist
-      expect(order.jobs.joins(:line_items).where(line_items: { imprintable_object_id: red_sweater_xl.id, quantity: 1 })).to exist
-      expect(order.jobs.joins(:line_items).where(line_items: { imprintable_object_id: red_sweater_xxl.id, quantity: 1 })).to exist
-      expect(order.jobs.joins(:line_items).where(line_items: { imprintable_object_id: red_sweater_xxxl.id, quantity: 1 })).to exist
-      expect(order.jobs.joins(:line_items).where(line_items: { imprintable_object_id: red_shirt_s.id, quantity: 1 })).to exist
-      expect(order.jobs.joins(:line_items).where(line_items: { imprintable_object_id: red_shirt_m.id, quantity: 1 })).to exist
-      expect(order.jobs.joins(:line_items).where(line_items: { imprintable_object_id: red_shirt_l.id, quantity: 1 })).to exist
-      expect(order.jobs.joins(:line_items).where(line_items: { imprintable_object_id: red_shirt_xl.id, quantity: 1 })).to exist
-      expect(order.jobs.joins(:line_items).where(line_items: { imprintable_object_id: red_shirt_xxl.id, quantity: 1 })).to exist
+      expect(order.line_items.where(imprintable_object_id: red_shirt_xs.id, quantity: 1)).to exist
+      expect(order.line_items.where(imprintable_object_id: red_shirt_s.id, quantity: 1)).to exist
+      expect(order.line_items.where(imprintable_object_id: red_shirt_m.id, quantity: 1)).to exist
+      expect(order.line_items.where(imprintable_object_id: red_shirt_l.id, quantity: 1)).to exist
+      expect(order.line_items.where(imprintable_object_id: red_shirt_xl.id, quantity: 1)).to exist
+      expect(order.line_items.where(imprintable_object_id: red_shirt_xxl.id, quantity: 1)).to exist
+      expect(order.line_items.where(imprintable_object_id: red_shirt_xxxl.id, quantity: 1)).to exist
+      expect(order.line_items.where(imprintable_object_id: red_sweater_s.id, quantity: 1)).to exist
+      expect(order.line_items.where(imprintable_object_id: red_sweater_m.id, quantity: 1)).to exist
+      expect(order.line_items.where(imprintable_object_id: red_sweater_l.id, quantity: 1)).to exist
+      expect(order.line_items.where(imprintable_object_id: red_sweater_xl.id, quantity: 1)).to exist
+      expect(order.line_items.where(imprintable_object_id: red_sweater_xxl.id, quantity: 1)).to exist
     end
-  end
-
-  context "when some skus don't match, but can be parsed" do
-    scenario 'the user is informed and provided to create the missing product', pending: 'uhhh'
   end
 
   context "when there are some bad skus" do
@@ -182,7 +178,7 @@ feature 'FBA Order management', fba_spec: true, story_103: true, js: true, retry
 
       expect(page).to have_content 'PackingSlipBadSku.txt'
       expect(page).to have_content 'No line items will be added'
-      expect(page).to have_selector "a[href=#{fba_products_path}]"
+      expect(page).to have_selector "a[href='#{fba_products_path}']"
     end
   end
 end

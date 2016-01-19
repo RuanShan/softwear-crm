@@ -201,7 +201,7 @@ class OrdersController < InheritedResources::Base
           line_items_attributes: [
             :imprintable_object_id, :imprintable_object_type, :id,
             :line_itemable_id, :line_itemable_type, :quantity,
-            :unit_price, :decoration_price, :_destroy
+            :unit_price, :decoration_price, :_destroy, :imprintable_price
           ]
         ]
       ]

@@ -20,7 +20,7 @@ class LineItem < ActiveRecord::Base
   scope :taxable, -> { where(taxable: true) }
 
   belongs_to :imprintable_object, polymorphic: true
-  belongs_to :line_itemable, polymorphic: true, touch: true
+  belongs_to :job, touch: true, inverse_of: :line_items
 
   validates :description, presence: true, unless: :imprintable?
   validates :name, presence: true, unless: :imprintable?
@@ -35,18 +35,18 @@ class LineItem < ActiveRecord::Base
   validates :imprintable_object_type, inclusion: {
     in: ['ImprintableVariant', nil], message: 'must be "Imprintable Variant"' }, if: :order?
   validates :imprintable_object_id, uniqueness: {
-    scope: [:line_itemable_id], message: 'is a duplicate in this group' }, if: :imprintable_and_in_job?
+    scope: [:job_id], message: 'is a duplicate in this group' }, if: :imprintable_and_in_job?
 
   before_validation :set_sort_order, if: :markup_or_option?
   after_save :recalculate_order_fields
   after_destroy :recalculate_order_fields
 
-  def self.create_imprintables(line_itemable, imprintable, color, options = {})
-    new_imprintables(line_itemable, imprintable, color, options)
+  def self.create_imprintables(job, imprintable, color, options = {})
+    new_imprintables(job, imprintable, color, options)
       .each(&:save!)
   end
 
-  def self.new_imprintables(line_itemable, imprintable, color, options = {})
+  def self.new_imprintables(job, imprintable, color, options = {})
     imprintable_variants = ImprintableVariant.size_variants_for(
       param_record_id(imprintable),
       param_record_id(color)
@@ -58,8 +58,7 @@ class LineItem < ActiveRecord::Base
         imprintable_object_id:   variant.id,
         unit_price:         options[:base_unit_price].try(:to_f) || variant.imprintable.base_price || 0,
         quantity:           options[:quantity].try(:[], variant.size_id.to_s) || 0,
-        line_itemable_id:   line_itemable.id,
-        line_itemable_type: line_itemable.class.name,
+        job_id:             job.id,
         imprintable_price:  options[:imprintable_price] || variant.imprintable.base_price,
         decoration_price:   options[:decoration_price].try(:to_f) || 0,
       )
@@ -76,12 +75,28 @@ class LineItem < ActiveRecord::Base
     super || imprintable.try(:supplier_link)
   end
 
-  def job
-    line_itemable
+  def line_itemable
+    job
+  end
+  def line_itemable=(new)
+    self.job = new
+  end
+  def line_itemable_id
+    job_id
+  end
+  def line_itemable_id=(new)
+    self.job_id = new
+  end
+  def line_itemable_type
+    'Job' unless job_id.nil?
+  end
+  def line_itemable_type=(new_type)
+    return new_type if new_type == 'Job' || new_type.blank?
+    raise "line_itemable has been changed to job. All code referencing line_itemable should be changed to reference job."
   end
 
   def imprintable_and_in_an_order?
-    imprintable? && line_itemable.try(:jobbable_type) == 'Order'
+    imprintable? && job.try(:jobbable_type) == 'Order'
   end
 
   def <=>(other)
@@ -101,14 +116,14 @@ class LineItem < ActiveRecord::Base
   end
 
   def quote?
-    line_itemable.try(:jobbable_type) == 'Quote'
+    job.try(:jobbable_type) == 'Quote'
   end
   def order?
-    line_itemable.try(:jobbable_type) == 'Order'
+    job.try(:jobbable_type) == 'Order'
   end
 
   def order
-    line_itemable.try(:order)
+    job.try(:order)
   end
 
   def imprintable
@@ -144,7 +159,7 @@ class LineItem < ActiveRecord::Base
   end
 
   def imprintable_and_in_job?
-    imprintable? && !(line_itemable_type.blank? || line_itemable_id.blank?)
+    imprintable? && !(job_id.blank?)
   end
 
   def imprintable?
@@ -198,7 +213,7 @@ class LineItem < ActiveRecord::Base
   def set_sort_order
     return unless sort_order.nil?
 
-    if line_itemable && last_line_item = line_itemable.line_items.where.not(id: id).last
+    if job && last_line_item = job.line_items.where.not(id: id).last
       last_sort_order = last_line_item.sort_order
     else
       last_sort_order = 0
@@ -210,7 +225,7 @@ class LineItem < ActiveRecord::Base
   def should_validate_quantity?
     return false if quantity == MARKUP_ITEM_QUANTITY
 
-    line_itemable.try(:jobbable_type) == 'Quote' and imprintable? || quantity != MARKUP_ITEM_QUANTITY
+    job.try(:jobbable_type) == 'Quote' and imprintable? || quantity != MARKUP_ITEM_QUANTITY
   end
 
   def quantity_is_not_negative

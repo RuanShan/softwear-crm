@@ -87,6 +87,7 @@ class Order < ActiveRecord::Base
   belongs_to :salesperson, class_name: User
   belongs_to :store
   has_many :jobs, as: :jobbable, dependent: :destroy, inverse_of: :jobbable
+  has_many :line_items, through: :jobs, source: :line_items
   has_many :artwork_requests, through: :jobs, dependent: :destroy
   has_many :artworks, through: :artwork_requests
   has_many :imprints, through: :jobs
@@ -377,10 +378,6 @@ class Order < ActiveRecord::Base
 
   def salesperson_full_name
     salesperson.full_name
-  end
-
-  def line_items
-    LineItem.where(line_itemable_id: job_ids, line_itemable_type: 'Job')
   end
 
   def payment_status

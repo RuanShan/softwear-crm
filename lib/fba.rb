@@ -5,9 +5,10 @@ class FBA
       hash = {}
       each_with_index do |e, index|
         hash[index] = {
-          quantity:         e.quantity,
-          unit_price:       0,
-          decoration_price: 0,
+          quantity:          e.quantity,
+          unit_price:        0,
+          imprintable_price: 0,
+          decoration_price:  0,
           imprintable_object_type: 'ImprintableVariant',
           imprintable_object_id:    e.fba_sku.imprintable_variant_id
         }
@@ -83,7 +84,8 @@ class FBA
           description: "Generated from packing slip #{options[:filename]} and FBA Product ##{fba_product.id}, "\
                        "Job Template ##{fba_job_template.id}",
           line_items_attributes: skus.line_items_attributes,
-          imprints_attributes:   fba_job_template.imprints_attributes
+          imprints_attributes:   fba_job_template.imprints_attributes,
+          collapsed: true
         }
       end
 
