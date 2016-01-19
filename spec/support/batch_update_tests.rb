@@ -16,6 +16,7 @@ shared_examples 'batch update' do
     let!(:resource_class) { subject.send(:resource_class) }
     before do
       allow(resource_class).to receive(:unscoped).and_return resource_class
+      allow(resource_class).to receive(:insert).and_return nil
     end
 
     let!(:params) do

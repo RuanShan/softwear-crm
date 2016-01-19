@@ -127,7 +127,9 @@ feature 'FBA Order management', fba_spec: true, story_103: true, js: true, retry
       fill_in 'Deadline', with: '12/25/2025 12:00 AM'
 
       click_button 'Next'
+      sleep 1 if ci?
       click_link 'Upload Packing Slip(s)'
+      sleep 1 if ci?
       attach_file 'packing_slips_', multi_packing_slip_path
 
       click_button 'Upload'
@@ -138,6 +140,7 @@ feature 'FBA Order management', fba_spec: true, story_103: true, js: true, retry
 
       click_button 'Next'
       find('.big-submit-button').click
+      sleep 1 if ci?
 
       order = Order.fba.where(name: 'An FBA Order')
       expect(order).to exist

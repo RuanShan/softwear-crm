@@ -30,10 +30,15 @@ feature 'FBA Products management', js: true do
     find('.fba-sku-sku').set '0-misc_baberah-1030101009'
 
     select2 shirt.brand.name,       from: '.fba-sku-brand'
+    sleep 1 if ci?
     select2 shirt.style_catalog_no, from: '.fba-sku-style'
+    sleep 1 if ci?
     select2 red.name,               from: '.fba-sku-color'
+    sleep 1 if ci?
     select2 size_s.display_value,   from: '.fba-sku-size'
+    sleep 1 if ci?
     select2 fba_job_template.name,  from: '.fba-sku-job-template'
+    sleep 1 if ci?
 
     click_button 'Create FBA Product'
 
@@ -54,12 +59,18 @@ feature 'FBA Products management', js: true do
     find('.fba-sku-sku').set '0-misc_baberah-1030101009'
 
     select2 shirt.brand.name,       from: '.fba-sku-brand'
+    sleep 1 if ci?
     select2 shirt.style_catalog_no, from: '.fba-sku-style'
+    sleep 1 if ci?
     select2 red.name,               from: '.fba-sku-color'
+    sleep 1 if ci?
     select2 size_s.display_value,   from: '.fba-sku-size'
+    sleep 1 if ci?
     select2 fba_job_template.name,  from: '.fba-sku-job-template'
+    sleep 1 if ci?
 
     click_link 'Add Child SKU'
+    sleep 1 if ci?
 
     within all('.fba-sku-fields').last do
       find('.fba-sku-sku').set '0-misc_baberah-1030101009'
@@ -72,6 +83,7 @@ feature 'FBA Products management', js: true do
     end
 
     click_button 'Create FBA Product'
+    sleep 1 if ci?
 
     expect(page).to have_content 'successfully created'
 
@@ -92,10 +104,15 @@ feature 'FBA Products management', js: true do
     find('.fba-sku-sku').set '0-misc_baberah-1030101009'
 
     select2 shirt.brand.name,       from: '.fba-sku-brand'
+    sleep 1 if ci?
     select2 shirt.style_catalog_no, from: '.fba-sku-style'
+    sleep 1 if ci?
     select2 red.name,               from: '.fba-sku-color'
+    sleep 1 if ci?
     select2 size_s.display_value,   from: '.fba-sku-size'
+    sleep 1 if ci?
     select2 fba_job_template.name,  from: '.fba-sku-job-template'
+    sleep 1 if ci?
 
     click_link 'Add Child SKU'
 
