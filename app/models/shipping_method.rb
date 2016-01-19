@@ -1,4 +1,6 @@
 class ShippingMethod < ActiveRecord::Base
+  FBA = 'UPS Amazon FBA'
+
   include Popularity
 
   acts_as_paranoid

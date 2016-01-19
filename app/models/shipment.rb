@@ -10,7 +10,7 @@ class Shipment < ActiveRecord::Base
   validates :status, presence: true,
     inclusion: { in: ['pending', 'shipped'], message: 'should either be "pending" or "shipped"' }
   
-  validates :shippable, presence: true
+  validates :shippable, presence: true, if: :persisted?
   validates :name, :address_1, :city, :state, :zipcode, presence: true
 
   before_validation :assign_proper_status

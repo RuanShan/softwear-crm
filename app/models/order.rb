@@ -100,7 +100,7 @@ class Order < ActiveRecord::Base
   has_many :discounts, as: :discountable, dependent: :destroy
   has_many :job_discounts, through: :jobs, source: :discounts, dependent: :destroy
 
-  accepts_nested_attributes_for :payments, :jobs
+  accepts_nested_attributes_for :payments, :jobs, :shipments
 
   validates :invoice_state,
             presence: true,
@@ -141,6 +141,7 @@ class Order < ActiveRecord::Base
   validates :in_hand_by, presence: true
   validates :invoice_reject_reason, presence: true, if: :invoice_rejected?
 
+  before_create { self.delivery_method ||= 'Ship to multiple locations' if fba? }
   after_initialize -> (o) { o.production_state = 'pending' if o.production_state.blank? }
   after_initialize -> (o) { o.invoice_state = 'pending' if o.invoice_state.blank? }
   after_initialize do
@@ -804,7 +805,7 @@ class Order < ActiveRecord::Base
   end
 
   def check_if_shipped!
-    return unless delivery_method.include?('Ship')
+    return unless delivery_method && delivery_method.include?('Ship')
     return if notification_state == 'shipped'
     jobs.reload; shipments.reload
     return if all_shipments.empty?

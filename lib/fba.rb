@@ -1,5 +1,8 @@
 class FBA
   SKU = Struct.new(:version, :idea, :print, :imprintable, :size, :color)
+  Address = Struct.new(:name, :street, :city, :state, :country, :zipcode)
+
+  # This is extended by an instance of array so that we can call a.line_items_attributes
   module PendingLineItems
     def line_items_attributes
       hash = {}
@@ -30,12 +33,15 @@ class FBA
       result = {
         errors: [],
         jobs_attributes: {},
+        shipments_attributes: {},
         filename: options[:filename]
       }
 
       if header.blank? || data.blank?
         return { fatal_error: "Couldn't parse #{options[:filename]}" }
       end
+
+      address = parse_address(header['Ship To'])
 
       # Pass 1: Just collect (and report bad skus)
       job_groups = {}
@@ -81,11 +87,25 @@ class FBA
 
         result[:jobs_attributes][key.hash] = {
           name:        "#{fba_product.name} #{fba_job_template.name} - #{header['Shipment ID']}",
+          collapsed:   true,
           description: "Generated from packing slip #{options[:filename]} and FBA Product ##{fba_product.id}, "\
                        "Job Template ##{fba_job_template.id}",
+
           line_items_attributes: skus.line_items_attributes,
           imprints_attributes:   fba_job_template.imprints_attributes,
-          collapsed: true
+
+          shipments_attributes: {
+            header['Shipment ID'].hash => {
+              name:      address.name,
+              address_1: address.street,
+              city:      address.city,
+              state:     address.state,
+              zipcode:   address.zipcode,
+              country:   address.country,
+              shipped_by_id:      options[:shipped_by_id],
+              shipping_method_id: ShippingMethod.where(name: ShippingMethod::FBA).pluck(:id).first
+            }
+          }
         }
       end
 
@@ -229,6 +249,14 @@ class FBA
       end
 
       data
+    end
+
+    def parse_address(address_str)
+      data = address_str.split(',').map(&:strip)
+      # Addresses in the packing slips are assumed to be formatted like so:
+      # [0]("Amazon.com"), [1](street), [2](city), [3](state), [4](country), [5](zipcode)
+
+      Address.new(*data)
     end
 
     def parse_sku(data)

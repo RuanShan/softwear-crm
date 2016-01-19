@@ -5,6 +5,8 @@ feature 'FBA Order management', fba_spec: true, story_103: true, js: true, retry
   given!(:valid_user) { create :user }
   background(:each) { login_as valid_user }
 
+  given!(:fba_shipping_method) { ShippingMethod.find_by(name: ShippingMethod::FBA) || create(:valid_shipping_method, name: ShippingMethod::FBA) }
+
   given(:packing_slip_path) { "#{Rails.root}/spec/fixtures/fba/TestPackingSlip.txt" }
   given(:multi_packing_slip_path) { "#{Rails.root}/spec/fixtures/fba/PackingSlipMulti.txt" }
   given(:bad_sku_packing_slip_path) { "#{Rails.root}/spec/fixtures/fba/PackingSlipBadSku.txt" }
@@ -119,7 +121,7 @@ feature 'FBA Order management', fba_spec: true, story_103: true, js: true, retry
   context 'when matching FBA Products are present,', valid_data: true do
     background { scuba_doitdeeper_shirt; scuba_doitdeeper_sweater }
 
-    scenario 'a user can create an FBA order with the jobs and line items specified by a packing slip' do
+    scenario 'a user can create an FBA order with the jobs, line items, and shipments specified by a packing slip' do
       visit new_fba_orders_path
       fill_in 'Name', with: 'An FBA Order'
       fill_in 'Deadline', with: '12/25/2025 12:00 AM'
@@ -132,7 +134,7 @@ feature 'FBA Order management', fba_spec: true, story_103: true, js: true, retry
       wait_for_ajax
 
       expect(page).to have_content 'PackingSlipMulti.txt'
-      expect(page).to have_content 'Job and line items will be added'
+      expect(page).to have_content 'Jobs and line items will be added'
 
       click_button 'Next'
       find('.big-submit-button').click
@@ -160,6 +162,9 @@ feature 'FBA Order management', fba_spec: true, story_103: true, js: true, retry
       expect(order.line_items.where(imprintable_object_id: red_sweater_l.id, quantity: 1)).to exist
       expect(order.line_items.where(imprintable_object_id: red_sweater_xl.id, quantity: 1)).to exist
       expect(order.line_items.where(imprintable_object_id: red_sweater_xxl.id, quantity: 1)).to exist
+
+      expect(order.jobs.first.shipments.where(address_1: '650 Boulder Drive', city: 'Breiningsville', state: 'PA', zipcode: '18031', shipped_by_id: valid_user.id)).to exist
+      expect(order.jobs.last.shipments.where(address_1: '650 Boulder Drive', city: 'Breiningsville', state: 'PA', zipcode: '18031', shipped_by_id: valid_user.id)).to exist
     end
   end
 

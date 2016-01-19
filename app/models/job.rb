@@ -26,7 +26,7 @@ class Job < ActiveRecord::Base
   has_many :print_locations, through: :imprints
   has_many :imprint_methods, through: :print_locations
 
-  accepts_nested_attributes_for :line_items, :imprints, allow_destroy: true
+  accepts_nested_attributes_for :line_items, :imprints, :shipments, allow_destroy: true
 
   Imprintable::TIERS.each do |tier_num, tier|
     tier_line_items = "#{tier.underscore}_line_items".to_sym

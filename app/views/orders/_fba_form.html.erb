@@ -1,5 +1,7 @@
 <%= render_error_modal_for order %>
 <%= form_for order, builder: LancengFormBuilder, html: { id: 'easyWizard'} do |f| %>
+  <% f.hidden_field :delivery_method, value: 'Ship to multiple locations' %>
+
   <section class="step" data-step-title="Order Information">
     <div class="row">
       <div class="col-sm-6">

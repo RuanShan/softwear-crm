@@ -223,13 +223,14 @@ module ApplicationHelper
     image_tag image_url || 'avatar/masarie.jpg', options
   end
 
-  def hash_to_hidden_fields(hash, scope)
+  def hash_to_hidden_fields(hash, scope, &block)
     buf = ''.html_safe
 
     hash.each do |key, value|
       new_scope = "#{scope}[#{key}]"
       if value.is_a?(Hash)
-        buf += hash_to_hidden_fields(value, new_scope)
+        yield new_scope, value if block_given?
+        buf += hash_to_hidden_fields(value, new_scope, &block)
       else
         buf += hidden_field_tag(new_scope, value.to_s)
       end

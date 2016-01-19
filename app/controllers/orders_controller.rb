@@ -120,7 +120,8 @@ class OrdersController < InheritedResources::Base
       @fba_infos += packing_slips.compact.flat_map do |packing_slip|
         FBA.parse_packing_slip(
           StringIO.new(packing_slip.read),
-          filename: packing_slip.original_filename
+          filename:   packing_slip.original_filename,
+          shipped_by_id: current_user.id
         )
       end
     end
@@ -132,7 +133,8 @@ class OrdersController < InheritedResources::Base
 
         FBA.parse_packing_slip(
           StringIO.new(URI.parse(url).read),
-          filename: url.split('/').last
+          filename:   url.split('/').last,
+          shipped_by_id: current_user.id
         )
       end
     end
@@ -202,6 +204,10 @@ class OrdersController < InheritedResources::Base
             :imprintable_object_id, :imprintable_object_type, :id,
             :line_itemable_id, :line_itemable_type, :quantity,
             :unit_price, :decoration_price, :_destroy, :imprintable_price
+          ],
+          shipments_attributes: [
+            :name, :address_1, :city, :state, :zipcode, :shipped_by_id,
+            :shippable_type, :shippable_id, :id, :_destroy, :shipping_method_id
           ]
         ]
       ]
