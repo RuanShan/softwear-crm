@@ -6,7 +6,7 @@ describe LineItem, line_item_spec: true do
   it { is_expected.to be_paranoid }
 
   describe 'Relationships' do
-    it { is_expected.to belong_to(:line_itemable) }
+    it { is_expected.to belong_to(:job) }
   end
 
   describe 'Validations', now: true do
@@ -20,7 +20,6 @@ describe LineItem, line_item_spec: true do
 
       it { is_expected.to validate_presence_of :quantity }
       it { is_expected.to allow_value(5).for :quantity }
-      it { is_expected.to_not allow_value(0).for :quantity }
       it { is_expected.to_not allow_value(-4).for :quantity }
 
       context 'when an order line item' do

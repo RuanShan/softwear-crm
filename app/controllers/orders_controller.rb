@@ -78,9 +78,10 @@ class OrdersController < InheritedResources::Base
         end
         session[:quote_id] = nil
       end
+      flash[:success] = "Order was successfully created."
       redirect_to edit_order_path(@order)
     else
-      flash[:error] = @order.errors.full_messages.join("\n")
+      flash[:error] = @order.errors.full_messages.join("\n") if @order.fba?
       render action: @order.fba? ? :new_fba : :new
     end
   end

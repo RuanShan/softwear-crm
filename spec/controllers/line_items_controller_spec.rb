@@ -39,7 +39,7 @@ describe LineItemsController, line_item_spec: true do
                          imprintable_object_type: 'ImprintableVariant')
         ).to exist
         expect(
-          LineItem.where(line_itemable_id: job.id, line_itemable_type: 'Job')
+          LineItem.where(job_id: job.id)
         ).to exist
       end
 

@@ -535,8 +535,8 @@ describe Quote, quote_spec: true do
     describe '#added_a_line_item_group_hash', story_600: true do
       context 'a job has been added' do
         let!(:quote) { create(:valid_quote) }
-        let!(:line_item1) { create(:imprintable_line_item) }
-        let!(:line_item2) { create(:imprintable_line_item) }
+        let!(:line_item1) { create(:imprintable_quote_line_item) }
+        let!(:line_item2) { create(:imprintable_quote_line_item) }
         let!(:imprint1) { create(:valid_imprint, description: "n\\a - Front") }
         let!(:imprint2) { create(:valid_imprint, description: "n\\a - Left Chest") }
         let!(:job) { create(:quote_job, line_items: [line_item1, line_item2], imprints: [imprint1, imprint2], jobbable: quote, name: "Test Job 1") }
@@ -565,8 +565,8 @@ describe Quote, quote_spec: true do
 
     describe '#activity_parameters_for_job_changed', story_600xx: true do
         let!(:quote) { create(:valid_quote) }
-        let!(:line_item1) { create(:imprintable_line_item) }
-        let!(:line_item2) { create(:imprintable_line_item) }
+        let!(:line_item1) { create(:imprintable_quote_line_item) }
+        let!(:line_item2) { create(:imprintable_quote_line_item) }
         let!(:imprint1) { create(:valid_imprint) }
         let!(:imprint2) { create(:valid_imprint) }
         let!(:markup1)  { create(:non_imprintable_line_item) }

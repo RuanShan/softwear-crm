@@ -1,7 +1,7 @@
 require 'spec_helper'
 include LineItemHelpers
 
-feature 'FBA Order management', fba_spec: true, story_103: true, js: true, retry: 0 do
+feature 'FBA Order management', fba_spec: true, story_103: true, js: true, retry: 3 do
   given!(:valid_user) { create :user }
   background(:each) { login_as valid_user }
 
