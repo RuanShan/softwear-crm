@@ -19,6 +19,7 @@ describe 'orders/_order_detail_fields.html.erb', order_spec: true do
       expect(rendered).to have_field_for :salesperson_id
       expect(rendered).to have_field_for :invoice_state
       expect(rendered).to have_field_for :freshdesk_proof_ticket_id
+      expect(rendered).to have_field_for :imported_from_admin
     end
   end
 

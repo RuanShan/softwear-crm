@@ -13,6 +13,7 @@ describe Order, order_spec: true do
     it { is_expected.to have_many :proofs }
     it { is_expected.to have_many(:imprints).through(:jobs) }
     it { is_expected.to have_many(:quotes) }
+    it { is_expected.to have_many(:admin_proofs) }
 
     it { is_expected.to accept_nested_attributes_for :payments }
     # TODO: not sure if this should be gone?

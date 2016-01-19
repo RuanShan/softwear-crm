@@ -98,6 +98,7 @@ class Order < ActiveRecord::Base
   has_many :shipments, as: :shippable, dependent: :destroy
   has_many :discounts, as: :discountable, dependent: :destroy
   has_many :job_discounts, through: :jobs, source: :discounts, dependent: :destroy
+  has_many :admin_proofs, dependent: :destroy
 
   accepts_nested_attributes_for :payments, :jobs
 

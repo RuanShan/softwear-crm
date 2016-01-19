@@ -223,8 +223,11 @@
             </div>
 
             <div class="tab-pane animated fadeInRight" id="artwork">
-              <%= render partial: 'artwork_requests/list',
-                         locals: { order: @order } %>
+              <% if @order.imported_from_admin %>
+                <%= render 'artwork_tab_disabled' %>
+             <% else %>
+                <%= render 'artwork_requests/list',  order: @order %>
+             <% end %>
             </div>
 
             <div class="tab-pane animated fadeInRight" id="proofs">
