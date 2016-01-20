@@ -8,7 +8,7 @@ $(window).load(function() {
   };
   var variant_fields = ['fba-sku-brand', 'fba-sku-style', 'fba-sku-color', 'fba-sku-size'];
 
-  var initializeForm = function(fields) {
+  var initializeForm = function(fields, isNewEntry) {
     var hideIfBlank = function(element) {
       var len = element.find('option').length;
       if (len === 1 || len === 0) element.next().hide();
@@ -27,7 +27,7 @@ $(window).load(function() {
 
     var id = fields.find('.fba-sku-sku').attr('name')
 
-    if ($('.fba-sku-fields').length > 1) {
+    if (isNewEntry && $('.fba-sku-fields').length > 1) {
       var allFields = $('.fba-sku-fields');
       var previousFields = $(allFields[allFields.length - 2]);
 
@@ -103,6 +103,6 @@ $(window).load(function() {
     });
   };
 
-  $(document).on('nested:fieldAdded', function(event) { initializeForm(event.field.find('.fba-sku-fields')); });
+  $(document).on('nested:fieldAdded', function(event) { initializeForm(event.field.find('.fba-sku-fields'), true); });
   initializeForm($('.fba-skus'));
 });
