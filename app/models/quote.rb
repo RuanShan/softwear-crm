@@ -274,7 +274,7 @@ class Quote < ActiveRecord::Base
       line_item.decoration_price   = decoration_price
       line_item.imprintable_price  = imprintable.base_price || 0
       line_item.imprintable_object = imprintable
-      line_item.line_itemable      = new_job
+      line_item.job                = new_job
       line_item.tier               = tier
 
       line_item
@@ -324,7 +324,7 @@ class Quote < ActiveRecord::Base
       imprintable = Imprintable.find imprintable_id
 
       line_item = LineItem.new
-      line_item.line_itemable      = job
+      line_item.job                = job
       line_item.tier               = attrs[:tier].blank? ? Imprintable::TIER.good : attrs[:tier]
       line_item.quantity           = attrs[:quantity].blank? ? 1 : attrs[:quantity]
       line_item.decoration_price   = attrs[:decoration_price].blank? ? 0 : attrs[:decoration_price]
@@ -746,7 +746,7 @@ class Quote < ActiveRecord::Base
         hash[:decoration_price] = line_item.decoration_price.to_f
         hash[:quantity] = line_item.quantity
         hash[:tier] = line_item.tier
-        hash[:group_id] = line_item.line_itemable_id
+        hash[:group_id] = line_item.job_id
       end
     else
       changed_attrs = self.attribute_names.select{ | attr| self.send("#{attr}_changed?")}
