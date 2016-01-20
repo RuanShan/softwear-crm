@@ -3,6 +3,9 @@ $(window).load(function() {
 
   console.log('doing it');
 
+  var replaceAt = function(str, index, character) {
+    return str.substr(0, index) + character + str.substr(index+character.length);
+  };
   var variant_fields = ['fba-sku-brand', 'fba-sku-style', 'fba-sku-color', 'fba-sku-size'];
 
   var initializeForm = function(fields) {
@@ -42,7 +45,14 @@ $(window).load(function() {
       fields.find('.fba-sku-size').select2({ data: arrayDataFrom(previousFields.find('.fba-sku-size')) });
       fields.find('.fba-sku-size').val('').trigger('change');
 
-      fields.find('.fba-sku-sku').val(previousFields.find('.fba-sku-sku').val().replace(/\d{5}$/, ''));
+      var prevSku = previousFields.find('.fba-sku-sku').val();
+      if (prevSku.match(/0-\w+-\d{10}/)) {
+        var newSku = replaceAt(prevSku, prevSku.length - 4, '_');
+        var newSku = replaceAt(newSku,  newSku.length  - 5, '_');
+        fields.find('.fba-sku-sku').val(newSku);
+      }
+      else
+        fields.find('.fba-sku-sku').val(prevSku);
     }
 
     hideIfBlank(fields.find('.fba-sku-style'));
