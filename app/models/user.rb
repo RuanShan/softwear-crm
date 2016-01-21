@@ -9,6 +9,7 @@ class User < ActiveRecord::Base
     chantal@annarbortees.com
     kenny@annarbortees.com
     nigel@annarbortees.com
+    shannon@annarbortees.com
   )
 
   acts_as_paranoid
