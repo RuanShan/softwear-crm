@@ -1,3 +1,13 @@
+Dropzone.options.jsPackingSlipForm =
+  paramName: 'packing_slips'
+  maxFilesize: 1#MB
+  uploadMultiple: true
+  success: (file, response) ->
+    for entry in response
+      container = $(entry.container)
+      $('#js-packing-slip-info-zone').append container
+      container.find('.info').append entry.info
+
 $.fn.modal.Constructor.prototype.enforceFocus = ->
 
 $(window).load ->

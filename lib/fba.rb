@@ -77,16 +77,17 @@ class FBA
         end
 
         # The extend thing is only so that I can say "skus.line_items_attributes" in the next pass
-        job_groups[[fba_product, fba_job_template]] ||= [].tap { |a| a.send :extend, PendingLineItems }
-        job_groups[[fba_product, fba_job_template]] << OpenStruct.new(fba_sku: fba_sku, quantity: datum['Shipped'])
+        key = [header['Shipment ID'], fba_product, fba_job_template]
+        job_groups[key] ||= [].tap { |a| a.send :extend, PendingLineItems }
+        job_groups[key] << OpenStruct.new(fba_sku: fba_sku, quantity: datum['Shipped'])
       end
 
       # Pass 2: Add job attributes
       job_groups.each do |key, skus|
-        fba_product, fba_job_template = key
+        shipment_id, fba_product, fba_job_template = key
 
         result[:jobs_attributes][key.hash] = {
-          name:        "#{fba_product.name} #{fba_job_template.name} - #{header['Shipment ID']}",
+          name:        "#{fba_product.name} #{fba_job_template.name} - #{shipment_id}",
           collapsed:   true,
           description: "Generated from packing slip #{options[:filename]} and FBA Product ##{fba_product.id}, "\
                        "Job Template ##{fba_job_template.id}",
@@ -95,7 +96,7 @@ class FBA
           imprints_attributes:   fba_job_template.imprints_attributes,
 
           shipments_attributes: {
-            header['Shipment ID'].hash => {
+            shipment_id.hash => {
               name:      address.name,
               address_1: address.street,
               city:      address.city,

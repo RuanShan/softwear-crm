@@ -233,6 +233,8 @@ GEM
     diff-lcs (1.2.5)
     domain_name (0.5.24)
       unf (>= 0.0.5, < 1.0.0)
+    dropzonejs-rails (0.7.2)
+      rails (> 3.1)
     email_spec (1.6.0)
       launchy (~> 2.1)
       mail (~> 2.2)
@@ -573,6 +575,7 @@ DEPENDENCIES
   coffee-rails (~> 4.0.0)
   database_cleaner
   devise
+  dropzonejs-rails
   dumpsync!
   email_spec
   endpoint_stub!
@@ -638,4 +641,4 @@ DEPENDENCIES
   yaml_db!
 
 BUNDLED WITH
-   1.10.6
+   1.11.2

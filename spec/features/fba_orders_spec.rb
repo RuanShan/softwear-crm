@@ -1,7 +1,7 @@
 require 'spec_helper'
 include LineItemHelpers
 
-feature 'FBA Order management', fba_spec: true, story_103: true, js: true, retry: 3 do
+feature 'FBA Order management', fba_spec: true, story_103: true, js: true, retry: ci? ? 3 : 0 do
   given!(:valid_user) { create :user }
   background(:each) { login_as valid_user }
 
@@ -121,26 +121,27 @@ feature 'FBA Order management', fba_spec: true, story_103: true, js: true, retry
   context 'when matching FBA Products are present,', valid_data: true do
     background { scuba_doitdeeper_shirt; scuba_doitdeeper_sweater }
 
-    scenario 'a user can create an FBA order with the jobs, line items, and shipments specified by a packing slip' do
+    scenario 'a user can create an FBA order with the jobs, line items, and shipments specified by a packing slip', create: true do
       visit new_fba_orders_path
       fill_in 'Name', with: 'An FBA Order'
       fill_in 'Deadline', with: '12/25/2025 12:00 AM'
 
       click_button 'Next'
-      sleep 1 if ci?
+      sleep 1
       click_link 'Upload Packing Slip(s)'
-      sleep 1 if ci?
-      attach_file 'packing_slips_', multi_packing_slip_path
-
-      click_button 'Upload'
+      sleep 1
+      drop_in_dropzone multi_packing_slip_path
+      sleep ci? ? 3 : 1
+      click_button "close-packing-slip-modal"
       wait_for_ajax
 
       expect(page).to have_content 'PackingSlipMulti.txt'
       expect(page).to have_content 'Jobs and line items will be added'
 
       click_button 'Next'
+      sleep ci? ? 3 : 1
       find('.big-submit-button').click
-      sleep 1 if ci?
+      sleep ci? ? 3 : 1
 
       order = Order.fba.where(name: 'An FBA Order')
       expect(order).to exist
@@ -179,9 +180,8 @@ feature 'FBA Order management', fba_spec: true, story_103: true, js: true, retry
 
       click_button 'Next'
       click_link 'Upload Packing Slip(s)'
-      attach_file 'packing_slips_', bad_sku_packing_slip_path
-
-      click_button 'Upload'
+      drop_in_dropzone bad_sku_packing_slip_path
+      click_button "close-packing-slip-modal"
       wait_for_ajax
 
       expect(page).to have_content 'PackingSlipBadSku.txt'

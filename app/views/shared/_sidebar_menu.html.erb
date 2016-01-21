@@ -5,7 +5,7 @@
       <a href="/"><i class="fa fa-home"></i> Dashboard</a>
     <% end %>
 
-    <%= content_tag :li, class: ('active' if current_url.include?('orders')) do %>
+    <%= content_tag :li, class: ('active' if current_url.include?('orders') && !current_url.include?('fba')) do %>
       <a href="#fakelink"><i class="fa fa-shopping-cart"></i><i class="fa fa-angle-double-down i-right"></i> Orders</a>
 
       <%= content_tag :ul, class: ('visible' if current_url.include?('orders')) do %>

@@ -36,7 +36,7 @@ class Job < ActiveRecord::Base
   end
 
   validate :assure_name_and_description, on: :create
-  validates :name, uniqueness: { scope: [:jobbable_id] }, if: ->(j) { j.jobbable_type == 'Order' }
+  validates :name, uniqueness: { scope: [:jobbable_id] }, if: ->(j) { j.jobbable_type == 'Order' && j.jobbable_id }
 
   def id_and_name
     "##{id} #{name}"

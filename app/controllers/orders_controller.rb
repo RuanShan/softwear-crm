@@ -1,6 +1,7 @@
 class OrdersController < InheritedResources::Base
   include StateMachine
 
+  skip_before_action :verify_authenticity_token, only: [:fba_job_info]
   before_filter :format_in_hand_by, only: [:create, :update]
   layout 'no_overlay', only: [:show]
 
@@ -118,6 +119,10 @@ class OrdersController < InheritedResources::Base
     @fba_infos = []
 
     if packing_slips
+      if packing_slips.is_a?(Hash)
+        packing_slips = packing_slips.values
+      end
+
       @fba_infos += packing_slips.compact.flat_map do |packing_slip|
         FBA.parse_packing_slip(
           StringIO.new(packing_slip.read),
@@ -141,6 +146,19 @@ class OrdersController < InheritedResources::Base
     end
 
     @fba_infos.compact!
+
+    respond_to do |format|
+      format.js
+      format.json do
+        result = @fba_infos.map do |fba|
+          {
+            container: render_string(partial: 'fba_upload', locals: { filename: fba[:filename] }),
+            info:      render_string(partial: 'fba_job_info_box', locals: { fba: fba })
+          }
+        end
+        render json: result.to_json
+      end
+    end
   end
 
   def imprintable_order_sheets

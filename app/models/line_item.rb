@@ -171,15 +171,15 @@ class LineItem < ActiveRecord::Base
   end
 
   def size_display
-    imprintable_variant.size.display_value
+    imprintable_variant.size.display_value rescue nil
   end
 
   def style_catalog_no
-    imprintable.style_catalog_no
+    imprintable.style_catalog_no if imprintable
   end
 
   def style_name
-    imprintable.style_name
+    imprintable.style_name if imprintable
   end
 
   def unit_price
