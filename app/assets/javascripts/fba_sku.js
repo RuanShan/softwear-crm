@@ -49,7 +49,9 @@ $(window).load(function() {
       if (prevSku.match(/0-\w+-\d{10}/)) {
         var newSku = replaceAt(prevSku, prevSku.length - 4, '_');
         var newSku = replaceAt(newSku,  newSku.length  - 5, '_');
-        fields.find('.fba-sku-sku').val(newSku);
+        var skuField = fields.find('.fba-sku-sku');
+        skuField.val(newSku);
+        skuField[0].setSelectionRange(prevSku.length - 5, prevSku.length - 3);
       }
       else
         fields.find('.fba-sku-sku').val(prevSku);

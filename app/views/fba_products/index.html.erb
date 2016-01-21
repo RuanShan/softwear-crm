@@ -6,7 +6,7 @@
   <%= link_to '+', new_fba_product_path, class: 'btn btn-success' %>
 </div>
 
-<%= search_form_for FbaJobTemplate, class: 'form-horizontal' do |s| %>
+<%= search_form_for FbaProduct, class: 'form-horizontal' do |s| %>
   <div class='form-group'>
     <%= s.fulltext placeholder: 'Search Terms', class: 'form-control' %>
   </div>
