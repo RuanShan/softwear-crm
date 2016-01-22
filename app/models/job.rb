@@ -12,6 +12,8 @@ class Job < ActiveRecord::Base
 
   tracked by_current_user + on_order
 
+  default_scope { order(sort_order: :asc) }
+
   before_destroy :check_for_line_items
   after_update :destroy_self_if_line_items_and_imprints_are_empty
   after_create :create_default_imprint, if: :fba?

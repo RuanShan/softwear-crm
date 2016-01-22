@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160119202740) do
+ActiveRecord::Schema.define(version: 20160122190252) do
 
   create_table "activities", force: :cascade do |t|
     t.integer  "trackable_id",   limit: 4
@@ -469,6 +469,7 @@ ActiveRecord::Schema.define(version: 20160119202740) do
     t.boolean  "collapsed"
     t.string   "jobbable_type",    limit: 191
     t.integer  "softwear_prod_id", limit: 4
+    t.integer  "sort_order",       limit: 4
   end
 
   add_index "jobs", ["deleted_at"], name: "index_jobs_on_deleted_at", using: :btree

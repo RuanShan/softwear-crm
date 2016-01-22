@@ -44,6 +44,7 @@ class FBA
       end
 
       address = parse_address(header['Ship To'])
+      shipping_location_size = 0 # This will be the sum of all quantities after pass 1
 
       # Pass 1: Just collect (and report bad skus)
       job_groups = {}
@@ -82,6 +83,7 @@ class FBA
         key = [header['Shipment ID'], fba_product, fba_job_template]
         job_groups[key] ||= [].tap { |a| a.send :extend, PendingLineItems }
         job_groups[key] << OpenStruct.new(fba_sku: fba_sku, quantity: datum['Shipped'])
+        shipping_location_size += datum['Shipped'].to_i
       end
 
       # Pass 2: Add job attributes (and FBA product names)
@@ -91,8 +93,10 @@ class FBA
         result[:fba_product_names] << fba_product.name unless result[:fba_product_names].include?(fba_product.name)
 
         result[:jobs_attributes][key.hash] = {
-          name:        "#{fba_product.name} #{fba_job_template.name} - #{shipment_id}",
+          name:        "#{fba_job_template.name} - #{address.city}, #{address.state}",
           collapsed:   true,
+          shipping_location: header['Shipment ID'],
+          shipping_location_size: shipping_location_size,
           description: "Generated from packing slip #{options[:filename]} and FBA Product ##{fba_product.id}, "\
                        "Job Template ##{fba_job_template.id}",
 

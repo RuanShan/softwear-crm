@@ -320,6 +320,44 @@ class Order < ActiveRecord::Base
     save!
   end
 
+  def jobs_attributes=(attrs)
+    return super unless fba?
+
+    attrs = (attrs.try(:values) || attrs).map(&:with_indifferent_access)
+
+    # Sort jobs by shipping location
+    jobs_by_shipping_location = {}
+    attrs.each do |job_attrs|
+      shipping_location      = job_attrs[:shipping_location]
+      shipping_location_size = job_attrs[:shipping_location_size]
+
+      jobs_by_shipping_location[[shipping_location, shipping_location_size]] ||= []
+      jobs_by_shipping_location[[shipping_location, shipping_location_size]] << job_attrs
+    end
+
+    # Sort shipping locations by size
+    sorted_shipping_locations = jobs_by_shipping_location.keys.sort_by(&:last)
+
+    sorted_jobs = []
+    sorted_shipping_locations.each do |key|
+      # Sort jobs within each location by total line item quantity
+      sorted_jobs += jobs_by_shipping_location[key].sort_by do |job_attrs|
+        job_attrs[:line_items_attributes].values.reduce(0) { |n, l| n + l[:quantity].to_i }
+      end
+    end
+
+    # Add sort order to each job and job name
+    sorted_jobs.each_with_index do |job_attrs, index|
+      job_attrs[:sort_order] = index
+      job_attrs[:name] = "Job #{index + 1} - #{job_attrs[:name]}"
+
+      job_attrs.delete(:shipping_location)
+      job_attrs.delete(:shipping_location_size)
+    end
+
+    super(sorted_jobs)
+  end
+
   def id=(new_id)
     return if new_id.blank?
     super

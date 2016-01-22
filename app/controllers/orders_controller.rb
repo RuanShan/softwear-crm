@@ -216,6 +216,7 @@ class OrdersController < InheritedResources::Base
         quote_ids: [],
         jobs_attributes: [
           :id, :name, :jobbable_id, :jobbable_type, :description, :_destroy,
+          :shipping_location, :shipping_location_size, :sort_order,
           imprints_attributes: [
             :print_location_id, :description, :_destroy, :id
           ],
