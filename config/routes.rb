@@ -104,7 +104,7 @@ CrmSoftwearcrmCom::Application.routes.draw do
     resources :in_store_credits do
       collection { get :search }
     end
-    resources :payment_drops
+    resources :payment_drops, except: :destroy
   end
 
   get 'payments/undropped', to: 'payments#undropped'
