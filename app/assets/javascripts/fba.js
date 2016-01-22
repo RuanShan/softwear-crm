@@ -31,8 +31,16 @@ $(function() {
     if (fbaProductNames.length === 0)
       name = "Empty FBA Order ";
 
-    name += "- " + $('.fba-upload').length + " Shipping Location";
-    if ($('.fba-upload').length != 1)
+    // Grab only unique file names for shipping location count
+    var fbaFileNames = [];
+    $('.fba-file-upload-shipping-location').each(function() {
+      var fileName = $(this).data('filename');
+      if (fbaFileNames.lastIndexOf(fileName) === -1)
+        fbaFileNames.push(fileName);
+    });
+
+    name += "- " + fbaFileNames.length + " Shipping Location";
+    if (fbaFileNames.length != 1)
       name += "s";
 
     $('#order_name').val(name);

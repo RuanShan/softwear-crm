@@ -2,7 +2,7 @@ Dropzone.options.jsPackingSlipForm =
   paramName: 'packing_slips'
   maxFilesize: 1#MB
   uploadMultiple: true
-  success: (file, response) ->
+  successmultiple: (file, response) ->
     for entry in response
       container = $(entry.container)
       $('#js-packing-slip-info-zone').append container

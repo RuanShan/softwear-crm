@@ -336,7 +336,7 @@ class Order < ActiveRecord::Base
     end
 
     # Sort shipping locations by size
-    sorted_shipping_locations = jobs_by_shipping_location.keys.sort_by(&:last)
+    sorted_shipping_locations = jobs_by_shipping_location.keys.sort_by(&:last).reverse
 
     sorted_jobs = []
     sorted_shipping_locations.each do |key|
