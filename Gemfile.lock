@@ -632,6 +632,7 @@ DEPENDENCIES
   sunspot_matchers
   sunspot_rails
   sunspot_solr
+  thread_safe
   uglifier (>= 1.3.0)
   webmock
   whenever
