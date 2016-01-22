@@ -11,6 +11,13 @@ class FbaJobTemplatesController < InheritedResources::Base
     end
   end
 
+  def create
+    super do |success, failure|
+      success.html { redirect_to action: :index }
+      failure.html { render }
+    end
+  end
+
   private
 
   def permitted_params

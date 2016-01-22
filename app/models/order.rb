@@ -321,7 +321,7 @@ class Order < ActiveRecord::Base
   end
 
   def jobs_attributes=(attrs)
-    return super unless fba?
+    return super unless fba? && new_record?
 
     attrs = (attrs.try(:values) || attrs).map(&:with_indifferent_access)
 
