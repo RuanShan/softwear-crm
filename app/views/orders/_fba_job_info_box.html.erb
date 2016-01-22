@@ -24,3 +24,6 @@
 <% end %>
 
 <%= hash_to_hidden_fields(fba[:jobs_attributes], 'order[jobs_attributes]') if fba[:jobs_attributes] %>
+<% fba[:fba_product_names].each do |fba_product_name| %>
+  <div class='fba-order-product-name' data-name='<%= fba_product_name %>'></div>
+<% end %>

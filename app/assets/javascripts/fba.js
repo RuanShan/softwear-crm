@@ -14,6 +14,32 @@ var resubmitFbaOnEnter;
 $(function() {
   if ($('#js-packing-slip-form').length == 0) return;
 
+  window.figureOutFbaOrderName = function() {
+    var fbaProductNames = [];
+    var name = "";
+
+    // these .fba-order-product-name elements come from orders/fba_job_info.js.erb
+    // the idea is to grab the unique ones
+    $('.fba-order-product-name').each(function() {
+      var productName = $(this).data('name');
+      if (fbaProductNames.lastIndexOf(productName) === -1) {
+        fbaProductNames.push(productName);
+        name += productName + " "
+      }
+    });
+
+    if (fbaProductNames.length === 0)
+      name = "Empty FBA Order ";
+
+    name += "- " + $('.fba-upload').length + " Shipping Location";
+    if ($('.fba-upload').length != 1)
+      name += "s";
+
+    $('#order_name').val(name);
+  };
+
+  $(document).on('click', 'button.next', figureOutFbaOrderName)
+
   resubmitButton = function(self, inputClass) {
     var dataElement =
       self.closest('.fba-upload');

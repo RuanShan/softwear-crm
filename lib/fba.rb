@@ -25,6 +25,7 @@ class FBA
     # { :fatal_error => message }     if the file could not be parsed  (check for this first)
     # { :errors => list_of_messages } if there were some other problems
     # { :jobs_attributes => jobs_attributes } these attributes will be valid form input
+    # { :fba_product_names => array_of_names } unique fba product names found from this packing slip
     def parse_packing_slip(packing_slip, options = {})
       options[:filename] ||= '<unknown file>'
       routes = options[:context]
@@ -34,7 +35,8 @@ class FBA
         errors: [],
         jobs_attributes: {},
         shipments_attributes: {},
-        filename: options[:filename]
+        filename: options[:filename],
+        fba_product_names: []
       }
 
       if header.blank? || data.blank?
@@ -82,9 +84,11 @@ class FBA
         job_groups[key] << OpenStruct.new(fba_sku: fba_sku, quantity: datum['Shipped'])
       end
 
-      # Pass 2: Add job attributes
+      # Pass 2: Add job attributes (and FBA product names)
       job_groups.each do |key, skus|
         shipment_id, fba_product, fba_job_template = key
+
+        result[:fba_product_names] << fba_product.name unless result[:fba_product_names].include?(fba_product.name)
 
         result[:jobs_attributes][key.hash] = {
           name:        "#{fba_product.name} #{fba_job_template.name} - #{shipment_id}",

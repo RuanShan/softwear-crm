@@ -1,3 +1,5 @@
+<% # NOTE the current implementation of this that is being used with dropzone is in global.js.coffee %>
+
 <% if @fba_infos %>
 
   <% @fba_infos.each do |fba| %>
@@ -7,6 +9,8 @@
     container.find('.info')
     .append("<%=j "#{render('fba_job_info_box', fba: fba)}" %>");
   <% end %>
+
+  window.figureOutFbaOrderName();
 
 <% else %>
   errorModal("le gasp");

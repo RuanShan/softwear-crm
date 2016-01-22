@@ -123,7 +123,6 @@ feature 'FBA Order management', fba_spec: true, story_103: true, js: true, retry
 
     scenario 'a user can create an FBA order with the jobs, line items, and shipments specified by a packing slip', create: true do
       visit new_fba_orders_path
-      fill_in 'Name', with: 'An FBA Order'
       fill_in 'Deadline', with: '12/25/2025 12:00 AM'
 
       click_button 'Next'
@@ -143,16 +142,16 @@ feature 'FBA Order management', fba_spec: true, story_103: true, js: true, retry
       find('.big-submit-button').click
       sleep ci? ? 3 : 1
 
-      order = Order.fba.where(name: 'An FBA Order')
+      order = Order.fba.where(name: "Scooba Shirt Scooba Sweater - 1 Shipping Location")
       expect(order).to exist
-      expect(page).to have_content 'An FBA Order'
+      expect(page).to have_content 'Scooba Shirt Scooba Sweater - 1 Shipping Location'
       order = order.first
       expect(
         order.jobs.joins(:imprints).where(imprints: { print_location_id: job_template.imprints.first.id }).size
       ).to eq 2
 
-      expect(order.jobs.where(name: 'Scooba Sweater Test Template - FBA312LM3T')).to exist
-      expect(order.jobs.where(name: 'Scooba Shirt Test Template - FBA312LM3T')).to exist
+      expect(order.jobs.where(name: 'Job 1 - Test Template - Breiningsville, PA')).to exist
+      expect(order.jobs.where(name: 'Job 2 - Test Template - Breiningsville, PA')).to exist
 
       expect(order.line_items.where(imprintable_object_id: red_shirt_xs.id, quantity: 1)).to exist
       expect(order.line_items.where(imprintable_object_id: red_shirt_s.id, quantity: 1)).to exist
@@ -175,7 +174,6 @@ feature 'FBA Order management', fba_spec: true, story_103: true, js: true, retry
   context "when there are some bad skus" do
     scenario 'the user is informed and linked to the fba products page (target=_blank)' do
       visit new_fba_orders_path
-      fill_in 'Name', with: 'An FBA Order'
       fill_in 'Deadline', with: '12/25/2025 12:00 AM'
 
       click_button 'Next'
