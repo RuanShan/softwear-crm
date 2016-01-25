@@ -2,7 +2,7 @@ class User
   include ActiveModel::Model
   include ActiveModel::Conversion
 
-  ENDPOINT = 'localhsot'
+  ENDPOINT = 'localhost'
 
   attr_reader :id
   attr_reader :email
