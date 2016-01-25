@@ -18,6 +18,20 @@
       </div>
 
       <div class="form-group row">
+        <%= f.label :fnsku, 'Amazon FNSKU', class: 'col-sm-2 control-label form-right' %>
+
+        <div class="col-sm-10">
+          <% if fba_product.errors.include?(:fnsku) %>
+            <% fba_product.errors.full_messages_for(:fnsku).each do |message| %>
+              <p class="text-danger"><%= message %></p>
+            <% end %>
+          <% end %>
+
+          <%= f.text_field :fnsku, class: 'form-control' %>
+        </div>
+      </div>
+
+      <div class="form-group row">
         <%= f.label :sku, 'Master SKU', class: 'col-sm-2 control-label form-right' %>
 
         <div class="col-sm-10">

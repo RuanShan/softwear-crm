@@ -23,6 +23,7 @@ feature 'FBA Products management', js: true do
   scenario 'A user can create a new FBA Product', new: true do
     visit new_fba_product_path
     fill_in 'Name', with: 'Baberaham Lincoln'
+    fill_in 'Amazon FNSKU', with: 'abc123'
     fill_in 'Master SKU', with: 'misc_baberah'
 
     click_link 'Add Child SKU'
@@ -44,7 +45,7 @@ feature 'FBA Products management', js: true do
 
     expect(page).to have_content 'successfully created'
 
-    fba_product = FbaProduct.where(name: 'Baberaham Lincoln', sku: 'misc_baberah')
+    fba_product = FbaProduct.where(name: 'Baberaham Lincoln', fnsku: 'abc123', sku: 'misc_baberah')
     expect(fba_product).to exist
     expect(fba_product.first.fba_skus.where(sku: '0-misc_baberah-1030101009', imprintable_variant_id: red_shirt_s.id)).to exist
   end

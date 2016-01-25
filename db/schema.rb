@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160122190252) do
+ActiveRecord::Schema.define(version: 20160125202402) do
 
   create_table "activities", force: :cascade do |t|
     t.integer  "trackable_id",   limit: 4
@@ -262,6 +262,7 @@ ActiveRecord::Schema.define(version: 20160122190252) do
     t.string   "sku",        limit: 191
     t.datetime "created_at",             null: false
     t.datetime "updated_at",             null: false
+    t.string   "fnsku",      limit: 191
   end
 
   create_table "fba_skus", force: :cascade do |t|
@@ -553,9 +554,9 @@ ActiveRecord::Schema.define(version: 20160122190252) do
     t.decimal  "shipping_price",                             precision: 10, scale: 2, default: 0.0
     t.string   "invoice_state",             limit: 191
     t.string   "production_state",          limit: 191
-    t.integer  "softwear_prod_id",          limit: 4
     t.string   "notification_state",        limit: 191
     t.integer  "freshdesk_proof_ticket_id", limit: 4
+    t.integer  "softwear_prod_id",          limit: 4
     t.string   "artwork_state",             limit: 191
     t.string   "customer_key",              limit: 191
     t.text     "invoice_reject_reason",     limit: 16777215
@@ -709,8 +710,8 @@ ActiveRecord::Schema.define(version: 20160122190252) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.decimal  "shipping",                                     precision: 10, scale: 2
-    t.datetime "initialized_at"
     t.string   "quote_source",                     limit: 191
+    t.datetime "initialized_at"
     t.string   "freshdesk_ticket_id",              limit: 191
     t.boolean  "informal"
     t.integer  "insightly_category_id",            limit: 4
