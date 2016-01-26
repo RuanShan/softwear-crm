@@ -44,7 +44,7 @@ feature 'FBA Products management', js: true do
 
     expect(page).to have_content 'successfully created'
 
-    fba_product = FbaProduct.where(name: 'Baberaham Lincoln', fnsku: 'abc123', sku: 'misc_baberah')
+    fba_product = FbaProduct.where(name: 'Baberaham Lincoln', sku: 'misc_baberah')
     expect(fba_product).to exist
     expect(fba_product.first.fba_skus.where(sku: '0-misc_baberah-1030101009', imprintable_variant_id: red_shirt_s.id)).to exist
   end
@@ -170,6 +170,30 @@ feature 'FBA Products management', js: true do
     expect(fba_product.first.fba_skus.size).to eq 2
     expect(fba_product.first.fba_skus.where(sku: '0-misc_baberah-1030101009', imprintable_variant_id: red_shirt_s.id)).to exist
     expect(fba_product.first.fba_skus.where(sku: '0-misc_baberah-10301__009', imprintable_variant_id: red_shirt_m.id)).to exist
+  end
+
+  scenario 'Adding a valid sku pre-populates the imprintable variant fields', new: true, prepopulate: true do
+    shirt.update_column  :sku, 3333
+    size_s.update_column :sku, 11
+    red.update_column    :sku, 222
+
+    visit new_fba_product_path
+    fill_in 'Name', with: 'Baberaham Lincoln'
+    fill_in 'Master SKU', with: 'misc_baberah'
+
+    click_link 'Add Child SKU'
+
+    find('.fba-sku-sku').set '0-misc_baberah-0333311222'
+    select2 fba_job_template.name,    from: '.fba-sku-job-template'
+
+    click_button 'Create FBA Product'
+
+    expect(page).to have_content 'successfully created'
+
+    fba_product = FbaProduct.where(name: 'Baberaham Lincoln', sku: 'misc_baberah')
+    expect(fba_product).to exist
+    expect(fba_product.first.fba_skus.size).to eq 1
+    expect(fba_product.first.fba_skus.where(sku: '0-misc_baberah-0333311222', imprintable_variant_id: red_shirt_s.id)).to exist
   end
 
   scenario 'A user can edit just the size of an existing FBA Product sku', edit: true do

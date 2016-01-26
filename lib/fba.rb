@@ -274,7 +274,7 @@ class FBA
       version = sku.try(:[], 0)
       case version
       when '0'
-        /\d\-(?<idea>\w+)\-
+        /\d-(?<idea>\w+)-
         (?<print>\d)
         (?<imprintable>\d{4})
         (?<size>\d{2})

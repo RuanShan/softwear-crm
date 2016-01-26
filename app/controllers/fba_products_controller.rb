@@ -1,6 +1,9 @@
 class FbaProductsController < InheritedResources::Base
   include ActionView::Helpers::FormOptionsHelper
   SelectOptions = Struct.new(:id, :target, :hide, :collection)
+  SelectedOption = Struct.new(:id, :target, :value)
+
+  before_filter :check_autofill, only: [:new, :edit, :create, :update]
 
   helper_method :imprintable_options_for_select
   helper_method :color_options_for_select
@@ -9,24 +12,6 @@ class FbaProductsController < InheritedResources::Base
   def index
     @current_action = 'fba_products#index'
     @fba_products = FbaProduct.page(params[:page])
-  end
-
-  def variant_fields
-    @results = []
-    # params[:entries] comes from assets/javascripts/fba_sku.js
-    params[:entries].each do |_index, entry|
-      if entry[:color_id]
-        @results << select_options_from_color_id(entry)
-
-      elsif entry[:imprintable_id]
-        @results << select_options_from_imprintable_id(entry)
-
-      elsif entry[:brand_id]
-        @results << select_options_from_brand_id(entry)
-      end
-    end
-
-    respond_to(&:js)
   end
 
   def new_from_spreadsheet
@@ -56,6 +41,59 @@ class FbaProductsController < InheritedResources::Base
     end
 
     redirect_to new_from_spreadsheet_fba_products_path
+  end
+
+  def variant_fields
+    @results = []
+    @selections = []
+
+    if params[:sku] && params[:name]
+      sku_info = FBA.parse_sku(params[:sku])
+
+      imprintable = Imprintable.find_by sku: sku_info.imprintable
+      color       = Color.find_by       sku: sku_info.color
+      size        = Size.find_by        sku: sku_info.size
+      return if imprintable.nil? || color.nil? || size.nil?
+      variant = imprintable.imprintable_variants.where(color_id: color.id, size_id: size.id).first
+      return if variant.nil?
+
+      entry = {
+        brand_id:       imprintable.brand_id,
+        imprintable_id: imprintable.id,
+        color_id:       color.id,
+        id:             params[:name]
+      }
+
+      @results = [
+        select_options_from_brand_id(entry),
+        select_options_from_imprintable_id(entry),
+        select_options_from_color_id(entry)
+      ]
+
+      @selections = [
+        SelectedOption.new(params[:name], '.fba-sku-brand', imprintable.brand_id),
+        SelectedOption.new(params[:name], '.fba-sku-style', imprintable.id),
+        SelectedOption.new(params[:name], '.fba-sku-color', color.id),
+        SelectedOption.new(params[:name], '.fba-sku-size',  variant.id)
+      ]
+    else
+      # params[:entries] comes from assets/javascripts/fba_sku.js
+      entries = params[:entries]
+
+      entries.each do |_index, entry|
+        if entry[:color_id]
+          @results << select_options_from_color_id(entry)
+
+        elsif entry[:imprintable_id]
+          @results << select_options_from_imprintable_id(entry)
+
+        elsif entry[:brand_id]
+          @results << select_options_from_brand_id(entry)
+        end
+      end
+    end
+
+    respond_to(&:js)
   end
 
   private
@@ -166,5 +204,16 @@ class FbaProductsController < InheritedResources::Base
         ]
       ]
     )
+  end
+
+  def check_autofill
+    if params[:sku_autofill]
+      session[:sku_autofill] = params[:sku_autofill]
+    end
+    if session[:sku_autofill].nil?
+      @sku_autofill = true
+    else
+      @sku_autofill = session[:sku_autofill] == '1'
+    end
   end
 end
