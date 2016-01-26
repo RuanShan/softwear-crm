@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160125202402) do
+ActiveRecord::Schema.define(version: 20160126172107) do
 
   create_table "activities", force: :cascade do |t|
     t.integer  "trackable_id",   limit: 4
@@ -262,7 +262,6 @@ ActiveRecord::Schema.define(version: 20160125202402) do
     t.string   "sku",        limit: 191
     t.datetime "created_at",             null: false
     t.datetime "updated_at",             null: false
-    t.string   "fnsku",      limit: 191
   end
 
   create_table "fba_skus", force: :cascade do |t|
@@ -272,6 +271,8 @@ ActiveRecord::Schema.define(version: 20160125202402) do
     t.integer  "fba_job_template_id",    limit: 4
     t.datetime "created_at",                         null: false
     t.datetime "updated_at",                         null: false
+    t.string   "fnsku",                  limit: 191
+    t.string   "asin",                   limit: 191
   end
 
   add_index "fba_skus", ["fba_job_template_id"], name: "index_fba_skus_on_fba_job_template_id", using: :btree

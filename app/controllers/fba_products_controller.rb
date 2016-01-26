@@ -130,9 +130,10 @@ class FbaProductsController < InheritedResources::Base
   def permitted_params
     params.permit(
       fba_product: [
-        :name, :sku, :fnsku,
+        :name, :sku,
         fba_skus_attributes: [
-          :id, :sku, :imprintable_variant_id, :fba_job_template_id, :_destroy
+          :id, :sku, :imprintable_variant_id, :fba_job_template_id,
+          :fnsku, :asin, :_destroy
         ]
       ]
     )

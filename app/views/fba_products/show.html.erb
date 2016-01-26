@@ -34,6 +34,8 @@
         <thead>
           <tr>
             <th>SKU</th>
+            <th>FNSKU</th>
+            <th>ASIN</th>
             <th>Imprintable Variant</th>
             <th>FBA Job Template</th>
           </tr>
@@ -43,6 +45,8 @@
           <% @fba_product.fba_skus.each do |fba_sku| %>
             <tr>
               <td><%= fba_sku.sku %></td>
+              <td><%= fba_sku.fnsku %></td>
+              <td><%= fba_sku.asin %></td>
               <td><%= link_to fba_sku.imprintable_variant.fancy_name, fba_sku.imprintable %></td>
               <td><%= link_to fba_sku.fba_job_template.name, fba_sku.fba_job_template %></td>
             </tr>
