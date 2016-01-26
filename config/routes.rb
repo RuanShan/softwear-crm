@@ -161,6 +161,8 @@ CrmSoftwearcrmCom::Application.routes.draw do
   resources :fba_products do
     collection do
       get :variant_fields
+      get :new_from_spreadsheet
+      post :upload_spreadsheet
     end
   end
 

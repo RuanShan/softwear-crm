@@ -22,6 +22,8 @@ class FbaProduct < ActiveRecord::Base
     all_errors = {}
 
     doc.sheets.each do |sheet|
+      next if /IGNORE/ =~ sheet.name
+
       header = {}
       errors = {}
       action = nil
@@ -87,7 +89,7 @@ class FbaProduct < ActiveRecord::Base
 
         next "No matching job template found" if fba_job_template.nil?
 
-        current_fba_skus << {
+        fba_sku_attributes = {
           sku:   sku,
           fnsku: fnsku,
           asin:  asin,
@@ -95,6 +97,17 @@ class FbaProduct < ActiveRecord::Base
           imprintable_variant_id: imprintable_variant.id,
           fba_job_template_id:    fba_job_template.id
         }
+
+        if fba_sku = FbaSku.find_by(sku: sku)
+          if current_product.persisted? && fba_sku.fba_product.id != current_product.id
+            next "The child sku #{sku} already belongs to FBA Product #{fba_sku.fba_product.name}"
+          end
+
+          fba_sku_attributes[:id] = fba_sku.id
+        end
+
+        current_fba_skus << fba_sku_attributes
+
         true
       end
 
@@ -108,7 +121,7 @@ class FbaProduct < ActiveRecord::Base
           end
 
           first_row_of_current_product = rownum
-          current_product = FbaProduct.new(
+          current_product = FbaProduct.find_or_initialize_by(
             name: row[header[:name]],
             sku:  row[header[:parent_sku]]
           )
@@ -146,7 +159,9 @@ class FbaProduct < ActiveRecord::Base
       sheet.rows.each_with_index do |row, index|
         action.call(row, index)
       end
-      unless current_product.nil?
+      if action == find_header
+        errors[0] = "Couldn't find header"
+      elsif !current_product.nil?
         complete_product.call first_row_of_current_product
       end
       all_errors[sheet.name] = errors unless errors.empty?
