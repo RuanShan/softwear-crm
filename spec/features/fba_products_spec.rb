@@ -23,7 +23,6 @@ feature 'FBA Products management', js: true do
   scenario 'A user can create a new FBA Product', new: true do
     visit new_fba_product_path
     fill_in 'Name', with: 'Baberaham Lincoln'
-    fill_in 'Amazon FNSKU', with: 'abc123'
     fill_in 'Master SKU', with: 'misc_baberah'
 
     click_link 'Add Child SKU'
