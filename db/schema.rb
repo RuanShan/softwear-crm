@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160126172107) do
+ActiveRecord::Schema.define(version: 20160127215857) do
 
   create_table "activities", force: :cascade do |t|
     t.integer  "trackable_id",   limit: 4
@@ -555,9 +555,9 @@ ActiveRecord::Schema.define(version: 20160126172107) do
     t.decimal  "shipping_price",                             precision: 10, scale: 2, default: 0.0
     t.string   "invoice_state",             limit: 191
     t.string   "production_state",          limit: 191
-    t.integer  "softwear_prod_id",          limit: 4
     t.string   "notification_state",        limit: 191
     t.integer  "freshdesk_proof_ticket_id", limit: 4
+    t.integer  "softwear_prod_id",          limit: 4
     t.string   "artwork_state",             limit: 191
     t.string   "customer_key",              limit: 191
     t.text     "invoice_reject_reason",     limit: 16777215
@@ -693,6 +693,8 @@ ActiveRecord::Schema.define(version: 20160126172107) do
     t.integer  "insightly_organisation_id", limit: 4
     t.integer  "freshdesk_contact_id",      limit: 4
     t.string   "freshdesk_ticket_id",       limit: 191
+    t.string   "domain",                    limit: 191
+    t.string   "ip_address",                limit: 191
   end
 
   create_table "quotes", force: :cascade do |t|
@@ -711,8 +713,8 @@ ActiveRecord::Schema.define(version: 20160126172107) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.decimal  "shipping",                                     precision: 10, scale: 2
-    t.datetime "initialized_at"
     t.string   "quote_source",                     limit: 191
+    t.datetime "initialized_at"
     t.string   "freshdesk_ticket_id",              limit: 191
     t.boolean  "informal"
     t.integer  "insightly_category_id",            limit: 4
