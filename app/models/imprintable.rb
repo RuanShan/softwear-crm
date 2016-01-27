@@ -325,6 +325,10 @@ class Imprintable < ActiveRecord::Base
     end
   end
 
+  def imprintable_variants
+    super.eager_load(:color, :size).readonly(false)
+  end
+
   private
 
   def discontinue_imprintable

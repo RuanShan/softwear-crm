@@ -291,7 +291,7 @@ feature 'Imprintables management', imprintable_spec: true, slow: true do
 
     click_button 'Add Imprintable(s)'
 
-    sleep 1
+    sleep 2
     expect(page).to have_content 'Quote was successfully updated.'
   end
 
