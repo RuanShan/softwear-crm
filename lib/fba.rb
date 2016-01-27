@@ -22,6 +22,7 @@ class FBA
 
   class << self
     # Possible keys:
+    # { :missing_skus => idea => array_of_skus }
     # { :fatal_error => message }     if the file could not be parsed  (check for this first)
     # { :errors => list_of_messages } if there were some other problems
     # { :jobs_attributes => jobs_attributes } these attributes will be valid form input
@@ -32,6 +33,7 @@ class FBA
 
       header, data = parse_file(packing_slip)
       result = {
+        missing_skus: {},
         errors: [],
         jobs_attributes: {},
         shipments_attributes: {},
@@ -53,10 +55,11 @@ class FBA
         fba_sku = FbaSku.find_by(sku: sku)
 
         if fba_sku.nil?
-          result[:errors] << lambda do |view|
-            "No FBA Product was found with a child sku of #{sku}. Configure FBA Products "\
-            "#{view.link_to 'here', view.fba_products_path, target: :_blank}."
-          end
+          sku_info = parse_sku(sku)
+
+          result[:missing_skus][sku_info.idea] ||= []
+          result[:missing_skus][sku_info.idea] << sku
+
           next
         end
         fba_product      = fba_sku.fba_product

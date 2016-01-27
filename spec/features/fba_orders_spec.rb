@@ -172,19 +172,28 @@ feature 'FBA Order management', fba_spec: true, story_103: true, js: true, retry
   end
 
   context "when there are some bad skus" do
-    scenario 'the user is informed and linked to the fba products page (target=_blank)' do
+    scenario 'the user is informed and linked to the fba products page (target=_blank)', bad_skus: true do
       visit new_fba_orders_path
       fill_in 'Deadline', with: '12/25/2025 12:00 AM'
 
       click_button 'Next'
+      sleep 2
       click_link 'Upload Packing Slip(s)'
+      sleep 2
       drop_in_dropzone bad_sku_packing_slip_path
+      sleep 1
       click_button "close-packing-slip-modal"
       wait_for_ajax
 
       expect(page).to have_content 'PackingSlipBadSku.txt'
       expect(page).to have_content 'No line items will be added'
-      expect(page).to have_selector "a[href='#{fba_products_path}']"
+      expect(page).to have_content "Missing 4 skus for the product \"fba_wedd_bride\""
+      click_link 'Click here'
+
+      expect(page).to have_css 'input[type=text][value="0-fba_wedd_bride-2070502000"]'
+      expect(page).to have_css 'input[type=text][value="0-fba_wedd_bride-2070503000"]'
+      expect(page).to have_css 'input[type=text][value="0-fba_wedd_bride-2070504000"]'
+      expect(page).to have_css 'input[type=text][value="0-fba_wedd_bride-2070505000"]'
     end
   end
 end
