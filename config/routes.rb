@@ -1,7 +1,6 @@
 require 'sidekiq/web'
 
 CrmSoftwearcrmCom::Application.routes.draw do
-  devise_for :users, controllers: { sessions: 'users/sessions' }, skip: 'registration'
   mount ActsAsWarnable::Engine => '/'
 
   root 'home#index'
@@ -29,7 +28,7 @@ CrmSoftwearcrmCom::Application.routes.draw do
     end
   end
 
-
+  get '/set-session-token', to: 'users#set_session_token', as: :set_session_token
 
   get 'tags/:tag', to: 'imprintables#index', as: :tag
 

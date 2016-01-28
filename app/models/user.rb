@@ -34,6 +34,27 @@ class User
     object
   end
 
+  def self.all
+    default_socket.puts "get #{target_id}"
+    json = validate_response default_socket.gets.chomp
+
+    objects = JSON.parse(json).map(&method(:new))
+    objects.each { |u| u.instance_variable_set(:@persisted, true) }
+    objects
+  end
+
+  def self.auth(token)
+    default_socket.puts "auth #{token}"
+    response = validate_response default_socket.gets.chomp
+
+    return false unless response =~ /^yes .+$/
+
+    _yes, json = response.split(/\s+/, 2)
+    object = new(JSON.parse(json))
+    object.instance_variable_set(:@persisted, true)
+    object
+  end
+
   def initialize(attributes={})
     update_attributes(attributes)
   end
