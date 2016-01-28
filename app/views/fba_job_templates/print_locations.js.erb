@@ -1,0 +1,4 @@
+$('.print-location-select option').remove();
+$('.print-location-select').select2({
+  data: <%= @print_location_id_options.html_safe %>
+});

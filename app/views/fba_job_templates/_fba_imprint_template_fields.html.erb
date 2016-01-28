@@ -1,0 +1,22 @@
+<div class='imprint-entry col-sm-4'>
+  <div class='box-info'>
+    <div class='form-group'>
+      <%= label_tag :imprint_method %>
+      <%= select_tag :imprint_method, options_from_collection_for_select(ImprintMethod.all, :id, :name, f.object.imprint_method_id), include_blank: true, class: 'form-control imprint-method-select select2' %>
+    </div>
+
+    <div>
+      <% print_locations = f.object.imprint_method.try(:print_locations) || [] %>
+
+      <%= f.label :print_location_id %>
+      <%= f.select :print_location_id, options_from_collection_for_select(print_locations, :id, :name, f.object.print_location_id), {}, class: 'form-control print-location-select select2' %>
+    </div>
+
+    <div>
+      <%= f.label :description %>
+      <%= f.text_area :description %>
+    </div>
+
+    <%= f.link_to_remove "Remove", class: 'btn btn-danger margin-topbot-10' %>
+  </div>
+</div>

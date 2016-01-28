@@ -635,12 +635,7 @@ class Order < ActiveRecord::Base
 
     jobs.each_with_index do |job, index|
       # NOTE make sure the permitted params in Production match up with this
-      attrs[index] = {
-        name: job.name,
-        softwear_crm_id: job.id,
-        imprints_attributes: job.production_imprints_attributes,
-        imprintable_train_attributes: job.imprintable_train_attributes
-      }
+      attrs[index] = job.production_attributes
       attrs[index].delete_if { |_,v| v.nil? }
     end
 
@@ -853,5 +848,28 @@ class Order < ActiveRecord::Base
       shipped
       save!
     end
+  end
+
+  def setup_art_for_fba
+    jobs_by_template = {}
+
+    jobs.includes(:imprints).each do |job|
+      jobs_by_template[job.job_template_id] ||= []
+      jobs_by_template[job.job_template_id] << job
+    end
+
+    jobs_by_template.values.each do |jobs|
+      artwork_ids = [Artwork.fba_missing.try(:id)]
+      ArtworkRequest.create(
+        imprint_ids: jobs.map(&:imprint_ids).uniq,
+        artwork_ids: artwork_ids
+      )
+
+      Proof.create(
+        order_id: id,
+        job_id:   jobs.first.id,
+      )
+    end
+
   end
 end

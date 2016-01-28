@@ -1,4 +1,6 @@
 class FbaJobTemplatesController < InheritedResources::Base
+  include ActionView::Helpers::FormOptionsHelper
+
   def index
     @current_action = 'fba_job_templates#index'
     @fba_job_templates = FbaJobTemplate.page(params[:page])
@@ -16,6 +18,13 @@ class FbaJobTemplatesController < InheritedResources::Base
       success.html { redirect_to action: :index }
       failure.html { render }
     end
+  end
+
+  def print_locations
+    return if params[:imprint_method_id].blank?
+
+    @print_location_id_options = PrintLocation.where(imprint_method_id: params[:imprint_method_id])
+      .map { |pl| { id: pl.id, text: pl.name } }.to_json
   end
 
   private

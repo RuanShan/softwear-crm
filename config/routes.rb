@@ -157,7 +157,11 @@ CrmSoftwearcrmCom::Application.routes.draw do
     end
   end
 
-  resources :fba_job_templates
+  resources :fba_job_templates do
+    collection do
+      get :print_locations
+    end
+  end
   resources :fba_products do
     collection do
       get :variant_fields

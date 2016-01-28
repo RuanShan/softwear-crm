@@ -30,6 +30,10 @@ class Artwork < ActiveRecord::Base
             :artwork,
             :preview, presence: true
 
+  def self.fba_missing
+    where(name: 'FBA Art Not Provided').first
+  end
+
   def path
     preview.file.url
   end
@@ -41,11 +45,8 @@ class Artwork < ActiveRecord::Base
   private
 
   def initialize_assets
+    set_assetable = proc { |artwork| artwork.assetable = self }
     self.artwork ||= Asset.new(allowed_content_type: "^image/(ai|pdf|psd)").tap(&set_assetable)
     self.preview ||= Asset.new(allowed_content_type: "^image/(png|gif|jpeg|jpg)").tap(&set_assetable)
-  end
-
-  def set_assetable
-    proc { |artwork| artwork.assetable = self }
   end
 end

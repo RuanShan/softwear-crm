@@ -25,9 +25,9 @@ feature 'FBA Job Tempaltes management', js: true do
     expect(page).to have_content 'successfully created'
     new_template = FbaJobTemplate.where(name: 'cool new template')
     expect(new_template).to exist
-    expect(new_template.first.imprints).to exist
-    expect(new_template.first.imprints.first.description).to eq 'An imprint!'
-    expect(new_template.first.imprints.first.print_location_id).to eq imprint_method_2.print_locations.first.id
+    expect(new_template.first.fba_imprint_templates).to exist
+    expect(new_template.first.fba_imprint_templates.first.description).to eq 'An imprint!'
+    expect(new_template.first.fba_imprint_templates.first.print_location_id).to eq imprint_method_2.print_locations.first.id
   end
 
   scenario 'A user can edit an existing FBA job tamplate', edit: true do
@@ -42,8 +42,8 @@ feature 'FBA Job Tempaltes management', js: true do
     expect(page).to have_content 'successfully updated'
     new_template = FbaJobTemplate.where(name: 'cool new name')
     expect(new_template).to exist
-    expect(new_template.first.imprints).to exist
-    expect(new_template.first.imprints.first.description).to eq 'New imprint stuff'
-    expect(new_template.first.imprints.first.print_location_id).to eq imprint_method_2.print_locations.first.id
+    expect(new_template.first.fba_imprint_templates).to exist
+    expect(new_template.first.fba_imprint_templates.first.description).to eq 'New imprint stuff'
+    expect(new_template.first.fba_imprint_templates.first.print_location_id).to eq imprint_method_2.print_locations.first.id
   end
 end
