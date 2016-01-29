@@ -329,14 +329,14 @@ class Order < ActiveRecord::Base
     jobs_by_shipping_location = {}
     attrs.each do |job_attrs|
       shipping_location      = job_attrs[:shipping_location]
-      shipping_location_size = job_attrs[:shipping_location_size]
+      shipping_location_size = job_attrs[:shipping_location_size].to_i
 
       jobs_by_shipping_location[[shipping_location, shipping_location_size]] ||= []
       jobs_by_shipping_location[[shipping_location, shipping_location_size]] << job_attrs
     end
 
     # Sort shipping locations by size
-    sorted_shipping_locations = jobs_by_shipping_location.keys.sort_by(&:last).reverse
+    sorted_shipping_locations = jobs_by_shipping_location.keys.sort_by(&:last)
 
     sorted_jobs = []
     sorted_shipping_locations.each do |key|

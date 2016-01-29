@@ -99,11 +99,13 @@ class FbaProduct < ActiveRecord::Base
         }
 
         if fba_sku = FbaSku.find_by(sku: sku)
-          if current_product.persisted? && fba_sku.fba_product.id != current_product.id
+          if fba_sku.fba_product.nil?
+            fba_sku.destroy
+          elsif !current_product.persisted? || fba_sku.fba_product.id != current_product.id
             next "The child sku #{sku} already belongs to FBA Product #{fba_sku.fba_product.name}"
           end
 
-          fba_sku_attributes[:id] = fba_sku.id
+          fba_sku_attributes[:id] = fba_sku.id if fba_sku.persisted?
         end
 
         current_fba_skus << fba_sku_attributes

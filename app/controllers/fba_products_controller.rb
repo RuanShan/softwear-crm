@@ -14,6 +14,32 @@ class FbaProductsController < InheritedResources::Base
     @fba_products = FbaProduct.page(params[:page])
   end
 
+  def new
+    super do
+      if params[:skus]
+        fba_skus_attributes = []
+
+        Array(params[:skus]).each do |sku|
+          sku_info = FBA.parse_sku(sku)
+
+          imprintable = Imprintable.find_by sku: sku_info.imprintable
+          color       = Color.find_by       sku: sku_info.color
+          size        = Size.find_by        sku: sku_info.size
+          unless imprintable.nil? || color.nil? || size.nil?
+            variant = imprintable.imprintable_variants.where(color_id: color.id, size_id: size.id).first
+          end
+
+          fba_skus_attributes << {
+            sku: sku,
+            imprintable_variant_id: variant.try(:id)
+          }
+        end
+
+        @fba_product.fba_skus_attributes = fba_skus_attributes
+      end
+    end
+  end
+
   def new_from_spreadsheet
   end
 
@@ -98,12 +124,12 @@ class FbaProductsController < InheritedResources::Base
 
   private
 
-  # == Helper methods used in fba_products/_fba_sku_fields.html.erb ==
+  # == (view) Helper methods used in fba_products/_fba_sku_fields.html.erb ==
   def imprintable_options_for_select(fba_sku)
-    return "" if fba_sku.imprintable_variant.nil? || fba_sku.brand.nil?
+    return "" if fba_sku.imprintable_variant.nil? || fba_sku.imprintable_variant.brand.nil?
 
     options_from_collection_for_select(
-      imprintable_ids_from_brand(fba_sku.brand.id),
+      imprintable_ids_from_brand(fba_sku.imprintable_variant.brand.id),
       :first, :last,
       fba_sku.imprintable_variant.imprintable_id
     )
