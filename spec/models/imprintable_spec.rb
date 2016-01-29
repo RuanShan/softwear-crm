@@ -279,8 +279,8 @@ describe Imprintable, imprintable_spec: true do
       expect(sizes.map(&:name)).to eq %w(s m l)
     end
 
-    it 'takes 4 sql queries' do
-      expect(queries_after { shirt.sizes_by_color 'Red' }).to eq 4
+    it 'takes 2 sql queries' do
+      expect(queries_after { shirt.sizes_by_color 'Red' }).to eq 2
     end
 
     describe 'options' do
@@ -337,7 +337,7 @@ describe Imprintable, imprintable_spec: true do
 
   describe 'Shirt Tag Type', story_764: true do
     let(:imp) { create(:valid_imprintable) }
-    
+
     context 'Not Specified' do
       it 'is not specified by default' do
         expect(imp.tag).to eq('Not Specified')
@@ -345,6 +345,6 @@ describe Imprintable, imprintable_spec: true do
     end
 
   end
-  
+
 end
 
