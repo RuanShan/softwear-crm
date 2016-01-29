@@ -23,9 +23,11 @@
   display: none;
 }
 
+/*
 .select2-dropdown--below,.select2-container {
   z-index: 9999999 !important;
 }
+*/
 
 .no-click {
   cursor: not-allowed;
@@ -129,4 +131,8 @@
 .margin-topbot-10 {
   margin-top: 5px;
   margin-bottom: 10px;
+}
+
+.select-artwork-entry {
+  cursor: pointer;
 }

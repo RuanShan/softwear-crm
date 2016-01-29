@@ -1,29 +1,33 @@
 class FbaJobTemplate < ActiveRecord::Base
-  has_many :fba_job_template_imprints, inverse_of: :fba_job_template, dependent: :destroy
-  has_many :imprints, through: :fba_job_template_imprints, dependent: :destroy
+  has_many :fba_imprint_templates, dependent: :destroy, inverse_of: :fba_job_template
+  has_many :artworks, through: :fba_imprint_templates
+  has_one :mockup, as: :assetable, class_name: 'Asset'
+
+  accepts_nested_attributes_for :fba_imprint_templates, allow_destroy: true
+  accepts_nested_attributes_for :mockup
 
   validates :name, presence: true, uniqueness: true
-
-  after_save :assign_imprints
+  validate :mockup_uploaded
 
   searchable do
-    text :name
+    text :name, :job_name
   end
 
-  def print_location_ids
-    imprints.pluck(:print_location_id)
+  def job_name
+    n = super
+    n.blank? ? name : n
   end
-  attr_writer :print_location_ids
 
-  def imprint_descriptions
-    imprints.pluck(:description)
+  def mockup_attributes=(attrs)
+    return if attrs[:file].blank?
+    attrs[:description] = "FBA #{name} proof mockup"
+    super(attrs)
   end
-  attr_writer :imprint_descriptions
 
   def imprints_attributes
     hash = {}
-    imprints.each do |imprint|
-      hash[imprint.id] = {
+    fba_imprint_templates.each_with_index do |imprint, index|
+      hash[index] = {
         print_location_id: imprint.print_location_id,
         description:       imprint.description
       }
@@ -31,24 +35,15 @@ class FbaJobTemplate < ActiveRecord::Base
     hash
   end
 
+  def mockup
+    super || Asset.new
+  end
+
   private
 
-  def assign_imprints
-    return if @print_location_ids.nil? && @imprint_descriptions.nil?
-    imprints.destroy_all if imprints.any?
-
-    imprint_count = [@print_location_ids, @imprint_descriptions].map(&:size).max
-    imprint_count.times do |index|
-      fba_job_template_imprints.create(
-        fba_job_template_id: id,
-        imprint: Imprint.create!(
-          print_location_id: @print_location_ids[index],
-          description: @imprint_descriptions[index]
-        )
-      )
+  def mockup_uploaded
+    if mockup.file.blank?
+      errors.add(:mockup, "must be uploaded")
     end
-
-    @print_location_ids = nil
-    @imprint_descriptions = nil
   end
 end

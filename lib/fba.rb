@@ -98,6 +98,7 @@ class FBA
         result[:jobs_attributes][key.hash] = {
           name:        "#{fba_job_template.name} - #{address.city}, #{address.state}",
           collapsed:   true,
+          fba_job_template_id:    fba_job_template.id,
           shipping_location:      header['Shipment ID'],
           shipping_location_size: shipping_location_size,
           description: "Generated from packing slip #{options[:filename]} and FBA Product ##{fba_product.id}, "\
