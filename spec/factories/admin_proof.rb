@@ -3,7 +3,7 @@ FactoryGirl.define do
     sequence(:name) { |n| "Job ##{n}" }
     description "whatever"
 
-    file_url Rails.root.join "spec/fixtures/images/macho.jpg"
-    thumbnail_url Rails.root.join "spec/fixtures/images/macho.jpg"
+    file_url Rails.root.join "spec/fixtures/images/macho.png"
+    thumbnail_url Rails.root.join "spec/fixtures/images/macho.png"
   end
 end

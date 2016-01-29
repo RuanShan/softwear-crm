@@ -20,7 +20,7 @@
     <div class='form-group artwork-target-container'>
       <div class='artwork-target' data-id='<%= f.object.id %>'>
         <% if f.object.artwork %>
-           <%= image_tag f.object.artwork.preview.url(:thumb), alt: f.object.artwork.name %>
+           <%= image_tag f.object.artwork.preview.file.url(:thumb), alt: f.object.artwork.name %>
         <% end %>
         <%= f.hidden_field :artwork_id %>
       </div>

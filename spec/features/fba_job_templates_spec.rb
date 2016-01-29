@@ -7,9 +7,18 @@ feature 'FBA Job Tempaltes management', js: true do
   given!(:imprint_method_1) { print_location_1.imprint_method }
   given!(:imprint_method_2) { print_location_2.imprint_method }
   given(:fba_job_template) { create(:fba_job_template_with_imprint) }
+  given(:mockup_file_path) { "#{Rails.root}/spec/fixtures/images/test-mockup.png" }
 
   given!(:valid_user) { create(:alternate_user) }
   background(:each) { login_as(valid_user) }
+
+  before(:each) do
+    Capybara.ignore_hidden_elements = false
+  end
+
+  after(:each) do
+    Capybara.ignore_hidden_elements = true
+  end
 
   scenario 'A user can create a new FBA Job Template', new: true do
     visit new_fba_job_template_path
@@ -20,9 +29,11 @@ feature 'FBA Job Tempaltes management', js: true do
     find('select[name=imprint_method]').select imprint_method_2.name
     fill_in 'Description', with: 'An imprint!'
 
-    click_button "Create FBA Job Template"
+    find('input[type=file]').set mockup_file_path
 
-    expect(page).to have_content 'successfully created'
+    click_button "Create FBA Job Template"
+    sleep 2
+
     new_template = FbaJobTemplate.where(name: 'cool new template')
     expect(new_template).to exist
     expect(new_template.first.fba_imprint_templates).to exist
@@ -38,8 +49,8 @@ feature 'FBA Job Tempaltes management', js: true do
     fill_in 'Description', with: 'New imprint stuff'
 
     click_button "Update FBA Job Template"
+    sleep 2
 
-    expect(page).to have_content 'successfully updated'
     new_template = FbaJobTemplate.where(name: 'cool new name')
     expect(new_template).to exist
     expect(new_template.first.fba_imprint_templates).to exist
@@ -54,6 +65,7 @@ feature 'FBA Job Tempaltes management', js: true do
     scenario 'A user can select multiple artwork for an FBA job template' do
       visit new_fba_job_template_path
       fill_in 'Name', with: 'cool new template'
+      find('input[type=file]').set mockup_file_path
 
       click_link 'Add Imprint'
       sleep 1
@@ -78,8 +90,8 @@ feature 'FBA Job Tempaltes management', js: true do
       expect(page).to have_content "img[src='#{artwork_2.preview.url(:thumb)}']"
 
       click_button "Create FBA Job Template"
+      sleep 2
 
-      expect(page).to have_content 'successfully created'
       new_template = FbaJobTemplate.where(name: 'cool new template')
       expect(new_template).to exist
       expect(new_template.first.fba_imprint_templates).to exist

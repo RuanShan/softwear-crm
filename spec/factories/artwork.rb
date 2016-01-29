@@ -15,7 +15,7 @@ FactoryGirl.define do
       preview do |p|
         p.association(
           :valid_asset,
-          file: File.open("#{Rails.root}/spec/fixtures/images/macho.jpg"),
+          file: File.open("#{Rails.root}/spec/fixtures/images/macho.png"),
         )
       end
 

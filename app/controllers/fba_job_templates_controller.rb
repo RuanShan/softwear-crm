@@ -36,6 +36,9 @@ class FbaJobTemplatesController < InheritedResources::Base
         fba_imprint_templates_attributes: [
           :print_location_id, :description, :artwork_id,
           :id, :_destroy
+        ],
+        mockup_attributes: [
+          :file, :id
         ]
       ]
     )

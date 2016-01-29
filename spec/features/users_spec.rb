@@ -67,7 +67,7 @@ feature 'Users', user_spec: true, js: true do
       scenario 'I can add a profile picture to be displayed instead of Tom Cruise', story_689: true do
         visit edit_user_path(valid_user)
         sleep 2
-        find('#user_profile_picture_attributes_file', visible: false).set("#{Rails.root}/spec/fixtures/images/macho.jpg")
+        find('#user_profile_picture_attributes_file', visible: false).set("#{Rails.root}/spec/fixtures/images/macho.png")
         click_button 'Update'
 
         visit root_path
@@ -77,7 +77,7 @@ feature 'Users', user_spec: true, js: true do
 
       scenario 'I can add a profile picture, then edit other fields without losing the image', story_689: true do
         visit edit_user_path(valid_user)
-        find('#user_profile_picture_attributes_file', visible: false).set("#{Rails.root}/spec/fixtures/images/macho.jpg")
+        find('#user_profile_picture_attributes_file', visible: false).set("#{Rails.root}/spec/fixtures/images/macho.png")
         click_button 'Update'
 
         visit edit_user_path(valid_user)
@@ -91,7 +91,7 @@ feature 'Users', user_spec: true, js: true do
       scenario 'I can upload a signature', story_690: true do
         visit edit_user_path(valid_user)
         sleep 2
-        find('#user_signature_attributes_file', visible: false).set("#{Rails.root}/spec/fixtures/images/macho.jpg")
+        find('#user_signature_attributes_file', visible: false).set("#{Rails.root}/spec/fixtures/images/macho.png")
         click_button 'Update'
 
         expect(valid_user.reload.signature).to_not be_nil
@@ -100,7 +100,7 @@ feature 'Users', user_spec: true, js: true do
       scenario 'When I have a signature, I can see it on the edit page', story_690: true do
         visit edit_user_path(valid_user)
         sleep 2
-        find('#user_signature_attributes_file', visible: false).set("#{Rails.root}/spec/fixtures/images/macho.jpg")
+        find('#user_signature_attributes_file', visible: false).set("#{Rails.root}/spec/fixtures/images/macho.png")
         click_button 'Update'
 
         visit edit_user_path(valid_user)

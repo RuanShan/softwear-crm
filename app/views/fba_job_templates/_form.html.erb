@@ -18,6 +18,22 @@
           <p class="help-block">Unique name for this job template</p>
         </div>
       </div>
+
+      <div class="form-group">
+        <%= f.label :job_name, class: 'col-sm-2 control-label' %>
+
+        <div class="col-sm-10">
+          <% if fba_job_template.errors.include?(:job_name) %>
+            <% fba_job_template.errors.full_messages_for(:job_name).each do |message| %>
+              <p class="text-danger"><%= message %></p>
+            <% end %>
+          <% end %>
+
+          <%= f.text_field :job_name, class: 'form-control' %>
+
+          <p class="help-block">Name to use in generated jobs</p>
+        </div>
+      </div>
     </div>
 
     <div class='form-group'>
@@ -34,6 +50,28 @@
         </div>
         <div class='clearfix'></div>
       </div>
+    </div>
+
+    <div class='form-group'>
+      <%= f.fields_for :mockup do |ff| %>
+        <div class='clearfix'></div>
+        <%= ff.label :file, 'Mockup', class: 'control-label' %>
+        <div class='clearfix'></div>
+
+        <% if fba_job_template.errors.include?(:mockup) %>
+          <% fba_job_template.errors.full_messages_for(:mockup).each do |message| %>
+            <p class="text-danger"><%= message %></p>
+          <% end %>
+        <% end %>
+
+        <% if fba_job_template.mockup.file %>
+          <%= link_to fba_job_template.mockup.file.url, target: :_blank do %>
+            <%= image_tag fba_job_template.mockup.file.url(:large) %>
+          <% end %>
+        <% end %>
+
+        <%= ff.file_field :file, class: 'form-control' %>
+      <% end %>
     </div>
 
     <%= f.submit "#{create_or_edit_text(@fba_job_template)} FBA Job Template", class: 'btn btn-primary' %>
