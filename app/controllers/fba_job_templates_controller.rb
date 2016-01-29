@@ -33,8 +33,10 @@ class FbaJobTemplatesController < InheritedResources::Base
     params.permit(
       fba_job_template: [
         :name,
-        print_location_ids: [],
-        imprint_descriptions: []
+        fba_imprint_templates_attributes: [
+          :print_location_id, :description, :artwork_id,
+          :id, :_destroy
+        ]
       ]
     )
   end

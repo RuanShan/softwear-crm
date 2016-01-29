@@ -28,7 +28,7 @@
         <%= f.fields_for :fba_imprint_templates do |ff| %>
           <%= render 'fba_job_templates/fba_imprint_template_fields', f: ff %>
         <% end %>
-        <%= f.link_to_add "Add Imprint", :fba_imprint_templates, class: 'btn btn-success pull-right' %>
+        <%= f.link_to_add "Add Imprint", :fba_imprint_templates, class: 'btn btn-success' %>
 
         <div class="col-xs-12">
         </div>

@@ -4,15 +4,20 @@ FactoryGirl.define do
     factory :valid_artwork do
       name 'Artwork'
       description 'This is artwork'
-      local_file_location '~/spec/fixtures/images/test.psd'
+      local_file_location "#{Rails.root}/spec/fixtures/images/test.psd"
 
       artwork do |a|
         a.association(
           :valid_asset,
-          file: File.open("#{Rails.root}" + '/spec/fixtures/images/test.psd'),
+          file: File.open("#{Rails.root}/spec/fixtures/images/test.psd"),
         )
       end
-      preview { |p| p.association(:valid_asset) }
+      preview do |p|
+        p.association(
+          :valid_asset,
+          file: File.open("#{Rails.root}/spec/fixtures/images/macho.jpg"),
+        )
+      end
 
       artist { |a| a.association(:user) }
     end

@@ -4,8 +4,6 @@ class FbaJobTemplate < ActiveRecord::Base
 
   validates :name, presence: true, uniqueness: true
 
-  after_save :assign_imprints
-
   searchable do
     text :name, :job_name
   end

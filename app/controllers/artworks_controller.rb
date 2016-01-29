@@ -13,6 +13,24 @@ class ArtworksController < InheritedResources::Base
     end
   end
 
+  def select
+    per_page = 20
+
+    if params[:q]
+      @artworks = Artwork.search do
+        fulltext params[:q]
+        paginate page: params[:page] || 1, per_page: per_page
+      end
+        .results
+    else
+      @artworks = Artwork.all.page(params[:page] || 1).per(per_page)
+    end
+
+    @target = params[:target]
+
+    respond_to(&:js)
+  end
+
   def create
     super do |success, failure|
       success.html { redirect_to params[:back_to].blank? ? artworks_path : params[:back_to] }
