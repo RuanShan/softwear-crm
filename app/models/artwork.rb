@@ -46,7 +46,11 @@ class Artwork < ActiveRecord::Base
 
   def initialize_assets
     set_assetable = proc { |artwork| artwork.assetable = self }
-    self.artwork ||= Asset.new(allowed_content_type: "^image/(ai|pdf|psd)").tap(&set_assetable)
+    if Rails.env.test?
+      self.artwork ||= Asset.new(allowed_content_type: "^image/(ai|pdf|psd)").tap(&set_assetable)
+    else
+      self.artwork ||= Asset.new(allowed_content_type: "^image/(ai|pdf|psd|png|gif|jpeg|jpg)").tap(&set_assetable)
+    end
     self.preview ||= Asset.new(allowed_content_type: "^image/(png|gif|jpeg|jpg)").tap(&set_assetable)
   end
 end

@@ -854,21 +854,47 @@ class Order < ActiveRecord::Base
     jobs_by_template = {}
 
     jobs.includes(:imprints).each do |job|
-      jobs_by_template[job.job_template_id] ||= []
-      jobs_by_template[job.job_template_id] << job
+      jobs_by_template[job.fba_job_template_id] ||= []
+      jobs_by_template[job.fba_job_template_id] << job
     end
 
-    jobs_by_template.values.each do |jobs|
-      artwork_ids = [Artwork.fba_missing.try(:id)]
-      ArtworkRequest.create(
-        imprint_ids: jobs.map(&:imprint_ids).uniq,
-        artwork_ids: artwork_ids
-      )
+    jobs_by_template.each do |job_template_id, jobs|
+      fba_job_template = FbaJobTemplate.find(job_template_id)
+      artworks = fba_job_template.artworks
 
-      Proof.create(
-        order_id: id,
-        job_id:   jobs.first.id,
-      )
+      artwork_request = ArtworkRequest.create
+      artwork_request.description = "Generated for FBA"
+      artwork_request.deadline    = in_hand_by
+      artwork_request.state       = :manager_approved
+      artwork_request.salesperson = salesperson
+      artwork_request.approved_by = salesperson
+      artwork_request.imprint_ids = jobs.flat_map(&:imprint_ids).uniq
+      artwork_request.artwork_ids = artworks.map(&:id)
+      artwork_request.priority    = 5
+      if artwork_request.artwork_ids.blank?
+        artwork_request.artwork_ids = [Artwork.fba_missing.try(:id)]
+      end
+
+      if artwork_request.save
+        proof = Proof.create(
+          order_id:   id,
+          job_id:     jobs.first.id,
+          approve_by: in_hand_by,
+
+          mockups_attributes: [{
+            file:        fba_job_template.mockup.file,
+            description: fba_job_template.mockup.description
+          }],
+          artworks: artwork_request.artworks
+        )
+
+        unless proof.persisted?
+          issue_warning('FBA Order Generation', "Unable to save proof: #{proof.errors.full_messages.join(', ')}")
+        end
+      else
+        issue_warning('FBA Order Generation', "Unable to save artwork request: #{artwork_request.errors.full_messages.join(', ')}")
+      end
+      byebug
     end
 
   end

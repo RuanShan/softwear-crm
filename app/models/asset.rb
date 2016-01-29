@@ -3,26 +3,33 @@ class Asset < ActiveRecord::Base
 
   attr_accessor :photo
 
-  path = if Paperclip::Attachment.default_options[:storage] == :s3
-           '/public/assets/:assetable_type/:assetable_id/asset/:style/:id.:extension'
-         else
-           ":rails_root/public/assets/:assetable_type/:assetable_id/asset/:style/:id.:extension"
-         end
+  unless Rails.env.test?
+    path = if Paperclip::Attachment.default_options[:storage] == :s3
+             '/public/assets/:assetable_type/:assetable_id/asset/:style/:id.:extension'
+           else
+             ":rails_root/public/assets/:assetable_type/:assetable_id/asset/:style/:id.:extension"
+           end
 
-  url = if Paperclip::Attachment.default_options[:storage] == :s3
-          '/public/assets/:assetable_type/:assetable_id/asset/:style/:id.:extension'
-        else
-          '/assets/:assetable_type/:assetable_id/asset/:style/:id.:extension'
-        end
+    url = if Paperclip::Attachment.default_options[:storage] == :s3
+            '/public/assets/:assetable_type/:assetable_id/asset/:style/:id.:extension'
+          else
+            '/assets/:assetable_type/:assetable_id/asset/:style/:id.:extension'
+          end
+  end
 
   belongs_to :assetable, polymorphic: true
 
   validates :description, presence: true, unless: :model_can_be_blank?
 
-  has_attached_file :file,
-                    path: path,
-                    url: url,
-                    styles: { icon: ['100x100#'], thumb: ['200x200>'], medium: ['250x250>'], large: ['500x500>'], signature: ['300x300>'] }
+  if Rails.env.test?
+    has_attached_file :file,
+                      styles: { icon: ['100x100#'], thumb: ['200x200>'], medium: ['250x250>'], large: ['500x500>'], signature: ['300x300>'] }
+  else
+    has_attached_file :file,
+                      path: path,
+                      url: url,
+                      styles: { icon: ['100x100#'], thumb: ['200x200>'], medium: ['250x250>'], large: ['500x500>'], signature: ['300x300>'] }
+  end
   validates_attachment :file,
             size: { less_than: 120.megabytes },
     content_type: { content_type: ->(_, a) { Regexp.new(a.allowed_content_type) } },

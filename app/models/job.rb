@@ -20,6 +20,8 @@ class Job < ActiveRecord::Base
 
   belongs_to :jobbable, polymorphic: true
   belongs_to :fba_job_template
+  has_many :fba_imprint_templates, through: :fba_job_template
+  has_many :fba_artworks, through: :fba_imprint_templates, source: :artwork
   has_many :artwork_requests, through: :imprints
   has_many :imprints, dependent: :destroy, inverse_of: :job
   has_many :line_items, dependent: :destroy, inverse_of: :job
