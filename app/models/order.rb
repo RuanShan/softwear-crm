@@ -894,7 +894,6 @@ class Order < ActiveRecord::Base
       else
         issue_warning('FBA Order Generation', "Unable to save artwork request: #{artwork_request.errors.full_messages.join(', ')}")
       end
-      byebug
     end
 
   end
