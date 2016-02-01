@@ -3,6 +3,7 @@
   <div class='page-heading animated fadeInDownBig'>
     <h1>Spreadsheet uploaded!</h1>
   </div>
+  <%= @fba_spreadsheet_upload.filename %>
 
   <div class='well'>
     <% if @fba_spreadsheet_upload.processing_errors.empty? %>
@@ -15,6 +16,8 @@
   </div>
   <%= link_to 'Upload another', new_fba_spreadsheet_upload_path, class: 'btn btn-default' %>
 <% else %>
+  <%= @fba_spreadsheet_upload.filename %>
+
   <div class='waiting-for-spreadsheet page-heading animated fadeInDownBig'>
     <h1>Processing spreadsheet...</h1>
   </div>
