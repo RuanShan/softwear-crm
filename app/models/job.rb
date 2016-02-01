@@ -75,6 +75,10 @@ class Job < ActiveRecord::Base
     jobbable_type == 'Order' && jobbable.fba?
   end
 
+  def name_in_production
+    "#{order.name} #{name} CRM##{id}"
+  end
+
   def production_attributes
     {
       name: name_in_production,
@@ -161,7 +165,7 @@ class Job < ActiveRecord::Base
   end
 
   def sync_with_production(sync)
-    sync[:name]
+    sync[name: :name_in_production]
   end
 
   # NOTE this works together with javascripts/quote_line_items.js to achieve
