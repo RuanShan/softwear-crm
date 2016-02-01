@@ -1,10 +1,12 @@
 require 'spec_helper'
 include LineItemHelpers
 
-describe FbaProduct do
+describe FbaSpreadsheetUpload do
   describe '.create_from_spreadsheet' do
     context 'given a validly formatted spreadsheet' do
       let(:spreadsheet_path) { Rails.root.join "spec/fixtures/fba/fbaskus1.xlsx" }
+
+      subject { FbaSpreadsheetUpload.new(spreadsheet: spreadsheet_path) }
 
       context 'when all of the referenced variants exist' do
         let!(:next_level) { create(:valid_brand, name: 'Next Level') }
@@ -22,7 +24,7 @@ describe FbaProduct do
         make_variants :black, :sweater, [:XS, :S, :M, :L, :XL, :XXL, :XXXL], not: %i(line_item job)
 
         it 'creates fba products with skus matching all of the data in the spreadsheet' do
-          expect(FbaProduct.create_from_spreadsheet(spreadsheet_path)).to be_empty
+          expect(subject.create_records).to be_empty
 
           expect(FbaProduct.where(name: 'FBA - Vin Reagan - 2CF')).to exist
           expect(FbaProduct.where(name: 'FBA - Vin Reagan - 2CF', sku: 'fba_reagan84')).to exist

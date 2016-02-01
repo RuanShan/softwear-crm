@@ -152,8 +152,8 @@ feature 'FBA Order management', fba_spec: true, story_103: true, js: true, retry
         order.jobs.joins(:imprints).where(imprints: { print_location_id: job_template.fba_imprint_templates.first.print_location_id }).size
       ).to eq 2
 
-      expect(order.jobs.where(name: 'Job 1 - Test Template - Breiningsville, PA')).to exist
-      expect(order.jobs.where(name: 'Job 2 - Test Template - Breiningsville, PA')).to exist
+      expect(order.jobs.where(name: 'Job 1 - Scooba Sweater - Test Template - Breiningsville, PA')).to exist
+      expect(order.jobs.where(name: 'Job 2 - Scooba Shirt - Test Template - Breiningsville, PA')).to exist
 
       expect(order.line_items.where(imprintable_object_id: red_shirt_xs.id, quantity: 1)).to exist
       expect(order.line_items.where(imprintable_object_id: red_shirt_s.id, quantity: 1)).to exist

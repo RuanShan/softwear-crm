@@ -1,6 +1,7 @@
 class FbaJobTemplate < ActiveRecord::Base
   has_many :fba_imprint_templates, dependent: :destroy, inverse_of: :fba_job_template
   has_many :artworks, through: :fba_imprint_templates
+  has_many :fba_skus, dependent: :destroy
   has_one :mockup, as: :assetable, class_name: 'Asset', dependent: :destroy
 
   accepts_nested_attributes_for :fba_imprint_templates, allow_destroy: true

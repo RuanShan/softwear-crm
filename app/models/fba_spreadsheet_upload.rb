@@ -9,7 +9,8 @@ class FbaSpreadsheetUpload < ActiveRecord::Base
       self.filename = File.basename(value.try(:original_filename) || value.path)
       super(SimpleXlsxReader.open(value.path).to_hash.to_json)
     else
-      super
+      self.filename = File.basename(value)
+      super(SimpleXlsxReader.open(value).to_hash.to_json)
     end
   end
 
