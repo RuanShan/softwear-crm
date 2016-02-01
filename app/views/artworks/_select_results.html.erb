@@ -1,13 +1,14 @@
 <div class='artworks'>
   <div class='artwork-search'>
     <%= form_tag select_artworks_path, remote: true, method: :get do %>
+      <%= hidden_field_tag :target, @target %>
       <%= text_field_tag :q, '', placeholder: 'Search Terms', class: 'form-control' %>
       <%= button_tag 'Search', class: 'btn btn-primary' %>
     <% end %>
   </div>
 
   <div>
-    <%= paginate artworks %>
+    <%= paginate artworks, remote: true %>
     <div class='clearfix'></div>
   </div>
 
@@ -28,6 +29,6 @@
   </div>
 
   <div>
-    <%= paginate artworks %>
+    <%= paginate artworks, remote: true %>
   </div>
 </div>

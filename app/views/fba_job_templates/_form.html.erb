@@ -53,7 +53,7 @@
     </div>
 
     <div class='form-group'>
-      <%= f.fields_for :mockup do |ff| %>
+      <%= f.fields_for :mockup, fba_job_template.mockup || Asset.new do |ff| %>
         <div class='clearfix'></div>
         <%= ff.label :file, 'Mockup', class: 'control-label' %>
         <div class='clearfix'></div>
@@ -64,7 +64,7 @@
           <% end %>
         <% end %>
 
-        <% if fba_job_template.mockup.file %>
+        <% if fba_job_template.mockup.try(:file) %>
           <%= link_to fba_job_template.mockup.file.url, target: :_blank do %>
             <%= image_tag fba_job_template.mockup.file.url(:large) %>
           <% end %>

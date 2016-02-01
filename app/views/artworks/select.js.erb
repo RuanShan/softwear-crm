@@ -5,7 +5,7 @@ var setupLinks = function() {
   $('.select-artwork-entry').click(function() {
     hideContentModal();
     if ($("#<%= @target %>").length === 0) {
-      alert("The form is configured incorrectly.");
+      alert("Uhhh try refreshing the page. Sorry.");
       return;
     }
     var target    = $("#<%= @target %>").closest('.artwork-target-container').find('.artwork-target');

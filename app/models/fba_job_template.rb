@@ -1,13 +1,15 @@
 class FbaJobTemplate < ActiveRecord::Base
   has_many :fba_imprint_templates, dependent: :destroy, inverse_of: :fba_job_template
   has_many :artworks, through: :fba_imprint_templates
-  has_one :mockup, as: :assetable, class_name: 'Asset'
+  has_one :mockup, as: :assetable, class_name: 'Asset', dependent: :destroy
 
   accepts_nested_attributes_for :fba_imprint_templates, allow_destroy: true
   accepts_nested_attributes_for :mockup
 
   validates :name, presence: true, uniqueness: true
-  validate :mockup_uploaded
+
+  scope :with_mockup, -> { where.not(mockup: nil) }
+  scope :without_mockup, -> { where(mockup: nil) }
 
   searchable do
     text :name, :job_name
@@ -19,7 +21,9 @@ class FbaJobTemplate < ActiveRecord::Base
   end
 
   def mockup_attributes=(attrs)
+    attrs = attrs.with_indifferent_access
     return if attrs[:file].blank?
+
     attrs[:description] = "FBA #{name} proof mockup"
     super(attrs)
   end
@@ -35,15 +39,5 @@ class FbaJobTemplate < ActiveRecord::Base
     hash
   end
 
-  def mockup
-    super || Asset.new
-  end
-
   private
-
-  def mockup_uploaded
-    if mockup.file.blank?
-      errors.add(:mockup, "must be uploaded")
-    end
-  end
 end

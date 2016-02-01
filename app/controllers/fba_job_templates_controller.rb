@@ -38,7 +38,7 @@ class FbaJobTemplatesController < InheritedResources::Base
           :id, :_destroy
         ],
         mockup_attributes: [
-          :file, :id
+          :file, :id, :_destroy
         ]
       ]
     )

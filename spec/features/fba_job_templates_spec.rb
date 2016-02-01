@@ -32,7 +32,7 @@ feature 'FBA Job Tempaltes management', js: true do
     find('input[type=file]').set mockup_file_path
 
     click_button "Create FBA Job Template"
-    sleep 2
+    sleep 5
 
     new_template = FbaJobTemplate.where(name: 'cool new template')
     expect(new_template).to exist
@@ -59,8 +59,8 @@ feature 'FBA Job Tempaltes management', js: true do
   end
 
   context 'with artwork present', artwork: true do
-    given!(:artwork_1) { create(:valid_artwork, name: 'Artwork 1') }
-    given!(:artwork_2) { create(:valid_artwork, name: 'Artwork 2') }
+    given!(:artwork_1) { create(:valid_artwork, name: 'Le first artwork') }
+    given!(:artwork_2) { create(:valid_artwork, name: 'Le seconde artwork') }
 
     scenario 'A user can select multiple artwork for an FBA job template' do
       visit new_fba_job_template_path
@@ -73,9 +73,9 @@ feature 'FBA Job Tempaltes management', js: true do
       fill_in 'Description', with: 'An imprint!'
       click_link 'Select Artwork'
       sleep 1
-      find('div', text: artwork_1.name).click
+      find('.select-artwork-entry', text: artwork_1.name).click
       sleep 1
-      expect(page).to have_content "img[src='#{artwork_1.preview.url(:thumb)}']"
+      expect(page).to have_css "img[src='#{artwork_1.preview.file.url(:thumb)}']"
 
       click_link 'Add Imprint'
       sleep 1
@@ -84,23 +84,21 @@ feature 'FBA Job Tempaltes management', js: true do
         fill_in 'Description', with: 'Another imprint!'
         click_link 'Select Artwork'
         sleep 1
-        find('div', text: artwork_2.name).click
-        sleep 1
       end
-      expect(page).to have_content "img[src='#{artwork_2.preview.url(:thumb)}']"
+      find('.select-artwork-entry', text: artwork_2.name).click
+      sleep 1
+      expect(page).to have_css "img[src='#{artwork_2.preview.file.url(:thumb)}']"
 
       click_button "Create FBA Job Template"
-      sleep 2
+      sleep 7
 
       new_template = FbaJobTemplate.where(name: 'cool new template')
       expect(new_template).to exist
       expect(new_template.first.fba_imprint_templates).to exist
       expect(new_template.first.fba_imprint_templates.first.description).to eq 'An imprint!'
-      expect(new_template.first.fba_imprint_templates.first.print_location_id).to eq imprint_method_2.print_locations.first.id
       expect(new_template.first.fba_imprint_templates.first.artwork_id).to eq artwork_1.id
 
       expect(new_template.first.fba_imprint_templates.last.description).to eq 'Another imprint!'
-      expect(new_template.first.fba_imprint_templates.last.print_location_id).to eq imprint_method_1.print_locations.first.id
       expect(new_template.first.fba_imprint_templates.last.artwork_id).to eq artwork_2.id
     end
   end

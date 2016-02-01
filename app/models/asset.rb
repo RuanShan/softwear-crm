@@ -28,6 +28,7 @@ class Asset < ActiveRecord::Base
     has_attached_file :file,
                       path: path,
                       url: url,
+                      s3_protocol: Rails.env.production? ? :https : :http,
                       styles: { icon: ['100x100#'], thumb: ['200x200>'], medium: ['250x250>'], large: ['500x500>'], signature: ['300x300>'] }
   end
   validates_attachment :file,

@@ -876,15 +876,21 @@ class Order < ActiveRecord::Base
       end
 
       if artwork_request.save
+        if fba_job_template
+          mockup_attributes = {
+            file:        fba_job_template.mockup.file,
+            description: fba_job_template.mockup.description
+          }
+        else
+          mockup_attributes = nil
+        end
+
         proof = Proof.create(
           order_id:   id,
           job_id:     jobs.first.id,
           approve_by: in_hand_by,
 
-          mockups_attributes: [{
-            file:        fba_job_template.mockup.file,
-            description: fba_job_template.mockup.description
-          }],
+          mockups_attributes: [mockup_attributes].compact,
           artworks: artwork_request.artworks
         )
 
