@@ -7,6 +7,10 @@ class FbaImprintTemplate < ActiveRecord::Base
     print_location.try(:imprint_method)
   end
 
+  def name
+    "#{imprint_method.try(:name)} #{print_location.try(:name)} \"#{description}\""
+  end
+
   def imprint_method_id
     imprint_method.try(:id)
   end

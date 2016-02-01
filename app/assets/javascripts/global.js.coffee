@@ -14,6 +14,8 @@ $(window).load ->
   $("#flashModal").modal "show"
   $("#errorsModal").modal "show"
   $("#dock").zIndex(1000)
+  $(document).on 'select2:open', ->
+    $('.select2-dropdown').css 'z-index', '9999999'
 
 @initializeSelect2 = (opts) ->
   scope = $('body')

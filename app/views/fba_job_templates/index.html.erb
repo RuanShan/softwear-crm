@@ -39,7 +39,11 @@
             <td><%= fba_job_template.id %></td>
             <td><%= fba_job_template.name %></td>
             <td><%= fba_job_template.job_name %></td>
-            <td><%= fba_job_template.fba_imprint_templates.size %></td>
+            <td>
+              <span data-toggle='tooltip' title="<%= fba_job_template.fba_imprint_templates.map(&:name).join(', ') %>">
+                <%= fba_job_template.fba_imprint_templates.size %>
+              </span
+            </td>
             <td>
               <div class='btn-group btn-group-xs'>
                 <%= link_to fa(:edit), edit_fba_job_template_path(fba_job_template), class: 'btn btn-sm btn-warning' %>
