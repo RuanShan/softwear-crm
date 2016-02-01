@@ -1,0 +1,22 @@
+<div class="page-heading animated fadeInDownBig">
+  <h1>Upload Spreadsheet of FBA Products and Job Templates</h1>
+</div>
+
+<% unless (last = FbaSpreadsheetUpload.all.last).nil? %>
+  <%= link_to 'Last upload', fba_spreadsheet_upload_path(last), class: 'btn btn-default' %>
+<% end %>
+
+<div class='well'>
+  <div class='help-block'>
+    <ul>
+      <li>Type of upload (Product or Job) will be inferred from headers</li>
+      <li>Columns and rows that are entirely blank are okay (ignored)</li>
+      <li>Header cells are required and case insensitive</li>
+      <li>All sheets that don't have "IGNORE" in the name will be parsed</li>
+      <li>If an error is encountered, the erroneous data will be skipped and parsing will continue</li>
+      <li>Existing data will be overwritten unless an existing sku is being assigned to a new product</li>
+    </ul>
+  </div>
+</div>
+
+<%= render 'spreadsheet_upload' %>

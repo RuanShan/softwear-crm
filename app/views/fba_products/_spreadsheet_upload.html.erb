@@ -1,5 +1,0 @@
-<%= form_tag upload_spreadsheet_fba_products_path, multipart: true do %>
-  <%= label_tag :spreadsheet, 'FBA Product Spreadsheet' %>
-  <%= file_field_tag :spreadsheet %>
-  <%= submit_tag 'Upload', onclick: "$('#loading').show()" %>
-<% end %>

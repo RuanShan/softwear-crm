@@ -162,6 +162,7 @@ CrmSoftwearcrmCom::Application.routes.draw do
     end
   end
 
+  resources :fba_spreadsheet_uploads
   resources :fba_job_templates do
     collection do
       get :print_locations

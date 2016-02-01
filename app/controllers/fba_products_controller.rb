@@ -40,35 +40,6 @@ class FbaProductsController < InheritedResources::Base
     end
   end
 
-  def new_from_spreadsheet
-  end
-
-  def upload_spreadsheet
-    if params[:spreadsheet].blank?
-      flash[:error] = "Looks like you forgot to choose a spreadsheet!"
-      redirect_to new_from_spreadsheet_fba_products_path and return
-    end
-
-    @errors = FbaProduct.create_from_spreadsheet(params[:spreadsheet].path)
-    if @errors.blank?
-      flash[:success] = "Upload successful!"
-    else
-      error_message = "Parse errors: <br />"
-      @errors.each do |sheet_name, sheet_errors|
-        error_message += "=== Sheet: \"#{sheet_name}\" ==="
-        error_message += "<br />"
-        sheet_errors.each do |row_number, message|
-          error_message += "Row #{row_number}: #{message}"
-          error_message += "<br />"
-        end
-        error_message += "<br />"
-      end
-      flash[:error] = error_message.html_safe
-    end
-
-    redirect_to new_from_spreadsheet_fba_products_path
-  end
-
   def variant_fields
     @results = []
     @selections = []
