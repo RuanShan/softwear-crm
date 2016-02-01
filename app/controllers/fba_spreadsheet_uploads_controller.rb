@@ -6,15 +6,15 @@ class FbaSpreadsheetUploadsController < InheritedResources::Base
     end
   end
 
-  def upload
-    if params[:fba_spreadsheet_upload][:spreadsheet].blank?
+  def create
+    if params[:fba_spreadsheet_upload].try(:[], :spreadsheet).blank?
       flash[:error] = "Looks like you forgot to hit 'Browse'!"
       redirect_to new_fba_spreadsheet_upload_path and return
     end
 
     super do |success, failure|
       success.html do
-        flash[:success] = flash[:notice] = nil
+        flash.clear
         redirect_to fba_spreadsheet_upload_path(@fba_spreadsheet_upload)
       end
       failure.html

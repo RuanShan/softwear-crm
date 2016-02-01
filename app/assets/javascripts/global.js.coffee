@@ -131,7 +131,8 @@ $(document).ajaxStart ->
     $('#loading').fadeIn(100)
 
 $(document).ajaxStop ->
-  $('#loading').fadeOut(100)
+  unless window.noSpinner
+    $('#loading').fadeOut(100)
 
 @after = (ms, func) ->
   setTimeout(func, ms)

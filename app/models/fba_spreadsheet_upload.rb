@@ -150,6 +150,8 @@ class FbaSpreadsheetUpload < ActiveRecord::Base
       end
 
       read_fba_job_template = lambda do |row, rownum|
+        next if row.all?(&:blank?)
+
         fba_job_template = FbaJobTemplate.find_or_initialize_by name: row[header[:name]]
         fba_job_template.job_name = row[header[:job_name]]
         unless fba_job_template.save
