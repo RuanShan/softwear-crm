@@ -62,7 +62,7 @@ feature 'FBA Job Tempaltes management', js: true do
     given!(:artwork_1) { create(:valid_artwork, name: 'Le first artwork') }
     given!(:artwork_2) { create(:valid_artwork, name: 'Le seconde artwork') }
 
-    scenario 'A user can select multiple artwork for an FBA job template' do
+    scenario 'A user can select multiple artwork for an FBA job template', ci_skip: true do
       visit new_fba_job_template_path
       fill_in 'Name', with: 'cool new template'
       find('input[type=file]').set mockup_file_path
