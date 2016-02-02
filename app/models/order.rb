@@ -371,7 +371,7 @@ class Order < ActiveRecord::Base
     return if production?
 
     (payment_status == 'Payment Terms Met' ||
-    payment_status == 'Payment Complete') and
+    payment_status == 'Payment Complete' || fba?) &&
     invoice_state  == 'approved'
   end
 
@@ -858,8 +858,6 @@ class Order < ActiveRecord::Base
       jobs_by_template[job.fba_job_template_id] << job
     end
 
-    self.artwork_state = :ready_for_production
-
     jobs_by_template.each do |job_template_id, jobs|
       fba_job_template = FbaJobTemplate.find(job_template_id)
       artworks = fba_job_template.artworks
@@ -891,7 +889,7 @@ class Order < ActiveRecord::Base
           order_id:   id,
           job_id:     jobs.first.id,
           approve_by: in_hand_by,
-          state: :manager_approved,
+          state: :customer_approved,
 
           mockups_attributes: [mockup_attributes].compact,
           artworks: artwork_request.artworks
@@ -904,6 +902,6 @@ class Order < ActiveRecord::Base
         issue_warning('FBA Order Generation', "Unable to save artwork request: #{artwork_request.errors.full_messages.join(', ')}")
       end
     end
-
   end
+  warn_on_failure_of :setup_art_for_fba
 end

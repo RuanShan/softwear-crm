@@ -21,7 +21,22 @@
       </div>
 
       <div class="col-sm-6">
-        <% unless order.fba? %>
+        <% if order.fba? %>
+          <h3><strong>Manager</strong> Signoff</h3>
+          <% if order.salesperson_id == current_user.id %>
+            <%= f.select :invoice_state, [['Pending','pending'], ['Looks Good','approved']], class: 'form-control' %>
+          <% else %>
+            <% if order.invoice_state == 'approved' %>
+              <div class='alert alert-success text-center'>
+                <strong>Signed off</strong>
+              </div>
+            <% else %>
+              <div class='alert alert-warning text-center'>
+                <strong>Pending</strong>
+              </div>
+            <% end %>
+          <% end %>
+        <% else %>
           <h3><strong>Customer</strong> Details</h3>
 
           <%= render partial: 'customer_detail_fields',
