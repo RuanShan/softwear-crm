@@ -123,8 +123,8 @@ module ApplicationHelper
     end
   end
 
-  def preview_artwork(artwork, size = :medium)
-    img_options = {}
+  def preview_artwork(artwork, size = :medium, options = {})
+    img_options = options
     unless artwork.bg_color.blank?
       img_options[:style] = "background-color: #{artwork.bg_color};"
     end

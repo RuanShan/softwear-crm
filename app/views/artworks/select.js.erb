@@ -16,10 +16,14 @@ var setupLinks = function() {
     var imgSrc    = $(this).data('src');
     var imgTitle  = $(this).data('name');
     var artworkId = $(this).data('id');
+    var bgColor   = $(this).data('bg');
 
     target.find('img').remove();
 
-    target.append("<img src='"+imgSrc+"' title='"+imgTitle+"' alt='"+imgTitle+"' data-toggle=tooltip />");
+    var image = $("<img src='"+imgSrc+"' title='"+imgTitle+"' alt='"+imgTitle+"' data-toggle=tooltip />");
+    target.append(image);
+    if (bgColor && bgColor.length != 0)
+      image.css("background-color", bgColor);
 
     var field = target.find('input[type=hidden]');
     if (field.length === 0)
