@@ -39,11 +39,7 @@
       <th>Invoice
       </th>
       <td class='invoice-state'>
-        <% if order.fba? %>
-          <span class="label label-default">N/A</span>
-        <% else %>
-          <%= render 'orders/state', which: 'invoice_state', state: order.invoice_state %>
-        <% end %>
+        <%= render 'orders/state', which: 'invoice_state', state: order.invoice_state %>
       </td>
     </tr>
     <tr>
