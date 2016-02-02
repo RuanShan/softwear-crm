@@ -319,6 +319,8 @@ class ArtworkRequest < ActiveRecord::Base
   end
 
   def enqueue_create_freshdesk_proof_ticket
+    return if order.fba?
+
     delay(queue: 'api').create_freshdesk_proof_ticket if
             (should_access_third_parties? && order.freshdesk_proof_ticket_id.blank?)
   end
