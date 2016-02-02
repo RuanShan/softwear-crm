@@ -18,6 +18,24 @@
 <% end %>
 <div class='clearfix'></div>
 
+<%= form_tag fba_job_templates_url, method: :get do %>
+<div class='well col-sm-2'>
+  <div class='form-group'>
+    <%= hidden_field_tag :needs_artwork, '0' %>
+    <%= label_tag :needs_artwork %>
+    <%= check_box_tag :needs_artwork, '1', session[:fjt_needs_artwork] == '1', class: 'form-control' %>
+  </div>
+
+  <div class='form-group'>
+    <%= hidden_field_tag :needs_proof, '0' %>
+    <%= label_tag :needs_proof %>
+    <%= check_box_tag :needs_proof, '1', session[:fjt_needs_proof] == '1', class: 'form-control' %>
+  </div>
+
+  <%= button_tag 'Apply Filter', class: 'btn btn-default' %>
+</div>
+<% end %>
+
 <%= paginate @fba_job_templates %>
 
 <div class='box-info full clear'>

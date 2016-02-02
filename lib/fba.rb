@@ -55,10 +55,16 @@ class FBA
         fba_sku = FbaSku.find_by(sku: sku)
 
         if fba_sku.nil?
-          sku_info = parse_sku(sku)
-
-          result[:missing_skus][sku_info.idea] ||= []
-          result[:missing_skus][sku_info.idea] << sku
+          if sku_info = parse_sku(sku)
+            result[:missing_skus][sku_info.idea] ||= []
+            result[:missing_skus][sku_info.idea] << sku
+          else
+            result[:errors] << lambda do |view|
+              "Missing malformed sku &quot;#{sku}&quot;. "\
+              "#{view.link_to 'Enter a new FBA Product', view.fba_products_path, target: :_blank} "\
+              "to define it."
+            end
+          end
 
           next
         end

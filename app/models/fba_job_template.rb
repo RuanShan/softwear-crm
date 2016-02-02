@@ -14,19 +14,19 @@ class FbaJobTemplate < ActiveRecord::Base
 
   searchable do
     text :name, :job_name
-    boolean :has_artwork
-    boolean :has_proof
+    boolean :needs_artwork
+    boolean :needs_proof
   end
 
-  def has_artwork
-    artworks.size > 0
+  def needs_artwork
+    artworks.size < fba_imprint_templates.size
   end
-  alias_method :has_artwork?, :has_artwork
+  alias_method :needs_artwork?, :needs_artwork
 
-  def has_proof
-    !mockup.blank? && !mockup.file.blank?
+  def needs_proof
+    mockup.blank? || mockup.file.blank?
   end
-  alias_method :has_proof?, :has_proof
+  alias_method :needs_proof?, :needs_proof
 
   def job_name
     n = super
