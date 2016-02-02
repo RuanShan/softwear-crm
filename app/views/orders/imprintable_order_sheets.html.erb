@@ -1,7 +1,20 @@
+<div class="imprintable-order-sheet-job" style="page-break-after: always">
+  <p class="text-center">Imprintable Order Sheet - Printed on <%= Time.now.strftime("%a, %b %d %Y") %><br />
+    <strong> <%= @order.fba? ? "FBA " : '' %>Order:</strong> <%= @order.full_name %> - <%= @order.name %><br />
+    <strong>Salesperson:</strong> <%= @order.salesperson.full_name %><br />
+  <% @order.total_imprintable_breakdown.each do |imprintable, colors| %>
+    <% colors.each do |color, line_items| %>
+        <%= render 'line_items/imprintable_order_sheets_aggregate_row',
+                   imprintable: imprintable, color: color,
+                   line_items: line_items %>
+        <% end %>
+    <% end %>
+</div>
+
   <% @order.jobs.each_with_index do |job, index| %>
     <div class="imprintable-order-sheet-job" style="page-break-after: always">
-      <p class="text-center">Imprintable Order Sheet - Printed on <%= Time.now.strftime("%a, %b %d %Y") %><br />
-      <strong>Order:</strong> <%= @order.full_name %> - <%= @order.name %><br />
+      <p class="text-center">Imprintable Receiving Sheet - Printed on <%= Time.now.strftime("%a, %b %d %Y") %><br />
+      <strong> <%= @order.fba? ? "FBA " : '' %>Order:</strong> <%= @order.full_name %> - <%= @order.name %><br />
       <strong>Salesperson:</strong> <%= @order.salesperson.full_name %><br />
       Job: <%= index + 1 %> of <%= @order.jobs.size %> - #<%= job.id %> - <%= job.name %><br />
       <span class="h2"><%= job.imprintable_line_items_total %> Total Pieces</span></p>

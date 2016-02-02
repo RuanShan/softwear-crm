@@ -1,7 +1,7 @@
 <div style="page-break-after: always">
   <p class="text-center">Printed on <%= Time.now.strftime("%a, %b %d %Y") %></p>
   <h2 class="text-center">Job Report  #<%= @order.id %><br />
-    <strong>Order:</strong> <%= @order.full_name %> - <%= @order.name %><br />
+    <strong><%= @order.fba? ? "FBA " : '' %>Order:</strong> <%= @order.full_name %> - <%= @order.name %><br />
     <strong>In Hand Date: </strong> <%= @order.in_hand_by.strftime('%a, %b %d %Y') rescue 'n/a' %>
       </h2>
 
