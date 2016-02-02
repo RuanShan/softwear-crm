@@ -32,7 +32,7 @@ feature 'FBA Job Tempaltes management', js: true do
     find('input[type=file]').set mockup_file_path
 
     click_button "Create FBA Job Template"
-    sleep 5
+    sleep 10
 
     new_template = FbaJobTemplate.where(name: 'cool new template')
     expect(new_template).to exist
@@ -72,9 +72,9 @@ feature 'FBA Job Tempaltes management', js: true do
       find('select[name=imprint_method]').select imprint_method_2.name
       fill_in 'Description', with: 'An imprint!'
       click_link 'Select Artwork'
-      sleep 1
+      sleep 2
       find('.select-artwork-entry', text: artwork_1.name).click
-      sleep 1
+      sleep 2
       expect(page).to have_css "img[src='#{artwork_1.preview.file.url(:thumb)}']"
 
       click_link 'Add Imprint'
@@ -83,10 +83,10 @@ feature 'FBA Job Tempaltes management', js: true do
         find('select[name=imprint_method]').select imprint_method_1.name
         fill_in 'Description', with: 'Another imprint!'
         click_link 'Select Artwork'
-        sleep 1
+        sleep 2
       end
       find('.select-artwork-entry', text: artwork_2.name).click
-      sleep 1
+      sleep 2
       expect(page).to have_css "img[src='#{artwork_2.preview.file.url(:thumb)}']"
 
       click_button "Create FBA Job Template"

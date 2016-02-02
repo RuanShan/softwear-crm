@@ -858,6 +858,8 @@ class Order < ActiveRecord::Base
       jobs_by_template[job.fba_job_template_id] << job
     end
 
+    self.artwork_state = :ready_for_production
+
     jobs_by_template.each do |job_template_id, jobs|
       fba_job_template = FbaJobTemplate.find(job_template_id)
       artworks = fba_job_template.artworks
@@ -889,6 +891,7 @@ class Order < ActiveRecord::Base
           order_id:   id,
           job_id:     jobs.first.id,
           approve_by: in_hand_by,
+          state: :manager_approved,
 
           mockups_attributes: [mockup_attributes].compact,
           artworks: artwork_request.artworks

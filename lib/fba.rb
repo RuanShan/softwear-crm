@@ -96,7 +96,7 @@ class FBA
         result[:fba_product_names] << fba_product.name unless result[:fba_product_names].include?(fba_product.name)
 
         result[:jobs_attributes][key.hash] = {
-          name:        "#{fba_product.name} - #{fba_job_template.job_name} - #{address.city}, #{address.state}",
+          name:        "#{fba_job_template.job_name} - #{address.city}, #{address.state}",
           collapsed:   true,
           fba_job_template_id:    fba_job_template.id,
           shipping_location:      header['Shipment ID'],
