@@ -1,3 +1,5 @@
+var id = $('#js-fba-spreadsheet-id').data('id');
+
 if ($('.waiting-for-spreadsheet').length != 0) {
 <% if @fba_spreadsheet_upload.done? %>
   window.location = Routes.fba_spreadsheet_upload_path(id);

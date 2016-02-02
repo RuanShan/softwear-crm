@@ -4,9 +4,9 @@ $(function() {
   if (id == null || id.length == 0) return;
 
   window.noSpinner = true;
-  $('#loading').show();
 
   window.checkSpreadsheetStatus = function() {
+    $('#loading').show();
     $.ajax({
       type: 'GET',
       url:  Routes.fba_spreadsheet_upload_path(id),
