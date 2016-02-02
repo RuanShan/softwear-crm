@@ -15,10 +15,11 @@ class OrdersController < InheritedResources::Base
   def update
     super do |success, failure|
       success.html do
-        if ((@order.fba? && order.invoice_state_changed? && order.ready_for_production?) rescue false)
-          flash[:success] = "The order has been signed off and will be sent to production shortly."
+        if @order.fba?
+          redirect_to edit_order_path(params[:id], anchor: 'jobs')
+        else
+          redirect_to edit_order_path(params[:id], anchor: 'details')
         end
-        redirect_to edit_order_path(params[:id], anchor: 'details')
       end
       failure.html do
         assign_activities
