@@ -35,11 +35,19 @@ class Artwork < ActiveRecord::Base
   end
 
   def path
-    preview.file.url
+    if Figaro.env.artwork_view_host
+      "#{Figaro.env.artwork_view_host}/artworks/#{id}/full_view"
+    else
+      preview.file.url
+    end
   end
 
   def thumbnail_path
-    preview.file.url(:thumb)
+    if Figaro.env.artwork_view_host
+      "#{Figaro.env.artwork_view_host}/artworks/#{id}/full_view?style=thumb"
+    else
+      preview.file.url(:thumb)
+    end
   end
 
   private

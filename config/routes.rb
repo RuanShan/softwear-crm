@@ -38,6 +38,9 @@ CrmSoftwearcrmCom::Application.routes.draw do
     collection do
       get 'select'
     end
+    member do
+      get 'full_view'
+    end
   end
 
   resources :artwork_requests do

@@ -44,6 +44,11 @@ class ArtworksController < InheritedResources::Base
     end
   end
 
+  def full_view
+    @artwork = Artwork.find(params[:id])
+    render layout: nil
+  end
+
   def self.permitted_search_locals
     [:artwork_request_id]
   end
