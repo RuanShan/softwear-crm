@@ -90,4 +90,9 @@ class Proof < ActiveRecord::Base
     end
   end
 
+  def artwork_paths
+    artworks.map do |artwork|
+      artwork.path
+    end
+  end
 end
