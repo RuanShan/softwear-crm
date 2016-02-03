@@ -8,7 +8,7 @@ class StoreStringsAs4ByteUnicode < ActiveRecord::Migration
 
     string_columns.each do |table, columns|
       columns.each do |column|
-        execute "ALTER TABLE `#{table}` MODIFY `#{column}` VARCHAR(191) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin"
+        execute "ALTER TABLE `#{table}` MODIFY `#{column}` VARCHAR(191) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin" rescue nil
       end
     end
 
@@ -26,7 +26,7 @@ class StoreStringsAs4ByteUnicode < ActiveRecord::Migration
       taggings tags users warning_emails warnings
     )
     all_tables.each do |table|
-      execute "ALTER TABLE #{table} CONVERT TO CHARACTER SET utf8mb4 COLLATE utf8mb4_bin"
+      execute "ALTER TABLE #{table} CONVERT TO CHARACTER SET utf8mb4 COLLATE utf8mb4_bin" rescue nil
     end
   end
 
