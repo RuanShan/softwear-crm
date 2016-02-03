@@ -14,6 +14,8 @@ $(window).load ->
   $("#flashModal").modal "show"
   $("#errorsModal").modal "show"
   $("#dock").zIndex(1000)
+  $(document).on 'select2:open', ->
+    $('.select2-dropdown').css 'z-index', '9999999'
 
 @initializeSelect2 = (opts) ->
   scope = $('body')
@@ -125,10 +127,12 @@ $(document).ready ->
 
 
 $(document).ajaxStart ->
-  $('#loading').fadeIn("fast")
+  unless window.noSpinner
+    $('#loading').fadeIn(100)
 
 $(document).ajaxStop ->
-  $('#loading').fadeOut("fast")
+  unless window.noSpinner
+    $('#loading').fadeOut(100)
 
 @after = (ms, func) ->
   setTimeout(func, ms)

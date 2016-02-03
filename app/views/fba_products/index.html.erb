@@ -1,7 +1,6 @@
-<div class="page-heading animated fadeInDownBig col-lg-9">
+<div class="page-heading animated fadeInDownBig col-lg-11">
   <h1>FBA Job Products</h1>
 </div>
-<div class="col-lg-2"></div>
 <div class="col-lg-1">
   <%= link_to '+', new_fba_product_path, class: 'btn btn-success' %>
 </div>
@@ -27,7 +26,6 @@
         <tr>
           <th>ID</th>
           <th>Name</th>
-          <th>Amaon FNSKU</th>
           <th>Master SKU</th>
           <th>Child SKUs</th>
           <th>Actions</th>
@@ -39,11 +37,15 @@
           <tr>
             <td><%= fba_product.id %></td>
             <td><%= fba_product.name %></td>
-            <td><%= fba_product.fnsku %></td>
             <td><%= fba_product.sku %></td>
-            <td><%= fba_product.fba_skus.size %></td>
+            <td>
+              <span data-toggle='tooltip' title="<%= fba_product.fba_skus.pluck(:sku).join(', ') %>">
+                <%= fba_product.fba_skus.size %>
+              </span>
+            </td>
             <td>
               <div class='btn-group btn-group-xs'>
+                <%= link_to fa(:eye), fba_product_path(fba_product), class: 'btn btn-sm btn-primary' %>
                 <%= link_to fa(:edit), edit_fba_product_path(fba_product), class: 'btn btn-sm btn-warning' %>
                 <%= link_to fa('times-circle'), fba_product_path(fba_product), method: :delete, 'data-action' => 'destroy', class: 'btn btn-sm btn-danger', data: { confirm: %(Delete FBA product "#{fba_product.name}"?) } %>
               </div>

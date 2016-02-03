@@ -51,7 +51,7 @@ class ArtworkRequest < ActiveRecord::Base
   validates :state,          presence: true
   validates :deadline,       presence: true
   validates :description,    presence: true
-  validates :ink_colors,     presence: true
+  validates :ink_colors,     presence: true, unless: :fba?
   validates :imprints,       presence: true
   validates :priority,       presence: true
   validates :salesperson,    presence: true
@@ -161,11 +161,19 @@ class ArtworkRequest < ActiveRecord::Base
   end
 
   def order
-    if jobs.respond_to?(:where)
-      @order ||= jobs.where.not(jobbable_id: nil).first.try(:jobbable)
+    if persisted?
+      if jobs.respond_to?(:where)
+        @order ||= jobs.where.not(jobbable_id: nil).first.try(:jobbable)
+      else
+        @order ||= jobs.find { |j| !j.jobbable_id.nil? }.try(:jobbable)
+      end
     else
-      @order ||= jobs.find { |j| !j.jobbable_id.nil? }.try(:jobbable)
+      @order ||= imprints.first.try(:job).try(:jobbable)
     end
+  end
+
+  def fba?
+    order.try(:fba?)
   end
 
   def artist_full_name
@@ -311,6 +319,8 @@ class ArtworkRequest < ActiveRecord::Base
   end
 
   def enqueue_create_freshdesk_proof_ticket
+    return if order.fba?
+
     delay(queue: 'api').create_freshdesk_proof_ticket if
             (should_access_third_parties? && order.freshdesk_proof_ticket_id.blank?)
   end

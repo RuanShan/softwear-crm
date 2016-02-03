@@ -22,6 +22,7 @@ class FBA
 
   class << self
     # Possible keys:
+    # { :missing_skus => idea => array_of_skus }
     # { :fatal_error => message }     if the file could not be parsed  (check for this first)
     # { :errors => list_of_messages } if there were some other problems
     # { :jobs_attributes => jobs_attributes } these attributes will be valid form input
@@ -32,6 +33,7 @@ class FBA
 
       header, data = parse_file(packing_slip)
       result = {
+        missing_skus: {},
         errors: [],
         jobs_attributes: {},
         shipments_attributes: {},
@@ -53,10 +55,17 @@ class FBA
         fba_sku = FbaSku.find_by(sku: sku)
 
         if fba_sku.nil?
-          result[:errors] << lambda do |view|
-            "No FBA Product was found with a child sku of #{sku}. Configure FBA Products "\
-            "#{view.link_to 'here', view.fba_products_path, target: :_blank}."
+          if sku_info = parse_sku(sku)
+            result[:missing_skus][sku_info.idea] ||= []
+            result[:missing_skus][sku_info.idea] << sku
+          else
+            result[:errors] << lambda do |view|
+              "Missing malformed sku &quot;#{sku}&quot;. "\
+              "#{view.link_to 'Enter a new FBA Product', view.fba_products_path, target: :_blank} "\
+              "to define it."
+            end
           end
+
           next
         end
         fba_product      = fba_sku.fba_product
@@ -93,8 +102,9 @@ class FBA
         result[:fba_product_names] << fba_product.name unless result[:fba_product_names].include?(fba_product.name)
 
         result[:jobs_attributes][key.hash] = {
-          name:        "#{fba_job_template.name} - #{address.city}, #{address.state}",
+          name:        "#{fba_job_template.job_name} - #{address.city}, #{address.state}",
           collapsed:   true,
+          fba_job_template_id:    fba_job_template.id,
           shipping_location:      header['Shipment ID'],
           shipping_location_size: shipping_location_size,
           description: "Generated from packing slip #{options[:filename]} and FBA Product ##{fba_product.id}, "\
@@ -274,7 +284,7 @@ class FBA
       version = sku.try(:[], 0)
       case version
       when '0'
-        /\d\-(?<idea>\w+)\-
+        /\d-(?<idea>\w+)-
         (?<print>\d)
         (?<imprintable>\d{4})
         (?<size>\d{2})

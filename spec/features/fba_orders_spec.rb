@@ -39,6 +39,7 @@ feature 'FBA Order management', fba_spec: true, story_103: true, js: true, retry
   make_variants :red, :sweater, [:XS, :S, :M, :L, :XL, :XXL, :XXXL], not: %i(line_item job)
 
   given!(:job_template) { create(:fba_job_template_with_imprint, name: 'Test Template') }
+  given!(:art_not_provided) { create(:valid_artwork, name: 'FBA Art Not Provided') }
 
   given(:scuba_doitdeeper_shirt) do
     create(
@@ -140,14 +141,15 @@ feature 'FBA Order management', fba_spec: true, story_103: true, js: true, retry
       click_button 'Next'
       sleep ci? ? 3 : 1
       find('.big-submit-button').click
-      sleep ci? ? 3 : 1
+      sleep 3
 
       order = Order.fba.where(name: "Scooba Shirt Scooba Sweater - 1 Shipping Location")
       expect(order).to exist
+      expect(page).to have_content "Edit Order ##{order.first.id}"
       expect(page).to have_content 'Scooba Shirt Scooba Sweater - 1 Shipping Location'
       order = order.first
       expect(
-        order.jobs.joins(:imprints).where(imprints: { print_location_id: job_template.imprints.first.id }).size
+        order.jobs.joins(:imprints).where(imprints: { print_location_id: job_template.fba_imprint_templates.first.print_location_id }).size
       ).to eq 2
 
       expect(order.jobs.where(name: 'Job 1 - Test Template - Breiningsville, PA')).to exist
@@ -168,23 +170,34 @@ feature 'FBA Order management', fba_spec: true, story_103: true, js: true, retry
 
       expect(order.jobs.first.shipments.where(address_1: '650 Boulder Drive', city: 'Breiningsville', state: 'PA', zipcode: '18031', shipped_by_id: valid_user.id)).to exist
       expect(order.jobs.last.shipments.where(address_1: '650 Boulder Drive', city: 'Breiningsville', state: 'PA', zipcode: '18031', shipped_by_id: valid_user.id)).to exist
+
+      expect(order.proofs.size).to eq 1
     end
   end
 
   context "when there are some bad skus" do
-    scenario 'the user is informed and linked to the fba products page (target=_blank)' do
+    scenario 'the user is informed and linked to the fba products page (target=_blank)', bad_skus: true do
       visit new_fba_orders_path
       fill_in 'Deadline', with: '12/25/2025 12:00 AM'
 
       click_button 'Next'
+      sleep 2
       click_link 'Upload Packing Slip(s)'
+      sleep 2
       drop_in_dropzone bad_sku_packing_slip_path
+      sleep 1
       click_button "close-packing-slip-modal"
       wait_for_ajax
 
       expect(page).to have_content 'PackingSlipBadSku.txt'
       expect(page).to have_content 'No line items will be added'
-      expect(page).to have_selector "a[href='#{fba_products_path}']"
+      expect(page).to have_content "Missing 4 skus for the product \"fba_wedd_bride\""
+      click_link 'Click here'
+
+      expect(page).to have_css 'input[type=text][value="0-fba_wedd_bride-2070502000"]'
+      expect(page).to have_css 'input[type=text][value="0-fba_wedd_bride-2070503000"]'
+      expect(page).to have_css 'input[type=text][value="0-fba_wedd_bride-2070504000"]'
+      expect(page).to have_css 'input[type=text][value="0-fba_wedd_bride-2070505000"]'
     end
   end
 end

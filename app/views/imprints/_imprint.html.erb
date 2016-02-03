@@ -12,7 +12,7 @@
       <%= link_to 'Click here', new_imprint_method_path %> to add one.
     </p>
   <% else %>
-    <%= "[#{id}]" if id.to_i > 0 %>
+    <%= "[#{id}]" if id.to_i > 0 || !local_assigns[:imprint].try(:job_id).nil? %>
 
         <div class="form-group">
           <%= label_tag :imprint_method %>

@@ -48,16 +48,30 @@ module Api
     end
 
     def includes
-      [
-        :colors, :sizes,
-        imprintable_variants: {
-          methods: [:sku],
-          include: {
-            color: { only: [:name, :hexcode, :map] },
-            size: { only: [:name, :display_value, :sort_order] }
+      if params[:detail_level].to_s == 'low'
+        [ ]
+      elsif params[:detail_level].to_s == 'medium'
+        [
+            :colors, :sizes
+        ]
+      elsif params[:detail_level].to_s == 'high'
+        [
+            :colors, :sizes, imprintable_variants: {
+            methods: [:sku]
           }
-        }
-      ]
+        ]
+      else
+        [
+            :colors, :sizes,
+            imprintable_variants: {
+                methods: [:sku],
+                include: {
+                    color: { only: [:name, :hexcode, :map] },
+                    size: { only: [:name, :display_value, :sort_order] }
+                }
+            }
+        ]
+      end
     end
   end
 end

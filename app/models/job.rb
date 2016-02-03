@@ -19,6 +19,9 @@ class Job < ActiveRecord::Base
   after_create :create_default_imprint, if: :fba?
 
   belongs_to :jobbable, polymorphic: true
+  belongs_to :fba_job_template
+  has_many :fba_imprint_templates, through: :fba_job_template
+  has_many :fba_artworks, through: :fba_imprint_templates, source: :artwork
   has_many :artwork_requests, through: :imprints
   has_many :imprints, dependent: :destroy, inverse_of: :job
   has_many :line_items, dependent: :destroy, inverse_of: :job
@@ -70,6 +73,19 @@ class Job < ActiveRecord::Base
 
   def fba?
     jobbable_type == 'Order' && jobbable.fba?
+  end
+
+  def name_in_production
+    "#{order.name} #{name} CRM##{id}"
+  end
+
+  def production_attributes
+    {
+      name: name_in_production,
+      softwear_crm_id: id,
+      imprints_attributes: production_imprints_attributes,
+      imprintable_train_attributes: imprintable_train_attributes
+    }
   end
 
   def production_imprints_attributes
@@ -149,7 +165,7 @@ class Job < ActiveRecord::Base
   end
 
   def sync_with_production(sync)
-    sync[:name]
+    sync[name: :name_in_production]
   end
 
   # NOTE this works together with javascripts/quote_line_items.js to achieve

@@ -1,29 +1,50 @@
 class FbaJobTemplate < ActiveRecord::Base
-  has_many :fba_job_template_imprints, inverse_of: :fba_job_template, dependent: :destroy
-  has_many :imprints, through: :fba_job_template_imprints, dependent: :destroy
+  has_many :fba_imprint_templates, dependent: :destroy, inverse_of: :fba_job_template
+  has_many :artworks, through: :fba_imprint_templates
+  has_many :fba_skus, dependent: :destroy
+  has_one :mockup, as: :assetable, class_name: 'Asset', dependent: :destroy
+
+  accepts_nested_attributes_for :fba_imprint_templates, allow_destroy: true
+  accepts_nested_attributes_for :mockup
 
   validates :name, presence: true, uniqueness: true
 
-  after_save :assign_imprints
+  scope :with_mockup, -> { where.not(mockup: nil) }
+  scope :without_mockup, -> { where(mockup: nil) }
 
   searchable do
-    text :name
+    text :name, :job_name
+    boolean :needs_artwork
+    boolean :needs_proof
   end
 
-  def print_location_ids
-    imprints.pluck(:print_location_id)
+  def needs_artwork
+    artworks.size < fba_imprint_templates.size
   end
-  attr_writer :print_location_ids
+  alias_method :needs_artwork?, :needs_artwork
 
-  def imprint_descriptions
-    imprints.pluck(:description)
+  def needs_proof
+    mockup.blank? || mockup.file.blank?
   end
-  attr_writer :imprint_descriptions
+  alias_method :needs_proof?, :needs_proof
+
+  def job_name
+    n = super
+    n.blank? ? name : n
+  end
+
+  def mockup_attributes=(attrs)
+    attrs = attrs.with_indifferent_access
+    return if attrs[:file].blank?
+
+    attrs[:description] = "FBA #{name} proof mockup"
+    super(attrs)
+  end
 
   def imprints_attributes
     hash = {}
-    imprints.each do |imprint|
-      hash[imprint.id] = {
+    fba_imprint_templates.each_with_index do |imprint, index|
+      hash[index] = {
         print_location_id: imprint.print_location_id,
         description:       imprint.description
       }
@@ -32,23 +53,4 @@ class FbaJobTemplate < ActiveRecord::Base
   end
 
   private
-
-  def assign_imprints
-    return if @print_location_ids.nil? && @imprint_descriptions.nil?
-    imprints.destroy_all if imprints.any?
-
-    imprint_count = [@print_location_ids, @imprint_descriptions].map(&:size).max
-    imprint_count.times do |index|
-      fba_job_template_imprints.create(
-        fba_job_template_id: id,
-        imprint: Imprint.create!(
-          print_location_id: @print_location_ids[index],
-          description: @imprint_descriptions[index]
-        )
-      )
-    end
-
-    @print_location_ids = nil
-    @imprint_descriptions = nil
-  end
 end

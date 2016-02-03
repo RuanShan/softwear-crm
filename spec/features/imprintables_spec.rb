@@ -188,7 +188,7 @@ feature 'Imprintables management', imprintable_spec: true, slow: true do
       click_link 'Add Photo'
 
       within '.imprintable-photo-form' do
-        find('.photo-asset-file').set("#{Rails.root}/spec/fixtures/images/macho.jpg")
+        find('.photo-asset-file').set("#{Rails.root}/spec/fixtures/images/macho.png")
         select imprintable.colors.first.name, from: 'Color'
       end
 
@@ -291,7 +291,7 @@ feature 'Imprintables management', imprintable_spec: true, slow: true do
 
     click_button 'Add Imprintable(s)'
 
-    sleep 1
+    sleep 2
     expect(page).to have_content 'Quote was successfully updated.'
   end
 

@@ -17,7 +17,7 @@ module Api
             }
           },
           methods: [
-            :mockup_paths
+            :mockup_paths, :artwork_paths
           ]
         }
       ]

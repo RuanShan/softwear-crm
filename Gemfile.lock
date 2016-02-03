@@ -482,6 +482,9 @@ GEM
       actionmailer (>= 3.2.6, < 5)
       actionpack (>= 3.2.6, < 5)
       devise (~> 3.2)
+    simple_xlsx_reader (1.0.2)
+      nokogiri
+      rubyzip
     sinatra (1.4.6)
       rack (~> 1.4)
       rack-protection (~> 1.4)
@@ -625,6 +628,7 @@ DEPENDENCIES
   sidekiq-failures!
   sidekiq-status
   simple_token_authentication
+  simple_xlsx_reader
   sinatra
   softwear-lib (~> 1.4.3)
   state_machines-activerecord

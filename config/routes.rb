@@ -32,7 +32,15 @@ CrmSoftwearcrmCom::Application.routes.draw do
 
   get 'tags/:tag', to: 'imprintables#index', as: :tag
 
-  resources :brands, :colors, :users, :artworks
+  resources :brands, :colors, :users
+  resources :artworks do
+    collection do
+      get 'select'
+    end
+    member do
+      get 'full_view'
+    end
+  end
 
   resources :artwork_requests do
     member do
@@ -156,10 +164,17 @@ CrmSoftwearcrmCom::Application.routes.draw do
     end
   end
 
-  resources :fba_job_templates
+  resources :fba_spreadsheet_uploads
+  resources :fba_job_templates do
+    collection do
+      get :print_locations
+    end
+  end
   resources :fba_products do
     collection do
       get :variant_fields
+      get :new_from_spreadsheet
+      post :upload_spreadsheet
     end
   end
 

@@ -15,7 +15,11 @@ class OrdersController < InheritedResources::Base
   def update
     super do |success, failure|
       success.html do
-        redirect_to edit_order_path(params[:id], anchor: 'details')
+        if @order.fba?
+          redirect_to edit_order_path(params[:id], anchor: 'jobs')
+        else
+          redirect_to edit_order_path(params[:id], anchor: 'details')
+        end
       end
       failure.html do
         assign_activities
@@ -63,6 +67,7 @@ class OrdersController < InheritedResources::Base
       if @order.save
         @order.jobs_attributes = params.permit![:order][:jobs_attributes]
         if @order.save
+          @order.setup_art_for_fba if @order.fba?
           valid = true
         else
           @order.really_destroy!
@@ -213,10 +218,11 @@ class OrdersController < InheritedResources::Base
         :delivery_method, :phone_number, :commission_amount,
         :store_id, :salesperson_id, :total, :shipping_price, :artwork_state,
         :freshdesk_proof_ticket_id, :softwear_prod_id, :production_state,
+
         quote_ids: [],
         jobs_attributes: [
           :id, :name, :jobbable_id, :jobbable_type, :description, :_destroy,
-          :shipping_location, :shipping_location_size, :sort_order,
+          :shipping_location, :shipping_location_size, :sort_order, :fba_job_template_id,
           imprints_attributes: [
             :print_location_id, :description, :_destroy, :id
           ],

@@ -23,10 +23,12 @@
 
     <% unless @order.notification_state == 'picked_up' %>
       <span ".edit-notification-buttons">
-      <%= link_to state_order_path(@order, :notification_state), remote: true,
-        data: {toggle: :tooltip, :title => 'Notify Customer', placement: :bottom},
-        class: 'btn btn-primary'  do %>
-          <i class="glyphicon glyphicon-phone-alt"></i>
+      <% unless @order.fba? %>
+        <%= link_to state_order_path(@order, :notification_state), remote: true,
+          data: {toggle: :tooltip, :title => 'Notify Customer', placement: :bottom},
+          class: 'btn btn-primary'  do %>
+            <i class="glyphicon glyphicon-phone-alt"></i>
+        <% end %>
       <% end %>
 
       <%= link_to transition_order_path(@order, :notification_state,  :picked_up), remote: true,
@@ -63,66 +65,60 @@
 <br clear="all" />
 <table class="table table-condensed">
   <thead>
-    <% if @order.fba? %>
-      <th>Production State</th>
-    <% else %>
+    <% unless @order.fba? %>
       <th>Payment State
       </th>
-      <th>Invoice State
-      </th>
-      <th>Production State
-      </th>
-      <th>Artwork State
-      </th>
+    <% end %>
+    <th>Invoice State
+    </th>
+    <th>Production State
+    </th>
+    <th>Artwork State
+    </th>
+    <% unless @order.fba? %>
       <th>Notification State
       </th>
     <% end %>
   </thead>
   <tbody>
     <tr id="order_<%= @order.id %>">
-
-      <% if @order.fba? %>
-
-        <td class='production-state'>
-          <div class='col-sm-1'>
-            <span class="label <%= get_style_from_production_state(@order.production_state)%>"><%= @order.production_state.humanize %></span>
-          </div>
-
-          <div class='col-sm-2'>
-            <% if @order.production_url && @order.production_state != 'pending' %>
-              <%= link_to 'View in Production', @order.production_url, class: 'btn btn-success', target: :_blank %>
-            <% else %>
-              <%= button_to 'Send to Production', send_to_production_order_path(@order), class: 'btn btn-primary' %>
-            <% end %>
-          </div>
-        </td>
-
-      <% else %>
-
+      <% unless @order.fba? %>
         <td class='payment-state'>
           <span class="label <%= get_style_from_status(@order.payment_status)%>"><%= @order.payment_status %></span>
         </td>
-        <td class='invoice-state'>
-          <span class="label <%= get_style_from_invoice_state(@order.invoice_state)%>"><%= @order.invoice_state.humanize %></span>
-        </td>
-        <td class='production-state'>
-          <span class="label <%= get_style_from_production_state(@order.production_state)%>"><%= @order.production_state.humanize %></span>
-          <br />
-            <% if @order.production_url && @order.production_state != 'pending' %>
-              <%= link_to 'View in Production', @order.production_url, target: :_blank %>
-            <% else %>
-              <%= link_to 'Send to Production', send_to_production_order_path(@order), method: :post  %>
-            <% end %>
-        </td>
-        <td class='artwork-state'>
-          <span class="label label-primary <%= get_style_from_artwork_state(@order.artwork_state) %>"><%=  @order.artwork_state.humanize %></span>
-        </td>
+      <% end %>
+
+      <td class='invoice-state'>
+        <span class="label <%= get_style_from_invoice_state(@order.invoice_state)%>"><%= @order.invoice_state.humanize %></span>
+        <br />
+
+        <% unless @order.invoice_state == 'approved' %>
+          <%= form_for @order do |f| %>
+            <%= f.hidden_field :invoice_state, value: 'approved' %>
+            <%= button_tag 'Approve Invoice', class: 'btn btn-sm btn-success margin-top-10' %>
+          <% end %>
+        <% end %>
+      </td>
+
+      <td class='production-state'>
+        <span class="label <%= get_style_from_production_state(@order.production_state)%>"><%= @order.production_state.humanize %></span>
+        <br />
+          <% if @order.production_url && @order.production_state != 'pending' %>
+            <%= link_to 'View in Production', @order.production_url, target: :_blank, class: 'btn btn-sm btn-success margin-top-10' %>
+          <% else %>
+            <%= link_to 'Send to Production', send_to_production_order_path(@order), method: :post, class: 'btn btn-sm btn-danger margin-top-10', title: 'Karsten only', data: { toggle: 'tooltip' }  %>
+          <% end %>
+      </td>
+
+      <td class='artwork-state'>
+        <span class="label label-primary <%= get_style_from_artwork_state(@order.artwork_state) %>"><%=  @order.artwork_state.humanize %></span>
+      </td>
+
+      <% unless @order.fba? %>
         <td class='notification-state'>
           <span class="label <%= get_style_from_notification_state(@order.notification_state)%>"><%= @order.notification_state.humanize %></span>
         </td>
-
       <% end %>
-
     </tr>
   </tbody>
 </table>
@@ -169,12 +165,12 @@
               <% end %>
             </li>
             <li>
-              <%= order_tab(:artwork, @order.fba?) do %>
+              <%= order_tab(:artwork) do %>
                 <i class="fa fa-picture-o"></i> Artwork
               <% end %>
             </li>
             <li>
-              <%= order_tab(:proofs, @order.fba?) do %>
+              <%= order_tab(:proofs) do %>
                 <i class="fa fa-file-text-o"></i> Proofs
               <% end %>
               </a>

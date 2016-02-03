@@ -26,7 +26,7 @@ feature 'Stores management', store_spec: true do
     fill_in 'Phone', with: '800-555-1212'
     fill_in 'Sales email', with: 'sales@softwearcrm.com'
     fill_in 'Alternate text', with: 'alt stuff'
-    attach_file('Logo', "#{Rails.root}" + '/spec/fixtures/images/macho.jpg')
+    attach_file('Logo', "#{Rails.root}" + '/spec/fixtures/images/macho.png')
     click_button 'Create Store'
     expect(page).to have_selector('#flash_notice', text: 'Store was successfully created.')
     expect(page).to have_selector('.store-address', text: 'Address 1')

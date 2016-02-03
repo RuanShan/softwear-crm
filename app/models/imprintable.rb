@@ -325,6 +325,12 @@ class Imprintable < ActiveRecord::Base
     end
   end
 
+  def imprintable_variants
+    ivs = super
+    return ivs if ivs.empty?
+    ivs.eager_load(:color, :size).readonly(false)
+  end
+
   private
 
   def discontinue_imprintable

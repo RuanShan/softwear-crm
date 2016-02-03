@@ -29,8 +29,8 @@
         <h4>Artworks</h4>
         <% proof.artworks.each do |artwork| %>
           <div class="text-center col-xs-6" data-artwork-id="<%= artwork.id %>">
-          <%= link_to artwork.preview.file.url, target: :_blank do %>
-            <%= image_tag artwork.preview.file.url(:thumb), class: 'img-responsive center-block' %>
+          <%= link_to full_view_artwork_path(artwork), target: :_blank do %>
+            <%= preview_artwork artwork, :thumb, class: 'img-responsive center-block' %>
             Open in New Tab
           <% end %>
           </div>

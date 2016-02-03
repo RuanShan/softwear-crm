@@ -329,14 +329,14 @@ class Order < ActiveRecord::Base
     jobs_by_shipping_location = {}
     attrs.each do |job_attrs|
       shipping_location      = job_attrs[:shipping_location]
-      shipping_location_size = job_attrs[:shipping_location_size]
+      shipping_location_size = job_attrs[:shipping_location_size].to_i
 
       jobs_by_shipping_location[[shipping_location, shipping_location_size]] ||= []
       jobs_by_shipping_location[[shipping_location, shipping_location_size]] << job_attrs
     end
 
     # Sort shipping locations by size
-    sorted_shipping_locations = jobs_by_shipping_location.keys.sort_by(&:last).reverse
+    sorted_shipping_locations = jobs_by_shipping_location.keys.sort_by(&:last)
 
     sorted_jobs = []
     sorted_shipping_locations.each do |key|
@@ -371,7 +371,7 @@ class Order < ActiveRecord::Base
     return if production?
 
     (payment_status == 'Payment Terms Met' ||
-    payment_status == 'Payment Complete') and
+    payment_status == 'Payment Complete' || fba?) &&
     invoice_state  == 'approved'
   end
 
@@ -635,12 +635,7 @@ class Order < ActiveRecord::Base
 
     jobs.each_with_index do |job, index|
       # NOTE make sure the permitted params in Production match up with this
-      attrs[index] = {
-        name: job.name,
-        softwear_crm_id: job.id,
-        imprints_attributes: job.production_imprints_attributes,
-        imprintable_train_attributes: job.imprintable_train_attributes
-      }
+      attrs[index] = job.production_attributes
       attrs[index].delete_if { |_,v| v.nil? }
     end
 
@@ -854,4 +849,80 @@ class Order < ActiveRecord::Base
       save!
     end
   end
+
+  def setup_art_for_fba
+    jobs_by_template = {}
+
+    jobs.includes(:imprints).each do |job|
+      jobs_by_template[job.fba_job_template_id] ||= []
+      jobs_by_template[job.fba_job_template_id] << job
+    end
+
+    jobs_by_template.each do |job_template_id, jobs|
+      fba_job_template = FbaJobTemplate.find(job_template_id)
+      artworks = fba_job_template.artworks
+
+      artwork_request = ArtworkRequest.create
+      artwork_request.description = "Generated for FBA"
+      artwork_request.deadline    = in_hand_by
+      artwork_request.state       = :manager_approved
+      artwork_request.salesperson = salesperson
+      artwork_request.approved_by = salesperson
+      artwork_request.imprint_ids = jobs.flat_map(&:imprint_ids).uniq
+      artwork_request.artwork_ids = artworks.map(&:id)
+      artwork_request.priority    = 5
+      if artwork_request.artwork_ids.blank?
+        artwork_request.artwork_ids = [Artwork.fba_missing.try(:id)]
+      end
+
+      if artwork_request.save
+        if fba_job_template
+          mockup_attributes = {
+            file:        fba_job_template.mockup.file,
+            description: fba_job_template.mockup.description
+          }
+        else
+          mockup_attributes = nil
+        end
+
+        proof = Proof.create(
+          order_id:   id,
+          job_id:     jobs.first.id,
+          approve_by: in_hand_by,
+          state: :customer_approved,
+
+          mockups_attributes: [mockup_attributes].compact,
+          artworks: artwork_request.artworks
+        )
+
+        unless proof.persisted?
+          issue_warning('FBA Order Generation', "Unable to save proof: #{proof.errors.full_messages.join(', ')}")
+        end
+      else
+        issue_warning('FBA Order Generation', "Unable to save artwork request: #{artwork_request.errors.full_messages.join(', ')}")
+      end
+    end
+  end
+  warn_on_failure_of :setup_art_for_fba
+
+
+  def total_imprintable_breakdown
+    query = %{
+      select iv.id imprintable_object_id, li.imprintable_object_type imprintable_object_type, sum(quantity) quantity
+      from orders o
+      join jobs j on (o.id = j.jobbable_id and j.jobbable_type = 'order')
+      join line_items li on (li.job_id = j.id and imprintable_object_id is not null)
+      join imprintable_variants iv on (li.imprintable_object_id = iv.id and imprintable_object_type = 'imprintablevariant' and quantity > 0)
+      join colors c on c.id = iv.color_id
+      join sizes s on s.id = iv.size_id
+      join imprintables i on i.id = iv.imprintable_id
+      join brands b on b.id = i.brand_id
+      where o.id = #{self.id}
+      group by iv.id
+      order by o.id, i.id, c.id, s.sort_order;
+    }
+    by_imprintable = LineItem.find_by_sql(query).group_by{ |li| li.imprintable_object.imprintable.name }
+    by_imprintable.each{|key, val| by_imprintable[key] = val.map.group_by{|x| x.imprintable_object.color.name } }
+  end
+
 end

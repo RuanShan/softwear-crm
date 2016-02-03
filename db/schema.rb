@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160125202402) do
+ActiveRecord::Schema.define(version: 20160201170926) do
 
   create_table "activities", force: :cascade do |t|
     t.integer  "trackable_id",   limit: 4
@@ -241,6 +241,15 @@ ActiveRecord::Schema.define(version: 20160125202402) do
     t.boolean  "freshdesk"
   end
 
+  create_table "fba_imprint_templates", force: :cascade do |t|
+    t.integer "print_location_id",   limit: 4
+    t.integer "fba_job_template_id", limit: 4
+    t.text    "description",         limit: 65535
+    t.integer "artwork_id",          limit: 4
+  end
+
+  add_index "fba_imprint_templates", ["fba_job_template_id"], name: "index_fba_imprint_templates_on_fba_job_template_id", using: :btree
+
   create_table "fba_job_template_imprints", force: :cascade do |t|
     t.integer  "fba_job_template_id", limit: 4
     t.integer  "imprint_id",          limit: 4
@@ -255,6 +264,7 @@ ActiveRecord::Schema.define(version: 20160125202402) do
     t.string   "name",       limit: 191
     t.datetime "created_at",             null: false
     t.datetime "updated_at",             null: false
+    t.string   "job_name",   limit: 191
   end
 
   create_table "fba_products", force: :cascade do |t|
@@ -262,7 +272,6 @@ ActiveRecord::Schema.define(version: 20160125202402) do
     t.string   "sku",        limit: 191
     t.datetime "created_at",             null: false
     t.datetime "updated_at",             null: false
-    t.string   "fnsku",      limit: 191
   end
 
   create_table "fba_skus", force: :cascade do |t|
@@ -272,11 +281,22 @@ ActiveRecord::Schema.define(version: 20160125202402) do
     t.integer  "fba_job_template_id",    limit: 4
     t.datetime "created_at",                         null: false
     t.datetime "updated_at",                         null: false
+    t.string   "fnsku",                  limit: 191
+    t.string   "asin",                   limit: 191
   end
 
   add_index "fba_skus", ["fba_job_template_id"], name: "index_fba_skus_on_fba_job_template_id", using: :btree
   add_index "fba_skus", ["fba_product_id"], name: "index_fba_skus_on_fba_product_id", using: :btree
   add_index "fba_skus", ["imprintable_variant_id"], name: "index_fba_skus_on_imprintable_variant_id", using: :btree
+
+  create_table "fba_spreadsheet_uploads", force: :cascade do |t|
+    t.boolean  "done"
+    t.text     "spreadsheet",       limit: 65535
+    t.text     "processing_errors", limit: 65535
+    t.string   "filename",          limit: 191
+    t.datetime "created_at",                      null: false
+    t.datetime "updated_at",                      null: false
+  end
 
   create_table "freshdesk_local_contacts", force: :cascade do |t|
     t.string   "name",         limit: 191
@@ -461,19 +481,21 @@ ActiveRecord::Schema.define(version: 20160125202402) do
   add_index "ink_colors", ["deleted_at"], name: "index_ink_colors_on_deleted_at", using: :btree
 
   create_table "jobs", force: :cascade do |t|
-    t.string   "name",             limit: 191
-    t.text     "description",      limit: 16777215
-    t.integer  "jobbable_id",      limit: 4
+    t.string   "name",                limit: 191
+    t.text     "description",         limit: 16777215
+    t.integer  "jobbable_id",         limit: 4
     t.datetime "deleted_at"
     t.datetime "created_at"
     t.datetime "updated_at"
     t.boolean  "collapsed"
-    t.string   "jobbable_type",    limit: 191
-    t.integer  "softwear_prod_id", limit: 4
-    t.integer  "sort_order",       limit: 4
+    t.string   "jobbable_type",       limit: 191
+    t.integer  "softwear_prod_id",    limit: 4
+    t.integer  "sort_order",          limit: 4
+    t.integer  "fba_job_template_id", limit: 4
   end
 
   add_index "jobs", ["deleted_at"], name: "index_jobs_on_deleted_at", using: :btree
+  add_index "jobs", ["fba_job_template_id"], name: "index_jobs_on_fba_job_template_id", using: :btree
 
   create_table "line_item_groups", force: :cascade do |t|
     t.string   "name",        limit: 191
@@ -692,6 +714,8 @@ ActiveRecord::Schema.define(version: 20160125202402) do
     t.integer  "insightly_organisation_id", limit: 4
     t.integer  "freshdesk_contact_id",      limit: 4
     t.string   "freshdesk_ticket_id",       limit: 191
+    t.string   "domain",                    limit: 191
+    t.string   "ip_address",                limit: 191
   end
 
   create_table "quotes", force: :cascade do |t|
@@ -980,4 +1004,5 @@ ActiveRecord::Schema.define(version: 20160125202402) do
   add_foreign_key "fba_skus", "fba_job_templates"
   add_foreign_key "fba_skus", "fba_products"
   add_foreign_key "fba_skus", "imprintable_variants"
+  add_foreign_key "jobs", "fba_job_templates"
 end

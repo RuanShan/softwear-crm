@@ -1,5 +1,5 @@
 setupContentModal(function($contentModal) {
-  $contentModal.find('.modal-dialog').addClass('enlarge-modal')
+  $contentModal.find('.modal-dialog').addClass('enlarge-modal');
 });
 
 showContentModal({
@@ -8,5 +8,5 @@ showContentModal({
   title: 'Assign Artwork to the Artwork Request',
   body: $("<%= j(render partial: 'artworks/artwork_request',
                         locals: { artworks: @artworks,
-                                  artwork_request: artwork_request }).html_safe %>")
+                                  artwork_request: (artwork_request if defined? artwork_request) }).html_safe %>")
 });

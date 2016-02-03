@@ -10,6 +10,9 @@ class FbaProduct < ActiveRecord::Base
     text :name, :sku, :fba_sku_skus
   end
 
+  def spreadsheet=
+  end
+
   def fba_sku_skus
     fba_skus.pluck(:sku)
   end
