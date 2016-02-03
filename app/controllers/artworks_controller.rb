@@ -1,5 +1,6 @@
 class ArtworksController < InheritedResources::Base
   before_action :set_current_action
+  skip_before_filter :authenticate_user!, only: [:full_view]
 
   respond_to :html, :js
 
