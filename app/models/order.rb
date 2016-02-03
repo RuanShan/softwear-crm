@@ -904,4 +904,25 @@ class Order < ActiveRecord::Base
     end
   end
   warn_on_failure_of :setup_art_for_fba
+
+
+  def total_imprintable_breakdown
+    query = %{
+      select iv.id imprintable_object_id, li.imprintable_object_type imprintable_object_type, sum(quantity) quantity
+      from orders o
+      join jobs j on (o.id = j.jobbable_id and j.jobbable_type = 'order')
+      join line_items li on (li.job_id = j.id and imprintable_object_id is not null)
+      join imprintable_variants iv on (li.imprintable_object_id = iv.id and imprintable_object_type = 'imprintablevariant' and quantity > 0)
+      join colors c on c.id = iv.color_id
+      join sizes s on s.id = iv.size_id
+      join imprintables i on i.id = iv.imprintable_id
+      join brands b on b.id = i.brand_id
+      where o.id = #{self.id}
+      group by iv.id
+      order by o.id, i.id, c.id, s.sort_order;
+    }
+    by_imprintable = LineItem.find_by_sql(query).group_by{ |li| li.imprintable_object.imprintable.name }
+    by_imprintable.each{|key, val| by_imprintable[key] = val.map.group_by{|x| x.imprintable_object.color.name } }
+  end
+
 end
