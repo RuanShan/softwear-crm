@@ -6,6 +6,9 @@ module Authentication
 
   included do
     rescue_from NotSignedInError, with: :user_not_signed_in
+    helper_method :current_user
+    helper_method :user_signed_in
+    helper_method :destroy_user_session_path
   end
 
   def user_not_signed_in
@@ -15,7 +18,7 @@ module Authentication
   protected
 
   def authenticate_user!
-    token = cookies[:user_token]
+    token = session[:user_token]
 
     if token.blank?
       raise NotSignedInError, "No token"
@@ -30,5 +33,13 @@ module Authentication
 
   def current_user
     @current_user
+  end
+
+  def user_signed_in?
+    !@current_user.nil?
+  end
+
+  def destroy_user_session_path
+    Figaro.env.softwear_hub_url + "/users/sign_out"
   end
 end

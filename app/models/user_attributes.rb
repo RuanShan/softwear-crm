@@ -14,9 +14,6 @@ class UserAttributes < ActiveRecord::Base
 
   attr_encrypted :freshdesk_password, key: 'h4rdc0ded1337ness'
 
-  devise(:database_authenticatable, :confirmable, :recoverable, :registerable,
-         :rememberable, :trackable, :timeoutable, :validatable, :lockable)
-
   belongs_to :store
   has_many :orders
   has_many :quote_requests, foreign_key: 'salesperson_id'
@@ -66,6 +63,7 @@ class UserAttributes < ActiveRecord::Base
   # same type. Because of this, the assets don't get the assetable information they
   # need for paths. This is a quick fix for that.
   def assign_image_assetables
+    return if signature.nil?
     signature.assetable = self
     signature.save(validate: false)
   end

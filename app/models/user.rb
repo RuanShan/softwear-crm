@@ -15,19 +15,34 @@ class User
     @default_socket ||= TCPSocket.open(ENDPOINT, 2900)
   end
 
-  def validate_response(response_string)
+  def self.query(message)
+    begin
+      default_socket.puts message
+    rescue Errno::EPIPE => e
+      @default_socket = TCPSocket.open(ENDPOINT, 2900)
+      @default_socket.puts message
+    end
+    default_socket.gets.chomp
+  end
+  def query(*a)
+    self.class.query(*a)
+  end
+
+  def self.validate_response(response_string)
     case response_string
-    when 'denied'  raise "Denied"
-    when 'invalid' raise "Invalid command"
-    when 'sorry'   raise "Authentication server encountered an error"
+    when 'denied'  then raise "Denied"
+    when 'invalid' then raise "Invalid command"
+    when 'sorry'   then raise "Authentication server encountered an error"
     else
       response_string
     end
   end
+  def validate_response
+    self.class.validate_response
+  end
 
   def self.find(target_id)
-    default_socket.puts "get #{target_id}"
-    json = validate_response default_socket.gets.chomp
+    json = validate_response query "get #{target_id}"
 
     object = new(JSON.parse(json))
     object.instance_variable_set(:@persisted, true)
@@ -35,8 +50,7 @@ class User
   end
 
   def self.all
-    default_socket.puts "get #{target_id}"
-    json = validate_response default_socket.gets.chomp
+    json = validate_response query "all"
 
     objects = JSON.parse(json).map(&method(:new))
     objects.each { |u| u.instance_variable_set(:@persisted, true) }
@@ -44,13 +58,12 @@ class User
   end
 
   def self.auth(token)
-    default_socket.puts "auth #{token}"
-    response = validate_response default_socket.gets.chomp
+    response = validate_response query "auth #{token}"
 
     return false unless response =~ /^yes .+$/
 
     _yes, json = response.split(/\s+/, 2)
-    object = new(JSON.parse(json))
+    object = new(JSON.parse(json)['user'])
     object.instance_variable_set(:@persisted, true)
     object
   end
@@ -68,10 +81,33 @@ class User
     @last_name  = attributes[:last_name]
   end
 
-  def update
-    User.default_socket.puts "get #{target_id}"
-    json = validate_response User.default_socket.gets.chomp
+  def reload
+    json = validate_response query "get #{id}"
+
     update_attributes(JSON.parse(json))
     @persisted = true
+    self
+  end
+
+  def respond_to?(name, *a)
+    super || attributes.respond_to?(name, *a)
+  end
+
+  def method_missing(name, *args, &block)
+    attributes.send(name, *args, &block)
+  end
+
+  def attributes
+    return nil if id.nil?
+    @attributes ||= UserAttributes.find_or_create_by(user_id: id)
+  end
+
+  def full_name
+    "#{@first_name} #{@last_name}"
+  end
+
+  # TODO ...
+  def sales_manager?
+    true
   end
 end

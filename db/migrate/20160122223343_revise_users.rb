@@ -5,6 +5,7 @@ class ReviseUsers < ActiveRecord::Migration
     drop_table :users
 
     create_table :user_attributes do |t|
+      t.integer :user_id, index: true, unique: true
       t.integer :store_id
       t.string :freshdesk_email
       t.string :freshdesk_password
