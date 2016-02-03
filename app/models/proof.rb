@@ -92,7 +92,10 @@ class Proof < ActiveRecord::Base
 
   def artwork_paths
     artworks.map do |artwork|
-      artwork.path
+      [
+        artwork.preview.try(:file).try(:url, :thumb),
+        artwork.path
+      ]
     end
   end
 end
