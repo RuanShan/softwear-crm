@@ -143,15 +143,17 @@ class Order < ActiveRecord::Base
   validates :invoice_reject_reason, presence: true, if: :invoice_rejected?
 
   before_create { self.delivery_method ||= 'Ship to multiple locations' if fba? }
-  after_initialize -> (o) { o.production_state = 'pending' if o.production_state.blank? }
-  after_initialize -> (o) { o.invoice_state = 'pending' if o.invoice_state.blank? }
+  after_initialize -> (o) { o.production_state = 'pending' if o.respond_to?(:production_state) && o.production_state.blank? }
+  after_initialize -> (o) { o.invoice_state = 'pending' if o.respond_to?(:invoice_state) && o.invoice_state.blank? }
   after_initialize do
+    next unless respond_to?(:customer_key)
     while customer_key.blank? ||
           Order.where(customer_key: customer_key).where.not(id: id).exists?
       self.customer_key = rand(36**6).to_s(36).upcase
     end
   end
   after_initialize do
+    next unless %i(subtotal taxable_total discount_total payment_total).all?(&method(:respond_to?))
     self.subtotal ||= 0
     self.taxable_total ||= 0
     self.discount_total ||= 0
