@@ -353,7 +353,11 @@ class Payment < ActiveRecord::Base
     return if order.blank? || amount.blank?
 
     order_balance = order.balance_excluding(self)
-    new_balance = order_balance - amount
+    if is_refunded?
+      new_balance = order_balance - (amount - refunded_amount)
+    else
+      new_balance = order_balance - amount
+    end
     if new_balance < 0
       if order_balance == 0
         remark = "(the order's balance is $0.00)"
