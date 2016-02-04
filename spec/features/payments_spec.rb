@@ -249,6 +249,7 @@ feature 'Payments management', js: true, payment_spec: true, retry: 2 do
         sleep 2
         page.driver.browser.switch_to.alert.accept
 
+        sleep 5 if ci?
         expect(page).to have_content 'Thank you!'
         expect(page).to have_content 'Your payment has been processed'
         click_button 'OK'

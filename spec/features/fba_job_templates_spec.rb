@@ -20,7 +20,7 @@ feature 'FBA Job Tempaltes management', js: true do
     Capybara.ignore_hidden_elements = true
   end
 
-  scenario 'A user can create a new FBA Job Template', new: true do
+  scenario 'A user can create a new FBA Job Template', retry: (3 if ci?), new: true do
     visit new_fba_job_template_path
     fill_in 'Name', with: 'cool new template'
 
