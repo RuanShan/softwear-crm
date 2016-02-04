@@ -35,6 +35,10 @@ class Order < ActiveRecord::Base
 
     date :in_hand_by
 
+    boolean :fba do
+      fba?
+    end
+
     reference :salesperson
   end
 
@@ -876,7 +880,7 @@ class Order < ActiveRecord::Base
       end
 
       if artwork_request.save
-        if fba_job_template
+        if fba_job_template.mockup
           mockup_attributes = {
             file:        fba_job_template.mockup.file,
             description: fba_job_template.mockup.description
