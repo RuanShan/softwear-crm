@@ -12,7 +12,7 @@ module Authentication
   end
 
   def user_not_signed_in
-    redirect_to Figaro.env.softwear_hub_url + "/users/sign_in?return_to=softwear-crm"
+    redirect_to Figaro.env.softwear_hub_url + "/users/sign_in?#{{return_to: request.original_url}.to_param}"
   end
 
   protected
