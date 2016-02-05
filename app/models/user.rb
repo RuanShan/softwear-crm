@@ -11,6 +11,34 @@ class User
   attr_reader :persisted
   alias_method :persisted?, :persisted
 
+  # Stupider version of has_many
+  def self.has_many(assoc, options = {})
+    assoc = assoc.to_s
+
+    class_name  = options[:class_name]  || assoc.singularize.camelize
+    foreign_key = options[:foreign_key] || 'user_id'
+
+    class_eval <<-RUBY, __FILE__, __LINE__ + 1
+      def #{assoc}
+        #{class_name}.where(#{foreign_key}: id)
+      end
+    RUBY
+  end
+
+  # ------- These associations are crm-specific, of course --------
+  has_many :orders,         foreign_key: 'salesperson_id'
+  has_many :quote_requests, foreign_key: 'salesperson_id'
+  has_many :search_queries, class_name: 'Search::Query'
+
+  def pending_quote_requests
+    quote_requests.where.not(status: 'quoted')
+  end
+
+  # ------- Now auth specific stuff again -------
+  def self.arel_table
+    Arel::Table.new('users', User)
+  end
+
   def self.default_socket
     @default_socket ||= TCPSocket.open(ENDPOINT, 2900)
   end
@@ -44,9 +72,13 @@ class User
   def self.find(target_id)
     json = validate_response query "get #{target_id}"
 
-    object = new(JSON.parse(json))
-    object.instance_variable_set(:@persisted, true)
-    object
+    if json == 'nosuchuser'
+      nil
+    else
+      object = new(JSON.parse(json))
+      object.instance_variable_set(:@persisted, true)
+      object
+    end
   end
 
   def self.all
@@ -90,19 +122,6 @@ class User
     self
   end
 
-  def respond_to?(name, *a)
-    super || attributes.respond_to?(name, *a)
-  end
-
-  def method_missing(name, *args, &block)
-    attributes.send(name, *args, &block)
-  end
-
-  def attributes
-    return nil if id.nil?
-    @attributes ||= UserAttributes.find_or_create_by(user_id: id)
-  end
-
   def full_name
     "#{@first_name} #{@last_name}"
   end
@@ -110,5 +129,24 @@ class User
   # TODO ...
   def sales_manager?
     true
+  end
+
+  # -------------------- CRM Specific stuff -------------------
+
+  def attributes
+    return nil if id.nil?
+    @attributes ||= UserAttributes.find_or_create_by(user_id: id)
+  end
+
+  def respond_to?(name, *a)
+    super || attributes.respond_to?(name, *a)
+  end
+
+  def method_missing(name, *args, &block)
+    if attributes.respond_to?(name)
+      attributes.send(name, *args, &block)
+    else
+      raise NoMethodError.new("undefined method `#{name}' for instance of User")
+    end
   end
 end

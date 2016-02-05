@@ -1,6 +1,7 @@
 class Order < ActiveRecord::Base
   include TrackingHelpers
   include ProductionCounterpart
+  include BelongsToUser
 
   acts_as_paranoid
   acts_as_commentable :public, :private
@@ -84,7 +85,7 @@ class Order < ActiveRecord::Base
   ]
 
 
-  belongs_to :salesperson, class_name: User
+  belongs_to_user_as :salesperson
   belongs_to :store
   has_many :jobs, as: :jobbable, dependent: :destroy, inverse_of: :jobbable
   has_many :line_items, through: :jobs, source: :line_items
@@ -485,7 +486,7 @@ class Order < ActiveRecord::Base
   end
 
   def salesperson_name
-    User.find(salesperson_id).full_name
+    salesperson.full_name
   end
 
   def discount_total(exclude = [])

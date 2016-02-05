@@ -16,7 +16,7 @@
     <% end %>
   </td>
   <td>
-    <%= order.salesperson.full_name %>
+    <%= order.salesperson.try(:full_name) || 'No user' %>
     <div class='row'>
       <%= profile_picture_of order.salesperson if order.salesperson %>
     </div>

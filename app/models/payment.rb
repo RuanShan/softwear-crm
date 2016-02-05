@@ -1,6 +1,7 @@
 class Payment < ActiveRecord::Base
   include ActionView::Helpers::NumberHelper
   include PublicActivity::Common
+  include BelongsToUser
 
   class PaymentError < StandardError
   end
@@ -61,7 +62,7 @@ class Payment < ActiveRecord::Base
 
   belongs_to :order, touch: true
   belongs_to :store
-  belongs_to :salesperson, class_name: User
+  belongs_to_user_as :salesperson
   has_many :discounts, as: :discountable # Only refunds
   has_many :payment_drop_payments
 

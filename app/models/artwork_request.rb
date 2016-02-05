@@ -1,6 +1,7 @@
 class ArtworkRequest < ActiveRecord::Base
   include TrackingHelpers
   include IntegratedCrms
+  include BelongsToUser
 
   acts_as_paranoid
   acts_as_warnable
@@ -33,8 +34,8 @@ class ArtworkRequest < ActiveRecord::Base
   has_many :artwork_request_artworks
   has_many :artwork_request_ink_colors
   has_many :artwork_request_imprints
-  belongs_to :artist,                class_name: User
-  belongs_to :salesperson,           class_name: User
+  belongs_to_user_as :artist
+  belongs_to_user_as :salesperson
   belongs_to :approved_by,           class_name: User
   has_many   :artworks,              through: :artwork_request_artworks
   has_many   :proofs,                through: :artworks
