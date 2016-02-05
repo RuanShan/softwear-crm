@@ -21,9 +21,11 @@ module Api
             end
           end
         else
+
+          retail_conditions = ( params[:retail] === '' ? {} : { retail: true } )
           @imprintables = Imprintable
             .includes(imprintable_variants: [:color, :size])
-            .where(retail: true)
+            .where(retail_conditions)
         end
       end
     end
