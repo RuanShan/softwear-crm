@@ -4,7 +4,7 @@ class UsersController < ApplicationController
 
   def set_session_token
     token = params[:token]
-    redirect_to root_path if token.blank?
+    redirect_to Figaro.env.softwear_hub_url and return if token.blank?
 
     session[:user_token] = token
 

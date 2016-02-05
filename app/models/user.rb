@@ -62,8 +62,8 @@ class User
 
     return false unless response =~ /^yes .+$/
 
-    _yes, json = response.split(/\s+/, 2)
-    object = new(JSON.parse(json)['user'])
+    _yes, json = response.split(' ', 2)
+    object = new(JSON.parse(json))
     object.instance_variable_set(:@persisted, true)
     object
   end
@@ -73,6 +73,7 @@ class User
   end
 
   def update_attributes(attributes={})
+    return if attributes.blank?
     attributes = attributes.with_indifferent_access
 
     @id         = attributes[:id]
