@@ -6,10 +6,14 @@ module Authentication
 
   included do
     rescue_from NotSignedInError, with: :user_not_signed_in
+
     helper_method :current_user
-    helper_method :user_signed_in
+    helper_method :user_signed_in?
+
     helper_method :destroy_user_session_path
+    helper_method :users_path
     helper_method :user_path
+    helper_method :edit_user_path
   end
 
   def user_not_signed_in
@@ -54,5 +58,9 @@ module Authentication
   def edit_user_path(user)
     user_id = user.is_a?(User) ? user.id : user
     Figaro.env.softwear_hub_url + "/users/#{user_id}/edit"
+  end
+
+  def users_path
+    Figaro.env.softwear_hub_url + "/users"
   end
 end

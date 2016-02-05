@@ -7,10 +7,6 @@ CrmSoftwearcrmCom::Application.routes.draw do
   get 'home/api_warnings', to: 'home#api_warnings', as: :api_warnings
   get 'home/not_allowed', to: 'home#not_allowed', as: :not_allowed
 
-  get '/users/change_password', to: 'users#edit_password', as: :change_password
-  put '/users/change_password', to: 'users#update_password', as: :update_password
-  get '/users/lock', to: 'users#lock', as: :lock_user
-
   get 'imprints/ink_colors', to: 'imprints#ink_colors', as: :imprint_ink_colors
   get 'imprints/new', to: 'imprints#new', as: :new_imprint
 
@@ -32,7 +28,7 @@ CrmSoftwearcrmCom::Application.routes.draw do
 
   get 'tags/:tag', to: 'imprintables#index', as: :tag
 
-  resources :brands, :colors, :users
+  resources :brands, :colors
   resources :artworks do
     collection do
       get 'select'
@@ -84,8 +80,6 @@ CrmSoftwearcrmCom::Application.routes.draw do
   end
   warning_paths_for :quote_requests
   resources :warnings
-
-  get '/logout' => 'users#logout'
 
   scope 'configuration' do
     resources :shipping_methods, :stores, :line_item_templates
