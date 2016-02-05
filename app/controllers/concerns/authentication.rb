@@ -9,6 +9,7 @@ module Authentication
     helper_method :current_user
     helper_method :user_signed_in
     helper_method :destroy_user_session_path
+    helper_method :user_path
   end
 
   def user_not_signed_in
@@ -39,7 +40,19 @@ module Authentication
     !@current_user.nil?
   end
 
+  # -- url uelpers --
+
   def destroy_user_session_path
     Figaro.env.softwear_hub_url + "/users/sign_out"
+  end
+
+  def user_path(user)
+    user_id = user.is_a?(User) ? user.id : user
+    Figaro.env.softwear_hub_url + "/users/#{user_id}"
+  end
+
+  def edit_user_path(user)
+    user_id = user.is_a?(User) ? user.id : user
+    Figaro.env.softwear_hub_url + "/users/#{user_id}/edit"
   end
 end

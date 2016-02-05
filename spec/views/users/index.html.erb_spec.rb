@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe 'users/index.html.erb', user_spec: true do
+describe 'users/index.html.erb', user_spec: true, pending: 'NO MORE' do
   before :each do
     assign(:users, [
       create(:user, 
