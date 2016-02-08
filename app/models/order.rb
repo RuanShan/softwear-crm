@@ -929,4 +929,28 @@ class Order < ActiveRecord::Base
     by_imprintable.each{|key, val| by_imprintable[key] = val.map.group_by{|x| x.imprintable_object.color.name } }
   end
 
+  def destroy_recursively
+    nuke = nil
+    nuke = lambda do |object|
+      associations_to_destroy = object.class.reflect_on_all_associations
+        .select { |a| a.options[:dependent] == :destroy }
+
+      associations_to_destroy.each do |assoc|
+        if assoc.is_a?(ActiveRecord::Reflection::HasManyReflection) ||
+           assoc.is_a?(ActiveRecord::Reflection::ThroughReflection)
+          object.send(assoc.name).each(&nuke)
+        else
+          nuke.(object.send(assoc.name))
+        end
+      end
+
+      if object.paranoid?
+        object.update_column :deleted_at, Time.now
+      else
+        object.destroy
+      end
+    end
+
+    nuke.(self)
+  end
 end
