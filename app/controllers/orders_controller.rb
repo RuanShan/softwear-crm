@@ -95,7 +95,10 @@ class OrdersController < InheritedResources::Base
   def destroy
     @order = Order.find(params[:id])
     @order.destroy_recursively
-    redirect_to orders_path
+    respond_to do |format|
+      format.html { redirect_to orders_path }
+      format.js { render }
+    end
   end
 
   def production_dashboard
