@@ -29,6 +29,7 @@ class FbaSpreadsheetUpload < ActiveRecord::Base
 
     # sheetname => rownumber => errormessage
     all_errors = {}
+    created_job_templates = []
 
     spreadsheet.each do |sheet_name, rows|
       if /IGNORE/ =~ sheet_name
@@ -39,7 +40,6 @@ class FbaSpreadsheetUpload < ActiveRecord::Base
 
       header = {}
       errors = {}
-      created_job_templates = []
       action = nil
       first_row_of_current_product = -1
       current_product = nil
