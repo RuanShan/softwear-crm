@@ -114,6 +114,16 @@ class User
     @last_name  = attributes[:last_name]
   end
 
+  def to_json
+    {
+      id:         @id,
+      email:      @email,
+      first_name: @first_name,
+      last_name:  @last_name
+    }
+      .to_json
+  end
+
   def reload
     json = validate_response query "get #{id}"
 

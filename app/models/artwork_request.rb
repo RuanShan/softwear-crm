@@ -55,7 +55,7 @@ class ArtworkRequest < ActiveRecord::Base
   validates :ink_colors,     presence: true, unless: :fba?
   validates :imprints,       presence: true
   validates :priority,       presence: true
-  validates :salesperson,    presence: true
+  validates :salesperson_id, presence: true
 
   after_create :enqueue_create_freshdesk_proof_ticket if Rails.env.production?
   before_save :transition_to_assigned, if: :should_assign?
