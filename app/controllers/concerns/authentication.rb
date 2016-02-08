@@ -20,8 +20,6 @@ module Authentication
     redirect_to Figaro.env.softwear_hub_url + "/users/sign_in?#{{return_to: request.original_url}.to_param}"
   end
 
-  protected
-
   def authenticate_user!
     token = session[:user_token]
 

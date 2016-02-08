@@ -137,7 +137,7 @@ class Order < ActiveRecord::Base
               message: 'is incorrectly formatted, use 000-000-0000'
             },
             unless: :fba?
-  validates :salesperson, presence: true
+  validates :salesperson_id, presence: true
   validates :store, presence: true
   validates :terms, presence: true
   validates :in_hand_by, presence: true

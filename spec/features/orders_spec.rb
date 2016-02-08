@@ -3,7 +3,7 @@ include ApplicationHelper
 
 feature 'Order management', order_spec: true, js: true do
   given!(:valid_user) { create(:user) }
-  background(:each) { login_as valid_user }
+  background(:each) { sign_in_as valid_user }
 
   given!(:order) { create(:order) }
 
@@ -224,6 +224,7 @@ feature 'Order management', order_spec: true, js: true do
       sleep(0.5)
       select('Notified', from: 'What did you do?')
       fill_in('And what are the details?', with:  'Spoke over the phone')
+      byebug
       click_button('Update Notification state')
       sleep(1)
       find("button[data-dismiss='modal']").click

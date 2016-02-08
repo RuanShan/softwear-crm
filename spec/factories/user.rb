@@ -29,7 +29,7 @@ FactoryGirl.define do
         u.attributes.save!
       end
       after(:create) do |u|
-        Thread.current[:users] << u
+        @_users << u if @_users
       end
     end
   end

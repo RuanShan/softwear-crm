@@ -11,6 +11,14 @@ class User
   attr_reader :persisted
   alias_method :persisted?, :persisted
 
+  def self.primary_key
+    :id
+  end
+
+  def self.base_class
+    self
+  end
+
   # Stupider version of has_many
   def self.has_many(assoc, options = {})
     assoc = assoc.to_s
