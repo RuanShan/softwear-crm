@@ -190,7 +190,8 @@ class ImprintablesController < InheritedResources::Base
         ],
         imprintable_imprintable_groups_attributes: [
           :id, :default, :tier, :imprintable_group_id, :imprintable_id
-        ]
+        ],
+        sizing_chart_attributes: [ :file, :id, :description, :_destroy ]
       ]
     )
   end
