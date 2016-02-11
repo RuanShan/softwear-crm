@@ -906,6 +906,8 @@ class Order < ActiveRecord::Base
         issue_warning('FBA Order Generation', "Unable to save artwork request: #{artwork_request.errors.full_messages.join(', ')}")
       end
     end
+
+    update_column :artwork_state, 'in_production'
   end
   warn_on_failure_of :setup_art_for_fba
 
