@@ -857,6 +857,9 @@ class Order < ActiveRecord::Base
   def setup_art_for_fba
     jobs_by_template = {}
 
+    missing_artworks = false
+    missing_mockups = false
+
     jobs.includes(:imprints).each do |job|
       jobs_by_template[job.fba_job_template_id] ||= []
       jobs_by_template[job.fba_job_template_id] << job
@@ -876,6 +879,7 @@ class Order < ActiveRecord::Base
       artwork_request.artwork_ids = artworks.map(&:id)
       artwork_request.priority    = 5
       if artwork_request.artwork_ids.blank?
+        missing_artworks = true
         artwork_request.artwork_ids = [Artwork.fba_missing.try(:id)]
       end
 
@@ -887,13 +891,14 @@ class Order < ActiveRecord::Base
           }
         else
           mockup_attributes = nil
+          missing_mockups = true
         end
 
         proof = Proof.create(
           order_id:   id,
           job_id:     jobs.first.id,
           approve_by: in_hand_by,
-          state: :customer_approved,
+          state:      :customer_approved,
 
           mockups_attributes: [mockup_attributes].compact,
           artworks: artwork_request.artworks
@@ -907,7 +912,17 @@ class Order < ActiveRecord::Base
       end
     end
 
-    update_column :artwork_state, 'in_production'
+    if missing_artworks
+      if missing_proofs
+        update_column :artwork_state, 'pending_artwork_and_proofs'
+      else
+        update_column :artwork_state, 'pending_artwork_requests'
+      end
+    elsif missing_proofs
+      update_column :artwork_state, 'pending_proofs'
+    else
+      update_column :artwork_state, 'in_production'
+    end
   end
   warn_on_failure_of :setup_art_for_fba
 

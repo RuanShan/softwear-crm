@@ -172,7 +172,6 @@ feature 'FBA Order management', fba_spec: true, story_103: true, js: true, retry
       expect(order.jobs.last.shipments.where(address_1: '650 Boulder Drive', city: 'Breiningsville', state: 'PA', zipcode: '18031', shipped_by_id: valid_user.id)).to exist
 
       expect(order.proofs.size).to eq 1
-      expect(order.artwork_state).to eq 'in_production'
     end
   end
 
