@@ -30,6 +30,7 @@ module Authentication
     if user = User.auth(token)
       @current_user = user
     else
+      session[:user_token] = nil
       raise NotSignedInError, "Invalid token"
     end
   end

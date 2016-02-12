@@ -98,7 +98,7 @@ class User
   end
 
   def self.auth(token)
-    response = validate_response query "auth #{token}"
+    response = validate_response query "auth #{Figaro.env.hub_app_name} #{token}"
 
     return false unless response =~ /^yes .+$/
 

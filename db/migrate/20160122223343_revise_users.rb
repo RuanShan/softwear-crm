@@ -19,9 +19,9 @@ class ReviseUsers < ActiveRecord::Migration
         store_id:                     row['store_id'],
         freshdesk_email:              row['freshdesk_email'],
         insightly_api_key:            row['insightly_api_key'],
-        signature_id:                 row['signature_id']
+        signature_id:                 row['signature_id'],
         freshdesk_password:           row['freshdesk_password'],
-        encrypted_freshdesk_password: row['encrypted_freshdesk_password'],
+        encrypted_freshdesk_password: row['encrypted_freshdesk_password']
       )
     end
 

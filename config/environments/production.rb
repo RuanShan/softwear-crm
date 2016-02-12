@@ -80,4 +80,8 @@ CrmSoftwearcrmCom::Application.configure do
   config.log_formatter = ::Logger::Formatter.new
   config.action_mailer.default_url_options = { :host => 'http://crm.softwearcrm.com' }
   config.action_mailer.delivery_method = :ses
+
+  if Figaro.env.hub_app_name.blank?
+    raise "You must specify \"hub_app_name\" in application.yml for users to work"
+  end
 end
