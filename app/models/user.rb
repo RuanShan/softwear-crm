@@ -164,7 +164,7 @@ class User
     if attributes.respond_to?(name)
       attributes.send(name, *args, &block)
     else
-      raise NoMethodError.new("undefined method `#{name}' for instance of User")
+      raise NoMethodError.new("undefined method `#{name}' called on instance of User")
     end
   end
 end

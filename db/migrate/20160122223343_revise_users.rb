@@ -1,9 +1,5 @@
 class ReviseUsers < ActiveRecord::Migration
   def up
-    # TODO we probably want to write user ids and stuff to a file or something, or migrate them to softwear-hub first
-
-    drop_table :users
-
     create_table :user_attributes do |t|
       t.integer :user_id, index: true, unique: true
       t.integer :store_id
@@ -13,6 +9,23 @@ class ReviseUsers < ActiveRecord::Migration
       t.string :insightly_api_key
       t.integer :signature_id
     end
+
+    # NOTE this does assume that softwear-hub will have users with the same IDs as were in CRM
+    query = "SELECT * from users"
+    result = ActiveRecord::Base.connection.execute(query)
+    result.each(as: :hash) do |row|
+      user_attrs = UserAttributes.create(
+        user_id:                      row['id'],
+        store_id:                     row['store_id'],
+        freshdesk_email:              row['freshdesk_email'],
+        insightly_api_key:            row['insightly_api_key'],
+        signature_id:                 row['signature_id']
+        freshdesk_password:           row['freshdesk_password'],
+        encrypted_freshdesk_password: row['encrypted_freshdesk_password'],
+      )
+    end
+
+    drop_table :users
   end
 
   def down
