@@ -105,11 +105,13 @@ class Imprintable < ActiveRecord::Base
   has_many :similar_imprintables, through: :imprintable_groups, source: :imprintables
   has_many :imprintable_photos
   has_many :assets, through: :imprintable_photos
+  belongs_to :sizing_chart, class_name: 'Asset'
 
   accepts_nested_attributes_for :imprintable_categories,
                                 :imprintable_imprintable_groups,
                                 :imprintable_photos,
                                 :print_location_imprintables,
+                                :sizing_chart,
                                 allow_destroy: true
 
   accepts_nested_attributes_for :imprintable_variants
@@ -140,6 +142,7 @@ class Imprintable < ActiveRecord::Base
   validates :department_name, inclusion: { in: DEPARTMENT_NAMES, message: "is not a valid department name" }, if: :department_name
 
   before_save :discontinue_imprintable, if: :discontinued?
+  after_save :assign_sizing_chart_assetable
   after_initialize { self.tag ||= "Not Specified" }
 
   def self.find(param)
@@ -152,6 +155,11 @@ class Imprintable < ActiveRecord::Base
 
   def default_photo_url
     { thumb: imprintable_photos.default.try(:asset).try(:file).try(:url, :thumb), medium: imprintable_photos.default.try(:asset).try(:file).try(:url, :medium), original: imprintable_photos.default.try(:asset).try(:file).try(:url, :original) } rescue {}
+  end
+
+  def sizing_chart_url
+    return nil unless sizing_chart && sizing_chart.file
+    sizing_chart.file.url(:original)
   end
 
   def brand_name
@@ -329,6 +337,21 @@ class Imprintable < ActiveRecord::Base
     ivs = super
     return ivs if ivs.empty?
     ivs.eager_load(:color, :size).readonly(false)
+  end
+
+  def sizing_chart_attributes=(attrs)
+    attrs = attrs.with_indifferent_access
+    return if attrs[:file].blank?
+
+    attrs[:description] = "#{name} Sizing Chart"
+    super(attrs)
+  end
+
+  def assign_sizing_chart_assetable
+    if sizing_chart && sizing_chart.assetable != self
+      sizing_chart.assetable = self
+      sizing_chart.save(validate: false)
+    end
   end
 
   private

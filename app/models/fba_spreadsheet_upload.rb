@@ -29,6 +29,7 @@ class FbaSpreadsheetUpload < ActiveRecord::Base
 
     # sheetname => rownumber => errormessage
     all_errors = {}
+    created_job_templates = []
 
     spreadsheet.each do |sheet_name, rows|
       if /IGNORE/ =~ sheet_name
@@ -183,7 +184,9 @@ class FbaSpreadsheetUpload < ActiveRecord::Base
 
         imprint = fba_job_template.fba_imprint_templates.find_or_initialize_by(print_location_id: print_location.id)
         imprint.description = description
-        unless imprint.save
+        if imprint.save
+          created_job_templates << fba_job_template
+        else
           report_error.call rownum, "Couldn't save imprint: #{imprint.errors.full_messages.join(', ')}"
           next
         end
@@ -231,6 +234,8 @@ class FbaSpreadsheetUpload < ActiveRecord::Base
       end
       all_errors[sheet_name] = errors unless errors.empty?
     end
+
+    Sunspot.index! created_job_templates unless created_job_templates.empty?
 
     errors_string = ""
     all_errors.each do |sheet, sheet_errors|

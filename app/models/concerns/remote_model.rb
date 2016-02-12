@@ -20,6 +20,7 @@ module RemoteModel
             else
               self.site = site
             end
+            self.timeout = 60 * 10 # 10 minutes
 
           rescue ActiveRecord::StatementInvalid => e
             Rails.logger.error "WARNING: *********************************************"

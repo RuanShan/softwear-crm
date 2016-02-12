@@ -152,7 +152,7 @@ module Customer
     end
 
     def email_receipt_to_customer(payment)
-      OrderMailer.payment_made(payment.order, payment, customer_order_url(payment.order)).deliver
+      OrderMailer.payment_made(payment.order, payment, customer_order_url(payment.order.try(:customer_key))).deliver
     end
 
     def permitted_params

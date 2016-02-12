@@ -254,20 +254,24 @@ class ArtworkRequest < ActiveRecord::Base
   def max_ideal_print_location_size_for_job(job)
     print_location_ids = imprints.where(job_id: job.id).pluck(:print_location_id)
     print_location_imprintables = jobs.map{|x| x.imprintables_for_order }.flatten
-    .map{|x| x.print_location_imprintables.where(print_location_id: print_location_ids) }
-    .flatten
-    width = print_location_imprintables.map(&:ideal_imprint_width).min
-    height = print_location_imprintables.map(&:ideal_imprint_height).min
+      .map{|x| x.print_location_imprintables.where(print_location_id: print_location_ids) }
+      .flatten
+
+    width  = print_location_imprintables.map(&:ideal_imprint_width).compact.min.to_f
+    height = print_location_imprintables.map(&:ideal_imprint_height).compact.min.to_f
+
     { width: width , height: height }
   end
 
   def max_print_location_size
     print_location_ids = imprints.pluck(:print_location_id)
     print_location_imprintables = jobs.map{|x| x.imprintables_for_order }.flatten
-    .map{|x| x.print_location_imprintables.where(print_location_id: print_location_ids) }
-    .flatten
-    width = print_location_imprintables.map(&:max_imprint_width).min
-    height = print_location_imprintables.map(&:max_imprint_height).min
+      .map{|x| x.print_location_imprintables.where(print_location_id: print_location_ids) }
+      .flatten
+
+    width  = print_location_imprintables.map(&:max_imprint_width).compact.min.to_f
+    height = print_location_imprintables.map(&:max_imprint_height).compact.min.to_f
+
     { width: width , height: height }
   end
 

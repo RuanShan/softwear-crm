@@ -7,8 +7,7 @@ module Api
       params.permit(
         quote_request: [
           :name, :organization, :email, :date_needed, :description, :source,
-          :phone_number, :approx_quantity, :domain, :ip_address,
-
+          :phone_number, :approx_quantity, :domain, :ip_address, :imprintable_quantities,
           customer_uploads_attributes: [:filename, :url, :id]
         ]
       )

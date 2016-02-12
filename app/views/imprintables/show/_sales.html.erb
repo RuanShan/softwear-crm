@@ -68,6 +68,15 @@
       <dd><%= imprintable.sample_locations.empty? ? 'Not Specified' : imprintable.sample_locations.map{|x| x.name}.join(', ') %></dd>
       <dt>Tags</dt>
       <dd><%= imprintable.tags.empty? ? 'Not Specified' : imprintable.tags.map{|x| x.name}.join(', ') %></dd>
+
+      <dt>Sizing Chart</dt>
+      <dd>
+      <% if imprintable.sizing_chart %>
+        <%= link_to image_tag(imprintable.sizing_chart.file.url(:thumb)), imprintable.sizing_chart_url %>
+      <% else %>
+        None uploaded
+      <% end %>
+      </dd>
     </dl>
 
     <%= render 'imprintables/show/weight_table', imprintable: imprintable %>

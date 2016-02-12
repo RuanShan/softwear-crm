@@ -191,9 +191,9 @@ CrmSoftwearcrmCom::Application.routes.draw do
 
   namespace 'api', defaults: { format: :json } do
     match '*path', to: 'api#options', via: :options
-    resources 'orders', only: [:index, :show]
-    resources 'jobs', only: [:index, :show]
-    resources 'imprints', only: [:index, :show]
+    resources 'orders', only: [:index, :show, :update]
+    resources 'jobs', only: [:index, :show, :update]
+    resources 'imprints', only: [:index, :show, :update]
     resources 'imprintables'
     resources 'imprintable_variants', only: [:index, :show]
     resources 'colors'

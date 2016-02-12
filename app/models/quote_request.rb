@@ -37,6 +37,8 @@ class QuoteRequest < ActiveRecord::Base
   has_many :orders, through: :quotes
   has_many :emails, as: :emailable, dependent: :destroy
   has_many :customer_uploads, dependent: :destroy
+  has_many :quote_request_imprintables, dependent: :destroy
+  has_many :imprintables, through: :quote_request_imprintables
 
   accepts_nested_attributes_for :customer_uploads
 
@@ -51,6 +53,34 @@ class QuoteRequest < ActiveRecord::Base
   def send_assigned_email(user_id)
     return if user_id != salesperson_id || salesperson_id.nil?
     QuoteRequestMailer.notify_salesperson_of_quote_request_assignment(self).deliver
+  end
+
+  def imprintable_quantities
+    Hash[
+      quote_request_imprintables.map do |qri|
+        [qri.imprintable_id, qri.quantity]
+      end
+    ]
+  end
+
+  def imprintable_quantities=(value)
+    return if value.blank?
+    if value.is_a?(String)
+      hash = JSON.parse(value.gsub('&quot;', '"'))
+    elsif value.is_a?(Hash)
+      hash = value
+    else
+      raise "Expected hash or string for QuoteRequest#imprintable_quantities=, got #{value.inspect}"
+    end
+
+    hash.each do |imprintable_id, quantity|
+      next if quantity.to_i == 0
+
+      quote_request_imprintables.build(
+        imprintable_id: imprintable_id,
+        quantity:       quantity.to_i
+      )
+    end
   end
 
   def assigned?

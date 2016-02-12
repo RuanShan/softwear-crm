@@ -18,6 +18,8 @@ class ApplicationController < ActionController::Base
   before_action :assign_request_time
   before_action :set_title
 
+  force_ssl if: :ssl_required?
+
   helper_method :salesperson_or_customer
 
   # Quicker way to render to a string using the `with_format` function down there
@@ -127,4 +129,11 @@ class ApplicationController < ActionController::Base
     @title += "SoftWEAR"
     @title
   end
+
+  private
+
+  def ssl_required?
+    Rails.env.production? && request.host != 'readonly-api.crm.softwearcrm.com'
+  end
+
 end

@@ -21,9 +21,11 @@ module Api
             end
           end
         else
+
+          retail_conditions = ( params[:retail] === '' ? {} : { retail: true } )
           @imprintables = Imprintable
             .includes(imprintable_variants: [:color, :size])
-            .where(retail: true)
+            .where(retail_conditions)
         end
       end
     end
@@ -52,24 +54,25 @@ module Api
         [ ]
       elsif params[:detail_level].to_s == 'medium'
         [
-            :colors, :sizes
+          :colors, :sizes
         ]
       elsif params[:detail_level].to_s == 'high'
         [
-            :colors, :sizes, imprintable_variants: {
+          :colors, :sizes,
+          imprintable_variants: {
             methods: [:sku]
           }
         ]
       else
         [
-            :colors, :sizes,
-            imprintable_variants: {
-                methods: [:sku],
-                include: {
-                    color: { only: [:name, :hexcode, :map] },
-                    size: { only: [:name, :display_value, :sort_order] }
-                }
-            }
+          :colors, :sizes,
+          imprintable_variants: {
+              methods: [:sku],
+              include: {
+                  color: { only: [:name, :hexcode, :map] },
+                  size: { only: [:name, :display_value, :sort_order] }
+              }
+          }
         ]
       end
     end

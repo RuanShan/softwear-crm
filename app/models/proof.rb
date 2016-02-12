@@ -94,7 +94,8 @@ class Proof < ActiveRecord::Base
     artworks.map do |artwork|
       [
         artwork.preview.try(:file).try(:url, :thumb),
-        artwork.path
+        artwork.path,
+        artwork.bg_color
       ]
     end
   end
