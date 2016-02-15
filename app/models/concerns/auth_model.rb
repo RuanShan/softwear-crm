@@ -224,10 +224,12 @@ class AuthModel
 
   # ============================= INSTANCE METHODS ======================
 
-  attr_reader :id
-  attr_reader :email
-  attr_reader :first_name
-  attr_reader :last_name
+  REMOTE_ATTRIBUTES = [
+    :id, :email, :first_name, :last_name,
+    :profile_picture_url
+  ]
+  REMOTE_ATTRIBUTES.each(&method(:attr_reader))
+
   attr_reader :persisted
   alias_method :persisted?, :persisted
 
@@ -255,10 +257,9 @@ class AuthModel
     return if attributes.blank?
     attributes = attributes.with_indifferent_access
 
-    @id         = attributes[:id]
-    @email      = attributes[:email]
-    @first_name = attributes[:first_name]
-    @last_name  = attributes[:last_name]
+    REMOTE_ATTRIBUTES.each do |attr|
+      instance_variable_set("@#{attr}", attributes[attr])
+    end
   end
 
   def to_json

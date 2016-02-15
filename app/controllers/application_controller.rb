@@ -137,3 +137,6 @@ class ApplicationController < ActionController::Base
   end
 
 end
+
+# This stops applicationcontroller from forgetting about the user model when code is partially reloaded
+User if Rails.env.development?
