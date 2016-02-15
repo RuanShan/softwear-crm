@@ -1,15 +1,5 @@
-class UsersController < ApplicationController
+class UsersController < AuthController
   before_action :set_current_action
-  skip_before_filter :authenticate_user!, only: [:set_session_token]
-
-  def set_session_token
-    token = params[:token]
-    redirect_to Figaro.env.softwear_hub_url and return if token.blank?
-
-    session[:user_token] = token
-
-    render inline: 'Done'
-  end
 
   private
 
