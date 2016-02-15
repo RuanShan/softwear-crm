@@ -24,7 +24,8 @@ class Payment < ActiveRecord::Base
     5 => 'Trade First',
     6 => 'Trade',
     7 => 'Wire Transfer',
-    2 => 'Swiped Credit Card'
+    2 => 'Swiped Credit Card',
+    9 => 'Group Payment'
   }
 
   FIELDS_TO_RENDER_FOR_METHOD = {
