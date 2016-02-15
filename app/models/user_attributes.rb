@@ -1,17 +1,4 @@
 class UserAttributes < ActiveRecord::Base
-  CUSTOMER_EMAIL = "customer@softwearcrm.com"
-  SALES_MANAGERS = %w(
-    ricky@annarbortees.com
-    jack@annarbortees.com
-    jerry@annarbortees.com
-    nate@annarbortees.com
-    michael@annarbortees.com
-    chantal@annarbortees.com
-    kenny@annarbortees.com
-    nigel@annarbortees.com
-    shannon@annarbortees.com
-  )
-
   attr_encrypted :freshdesk_password, key: 'h4rdc0ded1337ness'
 
   belongs_to :store
@@ -22,14 +9,6 @@ class UserAttributes < ActiveRecord::Base
   validates :freshdesk_email, email: true, allow_blank: true
   
   after_save :assign_image_assetables
-
-  def customer?
-    email == CUSTOMER_EMAIL
-  end
-
-  def sales_manager?
-    SALES_MANAGERS.include?(email) || Rails.env.test?
-  end
 
   def full_name
     "#{first_name} #{last_name}"

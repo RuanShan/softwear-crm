@@ -11,6 +11,7 @@ class ReviseUsers < ActiveRecord::Migration
     end
 
     # NOTE this does assume that softwear-hub will have users with the same IDs as were in CRM
+    # (so hub's import script should be called before this migration is invoked)
     query = "SELECT * from users"
     result = ActiveRecord::Base.connection.execute(query)
     result.each(as: :hash) do |row|
@@ -24,6 +25,10 @@ class ReviseUsers < ActiveRecord::Migration
         encrypted_freshdesk_password: row['encrypted_freshdesk_password']
       )
     end
+
+    # NOTE this assumes that the customer user's id is 52.
+    # 0 is the special ID of the customer user in the new system.
+    Payment.unscoped.where(salesperson_id: 52).update_all salesperson_id: 0
 
     drop_table :users
   end
