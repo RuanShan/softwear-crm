@@ -1,4 +1,22 @@
 module ApplicationHelper
+  def customer_order_path(*args)
+    if args.first.is_a?(Order)
+      args.first = args.first.customer_key
+      super(*args)
+    else
+      super
+    end
+  end
+
+  def customer_order_url(*args)
+    if args.first.is_a?(Order)
+      args.first = args.first.customer_key
+      super(*args)
+    else
+      super
+    end
+  end
+
   def trackable_link_or_unavailable(activity, attribute=:name)
     return "Which has since been removed" if activity.trackable.nil?
     return link_to activity.trackable.send(attribute), activity.trackable
