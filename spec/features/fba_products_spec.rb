@@ -18,7 +18,7 @@ feature 'FBA Products management', js: true do
   given(:fba_product) { create(:fba_product, fba_skus: [build(:fba_sku, imprintable_variant: red_shirt_s)]) }
 
   given!(:valid_user) { create(:alternate_user) }
-  background(:each) { login_as(valid_user) }
+  background(:each) { sign_in_as(valid_user) }
 
   scenario 'A user can create a new FBA Product', new: true do
     visit new_fba_product_path

@@ -5,7 +5,7 @@ feature 'Stores management', store_spec: true do
   given!(:valid_user) { create(:user) }
   given!(:store) { create(:valid_store) }
 
-  background(:each) { login_as(valid_user) }
+  background(:each) { sign_in_as(valid_user) }
 
   scenario 'User views list of existing stores' do
     visit root_path

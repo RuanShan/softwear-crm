@@ -5,7 +5,7 @@ feature 'Brands management', brand_spec: true do
   given!(:brand) { create(:valid_brand) }
   given!(:valid_user) { create(:alternate_user) }
 
-  background(:each) { login_as(valid_user) }
+  background(:each) { sign_in_as(valid_user) }
 
   scenario 'A user can see a list of brands' do
     visit root_path

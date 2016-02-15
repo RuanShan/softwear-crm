@@ -4,7 +4,7 @@ include ApplicationHelper
 feature 'Coupons management', story_857: true do
   given!(:valid_user) { create(:user) }
   before(:each) do
-    login_as(valid_user)
+    sign_in_as(valid_user)
   end
 
   let!(:coupon) { create(:flat_rate) }

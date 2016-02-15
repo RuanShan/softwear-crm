@@ -4,7 +4,7 @@ include ApplicationHelper
 feature 'Artwork Features', js: true, artwork_spec: true do
   given!(:artwork) { create(:valid_artwork) }
   given!(:valid_user) { create(:alternate_user) }
-  before(:each) { login_as(valid_user) }
+  before(:each) { sign_in_as(valid_user) }
 
   scenario 'A user can view a list of Artworks' do
     if ci?

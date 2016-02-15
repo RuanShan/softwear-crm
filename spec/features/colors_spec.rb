@@ -5,7 +5,7 @@ feature 'Colors management', color_spec: true do
   given!(:color) { create(:valid_color) }
   given!(:valid_user) { create(:alternate_user) }
 
-  background(:each) { login_as(valid_user) }
+  background(:each) { sign_in_as(valid_user) }
 
   scenario 'A user can see a list of colors' do
     visit root_path

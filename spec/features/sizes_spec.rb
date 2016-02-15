@@ -4,7 +4,7 @@ include ApplicationHelper
 feature 'sizes management', size_spec: true do
 
   given!(:valid_user) { create(:alternate_user) }
-  background(:each) { login_as(valid_user) }
+  background(:each) { sign_in_as(valid_user) }
 
   given!(:size) do
     create(:valid_size)
@@ -42,7 +42,7 @@ feature 'sizes management', size_spec: true do
   scenario 'A user can delete an existing size', js: true, story_692: true do
     visit sizes_path
     find("tr#size_#{size.id} a[data-action='destroy']").click
-    sleep 2 if ci?
+    sleep 2
     page.driver.browser.switch_to.alert.accept
     wait_for_ajax
 

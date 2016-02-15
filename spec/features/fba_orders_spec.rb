@@ -3,7 +3,7 @@ include LineItemHelpers
 
 feature 'FBA Order management', fba_spec: true, story_103: true, js: true, retry: ci? ? 3 : 0 do
   given!(:valid_user) { create :user }
-  background(:each) { login_as valid_user }
+  background(:each) { sign_in_as valid_user }
 
   given!(:fba_shipping_method) { ShippingMethod.find_by(name: ShippingMethod::FBA) || create(:valid_shipping_method, name: ShippingMethod::FBA) }
 

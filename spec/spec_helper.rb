@@ -69,11 +69,13 @@ RSpec.configure do |config|
   config.include SimulateDragSortable, type: :feature
   config.include Softwear::Lib::Spec
   config.include OrderHelpers
-  config.include SpecAuth, type: :feature
+  config.include SpecAuth
 
   PublicActivity.enabled = false
 
   stub_authentication! config, type: :feature
+  stub_authentication! config, type: :controller
+  stub_authentication! config, type: :view
 
   # ## Mock Framework
   #

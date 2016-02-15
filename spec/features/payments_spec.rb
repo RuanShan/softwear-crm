@@ -4,7 +4,7 @@ include ActionView::Helpers::NumberHelper
 
 feature 'Payments management', js: true, payment_spec: true, retry: 2 do
   given!(:valid_user) { create(:alternate_user) }
-  background(:each) { login_as(valid_user) }
+  background(:each) { sign_in_as(valid_user) }
 
   given!(:order) { create(:order_with_job) }
   given!(:line_item) { create(:non_imprintable_line_item, unit_price: 1000, line_itemable: order.jobs.first) }

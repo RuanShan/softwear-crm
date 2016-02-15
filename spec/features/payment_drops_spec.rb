@@ -8,7 +8,7 @@ feature 'Payment Drops management', payment_drop_spec: true do
     create(:payment_drop, payments: [ create(:valid_payment) ])
   }
 
-  background(:each) { login_as(valid_user) }
+  background(:each) { sign_in_as(valid_user) }
 
   context 'As a sales manager' do
     scenario 'I can access list of payment drops' do

@@ -9,7 +9,7 @@ feature 'Artwork Request Features', js: true, artwork_request_spec: true do
   given!(:imprint_method) { create(:valid_imprint_method) }
 
   background do
-    login_as(valid_user)
+    sign_in_as(valid_user)
     imprint_method.ink_colors << create(:ink_color)
     order.imprints.first.imprint_method = imprint_method
     artwork_request.imprints << order.imprints.first unless (artwork_request.imprints - order.imprints).empty?

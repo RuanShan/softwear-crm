@@ -4,7 +4,7 @@ include ApplicationHelper
 feature 'Platens and Hoops management', story_866: true do
   given!(:valid_user) { create(:user) }
   before(:each) do
-    login_as(valid_user)
+    sign_in_as(valid_user)
   end
 
   let!(:platen_hoop) { create(:platen_hoop) }

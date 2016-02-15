@@ -4,7 +4,7 @@ feature 'shipment management' do
   given!(:shipping_method) { create(:shipping_method, name: 'USPS First Class') }
 
   given!(:valid_user) { create(:user) }
-  background(:each) { login_as valid_user }
+  background(:each) { sign_in_as valid_user }
 
   context 'within an order', js: true, story_860: true do
     given!(:order) { create(:order_with_job) }

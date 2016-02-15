@@ -17,7 +17,7 @@ feature 'Line Items management', line_item_spec: true, js: true do
 
   given!(:valid_user) { create(:user) }
   before(:each) do
-    login_as valid_user
+    sign_in_as valid_user
   end
 
   given(:non_imprintable) { create(:non_imprintable_line_item, line_itemable_id: job.id, line_itemable_type: 'Job') }
