@@ -1,4 +1,4 @@
-class HubUser
+class AuthModel
   include ActiveModel::Model
   include ActiveModel::Conversion
 

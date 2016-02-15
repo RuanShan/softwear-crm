@@ -16,10 +16,26 @@ module Authentication
     helper_method :edit_user_path
   end
 
+  def user_class
+    if AuthModel.descendants.size > 1
+      raise "More than one descendent of AuthModel is not supported."
+    elsif AuthModel.descendants.size == 0
+      raise "Please define a user model that extends AuthModel."
+    end
+    AuthModel.descendants.first
+  end
+
+  # ====================
+  # Called when a NotSignedInError is raised.
+  # ====================
   def user_not_signed_in
     redirect_to Figaro.env.softwear_hub_url + "/users/sign_in?#{{return_to: request.original_url}.to_param}"
   end
 
+  # ====================
+  # Drop this into a before_filter to require a user be signed in on every request -
+  # just like in Devise.
+  # ====================
   def authenticate_user!
     token = session[:user_token]
 
@@ -27,7 +43,7 @@ module Authentication
       raise NotSignedInError, "No token"
     end
 
-    if user = User.auth(token)
+    if user = user_class.auth(token)
       @current_user = user
     else
       session[:user_token] = nil
@@ -50,12 +66,12 @@ module Authentication
   end
 
   def user_path(user)
-    user_id = user.is_a?(User) ? user.id : user
+    user_id = user.is_a?(user_class) ? user.id : user
     Figaro.env.softwear_hub_url + "/users/#{user_id}"
   end
 
   def edit_user_path(user)
-    user_id = user.is_a?(User) ? user.id : user
+    user_id = user.is_a?(user_class) ? user.id : user
     Figaro.env.softwear_hub_url + "/users/#{user_id}/edit"
   end
 

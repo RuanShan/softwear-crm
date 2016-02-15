@@ -1,4 +1,4 @@
-class User < HubUser
+class User < AuthModel
   CUSTOMER_EMAIL = "customer@softwearcrm.com"
   SALES_MANAGERS = %w(
     ricky@annarbortees.com
