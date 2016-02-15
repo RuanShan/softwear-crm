@@ -25,6 +25,7 @@ CrmSoftwearcrmCom::Application.routes.draw do
   end
 
   get '/set-session-token', to: 'users#set_session_token', as: :set_session_token
+  get '/clear-user-query-cache', to: 'users#clear_query_cache', as: :clear_user_query_cache
 
   get 'tags/:tag', to: 'imprintables#index', as: :tag
 
