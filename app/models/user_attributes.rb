@@ -23,19 +23,6 @@ class UserAttributes < ActiveRecord::Base
   
   after_save :assign_image_assetables
 
-  def self.customer
-    customer_user = find_by(email: CUSTOMER_EMAIL)
-    return customer_user unless customer_user.nil?
-
-    User.create(
-      email: CUSTOMER_EMAIL,
-      first_name: 'Ann Arbor Tees',
-      last_name: 'Customer',
-      password: "Aa7cCust0m4rP455",
-      password_confirmation: "Aa7cCust0m4rP455"
-    )
-  end
-
   def customer?
     email == CUSTOMER_EMAIL
   end

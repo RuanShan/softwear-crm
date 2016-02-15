@@ -33,13 +33,21 @@ class User
     RUBY
   end
 
-  # ------- These associations are crm-specific, of course --------
+  # ------- These associations and methods are crm-specific --------
   has_many :orders,         foreign_key: 'salesperson_id'
   has_many :quote_requests, foreign_key: 'salesperson_id'
   has_many :search_queries, class_name: 'Search::Query'
 
   def pending_quote_requests
     quote_requests.where.not(status: 'quoted')
+  end
+
+  def self.customer
+    new(
+      email: CUSTOMER_EMAIL,
+      first_name: 'Ann Arbor Tees',
+      last_name: 'Customer'
+    )
   end
 
   # ------- Now auth specific stuff again -------
@@ -152,7 +160,7 @@ class User
   # -------------------- CRM Specific stuff -------------------
 
   def attributes
-    return nil if id.nil?
+    return nil if id.blank?
     @attributes ||= UserAttributes.find_or_create_by(user_id: id)
   end
 
