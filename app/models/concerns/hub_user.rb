@@ -54,7 +54,7 @@ class HubUser
     end
 
     # ====================
-    # This is only used to record how long it takes to perform queries for development
+    # This is only used to record how long it takes to perform queries for development.
     # ====================
     def record(before, after, type, body)
       ms = (after - before) * 1000
@@ -62,6 +62,10 @@ class HubUser
       Rails.logger.info "  \033[1m\033[33m#{type} (#{'%.1f' % ms}ms)\033[0m #{body}"
     end
 
+    # ====================
+    # Host of the auth server, from 'auth_server_endpoint' env variable.
+    # Defaults to localhost.
+    # ====================
     def auth_server_host
       endpoint = Figaro.env.auth_server_endpoint
       if endpoint.blank?
@@ -73,6 +77,10 @@ class HubUser
       end
     end
 
+    # ====================
+    # Port of the auth server, from 'auth_server_endpoint' env variable.
+    # Defaults to 2900.
+    # ====================
     def auth_server_port
       endpoint = Figaro.env.auth_server_endpoint
       if endpoint.try(:include?, ':')
