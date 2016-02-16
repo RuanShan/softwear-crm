@@ -3,6 +3,7 @@ module AuthHelper
     options[:class] ||= ''
     options[:class] += ' media-object img-circle'
     options[:alt] ||= "#{user.try(:full_name) || '(Unknown)'}'s Avatar"
+    options[:title] ||= user.try(:full_name) || 'Someone'
 
     image_tag user.try(:profile_picture_url) || 'avatar/masarie.jpg', options
   end

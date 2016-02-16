@@ -11,7 +11,6 @@ describe ArtworkRequest, artwork_request_spec: true do
 
   describe 'Relationships' do
     it { is_expected.to belong_to(:artist) }
-    it { is_expected.to belong_to(:salesperson) }
     it { is_expected.to have_many(:imprint_methods) }
     it { is_expected.to have_many(:print_locations) }
     it { is_expected.to have_many(:assets) }
@@ -27,7 +26,6 @@ describe ArtworkRequest, artwork_request_spec: true do
     it { is_expected.to validate_presence_of(:description) }
     it { is_expected.to validate_presence_of(:ink_colors) }
     it { is_expected.to validate_presence_of(:priority) }
-    it { is_expected.to validate_presence_of(:salesperson) }
   end
 
   describe 'callbacks'  do

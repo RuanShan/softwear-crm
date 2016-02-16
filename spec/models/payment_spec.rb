@@ -7,13 +7,11 @@ describe Payment, payment_spec: true do
   describe 'Relationship' do
     it { is_expected.to belong_to(:order) }
     it { is_expected.to belong_to(:store) }
-    it { is_expected.to belong_to(:salesperson).class_name('User') }
   end
 
   describe 'Validations' do
     it { is_expected.to validate_presence_of(:store) }
     it { is_expected.to validate_presence_of(:payment_method) }
-    it { is_expected.to validate_presence_of(:salesperson) }
     it { is_expected.to validate_presence_of(:amount) }
 
     context 'when payment_method = 8' do

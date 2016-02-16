@@ -6,10 +6,17 @@ class AuthController < ApplicationController
   # a user has signed in.
   # ====================
   def set_session_token
-    token = params[:token]
-    redirect_to Figaro.env.softwear_hub_url and return if token.blank?
+    encrypted_token = params[:token]
+    redirect_to Figaro.env.softwear_hub_url and return if encrypted_token.blank?
 
-    session[:user_token] = token
+    Rails.logger.info "RECEIVED ENCRYPTED TOKEN: #{encrypted_token}"
+
+    decipher = OpenSSL::Cipher::AES.new(256, :CBC)
+    decipher.decrypt
+    decipher.key = Figaro.env.token_cipher_key
+    decipher.iv  = Figaro.env.token_cipher_iv
+
+    session[:user_token] = decipher.update(Base64.urlsafe_decode64(encrypted_token)) + decipher.final
 
     render inline: 'Done'
   end

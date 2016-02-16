@@ -8,10 +8,13 @@ class AuthModel
   end
   class AuthServerError < StandardError
   end
+  class AuthServerDown < StandardError
+  end
 
   # ============================= CLASS METHODS ======================
   class << self
     attr_writer :query_cache
+    attr_accessor :last_query_cache
     attr_accessor :query_cache_expiry
     alias_method :expire_query_cache_every, :query_cache_expiry=
 
@@ -111,27 +114,59 @@ class AuthModel
     end
 
     # ====================
+    # Expires the query cache, setting a new expiration time as well as merging
+    # with the previous query cache, in case of an auth server outage.
+    # ====================
+    def expire_query_cache
+      before = Time.now
+      if last_query_cache
+        query_cache.each_pair do |key, value|
+          last_query_cache[key] = value
+        end
+      else
+        self.last_query_cache = query_cache.clone
+      end
+
+      query_cache.clear
+      query_cache['_expire_at'] = (query_cache_expiry || 1.hour).from_now
+      after = Time.now
+
+      record(before, after, "Authentication Expire Cache", "")
+    end
+
+    # ====================
     # Queries the authentication server only if there isn't a cached response.
     # ====================
     def query(message)
       before = Time.now
 
       expire_at = query_cache['_expire_at']
-      if expire_at.blank? || Time.now > expire_at
-        query_cache.clear
-        query_cache['_expire_at'] = (query_cache_expiry || 1.hour).from_now
-      end
+      expire_query_cache if expire_at.blank? || Time.now > expire_at
 
       if cached_response = query_cache[message]
         response = cached_response
         action = "Authentication Cache"
       else
-        response = raw_query(message)
-        action = "Authentication Query"
+        begin
+          response = raw_query(message)
+          action = "Authentication Query"
 
-        if query_cache
-          query_cache[message] = response
+        rescue AuthServerError => e
+          raise unless last_query_cache
+
+          old_response = last_query_cache[message]
+          if old_response
+            response = old_response
+            action = "Authentication Cache (due to error)"
+            Rails.logger.error "AUTHENTICATION: The authentication server encountered an error. "\
+                               "You should probably check the auth server's logs. "\
+                               "A cached response was used."
+          else
+            raise
+          end
         end
+
+        query_cache[message] = response
       end
       after = Time.now
 
@@ -140,9 +175,7 @@ class AuthModel
     end
 
     # ====================
-    # Runs a query through the server without checking the cache. Only difference
-    # between this and raw_query is that this one benchmarks the query on the info
-    # log level just like normal query.
+    # Runs a query through the server without error or cache checking.
     # ====================
     def force_query(message)
       before = Time.now

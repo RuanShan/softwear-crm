@@ -5,7 +5,7 @@ module SpecAuth
 
       allow(User).to receive(:all)   { @_users }
       allow(User).to receive(:find)  { |n| @_users.find { |u| u.id == n } }
-      allow(User).to receive(:auth)  { @_signed_in_user || false }
+      allow(User).to receive(:auth)  { @_signed_in_user or false }
       allow(User).to receive(:query) { |q| raise "Unstubbed authentication query \"#{q}\"" }
 
       if (controller rescue false)

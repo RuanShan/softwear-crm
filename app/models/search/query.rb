@@ -1,6 +1,8 @@
 module Search
   class Query < ActiveRecord::Base
-    belongs_to :user
+    include BelongsToUser
+
+    belongs_to_user
     has_many :query_models, class_name: 'Search::QueryModel',
                             dependent: :destroy
     validates :name, uniqueness: { scope: :user_id }

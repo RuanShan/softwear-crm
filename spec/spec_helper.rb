@@ -73,9 +73,7 @@ RSpec.configure do |config|
 
   PublicActivity.enabled = false
 
-  stub_authentication! config, type: :feature
-  stub_authentication! config, type: :controller
-  stub_authentication! config, type: :view
+  stub_authentication! config
 
   # ## Mock Framework
   #
