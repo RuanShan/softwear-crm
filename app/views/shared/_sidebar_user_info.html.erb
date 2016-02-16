@@ -5,8 +5,10 @@
 
   <div class="media-body">
     Welcome,
-    <h4 class="media-heading"><strong><%= @current_user.first_name %> <%= @current_user.last_name[0,1] %>.</strong></h4>
-    <%= link_to 'Edit', edit_user_path(@current_user) rescue 'Error' %>
+    <%= link_to edit_user_path(@current_user) do %>
+      <h4 class="media-heading"><strong><%= @current_user.first_name %> <%= @current_user.last_name[0,1] %>.</strong></h4>
+    <% end %>
+    <%= link_to 'Edit', edit_user_attribute_path(@current_user.attributes) rescue 'Error' %>
     <%= link_to 'Logout', destroy_user_session_path, class: 'md-trigger', 'data-model'=>'logout-modal-alt' rescue 'Error' %>
   </div>
 </div>

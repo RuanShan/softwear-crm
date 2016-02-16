@@ -1,0 +1,26 @@
+<div class="page-heading animated fadeInDownBig">
+  <h1>User Attributes <small>for #<%= @user_attributes.user.full_name %></small></h1>
+</div>
+
+<%= link_to 'Edit Profile', edit_user_path(@user_attributes.user), class: 'btn btn-default' %>
+
+<div class='row full'>
+  <div class='box-info'>
+    <%= bootstrap_form_for @user_attributes do |f| %>
+      <%= f.select :store_id, options_from_collection_for_select(Store.all, :id, :name), {}, class: 'select2' %>
+      <%= f.text_field :freshdesk_email %>
+      <%= f.password_field :freshdesk_password %>
+      <%= f.text_field :insightly_api_key %>
+
+      <%= f.fields_for :signature, @user_attributes.signature || Asset.new do |ff| %>
+        <% if ff.object.file.try(:url) %>
+          <%= image_tag ff.object.file.url %>
+        <% end %>
+
+        <%= ff.file_field :file, label: 'Signature' %>
+      <% end %>
+
+      <%= f.submit %>
+    <% end %>
+  </div>
+</div>

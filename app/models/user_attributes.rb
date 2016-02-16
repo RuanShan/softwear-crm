@@ -1,6 +1,9 @@
 class UserAttributes < ActiveRecord::Base
+  include BelongsToUser
+
   attr_encrypted :freshdesk_password, key: 'h4rdc0ded1337ness'
 
+  belongs_to_user
   belongs_to :store
   belongs_to :signature, class_name: 'Asset'
 
@@ -14,8 +17,12 @@ class UserAttributes < ActiveRecord::Base
     "#{first_name} #{last_name}"
   end
 
-  # Don't assign attachment attributes if no file is specified
+  # Don't assign attachment attributes if no file is specified,
+  # do assign description always.
   def signature_attributes=(attrs)
+    attrs = attrs.with_indifferent_access
+    attrs[:description] ||= "#{user.try(:full_name) || 'Unknown'}'s Signature"
+
     super(attrs) unless attrs[:file].blank?
   end
 
