@@ -24,6 +24,7 @@ class User < AuthModel
 
   def self.customer
     new(
+      id: 0,
       email: CUSTOMER_EMAIL,
       first_name: 'Ann Arbor Tees',
       last_name: 'Customer'

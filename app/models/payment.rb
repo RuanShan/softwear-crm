@@ -70,7 +70,7 @@ class Payment < ActiveRecord::Base
   after_save :recalculate_order_fields
   after_destroy :recalculate_order_fields
 
-  validates :store, :payment_method, :amount, :salesperson, presence: true
+  validates :store, :payment_method, :amount, :salesperson_id, presence: true
   validates :pp_transaction_id, presence: true, uniqueness: true,
                if: -> p { p.payment_method == 4 || p.payment_method == 7 }
   validates :t_name, :t_company_name, :tf_number, presence: true, if: -> p { p.payment_method == 5 }

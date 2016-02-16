@@ -20,7 +20,9 @@ module Customer
 
           render 'success'
         end
-        failure.js { render 'failure' }
+        failure.js do
+          render 'failure'
+        end
       end
     rescue Payment::PaymentError => e
       # The error message will be displayed via @payment's payment_method errors

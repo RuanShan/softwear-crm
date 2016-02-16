@@ -261,7 +261,7 @@ class AuthModel
     :id, :email, :first_name, :last_name,
     :profile_picture_url
   ]
-  REMOTE_ATTRIBUTES.each(&method(:attr_reader))
+  REMOTE_ATTRIBUTES.each(&method(:attr_accessor))
 
   attr_reader :persisted
   alias_method :persisted?, :persisted
