@@ -858,7 +858,7 @@ class Order < ActiveRecord::Base
     jobs_by_template = {}
 
     missing_artworks = false
-    missing_mockups = false
+    missing_proofs = false
 
     jobs.includes(:imprints).each do |job|
       jobs_by_template[job.fba_job_template_id] ||= []
@@ -891,7 +891,7 @@ class Order < ActiveRecord::Base
           }
         else
           mockup_attributes = nil
-          missing_mockups = true
+          missing_proofs = true
         end
 
         proof = Proof.create(
