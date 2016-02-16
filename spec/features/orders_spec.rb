@@ -224,7 +224,6 @@ feature 'Order management', order_spec: true, js: true do
       sleep(0.5)
       select('Notified', from: 'What did you do?')
       fill_in('And what are the details?', with:  'Spoke over the phone')
-      byebug
       click_button('Update Notification state')
       sleep(1)
       find("button[data-dismiss='modal']").click

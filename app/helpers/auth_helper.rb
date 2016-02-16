@@ -1,7 +1,7 @@
 module AuthHelper
   def profile_picture_of(user = nil, options = {})
     options[:class] ||= ''
-    options[:class] += ' media-object img-circle'
+    options[:class] += ' media-object img-circle profile-pic'
     options[:alt] ||= "#{user.try(:full_name) || '(Unknown)'}'s Avatar"
     options[:title] ||= user.try(:full_name) || 'Someone'
 

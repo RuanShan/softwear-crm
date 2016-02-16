@@ -1,7 +1,6 @@
 require 'spec_helper'
 
 describe Search::Query, search_spec: true do
-  it { is_expected.to belong_to :user }
   it { is_expected.to have_db_column :name }
   it { is_expected.to validate_uniqueness_of(:name).scoped_to :user_id }
   it { is_expected.to_not have_db_column :default_fulltext }

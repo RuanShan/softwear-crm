@@ -29,7 +29,7 @@ FactoryGirl.define do
         u.attributes.save!
       end
       after(:create) do |u|
-        @_users << u if @_users
+        spec_users << u if try(:spec_users)
       end
     end
   end

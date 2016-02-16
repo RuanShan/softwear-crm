@@ -30,7 +30,7 @@ feature 'Platens and Hoops management', story_866: true do
   scenario 'User deletes an existing platen/hoop', js: true, story_692: true do
     visit platen_hoops_path
     find("tr#platen_hoop_#{platen_hoop.id} a[data-action='destroy']").click
-    sleep 2 if ci?
+    sleep 2
     page.driver.browser.switch_to.alert.accept
     wait_for_ajax
     expect(PlatenHoop.where(id: platen_hoop.id)).to_not exist

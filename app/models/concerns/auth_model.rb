@@ -11,6 +11,17 @@ class AuthModel
   class AuthServerDown < StandardError
   end
 
+  # TODO
+  class UserFinder
+    def new(*args)
+      if args.size == 3
+        args[0].find(args[2].owner.send(args[2].reflection.foreign_key))
+      else
+        super
+      end
+    end
+  end
+
   # ============================= CLASS METHODS ======================
   class << self
     attr_writer :query_cache
@@ -33,6 +44,10 @@ class AuthModel
 
     def base_class
       self
+    end
+
+    def relation_delegate_class(*)
+      UserFinder
     end
 
     # ====================

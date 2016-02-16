@@ -10,7 +10,6 @@ describe ArtworkRequest, artwork_request_spec: true do
   end
 
   describe 'Relationships' do
-    it { is_expected.to belong_to(:artist) }
     it { is_expected.to have_many(:imprint_methods) }
     it { is_expected.to have_many(:print_locations) }
     it { is_expected.to have_many(:assets) }

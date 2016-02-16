@@ -1,10 +1,14 @@
 module SpecAuth
+  def spec_users
+    User.instance_variable_get(:@_spec_users)
+  end
+
   def stub_authentication!(config, *a)
     config.before(:each, *a) do
-      @_users = []
+      User.instance_variable_set(:@_spec_users, [])
 
-      allow(User).to receive(:all)   { @_users }
-      allow(User).to receive(:find)  { |n| @_users.find { |u| u.id == n } }
+      allow(User).to receive(:all)   { spec_users }
+      allow(User).to receive(:find)  { |n| spec_users.find { |u| u.id == n } }
       allow(User).to receive(:auth)  { @_signed_in_user or false }
       allow(User).to receive(:query) { |q| raise "Unstubbed authentication query \"#{q}\"" }
 
@@ -27,7 +31,7 @@ module SpecAuth
     end
 
     config.after(:each, *a) do
-      @_users = nil
+      User.instance_variable_set(:@_spec_users, nil)
     end
   end
 

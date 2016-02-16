@@ -30,7 +30,7 @@ feature 'shipment management' do
       fill_in 'Notes',           with: 'Notes here'
 
       click_button 'Create Shipment'
-      sleep 2
+      sleep 10
 
       expect(page).to have_content 'Shipment added!'
       first('[data-dismiss=modal]').click
