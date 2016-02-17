@@ -6,6 +6,7 @@ module Authentication
 
   included do
     rescue_from NotSignedInError, with: :user_not_signed_in
+    rescue_from AuthModel::AuthServerDown, with: :auth_server_down
 
     helper_method :current_user
     helper_method :user_signed_in?
@@ -26,10 +27,27 @@ module Authentication
   end
 
   # ====================
-  # Called when a NotSignedInError is raised.
+  # Action called when a NotSignedInError is raised.
   # ====================
   def user_not_signed_in
     redirect_to Figaro.env.softwear_hub_url + "/users/sign_in?#{{return_to: request.original_url}.to_param}"
+  end
+
+  # ====================
+  # Action called when a NotSignedInError is raised.
+  # ====================
+  def auth_server_down(error)
+    respond_to do |format|
+      format.html do
+        render inline: \
+          "<h1>#{error.message}</h1><div>Not all site functions will work until the problem is resolved. "\
+          "<a href='javascripr' onclick='history.go(-1);return false;' class='btn btn-default'>Go back.</a></div>"
+      end
+
+      format.js do
+        render inline: "alert(\"#{error.message.gsub('"', '\"')}\");"
+      end
+    end
   end
 
   # ====================

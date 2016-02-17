@@ -14,9 +14,20 @@ class AuthModel
   # ============================= CLASS METHODS ======================
   class << self
     attr_writer :query_cache
-    attr_accessor :last_query_cache
+    attr_accessor :total_query_cache
     attr_accessor :query_cache_expiry
     alias_method :expire_query_cache_every, :query_cache_expiry=
+    attr_accessor :auth_server_went_down_at
+    attr_accessor :sent_auth_server_down_email
+    attr_accessor :time_before_down_email
+    alias_method :email_when_down_after, :time_before_down_email=
+
+    # ====================
+    # Returns true if the authentication server was unreachable for the previous query.
+    # ====================
+    def auth_server_down?
+      !!auth_server_went_down_at
+    end
 
     # ====================
     # The query cache takes message keys (such as "get 12") with response values straight from
@@ -25,6 +36,18 @@ class AuthModel
     # ====================
     def query_cache
       @query_cache ||= ThreadSafe::Cache.new
+    end
+
+    def query_cache_expiry
+      super || Figaro.env.query_cache_expiry.try(:to_f) || 1.hour
+    end
+
+    # ===================
+    # Override this in your subclasses! The mailer should have auth_server_down(time) and
+    # auth_server_up(time)
+    # ===================
+    def auth_server_down_mailer
+      # override me
     end
 
     # ======================================
@@ -121,7 +144,7 @@ class AuthModel
 
     # ====================
     # Bare minimum query function - sends a message and returns the response, and
-    # handles a broken socket.
+    # handles a broken socket. #query and #force_query call this function.
     # ====================
     def raw_query(message)
       begin
@@ -132,7 +155,10 @@ class AuthModel
         @default_socket.puts message
       end
 
-      default_socket.gets.chomp
+      return default_socket.gets.chomp
+
+    rescue Errno::ECONNREFUSED => e
+      raise AuthServerDown, "Unable to connect to the authentication server."
     end
 
     # ====================
@@ -141,12 +167,12 @@ class AuthModel
     # ====================
     def expire_query_cache
       before = Time.now
-      if last_query_cache
+      if total_query_cache
         query_cache.each_pair do |key, value|
-          last_query_cache[key] = value
+          total_query_cache[key] = value
         end
       else
-        self.last_query_cache = query_cache.clone
+        self.total_query_cache = query_cache.clone
       end
 
       query_cache.clear
@@ -158,6 +184,8 @@ class AuthModel
 
     # ====================
     # Queries the authentication server only if there isn't a cached response.
+    # Also keeps track of whether or not the server is reachable, and sends emails
+    # when the server goes down and back up.
     # ====================
     def query(message)
       before = Time.now
@@ -172,11 +200,23 @@ class AuthModel
         begin
           response = raw_query(message)
           action = "Authentication Query"
+          query_cache[message] = response
+
+          if auth_server_went_down_at
+            self.auth_server_went_down_at = nil
+
+            if sent_auth_server_down_email
+              self.sent_auth_server_down_email = false
+              if (mailer = auth_server_down_mailer) && mailer.respond_to?(:auth_server_up)
+                mailer.auth_server_up(Time.now).deliver_now
+              end
+            end
+          end
 
         rescue AuthServerError => e
-          raise unless last_query_cache
+          raise unless total_query_cache
 
-          old_response = last_query_cache[message]
+          old_response = total_query_cache[message]
           if old_response
             response = old_response
             action = "Authentication Cache (due to error)"
@@ -186,9 +226,30 @@ class AuthModel
           else
             raise
           end
-        end
 
-        query_cache[message] = response
+        rescue AuthServerDown => e
+          if auth_server_went_down_at.nil?
+            self.auth_server_went_down_at = Time.now
+            expire_query_cache
+
+          elsif auth_server_went_down_at > (time_before_down_email || 5.minutes).ago
+            unless sent_auth_server_down_email
+              self.sent_auth_server_down_email = true
+
+              if (mailer = auth_server_down_mailer) && mailer.respond_to?(:auth_server_down)
+                mailer.auth_server_down(auth_server_went_down_at).deliver_now
+              end
+            end
+          end
+
+          old_response = total_query_cache[message]
+          if old_response
+            response = old_response
+            action = "Authentication Cache (server down)"
+          else
+            raise AuthServerDown, "An uncached query was attempted, and the authentication server is down."
+          end
+        end
       end
       after = Time.now
 
@@ -220,7 +281,9 @@ class AuthModel
       case response_string
       when 'denied'  then raise AccessDeniedError,   "Denied"
       when 'invalid' then raise InvalidCommandError, "Invalid command"
-      when 'sorry'   then raise AuthServerError,     "Authentication server encountered an error"
+      when 'sorry'
+        expire_query_cache
+        raise AuthServerError, "Authentication server encountered an error"
       else
         response_string
       end
@@ -337,8 +400,5 @@ class AuthModel
 
   def full_name
     "#{@first_name} #{@last_name}"
-  end
-
-  def merge!(*)
   end
 end

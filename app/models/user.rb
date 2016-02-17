@@ -16,10 +16,15 @@ class User < AuthModel
   has_many :quote_requests, foreign_key: 'salesperson_id'
   has_many :search_queries, class_name: 'Search::Query'
 
-  expire_query_cache_every 2.minutes if Rails.env.development?
+  expire_query_cache_every 5.minutes if Rails.env.development?
 
   def pending_quote_requests
     quote_requests.where.not(status: 'quoted')
+  end
+
+  # override
+  def self.auth_server_down_mailer
+    ErrorReportMailer
   end
 
   def self.customer
