@@ -1,11 +1,12 @@
 class Shipment < ActiveRecord::Base
   include Popularity
+  include BelongsToUser
 
   rates_popularity_of :shipping_method
 
   belongs_to :shipping_method
   belongs_to :shippable, polymorphic: true
-  belongs_to :shipped_by, class_name: 'User'
+  belongs_to_user_called :shipped_by
 
   validates :status, presence: true,
     inclusion: { in: ['pending', 'shipped'], message: 'should either be "pending" or "shipped"' }

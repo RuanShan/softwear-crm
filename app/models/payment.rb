@@ -62,7 +62,7 @@ class Payment < ActiveRecord::Base
 
   belongs_to :order, touch: true
   belongs_to :store
-  belongs_to_user_as :salesperson
+  belongs_to_user_called :salesperson
   has_many :discounts, as: :discountable # Only refunds
   has_many :payment_drop_payments
 

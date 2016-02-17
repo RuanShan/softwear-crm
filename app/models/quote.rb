@@ -78,8 +78,8 @@ class Quote < ActiveRecord::Base
 
   default_scope -> { order('quotes.created_at DESC') }
 
-  belongs_to_user_as :salesperson
-  belongs_to_user_as :insightly_whos_responsible
+  belongs_to_user_called :salesperson
+  belongs_to_user_called :insightly_whos_responsible
   belongs_to :store
   has_many :email_templates
   has_many :emails, as: :emailable, dependent: :destroy

@@ -10,7 +10,7 @@ class PaymentDrop < ActiveRecord::Base
   CHECK_PAYMENT_METHOD = 3
 
   belongs_to :store
-  belongs_to_user_as :salesperson
+  belongs_to_user_called :salesperson
   has_many :payment_drop_payments, dependent: :destroy
   has_many :payments, through: :payment_drop_payments
 

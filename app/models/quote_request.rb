@@ -32,7 +32,7 @@ class QuoteRequest < ActiveRecord::Base
     referred_to_design_studio duplicate
   )
 
-  belongs_to_user_as :salesperson
+  belongs_to_user_called :salesperson
   has_many :quote_request_quotes
   has_many :quotes, through: :quote_request_quotes
   has_many :orders, through: :quotes

@@ -89,7 +89,7 @@ class Order < ActiveRecord::Base
   ]
 
 
-  belongs_to_user_as :salesperson
+  belongs_to_user_called :salesperson
   belongs_to :store
   has_many :jobs, as: :jobbable, dependent: :destroy, inverse_of: :jobbable
   has_many :line_items, through: :jobs, source: :line_items

@@ -11,17 +11,6 @@ class AuthModel
   class AuthServerDown < StandardError
   end
 
-  # TODO
-  class UserFinder
-    def new(*args)
-      if args.size == 3
-        args[0].find(args[2].owner.send(args[2].reflection.foreign_key))
-      else
-        super
-      end
-    end
-  end
-
   # ============================= CLASS METHODS ======================
   class << self
     attr_writer :query_cache
@@ -38,6 +27,7 @@ class AuthModel
       @query_cache ||= ThreadSafe::Cache.new
     end
 
+    # ======================================
     def primary_key
       :id
     end
@@ -47,8 +37,25 @@ class AuthModel
     end
 
     def relation_delegate_class(*)
-      UserFinder
+      self
     end
+
+    def unscoped
+      self
+    end
+
+    def new(*args)
+      if args.size == 3
+        assoc_class = args[2].owner.class.name
+        assoc_name = args[2].reflection.name
+        raise "Unsupported user association: #{assoc_class}##{assoc_name}. If this is a belongs_to "\
+              "association, you may have #{assoc_class} include BelongsToUser and call "\
+              "`belongs_to_user_called :#{assoc_name}' instead of the traditional rails method."
+      else
+        super
+      end
+    end
+    # ======================================
 
     # ====================
     # Not a fully featured has_many - must specify foreign_key if the association doesn't match
@@ -330,5 +337,8 @@ class AuthModel
 
   def full_name
     "#{@first_name} #{@last_name}"
+  end
+
+  def merge!(*)
   end
 end
