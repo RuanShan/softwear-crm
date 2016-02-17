@@ -1,4 +1,4 @@
-class User < AuthModel
+class User < Softwear::Auth::Model
   CUSTOMER_EMAIL = "customer@softwearcrm.com"
   SALES_MANAGERS = %w(
     ricky@annarbortees.com

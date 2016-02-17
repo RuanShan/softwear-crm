@@ -19,7 +19,7 @@ describe User, user_spec: true do
       expect(User.auth_server_down?).to eq false
 
       User.expire_query_cache
-      allow(User).to receive(:raw_query).and_raise AuthModel::AuthServerDown
+      allow(User).to receive(:raw_query).and_raise User::AuthServerDown
       expect(User.query('test1')).to eq 'response'
       expect(User.auth_server_down?).to eq true
 

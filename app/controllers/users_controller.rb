@@ -1,4 +1,6 @@
-class UsersController < AuthController
+require 'softwear/auth/controller'
+
+class UsersController < Softwear::Auth::Controller
   before_action :set_current_action
 
   private

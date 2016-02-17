@@ -1,7 +1,7 @@
 class ArtworkRequest < ActiveRecord::Base
   include TrackingHelpers
   include IntegratedCrms
-  include BelongsToUser
+  include Softwear::Auth::BelongsToUser
 
   acts_as_paranoid
   acts_as_warnable

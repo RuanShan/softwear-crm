@@ -1,5 +1,5 @@
 class Artwork < ActiveRecord::Base
-  include BelongsToUser
+  include Softwear::Auth::BelongsToUser
 
   acts_as_paranoid
   acts_as_taggable

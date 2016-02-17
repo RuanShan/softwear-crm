@@ -3,7 +3,8 @@ class ApplicationController < ActionController::Base
   include ApplicationHelper
   include ActsAsWarnable::ApplicationHelper
   include ErrorCatcher
-  include Authentication
+  include Softwear::Lib::ControllerAuthentication
+  helper Softwear::Auth::Helper
 
   # Prevent CSRF attacks by raising an exception.
   # For APIs, you may want to use :null_session instead.

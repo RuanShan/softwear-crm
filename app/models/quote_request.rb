@@ -1,7 +1,7 @@
 class QuoteRequest < ActiveRecord::Base
   include TrackingHelpers
   include IntegratedCrms
-  include BelongsToUser
+  include Softwear::Auth::BelongsToUser
 
   tracked by_current_user + { parameters: { s: ->(_c, r) { r.track_state_changes } } }
   acts_as_warnable

@@ -1,6 +1,6 @@
 class PaymentDrop < ActiveRecord::Base
   include PublicActivity::Model
-  include BelongsToUser
+  include Softwear::Auth::BelongsToUser
 
   tracked only: [:new, :update], parameters: :tracked_values, owner: Proc.new{ |controller, model| controller.current_user }
   acts_as_paranoid

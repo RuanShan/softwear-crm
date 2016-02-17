@@ -6,7 +6,7 @@ class Quote < ActiveRecord::Base
   include TrackingHelpers
   include IntegratedCrms
   include ActionView::Helpers::DateHelper
-  include BelongsToUser
+  include Softwear::Auth::BelongsToUser
 
   acts_as_paranoid
   acts_as_commentable :public, :private

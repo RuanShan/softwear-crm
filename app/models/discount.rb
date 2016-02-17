@@ -1,5 +1,5 @@
 class Discount < ActiveRecord::Base
-  include BelongsToUser
+  include Softwear::Auth::BelongsToUser
   include PublicActivity::Common
 
   PAYMENT_METHODS = %w(PayPal Cash CreditCard Check RefundPayment)

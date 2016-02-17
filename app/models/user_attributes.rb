@@ -1,5 +1,5 @@
 class UserAttributes < ActiveRecord::Base
-  include BelongsToUser
+  include Softwear::Auth::BelongsToUser
 
   attr_encrypted :freshdesk_password, key: 'h4rdc0ded1337ness'
 

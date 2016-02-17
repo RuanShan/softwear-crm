@@ -1,7 +1,7 @@
 class Order < ActiveRecord::Base
   include TrackingHelpers
   include ProductionCounterpart
-  include BelongsToUser
+  include Softwear::Auth::BelongsToUser
 
   acts_as_paranoid
   acts_as_commentable :public, :private

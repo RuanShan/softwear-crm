@@ -1,6 +1,6 @@
 class Shipment < ActiveRecord::Base
   include Popularity
-  include BelongsToUser
+  include Softwear::Auth::BelongsToUser
 
   rates_popularity_of :shipping_method
 

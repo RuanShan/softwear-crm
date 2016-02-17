@@ -1,5 +1,5 @@
 class Comment < ActiveRecord::Base
-  include BelongsToUser
+  include Softwear::Auth::BelongsToUser
   include ActsAsCommentable::Comment
   include TrackingHelpers
 

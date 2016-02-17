@@ -1,7 +1,7 @@
 class Payment < ActiveRecord::Base
   include ActionView::Helpers::NumberHelper
   include PublicActivity::Common
-  include BelongsToUser
+  include Softwear::Auth::BelongsToUser
 
   class PaymentError < StandardError
   end

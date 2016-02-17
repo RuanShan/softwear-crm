@@ -1,6 +1,6 @@
 module Search
   class Query < ActiveRecord::Base
-    include BelongsToUser
+    include Softwear::Auth::BelongsToUser
 
     belongs_to_user
     has_many :query_models, class_name: 'Search::QueryModel',

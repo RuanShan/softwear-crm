@@ -1,6 +1,6 @@
 class InStoreCredit < ActiveRecord::Base
   include ActionView::Helpers::NumberHelper
-  include BelongsToUser
+  include Softwear::Auth::BelongsToUser
 
   validates :name, :customer_email, :amount, :description, :user_id, :valid_until, presence: true
   validates :name, uniqueness: true
