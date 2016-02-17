@@ -15,7 +15,7 @@ class AuthModel
   class << self
     attr_writer :query_cache
     attr_accessor :total_query_cache
-    attr_accessor :query_cache_expiry
+    attr_writer :query_cache_expiry
     alias_method :expire_query_cache_every, :query_cache_expiry=
     attr_accessor :auth_server_went_down_at
     attr_accessor :sent_auth_server_down_email
@@ -39,7 +39,7 @@ class AuthModel
     end
 
     def query_cache_expiry
-      super || Figaro.env.query_cache_expiry.try(:to_f) || 1.hour
+      @query_cache_expiry || Figaro.env.query_cache_expiry.try(:to_f) || 1.hour
     end
 
     # ===================
