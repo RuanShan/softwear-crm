@@ -5,7 +5,6 @@ describe Order, order_spec: true do
   it { is_expected.to be_paranoid }
 
   describe 'Relationships' do
-    it { is_expected.to belong_to :salesperson }
     it { is_expected.to belong_to :store }
     it { is_expected.to have_many :artwork_requests }
     it { is_expected.to have_many :jobs }
