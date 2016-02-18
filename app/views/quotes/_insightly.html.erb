@@ -16,7 +16,7 @@
           <h3><strong>Insightly</strong> Settings</h3>
           Note: if there is already a linked opportunity, changing these fields will not update it.
 
-          <% unless quote.insightly_whos_responsible_id.nil? %>
+          <% unless quote.insightly_whos_responsible.nil? %>
             <div>
               <label>User responsible:</label> <%= link_to quote.insightly_whos_responsible.full_name, user_path(quote.insightly_whos_responsible.id) %>
             </div>

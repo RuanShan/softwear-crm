@@ -1,6 +1,7 @@
 class Payment < ActiveRecord::Base
   include ActionView::Helpers::NumberHelper
   include PublicActivity::Common
+  include Softwear::Auth::BelongsToUser
 
   class PaymentError < StandardError
   end
@@ -62,7 +63,7 @@ class Payment < ActiveRecord::Base
 
   belongs_to :order, touch: true
   belongs_to :store
-  belongs_to :salesperson, class_name: User
+  belongs_to_user_called :salesperson
   has_many :discounts, as: :discountable # Only refunds
   has_many :payment_drop_payments
 
@@ -70,7 +71,7 @@ class Payment < ActiveRecord::Base
   after_save :recalculate_order_fields
   after_destroy :recalculate_order_fields
 
-  validates :store, :payment_method, :amount, :salesperson, presence: true
+  validates :store, :payment_method, :amount, :salesperson_id, presence: true
   validates :pp_transaction_id, presence: true, uniqueness: true,
                if: -> p { p.payment_method == 4 || p.payment_method == 7 }
   validates :t_name, :t_company_name, :tf_number, presence: true, if: -> p { p.payment_method == 5 }

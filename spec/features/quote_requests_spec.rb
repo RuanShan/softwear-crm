@@ -9,7 +9,7 @@ feature 'Quote Requests Management', js: true, quote_request_spec: true do
   given!(:valid_user) { create(:alternate_user) }
   given(:next_button) { '.quote-request-next-button' }
   given(:previous_button) { '.quote-request-previous-button' }
-  before(:each) { login_as(valid_user) }
+  before(:each) { sign_in_as(valid_user) }
 
   scenario 'A user can view a list of quote requests' do
     visit quote_requests_path

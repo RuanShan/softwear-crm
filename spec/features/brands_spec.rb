@@ -5,7 +5,7 @@ feature 'Brands management', brand_spec: true do
   given!(:brand) { create(:valid_brand) }
   given!(:valid_user) { create(:alternate_user) }
 
-  background(:each) { login_as(valid_user) }
+  background(:each) { sign_in_as(valid_user) }
 
   scenario 'A user can see a list of brands' do
     visit root_path
@@ -34,7 +34,7 @@ feature 'Brands management', brand_spec: true do
   scenario 'A user can delete an existing brand', js: true, story_692: true do
     visit brands_path
     find("tr#brand_#{brand.id} a[data-action='destroy']").click
-    sleep 2 if ci?
+    sleep 2
     page.driver.browser.switch_to.alert.accept
     wait_for_ajax
     expect(page).to have_content 'Brand was successfully destroyed.'

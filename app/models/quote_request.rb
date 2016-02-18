@@ -1,6 +1,7 @@
 class QuoteRequest < ActiveRecord::Base
   include TrackingHelpers
   include IntegratedCrms
+  include Softwear::Auth::BelongsToUser
 
   tracked by_current_user + { parameters: { s: ->(_c, r) { r.track_state_changes } } }
   acts_as_warnable
@@ -31,7 +32,7 @@ class QuoteRequest < ActiveRecord::Base
     referred_to_design_studio duplicate
   )
 
-  belongs_to :salesperson, class_name: User
+  belongs_to_user_called :salesperson
   has_many :quote_request_quotes
   has_many :quotes, through: :quote_request_quotes
   has_many :orders, through: :quotes

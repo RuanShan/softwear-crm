@@ -4,7 +4,7 @@ include ApplicationHelper
 feature 'Imprint Method Features', imprint_method_spec: true do
   given!(:imprint_method) { create(:valid_imprint_method_with_color_and_location) }
   given!(:valid_user) { create(:alternate_user) }
-  background(:each) { login_as(valid_user) }
+  background(:each) { sign_in_as(valid_user) }
 
   scenario 'A user can view a list of imprint methods' do
     visit root_path

@@ -143,10 +143,6 @@
 
       <%= content_tag :ul, class: ('visible' if current_url.include?('users')) do %>
 
-        <%= content_tag :li, class:('active' if current_action == 'users') do %>
-           <%= link_to users_path do %><i class="fa fa-angle-right"></i> Users<% end %>
-        <% end %>
-
         <% if current_user.sales_manager? %>
           <%= content_tag :li, class:('active' if current_action == 'coupons') do %>
              <%= link_to coupons_path do %><i class="fa fa-angle-right"></i> Coupons<% end %>

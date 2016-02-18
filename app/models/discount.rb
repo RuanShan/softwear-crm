@@ -1,11 +1,12 @@
 class Discount < ActiveRecord::Base
+  include Softwear::Auth::BelongsToUser
   include PublicActivity::Common
 
   PAYMENT_METHODS = %w(PayPal Cash CreditCard Check RefundPayment)
 
   belongs_to :discountable, polymorphic: true
   belongs_to :applicator, polymorphic: true
-  belongs_to :user
+  belongs_to_user
 
   validates :discount_method, inclusion: { in: PAYMENT_METHODS, message: "is not any of #{PAYMENT_METHODS.join(', ')}" }, if: :refund?
   validates :discountable, presence: { message: " must be assigned" }

@@ -1,6 +1,6 @@
 source 'https://rubygems.org'
 
-gem 'softwear-lib', '~> 1.4.3'
+gem 'softwear-lib', '>= 1.5.5'
 
 # === BEGIN SOFTWEAR LIB GEMS === #
 
@@ -135,4 +135,5 @@ gem 'business_time'
 gem 'redis-namespace'
 gem 'activemerchant'
 gem 'dropzonejs-rails'
+gem 'thread_safe'
 gem 'simple_xlsx_reader'

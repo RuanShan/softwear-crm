@@ -1,5 +1,7 @@
 class PaymentDrop < ActiveRecord::Base
   include PublicActivity::Model
+  include Softwear::Auth::BelongsToUser
+
   tracked only: [:new, :update], parameters: :tracked_values, owner: Proc.new{ |controller, model| controller.current_user }
   acts_as_paranoid
   paginates_per 20
@@ -8,11 +10,11 @@ class PaymentDrop < ActiveRecord::Base
   CHECK_PAYMENT_METHOD = 3
 
   belongs_to :store
-  belongs_to :salesperson, class_name: 'User'
+  belongs_to_user_called :salesperson
   has_many :payment_drop_payments, dependent: :destroy
   has_many :payments, through: :payment_drop_payments
 
-  validates :salesperson, :store, :cash_included, :check_included, presence: true
+  validates :salesperson_id, :store, :cash_included, :check_included, presence: true
   validates :difference_reason, presence: true, unless: :included_matches_total?
   validates :payments, presence: true
 

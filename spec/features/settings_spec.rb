@@ -4,7 +4,7 @@ require 'email_spec'
 
 feature 'Settings management', setting_spec: true, js: true do
   given!(:valid_user) { create(:alternate_user) }
-  background(:each) { login_as(valid_user) }
+  background(:each) { sign_in_as(valid_user) }
 
   given!(:quote) { create(:valid_quote) }
   given!(:imprintable) { create(:valid_imprintable) }

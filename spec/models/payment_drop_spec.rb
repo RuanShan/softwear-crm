@@ -8,12 +8,10 @@ describe PaymentDrop, payment_drop_spec: true do
     it { is_expected.to have_many(:payment_drop_payments).dependent(:destroy) }
     it { is_expected.to have_many(:payments).through(:payment_drop_payments) }
     it { is_expected.to belong_to(:store)}
-    it { is_expected.to belong_to(:salesperson).class_name('User')}
   end
 
   describe 'Validations' do
     it { is_expected.to validate_presence_of(:store) }
-    it { is_expected.to validate_presence_of(:salesperson) }
     it { is_expected.to validate_presence_of(:cash_included) }
     it { is_expected.to validate_presence_of(:check_included) }
 

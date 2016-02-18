@@ -6,7 +6,7 @@ feature 'Jobs management', js: true, job_spec: true do
 
   given!(:valid_user) { create(:user) }
   before(:each) do
-    login_as valid_user
+    sign_in_as valid_user
   end
 
   given(:standard_line_item) { create(:non_imprintable_line_item, line_itemable_id: job.id, line_itemable_type: 'Job') }

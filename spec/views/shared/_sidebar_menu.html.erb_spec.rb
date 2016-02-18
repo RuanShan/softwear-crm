@@ -218,10 +218,6 @@ describe 'shared/_sidebar_menu.html.erb' do
       it 'adds the active class to the "Administration" tab' do
         expect(rendered).to have_css('li.active a i.fa.fa-folder-open')
       end
-
-      it 'adds the visible class to the "Administration" ul and active class to the "Users" li' do
-        expect(rendered).to have_css('li.active ul.visible li.active a[href="/users"]')
-      end
     end
   end
 

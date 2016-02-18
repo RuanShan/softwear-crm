@@ -6,7 +6,7 @@ feature 'Line Item Templates', story_494: true do
 
   context 'as a logged in user,' do
     before(:each) do
-      login_as(user)
+      sign_in_as(user)
     end
 
     scenario 'I can view the list of line item templates from the navigation bar' do

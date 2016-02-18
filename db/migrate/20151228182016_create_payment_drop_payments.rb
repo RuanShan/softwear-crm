@@ -10,6 +10,7 @@ class CreatePaymentDropPayments < ActiveRecord::Migration
 
     # make a drop for each day of payments prior to today
     ending_of_drops = Date.yesterday
+    return unless User.respond_to?(:first)
     salesperson = User.first
     while Payment.where("created_at < ?", ending_of_drops).count > 0
       Store.all.each do |store|

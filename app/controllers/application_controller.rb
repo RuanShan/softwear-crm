@@ -3,6 +3,8 @@ class ApplicationController < ActionController::Base
   include ApplicationHelper
   include ActsAsWarnable::ApplicationHelper
   include ErrorCatcher
+  include Softwear::Lib::ControllerAuthentication
+  helper Softwear::Auth::Helper
 
   # Prevent CSRF attacks by raising an exception.
   # For APIs, you may want to use :null_session instead.
@@ -10,8 +12,6 @@ class ApplicationController < ActionController::Base
 
   before_action :authenticate_user!
   before_action :configure_user_parameters, if: :devise_controller?
-  # These allow current_user and the current url to be available to views
-  before_action :assign_current_user
   before_action :assign_current_url
   before_action :assign_current_action
   before_action :assign_request_time
@@ -56,12 +56,6 @@ class ApplicationController < ActionController::Base
   def configure_user_parameters
     devise_parameter_sanitizer.for(:sign_up) do |u|
       u.permit :email, :firstname, :lastname
-    end
-  end
-
-  def assign_current_user
-    if current_user
-      @current_user = current_user
     end
   end
 
@@ -136,3 +130,6 @@ class ApplicationController < ActionController::Base
   end
 
 end
+
+# This stops applicationcontroller from forgetting about the user model when code is partially reloaded
+User if Rails.env.development?

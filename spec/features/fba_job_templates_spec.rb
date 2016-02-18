@@ -10,7 +10,7 @@ feature 'FBA Job Tempaltes management', js: true do
   given(:mockup_file_path) { "#{Rails.root}/spec/fixtures/images/test-mockup.png" }
 
   given!(:valid_user) { create(:alternate_user) }
-  background(:each) { login_as(valid_user) }
+  background(:each) { sign_in_as(valid_user) }
 
   before(:each) do
     Capybara.ignore_hidden_elements = false

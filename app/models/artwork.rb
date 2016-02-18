@@ -1,4 +1,6 @@
 class Artwork < ActiveRecord::Base
+  include Softwear::Auth::BelongsToUser
+
   acts_as_paranoid
   acts_as_taggable
 
@@ -13,7 +15,7 @@ class Artwork < ActiveRecord::Base
 
   after_initialize :initialize_assets
 
-  belongs_to :artist, class_name: User
+  belongs_to_user_called :artist
   belongs_to :artwork, class_name: Asset, dependent: :destroy
   belongs_to :preview, class_name: Asset, dependent: :destroy
   has_many :artwork_request_artworks

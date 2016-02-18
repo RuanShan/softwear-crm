@@ -6,7 +6,7 @@ feature 'Imprintables management', imprintable_spec: true, slow: true do
   given!(:imprintable) { create(:valid_imprintable) }
   given!(:print_location) { create(:valid_print_location) }
 
-  background(:each) { login_as(valid_user) }
+  background(:each) { sign_in_as(valid_user) }
 
   scenario 'A user can see a list of imprintables' do
     visit root_path

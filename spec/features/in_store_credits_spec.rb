@@ -4,7 +4,7 @@ include ApplicationHelper
 feature 'In-Store Credit management', story_858: true do
   given!(:valid_user) { create(:user) }
   before(:each) do
-    login_as(valid_user)
+    sign_in_as(valid_user)
   end
 
   let!(:in_store_credit) { create(:in_store_credit) }

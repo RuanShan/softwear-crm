@@ -1,4 +1,4 @@
-set :branch, 'develop'
+set :branch, 'auth-server'
 set :linked_files, fetch(:linked_files) + %w{config/remote_database.yml}
 set :bundle_flags, '--deployment' # No --quiet for staging
 

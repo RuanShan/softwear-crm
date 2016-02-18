@@ -32,7 +32,7 @@
             <td><%= display_time quote.valid_until_date %></td>
             <td><%= display_time quote.estimated_delivery_date %></td>
             <td>
-              <%= quote.salesperson.full_name %>
+              <%= quote.salesperson.try(:full_name) || 'No user' %>
               <div class='row'>
                 <%= profile_picture_of quote.salesperson, class: 'half-width' if quote.salesperson %>
               </div>

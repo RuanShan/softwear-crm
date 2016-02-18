@@ -5,7 +5,6 @@ describe Order, order_spec: true do
   it { is_expected.to be_paranoid }
 
   describe 'Relationships' do
-    it { is_expected.to belong_to :salesperson }
     it { is_expected.to belong_to :store }
     it { is_expected.to have_many :artwork_requests }
     it { is_expected.to have_many :jobs }
@@ -39,7 +38,7 @@ describe Order, order_spec: true do
     it { is_expected.to allow_value('123-654-9871').for :phone_number }
     it { is_expected.to_not allow_value('135184e6').for(:phone_number)
            .with_message('is incorrectly formatted, use 000-000-0000') }
-    it { is_expected.to validate_presence_of :salesperson }
+    it { is_expected.to validate_presence_of :salesperson_id }
     it { is_expected.to validate_presence_of :store }
     it { is_expected.to validate_presence_of :terms }
     it { is_expected.to validate_presence_of :in_hand_by }

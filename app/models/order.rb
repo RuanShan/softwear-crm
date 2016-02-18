@@ -1,6 +1,7 @@
 class Order < ActiveRecord::Base
   include TrackingHelpers
   include ProductionCounterpart
+  include Softwear::Auth::BelongsToUser
 
   acts_as_paranoid
   acts_as_commentable :public, :private
@@ -88,7 +89,7 @@ class Order < ActiveRecord::Base
   ]
 
 
-  belongs_to :salesperson, class_name: User
+  belongs_to_user_called :salesperson
   belongs_to :store
   has_many :jobs, as: :jobbable, dependent: :destroy, inverse_of: :jobbable
   has_many :line_items, through: :jobs, source: :line_items
@@ -140,22 +141,24 @@ class Order < ActiveRecord::Base
               message: 'is incorrectly formatted, use 000-000-0000'
             },
             unless: :fba?
-  validates :salesperson, presence: true
+  validates :salesperson_id, presence: true
   validates :store, presence: true
   validates :terms, presence: true
   validates :in_hand_by, presence: true
   validates :invoice_reject_reason, presence: true, if: :invoice_rejected?
 
   before_create { self.delivery_method ||= 'Ship to multiple locations' if fba? }
-  after_initialize -> (o) { o.production_state = 'pending' if o.production_state.blank? }
-  after_initialize -> (o) { o.invoice_state = 'pending' if o.invoice_state.blank? }
+  after_initialize -> (o) { o.production_state = 'pending' if o.respond_to?(:production_state) && o.production_state.blank? }
+  after_initialize -> (o) { o.invoice_state = 'pending' if o.respond_to?(:invoice_state) && o.invoice_state.blank? }
   after_initialize do
+    next unless respond_to?(:customer_key)
     while customer_key.blank? ||
           Order.where(customer_key: customer_key).where.not(id: id).exists?
       self.customer_key = rand(36**6).to_s(36).upcase
     end
   end
   after_initialize do
+    next unless %i(subtotal taxable_total discount_total payment_total).all?(&method(:respond_to?))
     self.subtotal ||= 0
     self.taxable_total ||= 0
     self.discount_total ||= 0
@@ -487,7 +490,7 @@ class Order < ActiveRecord::Base
   end
 
   def salesperson_name
-    User.find(salesperson_id).full_name
+    salesperson.full_name
   end
 
   def discount_total(exclude = [])

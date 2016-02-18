@@ -1,6 +1,7 @@
 class ArtworkRequest < ActiveRecord::Base
   include TrackingHelpers
   include IntegratedCrms
+  include Softwear::Auth::BelongsToUser
 
   acts_as_paranoid
   acts_as_warnable
@@ -33,9 +34,9 @@ class ArtworkRequest < ActiveRecord::Base
   has_many :artwork_request_artworks
   has_many :artwork_request_ink_colors
   has_many :artwork_request_imprints
-  belongs_to :artist,                class_name: User
-  belongs_to :salesperson,           class_name: User
-  belongs_to :approved_by,           class_name: User
+  belongs_to_user_called :artist
+  belongs_to_user_called :salesperson
+  belongs_to_user_called :approved_by
   has_many   :artworks,              through: :artwork_request_artworks
   has_many   :proofs,                through: :artworks
   has_many   :assets,                as: :assetable, dependent: :destroy
@@ -54,7 +55,7 @@ class ArtworkRequest < ActiveRecord::Base
   validates :ink_colors,     presence: true, unless: :fba?
   validates :imprints,       presence: true
   validates :priority,       presence: true
-  validates :salesperson,    presence: true
+  validates :salesperson_id, presence: true
 
   after_create :enqueue_create_freshdesk_proof_ticket if Rails.env.production?
   before_save :transition_to_assigned, if: :should_assign?

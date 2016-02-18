@@ -6,7 +6,6 @@ describe Artwork, artwork_spec: true do
   it { is_expected.to be_paranoid }
 
   describe 'Relationships' do
-    it { is_expected.to belong_to(:artist) }
     it { is_expected.to belong_to(:artwork) }
     it { is_expected.to belong_to(:preview) }
     it { is_expected.to have_many(:artwork_requests) }

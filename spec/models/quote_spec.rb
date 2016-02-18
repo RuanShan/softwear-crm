@@ -5,7 +5,6 @@ describe Quote, quote_spec: true do
   it { is_expected.to be_paranoid }
 
   describe 'Relationships', story_74: true, story_79: true do
-    it { is_expected.to belong_to(:salesperson).class_name('User') }
     it { is_expected.to belong_to(:store) }
     it { is_expected.to have_many(:emails) }
     it { is_expected.to have_many(:jobs) }
@@ -19,7 +18,6 @@ describe Quote, quote_spec: true do
     it { is_expected.to validate_presence_of(:estimated_delivery_date) }
     it { is_expected.to validate_presence_of(:first_name) }
     it { is_expected.to validate_presence_of(:quote_source) }
-    it { is_expected.to validate_presence_of(:salesperson) }
     it { is_expected.to validate_presence_of(:store) }
     it { is_expected.to validate_presence_of(:valid_until_date) }
 

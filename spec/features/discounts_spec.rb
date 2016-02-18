@@ -2,7 +2,7 @@ require 'spec_helper'
 
 feature 'Discounts management', js: true, discount_spec: true, story_859: true do
   given!(:valid_user) { create(:alternate_user) }
-  background(:each) { login_as(valid_user) }
+  background(:each) { sign_in_as(valid_user) }
 
   given!(:order) { create(:order_with_job) }
   given(:job) { order.jobs.first }

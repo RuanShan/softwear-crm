@@ -23,6 +23,8 @@ Sidekiq.configure_server do |config|
   config.redis = redis_opts
 end
 
+# This is so that we can get away with stubbing methods that should return
+# ActiveRecord::Relations to return array.
 Array.class_eval do
   def pluck(attr)
     map(&attr)
@@ -42,6 +44,7 @@ end
 # option on the command line or in ~/.rspec, .rspec or `.rspec-local`.
 Dir[Rails.root.join('spec/support/**/*.rb')].each { |f| require f }
 include SunspotHelpers
+include Softwear::Auth::Spec
 
 # Checks for pending migrations before tests are run.
 # If you are not using ActiveRecord, you can remove this line.
@@ -54,9 +57,9 @@ RSpec.configure do |config|
   config.include FormHelpers
   config.include AuthenticationHelpers
   config.include GeneralHelpers
-  config.include Devise::TestHelpers, type: :controller
+  # config.include Devise::TestHelpers, type: :controller
   config.extend ControllerMacros, type: :view
-  config.include Devise::TestHelpers, type: :view
+  # config.include Devise::TestHelpers, type: :view
   config.include SunspotMatchers
   config.include SunspotHelpers
   config.include Paperclip::Shoulda::Matchers
@@ -66,8 +69,11 @@ RSpec.configure do |config|
   config.include SimulateDragSortable, type: :feature
   config.include Softwear::Lib::Spec
   config.include OrderHelpers
+  config.include Softwear::Auth::Spec
 
   PublicActivity.enabled = false
+
+  stub_authentication! config
 
   # ## Mock Framework
   #

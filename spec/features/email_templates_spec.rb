@@ -4,7 +4,7 @@ include ApplicationHelper
 feature 'Email Templates Management', js: true, email_template_spec: true, story_265: true do
   given!(:email_template) { create(:valid_email_template) }
   given!(:valid_user) { create(:alternate_user) }
-  background(:each) { login_as valid_user }
+  background(:each) { sign_in_as valid_user }
 
   scenario 'A user can create an e-mail template' do
     if ci?

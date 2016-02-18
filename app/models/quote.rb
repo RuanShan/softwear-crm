@@ -6,6 +6,7 @@ class Quote < ActiveRecord::Base
   include TrackingHelpers
   include IntegratedCrms
   include ActionView::Helpers::DateHelper
+  include Softwear::Auth::BelongsToUser
 
   acts_as_paranoid
   acts_as_commentable :public, :private
@@ -77,9 +78,9 @@ class Quote < ActiveRecord::Base
 
   default_scope -> { order('quotes.created_at DESC') }
 
-  belongs_to :salesperson, class_name: User
+  belongs_to_user_called :salesperson
+  belongs_to_user_called :insightly_whos_responsible
   belongs_to :store
-  belongs_to :insightly_whos_responsible, class_name: User
   has_many :email_templates
   has_many :emails, as: :emailable, dependent: :destroy
   has_many :quote_request_quotes
@@ -93,7 +94,7 @@ class Quote < ActiveRecord::Base
   validates :estimated_delivery_date, presence: true
   validates :first_name, presence: true
   validates :quote_source, presence: true
-  validates :salesperson, presence: true
+  validates :salesperson_id, presence: true
   validates :store, presence: true
   validates :valid_until_date, presence: true
   validates *(INSIGHTLY_FIELDS - [:insightly_opportunity_id]), presence: true, if: :should_validate_insightly_fields?
