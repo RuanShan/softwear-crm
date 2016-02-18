@@ -13,7 +13,7 @@ describe User, user_spec: true do
       User.email_when_down_after 5.seconds
     end
 
-    it 'sends an email' do
+    it 'sends an email', no_ci: true do
       allow(User).to receive(:raw_query).and_return 'response'
       expect(User.query('test1')).to eq 'response'
       expect(User.auth_server_down?).to eq false
