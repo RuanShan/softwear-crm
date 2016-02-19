@@ -1,8 +1,8 @@
 GIT
   remote: git://github.com/AnnArborTees/acts_as_warnable.git
-  revision: 4af24630dc7b2b7112c7af22a195f68ab9ab4734
+  revision: 843c36523006af252a433d540adc7c9181385dc7
   specs:
-    acts_as_warnable (0.2.3)
+    acts_as_warnable (0.2.4)
       devise
       inherited_resources
       rails (~> 4.2.1)
