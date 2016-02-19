@@ -45,6 +45,10 @@ shared_examples 'a retailable api controller' do
 
   describe 'GET #index' do
     it "assigns @#{resource_name.pluralize} where retail: true" do
+      allow_any_instance_of(described_class)
+        .to receive(:token_authenticate_user!)
+        .and_return true
+
       allow(resource_type).to receive(:where).and_call_original
       expect(resource_type).to receive(:where)
         .with(hash_including retail: true)
