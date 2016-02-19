@@ -5,12 +5,17 @@ class ErrorReportsController < ApplicationController
     ErrorReportMailer.send_report(params).deliver
     flash[:success] = 'Sent error report. Sorry about that.'
 
+    begin
+      current_user = User.find(params[:user_id]) unless params[:user_id].blank?
+    rescue StandardError => e
+    end
+
     if current_user
       redirect_to '/'
     elsif params[:order_id] && (key = Order.where(id: params[:order_id]).pluck(:customer_key).first)
       redirect_to customer_order_path(key)
     else
-      render inline: "<%= params[:success] %>"
+      render inline: "<%= flash[:success] %>"
     end
   end
 end
