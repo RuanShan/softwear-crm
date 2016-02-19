@@ -22,3 +22,5 @@ NilClass.class_eval do
     "Nil"
   end
 end
+
+require Rails.root.join('app/controllers/api/api_controller_decorator').to_s
