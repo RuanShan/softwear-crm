@@ -109,7 +109,6 @@ describe LineItem, line_item_spec: true do
       it { is_expected.to allow_value(51.21).for :unit_price }
       it { is_expected.to allow_value(12.2).for :unit_price }
       it { is_expected.to allow_value(3).for :unit_price }
-      it { is_expected.to_not allow_value(12.321).for :unit_price }
     end
   end
 

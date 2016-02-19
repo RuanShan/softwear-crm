@@ -109,9 +109,8 @@
                             $response = $(response)
                             clearSelectLevel 4, ->
                               $response.hide()
-                              unless /Color/.test($response.text())
-                                $select_level(4).prepend $response
-                                $response.fadeIn()
+                              $select_level(4).prepend $response
+                              $response.fadeIn()
 
   handleImprintableForm $('#li-imprintable-form')
   $lineItemModal.modal 'show'
