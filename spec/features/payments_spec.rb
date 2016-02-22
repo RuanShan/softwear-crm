@@ -264,7 +264,7 @@ feature 'Payments management', js: true, payment_spec: true, retry: 2 do
         ).to exist
       end
 
-      scenario 'A customer sees errors for trying to pay too much (and can correct)' do
+      scenario 'A customer sees errors for trying to pay too much (and can correct)', retry: 3 do
         visit customer_order_path(order.customer_key)
         toggle_dashboard
         find('#makepayment').click
