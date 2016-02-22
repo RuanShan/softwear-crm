@@ -60,7 +60,7 @@ feature 'Quote Requests Management', js: true, quote_request_spec: true do
     expect(quote_request.reload.status).to eq 'assigned'
   end
 
-  scenario 'A user can click next and previous unassigned quote request', next_and_previous: true do
+  scenario 'A user can click next and previous unassigned quote request', retry: 3, next_and_previous: true do
     quote_request.update_attributes salesperson_id:   nil
     quote_request_2.update_attributes salesperson_id: valid_user.id
     quote_request_3.update_attributes salesperson_id: nil

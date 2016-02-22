@@ -47,6 +47,7 @@ script: xvfb-run --server-args="-screen 0, 1024x768x24" bundle exec rspec --colo
 env:
   global:
     - WWW_DOMAIN=annarbortees.com
+    - HUB_APP_NAME=softwear-crm
     - SOFTWEAR_HUB_URL=http://hub.softwearcrm.com
     - AUTH_SERVER_ENDPOINT=hub.softwearcrm.com:2900
     - TOKEN_CIPHER_KEY="aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaEEEEEEEEEEEEEEEEEEEEEEEEEEEe"
