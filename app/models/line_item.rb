@@ -38,7 +38,7 @@ class LineItem < ActiveRecord::Base
     scope: [:job_id], message: 'is a duplicate in this group' }, if: :imprintable_and_in_job?
 
   before_validation :set_sort_order, if: :markup_or_option?
-  after_update :update_production_quantities, if: :order_in_production?
+  after_update :enqueue_update_production_quantities, if: :order_in_production?
   after_save :recalculate_order_fields
   after_destroy :recalculate_order_fields
 
@@ -213,6 +213,17 @@ class LineItem < ActiveRecord::Base
   end
   alias_method :option_or_markup?, :markup_or_option?
 
+  if Rails.env.production?
+    def enqueue_update_production_quantities
+      self.class.delay(queue: 'api').update_production_quantities(id)
+    end
+  else
+    alias_method :enqueue_update_production_quantities, :update_production_quantities
+  end
+
+  def self.update_production_quantities(id)
+    find(id).update_production_quantities
+  end
   def update_production_quantities
     return unless order_in_production?
     return unless imprintable_variant
