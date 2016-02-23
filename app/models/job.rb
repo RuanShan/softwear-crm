@@ -91,7 +91,7 @@ class Job < ActiveRecord::Base
       imprints_attributes: production_imprints_attributes,
       imprintable_train_attributes: imprintable_train_attributes
     }
-      .delete_if { |k,v| v.nil? }
+      .delete_if { |_,v| v.nil? }
   end
 
   def production_imprints_attributes
@@ -107,7 +107,7 @@ class Job < ActiveRecord::Base
         count:           imprintable_line_items_total,
         type:            imprint.production_type
       }
-      attrs[index].delete_if { |_,v| v.nil? }
+        .delete_if { |_,v| v.nil? }
     end
 
     attrs
@@ -434,6 +434,10 @@ class Job < ActiveRecord::Base
     end
 
     update_column :softwear_prod_id, prod_job.id
+
+    prod_job.imprints.each do |prod_imprint|
+      imprints.find(prod_imprint.softwear_crm_id).update_column :softwear_prod_id, prod_imprint.id
+    end
 
     unless artwork_requests.blank?
       artwork_requests.each(&method(:create_trains_from_artwork_request))

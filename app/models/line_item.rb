@@ -38,6 +38,7 @@ class LineItem < ActiveRecord::Base
     scope: [:job_id], message: 'is a duplicate in this group' }, if: :imprintable_and_in_job?
 
   before_validation :set_sort_order, if: :markup_or_option?
+  after_update :update_production_quantities, if: :order_in_production?
   after_save :recalculate_order_fields
   after_destroy :recalculate_order_fields
 
@@ -73,6 +74,10 @@ class LineItem < ActiveRecord::Base
 
   def url
     super || imprintable.try(:supplier_link)
+  end
+
+  def order_in_production?
+    order? && order.try(:production?)
   end
 
   def line_itemable
@@ -207,6 +212,26 @@ class LineItem < ActiveRecord::Base
     quantity == MARKUP_ITEM_QUANTITY
   end
   alias_method :option_or_markup?, :markup_or_option?
+
+  def update_production_quantities
+    return unless order_in_production?
+    return unless imprintable_variant
+
+    new_count = job.imprintable_line_items_total
+    errors = []
+
+    job.imprints.each do |imprint|
+      prod_imprint = imprint.production
+      prod_imprint.count = new_count
+      unless prod_imprint.save
+        errors << "Imprint (prod##{prod_imprint.id}): #{prod_imprint.errors.full_messages.join(', ')}"
+      end
+    end
+
+    unless errors.empty?
+      order.issue_warning("Production API", errors.join("\n"))
+    end
+  end
 
   private
 
