@@ -423,14 +423,6 @@ class Job < ActiveRecord::Base
     end
   end
 
-  if Rails.env.production?
-    def enqueue_create_production_job
-      self.class.delay(queue: 'api').create_production_job(id)
-    end
-  else
-    alias_method :enqueue_create_production_job, :create_production_job
-  end
-
   def self.create_production_job(job_id)
     find(job_id).create_production_job
   end
@@ -454,6 +446,14 @@ class Job < ActiveRecord::Base
       artwork_requests.each(&method(:create_trains_from_artwork_request))
     end
     true
+  end
+
+  if Rails.env.production?
+    def enqueue_create_production_job
+      self.class.delay(queue: 'api').create_production_job(id)
+    end
+  else
+    alias_method :enqueue_create_production_job, :create_production_job
   end
 
   private
