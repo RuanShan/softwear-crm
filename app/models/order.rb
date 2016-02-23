@@ -605,6 +605,8 @@ class Order < ActiveRecord::Base
 
       job.artwork_requests.each(&job.method(:create_trains_from_artwork_request))
     end
+
+    shipments.each(&:create_train)
   end
 
   warn_on_failure_of :create_production_order unless Rails.env.test?

@@ -18,6 +18,7 @@ class Shipment < ActiveRecord::Base
   after_save do
     shippable.try(:check_if_shipped!)
   end
+  after_create :create_train, if: :order_in_production?
 
   def shipped?
     status == 'shipped'
@@ -33,6 +34,34 @@ class Shipment < ActiveRecord::Base
 
   def time_in_transit
     super || 0.0
+  end
+
+  def order
+    shippable_type == 'Order' ? shippable : shippable.try(:order)
+  end
+
+  def order_in_production?
+    order.try(:production?)
+  end
+
+  def create_train
+    error = nil
+
+    case shipping_method.name
+    when 'Ann Arbor Tees Delivery'
+      train = Production::LocalDeliveryTrain.create(
+        order_id: order.softwear_prod_id,
+        state:    shipped? ? 'out_for_delivery' : 'pending_packing'
+      )
+      unless train.persisted?
+        error = "Failed to create LocalDeliveryTrain: #{train.errors.full_messages.join(', ')}"
+      end
+    end
+
+    if error && order
+      order.issue_warning('Production API', error)
+    end
+    !!error
   end
 
   protected
