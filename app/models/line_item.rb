@@ -151,11 +151,11 @@ class LineItem < ActiveRecord::Base
   end
 
   def imprintable_variant_id=(iv_id)
-    imprintable_object_type = 'ImprintableVariant'
-    imprintable_object_id = iv_id
+    self.imprintable_object_type = 'ImprintableVariant'
+    self.imprintable_object_id = iv_id
   end
   def imprintable_variant=(iv)
-    imprintable_object = iv
+    self.imprintable_object = iv
   end
 
   def imprintable_and_in_job?
