@@ -4,7 +4,7 @@ FactoryGirl.define do
     deadline 5.days.from_now
 
     factory :production_order_with_job do
-      jobs [ create(:production_job) ]
+      jobs { [ create(:production_job) ] }
     end
 
     factory :production_order_with_post_production_trains do

@@ -17,6 +17,7 @@ class Job < ActiveRecord::Base
   before_destroy :check_for_line_items
   after_update :destroy_self_if_line_items_and_imprints_are_empty
   after_create :create_default_imprint, if: :fba?
+  after_update :create_production_job, if: :order_in_production?
 
   belongs_to :jobbable, polymorphic: true
   belongs_to :fba_job_template
@@ -49,6 +50,10 @@ class Job < ActiveRecord::Base
 
   def all_shipments
     shipments
+  end
+
+  def order_in_production?
+    order.try(:production?)
   end
 
   def imprintable_line_items_total
@@ -86,6 +91,7 @@ class Job < ActiveRecord::Base
       imprints_attributes: production_imprints_attributes,
       imprintable_train_attributes: imprintable_train_attributes
     }
+      .delete_if { |k,v| v.nil? }
   end
 
   def production_imprints_attributes
@@ -416,6 +422,25 @@ class Job < ActiveRecord::Base
       Sunspot.index(order)
     end
   end
+
+  def create_production_job
+    return if order.softwear_prod_id.nil?
+
+    prod_job = Production::Job.post_raw(production_attributes.merge(order_id: order.softwear_prod_id))
+
+    unless prod_job.persisted?
+      order.issue_warning("Production API", "Job creation failed: #{prod_job.errors.full_messages}")
+      return false
+    end
+
+    update_column :softwear_prod_id, prod_job.id
+
+    unless artwork_requests.blank?
+      artwork_requests.each(&method(:create_trains_from_artwork_request))
+    end
+    true
+  end
+  warn_on_failure_of :create_production_job unless Rails.env.test?
 
   private
 

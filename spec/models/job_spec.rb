@@ -57,6 +57,24 @@ describe Job, job_spec: true do
     end
   end
 
+  describe 'when created, then updated in an order that exists in production', prod_api: true do
+    let!(:prod_order) { create(:production_order) }
+    let!(:order) { create(:order, softwear_prod_id: prod_order.id) }
+
+    it 'creates a copy in production' do
+      job = create(:job, jobbable: order)
+
+      job.name = "ok a job"
+      job.description = "this is the new job"
+      job.save!
+
+      expect(job).to be_production
+      expect(prod_order.reload.jobs.size).to eq 1
+      expect(prod_order.jobs.first).to eq job.production
+      expect(prod_order.jobs.first.name).to include 'ok a job'
+    end
+  end
+
   describe 'Validations' do
     # It won't listen to a multi-faceted scope
     # it { is_expected.to validate_uniqueness_of(:name).scoped_to(:order_id) }
