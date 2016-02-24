@@ -135,6 +135,8 @@ RSpec.configure do |config|
     Endpoint::Stub[Production::Job]
     Endpoint::Stub[Production::Imprint]
     Endpoint::Stub[Production::ImprintGroup]
+    Endpoint::Stub[Production::LocalDeliveryTrain]
+    Endpoint::Stub[Production::ShipmentTrain]
   end
 
   config.after(:suite) do

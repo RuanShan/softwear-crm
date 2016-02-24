@@ -1,6 +1,9 @@
 class Shipment < ActiveRecord::Base
   include Popularity
   include Softwear::Auth::BelongsToUser
+  include ProductionCounterpart
+
+  self.production_class = :polymorphic
 
   rates_popularity_of :shipping_method
 
@@ -45,17 +48,33 @@ class Shipment < ActiveRecord::Base
   end
 
   def create_train
+    return if production?
     error = nil
 
     case shipping_method.name
     when 'Ann Arbor Tees Delivery'
       train = Production::LocalDeliveryTrain.create(
+        softwear_crm_id: id,
         order_id: order.softwear_prod_id,
         state:    shipped? ? 'out_for_delivery' : 'pending_packing'
       )
-      unless train.persisted?
-        error = "Failed to create LocalDeliveryTrain: #{train.errors.full_messages.join(', ')}"
-      end
+    else
+      return if shippable.nil?
+
+      train = Production::ShipmentTrain.create(
+        softwear_crm_id: id,
+        # NOTE this assumes "Order" and "Job" are named the same in Production and CRM
+        shipment_holder_type: shippable_type,
+        shipment_holder_id:   shippable.softwear_prod_id,
+        state:                shipped? ? 'pending_packing' : 'shipped'
+      )
+    end
+
+    if train.persisted?
+      update_column :softwear_prod_id,   train.id
+      update_column :softwear_prod_type, train.class.name
+    else
+      error = "Failed to create #{train.class.name}: #{train.errors.full_messages.join(', ')}"
     end
 
     if error && order

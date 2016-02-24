@@ -38,13 +38,30 @@ module ProductionCounterpart
       end
       updated_count
     end
+
+    def self.production_polymorphic?
+      production_class == :polymorphic
+    end
+
+    def production_class
+      if production_polymorphic?
+        return nil if softwear_prod_type.blank?
+        softwear_prod_type.constantize
+      else
+        @production_class
+      end
+    end
   end
 
   def production_class
     self.class.production_class
   end
+  def production_polymorphic?
+    self.class.production_polymorphic?
+  end
 
   def production
+    return nil if production_class.nil? || softwear_prod_id.nil?
     @production ||= production_class.find(softwear_prod_id)
   end
 
