@@ -47,6 +47,9 @@ class Shipment < ActiveRecord::Base
     order.try(:production?)
   end
 
+  def self.create_train(id)
+    find(id).create_train
+  end
   def create_train
     return if production?
     error = nil
@@ -81,6 +84,14 @@ class Shipment < ActiveRecord::Base
       order.issue_warning('Production API', error)
     end
     !!error
+  end
+
+  if Rails.env.production?
+    def enqueue_create_train
+      self.class.delay(queue: 'api').create_train(id)
+    end
+  else
+    alias_method :enqueue_create_train, :create_train
   end
 
   protected
