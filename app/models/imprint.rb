@@ -33,6 +33,10 @@ class Imprint < ActiveRecord::Base
     "#{imprint_method.try(:name) || 'n\a'} - #{print_location.try(:name) || 'n\a'} - #{description}"
   end
 
+  def equipment_sanitizing?
+    imprint_method.try(:name) == 'Equipment Sanitizing'
+  end
+
   def name_changed?
     description_changed?
   end

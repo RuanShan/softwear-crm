@@ -104,7 +104,7 @@ class Job < ActiveRecord::Base
         softwear_crm_id: imprint.id,
         name:            imprint.name,
         description:     imprint.job_and_name,
-        count:           imprintable_line_items_total,
+        count:           imprint.equipment_sanitizing? ? 1 : imprintable_line_items_total,
         type:            imprint.production_type
       }
         .delete_if { |_,v| v.nil? }
