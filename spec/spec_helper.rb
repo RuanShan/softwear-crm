@@ -68,6 +68,7 @@ RSpec.configure do |config|
   config.include FormBuilderHelpers
   config.include SimulateDragSortable, type: :feature
   config.include Softwear::Lib::Spec
+  config.include Softwear::Lib::Spec::Select2
   config.include OrderHelpers
   config.include Softwear::Auth::Spec
 
