@@ -61,7 +61,7 @@ module ProductionCounterpart
     base = Figaro.env.production_url
     return if base.blank? || !production?
 
-    "#{base}/#{production_class.model_name.plural}/#{softwear_prod_id}"
+    "#{base}/#{production_class.model_name.element.pluralize}/#{softwear_prod_id}"
   end
 
   def should_update_production?
