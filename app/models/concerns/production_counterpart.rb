@@ -3,7 +3,10 @@ module ProductionCounterpart
 
   included do
     cattr_accessor :production_class
-    self.production_class = "Production::#{name}".constantize
+    begin
+      self.production_class = "Production::#{name}".constantize
+    rescue NameError => _
+    end
 
     before_save :enqueue_update_production, if: :should_update_production?
     after_destroy :enqueue_destroy_production, if: :should_update_production?
@@ -58,7 +61,7 @@ module ProductionCounterpart
     base = Figaro.env.production_url
     return if base.blank? || !production?
 
-    "#{base}/#{model_name.collection}/#{softwear_prod_id}"
+    "#{base}/#{production_class.model_name.plural}/#{softwear_prod_id}"
   end
 
   def should_update_production?

@@ -607,6 +607,7 @@ class Order < ActiveRecord::Base
     end
 
     shipments.each(&:create_train)
+    artwork_requests.each(&:create_imprint_group_if_needed)
   end
 
   warn_on_failure_of :create_production_order unless Rails.env.test?

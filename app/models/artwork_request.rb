@@ -1,7 +1,10 @@
 class ArtworkRequest < ActiveRecord::Base
   include TrackingHelpers
-  include IntegratedCrms
+  include ProductionCounterpart
   include Softwear::Auth::BelongsToUser
+  include IntegratedCrms
+
+  self.production_class = Production::ImprintGroup
 
   acts_as_paranoid
   acts_as_warnable
@@ -58,6 +61,7 @@ class ArtworkRequest < ActiveRecord::Base
   validates :salesperson_id, presence: true
 
   after_create :enqueue_create_freshdesk_proof_ticket if Rails.env.production?
+  after_save :enqueue_create_imprint_group_if_needed
   before_save :transition_to_assigned, if: :should_assign?
 
   attr_accessor :current_user
@@ -171,6 +175,10 @@ class ArtworkRequest < ActiveRecord::Base
     else
       @order ||= imprints.first.try(:job).try(:jobbable)
     end
+  end
+
+  def order_in_production?
+    order.try(:production?)
   end
 
   def fba?
@@ -400,6 +408,64 @@ class ArtworkRequest < ActiveRecord::Base
 
   def should_assign?
     artist_id_was.nil? && artist_id_changed? && state == 'unassigned'
+  end
+
+  def self.create_imprint_group_if_needed(id)
+    find(id).create_imprint_group_if_needed
+  end
+  def create_imprint_group_if_needed
+    return unless order_in_production?
+    return if order.artwork_state == 'pending_artwork_requests'
+    return if imprints.size < 2
+    warning_source = "ArtworkRequest#create_imprint_group_if_needed"
+
+    imprints_not_at_initial_state = []
+    imprints.each do |imprint|
+      if !imprint.production?
+        order.issue_warning(warning_source, "Artwork Request ##{id} has imprints missing from production.")
+        next
+      end
+
+      imprints_not_at_initial_state << imprint unless imprint.production.at_initial_state
+    end
+
+    unless imprints_not_at_initial_state.empty?
+      return if production?
+
+      order.issue_warning(
+        warning_source,
+        "Artwork Request ##{id} references imprints which aren't at their initial production states: "\
+        "#{imprints_not_at_initial_state.map { |i| %([CRM###{i.id}, PROD##{i.id}]) }.join(', ')}."\
+        "The Artwork Request will not generate an imprint group."
+      )
+      return
+    end
+
+    destroy_production if production?
+
+    imprint_group = Production::ImprintGroup.post_raw(
+      softwear_crm_id: id,
+      imprint_ids: imprints.map(:softwear_crm_id).compact
+    )
+
+    if imprint_group.persisted?
+      imprint_group.softwear_crm_id = id
+      imprint_group.save!
+    else
+      order.issue_warning(
+        warning_source,
+        "Artwork Request ##{id} failed to create an imprint group: #{imprint_group.errors.full_messages.join(', ')}"
+      )
+      return
+    end
+  end
+
+  if Rails.env.production?
+    def enqueue_create_imprint_group_if_needed
+      self.class.delay(queue: 'api').create_imprint_group_if_needed(id)
+    end
+  else
+    alias_method :enqueue_create_imprint_group_if_needed, :create_imprint_group_if_needed
   end
 
   def self.destroy_trains(id)

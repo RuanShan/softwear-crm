@@ -115,6 +115,27 @@ describe ArtworkRequest, artwork_request_spec: true do
     it 'creates a freshdesk ticket', story_809: true
   end
 
+  describe '#create_imprint_group_if_needed', imprint_group: true do
+    let!(:order) { create(:order) }
+
+    let!(:job_1) { create(:job, jobbable: order) }
+    let!(:imprint_1_1) { create(:valid_imprint, job: job_1) }
+    let!(:imprint_1_2) { create(:valid_imprint, job: job_1) }
+
+    let!(:job_2) { create(:job, jobbable: order) }
+    let!(:imprint_2_1) { create(:valid_imprint, job: job_2) }
+
+    let!(:artwork_request) do
+      create(
+        :artwork_request,
+        imprints: [imprint_1_1, imprint_2_1]
+        # TODO
+      )
+    end
+
+    # TODO
+  end
+
   context '#freshdesk_proof_ticket', story_809: true do
     context 'no freshdesk artwork ticket exists' do
       it 'creates an artwork freshdesk ticket for the order'
