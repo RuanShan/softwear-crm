@@ -37,6 +37,10 @@ class Imprint < ActiveRecord::Base
     imprint_method.try(:name) == 'Equipment Sanitizing'
   end
 
+  def no_imprint?
+    imprint_method.try(:name) == 'No Imprint'
+  end
+
   def name_changed?
     description_changed?
   end

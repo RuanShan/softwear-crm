@@ -100,6 +100,8 @@ class Job < ActiveRecord::Base
     attrs = {}
 
     imprints.each_with_index do |imprint, index|
+      next if imprint.no_imprint?
+
       attrs[index] = {
         softwear_crm_id: imprint.id,
         name:            imprint.name,
