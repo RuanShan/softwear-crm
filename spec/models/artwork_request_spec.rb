@@ -115,6 +115,50 @@ describe ArtworkRequest, artwork_request_spec: true do
     it 'creates a freshdesk ticket', story_809: true
   end
 
+  describe '#create_imprint_group_if_needed', imprint_group: true do
+    let!(:user) { create(:user) }
+    let!(:ink) { create(:ink_color) }
+
+    let!(:prod_order) { create(:production_order) }
+    let!(:order) { create(:order) }
+
+    let!(:job_1) { create(:job, jobbable: order) }
+    let!(:imprint_1_1) { create(:valid_imprint, job: job_1) }
+    let!(:imprint_1_2) { create(:valid_imprint, job: job_1) }
+
+    let!(:job_2) { create(:job, jobbable: order) }
+    let!(:imprint_2_1) { create(:valid_imprint, job: job_2) }
+
+    let!(:artwork_request) do
+      create(
+        :artwork_request,
+        imprints:    [imprint_1_1, imprint_2_1],
+        salesperson: user,
+        ink_colors:  [ink]
+      )
+    end
+
+    before(:each) do
+      order.update_column :softwear_prod_id, prod_order.id
+      [imprint_1_1, imprint_1_2, imprint_2_1].each do |imprint|
+        prod_imprint = create(:production_imprint)
+        imprint.update_column :softwear_prod_id, prod_imprint.id
+      end
+    end
+
+    it 'generates an imprint group when the artwork request includes imprints across multiple jobs' do
+      allow_any_instance_of(Order).to receive(:artwork_state).and_return 'ready_for_production'
+
+      expect(artwork_request).to be_order_in_production
+
+      artwork_request.create_imprint_group_if_needed
+
+      expect(artwork_request.production?).to eq true
+      expect(artwork_request.production.order_id).to eq order.softwear_prod_id
+      expect(artwork_request.production.imprint_ids.size).to eq 2
+    end
+  end
+
   context '#freshdesk_proof_ticket', story_809: true do
     context 'no freshdesk artwork ticket exists' do
       it 'creates an artwork freshdesk ticket for the order'

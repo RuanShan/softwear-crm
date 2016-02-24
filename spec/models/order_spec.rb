@@ -184,6 +184,7 @@ describe Order, order_spec: true do
       allow(order).to receive(:total).and_return(5)
       allow(order).to receive(:total_excluding_discounts).and_return(5)
       allow(order).to receive(:calculate_payment_total).and_return(5)
+      allow_any_instance_of(ArtworkRequest).to receive(:create_imprint_group_if_needed)
       order.recalculate_payment_total
     end
 

@@ -133,6 +133,7 @@ RSpec.configure do |config|
     Endpoint::Stub[Production::Order]
     Endpoint::Stub[Production::Job]
     Endpoint::Stub[Production::Imprint]
+    Endpoint::Stub[Production::ImprintGroup]
   end
 
   config.after(:suite) do
