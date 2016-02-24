@@ -420,9 +420,13 @@ class ArtworkRequest < ActiveRecord::Base
     warning_source = "ArtworkRequest#create_imprint_group_if_needed"
 
     imprints_not_at_initial_state = []
+    issued_imprint_missing_warning = false
     imprints.each do |imprint|
       if !imprint.production?
-        order.issue_warning(warning_source, "Artwork Request ##{id} has imprints missing from production.")
+        unless issued_imprint_missing_warning
+          order.issue_warning(warning_source, "Artwork Request ##{id} has imprints missing from production.")
+          issued_imprint_missing_warning = true
+        end
         next
       end
 
@@ -445,12 +449,11 @@ class ArtworkRequest < ActiveRecord::Base
 
     imprint_group = Production::ImprintGroup.post_raw(
       softwear_crm_id: id,
-      imprint_ids: imprints.map(:softwear_crm_id).compact
+      imprint_ids: imprints.map(&:softwear_prod_id).compact
     )
 
     if imprint_group.persisted?
-      imprint_group.softwear_crm_id = id
-      imprint_group.save!
+      update_column :softwear_prod_id, imprint_group.id
     else
       order.issue_warning(
         warning_source,

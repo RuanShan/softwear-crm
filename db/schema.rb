@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160210190339) do
+ActiveRecord::Schema.define(version: 20160223202316) do
 
   create_table "activities", force: :cascade do |t|
     t.integer  "trackable_id",   limit: 4
@@ -95,6 +95,7 @@ ActiveRecord::Schema.define(version: 20160210190339) do
     t.integer  "approved_by_id",          limit: 4
     t.boolean  "exact_recreation"
     t.decimal  "amount_paid_for_artwork",                  precision: 10, scale: 2, default: 0.0
+    t.integer  "softwear_prod_id",        limit: 4
   end
 
   create_table "artworks", force: :cascade do |t|

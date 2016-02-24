@@ -83,6 +83,7 @@ module ProductionCounterpart
 
   def destroy_production
     production.destroy
+    self.update_column :softwear_prod_id, nil
   end
 
   protected

@@ -19,5 +19,6 @@ FactoryGirl.define do
   factory :production_imprint, class: 'Production::Imprint' do
     name 'some imprint'
     scheduled_at 5.days.from_now
+    at_initial_state true
   end
 end
