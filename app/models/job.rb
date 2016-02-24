@@ -136,7 +136,7 @@ class Job < ActiveRecord::Base
       unless Production::Ar3Train.create(
         order_id: order.softwear_prod_id,
         crm_artwork_request_id: artwork_request.id
-      ).persisted?
+      ).try(:persisted?)
 
         failed_imprint_methods['Digital Print'] = true
       end
@@ -147,7 +147,7 @@ class Job < ActiveRecord::Base
       unless Production::ScreenTrain.create(
         order_id: order.softwear_prod_id,
         crm_artwork_request_id: artwork_request.id
-      ).persisted?
+      ).try(:persisted?)
 
         failed_imprint_methods['Screen Print'] = true
       end
@@ -158,7 +158,7 @@ class Job < ActiveRecord::Base
       unless Production::DigitizationTrain.create(
         order_id: order.softwear_prod_id,
         crm_artwork_request_id: artwork_request.id
-      ).persisted?
+      ).try(:persisted?)
 
         failed_imprint_methods['Embroidery'] = true
       end

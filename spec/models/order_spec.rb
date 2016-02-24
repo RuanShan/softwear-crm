@@ -624,9 +624,10 @@ describe Order, order_spec: true do
     context "production order doesn't have the same amount of jobs" do
 
       let!(:prod_order) { create(:production_order) }
-      let!(:order) { create(:order_with_job, softwear_prod_id: prod_order.id) }
+      let!(:order) { create(:order_with_job) }
 
       it 'creates a warning' do
+        order.update_column :softwear_prod_id, prod_order.id
         expect {
           order.prod_api_confirm_job_counts
         }.to change{order.warnings_count}.from(0).to(1)
