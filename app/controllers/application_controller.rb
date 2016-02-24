@@ -116,7 +116,7 @@ class ApplicationController < ActionController::Base
       end
 
       @title += "#{action_name.humanize} - " unless (action_name rescue nil).nil?
-    rescue Exception => e
+    rescue Exception => _e
     end
 
     @title += "SoftWEAR"

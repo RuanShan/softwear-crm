@@ -1,9 +1,9 @@
 class ErrorReportMailer < ActionMailer::Base
   default to: 'devteam@annarbortees.com'
 
-  def send_report(params)
+  def send_report(user, params)
     @order = Order.find_by(id: params[:order_id])
-    @user  = User.find_by(id: params[:user_id])
+    @user  = user || User.find_by(id: params[:user_id])
 
     if @user.nil?
       from_customer = true
@@ -16,7 +16,7 @@ class ErrorReportMailer < ActionMailer::Base
       else
         @user = OpenStruct.new(
           email:     @order.email,
-          full_name: @order.full_name
+          full_name: "(Customer) #{@order.full_name}"
         )
       end
     end
