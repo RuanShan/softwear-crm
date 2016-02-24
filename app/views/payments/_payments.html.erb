@@ -67,7 +67,7 @@
         <i class="fa fa-paypal"></i> PayPal
       <% end %>
 
-      <%= button_to new_order_payment_path(order.id) + '?payment_method=1', {
+      <%= button_to new_order_payment_path(order.id) + '?payment_method=7', {
               class: 'additional-icon btn btn-default payment-button', method: :get,
               remote: true, 'data-target' => '#payment-form', id: 'wire-button' } do %>
         <i class="fa fa-code-fork"></i> Wire Transfer

@@ -81,7 +81,7 @@ class Job < ActiveRecord::Base
   end
 
   def name_in_production
-    "#{order.name} #{name} CRM##{id}"
+    "#{name} CRM##{id}"
   end
 
   def production_attributes
