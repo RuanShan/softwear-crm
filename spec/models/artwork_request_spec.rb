@@ -154,6 +154,7 @@ describe ArtworkRequest, artwork_request_spec: true do
       artwork_request.create_imprint_group_if_needed
 
       expect(artwork_request.production?).to eq true
+      expect(artwork_request.production.order_id).to eq order.softwear_prod_id
       expect(artwork_request.production.imprint_ids.size).to eq 2
     end
   end

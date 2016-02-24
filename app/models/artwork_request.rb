@@ -449,6 +449,7 @@ class ArtworkRequest < ActiveRecord::Base
 
     imprint_group = Production::ImprintGroup.post_raw(
       softwear_crm_id: id,
+      order_id: order.softwear_prod_id,
       imprint_ids: imprints.map(&:softwear_prod_id).compact
     )
 
