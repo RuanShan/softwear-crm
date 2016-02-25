@@ -50,7 +50,7 @@ class QuoteRequest < ActiveRecord::Base
 
   before_validation(on: :create) { self.status = 'pending' if status.nil? }
   enqueue :link_integrated_crm_contacts, queue: 'api'
-  before_create :enqueue_link_integrated_crm_contacts, if: :should_access_third_parties?
+  after_create :enqueue_link_integrated_crm_contacts, if: :should_access_third_parties?
   before_save :notify_salesperson_if_assigned
   before_save { self.status = 'assigned' if salesperson_id_changed? && salesperson_id_was.nil? }
 

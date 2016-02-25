@@ -1,8 +1,38 @@
 module ProductionCounterpart
   extend ActiveSupport::Concern
 
+  module ClassMethods
+    def fetch_production_ids(start_date = nil)
+      start_date ||= 1.month.ago
+
+      updated_count = 0
+      where('softwear_prod_id IS NULL AND created_at > ?', start_date).find_each do |record|
+        if prod_record = production_class.where(softwear_crm_id: record.id).first
+          record.update_column :softwear_prod_id, prod_record.id
+          updated_count += 1
+        end
+      end
+      updated_count
+    end
+
+    def production_polymorphic?
+      @production_class == :polymorphic
+    end
+
+    def production_class
+      if production_polymorphic?
+        return nil if softwear_prod_type.blank?
+        softwear_prod_type.constantize
+      else
+        @production_class
+      end
+    end
+  end
+
   included do
-    cattr_accessor :production_class
+    extend ClassMethods
+
+    cattr_writer :production_class
     begin
       self.production_class = "Production::#{name}".constantize
     rescue NameError => _
@@ -24,32 +54,6 @@ module ProductionCounterpart
     else
       alias_method :enqueue_update_production, :update_production
       alias_method :enqueue_destroy_production, :destroy_production
-    end
-
-    def self.fetch_production_ids(start_date = nil)
-      start_date ||= 1.month.ago
-
-      updated_count = 0
-      where('softwear_prod_id IS NULL AND created_at > ?', start_date).find_each do |record|
-        if prod_record = production_class.where(softwear_crm_id: record.id).first
-          record.update_column :softwear_prod_id, prod_record.id
-          updated_count += 1
-        end
-      end
-      updated_count
-    end
-
-    def self.production_polymorphic?
-      production_class == :polymorphic
-    end
-
-    def self.production_class
-      if production_polymorphic?
-        return nil if softwear_prod_type.blank?
-        softwear_prod_type.constantize
-      else
-        @production_class
-      end
     end
   end
 
@@ -99,8 +103,9 @@ module ProductionCounterpart
   end
 
   def destroy_production
-    production.destroy
+    production.destroy unless production.nil?
     self.update_column :softwear_prod_id, nil
+  rescue ActiveRecord::ActiveRecordError => _
   end
 
   protected

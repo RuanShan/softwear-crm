@@ -54,7 +54,7 @@ describe Shipment do
             subject.status = 'shipped'
 
             expect(Production::LocalDeliveryTrain).to receive(:create)
-              .with(softwear_crm_id: subject.id, order_id: 1, state: 'out_for_delivery')
+              .with(hash_including(softwear_crm_id: subject.id, order_id: 1, state: 'out_for_delivery'))
               .and_return double('LocalDeliveryTrain', persisted?: true, id: 1)
 
             subject.create_train
@@ -66,7 +66,7 @@ describe Shipment do
             subject.status = 'pending'
 
             expect(Production::LocalDeliveryTrain).to receive(:create)
-              .with(softwear_crm_id: subject.id, order_id: 1, state: 'pending_packing')
+              .with(hash_including(softwear_crm_id: subject.id, order_id: 1, state: 'pending_packing'))
               .and_return double('LocalDeliveryTrain', persisted?: true, id: 1)
 
             subject.create_train
@@ -94,10 +94,12 @@ describe Shipment do
         it 'creates a ShipmentTrain' do
           expect(Production::ShipmentTrain).to receive(:create)
             .with(
-              softwear_crm_id: subject.id,
-              shipment_holder_type: 'Order',
-              shipment_holder_id: subject.order.id,
-              state: anything
+              hash_including(
+                softwear_crm_id: subject.id,
+                shipment_holder_type: 'Order',
+                shipment_holder_id: subject.order.id,
+                state: anything
+              )
             )
             .and_return double("ShipmentTrain", persisted?: true, id: 1)
 

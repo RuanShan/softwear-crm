@@ -49,6 +49,24 @@ class Shipment < ActiveRecord::Base
     order.try(:production?)
   end
 
+  def carrier
+    case shipping_method.name
+    when /^UPS/     then 'UPS'
+    when /^USPS/    then 'USPS'
+    when /Freight$/ then 'Freight'
+    else
+      nil
+    end
+  end
+
+  def service
+    if /^US?PS\s+(?<s>.+)$/ =~ shipping_method.name
+      s
+    else
+      shipping_method
+    end
+  end
+
   def create_train
     return if production?
     error = nil
@@ -68,7 +86,11 @@ class Shipment < ActiveRecord::Base
         # NOTE this assumes "Order" and "Job" are named the same in Production and CRM
         shipment_holder_type: shippable_type,
         shipment_holder_id:   shippable.softwear_prod_id,
-        state:                shipped? ? 'pending_packing' : 'shipped'
+        state:                shipped? ? 'pending_packing' : 'shipped',
+        tracking:             tracking_number,
+        shipped_at:           shipped_at,
+        carrier:              carrier,
+        service:              service
       )
     end
 
@@ -89,5 +111,6 @@ class Shipment < ActiveRecord::Base
 
   def assign_proper_status
     self.status = tracking_number.blank? ? 'pending' : 'shipped'
+  rescue RuntimeError => _
   end
 end
