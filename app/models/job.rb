@@ -20,7 +20,7 @@ class Job < ActiveRecord::Base
   after_update :destroy_self_if_line_items_and_imprints_are_empty
   after_create :create_default_imprint, if: :fba?
   enqueue :create_production_job, queue: 'api'
-  after_update :enqueue_create_production_job, if: :order_in_production?
+  after_update :enqueue_create_production_job, if: :needs_production_job?
 
   belongs_to :jobbable, polymorphic: true
   belongs_to :fba_job_template
@@ -53,6 +53,10 @@ class Job < ActiveRecord::Base
 
   def all_shipments
     shipments
+  end
+
+  def needs_production_job?
+    order_in_production? && !production?
   end
 
   def order_in_production?
