@@ -16,7 +16,7 @@ module IntegratedCrms
   end
 
   def should_access_third_parties?
-    !Rails.env.development? || Figaro.env.integrated_crms.try(:downcase) == 'true'
+    Rails.env.production? || Figaro.env.integrated_crms.try(:downcase) == 'true'
   end
 
   def insightly
@@ -119,11 +119,11 @@ module IntegratedCrms
 
     r = ApplicationController.new
     quote_requests
-      .reduce('') do |description, quote_request|
+      .reduce('') do |description, qr|
         r.render_string(
           template: nil,
           partial: 'quote_requests/basic_table',
-          locals: { quote_request: quote_request }
+          locals: { quote_request: qr }
         )
       end
       .html_safe
