@@ -55,6 +55,7 @@ class OrdersController < InheritedResources::Base
   def edit
     super do
       @current_action = 'orders#edit'
+      @shipping_methods = grab_shipping_methods
       assign_activities
     end
   end
@@ -211,6 +212,16 @@ class OrdersController < InheritedResources::Base
 
   def assign_activities
     @activities = @order.all_activities
+  end
+
+  def grab_shipping_methods
+    if @order.fba?
+      ShippingMethod.all
+    else
+      fba_filter = '"%Amazon FBA%"'
+      ShippingMethod.where.not("name LIKE #{fba_filter}") +
+      [ShippingMethod.find_by("name LIKE #{fba_filter}")].compact
+    end
   end
 
   def permitted_params

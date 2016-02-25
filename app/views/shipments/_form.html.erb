@@ -1,7 +1,7 @@
 <%= bootstrap_form_for shipment, remote: true do |f| %>
   <div class='form-group'>
     <%= f.select :shipping_method_id,
-      options_from_collection_for_select(ShippingMethod.all, :id, :name, f.object.try(:shipping_method_id).try(:to_s)),
+      options_from_collection_for_select(@shipping_methods || ShippingMethod.all, :id, :name, f.object.try(:shipping_method_id).try(:to_s)),
       {},
       class: 'select2', style: 'width: 100%;'  %>
 
