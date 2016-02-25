@@ -204,9 +204,7 @@ CrmSoftwearcrmCom::Application.routes.draw do
     resources 'shipments', only: [:index, :show, :update]
   end
 
-  authenticate :user do
-    mount Sidekiq::Web => '/sidekiq'
-  end
+  mount Sidekiq::Web => '/sidekiq'
 
   get '/undock', to: 'home#undock'
   get '/undock/:quote_request_id', to: 'home#undock'
