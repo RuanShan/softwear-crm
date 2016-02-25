@@ -19,6 +19,10 @@ module ProductionCounterpart
       @production_class == :polymorphic
     end
 
+    def production_class=(value)
+      @production_class = value
+    end
+
     def production_class
       if production_polymorphic?
         return nil if softwear_prod_type.blank?
@@ -31,29 +35,26 @@ module ProductionCounterpart
 
   included do
     extend ClassMethods
+    unless included_modules.include?(Softwear::Lib::Enqueue)
+      include Softwear::Lib::Enqueue
+    end
 
-    cattr_writer :production_class
     begin
       self.production_class = "Production::#{name}".constantize
     rescue NameError => _
     end
 
+    try :warn_on_failure_of, :update_production unless Rails.env.test?
+    enqueue :update_production, :destroy_production, queue: 'api'
+
     before_save :enqueue_update_production, if: :should_update_production?
     after_destroy :enqueue_destroy_production, if: :should_update_production?
 
-    try :warn_on_failure_of, :update_production unless Rails.env.test?
-
     if Rails.env.production?
+      # Override enqueue method to always pass update_production_fields
       def enqueue_update_production
-        delay(queue: 'api').update_production(update_production_fields)
+        self.class.delay(queue: 'api').update_production(id, update_production_fields)
       end
-
-      def enqueue_destroy_production
-        delay(queue: 'api').destroy_production
-      end
-    else
-      alias_method :enqueue_update_production, :update_production
-      alias_method :enqueue_destroy_production, :destroy_production
     end
   end
 
@@ -67,10 +68,12 @@ module ProductionCounterpart
   def production
     return nil if production_class.nil? || softwear_prod_id.nil?
     @production ||= production_class.find(softwear_prod_id)
+  rescue ActiveResource::ResourceNotFound => _
+    @production = nil
   end
 
   def production?
-    !softwear_prod_id.nil?
+    !!production
   end
 
   def sync_with_production(sync)

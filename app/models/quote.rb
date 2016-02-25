@@ -7,7 +7,6 @@ class Quote < ActiveRecord::Base
   include IntegratedCrms
   include ActionView::Helpers::DateHelper
   include Softwear::Auth::BelongsToUser
-  include Softwear::Lib::Enqueue
 
   acts_as_paranoid
   acts_as_commentable :public, :private
@@ -101,11 +100,9 @@ class Quote < ActiveRecord::Base
   validates(*(INSIGHTLY_FIELDS - [:insightly_opportunity_id]), presence: true, if: :should_validate_insightly_fields?)
   validate :no_line_item_errors
 
-  enqueue :create_freshdesk_ticket, :create_insightly_opportunity, queue: 'api'
-  after_create :enqueue_create_freshdesk_ticket, if: :should_access_third_parties?
-  after_create :enqueue_create_insightly_opportunity, if: :should_access_third_parties?
-
   after_save :set_quote_request_statuses_to_quoted
+  after_create :enqueue_create_freshdesk_ticket
+  after_create :enqueue_create_insightly_opportunity
   after_initialize :set_default_valid_until_date
   after_initialize  :initialize_time
 
@@ -411,6 +408,9 @@ class Quote < ActiveRecord::Base
     self.estimated_delivery_date = nil
   end
 
+  def enqueue_create_freshdesk_ticket
+    self.delay(queue: 'api').create_freshdesk_ticket if should_access_third_parties?
+  end
   warn_on_failure_of :enqueue_create_freshdesk_ticket
 
   def create_freshdesk_ticket
@@ -486,7 +486,7 @@ class Quote < ActiveRecord::Base
         return
       end
 
-      freshdesk.put_tickets(
+      _response = freshdesk.put_tickets(
         id: freshdesk_ticket_id,
         helpdesk_ticket: {
           requester_id: contact_id,
@@ -505,6 +505,9 @@ class Quote < ActiveRecord::Base
   end
 
 
+  def enqueue_create_insightly_opportunity
+    self.delay(queue: 'api').create_insightly_opportunity if should_access_third_parties?
+  end
   warn_on_failure_of :enqueue_create_insightly_opportunity
 
   def create_insightly_opportunity

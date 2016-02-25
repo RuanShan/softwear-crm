@@ -4,6 +4,10 @@ describe Quote, quote_spec: true do
 
   it { is_expected.to be_paranoid }
 
+  before(:each) do
+    allow_any_instance_of(Quote).to receive(:should_access_third_parties?).and_return true
+  end
+
   describe 'Relationships', story_74: true, story_79: true do
     it { is_expected.to belong_to(:store) }
     it { is_expected.to have_many(:emails) }
