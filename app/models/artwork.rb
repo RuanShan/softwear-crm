@@ -11,6 +11,7 @@ class Artwork < ActiveRecord::Base
     text :tag_list do
       tag_list.map(&:to_s)
     end
+    integer :id
   end
 
   after_initialize :initialize_assets

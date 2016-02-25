@@ -9,6 +9,7 @@ class Job < ActiveRecord::Base
     text :name, :description
     string :name
     reference :jobbable
+    integer :id
   end
 
   tracked by_current_user + on_order

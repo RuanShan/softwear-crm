@@ -6,7 +6,7 @@ class Proof < ActiveRecord::Base
   acts_as_paranoid
 
   searchable do
-
+    integer :id
   end
 
   tracked by_current_user + on_order

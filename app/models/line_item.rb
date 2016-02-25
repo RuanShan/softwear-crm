@@ -10,6 +10,7 @@ class LineItem < ActiveRecord::Base
   searchable do
     text :name, :description
     boolean(:is_imprintable) { imprintable? }
+    integer :id
   end
 
   tracked skip_defaults: true

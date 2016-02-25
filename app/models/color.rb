@@ -13,6 +13,7 @@ class Color < ActiveRecord::Base
 
   searchable do
     text :name, :sku, :map
+    integer :id
   end
 
   def hexcodes

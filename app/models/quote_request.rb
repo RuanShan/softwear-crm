@@ -26,6 +26,7 @@ class QuoteRequest < ActiveRecord::Base
 
     string :status
     time :created_at
+    integer :id
   end
 
   QUOTE_REQUEST_STATUSES = %w(

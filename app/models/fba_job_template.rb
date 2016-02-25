@@ -16,6 +16,7 @@ class FbaJobTemplate < ActiveRecord::Base
     text :name, :job_name
     boolean :needs_artwork
     boolean :needs_proof
+    integer :id
   end
 
   def needs_artwork

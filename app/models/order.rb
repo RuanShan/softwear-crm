@@ -30,6 +30,7 @@ class Order < ActiveRecord::Base
     double :commission_amount
 
     integer :warnings_count
+    integer :id
 
     boolean :balance do
       balance != 0

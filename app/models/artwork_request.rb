@@ -22,6 +22,8 @@ class ArtworkRequest < ActiveRecord::Base
 
     date :deadline
     date :order_in_hand_by
+
+    integer :id
   end
 
   PRIORITIES = {

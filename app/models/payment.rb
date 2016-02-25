@@ -15,6 +15,7 @@ class Payment < ActiveRecord::Base
       payment_drop_payments.blank?
     end
 
+    integer :id
   end
 
   VALID_PAYMENT_METHODS = {

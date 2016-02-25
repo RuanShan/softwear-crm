@@ -96,7 +96,7 @@ module Search
     # local_thing = something
     # str = "hey there ".instance_eval { concat(local_thing) }
     #
-    # That will actually have the desired effect, dang!
+    # That will actually have the desired effect.
     #
     # As much as it is pretty cool that we can carry over our data, it
     # makes it difficult to split up our functionality into functions
@@ -136,8 +136,10 @@ module Search
             query_model.filter.apply(self, base_scope)
           end
 
-          instance_eval(&block) if block_given?
           paginate page: options[:page] || 1, per_page: model.default_per_page
+          order_by :id, :desc
+
+          instance_eval(&block) if block_given?
         end
       end
 
