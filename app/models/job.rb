@@ -433,7 +433,7 @@ class Job < ActiveRecord::Base
   end
 
   def create_production_job
-    return if order.softwear_prod_id.nil?
+    return if order.softwear_prod_id.nil? || !production?
 
     prod_job = Production::Job.post_raw(production_attributes.merge(order_id: order.softwear_prod_id))
 
