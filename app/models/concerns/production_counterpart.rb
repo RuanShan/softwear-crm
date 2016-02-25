@@ -24,12 +24,7 @@ module ProductionCounterpart
     end
 
     def production_class
-      if production_polymorphic?
-        return nil if softwear_prod_type.blank?
-        softwear_prod_type.constantize
-      else
-        @production_class
-      end
+      @production_class
     end
   end
 
@@ -59,7 +54,12 @@ module ProductionCounterpart
   end
 
   def production_class
-    self.class.production_class
+    if production_polymorphic?
+      return nil if softwear_prod_type.blank?
+      softwear_prod_type.constantize
+    else
+      self.class.production_class
+    end
   end
   def production_polymorphic?
     self.class.production_polymorphic?
