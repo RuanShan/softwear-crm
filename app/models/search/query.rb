@@ -137,7 +137,11 @@ module Search
           end
 
           paginate page: options[:page] || 1, per_page: model.default_per_page
-          order_by :id, :desc
+          # Only order by ID if it happens to be indexed
+          begin
+            order_by :id, :desc
+          rescue Sunspot::UnrecognizedFieldError => _
+          end
 
           instance_eval(&block) if block_given?
         end

@@ -44,6 +44,7 @@ describe ArtworkRequest, artwork_request_spec: true do
     end
 
     describe 'approval', artwork_request_approved: true do
+      let!(:prod_order) { create(:production_order) }
       let!(:order) { create(:order_with_job) }
       let(:job) { order.jobs.first }
       let!(:artwork_request) { create(:valid_artwork_request_with_asset_and_artwork) }
@@ -65,7 +66,7 @@ describe ArtworkRequest, artwork_request_spec: true do
         allow(Job).to receive(:delay).and_return Job
         allow(ArtworkRequest).to receive(:delay).and_return ArtworkRequest
         allow(ArtworkRequest).to receive(:find).and_return artwork_request
-        allow_any_instance_of(Order).to receive(:softwear_prod_id).and_return 666
+        allow_any_instance_of(Order).to receive(:softwear_prod_id).and_return prod_order.id
 
         artwork_request.update_column :state, :pending_manager_approval
       end
