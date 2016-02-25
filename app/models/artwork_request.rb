@@ -3,6 +3,7 @@ class ArtworkRequest < ActiveRecord::Base
   include ProductionCounterpart
   include Softwear::Auth::BelongsToUser
   include IntegratedCrms
+  include Softwear::Lib::Enqueue
 
   self.production_class = Production::ImprintGroup
 
@@ -60,7 +61,9 @@ class ArtworkRequest < ActiveRecord::Base
   validates :priority,       presence: true
   validates :salesperson_id, presence: true
 
-  after_create :enqueue_create_freshdesk_proof_ticket if Rails.env.production?
+  enqueue :create_imprint_group_if_needed, queue: 'api'
+
+  after_create :enqueue_create_freshdesk_proof_ticket, unless: :fba? if Rails.env.production?
   after_save :enqueue_create_imprint_group_if_needed
   before_save :transition_to_assigned, if: :should_assign?
 
@@ -410,9 +413,6 @@ class ArtworkRequest < ActiveRecord::Base
     artist_id_was.nil? && artist_id_changed? && state == 'unassigned'
   end
 
-  def self.create_imprint_group_if_needed(id)
-    find(id).create_imprint_group_if_needed
-  end
   def create_imprint_group_if_needed
     return unless order_in_production?
     return if order.artwork_state == 'pending_artwork_requests'
@@ -462,14 +462,6 @@ class ArtworkRequest < ActiveRecord::Base
       )
       return
     end
-  end
-
-  if Rails.env.production?
-    def enqueue_create_imprint_group_if_needed
-      self.class.delay(queue: 'api').create_imprint_group_if_needed(id)
-    end
-  else
-    alias_method :enqueue_create_imprint_group_if_needed, :create_imprint_group_if_needed
   end
 
   def self.destroy_trains(id)

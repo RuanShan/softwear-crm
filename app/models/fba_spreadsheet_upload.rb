@@ -1,6 +1,9 @@
 class FbaSpreadsheetUpload < ActiveRecord::Base
+  include Softwear::Lib::Enqueue
+
   validates :spreadsheet, presence: true
 
+  enqueue :create_records
   after_create :enqueue_create_records
 
   def spreadsheet=(value)
@@ -18,10 +21,6 @@ class FbaSpreadsheetUpload < ActiveRecord::Base
     return @spreadsheet_hash if @spreadsheet_hash
     text = super
     @spreadsheet_hash = JSON.parse(text) unless text.blank?
-  end
-
-  def self.create_records(id)
-    find(id).create_records
   end
 
   def create_records
@@ -251,13 +250,5 @@ class FbaSpreadsheetUpload < ActiveRecord::Base
     save!
 
     all_errors
-  end
-
-  if Rails.env.production?
-    def enqueue_create_records
-      self.class.delay.create_records(id)
-    end
-  else
-    alias_method :enqueue_create_records, :create_records
   end
 end

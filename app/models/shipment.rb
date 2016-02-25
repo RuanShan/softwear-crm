@@ -2,6 +2,7 @@ class Shipment < ActiveRecord::Base
   include Popularity
   include Softwear::Auth::BelongsToUser
   include ProductionCounterpart
+  include Softwear::Lib::Enqueue
 
   self.production_class = :polymorphic
 
@@ -21,7 +22,8 @@ class Shipment < ActiveRecord::Base
   after_save do
     shippable.try(:check_if_shipped!)
   end
-  after_create :create_train, if: :order_in_production?
+  enqueue :create_train, queue: 'api'
+  after_create :enqueue_create_train, if: :order_in_production?
 
   def shipped?
     status == 'shipped'
@@ -47,9 +49,6 @@ class Shipment < ActiveRecord::Base
     order.try(:production?)
   end
 
-  def self.create_train(id)
-    find(id).create_train
-  end
   def create_train
     return if production?
     error = nil
@@ -84,14 +83,6 @@ class Shipment < ActiveRecord::Base
       order.issue_warning('Production API', error)
     end
     !!error
-  end
-
-  if Rails.env.production?
-    def enqueue_create_train
-      self.class.delay(queue: 'api').create_train(id)
-    end
-  else
-    alias_method :enqueue_create_train, :create_train
   end
 
   protected

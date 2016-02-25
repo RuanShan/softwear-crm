@@ -43,7 +43,7 @@ module ProductionCounterpart
       production_class == :polymorphic
     end
 
-    def production_class
+    def self.production_class
       if production_polymorphic?
         return nil if softwear_prod_type.blank?
         softwear_prod_type.constantize

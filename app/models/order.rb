@@ -2,6 +2,7 @@ class Order < ActiveRecord::Base
   include TrackingHelpers
   include ProductionCounterpart
   include Softwear::Auth::BelongsToUser
+  include Softwear::Lib::Enqueue
 
   acts_as_paranoid
   acts_as_commentable :public, :private
@@ -167,6 +168,7 @@ class Order < ActiveRecord::Base
 
   # subtotal will be changed when a line item price is changed and it calls recalculate_subtotal on the order.
   before_save :recalculate_coupons, if: :subtotal_changed?
+  enqueue :create_production_order, queue: 'api'
   after_save :enqueue_create_production_order, if: :ready_for_production?
   after_save :create_invoice_approval_activity, if: :invoice_state_changed?
 
@@ -611,14 +613,6 @@ class Order < ActiveRecord::Base
   end
 
   warn_on_failure_of :create_production_order unless Rails.env.test?
-
-  if Rails.env.production?
-    def enqueue_create_production_order(*args)
-      delay(queue: 'api').create_production_order(*args)
-    end
-  else
-    alias_method :enqueue_create_production_order, :create_production_order
-  end
 
   def create_invoice_approval_activity
     if invoice_state_changed?(from: 'pending', to: 'approved')

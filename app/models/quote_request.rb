@@ -2,6 +2,7 @@ class QuoteRequest < ActiveRecord::Base
   include TrackingHelpers
   include IntegratedCrms
   include Softwear::Auth::BelongsToUser
+  include Softwear::Lib::Enqueue
 
   tracked by_current_user + { parameters: { s: ->(_c, r) { r.track_state_changes } } }
   acts_as_warnable
@@ -47,7 +48,8 @@ class QuoteRequest < ActiveRecord::Base
   validates :reason, presence: true, if: :reason_needed?
 
   before_validation(on: :create) { self.status = 'pending' if status.nil? }
-  before_create :enqueue_link_integrated_crm_contacts
+  enqueue :link_integrated_crm_contacts, queue: 'api'
+  before_create :enqueue_link_integrated_crm_contacts, if: :should_access_third_parties?
   before_save :notify_salesperson_if_assigned
   before_save { self.status = 'assigned' if salesperson_id_changed? && salesperson_id_was.nil? }
 
@@ -271,9 +273,6 @@ class QuoteRequest < ActiveRecord::Base
     self.send_assigned_email(salesperson_id) if salesperson_id_changed?
   end
 
-  def enqueue_link_integrated_crm_contacts
-    self.delay(queue: 'api').link_integrated_crm_contacts if should_access_third_parties?
-  end
   warn_on_failure_of :enqueue_link_integrated_crm_contacts
   warn_on_failure_of :link_with_insightly
   warn_on_failure_of :link_with_freshdesk

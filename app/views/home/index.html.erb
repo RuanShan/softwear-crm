@@ -28,7 +28,7 @@
       </div>
     <% else %>
       <div class="alert alert-danger">
-        <h3>You have orders that have any that need to be addressed</h3>
+        <h3>You have orders with warnings that need to be addressed</h3>
         <ul>
           <% @order_warnings.each do |o| %>
             <% if o.warnings_count == 0

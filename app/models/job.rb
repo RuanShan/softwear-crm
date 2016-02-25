@@ -1,6 +1,7 @@
 class Job < ActiveRecord::Base
   include TrackingHelpers
   include ProductionCounterpart
+  include Softwear::Lib::Enqueue
 
   acts_as_paranoid
 
@@ -17,6 +18,7 @@ class Job < ActiveRecord::Base
   before_destroy :check_for_line_items
   after_update :destroy_self_if_line_items_and_imprints_are_empty
   after_create :create_default_imprint, if: :fba?
+  enqueue :create_production_job, queue: 'api'
   after_update :enqueue_create_production_job, if: :order_in_production?
 
   belongs_to :jobbable, polymorphic: true
@@ -425,9 +427,6 @@ class Job < ActiveRecord::Base
     end
   end
 
-  def self.create_production_job(job_id)
-    find(job_id).create_production_job
-  end
   def create_production_job
     return if order.softwear_prod_id.nil?
 
@@ -448,14 +447,6 @@ class Job < ActiveRecord::Base
       artwork_requests.each(&method(:create_trains_from_artwork_request))
     end
     true
-  end
-
-  if Rails.env.production?
-    def enqueue_create_production_job
-      self.class.delay(queue: 'api').create_production_job(id)
-    end
-  else
-    alias_method :enqueue_create_production_job, :create_production_job
   end
 
   private

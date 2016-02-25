@@ -201,6 +201,7 @@ CrmSoftwearcrmCom::Application.routes.draw do
     resources 'colors'
     resources 'sizes'
     resources 'quote_requests', only: [:create, :index, :show]
+    resources 'shipments', only: [:index, :show, :update]
   end
 
   authenticate :user do
