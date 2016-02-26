@@ -138,4 +138,5 @@ gem 'activemerchant'
 gem 'dropzonejs-rails'
 gem 'thread_safe'
 gem 'simple_xlsx_reader'
+gem 'puma'
 

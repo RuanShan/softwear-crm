@@ -5,7 +5,7 @@ set :application, 'softwear-crm'
 set :repo_url, 'git@github.com:annarbortees/softwear-crm.git'
 set :rvm_ruby_string, 'ruby-2.1.1'
 set :rvm_ruby_version, 'ruby-2.1.1'
-set :rvm_task_ruby_version, 'ruby-2.1.2'
+set :rvm_task_ruby_version, 'ruby-2.1.1'
 set :whenever_identifier, -> { "#{fetch(:application)}_#{fetch(:stage)}" }
 set :assets_role, :web
 
@@ -56,7 +56,7 @@ namespace :deploy do
     end
   end
 
-  before :starting,     :check_revision
+  # before :starting,     :check_revision
   after  :finishing,    :compile_assets
   after  :finishing,    :cleanup
   after  :finishing,    :restart

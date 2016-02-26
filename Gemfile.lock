@@ -617,6 +617,7 @@ DEPENDENCIES
   php-serialize
   progress_bar
   public_activity!
+  puma
   rack_session_access
   rails (~> 4.2.3)
   redis-namespace
