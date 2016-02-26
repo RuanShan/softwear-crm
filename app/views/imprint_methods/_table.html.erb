@@ -5,6 +5,7 @@
       <thead>
         <tr>
           <th>Name</th>
+          <th>Name/Number Support</th>
           <th>Ink Colors</th>
           <th>Print Locations</th>
           <th>Actions</th>
@@ -15,6 +16,7 @@
         <% imprint_methods.each do |imprint_method| %>
           <tr id="<%= model_table_row_id imprint_method %>">
             <td><%= imprint_method.name %></td>
+            <td><%= imprint_method.name_number? ? 'Yes' : 'No' %></td>
             <td><%= imprint_method.ink_colors.map(&:name).join(', ') %></td>
             <td><%= imprint_method.print_locations.map(&:name_and_popularity).join(', ') %></td>
             <td>

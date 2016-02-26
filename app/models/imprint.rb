@@ -27,7 +27,7 @@ class Imprint < ActiveRecord::Base
 
   after_save :touch_associations
 
-  scope :name_number, -> { joins(:imprint_method).where(imprint_methods: { name: 'Name/Number' }) }
+  scope :name_number, -> { where(name_number: true) }
 
   def name
     "#{imprint_method.try(:name) || 'n\a'} - #{print_location.try(:name) || 'n\a'} - #{description}"

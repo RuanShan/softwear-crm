@@ -3,9 +3,10 @@
   id = $this.val()
 
   $this.addClass 'editing-imprint' unless $this.closest('form').data('no-editing-class')
-  # todo: using hardcoded name/number name
+  # TODO ............................v.............
   $name_number_container = $this.parent().siblings("div.js-name-number-format-fields")
-  if $this.children("option[value='#{ id }']").text() is 'Name/Number'
+
+  if $this.siblings('.name-number-imprint-id[data-id=#{id}]').length
     $name_number_container.toggleClass("hidden", false)
     $name_number_container.children("input").toggleClass("editing-imprint", true)
   else

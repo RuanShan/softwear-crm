@@ -1,4 +1,4 @@
-<% # If you're here to fix a bug, I'm sorry. %>
+<% # If you're here to fix a bug or refactor something, I'm sorry. %>
 
 <% select_field_name_for = method(:imprint_select_field_name_for).to_proc.curry.(local_assigns[:imprint]) %>
 <% id = local_assigns[:imprint].try(:id) || increment_new_imprint_counter %>
@@ -16,17 +16,20 @@
 
         <div class="form-group">
           <%= label_tag :imprint_method %>
+          <% ImprintMethod.name_number.each do |im| %>
+            <div class='hidden name-number-imprint-id' style='display: none;' data-id=<%= im.id %>></div>
+          <% end %>
           <%= select_tag :imprint_method,
                          options_from_collection_for_select(
                                  ImprintMethod.all,
                                  :id,
                                  :name,
                                  local_assigns[:imprint_method].try(:id) ||
-                                         local_assigns[:imprint].try(:imprint_method).try(:id)
+                                 local_assigns[:imprint].try(:imprint_method).try(:id)
           ),
                         include_blank: true,
-                         id: "imprint_method_select_#{ id }",
-                         class: 'form-control js-imprint-method-select' %>
+                        id: "imprint_method_select_#{ id }",
+                        class: 'form-control js-imprint-method-select' %>
         </div>
 
       <div class="print-location-container" <%= "data-select_tag_name=#{select_tag_name}" if local_assigns[:select_tag_name] %>>
