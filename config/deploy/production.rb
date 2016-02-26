@@ -6,8 +6,8 @@
 # ec2_role :redis, user: 'ubuntu'
 
 server '50.19.126.7',    user: 'ubuntu', roles: %w{web app redis} # , my_property: :my_value
-server '54.221.198.113', user: 'ubuntu', roles: %w{web app} # , my_property: :my_value
-server '54.158.84.225',  user: 'ubuntu', roles: %w{web app db} # , my_property: :my_value
+server '54.221.198.113', user: 'ubuntu', roles: %w{web app db} # , my_property: :my_value
+# server '54.158.84.225',  user: 'ubuntu', roles: %w{web app} # , my_property: :my_value
 
 set :branch, 'master'
 

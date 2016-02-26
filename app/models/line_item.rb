@@ -225,8 +225,9 @@ class LineItem < ActiveRecord::Base
 
     job.imprints.each do |imprint|
       prod_imprint = imprint.production
-      prod_imprint.count = new_count
-      unless prod_imprint.save
+      next if prod_imprint.nil?
+
+      unless prod_imprint.update_attribute(:count, new_count)
         errors << "Imprint (prod##{prod_imprint.id}): #{prod_imprint.errors.full_messages.join(', ')}"
       end
     end
