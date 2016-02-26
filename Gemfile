@@ -33,6 +33,7 @@ group :development do
   gem 'capistrano-rails'
   gem 'capistrano-rvm', github: 'AnnArborTees/rvm'
   gem 'capistrano-bundler', github: 'AnnArborTees/bundler'
+  gem 'capistrano3-puma',   require: false
   gem 'better_errors', '>= 0.3.2'
   gem 'binding_of_caller'
   gem 'dumpsync', git: 'git://github.com/AnnArborTees/dumpsync.git'
@@ -137,3 +138,4 @@ gem 'activemerchant'
 gem 'dropzonejs-rails'
 gem 'thread_safe'
 gem 'simple_xlsx_reader'
+
