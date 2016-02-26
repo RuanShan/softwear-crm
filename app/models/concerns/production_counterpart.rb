@@ -72,8 +72,12 @@ module ProductionCounterpart
     @production = nil
   end
 
-  def production?
+  def production_exists?
     !!production
+  end
+
+  def production?
+    !!softwear_prod_id
   end
 
   def sync_with_production(sync)
@@ -93,6 +97,8 @@ module ProductionCounterpart
   end
 
   def update_production(fields = nil)
+    return unless production_exists?
+
     fields = update_production_fields if fields.nil?
     return if fields.empty?
 
@@ -106,7 +112,7 @@ module ProductionCounterpart
   end
 
   def destroy_production
-    production.destroy unless production.nil?
+    production.destroy if production_exists?
     self.update_column :softwear_prod_id, nil
   rescue ActiveRecord::ActiveRecordError => _
   end
