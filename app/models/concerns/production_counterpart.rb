@@ -42,8 +42,8 @@ module ProductionCounterpart
     try :warn_on_failure_of, :update_production unless Rails.env.test?
     enqueue :update_production, :destroy_production, queue: 'api'
 
-    before_save :enqueue_update_production, if: :should_update_production?
-    after_destroy :enqueue_destroy_production, if: :should_update_production?
+    after_save :enqueue_update_production, if: :production?
+    after_destroy :enqueue_destroy_production, if: :production?
 
     if Rails.env.production?
       # Override enqueue method to always pass update_production_fields
