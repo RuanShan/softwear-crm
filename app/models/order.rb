@@ -583,14 +583,27 @@ class Order < ActiveRecord::Base
     )
 
     update_column :softwear_prod_id, prod_order.id
-    update_column :production_state, :in_production
+    update_column :production_state, :in_production unless prod_order.id.nil?
+
+    if prod_order.errors.any?
+      raise "The exported Production order ended up invalid. Contact devteam about this.\n\n"\
+            "=== Errors: ===\n#{prod_order.errors.full_messages.join("\n")}\n\n"\
+            "=== Attributes: ===\n#{JSON.pretty_generate(prod_order.attributes)}"
+    end
 
     # These hashes are used to minimize time spend looping and updating softwear_prod_id's
     job_hash = {}
     imprint_hash = {}
 
     prod_order.jobs.each do |p_job|
-      job_hash[p_job.softwear_crm_id] = p_job
+      if p_job.softwear_crm_id.nil?
+        raise "A production job was not assigned its crm id. "\
+              "Contact devteam about this.\n"\
+              "Here are its errors (if any): #{p_job.errors.full_messages}\n\n"\
+              "Here are its attributes: #{JSON.pretty_generate(p_job.attributes)}"
+      else
+        job_hash[p_job.softwear_crm_id] = p_job
+      end
 
       p_job.imprints.each do |p_imprint|
         next unless p_imprint.respond_to?(:softwear_crm_id)
