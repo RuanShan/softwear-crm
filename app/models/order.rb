@@ -619,7 +619,7 @@ class Order < ActiveRecord::Base
         imprint.update_column :softwear_prod_id, imprint_hash[imprint.id].id
       end
 
-      job.artwork_requests.each(&job.method(:create_trains_from_artwork_request))
+      job.artwork_requests.where(state: 'manager_approved').each(&job.method(:create_trains_from_artwork_request))
     end
 
     shipments.each(&:create_train)
