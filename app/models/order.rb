@@ -432,7 +432,7 @@ class Order < ActiveRecord::Base
   end
 
   def payment_status
-    payment_state
+    self.payment_state ||= calculate_payment_state
   end
 
   def proof_state

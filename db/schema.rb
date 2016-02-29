@@ -292,11 +292,11 @@ ActiveRecord::Schema.define(version: 20160229174515) do
 
   create_table "fba_spreadsheet_uploads", force: :cascade do |t|
     t.boolean  "done"
-    t.text     "spreadsheet",       limit: 4294967295
+    t.text     "spreadsheet",       limit: 65535
     t.text     "processing_errors", limit: 65535
     t.string   "filename",          limit: 191
-    t.datetime "created_at",                           null: false
-    t.datetime "updated_at",                           null: false
+    t.datetime "created_at",                      null: false
+    t.datetime "updated_at",                      null: false
   end
 
   create_table "freshdesk_local_contacts", force: :cascade do |t|
@@ -325,12 +325,11 @@ ActiveRecord::Schema.define(version: 20160229174515) do
   end
 
   create_table "imprint_methods", force: :cascade do |t|
-    t.string   "name",        limit: 191
+    t.string   "name",       limit: 191
     t.datetime "deleted_at"
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.boolean  "deletable",               default: true
-    t.boolean  "name_number"
+    t.boolean  "deletable",              default: true
   end
 
   add_index "imprint_methods", ["deleted_at"], name: "index_imprint_methods_on_deleted_at", using: :btree
@@ -458,7 +457,6 @@ ActiveRecord::Schema.define(version: 20160229174515) do
     t.string   "number_format",     limit: 191
     t.text     "description",       limit: 16777215
     t.integer  "softwear_prod_id",  limit: 4
-    t.boolean  "name_number"
   end
 
   create_table "in_store_credits", force: :cascade do |t|
@@ -548,46 +546,6 @@ ActiveRecord::Schema.define(version: 20160229174515) do
     t.integer "imprint_id",             limit: 4
     t.integer "imprintable_variant_id", limit: 4
   end
-
-  create_table "old_users", force: :cascade do |t|
-    t.string   "email",                        limit: 191
-    t.string   "encrypted_password",           limit: 191
-    t.string   "reset_password_token",         limit: 191
-    t.datetime "reset_password_sent_at"
-    t.datetime "remember_created_at"
-    t.integer  "sign_in_count",                limit: 4,   default: 0, null: false
-    t.datetime "current_sign_in_at"
-    t.datetime "last_sign_in_at"
-    t.string   "current_sign_in_ip",           limit: 191
-    t.string   "last_sign_in_ip",              limit: 191
-    t.string   "confirmation_token",           limit: 191
-    t.datetime "confirmed_at"
-    t.datetime "confirmation_sent_at"
-    t.string   "unconfirmed_email",            limit: 191
-    t.integer  "failed_attempts",              limit: 4,   default: 0, null: false
-    t.string   "unlock_token",                 limit: 191
-    t.datetime "locked_at"
-    t.datetime "created_at"
-    t.datetime "updated_at"
-    t.string   "first_name",                   limit: 191
-    t.string   "last_name",                    limit: 191
-    t.datetime "deleted_at"
-    t.integer  "store_id",                     limit: 4
-    t.string   "authentication_token",         limit: 191
-    t.string   "freshdesk_email",              limit: 191
-    t.string   "freshdesk_password",           limit: 191
-    t.string   "encrypted_freshdesk_password", limit: 191
-    t.string   "insightly_api_key",            limit: 191
-    t.integer  "profile_picture_id",           limit: 4
-    t.integer  "signature_id",                 limit: 4
-  end
-
-  add_index "old_users", ["authentication_token"], name: "index_old_users_on_authentication_token", using: :btree
-  add_index "old_users", ["confirmation_token"], name: "index_old_users_on_confirmation_token", unique: true, using: :btree
-  add_index "old_users", ["deleted_at"], name: "index_old_users_on_deleted_at", using: :btree
-  add_index "old_users", ["email"], name: "index_old_users_on_email", unique: true, using: :btree
-  add_index "old_users", ["reset_password_token"], name: "index_old_users_on_reset_password_token", unique: true, using: :btree
-  add_index "old_users", ["unlock_token"], name: "index_old_users_on_unlock_token", unique: true, using: :btree
 
   create_table "order_quotes", force: :cascade do |t|
     t.integer  "order_id",   limit: 4
