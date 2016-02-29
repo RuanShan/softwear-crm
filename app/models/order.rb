@@ -168,6 +168,7 @@ class Order < ActiveRecord::Base
   end
 
   # subtotal will be changed when a line item price is changed and it calls recalculate_subtotal on the order.
+  before_save :recalculate_payment_state
   before_save :recalculate_coupons, if: :subtotal_changed?
   enqueue :create_production_order, queue: 'api'
   after_save :enqueue_create_production_order, if: :ready_for_production?
@@ -431,6 +432,26 @@ class Order < ActiveRecord::Base
   end
 
   def payment_status
+    payment_state
+  end
+
+  def proof_state
+    return 'pending_artwork_requests' if missing_artwork_requests?
+    return 'pending' if missing_proofs?
+    return 'submitted_to_customer' if proofs_pending_approval?
+    return 'rejected' if !missing_artwork_requests? && missing_approved_proofs?
+    return 'approved' unless missing_approved_proofs?
+  end
+
+  def full_name
+    "#{firstname} #{lastname}"
+  end
+
+  def full_name_changed?
+    firstname_changed? || lastname_changed?
+  end
+
+  def calculate_payment_state
     if balance <= 0
       'Payment Complete'
     else
@@ -449,22 +470,6 @@ class Order < ActiveRecord::Base
       else 'Payment Terms Pending'
       end
     end
-  end
-
-  def proof_state
-    return 'pending_artwork_requests' if missing_artwork_requests?
-    return 'pending' if missing_proofs?
-    return 'submitted_to_customer' if proofs_pending_approval?
-    return 'rejected' if !missing_artwork_requests? && missing_approved_proofs?
-    return 'approved' unless missing_approved_proofs?
-  end
-
-  def full_name
-    "#{firstname} #{lastname}"
-  end
-
-  def full_name_changed?
-    firstname_changed? || lastname_changed?
   end
 
   def calculate_payment_total(exclude = [])
