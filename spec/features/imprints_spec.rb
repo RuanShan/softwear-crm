@@ -12,10 +12,12 @@ feature 'Imprints Management', imprint_spec: true, js: true do
        [%w(Digital Screen Embroidery Name/Number),
         %w(Front   Lower  Wherever Somewhere)]) do |name|
     4.times do |n|
-      let!("imprint_method#{n+1}") { create(:valid_imprint_method,
-                          name: name.first[n]) }
-      let!("print_location#{n+1}") { create(:valid_print_location, name: name[1][n],
-                          imprint_method_id: send("imprint_method#{n+1}").id) }
+      let!("imprint_method#{n+1}") do
+        create(:valid_imprint_method, name: name.first[n], name_number: name.first[n] == 'Name/Number')
+      end
+      let!("print_location#{n+1}") do
+        create(:valid_print_location, name: name[1][n], imprint_method_id: send("imprint_method#{n+1}").id)
+      end
     end
   end
 
@@ -155,24 +157,38 @@ feature 'Imprints Management', imprint_spec: true, js: true do
     expect(Imprint.where(job_id: job.id)).to_not exist
   end
 
-  scenario 'a user can specify a name and number formats for an imprint', name_number_spec: true, story_189: true do
-    imprint
-    visit edit_order_path(order.id, anchor: 'jobs')
-    wait_for_ajax
+  context 'name number selecting' do
+    before(:each) do
+      Capybara.ignore_hidden_elements = false
+    end
 
-    select 'Name/Number', from: 'imprint_method'
+    after(:each) do
+      Capybara.ignore_hidden_elements = true
+    end
 
-    first('.js-name-format-field').set('Extra wide')
-    first('.js-number-format-field').set('Extra long')
-    first('.update-imprints').click
-    wait_for_ajax
+    scenario 'a user can specify a name and number formats for an imprint', nn: true, name_number_spec: true, story_189: true do
+      imprint
+      visit edit_order_path(order.id, anchor: 'jobs')
+      wait_for_ajax
 
-    expect(imprint.reload.name_format).to eq('Extra wide')
-    expect(imprint.reload.number_format).to eq('Extra long')
+      select 'Name/Number', from: 'imprint_method'
+
+      sleep 1
+      first('.name-number-checkbox').click
+      evaluate_script(%<$('.js-name-number-format-fields').removeClass('hidden')>)
+      sleep 1
+      first('.js-name-format-field').set('Extra wide')
+      first('.js-number-format-field').set('Extra long')
+      first('.update-imprints').click
+      wait_for_ajax
+
+      expect(imprint.reload.name_format).to eq('Extra wide')
+      expect(imprint.reload.number_format).to eq('Extra long')
+    end
   end
 
   context 'when a name and number imprint is present' do
-    given(:imprint_two) { create(:blank_imprint, job_id: job.id, print_location_id: print_location4.id) }
+    given(:imprint_two) { create(:blank_imprint, job_id: job.id, print_location_id: print_location4.id, name_number: true) }
     given!(:name_number) { create(:name_number, imprint: imprint_two) }
     given!(:line_item) { create(:imprintable_line_item) }
 
