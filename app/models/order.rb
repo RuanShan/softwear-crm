@@ -627,7 +627,7 @@ class Order < ActiveRecord::Base
       job.artwork_requests.where(state: 'manager_approved').each(&job.method(:create_trains_from_artwork_request))
     end
 
-    shipments.each(&:create_train)
+    shipments.each(&:create_train) unless fba?
     artwork_requests.each(&:create_imprint_group_if_needed)
   end
 
