@@ -74,6 +74,8 @@ describe Order, order_spec: true do
 
   describe 'after_update' do
     let!(:order) { create(:order) }
+    let(:prod_order) { create(:production_order, softwear_crm_id: order.id) }
+    let(:new_deadline) { 100.days.from_now }
 
     describe 'if the invoice_state changes from pending to approved' do
       it 'creates an activity with the key approved_invoice' do
@@ -83,6 +85,17 @@ describe Order, order_spec: true do
           expect(order.activities.where(key: 'order.approved_invoice').count).to eq(1)
         end
       end
+    end
+
+    specify 'updates are propagated to production', prod_sync: true do
+      order.update_column :softwear_prod_id, prod_order.id
+      expect(order.in_hand_by.to_date).to_not eq prod_order.deadline.to_date
+
+      order.in_hand_by = new_deadline
+      order.save!
+      prod_order.reload
+
+      expect(order.in_hand_by.to_date).to eq prod_order.deadline.to_date
     end
   end
 
@@ -221,7 +234,7 @@ describe Order, order_spec: true do
     end
   end
 
-  describe '#payment_status' do
+  describe '#calculate_payment_state' do
     context 'terms are empty' do
       subject { (build_stubbed(:blank_order, terms: '')) }
 
@@ -230,7 +243,7 @@ describe Order, order_spec: true do
       end
 
       it 'returns Payment Terms Pending' do
-        expect(subject.payment_status).to eq('Payment Terms Pending')
+        expect(subject.calculate_payment_state).to eq('Payment Terms Pending')
       end
     end
 
@@ -247,7 +260,7 @@ describe Order, order_spec: true do
       end
 
       it 'returns Payment Complete' do
-        expect(subject.payment_status).to eq('Payment Complete')
+        expect(subject.calculate_payment_state).to eq('Payment Complete')
       end
     end
 
@@ -263,7 +276,7 @@ describe Order, order_spec: true do
 
         context 'balance > 0' do
           it 'returns Awaiting Payment' do
-            expect(subject.payment_status).to eq('Awaiting Payment')
+            expect(subject.calculate_payment_state).to eq('Awaiting Payment')
           end
         end
       end
@@ -279,7 +292,7 @@ describe Order, order_spec: true do
           end
 
           it 'returns Awaiting Payment' do
-            expect(subject.payment_status).to eq('Awaiting Payment')
+            expect(subject.calculate_payment_state).to eq('Awaiting Payment')
           end
         end
         context 'balance less than 49% of the total' do
@@ -288,7 +301,7 @@ describe Order, order_spec: true do
           end
 
           it 'returns Payment Terms Met' do
-            expect(subject.payment_status).to eq('Payment Terms Met')
+            expect(subject.calculate_payment_state).to eq('Payment Terms Met')
           end
         end
       end
@@ -304,7 +317,7 @@ describe Order, order_spec: true do
           end
 
           it 'returns Awaiting Payment' do
-            expect(subject.payment_status).to eq('Awaiting Payment')
+            expect(subject.calculate_payment_state).to eq('Awaiting Payment')
           end
         end
         context 'Time.now less than in_hand_by' do
@@ -317,7 +330,7 @@ describe Order, order_spec: true do
           end
 
           it 'returns Payment Terms Met' do
-            expect(subject.payment_status).to eq('Payment Terms Met')
+            expect(subject.calculate_payment_state).to eq('Payment Terms Met')
           end
         end
       end
@@ -333,7 +346,7 @@ describe Order, order_spec: true do
           end
 
           it 'returns Awaiting Payment' do
-            expect(subject.payment_status).to eq('Awaiting Payment')
+            expect(subject.calculate_payment_state).to eq('Awaiting Payment')
           end
         end
         context 'Time.now less than in_hand_by + 30 days' do
@@ -346,7 +359,7 @@ describe Order, order_spec: true do
           end
 
           it 'returns Payment Terms Met' do
-            expect(subject.payment_status).to eq('Payment Terms Met')
+            expect(subject.calculate_payment_state).to eq('Payment Terms Met')
           end
         end
       end
@@ -362,7 +375,7 @@ describe Order, order_spec: true do
           end
 
           it 'returns Awaiting Payment' do
-            expect(subject.payment_status).to eq('Awaiting Payment')
+            expect(subject.calculate_payment_state).to eq('Awaiting Payment')
           end
         end
         context 'Time.now less than in_hand_by + 60 days' do
@@ -375,7 +388,7 @@ describe Order, order_spec: true do
           end
 
           it 'returns Payment Terms Met' do
-            expect(subject.payment_status).to eq('Payment Terms Met')
+            expect(subject.calculate_payment_state).to eq('Payment Terms Met')
           end
         end
       end

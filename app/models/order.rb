@@ -168,6 +168,7 @@ class Order < ActiveRecord::Base
   end
 
   # subtotal will be changed when a line item price is changed and it calls recalculate_subtotal on the order.
+  before_save :recalculate_payment_state
   before_save :recalculate_coupons, if: :subtotal_changed?
   enqueue :create_production_order, queue: 'api'
   after_save :enqueue_create_production_order, if: :ready_for_production?
@@ -431,6 +432,26 @@ class Order < ActiveRecord::Base
   end
 
   def payment_status
+    self.payment_state ||= calculate_payment_state
+  end
+
+  def proof_state
+    return 'pending_artwork_requests' if missing_artwork_requests?
+    return 'pending' if missing_proofs?
+    return 'submitted_to_customer' if proofs_pending_approval?
+    return 'rejected' if !missing_artwork_requests? && missing_approved_proofs?
+    return 'approved' unless missing_approved_proofs?
+  end
+
+  def full_name
+    "#{firstname} #{lastname}"
+  end
+
+  def full_name_changed?
+    firstname_changed? || lastname_changed?
+  end
+
+  def calculate_payment_state
     if balance <= 0
       'Payment Complete'
     else
@@ -449,22 +470,6 @@ class Order < ActiveRecord::Base
       else 'Payment Terms Pending'
       end
     end
-  end
-
-  def proof_state
-    return 'pending_artwork_requests' if missing_artwork_requests?
-    return 'pending' if missing_proofs?
-    return 'submitted_to_customer' if proofs_pending_approval?
-    return 'rejected' if !missing_artwork_requests? && missing_approved_proofs?
-    return 'approved' unless missing_approved_proofs?
-  end
-
-  def full_name
-    "#{firstname} #{lastname}"
-  end
-
-  def full_name_changed?
-    firstname_changed? || lastname_changed?
   end
 
   def calculate_payment_total(exclude = [])
@@ -583,14 +588,27 @@ class Order < ActiveRecord::Base
     )
 
     update_column :softwear_prod_id, prod_order.id
-    update_column :production_state, :in_production
+    update_column :production_state, :in_production unless prod_order.id.nil?
+
+    if prod_order.errors.any?
+      raise "The exported Production order ended up invalid. Contact devteam about this.\n\n"\
+            "=== Errors: ===\n#{prod_order.errors.full_messages.join("\n")}\n\n"\
+            "=== Attributes: ===\n#{JSON.pretty_generate(prod_order.attributes)}"
+    end
 
     # These hashes are used to minimize time spend looping and updating softwear_prod_id's
     job_hash = {}
     imprint_hash = {}
 
     prod_order.jobs.each do |p_job|
-      job_hash[p_job.softwear_crm_id] = p_job
+      if p_job.softwear_crm_id.nil?
+        raise "A production job was not assigned its crm id. "\
+              "Contact devteam about this.\n"\
+              "Here are its errors (if any): #{p_job.errors.full_messages}\n\n"\
+              "Here are its attributes: #{JSON.pretty_generate(p_job.attributes)}"
+      else
+        job_hash[p_job.softwear_crm_id] = p_job
+      end
 
       p_job.imprints.each do |p_imprint|
         next unless p_imprint.respond_to?(:softwear_crm_id)
@@ -606,10 +624,10 @@ class Order < ActiveRecord::Base
         imprint.update_column :softwear_prod_id, imprint_hash[imprint.id].id
       end
 
-      job.artwork_requests.each(&job.method(:create_trains_from_artwork_request))
+      job.artwork_requests.where(state: 'manager_approved').each(&job.method(:create_trains_from_artwork_request))
     end
 
-    shipments.each(&:create_train)
+    shipments.each(&:create_train) unless fba?
     artwork_requests.each(&:create_imprint_group_if_needed)
   end
 

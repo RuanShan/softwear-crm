@@ -87,6 +87,23 @@ class Payment < ActiveRecord::Base
   attr_accessor :cc_expiration
   attr_accessor :cc_cvc
 
+  # If solr's dumb callbacks end up raising an error during creation, the payment will be processed,
+  # but not created in CRM.
+  def solr_index
+    super
+  rescue Exception => e
+    if order
+      order.issue_warning("Solr", "#{e.class.name}: #{e.message} while indexing a payment.")
+    end
+  end
+  def solr_index!
+    super
+  rescue Exception => e
+    if order
+      order.issue_warning("Solr", "#{e.class.name}: #{e.message} while indexing a payment.")
+    end
+  end
+
   def transaction_id
     case VALID_PAYMENT_METHODS[payment_method]
     when 'Credit Card' then cc_transaction
