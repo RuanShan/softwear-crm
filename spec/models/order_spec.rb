@@ -74,6 +74,8 @@ describe Order, order_spec: true do
 
   describe 'after_update' do
     let!(:order) { create(:order) }
+    let(:prod_order) { create(:production_order, softwear_crm_id: order.id) }
+    let(:new_deadline) { 100.days.from_now }
 
     describe 'if the invoice_state changes from pending to approved' do
       it 'creates an activity with the key approved_invoice' do
@@ -83,6 +85,17 @@ describe Order, order_spec: true do
           expect(order.activities.where(key: 'order.approved_invoice').count).to eq(1)
         end
       end
+    end
+
+    specify 'updates are propagated to production', prod_sync: true do
+      order.update_column :softwear_prod_id, prod_order.id
+      expect(order.in_hand_by.to_date).to_not eq prod_order.deadline.to_date
+
+      order.in_hand_by = new_deadline
+      order.save!
+      prod_order.reload
+
+      expect(order.in_hand_by.to_date).to eq prod_order.deadline.to_date
     end
   end
 
