@@ -449,10 +449,20 @@ class ArtworkRequest < ActiveRecord::Base
 
     destroy_production if production?
 
+    imprint_ids = imprints.map(&:softwear_prod_id).compact
+    if imprint_ids.size < 2
+      order.issue_warning(
+        warning_source,
+        "Artwork Request ##{id} has #{imprints.size} imprints (enough for a group) but #{imprint_ids.size}"\
+        "of them are actually in production, so an imprint group was no formed."
+      )
+      return
+    end
+
     imprint_group = Production::ImprintGroup.post_raw(
       softwear_crm_id: id,
       order_id: order.softwear_prod_id,
-      imprint_ids: imprints.map(&:softwear_prod_id).compact
+      imprint_ids: imprint_ids
     )
 
     if imprint_group.persisted?
