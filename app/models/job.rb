@@ -131,6 +131,7 @@ class Job < ActiveRecord::Base
     end
   end
 
+  # TODO these are deprecated for ArtworkRequest#create_trains
   def self.create_trains_from_artwork_request(job_id, artwork_request_id)
     Job.find(job_id).create_trains_from_artwork_request(ArtworkRequest.find(artwork_request_id))
   end
@@ -448,7 +449,7 @@ class Job < ActiveRecord::Base
       imprints.find(prod_imprint.softwear_crm_id).update_column :softwear_prod_id, prod_imprint.id
     end
 
-    artwork_requests.where(state: 'manager_approved').each(&method(:create_trains_from_artwork_request))
+    # artwork_requests.where(state: 'manager_approved').each(&:create_trains)
     true
   end
 

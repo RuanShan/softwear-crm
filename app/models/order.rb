@@ -623,12 +623,12 @@ class Order < ActiveRecord::Base
       job.imprints.each do |imprint|
         imprint.update_column :softwear_prod_id, imprint_hash[imprint.id].id
       end
-
-      job.artwork_requests.where(state: 'manager_approved').each(&job.method(:create_trains_from_artwork_request))
     end
 
-    shipments.each(&:create_train) unless fba?
-    artwork_requests.each(&:create_imprint_group_if_needed)
+    artwork_requests.each do |artwork_request|
+      artwork_request.create_trains
+      artwork_request.create_imprint_group_if_needed
+    end
   end
 
   warn_on_failure_of :create_production_order unless Rails.env.test?

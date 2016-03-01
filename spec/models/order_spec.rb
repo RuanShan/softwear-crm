@@ -99,7 +99,7 @@ describe Order, order_spec: true do
     end
   end
 
-  describe '#create_production_order' do
+  describe '#create_production_order', production: true do
     describe 'when payment_status reaches "Payment Terms Met" and invoice_status reaches "approved"', story_96: true do
       let!(:order) { create(:order) }
 
@@ -112,10 +112,10 @@ describe Order, order_spec: true do
 
       before do
         allow_any_instance_of(Order).to receive(:enqueue_create_production_order, &:create_production_order)
-        allow_any_instance_of(Job).to receive(:create_trains_from_artwork_request)
+        allow_any_instance_of(ArtworkRequest).to receive(:create_trains)
       end
 
-      it 'creates a Softwear Production order', create_production_order: true, pending: 'Todo for nigel' do
+      it 'creates a Softwear Production order', create_production_order: true do
         [order, job_1, job_2, imprint_1_1, imprint_1_2, imprint_2_1].each do |record|
           expect(record.reload.softwear_prod_id).to be_nil
         end
@@ -144,7 +144,7 @@ describe Order, order_spec: true do
         expect(imprint_2_1.production.name).to eq imprint_2_1.name
       end
 
-      it 'adds imprintable trains to (only) jobs that have imprintable line items', pending: 'todo for nigel' do
+      it 'adds imprintable trains to (only) jobs that have imprintable line items' do
         job_1.line_items << create(:imprintable_line_item)
 
         allow(order).to receive(:payment_status).and_return 'Payment Terms Met'

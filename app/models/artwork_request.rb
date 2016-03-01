@@ -63,7 +63,7 @@ class ArtworkRequest < ActiveRecord::Base
   validates :priority,       presence: true
   validates :salesperson_id, presence: true
 
-  enqueue :create_imprint_group_if_needed, queue: 'api'
+  enqueue :create_imprint_group_if_needed, :create_trains, queue: 'api'
 
   after_create :enqueue_create_freshdesk_proof_ticket, unless: :fba? if Rails.env.production?
   after_save :enqueue_create_imprint_group_if_needed
@@ -102,7 +102,7 @@ class ArtworkRequest < ActiveRecord::Base
     end
 
     after_transition any => :manager_approved do |artwork_request|
-      artwork_request.job_ids.uniq.each { |job_id| Job.delay.create_trains_from_artwork_request(job_id, artwork_request.id) }
+      artwork_request.enqueue_create_jobs
     end
 
     after_transition :manager_approved => any do |artwork_request|
@@ -413,6 +413,52 @@ class ArtworkRequest < ActiveRecord::Base
 
   def should_assign?
     artist_id_was.nil? && artist_id_changed? && state == 'unassigned'
+  end
+
+  def create_trains
+    imprint_method_names = imprint_methods.pluck(:name)
+    failed_imprint_methods = {}
+
+    digital_print_count = imprint_method_names.select { |im| /Digital\s+Print/ =~ im }.size
+    digital_print_count.times do
+      unless Production::Ar3Train.create(
+        order_id: order.softwear_prod_id,
+        crm_artwork_request_id: id
+      ).try(:persisted?)
+
+        failed_imprint_methods['Digital Print'] = true
+      end
+    end
+
+    screen_print_count = imprint_method_names.select { |im| /Screen\s+Print/ =~ im }.size
+    screen_print_count.times do
+      unless Production::ScreenTrain.create(
+        order_id: order.softwear_prod_id,
+        crm_artwork_request_id: id
+      ).try(:persisted?)
+
+        failed_imprint_methods['Screen Print'] = true
+      end
+    end
+
+    embroidery_count = imprint_method_names.select { |im| im.include?('Embroidery') }.size
+    embroidery_count.times do
+      unless Production::DigitizationTrain.create(
+        order_id: order.softwear_prod_id,
+        crm_artwork_request_id: id
+      ).try(:persisted?)
+
+        failed_imprint_methods['Embroidery'] = true
+      end
+    end
+
+    unless failed_imprint_methods.empty?
+      order.issue_warning(
+        'ArtworkRequest#create_trains',
+        "Failed to send trains to production for the following imprint methods: "\
+        "#{failed_imprint_methods.keys.join(', ')}"
+      )
+    end
   end
 
   def create_imprint_group_if_needed
