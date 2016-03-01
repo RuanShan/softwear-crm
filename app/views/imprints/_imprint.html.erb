@@ -60,7 +60,7 @@
       <div class='name-number-checkbox hidden'>
       <% end %>
 
-        <% name_number_name = local_assigns[:description_name].try(:gsub, '[description]', '[name_number]') || 'name_number' %>
+        <% name_number_name = local_assigns[:description_name].try(:gsub, '[description]', '[name_number]') || "imprint[#{id}][name_number]" %>
         <%= label_tag name_number_name, 'Name/Number?', class: 'control-label' %>
         <%= hidden_field_tag name_number_name, '0' %>
         <%= check_box_tag(name_number_name, '1', local_assigns[:imprint].try(:name_number), class: 'form-control js-imprint-is-name-number') %>

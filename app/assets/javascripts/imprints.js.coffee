@@ -79,6 +79,10 @@
   $parent.find('.js-imprint-is-name-number').on 'ifChecked.imprint', nameNumberChecked
   $parent.find('.js-imprint-is-name-number').off 'ifUnchecked.imprint'
   $parent.find('.js-imprint-is-name-number').on 'ifUnchecked.imprint', nameNumberChecked
+  $parent.find('.js-imprint-is-name-number').off 'change.imprint'
+  $parent.find('.js-imprint-is-name-number').on 'change.imprint', nameNumberChecked
+
+  styleCheckboxes $parent.find('input[type=checkbox]')
 
 
 @deleteImprint = ->
