@@ -11,6 +11,8 @@ class ImprintMethod < ActiveRecord::Base
 
   validates :name, presence: true, uniqueness: true
 
+  scope :name_number, -> { where(name_number: true) }
+
   def ink_color_names
     ink_colors.pluck(:name)
   end

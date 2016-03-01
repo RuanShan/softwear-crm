@@ -1,5 +1,5 @@
 <% field_name_for = method(:imprint_select_field_name_for).to_proc.curry.(imprint) %>
-<div class="<%= imprint_method_name == 'Name/Number' ? nil : 'hidden' %> js-name-number-format-fields form-group">
+<div class="<%= imprint.name_number? ? nil : 'hidden' %> js-name-number-format-fields form-group">
   <%= label_tag :name_format %>
   <%= text_field_tag local_assigns[:name_format_name] ? name_format_name : field_name_for.('name_format'), 
     imprint.name_format, class: 'form-control js-name-format-field', placeholder: 'Size(") - Style - Color - Method' %>

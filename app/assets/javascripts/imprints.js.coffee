@@ -1,16 +1,28 @@
+@nameNumberChecked = ->
+  $this = $(this)
+  $name_number_container = $this.closest('.imprint-container').find(".js-name-number-format-fields")
+
+  if this.checked
+    $name_number_container.toggleClass('hidden', false)
+    $name_number_container.children("input").toggleClass("editing-imprint", true)
+  else
+    $name_number_container.toggleClass('hidden', true)
+
 @imprintMethodSelected = ->
   $this = $(this)
   id = $this.val()
 
   $this.addClass 'editing-imprint' unless $this.closest('form').data('no-editing-class')
-  # TODO ............................v.............
-  $name_number_container = $this.parent().siblings("div.js-name-number-format-fields")
+  $name_number_container = $this.closest('.imprint-container').find(".js-name-number-format-fields")
+  $name_number_checkbox = $this.closest('.imprint-container').find('.name-number-checkbox')
 
-  if $this.siblings('.name-number-imprint-id[data-id=#{id}]').length
-    $name_number_container.toggleClass("hidden", false)
-    $name_number_container.children("input").toggleClass("editing-imprint", true)
+  if $this.siblings(".name-number-imprint-method-id[data-id=#{id}]").length
+    $name_number_checkbox.toggleClass  "hidden", false
+    if $name_number_checkbox.find('input[type=checkbox]')[0].checked
+      $name_number_container.toggleClass "hidden", false
   else
-    $name_number_container.toggleClass("hidden", true)
+    $name_number_checkbox.toggleClass  "hidden", true
+    $name_number_container.toggleClass "hidden", true
     $name_number_container.children("input").toggleClass("editing-imprint", false)
 
   $imprintContainer = $this.closest('.imprint-container')
@@ -54,9 +66,6 @@
   $parent.find('.js-imprint-method-select').off 'change.imprint'
   $parent.find('.js-imprint-method-select').on 'change.imprint', imprintMethodSelected
 
-  $parent.find('.js-imprint-has-name-number').off 'ifClicked.imprint'
-  $parent.find('.js-imprint-has-name-number').on 'ifClicked.imprint', imprintHasNameNumberChecked
-
   $parent.find('.js-name-format-field').off 'change.imprint'
   $parent.find('.js-name-format-field').on 'change.imprint', printLocationSelected
 
@@ -65,6 +74,11 @@
 
   $parent.find('.js-imprint-description').off 'change.imprint'
   $parent.find('.js-imprint-description').on 'change.imprint', printLocationSelected
+
+  $parent.find('.js-imprint-is-name-number').off 'ifChecked.imprint'
+  $parent.find('.js-imprint-is-name-number').on 'ifChecked.imprint', nameNumberChecked
+  $parent.find('.js-imprint-is-name-number').off 'ifUnchecked.imprint'
+  $parent.find('.js-imprint-is-name-number').on 'ifUnchecked.imprint', nameNumberChecked
 
 
 @deleteImprint = ->
