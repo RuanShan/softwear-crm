@@ -11,11 +11,12 @@
 
   $imprint.find("select,textarea").addClass("editing-imprint");
   $imprint.find(".js-delete-imprint-button").click(deleteImprint);
-  registerImprintEvents($imprint);
 <% else %>
 
-  $('#new-imprints-container').append(
+  var $imprint = $('#new-imprints-container')
+  $imprint.append(
       "<%=j render 'imprints/imprint', select_tag_name: params[:select_tag_name].try(:gsub, '*time*', timestamp), description_name: params[:description_name].try(:gsub, '*time*', timestamp) %>"
   );
-  registerImprintEvents($('#new-imprints-container'));
 <% end %>
+
+registerImprintEvents($imprint);

@@ -369,7 +369,7 @@ class Job < ActiveRecord::Base
   end
 
   def name_number_imprints
-    imprints.includes(:imprint_method).where('imprint_methods.name = "Name/Number"').references(:imprint_methods)
+    imprints.includes(:imprint_method).where(imprint_methods: { name_number: true }).references(:imprint_methods)
   end
 
   def name_and_numbers

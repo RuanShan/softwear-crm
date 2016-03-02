@@ -164,8 +164,8 @@ $(document).ajaxStop ->
   $element.css('background-color', (color or '#99ffbb'))
   $element.animate {backgroundColor: returnColor}, (duration or 1000), -> $element.css 'background-color', ''
 
-@styleCheckboxes = ->
-  $("input").iCheck
+@styleCheckboxes = (element) ->
+  (element or $("input")).iCheck
     checkboxClass: "icheckbox_minimal-grey"
     radioClass: "iradio_minimal-grey"
     increaseArea: "20%"
