@@ -102,7 +102,7 @@ class ArtworkRequest < ActiveRecord::Base
     end
 
     after_transition any => :manager_approved do |artwork_request|
-      artwork_request.enqueue_create_jobs
+      artwork_request.enqueue_create_trains
     end
 
     after_transition :manager_approved => any do |artwork_request|
