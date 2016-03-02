@@ -430,13 +430,30 @@ class ArtworkRequest < ActiveRecord::Base
       end
     end
 
-    screen_print_count = imprint_method_names.select { |im| /Screen\s+Print/ =~ im }.size
-    screen_print_count.times do
-      unless Production::ScreenTrain.create(
+    imprints.each do |imprint|
+      next unless imprint.imprint_method.name =~ /Screen\s+Print/
+
+      screen_train = Production::ScreenTrain.create(
         order_id: order.softwear_prod_id,
         crm_artwork_request_id: id
-      ).try(:persisted?)
+      )
 
+      if screen_train.try(:persisted?)
+
+        if order.fba? && imprint.production_exists?
+          imprint.production.screen_train_id = screen_train.id
+
+          unless imprint.production.save
+            order.issue_warning(
+              "ArtworkRequest#create_trains",
+              "Couldn't add screen train ##{screen_train.id} to imprint "\
+              "##{imprint.softwear_prod_id} (CRM##{imprint.id})\n\n"\
+              "#{imprint.production.errors.full_messages.join("\n")}"
+            )
+          end
+        end
+
+      else
         failed_imprint_methods['Screen Print'] = true
       end
     end
