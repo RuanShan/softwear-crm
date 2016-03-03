@@ -4,6 +4,12 @@ include ApplicationHelper
 describe ArtworkRequest, artwork_request_spec: true do
 
   it { is_expected.to be_paranoid }
+  let(:imprint_method_1) { create(:valid_imprint_method, name: 'Screen Print 1') }
+  let(:imprint_method_2) { create(:valid_imprint_method) }
+  let(:print_location_of_1) { create(:valid_print_location, imprint_method: imprint_method_1) }
+  let(:print_location_of_2) { create(:valid_print_location, imprint_method: imprint_method_2) }
+  let(:job_1) { create(:job) }
+  let(:job_2) { create(:job) }
 
   before(:each) do
     allow(RSpec::Mocks::Double).to receive(:primary_key).and_return 'id'
@@ -25,6 +31,36 @@ describe ArtworkRequest, artwork_request_spec: true do
     it { is_expected.to validate_presence_of(:description) }
     it { is_expected.to validate_presence_of(:ink_colors) }
     it { is_expected.to validate_presence_of(:priority) }
+
+    it 'must only contain imprints of the same imprint method', im: true do
+      subject.imprints = [
+        create(:valid_imprint, print_location: print_location_of_1, job_id: job_1.id),
+        create(:valid_imprint, print_location: print_location_of_2, job_id: job_2.id)
+      ]
+
+      expect(subject).to_not be_valid
+      expect(subject.errors[:imprints]).to include "must all be of the same type"
+    end
+
+    it 'must only contain imprints from different jobs', im: true do
+      subject.imprints = [
+        create(:valid_imprint, print_location: print_location_of_1, job_id: job_1.id),
+        create(:valid_imprint, print_location: print_location_of_2, job_id: job_1.id)
+      ]
+
+      expect(subject).to_not be_valid
+      expect(subject.errors[:imprints]).to include "must be of different jobs"
+    end
+
+    it 'is valid when containing different-job imprints with the same imprint method' do
+      subject.imprints = [
+        create(:valid_imprint, print_location: print_location_of_1, job_id: job_1.id),
+        create(:valid_imprint, print_location: print_location_of_1, job_id: job_2.id)
+      ]
+
+      subject.valid?
+      expect(subject.errors[:imprints]).to be_empty
+    end
   end
 
   describe 'callbacks'  do
@@ -46,23 +82,25 @@ describe ArtworkRequest, artwork_request_spec: true do
     describe 'approval', artwork_request_approved: true do
       let!(:prod_order) { create(:production_order) }
       let!(:order) { create(:order_with_job) }
-      let(:job) { order.jobs.first }
+      let(:job_1) { order.jobs.first }
+      let!(:job_2) { create(:job, jobbable: order) }
       let!(:artwork_request) { create(:valid_artwork_request_with_asset_and_artwork) }
       let(:dummy_ar3_1) { double('Ar3Train') }
       let(:dummy_ar3_2) { double('Ar3Train') }
       let(:dummy_digitization) { double('DigitizationTrain') }
 
       before do
-        job.imprints << create(:valid_imprint).tap do |i|
-          i.print_location.update_attributes imprint_method_id: create(:screen_print_imprint_method).id
+        job_1.imprints << create(:valid_imprint).tap do |i|
+          i.print_location.update_attributes imprint_method_id: imprint_method_1.id
         end
-        job.imprints << create(:valid_imprint).tap do |i|
-          i.print_location.update_attributes imprint_method_id: create(:dtg_imprint_method).id
+        job_2.imprints << create(:valid_imprint).tap do |i|
+          i.print_location.update_attributes imprint_method_id: imprint_method_1.id
         end
-        artwork_request.imprints = job.imprints
+        artwork_request.imprints = job_1.imprints + job_2.imprints
 
-        allow(job).to receive(:production?).and_return true
-        allow(Job).to receive(:find).and_return job
+        allow(job_1).to receive(:production?).and_return true
+        allow(job_2).to receive(:production?).and_return true
+        allow(Job).to receive(:find) { |i| i == job_1.id ? job_1 : job_2 }
         allow(Job).to receive(:delay).and_return Job
         allow(ArtworkRequest).to receive(:delay).and_return ArtworkRequest
         allow(ArtworkRequest).to receive(:find).and_return artwork_request
@@ -71,12 +109,12 @@ describe ArtworkRequest, artwork_request_spec: true do
         artwork_request.update_column :state, :pending_manager_approval
       end
 
-      specify 'trains are created based on relevant imprints when approved' do
-        expect(Production::Ar3Train).to receive(:create)
-          .with(order_id: order.softwear_prod_id, crm_artwork_request_id: artwork_request.id)
+      specify 'trains are created based on relevant imprints when approved', butt: true do
+        expect(Production::Ar3Train).to_not receive(:create)
+        expect(Production::DigitizationTrain).to_not receive(:create)
         expect(Production::ScreenTrain).to receive(:create)
           .with(order_id: order.softwear_prod_id, crm_artwork_request_id: artwork_request.id)
-        expect(Production::DigitizationTrain).to_not receive(:create)
+          .twice
 
         artwork_request.approved_by = create(:user)
         artwork_request.approved
@@ -125,7 +163,6 @@ describe ArtworkRequest, artwork_request_spec: true do
 
     let!(:job_1) { create(:job, jobbable: order) }
     let!(:imprint_1_1) { create(:valid_imprint, job: job_1) }
-    let!(:imprint_1_2) { create(:valid_imprint, job: job_1) }
 
     let!(:job_2) { create(:job, jobbable: order) }
     let!(:imprint_2_1) { create(:valid_imprint, job: job_2) }
@@ -141,7 +178,7 @@ describe ArtworkRequest, artwork_request_spec: true do
 
     before(:each) do
       order.update_column :softwear_prod_id, prod_order.id
-      [imprint_1_1, imprint_1_2, imprint_2_1].each do |imprint|
+      [imprint_1_1, imprint_2_1].each do |imprint|
         prod_imprint = create(:production_imprint)
         imprint.update_column :softwear_prod_id, prod_imprint.id
       end
@@ -154,7 +191,7 @@ describe ArtworkRequest, artwork_request_spec: true do
 
       artwork_request.create_imprint_group_if_needed
 
-      expect(artwork_request.production?).to eq true
+      expect(artwork_request).to be_production
       expect(artwork_request.production.order_id).to eq order.softwear_prod_id
       expect(artwork_request.production.imprint_ids.size).to eq 2
     end
@@ -266,7 +303,8 @@ describe ArtworkRequest, artwork_request_spec: true do
       create(
         :valid_imprint_method,
         ink_colors: [red, blue, yellow],
-        print_locations: [create(:valid_imprint).print_location]
+        print_locations: [create(:valid_imprint).print_location],
+        name: 'Screen Print'
       )
     end
 

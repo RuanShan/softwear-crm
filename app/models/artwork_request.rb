@@ -62,6 +62,8 @@ class ArtworkRequest < ActiveRecord::Base
   validates :imprints,       presence: true
   validates :priority,       presence: true
   validates :salesperson_id, presence: true
+  validate :imprints_are_all_the_same_imprint_method
+  validate :imprints_are_all_from_different_jobs
 
   enqueue :create_imprint_group_if_needed, :create_trains, queue: 'api'
 
@@ -413,6 +415,18 @@ class ArtworkRequest < ActiveRecord::Base
 
   def should_assign?
     artist_id_was.nil? && artist_id_changed? && state == 'unassigned'
+  end
+
+  def imprints_are_all_the_same_imprint_method
+    if imprints.map { |i| i.print_location.imprint_method_id }.uniq.size > 1
+      errors.add(:imprints, "must all be of the same type")
+    end
+  end
+
+  def imprints_are_all_from_different_jobs
+    if imprints.map(&:job_id).uniq.size < imprints.size
+      errors.add(:imprints, "must be of different jobs")
+    end
   end
 
   def create_trains
