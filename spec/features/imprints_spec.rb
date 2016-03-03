@@ -201,6 +201,22 @@ feature 'Imprints Management', imprint_spec: true, js: true do
       wait_for_ajax
     end
 
+    scenario 'a user can add name/number to a previously not name/number imprint without refreshing', bugfix: true do
+      imprint_two.update_column :name_number, false
+      visit edit_order_path(order.id, anchor: 'jobs')
+
+      first('.name-number-checkbox').click
+      evaluate_script(%<$('.js-name-number-format-fields').removeClass('hidden')>)
+      sleep 1
+      first('.js-name-format-field').set('Extra wide')
+      first('.js-number-format-field').set('Extra long')
+      first('.update-imprints').click
+      wait_for_ajax
+
+      expect(imprint_two.reload.name_format).to eq('Extra wide')
+      expect(imprint_two.reload.number_format).to eq('Extra long')
+    end
+
     scenario 'a user can add names and numbers to a table, when a name and number imprint is present', name_number_spec: true, story_190: true do
       # select imprintable_variant from variant select field
       select imprint_two.name, from: 'name_number_imprint_id'

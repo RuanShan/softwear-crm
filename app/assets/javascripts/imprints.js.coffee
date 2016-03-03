@@ -17,13 +17,15 @@
   $name_number_checkbox = $this.closest('.imprint-container').find('.name-number-checkbox')
 
   if $this.siblings(".name-number-imprint-method-id[data-id=#{id}]").length
-    $name_number_checkbox.toggleClass  "hidden", false
+    $name_number_checkbox.removeClass  "hidden", false
     if $name_number_checkbox.find('input[type=checkbox]')[0].checked
       $name_number_container.toggleClass "hidden", false
   else
-    $name_number_checkbox.toggleClass  "hidden", true
     $name_number_container.toggleClass "hidden", true
     $name_number_container.children("input").toggleClass("editing-imprint", false)
+    if $name_number_checkbox.find('input[type=checkbox]')[0].checked
+      $name_number_checkbox.find('input[type=checkbox]')[0].checked = false
+    $name_number_checkbox.toggleClass  "hidden", true
 
   $imprintContainer = $this.closest('.imprint-container')
   $imprintEntry = $this.closest('.imprint-entry')
@@ -75,12 +77,14 @@
   $parent.find('.js-imprint-description').off 'change.imprint'
   $parent.find('.js-imprint-description').on 'change.imprint', printLocationSelected
 
-  $parent.find('.js-imprint-is-name-number').off 'ifChecked.imprint'
-  $parent.find('.js-imprint-is-name-number').on 'ifChecked.imprint', nameNumberChecked
-  $parent.find('.js-imprint-is-name-number').off 'ifUnchecked.imprint'
-  $parent.find('.js-imprint-is-name-number').on 'ifUnchecked.imprint', nameNumberChecked
-  $parent.find('.js-imprint-is-name-number').off 'change.imprint'
-  $parent.find('.js-imprint-is-name-number').on 'change.imprint', nameNumberChecked
+  setTimeout (->
+    $parent.find('.js-imprint-is-name-number').off 'change.imprint'
+    $parent.find('.js-imprint-is-name-number').on 'change.imprint', nameNumberChecked
+    $parent.find('.js-imprint-is-name-number').off 'ifChecked.imprint'
+    $parent.find('.js-imprint-is-name-number').on 'ifChecked.imprint', nameNumberChecked
+    $parent.find('.js-imprint-is-name-number').off 'ifUnchecked.imprint'
+    $parent.find('.js-imprint-is-name-number').on 'ifUnchecked.imprint', nameNumberChecked
+  ), 1
 
   styleCheckboxes $parent.find('input[type=checkbox]')
 
