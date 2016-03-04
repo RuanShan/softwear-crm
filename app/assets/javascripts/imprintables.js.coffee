@@ -7,7 +7,7 @@ jQuery ->
     $('.upcharge-check-box').on 'ifChanged', ->
       field = $('.upcharge-' + $(this).data('for'))
       field.prop('disabled', !this.checked)
-  ), 1
+  ), 10
 
   # this function is modified from an example hosted publicly at
   # http://www.mredkj.com/tutorials/tableaddcolumn.html
