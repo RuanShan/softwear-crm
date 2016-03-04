@@ -9,7 +9,6 @@ jQuery ->
   $('.upcharge-check-box').on 'ifChanged', upchargeChecked
   $('.upcharge-check-box').on 'ifChecked', upchargeChecked
   $('.upcharge-check-box').on 'ifUnchecked', upchargeChecked
-  $('.upcharge-check-box').on 'change', upchargeChecked
 
   # this function is modified from an example hosted publicly at
   # http://www.mredkj.com/tutorials/tableaddcolumn.html
