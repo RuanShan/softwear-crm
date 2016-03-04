@@ -4,11 +4,11 @@ jQuery ->
   $('.mark-it-up').markItUp(html_editor_settings)
 
   setTimeout (->
-    console.log 'SET EVENT'
-    $('.upcharge-check-box').on 'ifChanged', ->
-      field = $('.upcharge-' + $(this).data('for'))
-      field.prop('disabled', !this.checked)
-  ), 10
+    checkChanged = ->
+      $('.upcharge-' + $(this).data('for')).prop('disabled', !this.checked)
+    $('.upcharge-check-box').on 'change', checkChanged
+    $('.upcharge-check-box').on 'ifChanged', checkChanged
+  ), 1000
 
   # this function is modified from an example hosted publicly at
   # http://www.mredkj.com/tutorials/tableaddcolumn.html
