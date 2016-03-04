@@ -60,7 +60,11 @@
         <% unless @order.phone_number.blank? %>
             <tr>
               <th>Phone Number</th>
-              <td><%= @order.phone_number %></td>
+              <td><%= @order.phone_number %>
+                 <% unless @order.phone_number_extension.blank? %>
+                   <strong> Ext </strong><%= @order.phone_number_extension %>
+                 <% end %>   
+              </td>
             </tr>
         <% end %>
       </table>

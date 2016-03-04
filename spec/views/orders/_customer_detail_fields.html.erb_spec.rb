@@ -14,6 +14,7 @@ describe 'orders/_order_customer_fields.html.erb', order_spec: true do
       expect(rendered).to have_field_for :company
       expect(rendered).to have_field_for :twitter
       expect(rendered).to have_field_for :phone_number
+      expect(rendered).to have_field_for :phone_number_extension
     end
   end
 end

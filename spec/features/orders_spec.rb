@@ -25,6 +25,7 @@ feature 'Order management', order_spec: true, js: true do
 
     fill_in 'Email', with: 'test@example.com'
     fill_in 'Phone number', with: '321-654-9870'
+    fill_in 'Phone number extension', with: '28'
     fill_in 'First name', with: 'Guy'
     fill_in 'Last name', with: 'Fieri'
     fill_in 'Company', with: 'Probably Nothing'
@@ -175,11 +176,13 @@ feature 'Order management', order_spec: true, js: true do
 
     fill_in 'Name', with: 'New Title'
     select 'approved', from: 'Invoice state'
+    fill_in 'Phone number extension', with: '28'
     click_button 'Save'
 
     sleep 2
     expect(Order.where(name: 'New Title')).to exist
     expect(Order.where(invoice_state: 'approved')).to exist
+    expect(Order.where(phone_number_extension: '28')).to exist
   end
 
   scenario 'when editing, submitting invalid information displays error content' do

@@ -191,7 +191,7 @@ class OrdersController < InheritedResources::Base
         :tax_id_number, :redo_reason, :invoice_state,
         :delivery_method, :phone_number, :commission_amount,
         :store_id, :salesperson_id, :total, :shipping_price, :artwork_state,
-        :freshdesk_proof_ticket_id, :softwear_prod_id, :production_state,
+        :freshdesk_proof_ticket_id, :softwear_prod_id, :production_state, :phone_number_extension,
         quote_ids: [],
         jobs_attributes: [
           :id, :name, :jobbable_id, :jobbable_type, :description, :_destroy,
