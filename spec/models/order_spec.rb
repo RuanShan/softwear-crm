@@ -124,7 +124,7 @@ describe Order, order_spec: true do
         order.invoice_state = 'approved'
         order.save!
 
-        %w(order job_1 job_2 imprint_1_1 imprint_1_2 imprint_2_1).each do |record|
+        %w(order job_1 job_2).each do |record|
           expect(eval(record).reload.softwear_prod_id).to_not be_nil,
             "#{record} was not assigned a softwear_prod_id"
         end
@@ -138,9 +138,9 @@ describe Order, order_spec: true do
         expect(Production::Imprint.where(softwear_crm_id: imprint_2_1.id)).to be_any
 =end
 
-        expect(order.production.name).to eq order.name_in_production
-        expect(job_1.production.name).to eq job_1.name
-        expect(job_2.production.name).to eq job_2.name
+        expect(order.production.name).to include order.name
+        expect(job_1.production.name).to include job_1.name
+        expect(job_2.production.name).to include job_2.name
       end
 
       it 'adds imprintable trains to (only) jobs that have imprintable line items', pending: "can't really test this with endpoint stub" do

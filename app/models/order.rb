@@ -905,8 +905,9 @@ class Order < ActiveRecord::Base
         artwork_request.artwork_ids = artworks.map(&:id).uniq
         artwork_request.priority    = 5
         artwork_request.imprint_ids = Imprint.where(
-          job_id: jobs.map(&:id), print_location_id: fba_imprint_templates.print_location_id
+          job_id: jobs.map(&:id), print_location_id: fba_imprint_template.print_location_id
         )
+          .pluck(:id)
 
         if artwork_request.artwork_ids.blank?
           missing_artworks = true
