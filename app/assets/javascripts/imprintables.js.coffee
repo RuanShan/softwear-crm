@@ -3,13 +3,11 @@ root = exports ? this
 jQuery ->
   $('.mark-it-up').markItUp(html_editor_settings)
 
-  upchargeChecked = ->
-    field = $('.upcharge-' + $(this).data('for'))
-    field.prop('disabled', !this.checked)
-  $('.upcharge-check-box').on 'ifChanged',   upchargeChecked
-  $('.upcharge-check-box').on 'ifChecked',   upchargeChecked
-  $('.upcharge-check-box').on 'ifUnchecked', upchargeChecked
-  $('.upcharge-check-box').on 'change',      upchargeChecked
+  setTimeout (->
+    $('.upcharge-check-box').on 'ifChanged', ->
+      field = $('.upcharge-' + $(this).data('for'))
+      field.prop('disabled', !this.checked)
+  ), 1
 
   # this function is modified from an example hosted publicly at
   # http://www.mredkj.com/tutorials/tableaddcolumn.html
