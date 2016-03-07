@@ -1,7 +1,7 @@
 class CreateCosts < ActiveRecord::Migration
   def change
     create_table :costs do |t|
-      t.string :cotable_type
+      t.string :costable_type
       t.string :costable_id
       t.string :type
       t.text :description
@@ -11,7 +11,7 @@ class CreateCosts < ActiveRecord::Migration
 
       t.timestamps null: false
     end
-    add_index :costs, :cotable_type
+    add_index :costs, :costable_type
     add_index :costs, :costable_id
     add_index :costs, :owner_id
   end
