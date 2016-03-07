@@ -308,11 +308,11 @@ ActiveRecord::Schema.define(version: 20160307200825) do
 
   create_table "fba_spreadsheet_uploads", force: :cascade do |t|
     t.boolean  "done"
-    t.text     "spreadsheet",       limit: 4294967295
+    t.text     "spreadsheet",       limit: 65535
     t.text     "processing_errors", limit: 65535
     t.string   "filename",          limit: 191
-    t.datetime "created_at",                           null: false
-    t.datetime "updated_at",                           null: false
+    t.datetime "created_at",                      null: false
+    t.datetime "updated_at",                      null: false
   end
 
   create_table "freshdesk_local_contacts", force: :cascade do |t|
