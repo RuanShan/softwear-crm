@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160307200825) do
+ActiveRecord::Schema.define(version: 20160307165952) do
 
   create_table "activities", force: :cascade do |t|
     t.integer  "trackable_id",   limit: 4
@@ -175,22 +175,6 @@ ActiveRecord::Schema.define(version: 20160307200825) do
   end
 
   add_index "coordinate_imprintables", ["coordinate_id", "imprintable_id"], name: "coordinate_imprintable_index", using: :btree
-
-  create_table "costs", force: :cascade do |t|
-    t.string   "cotable_type", limit: 191
-    t.string   "costable_id",  limit: 191
-    t.string   "type",         limit: 191
-    t.text     "description",  limit: 65535
-    t.integer  "owner_id",     limit: 4
-    t.decimal  "time",                       precision: 10, scale: 2
-    t.decimal  "amount",                     precision: 10, scale: 2
-    t.datetime "created_at",                                          null: false
-    t.datetime "updated_at",                                          null: false
-  end
-
-  add_index "costs", ["costable_id"], name: "index_costs_on_costable_id", using: :btree
-  add_index "costs", ["cotable_type"], name: "index_costs_on_cotable_type", using: :btree
-  add_index "costs", ["owner_id"], name: "index_costs_on_owner_id", using: :btree
 
   create_table "coupons", force: :cascade do |t|
     t.string   "code",        limit: 191
@@ -636,9 +620,9 @@ ActiveRecord::Schema.define(version: 20160307200825) do
     t.decimal  "shipping_price",                             precision: 10, scale: 2, default: 0.0
     t.string   "invoice_state",             limit: 191
     t.string   "production_state",          limit: 191
+    t.integer  "softwear_prod_id",          limit: 4
     t.string   "notification_state",        limit: 191
     t.integer  "freshdesk_proof_ticket_id", limit: 4
-    t.integer  "softwear_prod_id",          limit: 4
     t.string   "artwork_state",             limit: 191
     t.string   "customer_key",              limit: 191
     t.text     "invoice_reject_reason",     limit: 16777215
@@ -805,8 +789,8 @@ ActiveRecord::Schema.define(version: 20160307200825) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.decimal  "shipping",                                     precision: 10, scale: 2
-    t.string   "quote_source",                     limit: 191
     t.datetime "initialized_at"
+    t.string   "quote_source",                     limit: 191
     t.string   "freshdesk_ticket_id",              limit: 191
     t.boolean  "informal"
     t.integer  "insightly_category_id",            limit: 4
