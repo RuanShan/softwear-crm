@@ -23,6 +23,7 @@ class LineItem < ActiveRecord::Base
 
   belongs_to :imprintable_object, polymorphic: true
   belongs_to :job, touch: true, inverse_of: :line_items
+  has_one :cost, as: :costable
 
   validates :description, presence: true, unless: :imprintable?
   validates :name, presence: true, unless: :imprintable?
