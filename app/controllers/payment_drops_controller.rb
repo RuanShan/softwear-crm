@@ -2,13 +2,19 @@ class PaymentDropsController < InheritedResources::Base
   before_filter :sales_manager_only
   before_action :populate_salesperson_id, only: :create
   before_action :set_current_action
-  before_action :populate_undropped_payments
+  before_action :populate_undropped_payments, except: [:edit]
   layout 'no_overlay', only: [:show]
 
   def index
     super do
       @current_action = 'payment_drops#index'
       @payment_drops = PaymentDrop.page(params[:page])
+    end
+  end
+
+  def edit
+    super do
+      populate_undropped_payments
     end
   end
 
@@ -23,7 +29,11 @@ class PaymentDropsController < InheritedResources::Base
   def populate_undropped_payments
     @undropped_payments = Payment.search do
       with(:undropped, true)
-      with(:store_id, params[:store_id]) if params[:store_id]
+      if @payment_drop
+        with(:store_id, @payment_drop.store_id)
+      elsif params[:store_id]
+        with(:store_id, params[:store_id]) if params[:store_id]
+      end
     end.results
   end
 

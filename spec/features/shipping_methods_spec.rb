@@ -4,7 +4,7 @@ include ApplicationHelper
 feature 'Shipping Methods management' do
   given!(:valid_user) { create(:user) }
   before(:each) do
-    login_as(valid_user) 
+    sign_in_as(valid_user) 
   end
 
   let!(:shipping_method) { create(:valid_shipping_method)}

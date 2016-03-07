@@ -7,7 +7,7 @@ feature 'Imprintable Variant Management', js: true, imprintable_variant_spec: tr
   given!(:color) { create(:valid_color) }
   given!(:size) { create(:valid_size) }
 
-  before(:each) { login_as(valid_user) }
+  before(:each) { sign_in_as(valid_user) }
 
   context 'There are no imprintable variants' do
     given!(:imprintable) do

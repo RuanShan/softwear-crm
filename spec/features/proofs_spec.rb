@@ -9,7 +9,7 @@ feature 'Proof Features', js: true, proof_spec: true, retry: 3 do
   given!(:artwork) { create(:valid_artwork) }
 
   before(:each) do
-    login_as(valid_user)
+    sign_in_as(valid_user)
     allow(order).to receive(:artwork_requests) { [artwork_request] }
     create(:artwork_proof, artwork: artwork, proof: proof)
     allow_any_instance_of(Order).to receive(:artworks) {[artwork]}

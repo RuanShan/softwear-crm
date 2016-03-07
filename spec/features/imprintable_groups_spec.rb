@@ -2,7 +2,7 @@ require 'spec_helper'
 
 feature 'Imprintable Groups management' do
   given!(:valid_user) { create(:alternate_user) }
-  background(:each) { login_as(valid_user) }
+  background(:each) { sign_in_as(valid_user) }
 
   scenario 'A user can create an imprintable group', story_564: true do
     visit imprintable_groups_path

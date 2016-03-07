@@ -1,5 +1,6 @@
 class InStoreCredit < ActiveRecord::Base
   include ActionView::Helpers::NumberHelper
+  include Softwear::Auth::BelongsToUser
 
   validates :name, :customer_email, :amount, :description, :user_id, :valid_until, presence: true
   validates :name, uniqueness: true
@@ -7,7 +8,7 @@ class InStoreCredit < ActiveRecord::Base
   before_validation :populate_fields_from_order, if: :order_id
   after_create :create_job_and_line_item, if: :order_id
 
-  belongs_to :user
+  belongs_to_user
   has_one :discount, as: :applicator
 
   attr_accessor :order_id

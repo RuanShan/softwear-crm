@@ -1,0 +1,33 @@
+<div class='imprint-entry col-sm-4'>
+  <div class='box-info'>
+    <div class='form-group'>
+      <%= label_tag :imprint_method %>
+      <%= select_tag :imprint_method, options_from_collection_for_select(ImprintMethod.all, :id, :name, f.object.imprint_method_id), include_blank: true, class: 'form-control imprint-method-select select2' %>
+    </div>
+
+    <div class='form-group'>
+      <% print_locations = f.object.imprint_method.try(:print_locations) || [] %>
+
+      <%= f.label :print_location_id %>
+      <%= f.select :print_location_id, options_from_collection_for_select(print_locations, :id, :name, f.object.print_location_id), {}, class: 'form-control print-location-select select2' %>
+    </div>
+
+    <div class='form-group'>
+      <%= f.label :description %>
+      <%= f.text_area :description, class: 'form-control' %>
+    </div>
+
+    <div class='form-group artwork-target-container'>
+      <div class='artwork-target' data-id='<%= f.object.id %>'>
+        <% if f.object.artwork %>
+          <%= preview_artwork f.object.artwork, :thumb, alt: f.object.artwork.name, title: f.object.artwork.name, data: { toggle: 'tooltip' } %>
+        <% end %>
+        <%= f.hidden_field :artwork_id %>
+      </div>
+      <%= f.hidden_field :id, disabled: !f.object.persisted? %>
+      <%= link_to 'Select Artwork', select_artworks_path, class: 'select-artwork' %>
+    </div>
+
+    <%= f.link_to_remove "Remove", class: 'btn btn-danger margin-topbot-10' %>
+  </div>
+</div>

@@ -1,4 +1,22 @@
 module ApplicationHelper
+  def customer_order_path(*args)
+    if args.first.is_a?(Order)
+      args.first = args.first.customer_key
+      super(*args)
+    else
+      super
+    end
+  end
+
+  def customer_order_url(*args)
+    if args.first.is_a?(Order)
+      args.first = args.first.customer_key
+      super(*args)
+    else
+      super
+    end
+  end
+
   def trackable_link_or_unavailable(activity, attribute=:name)
     return "Which has since been removed" if activity.trackable.nil?
     return link_to activity.trackable.send(attribute), activity.trackable
@@ -123,8 +141,8 @@ module ApplicationHelper
     end
   end
 
-  def preview_artwork(artwork, size = :medium)
-    img_options = {}
+  def preview_artwork(artwork, size = :medium, options = {})
+    img_options = options
     unless artwork.bg_color.blank?
       img_options[:style] = "background-color: #{artwork.bg_color};"
     end
@@ -214,22 +232,14 @@ module ApplicationHelper
     content_tag(:div, "", class: 'clearfix')
   end
 
-  def profile_picture_of(user = nil, options = {})
-    options[:class] ||= ''
-    options[:class] += ' media-object img-circle'
-    options[:alt] ||= "#{user.try(:full_name) || 'Default'}'s Avatar"
-
-    image_url = user.try(:profile_picture).try(:file).try(:url, :icon)
-    image_tag image_url || 'avatar/masarie.jpg', options
-  end
-
-  def hash_to_hidden_fields(hash, scope)
+  def hash_to_hidden_fields(hash, scope, &block)
     buf = ''.html_safe
 
     hash.each do |key, value|
       new_scope = "#{scope}[#{key}]"
       if value.is_a?(Hash)
-        buf += hash_to_hidden_fields(value, new_scope)
+        yield new_scope, value if block_given?
+        buf += hash_to_hidden_fields(value, new_scope, &block)
       else
         buf += hidden_field_tag(new_scope, value.to_s)
       end

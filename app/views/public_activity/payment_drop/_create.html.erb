@@ -1,0 +1,19 @@
+Payment Drop Updated with values: <br />
+<dl>
+  <dt>Cash Included
+  </dt>
+  <dd><%= number_to_currency activity.parameters['cash_included'] %>
+  </dd>
+  <dt>Check Included
+  </dt>
+  <dd><%= number_to_currency activity.parameters['check_included'] %>
+  </dd>
+  <% Payment::VALID_PAYMENT_METHODS.each do |key, val| %>
+      <% if activity.parameters[key.to_s].to_i > 0 %>
+          <dt><%= val %>
+          </dt>
+          <dd><%= number_to_currency activity.parameters[key.to_s] %>
+          </dd>
+      <% end %>
+  <% end %>
+</dl>

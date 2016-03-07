@@ -5,7 +5,7 @@ feature 'Colors management', color_spec: true do
   given!(:color) { create(:valid_color) }
   given!(:valid_user) { create(:alternate_user) }
 
-  background(:each) { login_as(valid_user) }
+  background(:each) { sign_in_as(valid_user) }
 
   scenario 'A user can see a list of colors' do
     visit root_path
@@ -36,7 +36,7 @@ feature 'Colors management', color_spec: true do
   scenario 'A user can delete an existing color', js: true, story_692: true do
     visit colors_path
     find("tr#color_#{color.id} a[data-action='destroy']").click
-    sleep 2 if ci?
+    sleep 2
     page.driver.browser.switch_to.alert.accept
     wait_for_ajax
     expect(page).to have_content 'Color was successfully destroyed.'

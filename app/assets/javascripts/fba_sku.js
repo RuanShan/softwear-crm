@@ -1,11 +1,15 @@
 $(window).load(function() {
   if ($('.fba-skus').length === 0) return;
+  var validSku = /0-\w+-\d{10}/
 
   console.log('doing it');
 
+  var replaceAt = function(str, index, character) {
+    return str.substr(0, index) + character + str.substr(index+character.length);
+  };
   var variant_fields = ['fba-sku-brand', 'fba-sku-style', 'fba-sku-color', 'fba-sku-size'];
 
-  var initializeForm = function(fields) {
+  var initializeForm = function(fields, isNewEntry) {
     var hideIfBlank = function(element) {
       var len = element.find('option').length;
       if (len === 1 || len === 0) element.next().hide();
@@ -24,7 +28,7 @@ $(window).load(function() {
 
     var id = fields.find('.fba-sku-sku').attr('name')
 
-    if ($('.fba-sku-fields').length > 1) {
+    if (isNewEntry && $('.fba-sku-fields').length > 1) {
       var allFields = $('.fba-sku-fields');
       var previousFields = $(allFields[allFields.length - 2]);
 
@@ -42,12 +46,37 @@ $(window).load(function() {
       fields.find('.fba-sku-size').select2({ data: arrayDataFrom(previousFields.find('.fba-sku-size')) });
       fields.find('.fba-sku-size').val('').trigger('change');
 
-      fields.find('.fba-sku-sku').val(previousFields.find('.fba-sku-sku').val().replace(/\d{5}$/, ''));
+      var prevSku = previousFields.find('.fba-sku-sku').val();
+      if (prevSku.match(validSku)) {
+        var newSku = replaceAt(prevSku, prevSku.length - 4, '_');
+        var newSku = replaceAt(newSku,  newSku.length  - 5, '_');
+        var skuField = fields.find('.fba-sku-sku');
+        skuField.val(newSku);
+        skuField[0].setSelectionRange(prevSku.length - 5, prevSku.length - 3);
+      }
+      else
+        fields.find('.fba-sku-sku').val(prevSku);
     }
 
     hideIfBlank(fields.find('.fba-sku-style'));
     hideIfBlank(fields.find('.fba-sku-color'));
     hideIfBlank(fields.find('.fba-sku-size'));
+
+    fields.find('.fba-sku-sku').on('input', function() {
+      if ($('#sku_autofill')[0].checked && $(this).val().match(validSku)) {
+        window.noSpinner = true;
+        $.ajax({
+          type: 'GET',
+          url:  Routes.variant_fields_fba_products_path(),
+          data: {
+            name: id,
+            sku:  $(this).val()
+          },
+          dataType: 'script',
+          complete: function() { window.noSpinner = false; }
+        });
+      }
+    });
 
     fields.find('.fba-sku-brand').on('select2:select', function() {
       $.ajax({
@@ -93,6 +122,6 @@ $(window).load(function() {
     });
   };
 
-  $(document).on('nested:fieldAdded', function(event) { initializeForm(event.field.find('.fba-sku-fields')); });
-  initializeForm($('.fba-skus'));
+  $(document).on('nested:fieldAdded', function(event) { initializeForm(event.field.find('.fba-sku-fields'), true); });
+  $('.fba-skus .fba-sku-fields').each(function() { initializeForm($(this)) });
 });

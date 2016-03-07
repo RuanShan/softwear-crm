@@ -22,6 +22,14 @@
         <p class="help-block">URL to imprintable on suppliers website</p>
       </div>
 
+      <div class='form-group'>
+        <%= f.fields_for :sizing_chart, f.object.sizing_chart || Asset.new do |ff| %>
+          <%= ff.label :file, 'Sizing Chart' %>
+          <%= image_tag f.object.sizing_chart.file.url(:thumb) if f.object.sizing_chart %>
+          <%= ff.file_field :file %>
+        <% end %>
+      </div>
+
       <div class="form-group">
         <%= f.label :tag, 'Shirt Tag Type', class: 'control-label' %>
         <%= f.select :tag, options_for_select(Imprintable::TAG_TYPES, f.object.tag), prompt: 'Choose a tag type' %>

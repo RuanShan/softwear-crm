@@ -10,11 +10,13 @@
       <%= order.email %><br />
     <% end %>
     <b>In Hand By</b> <%= order.in_hand_by.try(:strftime, "%a, %b %d, %I:%M%p") || 'NOT SET' %><br />
-    Customer URL:<br />
-    <%= link_to customer_order_url(order.customer_key),  customer_order_path(order.customer_key), target: "_blank" %>
+    <% unless order.fba? %>
+      Customer URL:<br />
+      <%= link_to customer_order_url(order.customer_key),  customer_order_path(order.customer_key), target: "_blank" %>
+    <% end %>
   </td>
   <td>
-    <%= order.salesperson.full_name %>
+    <%= order.salesperson.try(:full_name) || 'No user' %>
     <div class='row'>
       <%= profile_picture_of order.salesperson if order.salesperson %>
     </div>
@@ -37,11 +39,7 @@
       <th>Invoice
       </th>
       <td class='invoice-state'>
-        <% if order.fba? %>
-          <span class="label label-default">N/A</span>
-        <% else %>
-          <%= render 'orders/state', which: 'invoice_state', state: order.invoice_state %>
-        <% end %>
+        <%= render 'orders/state', which: 'invoice_state', state: order.invoice_state %>
       </td>
     </tr>
     <tr>
@@ -120,8 +118,8 @@
       <% end %>
     </div>
     <br />
-      <% unless order.notification_state == 'picked_up' %>
     <div class="btn-group btn-group-xs">
+      <% unless order.notification_state == 'picked_up' %>
         <%= link_to state_order_path(order, :notification_state), remote: true,
           data: {toggle: :tooltip, :title => 'Notify Customer'},
           class: 'btn btn-default'  do %>
@@ -133,7 +131,15 @@
           class: 'btn btn-default'  do %>
             <i class="glyphicon glyphicon-thumbs-up"></i>
         <% end %>
-        </div>
       <% end %>
+
+      <% if order.fba? && order.production_state == 'pending' %>
+        <%= link_to order_path(order), class: 'btn btn-default', method: :delete,
+          remote: true, 'data-toggle'=> 'tooltip', title: 'Delete Order',
+          data: { confirm: %(Delete Order ##{order.id} "#{order.name}"?) } do  %>
+          <i class="fa fa-times"></i>
+        <% end %>
+      <% end %>
+    </div>
   </td>
 </tr>

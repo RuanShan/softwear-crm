@@ -16,3 +16,16 @@ Sidekiq.configure_server do |config|
   end
   config.redis = { namespace: 'softwear-crm', url: redis_url }
 end
+
+# The EC2 load balancer accepts https requests, then forwards them via http. This pisses
+# off rack-protection.
+# Also this doesn't even work!!!!!!!!!!!
+module Rack
+  module Protection
+    class HttpOrigin < Base
+      def accepts?(_env)
+        true
+      end
+    end
+  end
+end

@@ -10,3 +10,11 @@
     fields.find('<%= hide_field %>').next().hide();
   <% end %>
 <% end %>
+
+<% @selections.each do |selection| %>
+  var skuTextField = $('.fba-sku-sku[name="<%= selection.id %>"]');
+  var fields = skuTextField.closest('.fba-sku-fields');
+  var selectField = fields.find('<%= selection.target %>')
+
+  selectField.val("<%= selection.value %>").trigger('change');
+<% end %>

@@ -1,6 +1,8 @@
 <%= render_error_modal_for order %>
 <%= form_for order, builder: LancengFormBuilder, html: { id: 'easyWizard'} do |f| %>
-  <section class="step" data-step-title="Order Information">
+  <% f.hidden_field :delivery_method, value: 'Ship to multiple locations' %>
+
+  <section class="step order-step-1" data-step-title="Order Information">
     <div class="row">
       <div class="col-sm-6">
         <div class="form-group">
@@ -12,7 +14,7 @@
           <h4>Order Information Instructions</h4>
 
           <p style="text-align: justify">
-              Enter a name for the order, and a deadline.
+          Order deadline, store, and &quot;salesperson&quot;.
           </p>
 
           <ol>
@@ -40,14 +42,13 @@
           <h4>Packing Slip Validation</h4>
 
           <p style="text-align: justify">
-            Upload one or more packing slip .txt files from Amazon.
+          Upload one or more packing slip .txt files from Amazon.
           </p>
 
           <p style="text-align: justify">
-            One job will be created for each packing slip uploaded.
-            Job name and line items will be generated if the packing
-            slip is valid. If any issues arise while parsing the
-            slip, you will be informed.
+          At least one job will be created for each valid packing
+          slip uploaded. If any issues arise while parsing the
+          slip, you will be informed.
           </p>
 
         </div>
@@ -58,6 +59,10 @@
   <section class="step" data-step-title="Done">
     <div class="row">
       <div class="col-sm-6">
+        <div class="form-group">
+          <%= f.label('Order Name').error.text_field :name, placeholder: 'Order name' %>
+        </div>
+
         <div class="form-group">
           <%= f.submit 'Submit', class: 'btn btn-primary big-submit-button' %>
         </div>

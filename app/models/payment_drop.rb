@@ -1,17 +1,20 @@
 class PaymentDrop < ActiveRecord::Base
-  acts_as_paranoid
+  include PublicActivity::Model
+  include Softwear::Auth::BelongsToUser
 
+  tracked only: [:new, :update], parameters: :tracked_values, owner: Proc.new{ |controller, model| controller.current_user }
+  acts_as_paranoid
   paginates_per 20
 
   CASH_PAYMENT_METHOD = 1
   CHECK_PAYMENT_METHOD = 3
 
   belongs_to :store
-  belongs_to :salesperson, class_name: 'User'
+  belongs_to_user_called :salesperson
   has_many :payment_drop_payments, dependent: :destroy
   has_many :payments, through: :payment_drop_payments
 
-  validates :salesperson, :store, :cash_included, :check_included, presence: true
+  validates :salesperson_id, :store, :cash_included, :check_included, presence: true
   validates :difference_reason, presence: true, unless: :included_matches_total?
   validates :payments, presence: true
 
@@ -25,6 +28,14 @@ class PaymentDrop < ActiveRecord::Base
     payments
         .map{|x| x.amount}
         .reduce(0, :+)
+  end
+
+  def payment_totals_hash
+    Payment::VALID_PAYMENT_METHODS.map{ |key, val|
+      {
+          key => self.total_amount_for_payment_method(key)
+      }
+    }.reduce Hash.new, :merge
   end
 
   def total_amount_for_payment_method(payment_method)
@@ -52,5 +63,11 @@ class PaymentDrop < ActiveRecord::Base
         .to_f == check_included.to_f
   end
 
+  def tracked_values
+    {
+      cash_included: cash_included,
+      check_included: check_included
+    }.merge(payment_totals_hash)
+  end
 
 end

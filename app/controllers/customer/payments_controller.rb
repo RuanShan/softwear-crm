@@ -20,7 +20,9 @@ module Customer
 
           render 'success'
         end
-        failure.js { render 'failure' }
+        failure.js do
+          render 'failure'
+        end
       end
     rescue Payment::PaymentError => e
       # The error message will be displayed via @payment's payment_method errors
@@ -152,7 +154,7 @@ module Customer
     end
 
     def email_receipt_to_customer(payment)
-      OrderMailer.payment_made(payment.order, payment, customer_order_url(payment.order)).deliver
+      OrderMailer.payment_made(payment.order, payment, customer_order_url(payment.order.try(:customer_key))).deliver
     end
 
     def permitted_params

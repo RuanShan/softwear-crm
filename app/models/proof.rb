@@ -6,7 +6,7 @@ class Proof < ActiveRecord::Base
   acts_as_paranoid
 
   searchable do
-
+    integer :id
   end
 
   tracked by_current_user + on_order
@@ -90,4 +90,13 @@ class Proof < ActiveRecord::Base
     end
   end
 
+  def artwork_paths
+    artworks.map do |artwork|
+      [
+        artwork.preview.try(:file).try(:url, :thumb),
+        artwork.path,
+        artwork.bg_color
+      ]
+    end
+  end
 end

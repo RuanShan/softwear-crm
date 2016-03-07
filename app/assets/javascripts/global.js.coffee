@@ -1,9 +1,21 @@
+Dropzone.options.jsPackingSlipForm =
+  paramName: 'packing_slips'
+  maxFilesize: 1#MB
+  uploadMultiple: true
+  successmultiple: (file, response) ->
+    for entry in response
+      container = $(entry.container)
+      $('#js-packing-slip-info-zone').append container
+      container.find('.info').append entry.info
+
 $.fn.modal.Constructor.prototype.enforceFocus = ->
 
 $(window).load ->
   $("#flashModal").modal "show"
   $("#errorsModal").modal "show"
   $("#dock").zIndex(1000)
+  $(document).on 'select2:open', ->
+    $('.select2-dropdown').css 'z-index', '9999999'
 
 @initializeSelect2 = (opts) ->
   scope = $('body')
@@ -115,10 +127,12 @@ $(document).ready ->
 
 
 $(document).ajaxStart ->
-  $('#loading').fadeIn("fast")
+  unless window.noSpinner
+    $('#loading').fadeIn(100)
 
 $(document).ajaxStop ->
-  $('#loading').fadeOut("fast")
+  unless window.noSpinner
+    $('#loading').fadeOut(100)
 
 @after = (ms, func) ->
   setTimeout(func, ms)
@@ -150,8 +164,8 @@ $(document).ajaxStop ->
   $element.css('background-color', (color or '#99ffbb'))
   $element.animate {backgroundColor: returnColor}, (duration or 1000), -> $element.css 'background-color', ''
 
-@styleCheckboxes = ->
-  $("input").iCheck
+@styleCheckboxes = (element) ->
+  (element or $("input")).iCheck
     checkboxClass: "icheckbox_minimal-grey"
     radioClass: "iradio_minimal-grey"
     increaseArea: "20%"

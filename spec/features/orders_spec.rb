@@ -3,7 +3,7 @@ include ApplicationHelper
 
 feature 'Order management', order_spec: true, js: true do
   given!(:valid_user) { create(:user) }
-  background(:each) { login_as valid_user }
+  background(:each) { sign_in_as valid_user }
 
   given!(:order) { create(:order) }
 

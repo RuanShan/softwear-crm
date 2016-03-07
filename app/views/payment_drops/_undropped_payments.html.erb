@@ -15,9 +15,10 @@
   <% payments.each do |payment| %>
       <tr>
         <%
-           checked = params[:payment_drop] &&
+           checked = (params[:payment_drop] &&
                      params[:payment_drop][:payment_ids] &&
-                     params[:payment_drop][:payment_ids].include?(payment.id.to_s)
+                     params[:payment_drop][:payment_ids].include?(payment.id.to_s)) ||
+                     ( defined?(included_payments) && included_payments.include?(payment))
         %>
         <td>
           <%= check_box_tag "payment_drop[payment_ids][]", payment.id, checked, class: 'undropped-payment', data: {'payment-amount' => payment.amount, 'payment-method' => payment.payment_method}  %>

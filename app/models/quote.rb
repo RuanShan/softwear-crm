@@ -6,6 +6,7 @@ class Quote < ActiveRecord::Base
   include TrackingHelpers
   include IntegratedCrms
   include ActionView::Helpers::DateHelper
+  include Softwear::Auth::BelongsToUser
 
   acts_as_paranoid
   acts_as_commentable :public, :private
@@ -77,9 +78,9 @@ class Quote < ActiveRecord::Base
 
   default_scope -> { order('quotes.created_at DESC') }
 
-  belongs_to :salesperson, class_name: User
+  belongs_to_user_called :salesperson
+  belongs_to_user_called :insightly_whos_responsible
   belongs_to :store
-  belongs_to :insightly_whos_responsible, class_name: User
   has_many :email_templates
   has_many :emails, as: :emailable, dependent: :destroy
   has_many :quote_request_quotes
@@ -93,10 +94,10 @@ class Quote < ActiveRecord::Base
   validates :estimated_delivery_date, presence: true
   validates :first_name, presence: true
   validates :quote_source, presence: true
-  validates :salesperson, presence: true
+  validates :salesperson_id, presence: true
   validates :store, presence: true
   validates :valid_until_date, presence: true
-  validates *(INSIGHTLY_FIELDS - [:insightly_opportunity_id]), presence: true, if: :should_validate_insightly_fields?
+  validates(*(INSIGHTLY_FIELDS - [:insightly_opportunity_id]), presence: true, if: :should_validate_insightly_fields?)
   validate :no_line_item_errors
 
   after_save :set_quote_request_statuses_to_quoted
@@ -132,7 +133,7 @@ class Quote < ActiveRecord::Base
   end
 
   def show_quoted_email_text
-    html_doc = Nokogiri::HTML()
+    Nokogiri::HTML()
   end
 
   def markups_and_options_job
@@ -274,7 +275,7 @@ class Quote < ActiveRecord::Base
       line_item.decoration_price   = decoration_price
       line_item.imprintable_price  = imprintable.base_price || 0
       line_item.imprintable_object = imprintable
-      line_item.line_itemable      = new_job
+      line_item.job                = new_job
       line_item.tier               = tier
 
       line_item
@@ -324,7 +325,7 @@ class Quote < ActiveRecord::Base
       imprintable = Imprintable.find imprintable_id
 
       line_item = LineItem.new
-      line_item.line_itemable      = job
+      line_item.job                = job
       line_item.tier               = attrs[:tier].blank? ? Imprintable::TIER.good : attrs[:tier]
       line_item.quantity           = attrs[:quantity].blank? ? 1 : attrs[:quantity]
       line_item.decoration_price   = attrs[:decoration_price].blank? ? 0 : attrs[:decoration_price]
@@ -456,8 +457,8 @@ class Quote < ActiveRecord::Base
       # We only get a hash on error... better way to check?
       return if tickets.is_a?(Hash)
 
-      ticket = tickets.find do |ticket|
-        doc = Nokogiri::XML(ticket['description_html'])
+      ticket = tickets.find do |t|
+        doc = Nokogiri::XML(t['description_html'])
         quote_id = doc.at_css('#softwear_quote_id').text.to_i
 
         quote_id == id.to_i
@@ -485,7 +486,7 @@ class Quote < ActiveRecord::Base
         return
       end
 
-      response = freshdesk.put_tickets(
+      _response = freshdesk.put_tickets(
         id: freshdesk_ticket_id,
         helpdesk_ticket: {
           requester_id: contact_id,
@@ -746,7 +747,7 @@ class Quote < ActiveRecord::Base
         hash[:decoration_price] = line_item.decoration_price.to_f
         hash[:quantity] = line_item.quantity
         hash[:tier] = line_item.tier
-        hash[:group_id] = line_item.line_itemable_id
+        hash[:group_id] = line_item.job_id
       end
     else
       changed_attrs = self.attribute_names.select{ | attr| self.send("#{attr}_changed?")}

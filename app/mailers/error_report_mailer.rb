@@ -1,7 +1,9 @@
 class ErrorReportMailer < ActionMailer::Base
-  def send_report(params)
+  default to: 'devteam@annarbortees.com'
+
+  def send_report(user, params)
     @order = Order.find_by(id: params[:order_id])
-    @user  = User.find_by(id: params[:user_id])
+    @user  = user || User.find_by(id: params[:user_id])
 
     if @user.nil?
       from_customer = true
@@ -14,7 +16,7 @@ class ErrorReportMailer < ActionMailer::Base
       else
         @user = OpenStruct.new(
           email:     @order.email,
-          full_name: @order.full_name
+          full_name: "(Customer) #{@order.full_name}"
         )
       end
     end
@@ -30,6 +32,22 @@ class ErrorReportMailer < ActionMailer::Base
       reply_to: @user.email,
       to:       'devteam@annarbortees.com',
       subject:  "Softwear CRM Error Report From #{@user.full_name}"
+    )
+  end
+
+  def auth_server_down(at)
+    mail(
+      from:    'noreply@softwearcrm.com',
+      subject: 'Authentication server is down!',
+      body:    at.strftime("Lost contact on %m/%d/%Y at %I:%M%p. We're running on cache!")
+    )
+  end
+
+  def auth_server_up(at)
+    mail(
+      from:    'noreply@softwearcrm.com',
+      subject: 'Authentication server back up!',
+      body:    at.strftime("Just got a response at %I:%M%p")
     )
   end
 end

@@ -37,7 +37,12 @@
 
           <div class='col-sm-10'>
             <div class='col-sm-4'>
-              <%= label_tag 'SKU', 'SKU' %>
+              <%= label_tag 'SKU', 'SKU', class: 'pull-left' %>
+              <span class='pull-right'>
+                <%= hidden_field_tag 'sku_autofill', '0', id: 'hidden-sku-autofill-0' %>
+                <%= check_box_tag 'sku_autofill', '1', @sku_autofill %>
+                <em>auto-fill</em>
+              </span>
             </div>
 
             <div class='col-sm-4'>

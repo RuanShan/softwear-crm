@@ -2,6 +2,7 @@ module Search
   class QueriesController < ApplicationController
     # Funkify gives us auto_currying, which is used to keep our context
     # in a clean manner when dealing with Sunspot DSL procs.
+    # "clean"..
     include Funkify
 
     before_action :permit_params

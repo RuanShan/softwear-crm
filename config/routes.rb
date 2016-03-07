@@ -1,16 +1,11 @@
 require 'sidekiq/web'
 
 CrmSoftwearcrmCom::Application.routes.draw do
-  devise_for :users, controllers: { sessions: 'users/sessions' }, skip: 'registration'
   mount ActsAsWarnable::Engine => '/'
 
   root 'home#index'
   get 'home/api_warnings', to: 'home#api_warnings', as: :api_warnings
   get 'home/not_allowed', to: 'home#not_allowed', as: :not_allowed
-
-  get '/users/change_password', to: 'users#edit_password', as: :change_password
-  put '/users/change_password', to: 'users#update_password', as: :update_password
-  get '/users/lock', to: 'users#lock', as: :lock_user
 
   get 'imprints/ink_colors', to: 'imprints#ink_colors', as: :imprint_ink_colors
   get 'imprints/new', to: 'imprints#new', as: :new_imprint
@@ -29,11 +24,21 @@ CrmSoftwearcrmCom::Application.routes.draw do
     end
   end
 
-
+  resources :user_attributes, only: [:edit, :update]
+  get '/set-session-token', to: 'users#set_session_token', as: :set_session_token
+  get '/clear-user-query-cache', to: 'users#clear_query_cache', as: :clear_user_query_cache
 
   get 'tags/:tag', to: 'imprintables#index', as: :tag
 
-  resources :brands, :colors, :users, :artworks
+  resources :brands, :colors
+  resources :artworks do
+    collection do
+      get 'select'
+    end
+    member do
+      get 'full_view'
+    end
+  end
 
   resources :artwork_requests do
     member do
@@ -78,8 +83,6 @@ CrmSoftwearcrmCom::Application.routes.draw do
   warning_paths_for :quote_requests
   resources :warnings
 
-  get '/logout' => 'users#logout'
-
   scope 'configuration' do
     resources :shipping_methods, :stores, :line_item_templates
     resources :imprint_methods do
@@ -104,7 +107,7 @@ CrmSoftwearcrmCom::Application.routes.draw do
     resources :in_store_credits do
       collection { get :search }
     end
-    resources :payment_drops
+    resources :payment_drops, except: :destroy
   end
 
   get 'payments/undropped', to: 'payments#undropped'
@@ -157,10 +160,17 @@ CrmSoftwearcrmCom::Application.routes.draw do
     end
   end
 
-  resources :fba_job_templates
+  resources :fba_spreadsheet_uploads
+  resources :fba_job_templates do
+    collection do
+      get :print_locations
+    end
+  end
   resources :fba_products do
     collection do
       get :variant_fields
+      get :new_from_spreadsheet
+      post :upload_spreadsheet
     end
   end
 
@@ -183,19 +193,18 @@ CrmSoftwearcrmCom::Application.routes.draw do
 
   namespace 'api', defaults: { format: :json } do
     match '*path', to: 'api#options', via: :options
-    resources 'orders', only: [:index, :show]
-    resources 'jobs', only: [:index, :show]
-    resources 'imprints', only: [:index, :show]
+    resources 'orders', only: [:index, :show, :update]
+    resources 'jobs', only: [:index, :show, :update]
+    resources 'imprints', only: [:index, :show, :update]
     resources 'imprintables'
     resources 'imprintable_variants', only: [:index, :show]
     resources 'colors'
     resources 'sizes'
     resources 'quote_requests', only: [:create, :index, :show]
+    resources 'shipments', only: [:index, :show, :update]
   end
 
-  authenticate :user do
-    mount Sidekiq::Web => '/sidekiq'
-  end
+  mount Sidekiq::Web => '/sidekiq'
 
   get '/undock', to: 'home#undock'
   get '/undock/:quote_request_id', to: 'home#undock'

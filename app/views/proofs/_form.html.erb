@@ -15,7 +15,7 @@
   <div class="col-sm-10">
     <% order.artworks.each do |artwork| %>
       <div class="col-xs-6 col-sm-4 text-center" data-artwork-id="<%= artwork.id %>" style="padding: 4px; border: dashed 2px #DEDEDE">
-        <%= image_tag artwork.preview.file.url(:medium), class: 'img-responsive center-block' %><br />
+        <%= preview_artwork artwork, :medium, class: 'img-responsive center-block' %>
         <% checked = (proof && proof.artwork_ids.include?(artwork.id) ? { checked: true } : false ) %>
         <%= check_box_tag 'proof[artwork_ids][]', artwork.id, checked %>
       </div>

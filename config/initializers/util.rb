@@ -16,3 +16,11 @@ end
 Insightly2.api_key = ENV['INSIGHTLY_API_KEY'] if Rails.env.development?
 
 Softwear::Lib.fix_sort_argument_error_on_rubinius
+
+NilClass.class_eval do
+  def full_name
+    "Nil"
+  end
+end
+
+require Rails.root.join('app/controllers/api/api_controller_decorator').to_s

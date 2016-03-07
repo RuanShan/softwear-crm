@@ -1,6 +1,7 @@
 class LineItem < ActiveRecord::Base
   include TrackingHelpers
   extend ParamHelpers
+  include Softwear::Lib::Enqueue
 
   MARKUP_ITEM_QUANTITY = -999
 
@@ -9,6 +10,7 @@ class LineItem < ActiveRecord::Base
   searchable do
     text :name, :description
     boolean(:is_imprintable) { imprintable? }
+    integer :id
   end
 
   tracked skip_defaults: true
@@ -38,6 +40,8 @@ class LineItem < ActiveRecord::Base
     scope: [:job_id], message: 'is a duplicate in this group' }, if: :imprintable_and_in_job?
 
   before_validation :set_sort_order, if: :markup_or_option?
+  enqueue :update_production_quantities, queue: 'api'
+  after_update :enqueue_update_production_quantities, if: :order_in_production?
   after_save :recalculate_order_fields
   after_destroy :recalculate_order_fields
 
@@ -73,6 +77,10 @@ class LineItem < ActiveRecord::Base
 
   def url
     super || imprintable.try(:supplier_link)
+  end
+
+  def order_in_production?
+    order? && order.try(:production?)
   end
 
   def line_itemable
@@ -151,11 +159,11 @@ class LineItem < ActiveRecord::Base
   end
 
   def imprintable_variant_id=(iv_id)
-    imprintable_object_type = 'ImprintableVariant'
-    imprintable_object_id = iv_id
+    self.imprintable_object_type = 'ImprintableVariant'
+    self.imprintable_object_id = iv_id
   end
   def imprintable_variant=(iv)
-    imprintable_object = iv
+    self.imprintable_object = iv
   end
 
   def imprintable_and_in_job?
@@ -171,15 +179,15 @@ class LineItem < ActiveRecord::Base
   end
 
   def size_display
-    imprintable_variant.size.display_value
+    imprintable_variant.size.display_value rescue nil
   end
 
   def style_catalog_no
-    imprintable.style_catalog_no
+    imprintable.style_catalog_no if imprintable
   end
 
   def style_name
-    imprintable.style_name
+    imprintable.style_name if imprintable
   end
 
   def unit_price
@@ -207,6 +215,27 @@ class LineItem < ActiveRecord::Base
     quantity == MARKUP_ITEM_QUANTITY
   end
   alias_method :option_or_markup?, :markup_or_option?
+
+  def update_production_quantities
+    return unless order_in_production?
+    return unless imprintable_variant
+
+    new_count = job.imprintable_line_items_total
+    errors = []
+
+    job.imprints.each do |imprint|
+      prod_imprint = imprint.production
+      next if prod_imprint.nil?
+
+      unless prod_imprint.update_attribute(:count, new_count)
+        errors << "Imprint (prod##{prod_imprint.id}): #{prod_imprint.errors.full_messages.join(', ')}"
+      end
+    end
+
+    unless errors.empty?
+      order.issue_warning("Production API", errors.join("\n"))
+    end
+  end
 
   private
 

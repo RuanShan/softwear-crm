@@ -23,10 +23,6 @@
   display: none;
 }
 
-.select2-dropdown--below,.select2-container {
-  z-index: 9999999 !important;
-}
-
 .no-click {
   cursor: not-allowed;
   color: #A8A8A8;
@@ -49,6 +45,10 @@
   .qr-dock-show-btn {
     margin-top: 10px;
   }
+}
+
+.border {
+  border: 1px solid black;
 }
 
 #error-details {
@@ -120,4 +120,17 @@
 .tiny {
     width: 26pt;
     height: 26pt;
+}
+
+.margin-top-10 {
+  margin-top: 10px;
+}
+
+.margin-topbot-10 {
+  margin-top: 5px;
+  margin-bottom: 10px;
+}
+
+.select-artwork-entry {
+  cursor: pointer;
 }

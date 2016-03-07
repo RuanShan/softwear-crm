@@ -17,5 +17,5 @@ if Rails.env.production?
 end
 
 if ApplicationController.max_file_upload_size.nil?
-  ApplicationController.max_file_upload_size = "unknown"
+  ApplicationController.max_file_upload_size = "(unknown, probably 10mb)"
 end

@@ -1,5 +1,6 @@
 class ArtworksController < InheritedResources::Base
   before_action :set_current_action
+  skip_before_filter :authenticate_user!, only: [:full_view]
 
   respond_to :html, :js
 
@@ -13,6 +14,24 @@ class ArtworksController < InheritedResources::Base
     end
   end
 
+  def select
+    per_page = 20
+
+    if params[:q]
+      @artworks = Artwork.search do
+        fulltext params[:q]
+        paginate page: params[:page] || 1, per_page: per_page
+      end
+        .results
+    else
+      @artworks = Artwork.all.page(params[:page] || 1).per(per_page)
+    end
+
+    @target = params[:target]
+
+    respond_to(&:js)
+  end
+
   def create
     super do |success, failure|
       success.html { redirect_to params[:back_to].blank? ? artworks_path : params[:back_to] }
@@ -24,6 +43,11 @@ class ArtworksController < InheritedResources::Base
     super do |format|
       format.html { redirect_to params[:back_to].blank? ? artworks_path : params[:back_to] }
     end
+  end
+
+  def full_view
+    @artwork = Artwork.find(params[:id])
+    render layout: nil
   end
 
   def self.permitted_search_locals

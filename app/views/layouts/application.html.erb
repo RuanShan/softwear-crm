@@ -35,6 +35,7 @@
         <%= render 'shared/content_header'  %>
 
         <div class="body content rows scroll-y">
+            <%= auth_server_error_banner %>
             <%= yield %>
             <%= render 'shared/footer'  %>
             <% begin %>

@@ -3,5 +3,6 @@ class LineItemTemplate < ActiveRecord::Base
 
   searchable do
     text :name, :description, :url
+    integer :id
   end
 end

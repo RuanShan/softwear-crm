@@ -1,8 +1,8 @@
-<% if @current_user %>
+<% if @current_user.try(:attributes) %>
   <dl id='my-store'>
     <dt>My Store</dt>
     <dd>
-      <%= editable @current_user, :store_id, type: :select, data: { source: Store.all.map { |s| { s.id => s.name } } } %>
+      <%= editable @current_user.attributes, :store_id, type: :select, data: { source: Store.all.map { |s| { s.id => s.name } } } %>
     </dd>
   </dl>
 <% end %>

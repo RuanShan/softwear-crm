@@ -27,6 +27,7 @@
  *= require softwear-fonts
  *= require markitup/skins/markitup/style
  *= require markitup/sets/xbbcode/style
+ *= require dropzone/basic
  */
 
 .margin-top-10 {
@@ -119,6 +120,14 @@ blockquote.freshdesk_quote {
 
 .form-right {
   text-align: right;
+}
+
+.margin-left {
+  margin-left: 30px;
+}
+
+.profile-pic {
+  max-width: 10em;
 }
 
 @import "font-awesome-sprockets";

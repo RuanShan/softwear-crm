@@ -2,12 +2,19 @@
   <p class='text-danger'>
     ERROR: <%= error %>
   </p>
-<% elsif !fba[:errors].empty? %>
+<% elsif !fba[:errors].empty? || !fba[:missing_skus].empty? %>
   <p class='text-danger'>
     ERRORS:
     <ul>
       <% fba[:errors].each do |error| %>
         <li><%= error.respond_to?(:call) ? error.call(self).html_safe : error %></li>
+      <% end %>
+      <% fba[:missing_skus].each do |idea, skus| %>
+        <li>
+          Missing <%= skus.size %> skus for the product &quot;<%= idea %>&quot;.
+          <%= link_to 'Click here', new_fba_product_path(skus: skus), target: (:_blank unless Rails.env.test?) %>
+          to create this product.
+        </li>
       <% end %>
     </ul>
     <% if fba[:jobs_attributes].empty? %>
@@ -19,8 +26,11 @@
 <% else %>
   <p class='text-success'>
     <span class='glyphicon glyphicon-ok'></span>
-    Job and line items will be added.
+    Jobs and line items will be added.
   </p>
 <% end %>
 
 <%= hash_to_hidden_fields(fba[:jobs_attributes], 'order[jobs_attributes]') if fba[:jobs_attributes] %>
+<% fba[:fba_product_names].each do |fba_product_name| %>
+  <div class='fba-order-product-name' data-name='<%= fba_product_name %>'></div>
+<% end %>

@@ -5,7 +5,7 @@ require_relative '../../app/controllers/jobs_controller'
 
 feature 'Quotes management', quote_spec: true, js: true, retry: 3 do
   given!(:valid_user) { create(:alternate_user, insightly_api_key: "insight") }
-  background(:each) { login_as(valid_user) }
+  background(:each) { sign_in_as(valid_user) }
 
   given!(:quote) { create(:valid_quote) }
   given!(:imprintable) { create(:valid_imprintable) }
@@ -103,7 +103,7 @@ feature 'Quotes management', quote_spec: true, js: true, retry: 3 do
 
   context 'without an insightly api key' do
     given!(:user) { create(:alternate_user) }
-    background(:each) { login_as(user) }
+    background(:each) { sign_in_as(user) }
 
     scenario 'A user can create a quote', edit: true, wumbo: true do
       visit root_path

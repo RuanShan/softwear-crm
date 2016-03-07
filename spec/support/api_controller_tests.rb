@@ -8,6 +8,10 @@ module ApiControllerTests
       context 'with params' do
         it 'queries based on permitted field names in the params' do
           allow_any_instance_of(described_class)
+            .to receive(:token_authenticate_user!)
+            .and_return true
+
+          allow_any_instance_of(described_class)
             .to receive(:permitted_attributes)
             .and_return [:field_1]
 
@@ -26,6 +30,10 @@ module ApiControllerTests
 
     describe 'POST #create', api_controller_spec: true do
       it 'sets the "Location" header to the resource url' do
+        allow_any_instance_of(described_class)
+          .to receive(:token_authenticate_user!)
+          .and_return true
+
         allow_any_instance_of(described_class).to receive(:record)
           .and_return double('record', id: 5)
 

@@ -1,6 +1,8 @@
 module Search
   class Query < ActiveRecord::Base
-    belongs_to :user
+    include Softwear::Auth::BelongsToUser
+
+    belongs_to_user
     has_many :query_models, class_name: 'Search::QueryModel',
                             dependent: :destroy
     validates :name, uniqueness: { scope: :user_id }
@@ -94,7 +96,7 @@ module Search
     # local_thing = something
     # str = "hey there ".instance_eval { concat(local_thing) }
     #
-    # That will actually have the desired effect, dang!
+    # That will actually have the desired effect.
     #
     # As much as it is pretty cool that we can carry over our data, it
     # makes it difficult to split up our functionality into functions
@@ -134,8 +136,14 @@ module Search
             query_model.filter.apply(self, base_scope)
           end
 
-          instance_eval(&block) if block_given?
           paginate page: options[:page] || 1, per_page: model.default_per_page
+          # Only order by ID if it happens to be indexed
+          begin
+            order_by :id, :desc
+          rescue Sunspot::UnrecognizedFieldError => _
+          end
+
+          instance_eval(&block) if block_given?
         end
       end
 

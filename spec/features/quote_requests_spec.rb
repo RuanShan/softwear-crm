@@ -9,7 +9,7 @@ feature 'Quote Requests Management', js: true, quote_request_spec: true do
   given!(:valid_user) { create(:alternate_user) }
   given(:next_button) { '.quote-request-next-button' }
   given(:previous_button) { '.quote-request-previous-button' }
-  before(:each) { login_as(valid_user) }
+  before(:each) { sign_in_as(valid_user) }
 
   scenario 'A user can view a list of quote requests' do
     visit quote_requests_path
@@ -60,7 +60,7 @@ feature 'Quote Requests Management', js: true, quote_request_spec: true do
     expect(quote_request.reload.status).to eq 'assigned'
   end
 
-  scenario 'A user can click next and previous unassigned quote request', next_and_previous: true do
+  scenario 'A user can click next and previous unassigned quote request', retry: 3, next_and_previous: true do
     quote_request.update_attributes salesperson_id:   nil
     quote_request_2.update_attributes salesperson_id: valid_user.id
     quote_request_3.update_attributes salesperson_id: nil

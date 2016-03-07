@@ -1,12 +1,14 @@
 <div class="media">
   <a class="pull-left" href="#fakelink">
-    <%= image_tag @current_user.try(:profile_picture).try(:file).try(:url, :medium) || 'avatar/masarie.jpg', class: 'media-object img-circle', alt: 'Avatar' %>
+    <%= image_tag @current_user.profile_picture_url || 'avatar/masarie.jpg', class: 'media-object img-circle', alt: 'Your Avatar' %>
   </a>
 
   <div class="media-body">
     Welcome,
-    <h4 class="media-heading"><strong><%= @current_user.first_name %> <%= @current_user.last_name[0,1] %>.</strong></h4>
-    <%= link_to 'Edit', edit_user_path(@current_user) rescue 'Error' %>
-    <%= link_to 'Logout', destroy_user_session_path, method: :delete, class: 'md-trigger', 'data-model'=>'logout-modal-alt' rescue 'Error' %>
+    <%= link_to edit_user_path(@current_user) do %>
+      <h4 class="media-heading"><strong><%= @current_user.first_name %> <%= @current_user.last_name[0,1] %>.</strong></h4>
+    <% end %>
+    <%= link_to 'Edit', edit_user_attribute_path(@current_user.attributes) rescue 'Error' %>
+    <%= link_to 'Logout', destroy_user_session_path, class: 'md-trigger', 'data-model'=>'logout-modal-alt' rescue 'Error' %>
   </div>
 </div>

@@ -22,9 +22,16 @@
         </div>
       </div>
       <div class="col-xs-6">
-        <h3>Payments</h3>
+        <% if @payment_drop.persisted? %>
+        <h3>Payments Currently In This Drop</h3>
+          <div class="box-info" id="payment-drop-included-payments-list">
+            <%= render 'undropped_payments', payments: @payment_drop.payments, included_payments: @payment_drop.payments %>
+          </div>
+
+        <% end %>
+        <h3>Undropped Payments</h3>
         <div class="box-info" id="payment-drop-undropped-payments-list">
-          <% if params[:payment_drop] && params[:payment_drop][:store_id] %>
+          <% if(params[:payment_drop] && params[:payment_drop][:store_id]) || @payment_drop.persisted? %>
             <%= render 'undropped_payments', payments: @undropped_payments %>
           <% else %>
             <p class="alert alert-info">

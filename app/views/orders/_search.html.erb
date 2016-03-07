@@ -27,6 +27,10 @@
     <div class="col-sm-3">
       <%= s.select :production_state, Order::VALID_PRODUCTION_STATES, multiple: true %>
     </div>
+
+    <div class="col-sm-3">
+      <%= s.yes_or_no_select :fba, selected: @fba ? 'true' : nil %>
+    </div>
   </div>
 
   <div class='row form-group'>

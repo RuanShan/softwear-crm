@@ -1,6 +1,7 @@
 class OrdersController < InheritedResources::Base
   include StateMachine
 
+  skip_before_action :verify_authenticity_token, only: [:fba_job_info]
   before_filter :format_in_hand_by, only: [:create, :update]
   layout 'no_overlay', only: [:show]
 
@@ -14,7 +15,11 @@ class OrdersController < InheritedResources::Base
   def update
     super do |success, failure|
       success.html do
-        redirect_to edit_order_path(params[:id], anchor: 'details')
+        if @order.fba?
+          redirect_to edit_order_path(params[:id], anchor: 'jobs')
+        else
+          redirect_to edit_order_path(params[:id], anchor: 'details')
+        end
       end
       failure.html do
         assign_activities
@@ -50,6 +55,7 @@ class OrdersController < InheritedResources::Base
   def edit
     super do
       @current_action = 'orders#edit'
+      @shipping_methods = grab_shipping_methods
       assign_activities
     end
   end
@@ -62,6 +68,7 @@ class OrdersController < InheritedResources::Base
       if @order.save
         @order.jobs_attributes = params.permit![:order][:jobs_attributes]
         if @order.save
+          @order.setup_art_for_fba if @order.fba?
           valid = true
         else
           @order.really_destroy!
@@ -78,10 +85,20 @@ class OrdersController < InheritedResources::Base
         end
         session[:quote_id] = nil
       end
+      flash[:success] = "Order was successfully created."
       redirect_to edit_order_path(@order)
     else
-      flash[:error] = @order.errors.full_messages.join("\n")
+      flash[:error] = @order.errors.full_messages.join("\n") if @order.fba?
       render action: @order.fba? ? :new_fba : :new
+    end
+  end
+
+  def destroy
+    @order = Order.find(params[:id])
+    @order.destroy_recursively
+    respond_to do |format|
+      format.html { redirect_to orders_path }
+      format.js { render }
     end
   end
 
@@ -117,10 +134,15 @@ class OrdersController < InheritedResources::Base
     @fba_infos = []
 
     if packing_slips
+      if packing_slips.is_a?(Hash)
+        packing_slips = packing_slips.values
+      end
+
       @fba_infos += packing_slips.compact.flat_map do |packing_slip|
         FBA.parse_packing_slip(
           StringIO.new(packing_slip.read),
-          filename: packing_slip.original_filename
+          filename:   packing_slip.original_filename,
+          shipped_by_id: current_user.id
         )
       end
     end
@@ -132,12 +154,26 @@ class OrdersController < InheritedResources::Base
 
         FBA.parse_packing_slip(
           StringIO.new(URI.parse(url).read),
-          filename: url.split('/').last
+          filename:   url.split('/').last,
+          shipped_by_id: current_user.id
         )
       end
     end
 
     @fba_infos.compact!
+
+    respond_to do |format|
+      format.js
+      format.json do
+        result = @fba_infos.map do |fba|
+          {
+            container: render_string(partial: 'fba_upload', locals: { filename: fba[:filename] }),
+            info:      render_string(partial: 'fba_job_info_box', locals: { fba: fba })
+          }
+        end
+        render json: result.to_json
+      end
+    end
   end
 
   def imprintable_order_sheets
@@ -178,6 +214,16 @@ class OrdersController < InheritedResources::Base
     @activities = @order.all_activities
   end
 
+  def grab_shipping_methods
+    if @order.fba?
+      ShippingMethod.all
+    else
+      fba_filter = '"%Amazon FBA%"'
+      ShippingMethod.where.not("name LIKE #{fba_filter}") +
+      [ShippingMethod.find_by("name LIKE #{fba_filter}")].compact
+    end
+  end
+
   def permitted_params
     params.permit(
       :packing_slips, :page,
@@ -192,9 +238,12 @@ class OrdersController < InheritedResources::Base
         :delivery_method, :phone_number, :commission_amount,
         :store_id, :salesperson_id, :total, :shipping_price, :artwork_state,
         :freshdesk_proof_ticket_id, :softwear_prod_id, :production_state, :phone_number_extension,
+        :freshdesk_proof_ticket_id, :softwear_prod_id, :production_state,
+
         quote_ids: [],
         jobs_attributes: [
           :id, :name, :jobbable_id, :jobbable_type, :description, :_destroy,
+          :shipping_location, :shipping_location_size, :sort_order, :fba_job_template_id,
           imprints_attributes: [
             :print_location_id, :description, :_destroy, :id
           ],
@@ -202,6 +251,10 @@ class OrdersController < InheritedResources::Base
             :imprintable_object_id, :imprintable_object_type, :id,
             :line_itemable_id, :line_itemable_type, :quantity,
             :unit_price, :decoration_price, :_destroy, :imprintable_price
+          ],
+          shipments_attributes: [
+            :name, :address_1, :city, :state, :zipcode, :shipped_by_id,
+            :shippable_type, :shippable_id, :id, :_destroy, :shipping_method_id
           ]
         ]
       ]

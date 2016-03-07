@@ -1,0 +1,5 @@
+<%= form_for FbaSpreadsheetUpload.new, multipart: true do |f| %>
+  <%= f.label :spreadsheet %>
+  <%= f.file_field :spreadsheet %>
+  <%= f.submit 'Submit', class: 'btn btn-default' %>
+<% end %>

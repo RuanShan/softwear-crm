@@ -1,0 +1,49 @@
+var title = $("<span class='pull-left'>Select Artwork</span><span class='pull-right'><%=j(link_to 'Upload', new_artwork_path, class: 'btn btn-success', target: :_blank).html_safe %></span> <div class='clearfix'></div>");
+var body = $("<%=j render 'select_results', artworks: @artworks %>");
+
+var setupLinks = function() {
+  $('.select-artwork-entry').click(function() {
+    hideContentModal();
+    if ($("#<%= @target %>").length === 0) {
+      alert("Uhhh try refreshing the page. Sorry.");
+      return;
+    }
+    var target    = $("#<%= @target %>").closest('.artwork-target-container').find('.artwork-target');
+    if (target.length === 0) {
+      alert("No target");
+      return;
+    }
+    var imgSrc    = $(this).data('src');
+    var imgTitle  = $(this).data('name');
+    var artworkId = $(this).data('id');
+    var bgColor   = $(this).data('bg');
+
+    target.find('img').remove();
+
+    var image = $("<img src='"+imgSrc+"' title='"+imgTitle+"' alt='"+imgTitle+"' data-toggle=tooltip />");
+    target.append(image);
+    if (bgColor && bgColor.length != 0)
+      image.css("background-color", bgColor);
+
+    var field = target.find('input[type=hidden]');
+    if (field.length === 0)
+      alert("No field to populate");
+
+    field.val(artworkId);
+  });
+};
+
+<% if params[:q] || params[:page] %>
+$('#contentModal .artworks').replaceWith(body);
+setupLinks();
+
+<% else %>
+setupContentModal(function(modal) {
+  modal.find('.modal-dialog').addClass('modal-lg');
+});
+showContentModal({
+  title: title,
+  body:  body,
+  then: setupLinks
+});
+<% end %>

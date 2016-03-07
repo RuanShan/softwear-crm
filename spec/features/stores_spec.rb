@@ -5,7 +5,7 @@ feature 'Stores management', store_spec: true do
   given!(:valid_user) { create(:user) }
   given!(:store) { create(:valid_store) }
 
-  background(:each) { login_as(valid_user) }
+  background(:each) { sign_in_as(valid_user) }
 
   scenario 'User views list of existing stores' do
     visit root_path
@@ -26,7 +26,7 @@ feature 'Stores management', store_spec: true do
     fill_in 'Phone', with: '800-555-1212'
     fill_in 'Sales email', with: 'sales@softwearcrm.com'
     fill_in 'Alternate text', with: 'alt stuff'
-    attach_file('Logo', "#{Rails.root}" + '/spec/fixtures/images/macho.jpg')
+    attach_file('Logo', "#{Rails.root}" + '/spec/fixtures/images/macho.png')
     click_button 'Create Store'
     expect(page).to have_selector('#flash_notice', text: 'Store was successfully created.')
     expect(page).to have_selector('.store-address', text: 'Address 1')
@@ -42,7 +42,7 @@ feature 'Stores management', store_spec: true do
   scenario 'User deletes an existing store', js: true, story_692: true do
     visit stores_path
     find("tr#store_#{store.id} a[data-action='destroy']").click
-    sleep 2 if ci?
+    sleep 2
     page.driver.browser.switch_to.alert.accept
     wait_for_ajax
     expect(store.reload.deleted_at).not_to eq(nil)

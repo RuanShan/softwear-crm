@@ -1,0 +1,34 @@
+<div class='artworks'>
+  <div class='artwork-search'>
+    <%= form_tag select_artworks_path, remote: true, method: :get do %>
+      <%= hidden_field_tag :target, @target %>
+      <%= text_field_tag :q, '', placeholder: 'Search Terms', class: 'form-control' %>
+      <%= button_tag 'Search', class: 'btn btn-primary' %>
+    <% end %>
+  </div>
+
+  <div>
+    <%= paginate artworks, remote: true %>
+    <div class='clearfix'></div>
+  </div>
+
+  <div class='well'>
+    <% if artworks.empty? %>
+      No artworks matched &quot;<%= params[:q] %>&quot;
+    <% else %>
+      <% artworks.each do |artwork| %>
+        <div class='col-sm-3'>
+          <div class='box-info select-artwork-entry' data-id='<%= artwork.id %>' data-src='<%= artwork.preview.file.url(:thumb) %>' data-name='<%= artwork.name %>' data-bg='<%= artwork.bg_color %>'>
+            <%= preview_artwork artwork, :thumb %>
+            <%= content_tag :h4, artwork.name %>
+          </div>
+        </div>
+      <% end %>
+    <% end %>
+    <div class='clearfix'>
+  </div>
+
+  <div>
+    <%= paginate artworks, remote: true %>
+  </div>
+</div>

@@ -5,12 +5,18 @@ class CollateWithUtf8mb4UnicodeCi < ActiveRecord::Migration
 
     string_columns.each do |table, columns|
       columns.each do |column|
-        execute "ALTER TABLE `#{table}` MODIFY `#{column}` VARCHAR(191) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci"
+        begin
+          execute "ALTER TABLE `#{table}` MODIFY `#{column}` VARCHAR(191) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci"
+        rescue Exception => e
+        end
       end
     end
     text_columns.each do |table, columns|
       columns.each do |column|
-        execute "ALTER TABLE `#{table}` MODIFY `#{column}` MEDIUMTEXT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci"
+        begin
+          execute "ALTER TABLE `#{table}` MODIFY `#{column}` MEDIUMTEXT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci"
+        rescue Exception => e
+        end
       end
     end
 
@@ -28,7 +34,10 @@ class CollateWithUtf8mb4UnicodeCi < ActiveRecord::Migration
       taggings tags users warning_emails warnings fba_job_templates
     )
     all_tables.each do |table|
-      execute "ALTER TABLE #{table} CONVERT TO CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci"
+      begin
+        execute "ALTER TABLE #{table} CONVERT TO CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci"
+      rescue Exception => e
+      end
     end
   end
 

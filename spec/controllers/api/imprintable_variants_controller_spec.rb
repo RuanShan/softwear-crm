@@ -5,6 +5,12 @@ describe Api::ImprintableVariantsController, api_imprintable_variant_spec: true,
   let!(:valid_user) { create :alternate_user }
   before(:each) { sign_in valid_user }
 
+  before(:each) do
+    allow_any_instance_of(Api::ImprintableVariantsController)
+      .to receive(:token_authenticate_user!)
+      .and_return true
+  end
+
   describe 'GET #index' do
     context 'with valid "color" and "imprintable" parameters' do
       let!(:imprintable) { create :valid_imprintable, common_name: 'Common' }

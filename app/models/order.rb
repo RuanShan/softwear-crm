@@ -1,6 +1,8 @@
 class Order < ActiveRecord::Base
   include TrackingHelpers
   include ProductionCounterpart
+  include Softwear::Auth::BelongsToUser
+  include Softwear::Lib::Enqueue
 
   acts_as_paranoid
   acts_as_commentable :public, :private
@@ -28,12 +30,17 @@ class Order < ActiveRecord::Base
     double :commission_amount
 
     integer :warnings_count
+    integer :id
 
     boolean :balance do
       balance != 0
     end
 
     date :in_hand_by
+
+    boolean :fba do
+      fba?
+    end
 
     reference :salesperson
   end
@@ -84,7 +91,7 @@ class Order < ActiveRecord::Base
   ]
 
 
-  belongs_to :salesperson, class_name: User
+  belongs_to_user_called :salesperson
   belongs_to :store
   has_many :jobs, as: :jobbable, dependent: :destroy, inverse_of: :jobbable
   has_many :line_items, through: :jobs, source: :line_items
@@ -101,7 +108,7 @@ class Order < ActiveRecord::Base
   has_many :job_discounts, through: :jobs, source: :discounts, dependent: :destroy
   has_many :admin_proofs, dependent: :destroy
 
-  accepts_nested_attributes_for :payments, :jobs
+  accepts_nested_attributes_for :payments, :jobs, :shipments
 
   validates :invoice_state,
             presence: true,
@@ -136,21 +143,24 @@ class Order < ActiveRecord::Base
               message: 'is incorrectly formatted, use 000-000-0000'
             },
             unless: :fba?
-  validates :salesperson, presence: true
+  validates :salesperson_id, presence: true
   validates :store, presence: true
   validates :terms, presence: true
   validates :in_hand_by, presence: true
   validates :invoice_reject_reason, presence: true, if: :invoice_rejected?
 
-  after_initialize -> (o) { o.production_state = 'pending' if o.production_state.blank? }
-  after_initialize -> (o) { o.invoice_state = 'pending' if o.invoice_state.blank? }
+  before_create { self.delivery_method ||= 'Ship to multiple locations' if fba? }
+  after_initialize -> (o) { o.production_state = 'pending' if o.respond_to?(:production_state) && o.production_state.blank? }
+  after_initialize -> (o) { o.invoice_state = 'pending' if o.respond_to?(:invoice_state) && o.invoice_state.blank? }
   after_initialize do
+    next unless respond_to?(:customer_key)
     while customer_key.blank? ||
           Order.where(customer_key: customer_key).where.not(id: id).exists?
       self.customer_key = rand(36**6).to_s(36).upcase
     end
   end
   after_initialize do
+    next unless %i(subtotal taxable_total discount_total payment_total).all?(&method(:respond_to?))
     self.subtotal ||= 0
     self.taxable_total ||= 0
     self.discount_total ||= 0
@@ -158,7 +168,9 @@ class Order < ActiveRecord::Base
   end
 
   # subtotal will be changed when a line item price is changed and it calls recalculate_subtotal on the order.
+  before_save :recalculate_payment_state
   before_save :recalculate_coupons, if: :subtotal_changed?
+  enqueue :create_production_order, queue: 'api'
   after_save :enqueue_create_production_order, if: :ready_for_production?
   after_save :create_invoice_approval_activity, if: :invoice_state_changed?
 
@@ -319,6 +331,44 @@ class Order < ActiveRecord::Base
     save!
   end
 
+  def jobs_attributes=(attrs)
+    return super unless fba?
+
+    attrs = (attrs.try(:values) || attrs).map(&:with_indifferent_access)
+
+    # Sort jobs by shipping location
+    jobs_by_shipping_location = {}
+    attrs.each do |job_attrs|
+      shipping_location      = job_attrs[:shipping_location]
+      shipping_location_size = job_attrs[:shipping_location_size].to_i
+
+      jobs_by_shipping_location[[shipping_location, shipping_location_size]] ||= []
+      jobs_by_shipping_location[[shipping_location, shipping_location_size]] << job_attrs
+    end
+
+    # Sort shipping locations by size
+    sorted_shipping_locations = jobs_by_shipping_location.keys.sort_by(&:last)
+
+    sorted_jobs = []
+    sorted_shipping_locations.each do |key|
+      # Sort jobs within each location by total line item quantity
+      sorted_jobs += jobs_by_shipping_location[key].sort_by do |job_attrs|
+        job_attrs[:line_items_attributes].values.reduce(0) { |n, l| n + l[:quantity].to_i }
+      end
+    end
+
+    # Add sort order to each job and job name
+    sorted_jobs.each_with_index do |job_attrs, index|
+      job_attrs[:sort_order] = index
+      job_attrs[:name] = "Job #{index + 1} - #{job_attrs[:name]}"
+
+      job_attrs.delete(:shipping_location)
+      job_attrs.delete(:shipping_location_size)
+    end
+
+    super(sorted_jobs)
+  end
+
   def id=(new_id)
     return if new_id.blank?
     super
@@ -332,7 +382,7 @@ class Order < ActiveRecord::Base
     return if production?
 
     (payment_status == 'Payment Terms Met' ||
-    payment_status == 'Payment Complete') and
+    payment_status == 'Payment Complete' || fba?) &&
     invoice_state  == 'approved'
   end
 
@@ -382,6 +432,26 @@ class Order < ActiveRecord::Base
   end
 
   def payment_status
+    self.payment_state ||= calculate_payment_state
+  end
+
+  def proof_state
+    return 'pending_artwork_requests' if missing_artwork_requests?
+    return 'pending' if missing_proofs?
+    return 'submitted_to_customer' if proofs_pending_approval?
+    return 'rejected' if !missing_artwork_requests? && missing_approved_proofs?
+    return 'approved' unless missing_approved_proofs?
+  end
+
+  def full_name
+    "#{firstname} #{lastname}"
+  end
+
+  def full_name_changed?
+    firstname_changed? || lastname_changed?
+  end
+
+  def calculate_payment_state
     if balance <= 0
       'Payment Complete'
     else
@@ -400,22 +470,6 @@ class Order < ActiveRecord::Base
       else 'Payment Terms Pending'
       end
     end
-  end
-
-  def proof_state
-    return 'pending_artwork_requests' if missing_artwork_requests?
-    return 'pending' if missing_proofs?
-    return 'submitted_to_customer' if proofs_pending_approval?
-    return 'rejected' if !missing_artwork_requests? && missing_approved_proofs?
-    return 'approved' unless missing_approved_proofs?
-  end
-
-  def full_name
-    "#{firstname} #{lastname}"
-  end
-
-  def full_name_changed?
-    firstname_changed? || lastname_changed?
   end
 
   def calculate_payment_total(exclude = [])
@@ -444,7 +498,7 @@ class Order < ActiveRecord::Base
   end
 
   def salesperson_name
-    User.find(salesperson_id).full_name
+    salesperson.full_name
   end
 
   def discount_total(exclude = [])
@@ -534,14 +588,27 @@ class Order < ActiveRecord::Base
     )
 
     update_column :softwear_prod_id, prod_order.id
-    update_column :production_state, :in_production
+    update_column :production_state, :in_production unless prod_order.id.nil?
+
+    if prod_order.errors.any?
+      raise "The exported Production order ended up invalid. Contact devteam about this.\n\n"\
+            "=== Errors: ===\n#{prod_order.errors.full_messages.join("\n")}\n\n"\
+            "=== Attributes: ===\n#{JSON.pretty_generate(prod_order.attributes)}"
+    end
 
     # These hashes are used to minimize time spend looping and updating softwear_prod_id's
     job_hash = {}
     imprint_hash = {}
 
     prod_order.jobs.each do |p_job|
-      job_hash[p_job.softwear_crm_id] = p_job
+      if p_job.softwear_crm_id.nil?
+        raise "A production job was not assigned its crm id. "\
+              "Contact devteam about this.\n"\
+              "Here are its errors (if any): #{p_job.errors.full_messages}\n\n"\
+              "Here are its attributes: #{JSON.pretty_generate(p_job.attributes)}"
+      else
+        job_hash[p_job.softwear_crm_id] = p_job
+      end
 
       p_job.imprints.each do |p_imprint|
         next unless p_imprint.respond_to?(:softwear_crm_id)
@@ -550,26 +617,28 @@ class Order < ActiveRecord::Base
       end
     end
 
+    missing_id = lambda do |ident, id|
+      issue_warning(
+        "Order#create_production_order", "#{ident} ##{id} is missing a production entry"
+      )
+      nil
+    end
+
     jobs.each do |job|
-      job.update_column :softwear_prod_id, job_hash[job.id].id
+      job.update_column :softwear_prod_id, job_hash[job.id].try(:id) || missing_id['Job', job.id]
 
       job.imprints.each do |imprint|
-        imprint.update_column :softwear_prod_id, imprint_hash[imprint.id].id
+        imprint.update_column :softwear_prod_id, imprint_hash[imprint.id].try(:id) || missing_id['Imprint', imprint.id]
       end
+    end
 
-      job.artwork_requests.each(&job.method(:create_trains_from_artwork_request))
+    artwork_requests.each do |artwork_request|
+      artwork_request.create_trains
+      artwork_request.create_imprint_group_if_needed
     end
   end
 
   warn_on_failure_of :create_production_order unless Rails.env.test?
-
-  if Rails.env.production?
-    def enqueue_create_production_order(*args)
-      delay(queue: 'api').create_production_order(*args)
-    end
-  else
-    alias_method :enqueue_create_production_order, :create_production_order
-  end
 
   def create_invoice_approval_activity
     if invoice_state_changed?(from: 'pending', to: 'approved')
@@ -596,12 +665,7 @@ class Order < ActiveRecord::Base
 
     jobs.each_with_index do |job, index|
       # NOTE make sure the permitted params in Production match up with this
-      attrs[index] = {
-        name: job.name,
-        softwear_crm_id: job.id,
-        imprints_attributes: job.production_imprints_attributes,
-        imprintable_train_attributes: job.imprintable_train_attributes
-      }
+      attrs[index] = job.production_attributes
       attrs[index].delete_if { |_,v| v.nil? }
     end
 
@@ -805,7 +869,7 @@ class Order < ActiveRecord::Base
   end
 
   def check_if_shipped!
-    return unless delivery_method.include?('Ship')
+    return unless delivery_method && delivery_method.include?('Ship')
     return if notification_state == 'shipped'
     jobs.reload; shipments.reload
     return if all_shipments.empty?
@@ -814,5 +878,128 @@ class Order < ActiveRecord::Base
       shipped
       save!
     end
+  end
+
+  def setup_art_for_fba
+    jobs_by_template = {}
+
+    missing_artworks = false
+    missing_proofs = false
+
+    jobs.includes(:imprints).each do |job|
+      jobs_by_template[job.fba_job_template_id] ||= []
+      jobs_by_template[job.fba_job_template_id] << job
+    end
+
+    jobs_by_template.each do |job_template_id, jobs|
+      fba_job_template = FbaJobTemplate.find(job_template_id)
+      artworks = fba_job_template.artworks
+
+      fba_job_template.fba_imprint_templates.each do |fba_imprint_template|
+        artwork_request = ArtworkRequest.create
+        artwork_request.description = "Generated for FBA"
+        artwork_request.deadline    = in_hand_by
+        artwork_request.state       = :manager_approved
+        artwork_request.salesperson = salesperson
+        artwork_request.approved_by = salesperson
+        artwork_request.artwork_ids = artworks.map(&:id).uniq
+        artwork_request.priority    = 5
+        artwork_request.imprint_ids = Imprint.where(
+          job_id: jobs.map(&:id), print_location_id: fba_imprint_template.print_location_id
+        )
+          .pluck(:id)
+
+        if artwork_request.artwork_ids.blank?
+          missing_artworks = true
+          artwork_request.artwork_ids = [Artwork.fba_missing.try(:id)]
+        end
+
+        if artwork_request.save
+          if fba_job_template.mockup
+            mockup_attributes = {
+              file:        fba_job_template.mockup.file,
+              description: fba_job_template.mockup.description
+            }
+          else
+            mockup_attributes = nil
+            missing_proofs = true
+          end
+
+          proof = Proof.create(
+            order_id:   id,
+            job_id:     jobs.first.id,
+            approve_by: in_hand_by,
+            state:      :customer_approved,
+
+            mockups_attributes: [mockup_attributes].compact,
+            artworks: artwork_request.artworks
+          )
+
+          unless proof.persisted?
+            issue_warning('FBA Order Generation', "Unable to save proof: #{proof.errors.full_messages.join(', ')}")
+          end
+        else
+          issue_warning('FBA Order Generation', "Unable to save artwork request: #{artwork_request.errors.full_messages.join(', ')}")
+        end
+      end
+    end
+
+    if missing_artworks
+      if missing_proofs
+        update_column :artwork_state, 'pending_artwork_and_proofs'
+      else
+        update_column :artwork_state, 'pending_artwork_requests'
+      end
+    elsif missing_proofs
+      update_column :artwork_state, 'pending_proofs'
+    else
+      update_column :artwork_state, 'in_production'
+    end
+  end
+  warn_on_failure_of :setup_art_for_fba
+
+
+  def total_imprintable_breakdown
+    query = %{
+      select iv.id imprintable_object_id, li.imprintable_object_type imprintable_object_type, sum(quantity) quantity
+      from orders o
+      join jobs j on (o.id = j.jobbable_id and j.jobbable_type = 'order')
+      join line_items li on (li.job_id = j.id and imprintable_object_id is not null)
+      join imprintable_variants iv on (li.imprintable_object_id = iv.id and imprintable_object_type = 'imprintablevariant' and quantity > 0)
+      join colors c on c.id = iv.color_id
+      join sizes s on s.id = iv.size_id
+      join imprintables i on i.id = iv.imprintable_id
+      join brands b on b.id = i.brand_id
+      where o.id = #{self.id}
+      group by iv.id
+      order by o.id, i.id, c.id, s.sort_order;
+    }
+    by_imprintable = LineItem.find_by_sql(query).group_by{ |li| li.imprintable_object.imprintable.name }
+    by_imprintable.each{|key, val| by_imprintable[key] = val.map.group_by{|x| x.imprintable_object.color.name } }
+  end
+
+  def destroy_recursively
+    nuke = nil
+    nuke = lambda do |object|
+      associations_to_destroy = object.class.reflect_on_all_associations
+        .select { |a| a.options[:dependent] == :destroy }
+
+      associations_to_destroy.each do |assoc|
+        if assoc.is_a?(ActiveRecord::Reflection::HasManyReflection) ||
+           assoc.is_a?(ActiveRecord::Reflection::ThroughReflection)
+          object.send(assoc.name).each(&nuke)
+        else
+          nuke.(object.send(assoc.name))
+        end
+      end
+
+      if object.paranoid?
+        object.update_column :deleted_at, Time.now
+      else
+        object.destroy
+      end
+    end
+
+    nuke.(self)
   end
 end

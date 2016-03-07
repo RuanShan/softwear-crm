@@ -6,7 +6,7 @@ feature 'Imprintables management', imprintable_spec: true, slow: true do
   given!(:imprintable) { create(:valid_imprintable) }
   given!(:print_location) { create(:valid_print_location) }
 
-  background(:each) { login_as(valid_user) }
+  background(:each) { sign_in_as(valid_user) }
 
   scenario 'A user can see a list of imprintables' do
     visit root_path
@@ -188,7 +188,7 @@ feature 'Imprintables management', imprintable_spec: true, slow: true do
       click_link 'Add Photo'
 
       within '.imprintable-photo-form' do
-        find('.photo-asset-file').set("#{Rails.root}/spec/fixtures/images/macho.jpg")
+        find('.photo-asset-file').set("#{Rails.root}/spec/fixtures/images/macho.png")
         select imprintable.colors.first.name, from: 'Color'
       end
 
@@ -291,7 +291,7 @@ feature 'Imprintables management', imprintable_spec: true, slow: true do
 
     click_button 'Add Imprintable(s)'
 
-    sleep 1
+    sleep 2
     expect(page).to have_content 'Quote was successfully updated.'
   end
 

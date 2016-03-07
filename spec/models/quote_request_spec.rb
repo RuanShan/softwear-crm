@@ -2,6 +2,8 @@ require 'spec_helper'
 
 describe QuoteRequest, quote_request_spec: true, story_78: true do
   let(:quote_request) { create :quote_request }
+  let(:imprintable_1) { create(:valid_imprintable) }
+  let(:imprintable_2) { create(:valid_imprintable) }
   let(:user) { create(:user) }
 
   before do
@@ -339,6 +341,36 @@ describe QuoteRequest, quote_request_spec: true, story_78: true do
 
       quote_request.salesperson_id = user.id
       quote_request.save
+    end
+  end
+
+  describe '#imprintable_quantities=', imprintable_quantities: true do
+    context 'given a hash of imprintable_id => quantity' do
+      let!(:input) { { imprintable_1.id => 1, imprintable_2.id => 5 } }
+
+      it 'adds QuoteRequestImprintables with the given quantities to the quote request' do
+        quote_request.imprintable_quantities = input
+        expect(quote_request.save).to eq true
+        expect(quote_request.quote_request_imprintables.where(imprintable_id: imprintable_1.id, quantity: 1)).to exist
+        expect(quote_request.quote_request_imprintables.where(imprintable_id: imprintable_2.id, quantity: 5)).to exist
+      end
+
+      it 'ignores 0 quantity entries' do
+        input[imprintable_1.id] = 0
+        quote_request.imprintable_quantities = input
+        expect(quote_request.save).to eq true
+        expect(quote_request.quote_request_imprintables.where(imprintable_id: imprintable_1.id))
+          .to_not exist
+      end
+    end
+
+    context 'given a json string' do
+      let!(:input) { { imprintable_1.id => 1, imprintable_2.id => 5 }.to_json }
+
+      it 'works' do
+        quote_request.imprintable_quantities = input
+        expect(quote_request.save).to eq true
+      end
     end
   end
 

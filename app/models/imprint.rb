@@ -27,10 +27,18 @@ class Imprint < ActiveRecord::Base
 
   after_save :touch_associations
 
-  scope :name_number, -> { joins(:imprint_method).where(imprint_methods: { name: 'Name/Number' }) }
+  scope :name_number, -> { where(name_number: true) }
 
   def name
     "#{imprint_method.try(:name) || 'n\a'} - #{print_location.try(:name) || 'n\a'} - #{description}"
+  end
+
+  def equipment_sanitizing?
+    imprint_method.try(:name) == 'Equipment Sanitizing'
+  end
+
+  def no_imprint?
+    imprint_method.try(:name) == 'No Imprint'
   end
 
   def name_changed?
@@ -38,7 +46,7 @@ class Imprint < ActiveRecord::Base
   end
 
   def job_and_name
-    "#{job.id_and_name} - #{name}"
+    "#{job.name_in_production} - #{name}"
   end
 
   def count

@@ -1,6 +1,7 @@
 class Job < ActiveRecord::Base
   include TrackingHelpers
   include ProductionCounterpart
+  include Softwear::Lib::Enqueue
 
   acts_as_paranoid
 
@@ -8,15 +9,23 @@ class Job < ActiveRecord::Base
     text :name, :description
     string :name
     reference :jobbable
+    integer :id
   end
 
   tracked by_current_user + on_order
 
+  default_scope { order(sort_order: :asc) }
+
   before_destroy :check_for_line_items
   after_update :destroy_self_if_line_items_and_imprints_are_empty
   after_create :create_default_imprint, if: :fba?
+  enqueue :create_production_job, queue: 'api'
+  after_update :enqueue_create_production_job, if: :needs_production_job?
 
   belongs_to :jobbable, polymorphic: true
+  belongs_to :fba_job_template
+  has_many :fba_imprint_templates, through: :fba_job_template
+  has_many :fba_artworks, through: :fba_imprint_templates, source: :artwork
   has_many :artwork_requests, through: :imprints
   has_many :imprints, dependent: :destroy, inverse_of: :job
   has_many :line_items, dependent: :destroy, inverse_of: :job
@@ -26,7 +35,7 @@ class Job < ActiveRecord::Base
   has_many :print_locations, through: :imprints
   has_many :imprint_methods, through: :print_locations
 
-  accepts_nested_attributes_for :line_items, :imprints, allow_destroy: true
+  accepts_nested_attributes_for :line_items, :imprints, :shipments, allow_destroy: true
 
   Imprintable::TIERS.each do |tier_num, tier|
     tier_line_items = "#{tier.underscore}_line_items".to_sym
@@ -36,7 +45,7 @@ class Job < ActiveRecord::Base
   end
 
   validate :assure_name_and_description, on: :create
-  validates :name, uniqueness: { scope: [:jobbable_id] }, if: ->(j) { j.jobbable_type == 'Order' }
+  validates :name, uniqueness: { scope: [:jobbable_id] }, if: ->(j) { j.jobbable_type == 'Order' && j.jobbable_id }
 
   def id_and_name
     "##{id} #{name}"
@@ -44,6 +53,14 @@ class Job < ActiveRecord::Base
 
   def all_shipments
     shipments
+  end
+
+  def needs_production_job?
+    order_in_production? && !production?
+  end
+
+  def order_in_production?
+    order.try(:production?)
   end
 
   def imprintable_line_items_total
@@ -70,20 +87,36 @@ class Job < ActiveRecord::Base
     jobbable_type == 'Order' && jobbable.fba?
   end
 
+  def name_in_production
+    "#{name} CRM##{id}"
+  end
+
+  def production_attributes
+    {
+      name: name_in_production,
+      softwear_crm_id: id,
+      imprints_attributes: production_imprints_attributes,
+      imprintable_train_attributes: imprintable_train_attributes
+    }
+      .delete_if { |_,v| v.nil? }
+  end
+
   def production_imprints_attributes
     return if imprintable_line_items_total == 0
 
     attrs = {}
 
     imprints.each_with_index do |imprint, index|
+      next if imprint.no_imprint?
+
       attrs[index] = {
         softwear_crm_id: imprint.id,
         name:            imprint.name,
         description:     imprint.job_and_name,
-        count:           imprintable_line_items_total,
+        count:           imprint.equipment_sanitizing? ? 1 : imprintable_line_items_total,
         type:            imprint.production_type
       }
-      attrs[index].delete_if { |_,v| v.nil? }
+        .delete_if { |_,v| v.nil? }
     end
 
     attrs
@@ -98,6 +131,7 @@ class Job < ActiveRecord::Base
     end
   end
 
+  # TODO these are deprecated for ArtworkRequest#create_trains
   def self.create_trains_from_artwork_request(job_id, artwork_request_id)
     Job.find(job_id).create_trains_from_artwork_request(ArtworkRequest.find(artwork_request_id))
   end
@@ -112,7 +146,8 @@ class Job < ActiveRecord::Base
       unless Production::Ar3Train.create(
         order_id: order.softwear_prod_id,
         crm_artwork_request_id: artwork_request.id
-      )
+      ).try(:persisted?)
+
         failed_imprint_methods['Digital Print'] = true
       end
     end
@@ -122,7 +157,8 @@ class Job < ActiveRecord::Base
       unless Production::ScreenTrain.create(
         order_id: order.softwear_prod_id,
         crm_artwork_request_id: artwork_request.id
-      )
+      ).try(:persisted?)
+
         failed_imprint_methods['Screen Print'] = true
       end
     end
@@ -132,7 +168,8 @@ class Job < ActiveRecord::Base
       unless Production::DigitizationTrain.create(
         order_id: order.softwear_prod_id,
         crm_artwork_request_id: artwork_request.id
-      )
+      ).try(:persisted?)
+
         failed_imprint_methods['Embroidery'] = true
       end
     end
@@ -147,7 +184,7 @@ class Job < ActiveRecord::Base
   end
 
   def sync_with_production(sync)
-    sync[:name]
+    sync[name: :name_in_production]
   end
 
   # NOTE this works together with javascripts/quote_line_items.js to achieve
@@ -332,7 +369,7 @@ class Job < ActiveRecord::Base
   end
 
   def name_number_imprints
-    imprints.includes(:imprint_method).where('imprint_methods.name = "Name/Number"').references(:imprint_methods)
+    imprints.includes(:imprint_method).where(imprint_methods: { name_number: true }).references(:imprint_methods)
   end
 
   def name_and_numbers
@@ -394,6 +431,26 @@ class Job < ActiveRecord::Base
 
       Sunspot.index(order)
     end
+  end
+
+  def create_production_job
+    return if order.softwear_prod_id.nil? || production?
+
+    prod_job = Production::Job.post_raw(production_attributes.merge(order_id: order.softwear_prod_id))
+
+    unless prod_job.persisted?
+      order.issue_warning("Production API", "Job creation failed: #{prod_job.errors.full_messages}")
+      return false
+    end
+
+    update_column :softwear_prod_id, prod_job.id
+
+    prod_job.imprints.each do |prod_imprint|
+      imprints.find(prod_imprint.softwear_crm_id).update_column :softwear_prod_id, prod_imprint.id
+    end
+
+    # artwork_requests.where(state: 'manager_approved').each(&:create_trains)
+    true
   end
 
   private

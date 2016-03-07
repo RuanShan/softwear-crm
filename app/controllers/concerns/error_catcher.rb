@@ -25,8 +25,24 @@ module ErrorCatcher
     end
   end
 
+  def filter_params(params)
+    new_hash = {}
+    params.each do |key, value|
+      new_value = value
+
+      case key.to_s
+      when /cc_number/ then new_value = "<FILTERED>"
+      when /cc_cvc/    then new_value = "<FILTERED>"
+      when /password/  then new_value = "<FILTERED>"
+      end
+
+      new_hash[key] = new_value
+    end
+    new_hash
+  end
+
   def gather_additional_info
-    JSON.pretty_generate(params) + "|||" +
+    JSON.pretty_generate(filter_params(params)) + "|||" +
     instance_variables
       .reject { |v| /^@_/ =~ v.to_s || %i(@view_renderer @output_buffer @view_flow @error).include?(v) }
       .map { |v| "#{v}: #{instance_variable_get(v).inspect}" }

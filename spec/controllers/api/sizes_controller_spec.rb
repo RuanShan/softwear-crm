@@ -8,6 +8,12 @@ describe Api::SizesController, api_size_spec: true, api_spec: true do
   it_behaves_like 'api_controller create'
   it_behaves_like 'a retailable api controller'
 
+  before(:each) do
+    allow_any_instance_of(Api::SizesController)
+      .to receive(:token_authenticate_user!)
+      .and_return true
+  end
+
   describe 'GET #index' do
     context 'with valid "color" and "imprintable" parameters' do
       let!(:imprintable) { create :valid_imprintable, common_name: 'Common' }

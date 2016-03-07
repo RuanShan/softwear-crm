@@ -1,5 +1,8 @@
 class FBA
   SKU = Struct.new(:version, :idea, :print, :imprintable, :size, :color)
+  Address = Struct.new(:name, :street, :city, :state, :country, :zipcode)
+
+  # This is extended by an instance of array so that we can call a.line_items_attributes
   module PendingLineItems
     def line_items_attributes
       hash = {}
@@ -19,23 +22,31 @@ class FBA
 
   class << self
     # Possible keys:
+    # { :missing_skus => idea => array_of_skus }
     # { :fatal_error => message }     if the file could not be parsed  (check for this first)
     # { :errors => list_of_messages } if there were some other problems
     # { :jobs_attributes => jobs_attributes } these attributes will be valid form input
+    # { :fba_product_names => array_of_names } unique fba product names found from this packing slip
     def parse_packing_slip(packing_slip, options = {})
       options[:filename] ||= '<unknown file>'
       routes = options[:context]
 
       header, data = parse_file(packing_slip)
       result = {
+        missing_skus: {},
         errors: [],
         jobs_attributes: {},
-        filename: options[:filename]
+        shipments_attributes: {},
+        filename: options[:filename],
+        fba_product_names: []
       }
 
       if header.blank? || data.blank?
         return { fatal_error: "Couldn't parse #{options[:filename]}" }
       end
+
+      address = parse_address(header['Ship To'])
+      shipping_location_size = 0 # This will be the sum of all quantities after pass 1
 
       # Pass 1: Just collect (and report bad skus)
       job_groups = {}
@@ -44,10 +55,17 @@ class FBA
         fba_sku = FbaSku.find_by(sku: sku)
 
         if fba_sku.nil?
-          result[:errors] << lambda do |view|
-            "No FBA Product was found with a child sku of #{sku}. Configure FBA Products "\
-            "#{view.link_to 'here', view.fba_products_path, target: :_blank}."
+          if sku_info = parse_sku(sku)
+            result[:missing_skus][sku_info.idea] ||= []
+            result[:missing_skus][sku_info.idea] << sku
+          else
+            result[:errors] << lambda do |view|
+              "Missing malformed sku &quot;#{sku}&quot;. "\
+              "#{view.link_to 'Enter a new FBA Product', view.fba_products_path, target: :_blank} "\
+              "to define it."
+            end
           end
+
           next
         end
         fba_product      = fba_sku.fba_product
@@ -71,21 +89,42 @@ class FBA
         end
 
         # The extend thing is only so that I can say "skus.line_items_attributes" in the next pass
-        job_groups[[fba_product, fba_job_template]] ||= [].tap { |a| a.send :extend, PendingLineItems }
-        job_groups[[fba_product, fba_job_template]] << OpenStruct.new(fba_sku: fba_sku, quantity: datum['Shipped'])
+        key = [header['Shipment ID'], fba_product, fba_job_template]
+        job_groups[key] ||= [].tap { |a| a.send :extend, PendingLineItems }
+        job_groups[key] << OpenStruct.new(fba_sku: fba_sku, quantity: datum['Shipped'])
+        shipping_location_size += datum['Shipped'].to_i
       end
 
-      # Pass 2: Add job attributes
+      # Pass 2: Add job attributes (and FBA product names)
       job_groups.each do |key, skus|
-        fba_product, fba_job_template = key
+        shipment_id, fba_product, fba_job_template = key
+
+        result[:fba_product_names] << fba_product.name unless result[:fba_product_names].include?(fba_product.name)
 
         result[:jobs_attributes][key.hash] = {
-          name:        "#{fba_product.name} #{fba_job_template.name} - #{header['Shipment ID']}",
+          name:        "#{fba_job_template.job_name} - #{address.city}, #{address.state}",
+          collapsed:   true,
+          fba_job_template_id:    fba_job_template.id,
+          shipping_location:      header['Shipment ID'],
+          shipping_location_size: shipping_location_size,
           description: "Generated from packing slip #{options[:filename]} and FBA Product ##{fba_product.id}, "\
                        "Job Template ##{fba_job_template.id}",
+
           line_items_attributes: skus.line_items_attributes,
           imprints_attributes:   fba_job_template.imprints_attributes,
-          collapsed: true
+
+          shipments_attributes: {
+            shipment_id.hash => {
+              name:      address.name,
+              address_1: address.street,
+              city:      address.city,
+              state:     address.state,
+              zipcode:   address.zipcode,
+              country:   address.country,
+              shipped_by_id:      options[:shipped_by_id],
+              shipping_method_id: ShippingMethod.where(name: ShippingMethod::FBA).pluck(:id).first
+            }
+          }
         }
       end
 
@@ -231,13 +270,21 @@ class FBA
       data
     end
 
+    def parse_address(address_str)
+      data = address_str.split(',').map(&:strip)
+      # Addresses in the packing slips are assumed to be formatted like so:
+      # [0]("Amazon.com"), [1](street), [2](city), [3](state), [4](country), [5](zipcode)
+
+      Address.new(*data)
+    end
+
     def parse_sku(data)
       sku = data.is_a?(Hash) ? data['Merchant SKU'] : data
 
       version = sku.try(:[], 0)
       case version
       when '0'
-        /\d\-(?<idea>\w+)\-
+        /\d-(?<idea>\w+)-
         (?<print>\d)
         (?<imprintable>\d{4})
         (?<size>\d{2})

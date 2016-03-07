@@ -1,29 +1,8 @@
 module ProductionCounterpart
   extend ActiveSupport::Concern
 
-  included do
-    cattr_accessor :production_class
-    self.production_class = "Production::#{name}".constantize
-
-    before_save :enqueue_update_production, if: :should_update_production?
-    after_destroy :enqueue_destroy_production, if: :should_update_production?
-
-    try :warn_on_failure_of, :update_production unless Rails.env.test?
-
-    if Rails.env.production?
-      def enqueue_update_production
-        delay(queue: 'api').update_production(update_production_fields)
-      end
-
-      def enqueue_destroy_production
-        delay(queue: 'api').destroy_production
-      end
-    else
-      alias_method :enqueue_update_production, :update_production
-      alias_method :enqueue_destroy_production, :destroy_production
-    end
-
-    def self.fetch_production_ids(start_date = nil)
+  module ClassMethods
+    def fetch_production_ids(start_date = nil)
       start_date ||= 1.month.ago
 
       updated_count = 0
@@ -35,18 +14,74 @@ module ProductionCounterpart
       end
       updated_count
     end
+
+    def production_polymorphic?
+      @production_class == :polymorphic
+    end
+
+    def production_class=(value)
+      @production_class = value
+    end
+
+    def production_class
+      @production_class
+    end
+  end
+
+  included do
+    extend ClassMethods
+    unless included_modules.include?(Softwear::Lib::Enqueue)
+      include Softwear::Lib::Enqueue
+    end
+
+    begin
+      self.production_class = "Production::#{name}".constantize
+    rescue NameError => _
+    end
+
+    try :warn_on_failure_of, :update_production unless Rails.env.test?
+    enqueue :update_production, :destroy_production, queue: 'api'
+
+    after_save :enqueue_update_production, if: :production?
+    after_destroy :enqueue_destroy_production, if: :production?
+
+    if Rails.env.production?
+      # Override enqueue method to always pass update_production_fields
+      def enqueue_update_production
+        # For some reason, if we queue it instantly, sidekiq becomes one update "behind",
+        # and won't update to the new value until the next update comes in.
+        #
+        # That is why we delay for 1 second here.
+        self.class.delay_for(1.second, queue: 'api').update_production(id, update_production_fields)
+      end
+    end
   end
 
   def production_class
-    self.class.production_class
+    if production_polymorphic?
+      return nil if softwear_prod_type.blank?
+      softwear_prod_type.constantize
+    else
+      self.class.production_class
+    end
+  end
+  def production_polymorphic?
+    self.class.production_polymorphic?
   end
 
   def production
+    return nil if production_class.nil? || softwear_prod_id.nil?
     @production ||= production_class.find(softwear_prod_id)
+  rescue ActiveResource::ResourceNotFound => _
+    @production = nil
+  end
+
+  def production_exists?
+    !!production
   end
 
   def production?
-    !softwear_prod_id.nil?
+    !!softwear_prod_id
   end
 
   def sync_with_production(sync)
@@ -58,7 +93,7 @@ module ProductionCounterpart
     base = Figaro.env.production_url
     return if base.blank? || !production?
 
-    "#{base}/#{model_name.collection}/#{softwear_prod_id}"
+    "#{base}/#{production_class.model_name.element.pluralize}/#{softwear_prod_id}"
   end
 
   def should_update_production?
@@ -66,6 +101,8 @@ module ProductionCounterpart
   end
 
   def update_production(fields = nil)
+    return unless production_exists?
+
     fields = update_production_fields if fields.nil?
     return if fields.empty?
 
@@ -79,7 +116,9 @@ module ProductionCounterpart
   end
 
   def destroy_production
-    production.destroy
+    production.destroy if production_exists?
+    self.update_column :softwear_prod_id, nil
+  rescue ActiveRecord::ActiveRecordError => _
   end
 
   protected

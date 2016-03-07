@@ -1,6 +1,7 @@
 class Payment < ActiveRecord::Base
   include ActionView::Helpers::NumberHelper
   include PublicActivity::Common
+  include Softwear::Auth::BelongsToUser
 
   class PaymentError < StandardError
   end
@@ -14,6 +15,7 @@ class Payment < ActiveRecord::Base
       payment_drop_payments.blank?
     end
 
+    integer :id
   end
 
   VALID_PAYMENT_METHODS = {
@@ -24,7 +26,8 @@ class Payment < ActiveRecord::Base
     5 => 'Trade First',
     6 => 'Trade',
     7 => 'Wire Transfer',
-    2 => 'Swiped Credit Card'
+    2 => 'Swiped Credit Card',
+    9 => 'Group Payment'
   }
 
   FIELDS_TO_RENDER_FOR_METHOD = {
@@ -61,7 +64,7 @@ class Payment < ActiveRecord::Base
 
   belongs_to :order, touch: true
   belongs_to :store
-  belongs_to :salesperson, class_name: User
+  belongs_to_user_called :salesperson
   has_many :discounts, as: :discountable # Only refunds
   has_many :payment_drop_payments
 
@@ -69,7 +72,7 @@ class Payment < ActiveRecord::Base
   after_save :recalculate_order_fields
   after_destroy :recalculate_order_fields
 
-  validates :store, :payment_method, :amount, :salesperson, presence: true
+  validates :store, :payment_method, :amount, :salesperson_id, presence: true
   validates :pp_transaction_id, presence: true, uniqueness: true,
                if: -> p { p.payment_method == 4 || p.payment_method == 7 }
   validates :t_name, :t_company_name, :tf_number, presence: true, if: -> p { p.payment_method == 5 }
@@ -83,6 +86,23 @@ class Payment < ActiveRecord::Base
   attr_reader :actual_cc_number
   attr_accessor :cc_expiration
   attr_accessor :cc_cvc
+
+  # If solr's dumb callbacks end up raising an error during creation, the payment will be processed,
+  # but not created in CRM.
+  def solr_index
+    super
+  rescue Exception => e
+    if order
+      order.issue_warning("Solr", "#{e.class.name}: #{e.message} while indexing a payment.")
+    end
+  end
+  def solr_index!
+    super
+  rescue Exception => e
+    if order
+      order.issue_warning("Solr", "#{e.class.name}: #{e.message} while indexing a payment.")
+    end
+  end
 
   def transaction_id
     case VALID_PAYMENT_METHODS[payment_method]
@@ -353,7 +373,11 @@ class Payment < ActiveRecord::Base
     return if order.blank? || amount.blank?
 
     order_balance = order.balance_excluding(self)
-    new_balance = order_balance - amount
+    if is_refunded?
+      new_balance = order_balance - (amount - refunded_amount)
+    else
+      new_balance = order_balance - amount
+    end
     if new_balance < 0
       if order_balance == 0
         remark = "(the order's balance is $0.00)"

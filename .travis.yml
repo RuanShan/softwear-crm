@@ -13,7 +13,7 @@ before_install:
   - 'eval "$(ssh-agent -s)"'
   - ssh-add SoftWEAR-MockBot.pem travis_id_rsa
   - "ssh -T git@github.com || :"
-  - sudo apt-get install libmysql-ruby libmysqlclient-dev ruby-dev
+  - sudo apt-get install libmysql-ruby libmysqlclient-dev ruby-dev libappindicator1 fonts-liberation
   - gem update bundler
   - gem install softwear-lib -i ~/.rvm/rubies/rbx-2.5.2/gems --no-ri --no-rdoc
   - gem install eventmachine -i ~/.rvm/rubies/rbx-2.5.2/gems -v 1.0.3 --no-ri --no-rdoc
@@ -21,10 +21,8 @@ before_install:
   - mkdir ~/chromedriver
   - unzip chromedriver_linux64.zip -d ~/chromedriver
   - rm chromedriver_linux64.zip
-  - 'wget -q -O - https://dl-ssl.google.com/linux/linux_signing_key.pub | sudo apt-key add - '
-  - sudo sh -c 'echo "deb http://dl.google.com/linux/chrome/deb/ stable main" >> /etc/apt/sources.list.d/google.list'
-  - sudo apt-get update
-  - sudo apt-get install google-chrome-stable
+  - wget https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
+  - sudo dpkg -i google-chrome-stable_current_amd64.deb
 
 before_script:
   - |
@@ -47,3 +45,8 @@ script: xvfb-run --server-args="-screen 0, 1024x768x24" bundle exec rspec --colo
 env:
   global:
     - WWW_DOMAIN=annarbortees.com
+    - HUB_APP_NAME=softwear-crm
+    - SOFTWEAR_HUB_URL=http://hub.softwearcrm.com
+    - AUTH_SERVER_ENDPOINT=hub.softwearcrm.com:2900
+    - TOKEN_CIPHER_KEY="aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaEEEEEEEEEEEEEEEEEEEEEEEEEEEe"
+    - TOKEN_CIPHER_IV="aaaaaaaaaaaaaa2aaaaaaaaaaaaaaaaaaaaaaEEEEEEEEEEEEEEEEEEEEEEEEEEEe"

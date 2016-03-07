@@ -4,7 +4,7 @@ include ApplicationHelper
 feature 'Artwork Features', js: true, artwork_spec: true do
   given!(:artwork) { create(:valid_artwork) }
   given!(:valid_user) { create(:alternate_user) }
-  before(:each) { login_as(valid_user) }
+  before(:each) { sign_in_as(valid_user) }
 
   scenario 'A user can view a list of Artworks' do
     if ci?
@@ -30,7 +30,7 @@ feature 'Artwork Features', js: true, artwork_spec: true do
     fill_in 'Local file location', with: 'C:\some\windows\path\lol'
     find('#artwork_artwork_attributes_file', visible: false).set '/spec/fixtures/images/test.psd'
     find(:css, "textarea#artwork_artwork_attributes_description").set('description')
-    find('#artwork_preview_attributes_file', visible: false).set '/spec/fixtures/images/macho.jpg'
+    find('#artwork_preview_attributes_file', visible: false).set '/spec/fixtures/images/macho.png'
     find(:css, "textarea#artwork_preview_attributes_description").set('description')
 
     click_button 'Create Artwork'

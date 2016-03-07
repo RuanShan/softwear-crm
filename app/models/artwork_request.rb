@@ -1,6 +1,11 @@
 class ArtworkRequest < ActiveRecord::Base
   include TrackingHelpers
+  include ProductionCounterpart
+  include Softwear::Auth::BelongsToUser
   include IntegratedCrms
+  include Softwear::Lib::Enqueue
+
+  self.production_class = Production::ImprintGroup
 
   acts_as_paranoid
   acts_as_warnable
@@ -17,6 +22,8 @@ class ArtworkRequest < ActiveRecord::Base
 
     date :deadline
     date :order_in_hand_by
+
+    integer :id
   end
 
   PRIORITIES = {
@@ -33,9 +40,9 @@ class ArtworkRequest < ActiveRecord::Base
   has_many :artwork_request_artworks
   has_many :artwork_request_ink_colors
   has_many :artwork_request_imprints
-  belongs_to :artist,                class_name: User
-  belongs_to :salesperson,           class_name: User
-  belongs_to :approved_by,           class_name: User
+  belongs_to_user_called :artist
+  belongs_to_user_called :salesperson
+  belongs_to_user_called :approved_by
   has_many   :artworks,              through: :artwork_request_artworks
   has_many   :proofs,                through: :artworks
   has_many   :assets,                as: :assetable, dependent: :destroy
@@ -51,12 +58,17 @@ class ArtworkRequest < ActiveRecord::Base
   validates :state,          presence: true
   validates :deadline,       presence: true
   validates :description,    presence: true
-  validates :ink_colors,     presence: true
+  validates :ink_colors,     presence: true, unless: :fba?
   validates :imprints,       presence: true
   validates :priority,       presence: true
-  validates :salesperson,    presence: true
+  validates :salesperson_id, presence: true
+  validate :imprints_are_all_the_same_imprint_method
+  validate :imprints_are_all_from_different_jobs
 
-  after_create :enqueue_create_freshdesk_proof_ticket if Rails.env.production?
+  enqueue :create_imprint_group_if_needed, :create_trains, queue: 'api'
+
+  after_create :enqueue_create_freshdesk_proof_ticket, unless: :fba? if Rails.env.production?
+  after_save :enqueue_create_imprint_group_if_needed
   before_save :transition_to_assigned, if: :should_assign?
 
   attr_accessor :current_user
@@ -92,7 +104,7 @@ class ArtworkRequest < ActiveRecord::Base
     end
 
     after_transition any => :manager_approved do |artwork_request|
-      artwork_request.job_ids.uniq.each { |job_id| Job.delay.create_trains_from_artwork_request(job_id, artwork_request.id) }
+      artwork_request.enqueue_create_trains
     end
 
     after_transition :manager_approved => any do |artwork_request|
@@ -161,11 +173,23 @@ class ArtworkRequest < ActiveRecord::Base
   end
 
   def order
-    if jobs.respond_to?(:where)
-      @order ||= jobs.where.not(jobbable_id: nil).first.try(:jobbable)
+    if persisted?
+      if jobs.respond_to?(:where)
+        @order ||= jobs.where.not(jobbable_id: nil).first.try(:jobbable)
+      else
+        @order ||= jobs.find { |j| !j.jobbable_id.nil? }.try(:jobbable)
+      end
     else
-      @order ||= jobs.find { |j| !j.jobbable_id.nil? }.try(:jobbable)
+      @order ||= imprints.first.try(:job).try(:jobbable)
     end
+  end
+
+  def order_in_production?
+    order.try(:production?)
+  end
+
+  def fba?
+    order.try(:fba?)
   end
 
   def artist_full_name
@@ -245,20 +269,24 @@ class ArtworkRequest < ActiveRecord::Base
   def max_ideal_print_location_size_for_job(job)
     print_location_ids = imprints.where(job_id: job.id).pluck(:print_location_id)
     print_location_imprintables = jobs.map{|x| x.imprintables_for_order }.flatten
-    .map{|x| x.print_location_imprintables.where(print_location_id: print_location_ids) }
-    .flatten
-    width = print_location_imprintables.map(&:ideal_imprint_width).min
-    height = print_location_imprintables.map(&:ideal_imprint_height).min
+      .map{|x| x.print_location_imprintables.where(print_location_id: print_location_ids) }
+      .flatten
+
+    width  = print_location_imprintables.map(&:ideal_imprint_width).compact.min.to_f
+    height = print_location_imprintables.map(&:ideal_imprint_height).compact.min.to_f
+
     { width: width , height: height }
   end
 
   def max_print_location_size
     print_location_ids = imprints.pluck(:print_location_id)
     print_location_imprintables = jobs.map{|x| x.imprintables_for_order }.flatten
-    .map{|x| x.print_location_imprintables.where(print_location_id: print_location_ids) }
-    .flatten
-    width = print_location_imprintables.map(&:max_imprint_width).min
-    height = print_location_imprintables.map(&:max_imprint_height).min
+      .map{|x| x.print_location_imprintables.where(print_location_id: print_location_ids) }
+      .flatten
+
+    width  = print_location_imprintables.map(&:max_imprint_width).compact.min.to_f
+    height = print_location_imprintables.map(&:max_imprint_height).compact.min.to_f
+
     { width: width , height: height }
   end
 
@@ -311,6 +339,8 @@ class ArtworkRequest < ActiveRecord::Base
   end
 
   def enqueue_create_freshdesk_proof_ticket
+    return if order.fba?
+
     delay(queue: 'api').create_freshdesk_proof_ticket if
             (should_access_third_parties? && order.freshdesk_proof_ticket_id.blank?)
   end
@@ -385,6 +415,142 @@ class ArtworkRequest < ActiveRecord::Base
 
   def should_assign?
     artist_id_was.nil? && artist_id_changed? && state == 'unassigned'
+  end
+
+  def imprints_are_all_the_same_imprint_method
+    if imprints.map { |i| i.print_location.imprint_method_id }.uniq.size > 1
+      errors.add(:imprints, "must all be of the same type")
+    end
+  end
+
+  def imprints_are_all_from_different_jobs
+    if imprints.map(&:job_id).uniq.size < imprints.size
+      errors.add(:imprints, "must be of different jobs")
+    end
+  end
+
+  def create_trains
+    imprint_method_names = imprint_methods.pluck(:name)
+    failed_imprint_methods = {}
+
+    digital_print_count = imprint_method_names.select { |im| /Digital\s+Print/ =~ im }.size
+    digital_print_count.times do
+      unless Production::Ar3Train.create(
+        order_id: order.softwear_prod_id,
+        crm_artwork_request_id: id
+      ).try(:persisted?)
+
+        failed_imprint_methods['Digital Print'] = true
+      end
+    end
+
+    imprints.each do |imprint|
+      next unless imprint.imprint_method.name =~ /Screen\s+Print/
+
+      screen_train = Production::ScreenTrain.create(
+        order_id: order.softwear_prod_id,
+        crm_artwork_request_id: id
+      )
+
+      if screen_train.try(:persisted?)
+
+        if order.fba? && imprint.production_exists?
+          imprint.production.screen_train_id = screen_train.id
+
+          unless imprint.production.save
+            order.issue_warning(
+              "ArtworkRequest#create_trains",
+              "Couldn't add screen train ##{screen_train.id} to imprint "\
+              "##{imprint.softwear_prod_id} (CRM##{imprint.id})\n\n"\
+              "#{imprint.production.errors.full_messages.join("\n")}"
+            )
+          end
+        end
+
+      else
+        failed_imprint_methods['Screen Print'] = true
+      end
+    end
+
+    embroidery_count = imprint_method_names.select { |im| im.include?('Embroidery') }.size
+    embroidery_count.times do
+      unless Production::DigitizationTrain.create(
+        order_id: order.softwear_prod_id,
+        crm_artwork_request_id: id
+      ).try(:persisted?)
+
+        failed_imprint_methods['Embroidery'] = true
+      end
+    end
+
+    unless failed_imprint_methods.empty?
+      order.issue_warning(
+        'ArtworkRequest#create_trains',
+        "Failed to send trains to production for the following imprint methods: "\
+        "#{failed_imprint_methods.keys.join(', ')}"
+      )
+    end
+  end
+
+  def create_imprint_group_if_needed
+    return unless order_in_production?
+    return if order.artwork_state == 'pending_artwork_requests'
+    return if imprints.size < 2
+    warning_source = "ArtworkRequest#create_imprint_group_if_needed"
+
+    imprints_not_at_initial_state = []
+    issued_imprint_missing_warning = false
+    imprints.each do |imprint|
+      if !imprint.production?
+        unless issued_imprint_missing_warning
+          order.issue_warning(warning_source, "Artwork Request ##{id} has imprints missing from production.")
+          issued_imprint_missing_warning = true
+        end
+        next
+      end
+
+      imprints_not_at_initial_state << imprint unless imprint.production.at_initial_state
+    end
+
+    unless imprints_not_at_initial_state.empty?
+      return if production?
+
+      order.issue_warning(
+        warning_source,
+        "Artwork Request ##{id} references imprints which aren't at their initial production states: "\
+        "#{imprints_not_at_initial_state.map { |i| %([CRM###{i.id}, PROD##{i.id}]) }.join(', ')}."\
+        "The Artwork Request will not generate an imprint group."
+      )
+      return
+    end
+
+    destroy_production if production?
+
+    imprint_ids = imprints.map(&:softwear_prod_id).compact
+    if imprint_ids.size < 2
+      order.issue_warning(
+        warning_source,
+        "Artwork Request ##{id} has #{imprints.size} imprints (enough for a group) but #{imprint_ids.size}"\
+        "of them are actually in production, so an imprint group was no formed."
+      )
+      return
+    end
+
+    imprint_group = Production::ImprintGroup.post_raw(
+      softwear_crm_id: id,
+      order_id: order.softwear_prod_id,
+      imprint_ids: imprint_ids
+    )
+
+    if imprint_group.persisted?
+      update_column :softwear_prod_id, imprint_group.id
+    else
+      order.issue_warning(
+        warning_source,
+        "Artwork Request ##{id} failed to create an imprint group: #{imprint_group.errors.full_messages.join(', ')}"
+      )
+      return
+    end
   end
 
   def self.destroy_trains(id)

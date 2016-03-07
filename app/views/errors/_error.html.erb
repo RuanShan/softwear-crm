@@ -2,7 +2,7 @@
   Fortunately, a report of this error can be sent to the dev team.
 </div>
 
-<% if current_user %>
+<% if current_user || !Rails.env.production? %>
   <div>
     <%= link_to 'Show error details', '#', id: 'show-error-details-btn', onclick: '$("#error-details").toggle(); return false;', class: 'btn btn-info' %>
     <div id='error-details' style='display: none;'>

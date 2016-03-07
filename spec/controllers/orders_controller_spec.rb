@@ -42,7 +42,7 @@ describe OrdersController, order_spec: true do
 
       it 'calls FBA::parse_packing_slip on an uploaded file', basic: true do
         expect(FBA).to receive(:parse_packing_slip)
-          .with(anything, filename: 'TestPackingSlip.txt')
+          .with(anything, filename: 'TestPackingSlip.txt', shipped_by_id: valid_user.id)
           .and_call_original
 
         get :fba_job_info, packing_slips: [packing_slip], format: :js
@@ -57,7 +57,7 @@ describe OrdersController, order_spec: true do
           .to_return(status: 200, body: "#{packing_slip.read}")
 
         expect(FBA).to receive(:parse_packing_slip)
-          .with(anything, filename: 'test.txt')
+          .with(anything, filename: 'test.txt', shipped_by_id: valid_user.id)
           .and_call_original
 
         get :fba_job_info, packing_slip_urls: 'http://amazon.com/packing-slip/test.txt', format: :js
@@ -94,29 +94,6 @@ describe OrdersController, order_spec: true do
           .with [quote.id.to_s]
 
         post :create, order: order_params
-      end
-    end
-
-    context 'with fba params', story_103: true do
-      let(:order_params) do
-        {
-          name: 'Test FBA',
-          terms: 'Fulfilled by Amazon'
-        }
-      end
-
-      let(:fba_params) do
-        {
-        }
-      end
-
-      it 'calls order#generate_jobs with the passed parameters' do
-        dummy_order = double('Order')
-        expect(Order).to receive(:create).and_return dummy_order
-        expect(dummy_order).to receive(:valid?).and_return true
-        expect(dummy_order).to receive(:generate_jobs)
-
-        post :create, fba_jobs: [fba_params.to_json], order: order_params
       end
     end
   end

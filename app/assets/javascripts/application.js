@@ -42,5 +42,6 @@
 //= require list
 //= require list.fuzzysearch
 //= require jquery/jquery.creditCardValidator.js
+//= require dropzone
 
 //= require_tree .

@@ -1,7 +1,7 @@
-<div class="box-info">
+<div class="box-info fba-job-template-form">
   <%= render partial: 'shared/modal_errors', locals: {object: fba_job_template} %>
 
-  <%= bootstrap_form_for fba_job_template do |f| %>
+  <%= nested_form_for fba_job_template do |f| %>
     <div id="horizontal-form" class="collapse in">
       <div class="form-group">
         <%= f.label :name, class: 'col-sm-2 control-label' %>
@@ -18,34 +18,60 @@
           <p class="help-block">Unique name for this job template</p>
         </div>
       </div>
+
+      <div class="form-group">
+        <%= f.label :job_name, class: 'col-sm-2 control-label' %>
+
+        <div class="col-sm-10">
+          <% if fba_job_template.errors.include?(:job_name) %>
+            <% fba_job_template.errors.full_messages_for(:job_name).each do |message| %>
+              <p class="text-danger"><%= message %></p>
+            <% end %>
+          <% end %>
+
+          <%= f.text_field :job_name, class: 'form-control' %>
+
+          <p class="help-block">Name to use in generated jobs</p>
+        </div>
+      </div>
     </div>
 
     <div class='form-group'>
-      <%= f.label :imprints %>
-      <%= link_to new_imprint_path(
-        select_tag_name:  'fba_job_template[print_location_ids][]',
-        description_name: 'fba_job_template[imprint_descriptions][]'
-      ),
-        class: 'btn btn-info add-imprint',
-        method: :get, remote: true do %>
-          <i class="fa fa-pagelines"></i> Add Imprint
-      <% end %>
+      <%= f.label :fba_imprint_templates, 'Imprints' %>
 
       <div class='well'>
+
+        <%= f.fields_for :fba_imprint_templates do |ff| %>
+          <%= render 'fba_job_templates/fba_imprint_template_fields', f: ff %>
+        <% end %>
+        <%= f.link_to_add "Add Imprint", :fba_imprint_templates, class: 'btn btn-success' %>
+
         <div class="col-xs-12">
-        </div>
-        <div id='new-imprints-container' class='col-xs-12'>
-          <% fba_job_template.imprints.each do |imprint| %>
-            <%= render 'imprints/imprint',
-              imprint_method: imprint.imprint_method,
-              imprint: imprint,
-              select_tag_name:  'fba_job_template[print_location_ids][]',
-              description_name: 'fba_job_template[imprint_descriptions][]'
-            %>
-          <% end %>
         </div>
         <div class='clearfix'></div>
       </div>
+    </div>
+
+    <div class='form-group'>
+      <%= f.fields_for :mockup, fba_job_template.mockup || Asset.new do |ff| %>
+        <div class='clearfix'></div>
+        <%= ff.label :file, 'Mockup', class: 'control-label' %>
+        <div class='clearfix'></div>
+
+        <% if fba_job_template.errors.include?(:mockup) %>
+          <% fba_job_template.errors.full_messages_for(:mockup).each do |message| %>
+            <p class="text-danger"><%= message %></p>
+          <% end %>
+        <% end %>
+
+        <% if fba_job_template.mockup.try(:file) %>
+          <%= link_to fba_job_template.mockup.file.url, target: :_blank do %>
+            <%= image_tag fba_job_template.mockup.file.url(:large) %>
+          <% end %>
+        <% end %>
+
+        <%= ff.file_field :file, class: 'form-control' %>
+      <% end %>
     </div>
 
     <%= f.submit "#{create_or_edit_text(@fba_job_template)} FBA Job Template", class: 'btn btn-primary' %>
