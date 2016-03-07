@@ -472,14 +472,23 @@ class Order < ActiveRecord::Base
     end
   end
 
+  def bad_payments_filter(exclude = [])
+    proc do |p|
+      next true if p.nil? || p.amount.nil?
+      next true if exclude.include?(p.id) || exclude.include?(p)
+      next true if p.totally_refunded?
+      false
+    end
+  end
+
+  def sales_tax_balance
+    tax - payments.reload.reject(&bad_payments_filter).map(&:sales_tax_amount).compact.reduce(0, :+)
+  end
+
   def calculate_payment_total(exclude = [])
     exclude = Array(exclude)
 
-    payments.reload.reduce(0) do |total, p|
-      next total if p.nil? || p.amount.nil?
-      next total if exclude.include?(p.id) || exclude.include?(p)
-      next total if p.totally_refunded?
-
+    payments.reload.reject(&bad_payments_filter(exclude)).reduce(0) do |total, p|
       total + p.amount - p.refunded_amount
     end
   end

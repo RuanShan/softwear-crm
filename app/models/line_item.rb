@@ -268,7 +268,7 @@ class LineItem < ActiveRecord::Base
   def recalculate_order_fields
     if order
       order.recalculate_subtotal
-      order.recalculate_taxable_total if taxable?
+      order.recalculate_taxable_total
       order.save!
     end
   end

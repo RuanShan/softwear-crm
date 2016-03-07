@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160229174515) do
+ActiveRecord::Schema.define(version: 20160307165952) do
 
   create_table "activities", force: :cascade do |t|
     t.integer  "trackable_id",   limit: 4
@@ -686,6 +686,7 @@ ActiveRecord::Schema.define(version: 20160229174515) do
     t.string   "cc_type",            limit: 191
     t.string   "cc_transaction",     limit: 191
     t.text     "retail_description", limit: 16777215
+    t.decimal  "sales_tax_amount",                    precision: 10, scale: 2
   end
 
   create_table "platen_hoops", force: :cascade do |t|

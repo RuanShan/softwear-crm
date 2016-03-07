@@ -209,4 +209,49 @@ describe Payment, payment_spec: true do
       end
     end
   end
+
+  describe '#sales_tax_amount', sales_tax: true do
+    let(:taxable_1) { create(:taxable_non_imprintable_line_item, unit_price: 50, quantity: 1) }
+    let(:taxable_2) { create(:taxable_non_imprintable_line_item, unit_price: 50, quantity: 1) }
+    let(:job) { order.jobs.first }
+    let!(:order) { create(:order) }
+
+    before(:each) do
+      order.jobs << create(:job)
+      expect(order.jobs.size).to eq 1
+      order.jobs.first.line_items << taxable_1
+      order.jobs.first.line_items << taxable_2
+      order.recalculate_all!
+      order.reload
+
+      expect(order.line_items.size).to eq 2
+      expect(order.total).to eq 106.00
+      expect(order.balance).to eq 106.00
+    end
+
+    context 'when a payment is made' do
+      it 'is equal to the portion of the payment that is allocated to sales tax' do
+        payment = create(:valid_payment, amount: 53.00, payment_method: 1, cc_name: 'Test Guy', order: order)
+        expect(order.reload.payments.size).to eq 1
+        expect(order.balance).to eq 53.00
+        expect(payment.sales_tax_amount).to eq 3.00
+        expect(payment.reload.sales_tax_amount).to eq 3.00
+        expect(order.sales_tax_balance).to eq 3.00
+      end
+
+      it 'caps out at order#sales_tax_balance' do
+        payment_1 = create(:valid_payment, amount: 53.00, payment_method: 1, cc_name: 'Test Guy', order: order)
+        expect(payment_1.sales_tax_amount).to eq 3.00
+
+        taxable_2.taxable = false
+        taxable_2.save!
+        order.recalculate_taxable_total!
+
+        expect(order.reload.balance).to eq 50.00
+
+        payment_2 = create(:valid_payment, amount: 5.00, payment_method: 1, cc_name: 'Test Guy', order: order)
+        expect(payment_2.sales_tax_amount).to eq 0.00
+      end
+    end
+  end
 end
