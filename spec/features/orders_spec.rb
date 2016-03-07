@@ -255,7 +255,6 @@ feature 'Order management', order_spec: true, js: true do
     # Clicking that link opens a new tab which confuses capybara
   end
 
-
   context 'search', search: true, no_ci: true  do
     background do
       visit orders_path
