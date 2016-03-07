@@ -137,6 +137,37 @@ describe LineItemsController, line_item_spec: true do
         expect(line_item_2.quantity).to eq 1
         expect(line_item_2.unit_price).to eq 1
       end
+
+      it 'does not send an email, because the order is not in production' do
+        expect(OrderMailer).to_not receive(:imprintable_line_items_changed)
+        put :update, params_hash
+      end
+    end
+
+    context 'when the order is already in production', oip: true do
+      let!(:prod_order) { create(:production_order) }
+      let!(:order) { create(:order_with_job, softwear_prod_id: prod_order.id) }
+      let(:job) { order.jobs.first }
+      let!(:line_item_1) { create :imprintable_line_item, job: job }
+
+      let(:params_hash) do
+        {
+          line_item: {
+            line_item_1.id.to_s => {
+              quantity: 90,
+              unit_price: 1
+            }
+          }
+        }
+      end
+
+      it 'sends a notification email' do
+        expect(OrderMailer).to receive(:imprintable_line_items_changed)
+          .with(order, anything, anything)
+          .and_return double('mail', deliver_now: true)
+
+        put :update, params_hash
+      end
     end
   end
 
