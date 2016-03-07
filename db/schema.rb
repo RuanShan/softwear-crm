@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160303185155) do
+ActiveRecord::Schema.define(version: 20160307200825) do
 
   create_table "activities", force: :cascade do |t|
     t.integer  "trackable_id",   limit: 4
@@ -175,6 +175,22 @@ ActiveRecord::Schema.define(version: 20160303185155) do
   end
 
   add_index "coordinate_imprintables", ["coordinate_id", "imprintable_id"], name: "coordinate_imprintable_index", using: :btree
+
+  create_table "costs", force: :cascade do |t|
+    t.string   "cotable_type", limit: 191
+    t.string   "costable_id",  limit: 191
+    t.string   "type",         limit: 191
+    t.text     "description",  limit: 65535
+    t.integer  "owner_id",     limit: 4
+    t.decimal  "time",                       precision: 10, scale: 2
+    t.decimal  "amount",                     precision: 10, scale: 2
+    t.datetime "created_at",                                          null: false
+    t.datetime "updated_at",                                          null: false
+  end
+
+  add_index "costs", ["costable_id"], name: "index_costs_on_costable_id", using: :btree
+  add_index "costs", ["cotable_type"], name: "index_costs_on_cotable_type", using: :btree
+  add_index "costs", ["owner_id"], name: "index_costs_on_owner_id", using: :btree
 
   create_table "coupons", force: :cascade do |t|
     t.string   "code",        limit: 191
@@ -687,6 +703,7 @@ ActiveRecord::Schema.define(version: 20160303185155) do
     t.string   "cc_type",            limit: 191
     t.string   "cc_transaction",     limit: 191
     t.text     "retail_description", limit: 16777215
+    t.decimal  "sales_tax_amount",                    precision: 10, scale: 2
   end
 
   create_table "platen_hoops", force: :cascade do |t|

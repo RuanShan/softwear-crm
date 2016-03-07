@@ -56,6 +56,9 @@
       <th>
         Amount
       </th>
+      <th>
+        Tax Amount
+      </th>
     </tr>
   </thead>
   <tbody>
@@ -93,6 +96,9 @@
         </td>
         <td>
           <%= number_to_currency payment.amount %>
+        </td>
+        <td>
+          <%= number_to_currency payment.sales_tax_amount %>
         </td>
     </tr>
   <% end %>

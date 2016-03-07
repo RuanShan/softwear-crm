@@ -69,6 +69,7 @@ class Payment < ActiveRecord::Base
   has_many :payment_drop_payments
 
   after_validation :purchase!, on: :create
+  after_create :calculate_sales_tax_amount
   after_save :recalculate_order_fields
   after_destroy :recalculate_order_fields
 
@@ -398,5 +399,18 @@ class Payment < ActiveRecord::Base
 
   def recalculate_order_fields
     order.try(:recalculate_payment_total!)
+  end
+
+  def calculate_sales_tax_amount
+    return if order.nil?
+    self.sales_tax_amount = 0
+    tax_balance = order.sales_tax_balance
+
+    self.sales_tax_amount = (amount / order.total) * order.tax
+    if sales_tax_amount > tax_balance
+      self.sales_tax_amount = tax_balance
+    end
+
+    save(validate: false)
   end
 end

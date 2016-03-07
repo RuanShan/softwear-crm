@@ -23,6 +23,7 @@ class LineItem < ActiveRecord::Base
 
   belongs_to :imprintable_object, polymorphic: true
   belongs_to :job, touch: true, inverse_of: :line_items
+  has_one :cost, as: :costable
 
   validates :description, presence: true, unless: :imprintable?
   validates :name, presence: true, unless: :imprintable?
@@ -268,7 +269,7 @@ class LineItem < ActiveRecord::Base
   def recalculate_order_fields
     if order
       order.recalculate_subtotal
-      order.recalculate_taxable_total if taxable?
+      order.recalculate_taxable_total
       order.save!
     end
   end
