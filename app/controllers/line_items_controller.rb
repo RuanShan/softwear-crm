@@ -98,6 +98,19 @@ class LineItemsController < InheritedResources::Base
         logged[line_item.name] = true if line_item.imprintable?
       end
 
+      order = nil
+      @line_items.each { |li| order = li.order and break if li.order? }
+
+      # `logged` being not empty implies that imprintable line items were changed
+      if !logged.empty? && order.production?
+        OrderMailer.imprintable_line_items_changed(
+          order,
+          edit_order_url(order),
+          order.production_url
+        )
+          .deliver_now
+      end
+
       format.html { redirect_to root_path }
       format.js
     end

@@ -28,4 +28,14 @@ class OrderMailer < ActionMailer::Base
       subject: %(Thank you for your payment on Order ##{order.id} "#{order.name}")
     )
   end
+
+  def imprintable_line_items_changed(order, crm_link, prod_link)
+    return if order.nil?
+    mail(
+      from:    'noreply@softwearcrm.com',
+      to:      %w(neworderreport@annarbortees.com league@annarbortees.com receiving@annarbortees.com),
+      subject: %([Production Change] Imprintables changed for order ##{order.id} "#{order.name}"),
+      body:    %(crm: #{crm_link}\nproduction: #{prod_link})
+    )
+  end
 end
