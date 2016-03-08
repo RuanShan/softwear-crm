@@ -193,7 +193,7 @@ class ArtworkRequest < ActiveRecord::Base
   end
 
   def artist_full_name
-    artist.try(:full_name)
+    artist.try(:full_name) rescue nil
   end
 
   def salesperson_full_name
