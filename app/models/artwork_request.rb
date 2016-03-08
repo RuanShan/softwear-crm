@@ -430,56 +430,57 @@ class ArtworkRequest < ActiveRecord::Base
   end
 
   def create_trains
-    imprint_method_names = imprint_methods.pluck(:name)
     failed_imprint_methods = {}
 
-    digital_print_count = imprint_method_names.select { |im| /Digital\s+Print/ =~ im }.size
-    digital_print_count.times do
-      unless Production::Ar3Train.create(
-        order_id: order.softwear_prod_id,
-        crm_artwork_request_id: id
-      ).try(:persisted?)
-
-        failed_imprint_methods['Digital Print'] = true
-      end
-    end
+    count = 0
 
     imprints.each do |imprint|
-      next unless imprint.imprint_method.name =~ /Screen\s+Print/
+      case imprint.imprint_method.name
+      when /Digital\s+Print/
+        count += 1
+        unless Production::Ar3Train.create(
+          order_id: order.softwear_prod_id,
+          crm_artwork_request_id: id
+        ).try(:persisted?)
 
-      screen_train = Production::ScreenTrain.create(
-        order_id: order.softwear_prod_id,
-        crm_artwork_request_id: id
-      )
-
-      if screen_train.try(:persisted?)
-
-        if order.fba? && imprint.production_exists?
-          imprint.production.screen_train_id = screen_train.id
-
-          unless imprint.production.save
-            order.issue_warning(
-              "ArtworkRequest#create_trains",
-              "Couldn't add screen train ##{screen_train.id} to imprint "\
-              "##{imprint.softwear_prod_id} (CRM##{imprint.id})\n\n"\
-              "#{imprint.production.errors.full_messages.join("\n")}"
-            )
-          end
+          failed_imprint_methods['Digital Print'] = true
         end
 
-      else
-        failed_imprint_methods['Screen Print'] = true
-      end
-    end
+      when /Screen\s+Print/
+        count += 1
+        screen_train = Production::ScreenTrain.create(
+          order_id: order.softwear_prod_id,
+          crm_artwork_request_id: id
+        )
 
-    embroidery_count = imprint_method_names.select { |im| im.include?('Embroidery') }.size
-    embroidery_count.times do
-      unless Production::DigitizationTrain.create(
-        order_id: order.softwear_prod_id,
-        crm_artwork_request_id: id
-      ).try(:persisted?)
+        if screen_train.try(:persisted?)
 
-        failed_imprint_methods['Embroidery'] = true
+          if order.fba? && imprint.production_exists?
+            imprint.production.screen_train_id = screen_train.id
+
+            unless imprint.production.save
+              order.issue_warning(
+                "ArtworkRequest#create_trains",
+                "Couldn't add screen train ##{screen_train.id} to imprint "\
+                "##{imprint.softwear_prod_id} (CRM##{imprint.id})\n\n"\
+                "#{imprint.production.errors.full_messages.join("\n")}"
+              )
+            end
+          end
+
+        else
+          failed_imprint_methods['Screen Print'] = true
+        end
+
+      when /Embroidery/
+        count += 1
+        unless Production::DigitizationTrain.create(
+          order_id: order.softwear_prod_id,
+          crm_artwork_request_id: id
+        ).try(:persisted?)
+
+          failed_imprint_methods['Embroidery'] = true
+        end
       end
     end
 
@@ -490,6 +491,8 @@ class ArtworkRequest < ActiveRecord::Base
         "#{failed_imprint_methods.keys.join(', ')}"
       )
     end
+
+    count
   end
 
   def create_imprint_group_if_needed
