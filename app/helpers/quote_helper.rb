@@ -51,7 +51,7 @@ module QuoteHelper
     if params[:imprintable_only]
       return 'Add a imprintable line items to an existing group'
     elsif params[:options_and_markups]
-      return 'Add a an option or markup to this quote'
+      return 'Add an option or markup to this quote'
     else
       return 'Add a group of imprintables to this quote'
     end
