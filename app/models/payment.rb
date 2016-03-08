@@ -72,7 +72,7 @@ class Payment < ActiveRecord::Base
   after_create :calculate_sales_tax_amount
   after_save :recalculate_order_fields
   after_destroy :recalculate_order_fields
-  after_initialize -> (p) { p.sales_tax_amount ||= 0 }
+  after_initialize -> (p) { p.sales_tax_amount = 0 if p.sales_tax_amount.try(:nan?) }
 
   validates :store, :payment_method, :amount, :salesperson_id, presence: true
   validates :pp_transaction_id, presence: true, uniqueness: true,
@@ -412,6 +412,10 @@ class Payment < ActiveRecord::Base
       self.sales_tax_amount = tax_balance
     end
 
-    save(validate: false)
+    if sales_tax_amount.try(:nan?)
+      self.sales_tax_amount = 0
+    else
+      save(validate: false)
+    end
   end
 end
