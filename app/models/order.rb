@@ -641,7 +641,7 @@ class Order < ActiveRecord::Base
       end
     end
 
-    artwork_requests.each do |artwork_request|
+    artwork_requests.uniq(&:id).each do |artwork_request|
       artwork_request.create_trains
       artwork_request.create_imprint_group_if_needed
     end
