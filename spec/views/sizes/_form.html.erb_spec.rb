@@ -12,6 +12,7 @@ describe 'sizes/_form.html.erb', size_spec: true do
       expect(rendered).to have_field_for :name
       expect(rendered).to have_field_for :sku
       expect(rendered).to have_field_for :retail
+      expect(rendered).to have_field_for :upcharge_group
       expect(rendered).to have_selector('button')
     end
   end

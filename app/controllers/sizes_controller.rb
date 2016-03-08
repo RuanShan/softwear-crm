@@ -38,6 +38,6 @@ class SizesController < InheritedResources::Base
   private
 
   def permitted_params
-    params.permit(size: [:name, :display_value, :sku, :sort_order, :retail])
+    params.permit(size: [:name, :display_value, :sku, :sort_order, :retail, :upcharge_group])
   end
 end

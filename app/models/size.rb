@@ -1,6 +1,15 @@
 class Size < ActiveRecord::Base
   include Retailable
 
+  UPCHARGE_GROUPS = {
+    base_price:    'Base',
+    xxl_price:     '2XL',
+    xxxl_price:    '3XL',
+    xxxxl_price:   '4XL',
+    xxxxxl_price:  '5XL',
+    xxxxxxl_price: '6XL'
+  }
+
   acts_as_paranoid
 
   default_scope { order(:sort_order) }
@@ -12,7 +21,8 @@ class Size < ActiveRecord::Base
   validates :name, presence: true, uniqueness: true
   validates :sku, length: { is: 2 }, if: :is_retail?
   validates :sort_order, presence: true, uniqueness: true
-
+  validates :upcharge_group, inclusion: { in: UPCHARGE_GROUPS.keys.map(&:to_s) }, if: :upcharge_group
+  
   private
 
   def set_sort_order

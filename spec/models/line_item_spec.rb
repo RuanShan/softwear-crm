@@ -112,6 +112,33 @@ describe LineItem, line_item_spec: true do
     end
   end
 
+  describe '.new_imprintables', new_imprintables: true do
+    let!(:color) { create(:valid_color) }
+    let!(:size_xl)  { create(:valid_size, name: 'xl',  display_value: 'XL', upcharge_group: 'base_price') }
+    let!(:size_xxl) { create(:valid_size, name: 'xxl', display_value: '2XL', upcharge_group: 'xxl_price') }
+    let!(:imprintable) { create(:associated_imprintable, base_price: 5.00, xxl_price: 10.00) }
+    let!(:imprintable_variant_1) { create(:associated_imprintable_variant, imprintable: imprintable, size: size_xl, color: color) }
+    let!(:imprintable_variant_2) { create(:associated_imprintable_variant, imprintable: imprintable, size: size_xxl, color: color) }
+    let!(:job) { create(:job) }
+
+    context 'passed an imprintable with sizes that have upcharge_groups' do
+      it 'offsets the imprintable price by the matching upcharge group' do
+        line_items = LineItem.new_imprintables(job, imprintable, color, imprintable_price: 10.00)
+
+        expect(line_items.first.imprintable_price).to eq 10.00 + 5.00
+        expect(line_items.last.imprintable_price).to eq 10.00 + 10.00
+      end
+
+      it 'offsets 6xl groups with the highest existing upcharge' do
+        size_xxl.update_column :upcharge_group, 'xxxxl_price'
+        line_items = LineItem.new_imprintables(job, imprintable, color, imprintable_price: 10.00)
+
+        expect(line_items.first.imprintable_price).to eq 10.00 + 5.00
+        expect(line_items.last.imprintable_price).to eq 10.00 + 10.00
+      end
+    end
+  end
+
   describe '#<=>' do
     context 'on standard line items' do
       ['c', 'a', 'b'].each do |v|

@@ -58,13 +58,26 @@ class LineItem < ActiveRecord::Base
     )
 
     imprintable_variants.map do |variant|
+      imprintable_price = options[:imprintable_price].to_f || variant.imprintable.base_price.to_f
+      upcharge_group    = variant.size.upcharge_group || 'base_price'
+      upcharge          = variant.imprintable.send(upcharge_group)
+
+      while (upcharge.nil? || upcharge.zero?) && upcharge_group =~ /^x+l/
+        upcharge_group = upcharge_group[1..-1]
+        upcharge_group = 'base_price' if upcharge_group == 'xl'
+        upcharge = variant.imprintable.send(upcharge_group)
+      end
+      upcharge ||= 0
+
+      imprintable_price += upcharge
+
       LineItem.new(
         imprintable_object_type: 'ImprintableVariant',
         imprintable_object_id:   variant.id,
         unit_price:         options[:base_unit_price].try(:to_f) || variant.imprintable.base_price || 0,
         quantity:           options[:quantity].try(:[], variant.size_id.to_s) || 0,
         job_id:             job.id,
-        imprintable_price:  options[:imprintable_price] || variant.imprintable.base_price,
+        imprintable_price:  imprintable_price,
         decoration_price:   options[:decoration_price].try(:to_f) || 0,
       )
     end
