@@ -72,6 +72,7 @@ class Payment < ActiveRecord::Base
   after_create :calculate_sales_tax_amount
   after_save :recalculate_order_fields
   after_destroy :recalculate_order_fields
+  after_initialize -> (p) { p.sales_tax_amount ||= 0 }
 
   validates :store, :payment_method, :amount, :salesperson_id, presence: true
   validates :pp_transaction_id, presence: true, uniqueness: true,
