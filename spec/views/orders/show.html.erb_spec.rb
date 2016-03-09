@@ -13,7 +13,7 @@ describe "orders/show", type: :view do
     }
 
     it 'should display the disclaimer' do
-      expect(rendered).to have_text "Disclaimer" 
+      expect(rendered).to have_text "* Arrival date varies by carrier" 
     end
   end
 
@@ -25,7 +25,7 @@ describe "orders/show", type: :view do
     }
 
     it 'should not display the disclaimer' do
-      expect(rendered).to_not have_text "Disclaimer"
+      expect(rendered).to_not have_text "* Arrival date varies by carrier"
     end
   end
 
