@@ -64,7 +64,7 @@ class LineItem < ActiveRecord::Base
 
       while (upcharge.nil? || upcharge.zero?) && upcharge_group =~ /^x+l/
         upcharge_group = upcharge_group[1..-1]
-        upcharge_group = 'base_price' if upcharge_group == 'xl'
+        upcharge_group = 'base_price' if upcharge_group == 'xl_price'
         upcharge = variant.imprintable.send(upcharge_group)
       end
       upcharge ||= 0
