@@ -4,7 +4,7 @@
       <% @line_items_by_imprintable.each do |imprintable, line_items_by_color| %>
         <div class='box-info'>
           <h3>
-            <%= link_to imprintable_path(imprintable), remote: true do %>
+            <%= link_to imprintable_path(imprintable), remote: true, tabindex: -1 do %>
               <%= imprintable.brand_name %> <%= imprintable.style_catalog_no %>
             <% end %>
           </h3>
@@ -22,7 +22,7 @@
                   <% current_order_id = line_item.order_id %>
 
                   <hr />
-                  <h5><%= link_to "Order ##{line_item.order_id}", edit_order_path(line_item.order_id), target: :_blank %></h5>
+                  <h5><%= link_to "Order ##{line_item.order_id}", edit_order_path(line_item.order_id), target: :_blank, tabindex: -1 %></h5>
                 <% end %>
 
                 <div class='row' style='margin-bottom: 2px;'>
