@@ -1,0 +1,67 @@
+<div class='row'>
+  <div class='col-sm-6'>
+    <%= form_tag costs_imprintables_path, id: 'mass-cost-form' do %>
+      <% @line_items_by_imprintable.each do |imprintable, line_items_by_color| %>
+        <div class='box-info'>
+          <h3>
+            <%= link_to imprintable_path(imprintable), remote: true do %>
+              <%= imprintable.brand_name %> <%= imprintable.style_catalog_no %>
+            <% end %>
+          </h3>
+
+          <% line_items_by_color.each do |_color_id, line_items| %>
+            <% next if line_items.empty? %>
+
+            <div class='well'>
+              <h4><%= line_items.first.color_name %></h4>
+
+              <% current_order_id = nil %>
+
+              <% line_items.each do |line_item| %>
+                <% if current_order_id != line_item.order_id %>
+                  <% current_order_id = line_item.order_id %>
+
+                  <hr />
+                  <h5><%= link_to "Order ##{line_item.order_id}", edit_order_path(line_item.order_id), target: :_blank %></h5>
+                <% end %>
+
+                <div class='row' style='margin-bottom: 2px;'>
+                  <div class='col-sm-2'>
+                    <strong><%= line_item.size_name.blank? ? "??" : line_item.size_name %></strong>
+                  </div>
+                  <div class='col-sm-1'>
+                    &times;<%= line_item.quantity %>
+                  </div>
+                  <div class='col-sm-9'>
+                    <div class='input-group'>
+                      <div class='input-group-addon'>$</div>
+                      <% field_name = "line_item_#{line_item.id}_cost" %>
+
+                      <%= text_field_tag field_name,
+                        params[field_name] || line_item.last_cost,
+                        class: "form-control cost-amount iv-#{line_item.imprintable_variant_id}-cost",
+                        data: { iv: line_item.imprintable_variant_id }
+                      %>
+                    </div>
+                  </div>
+                </div>
+              <% end %>
+            </div>
+          <% end %>
+        </div>
+      <% end %>
+    <% end %>
+  </div>
+
+  <div class='col-sm-6'>
+    <div class='box-info' style='position: fixed; top: 100px; right: 30%;'>
+      <div class='input-group'>
+        <%= check_box_tag :multi_input, '1', true, class: 'form-control' %>
+        <%= label_tag :multi_input, 'Multi-input' %>
+      </div>
+      <div class='input-group' style='margin-top: 20px;'>
+        <%= button_tag 'Submit', class: 'btn btn-primary btn-lg' %>
+      </div>
+    </div>
+  </div>
+</div>
