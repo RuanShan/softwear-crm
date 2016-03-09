@@ -28,7 +28,11 @@
           <th>Order Name</th>
           <td><%= @order.name %></td>
           <th>In Hand By Date:</th>
-          <td><%= display_time @order.in_hand_by  %></td>
+          <td><%= display_time @order.in_hand_by  %>
+            <% unless !@order.delivery_method.include?("Ship") %>
+              <strong>*</strong></td><!-- for disclaimer -->
+            <% end %>
+          </td>
         </tr>
         <tr>
           <th>Payment Terms</th>
@@ -37,6 +41,18 @@
           <td><%= @order.salesperson.full_name %></td>
         </tr>
       </table>
+      <!-- if delivery method is ship, it shows disclaimer --> 
+      <% unless !@order.delivery_method.include?("Ship") %>
+        <div>
+          <br />
+          <p class="alert alert-warning"><strong>
+            * Arrival date varies by carrier and shipping method. 
+            If you need a guaranteed arrival date, be sure you 
+            and your salesperson have chosen the proper carrier 
+            and method to meet your needs. 
+          </strong></p>
+        </div>
+      <% end %>
     </div>
   </div>
   <div class="box-info">
