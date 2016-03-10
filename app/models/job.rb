@@ -29,13 +29,17 @@ class Job < ActiveRecord::Base
   has_many :artwork_requests, through: :imprints
   has_many :imprints, dependent: :destroy, inverse_of: :job
   has_many :line_items, dependent: :destroy, inverse_of: :job
+  has_many :costs, through: :line_items, source: :cost
   has_many :shipments, as: :shippable
   has_many :proofs
   has_many :discounts, as: :discountable
   has_many :print_locations, through: :imprints
   has_many :imprint_methods, through: :print_locations
 
-  accepts_nested_attributes_for :line_items, :imprints, :shipments, allow_destroy: true
+  has_many :imprintable_line_items, -> { where imprintable_object_type: 'ImprintableVariant' }, class_name: 'LineItem'
+  has_many :standard_line_items, -> { where imprintable_object_type: nil }, class_name: 'LineItem'
+
+  accepts_nested_attributes_for :imprintable_line_items, :standard_line_items, :line_items, :imprints, :shipments, allow_destroy: true
 
   Imprintable::TIERS.each do |tier_num, tier|
     tier_line_items = "#{tier.underscore}_line_items".to_sym

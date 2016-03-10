@@ -109,7 +109,8 @@ class Order < ActiveRecord::Base
   has_many :admin_proofs, dependent: :destroy
   has_many :costs, as: :costable
 
-  accepts_nested_attributes_for :payments, :jobs, :shipments, :costs
+  accepts_nested_attributes_for :payments, :jobs, :shipments
+  accepts_nested_attributes_for :costs, allow_destroy: true
 
   validates :invoice_state,
             presence: true,
@@ -368,6 +369,11 @@ class Order < ActiveRecord::Base
     end
 
     super(sorted_jobs)
+  end
+
+  def total_cost
+    costs.pluck(:amount).compact.reduce(0, :+) +
+    jobs.includes(:costs).flat_map(&:costs).compact.reduce(0, :+)
   end
 
   def id=(new_id)

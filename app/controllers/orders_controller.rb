@@ -270,13 +270,24 @@ class OrdersController < InheritedResources::Base
           line_items_attributes: [
             :imprintable_object_id, :imprintable_object_type, :id,
             :line_itemable_id, :line_itemable_type, :quantity,
-            :unit_price, :decoration_price, :_destroy, :imprintable_price,
-
-            cost_attributes: costs_attributes
+            :unit_price, :decoration_price, :_destroy, :imprintable_price
           ],
           shipments_attributes: [
             :name, :address_1, :city, :state, :zipcode, :shipped_by_id,
             :shippable_type, :shippable_id, :id, :_destroy, :shipping_method_id
+          ],
+
+          standard_line_items_attributes: [
+            :imprintable_object_id, :imprintable_object_type, :id,
+            :line_itemable_id, :line_itemable_type, :quantity,
+            :unit_price, :decoration_price, :imprintable_price,
+            cost_attributes: costs_attributes
+          ],
+          imprintable_line_items_attributes: [
+            :imprintable_object_id, :imprintable_object_type, :id,
+            :line_itemable_id, :line_itemable_type, :quantity,
+            :unit_price, :decoration_price, :imprintable_price,
+            cost_attributes: costs_attributes
           ]
         ]
       ]

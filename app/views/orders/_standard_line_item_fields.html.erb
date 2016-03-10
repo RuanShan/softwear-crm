@@ -1,0 +1,15 @@
+<div class='list-group-item'>
+  <h4>
+    &quot;<%= f.object.name %>&quot;
+    @
+    <%= number_to_currency f.object.unit_price %> ea.
+    <span class='badge'> &times;<%= f.object.quantity %> </span>
+  </h4>
+
+  <div class='cost-fields-container'>
+    <%= f.fields_for :cost do |ff| %>
+      <%= render 'orders/cost_fields', f: ff, show_on_remove: '.add-cost' %>
+    <% end %>
+    <%= f.link_to_add '+ Cost', :cost, class: 'btn btn-success add-cost hide-on-click' %>
+  </div>
+</div>

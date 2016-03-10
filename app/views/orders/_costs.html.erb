@@ -1,19 +1,27 @@
 <div class='user-profile-content'>
   <div class='hidden-print clearfix'>
+    <h3>
+      <strong>Total</strong> Cost:
+      <%= number_to_currency order.total_cost %>
+    </h3>
+
     <%= nested_form_for order do |f| %>
       <div class='row'>
 
-        <div class='cols-sm-6'>
-          <h4>Line Item costs</h4>
+        <div class='col-sm-6'>
+          <h3><strong>Line Item</strong> costs</h3>
 
+          <%= f.fields_for :jobs do |ff| %>
+            <%= render 'orders/job_fields', f: ff %>
+          <% end %>
         </div>
 
-        <div class='col-sm-6'>
-          <h4>Order costs</h4>
+        <div class='col-sm-6 cost-fields-container'>
+          <h3><strong>Order</strong> costs</h3>
           <%= f.fields_for :costs do |ff| %>
-            <%= render 'orders/cost_fields', f: ff %>
+            <%= render 'orders/cost_fields', f: ff, container: 'well' %>
           <% end %>
-          <%= f.link_to_add 'Add Order Cost', :costs, class: 'btn btn-success' %>
+          <%= f.link_to_add '+ Order Cost', :costs, class: 'btn btn-success' %>
         </div>
 
       </div>

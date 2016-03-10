@@ -1,6 +1,6 @@
 <%= render_error_modal_for @order %>
 
-<div class="row-fluid">
+<div class="row-fluid orders-edit">
   <div class="pull-left">
       <%= profile_picture_of @order.salesperson, style: 'display: inline;' %>
   </div>
@@ -42,7 +42,7 @@
 
     <%= link_to order_warnings_path(@order.id), class: 'btn btn-warning' do %>
       <i class="fa fa-exclamation-triangle"></i> Warnings
-      <%= @order.warnings.active.any? ? "(#{@order.warnings.active.size})" : '' %>
+      <%= @order.warnings.active.any? ? "<span class='badge'>#{@order.warnings.active.size}</span>".html_safe : '' %>
     <% end %>
 
   </div>
@@ -187,7 +187,7 @@
             </li>
             <li>
               <%= order_tab(:costs, remote: true) do %>
-                <i class="fa fa-dollar"></i> Costs
+                <i class="fa fa-dollar"></i> Costs (WIP)
               <% end %>
               </a>
             </li>
