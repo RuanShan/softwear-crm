@@ -15,6 +15,8 @@ CrmSoftwearcrmCom::Application.routes.draw do
       resources :brands, :colors
       resources :imprintable_groups
       post 'update_imprintable_variants'
+      get 'costs', to: 'costs#mass_new'
+      post 'costs', to: 'costs#mass_create'
 
       resources :sizes do
         collection do
@@ -30,7 +32,7 @@ CrmSoftwearcrmCom::Application.routes.draw do
 
   get 'tags/:tag', to: 'imprintables#index', as: :tag
 
-  resources :brands, :colors
+  resources :brands, :colors, :costs
   resources :artworks do
     collection do
       get 'select'

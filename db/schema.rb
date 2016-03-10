@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160308190536) do
+ActiveRecord::Schema.define(version: 20160309202432) do
 
   create_table "activities", force: :cascade do |t|
     t.integer  "trackable_id",   limit: 4
@@ -308,11 +308,11 @@ ActiveRecord::Schema.define(version: 20160308190536) do
 
   create_table "fba_spreadsheet_uploads", force: :cascade do |t|
     t.boolean  "done"
-    t.text     "spreadsheet",       limit: 65535
+    t.text     "spreadsheet",       limit: 4294967295
     t.text     "processing_errors", limit: 65535
     t.string   "filename",          limit: 191
-    t.datetime "created_at",                      null: false
-    t.datetime "updated_at",                      null: false
+    t.datetime "created_at",                           null: false
+    t.datetime "updated_at",                           null: false
   end
 
   create_table "freshdesk_local_contacts", force: :cascade do |t|
@@ -390,13 +390,14 @@ ActiveRecord::Schema.define(version: 20160308190536) do
   add_index "imprintable_stores", ["imprintable_id", "store_id"], name: "index_imprintable_stores_on_imprintable_id_and_store_id", using: :btree
 
   create_table "imprintable_variants", force: :cascade do |t|
-    t.integer  "imprintable_id", limit: 4
+    t.integer  "imprintable_id",   limit: 4
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.integer  "size_id",        limit: 4
-    t.integer  "color_id",       limit: 4
+    t.integer  "size_id",          limit: 4
+    t.integer  "color_id",         limit: 4
     t.datetime "deleted_at"
-    t.decimal  "weight",                   precision: 10, scale: 1
+    t.decimal  "weight",                     precision: 10, scale: 1
+    t.decimal  "last_cost_amount",           precision: 10, scale: 2
   end
 
   add_index "imprintable_variants", ["deleted_at"], name: "index_imprintable_variants_on_deleted_at", using: :btree
@@ -647,8 +648,8 @@ ActiveRecord::Schema.define(version: 20160308190536) do
     t.decimal  "discount_total",                             precision: 10, scale: 2
     t.decimal  "payment_total",                              precision: 10, scale: 2
     t.boolean  "imported_from_admin"
-    t.string   "phone_number_extension",    limit: 191
     t.string   "payment_state",             limit: 191
+    t.string   "phone_number_extension",    limit: 191
   end
 
   add_index "orders", ["deleted_at"], name: "index_orders_on_deleted_at", using: :btree
