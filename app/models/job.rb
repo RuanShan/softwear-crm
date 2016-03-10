@@ -102,7 +102,7 @@ class Job < ActiveRecord::Base
   end
 
   def production_imprints_attributes
-    return if imprintable_line_items_total == 0
+    return if imprintable_line_items_total == 0 && !imprints.any?(&:equipment_sanitizing?)
 
     attrs = {}
 
