@@ -1,2 +1,5 @@
 $("#<%= @tab %>").children().remove();
 $("#<%= @tab %>").append("<%=j render "orders/#{@tab}", order: @order %>");
+
+initializeEditable();
+initializeSelect2();

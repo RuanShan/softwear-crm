@@ -150,33 +150,33 @@
               <% end %>
             </li>
             <li>
-              <%= order_tab(:details) do %>
+              <%= order_tab(:details, remote: true) do %>
                 <i class="fa fa-shopping-cart"></i> Details
               <% end %>
             </li>
             <li>
-              <%= order_tab(:payments, disabled: @order.fba?) do %>
+              <%= order_tab(:payments, disabled: @order.fba?, remote: true) do %>
                 <i class="fa fa-money"></i> Payments
               <% end %>
             </li>
             <li>
-              <%= order_tab(:shipments) do %>
+              <%= order_tab(:shipments, remote: true) do %>
                 <i class="fa fa-archive"></i> Shipments
               <% end %>
             </li>
             <li>
-              <%= order_tab(:artwork) do %>
+              <%= order_tab(:artwork, remote: !@order.imported_from_admin?) do %>
                 <i class="fa fa-picture-o"></i> Artwork
               <% end %>
             </li>
             <li>
-              <%= order_tab(:proofs) do %>
+              <%= order_tab(:proofs, remote: !@order.imported_from_admin?) do %>
                 <i class="fa fa-file-text-o"></i> Proofs
               <% end %>
               </a>
             </li>
             <li>
-              <%= order_tab(:comments) do %>
+              <%= order_tab(:comments, remote: true) do %>
                 <i class="fa fa-bars"></i> Comments
               <% end %>
             </li>
@@ -215,39 +215,35 @@
             </div>
 
             <div class="tab-pane animated  fadeInRight" id="details">
-              <%= render partial: 'details', locals: { order: @order } %>
+              <%# remote orders/details %>
             </div>
 
             <div class="tab-pane animated fadeInRight" id="payments">
-              <%= render partial: 'payments/payments', locals: { order: @order }%>
+              <%# remote payments/payments %>
             </div>
 
             <div class="tab-pane animated fadeInRight" id="shipments">
-              <%= render partial: 'shipments', locals: { order: @order } %>
+              <%# remote orders/shipments %>
             </div>
 
             <div class="tab-pane animated fadeInRight" id="artwork">
-             <% if @order.imported_from_admin %>
-                <%= render 'artwork_tab_disabled', message: "There was no artwork concept in this version." %>
-             <% else %>
-                <%= render 'artwork_requests/list',  order: @order %>
+             <% if @order.imported_from_admin? %>
+               <%= render 'artwork_tab_disabled', message: "There was no artwork concept in this version." %>
              <% end %>
             </div>
 
             <div class="tab-pane animated fadeInRight" id="proofs">
-             <% if @order.imported_from_admin %>
+             <% if @order.imported_from_admin? %>
                <%= render 'admin_proofs', order: @order %>
-             <% else %>
-               <%= render partial: 'proofs/list', locals: { order: @order } %>
              <% end %>
             </div>
 
             <div class="tab-pane animated fadeInRight" id="costs">
-              <%# fetched remotely %>
+              <%# remote orders/costs %>
             </div>
 
             <div class="tab-pane animated fadeInRight" id="comments">
-                <%= render 'comments', order: @order %>
+              <%# remote orders/comments %>
             </div>
           </div>
       </div>
