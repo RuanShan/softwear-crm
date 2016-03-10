@@ -34,7 +34,34 @@ feature 'Costs Management', js: true do
 
     click_button 'Submit'
 
+    sleep ci? ? 3 : 1
     expect(Cost.where(amount: 12)).to exist
     expect(Cost.where(amount: 10)).to exist
+  end
+
+  context 'when there are existing costs for the shown variants' do
+    let(:new_line_item_1) { create(:imprintable_line_item, imprintable_object: white_shirt_m, job: job_2) }
+    let(:new_line_item_2) { create(:imprintable_line_item, imprintable_object: white_shirt_l, job: job_2) }
+
+    background(:each) do
+      Cost.create(
+        costable: white_shirt_m_item,
+        amount: 10.00
+      )
+      Cost.create(
+        costable: white_shirt_l_item,
+        amount: 15.00
+      )
+
+      ImprintableVariant.update_last_costs([white_shirt_m_item.id, white_shirt_l_item.id])
+    end
+
+    scenario 'the fields for line items of those variants already filled out' do
+      new_line_item_1; new_line_item_2
+      visit costs_imprintables_path
+
+      expect(page).to have_css "input[type=text][value='10.0']"
+      expect(page).to have_css "input[type=text][value='15.0']"
+    end
   end
 end

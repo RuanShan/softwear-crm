@@ -12,13 +12,31 @@ class ImprintableVariant < ActiveRecord::Base
   validates :imprintable, presence: true
   validates :size, presence: true
 
-  # TODO this scope isn't tested in model spec
-  # TRAGIC
   scope :size_variants_for, ->(imprintable, color) do
     where(
       imprintable_id: param_record_id(imprintable),
       color_id:       param_record_id(color)
     )
+  end
+
+  def self.update_last_costs(line_item_ids)
+    LineItem.includes(:cost).where(id: line_item_ids).find_each do |line_item| 
+      next unless line_item.imprintable_object_type == 'ImprintableVariant'
+
+      ImprintableVariant
+        .where(id: line_item.imprintable_object_id)
+        .update_all(last_cost_amount: line_item.cost.amount)
+    end
+  end
+
+  if Rails.env.production?
+    def self.enqueue_update_last_costs(line_item_ids)
+      delay.update_last_costs(line_item_ids)
+    end
+  else
+    class << self
+      alias_method :enqueue_update_last_costs, :update_last_costs
+    end
   end
 
   def brand_id
