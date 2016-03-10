@@ -22,6 +22,7 @@
       <dd class="<%= field.to_s.gsub('_', '-') %>"><%= payment.send(field) || '<blank>' %></dd>
     <% end %>
 
+    <%= link_to 'Print Receipt', payment, id: "show_#{payment.id}" %>
     <% if !payment.credit_card? || !payment.totally_refunded? %>
       <dd class='refund'>
         <%= link_to 'Refund Payment', edit_payment_path(payment, refund: true, order_id: payment.order_id),

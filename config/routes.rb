@@ -185,8 +185,8 @@ CrmSoftwearcrmCom::Application.routes.draw do
   namespace 'search' do
     resources :queries
   end
+  
   get '/search', to: 'search/queries#search', as: :search
-
 
   resources :sales_reports, only: [:index, :create]
   get '/sales_reports/:report_type/:start_time...:end_time(.:format)', to: 'sales_reports#show', as: :sales_reports_show

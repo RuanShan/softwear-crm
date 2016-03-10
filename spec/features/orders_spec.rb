@@ -6,6 +6,8 @@ feature 'Order management', order_spec: true, js: true do
   background(:each) { sign_in_as valid_user }
 
   given!(:order) { create(:order) }
+  given!(:payment1) { create(:valid_payment, order: order) }
+  given!(:payment2) { create(:valid_payment, order: order) }
 
   scenario 'user views the index of orders' do
     visit root_path
@@ -151,7 +153,6 @@ feature 'Order management', order_spec: true, js: true do
     expect(order.comments.where(comment: 'This is what I want to see')).to_not exist
   end
 
-
   scenario 'user sees an error message when submitting invalid information' do
     visit root_path
     unhide_dashboard
@@ -168,6 +169,32 @@ feature 'Order management', order_spec: true, js: true do
     expect(page).to have_content 'Email is not a valid email address'
   end
 
+  scenario 'salesperson can print individual receipts from payments tab' do
+    visit edit_order_path order
+
+    wait_for_ajax
+    click_link 'Payments'
+    wait_for_ajax
+    
+    expect(page).to have_link "show_#{payment1.id}" 
+    expect(page).to have_link "show_#{payment2.id}" 
+    
+    click_link "show_#{payment1.id}"
+    wait_for_ajax
+
+    expect(page).to have_link "Return To Payments"
+    expect(page).to have_link "Print"
+    expect(page).to have_text "Payment Receipt ##{payment1.id}"
+
+    click_link 'Return To Payments'
+    wait_for_ajax
+
+    click_link "show_#{payment2.id}"
+    wait_for_ajax
+    
+    expect(page).to have_text "Payment Receipt ##{payment2.id}"
+  end
+  
   scenario 'user edits an existing order', no_ci: true do
     visit edit_order_path order
     wait_for_ajax
