@@ -18,7 +18,7 @@
     <dd><%= human_boolean artwork_request.exact_recreation? %>
     </dd>
     
-    <% if artwork_request.amount_paid_for_artwork > 0.0 %>
+    <% if artwork_request.amount_paid_for_artwork.to_f > 0.0 %>
       <span style="color: #C00">
       <dt>Customer Paid For Artwork:</dt>
       <dd><%= number_to_currency artwork_request.amount_paid_for_artwork %></dd>
