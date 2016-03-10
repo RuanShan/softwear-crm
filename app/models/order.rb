@@ -902,7 +902,8 @@ class Order < ActiveRecord::Base
 
     jobs_by_template.each do |job_template_id, jobs|
       fba_job_template = FbaJobTemplate.find(job_template_id)
-      artworks = fba_job_template.artworks
+      artworks = fba_job_template.artworks.compact
+      artworks = [Artwork.fba_missing] if artworks.blank?
 
       fba_job_template.fba_imprint_templates.each do |fba_imprint_template|
         artwork_request = ArtworkRequest.create
@@ -911,7 +912,7 @@ class Order < ActiveRecord::Base
         artwork_request.state       = :manager_approved
         artwork_request.salesperson = salesperson
         artwork_request.approved_by = salesperson
-        artwork_request.artwork_ids = artworks.map(&:id).uniq
+        artwork_request.artwork_ids = [fba_imprint_template.artwork_id].compact
         artwork_request.priority    = 5
         artwork_request.imprint_ids = Imprint.where(
           job_id: jobs.map(&:id), print_location_id: fba_imprint_template.print_location_id
@@ -923,33 +924,33 @@ class Order < ActiveRecord::Base
           artwork_request.artwork_ids = [Artwork.fba_missing.try(:id)]
         end
 
-        if artwork_request.save
-          if fba_job_template.mockup
-            mockup_attributes = {
-              file:        fba_job_template.mockup.file,
-              description: fba_job_template.mockup.description
-            }
-          else
-            mockup_attributes = nil
-            missing_proofs = true
-          end
-
-          proof = Proof.create(
-            order_id:   id,
-            job_id:     jobs.first.id,
-            approve_by: in_hand_by,
-            state:      :customer_approved,
-
-            mockups_attributes: [mockup_attributes].compact,
-            artworks: artwork_request.artworks
-          )
-
-          unless proof.persisted?
-            issue_warning('FBA Order Generation', "Unable to save proof: #{proof.errors.full_messages.join(', ')}")
-          end
-        else
+        unless artwork_request.save
           issue_warning('FBA Order Generation', "Unable to save artwork request: #{artwork_request.errors.full_messages.join(', ')}")
         end
+      end
+
+      if fba_job_template.mockup
+        mockup_attributes = {
+          file:        fba_job_template.mockup.file,
+          description: fba_job_template.mockup.description
+        }
+      else
+        mockup_attributes = nil
+        missing_proofs = true
+      end
+
+      proof = Proof.create(
+        order_id:   id,
+        job_id:     jobs.first.id,
+        approve_by: in_hand_by,
+        state:      :customer_approved,
+
+        mockups_attributes: [mockup_attributes].compact,
+        artworks: artworks
+      )
+
+      unless proof.persisted?
+        issue_warning('FBA Order Generation', "Unable to save proof: #{proof.errors.full_messages.join(', ')}")
       end
     end
 
