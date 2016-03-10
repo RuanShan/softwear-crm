@@ -155,7 +155,7 @@
               <% end %>
             </li>
             <li>
-              <%= order_tab(:payments, @order.fba?) do %>
+              <%= order_tab(:payments, disabled: @order.fba?) do %>
                 <i class="fa fa-money"></i> Payments
               <% end %>
             </li>
@@ -184,6 +184,12 @@
               <%= order_tab(:timeline) do %>
                 <i class="fa fa-clock-o"></i> Timeline
               <% end %>
+            </li>
+            <li>
+              <%= order_tab(:costs, remote: true) do %>
+                <i class="fa fa-dollar"></i> Costs
+              <% end %>
+              </a>
             </li>
           </ul>
 
@@ -234,6 +240,10 @@
              <% else %>
                <%= render partial: 'proofs/list', locals: { order: @order } %>
              <% end %>
+            </div>
+
+            <div class="tab-pane animated fadeInRight" id="costs">
+              <%# fetched remotely %>
             </div>
 
             <div class="tab-pane animated fadeInRight" id="comments">

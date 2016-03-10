@@ -87,12 +87,19 @@ module OrderHelper
     end
   end
 
-  def order_tab(tag, disabled = false, &block)
-    options = {}
-    if disabled
-      options[:class] = 'no-click'
+  def order_tab(tag, options = {}, &block)
+    options[:class] ||= ''
+
+    if options.delete(:disabled)
+      options[:class] += 'no-click'
     else
       options[:data] = { toggle: 'tab' }
+
+      if options.delete(:remote)
+        options[:class] += ' remote-order-tab'
+        options[:data][:id] = @order.id
+        options[:data][:tab] = tag
+      end
     end
 
     link_to("##{tag}", options, &block)

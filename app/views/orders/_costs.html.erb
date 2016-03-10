@@ -1,0 +1,25 @@
+<div class='user-profile-content'>
+  <div class='hidden-print clearfix'>
+    <%= nested_form_for order do |f| %>
+      <div class='row'>
+
+        <div class='cols-sm-6'>
+          <h4>Line Item costs</h4>
+
+        </div>
+
+        <div class='col-sm-6'>
+          <h4>Order costs</h4>
+          <%= f.fields_for :costs do |ff| %>
+            <%= render 'orders/cost_fields', f: ff %>
+          <% end %>
+          <%= f.link_to_add 'Add Order Cost', :costs, class: 'btn btn-success' %>
+        </div>
+
+      </div>
+
+      <hr />
+      <%= f.submit class: 'btn btn-primary' %>
+    <% end %>
+  </div>
+</div>

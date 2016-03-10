@@ -117,6 +117,7 @@ CrmSoftwearcrmCom::Application.routes.draw do
 
   resources :orders do
     member do
+      get 'tab/:tab' => :tab, as: :tab
       get 'production_dashboard', as: 'production_dashboard'
       get :imprintable_order_sheets, as: :imprintable_order_sheets
       get :order_report, as: :order_report

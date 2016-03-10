@@ -15,11 +15,7 @@ class OrdersController < InheritedResources::Base
   def update
     super do |success, failure|
       success.html do
-        if @order.fba?
-          redirect_to edit_order_path(params[:id], anchor: 'jobs')
-        else
-          redirect_to edit_order_path(params[:id], anchor: 'details')
-        end
+        redirect_to edit_order_path(params[:id], anchor: return_to_anchor)
       end
       failure.html do
         assign_activities
@@ -57,6 +53,15 @@ class OrdersController < InheritedResources::Base
       @current_action = 'orders#edit'
       @shipping_methods = grab_shipping_methods
       assign_activities
+    end
+  end
+
+  def tab
+    @order = Order.find(params[:id])
+    @tab   = params[:tab]
+
+    respond_to do |format|
+      format.js
     end
   end
 
@@ -224,7 +229,21 @@ class OrdersController < InheritedResources::Base
     end
   end
 
+  def return_to_anchor
+    return 'jobs' if @order.fba?
+
+    if params[:order].try(:[], :costs_attributes)
+      'costs'
+    else
+      'details'
+    end
+  end
+
   def permitted_params
+    costs_attributes = [
+      :id, :_destroy, :amount, :type, :description, :costable_type, :costable_id
+    ]
+
     params.permit(
       :packing_slips, :page,
       :fba_jobs,
@@ -241,6 +260,7 @@ class OrdersController < InheritedResources::Base
         :freshdesk_proof_ticket_id, :softwear_prod_id, :production_state,
 
         quote_ids: [],
+        costs_attributes: costs_attributes,
         jobs_attributes: [
           :id, :name, :jobbable_id, :jobbable_type, :description, :_destroy,
           :shipping_location, :shipping_location_size, :sort_order, :fba_job_template_id,
@@ -250,7 +270,9 @@ class OrdersController < InheritedResources::Base
           line_items_attributes: [
             :imprintable_object_id, :imprintable_object_type, :id,
             :line_itemable_id, :line_itemable_type, :quantity,
-            :unit_price, :decoration_price, :_destroy, :imprintable_price
+            :unit_price, :decoration_price, :_destroy, :imprintable_price,
+
+            cost_attributes: costs_attributes
           ],
           shipments_attributes: [
             :name, :address_1, :city, :state, :zipcode, :shipped_by_id,

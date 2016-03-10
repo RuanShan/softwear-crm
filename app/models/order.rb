@@ -107,8 +107,9 @@ class Order < ActiveRecord::Base
   has_many :discounts, as: :discountable, dependent: :destroy
   has_many :job_discounts, through: :jobs, source: :discounts, dependent: :destroy
   has_many :admin_proofs, dependent: :destroy
+  has_many :costs, as: :costable
 
-  accepts_nested_attributes_for :payments, :jobs, :shipments
+  accepts_nested_attributes_for :payments, :jobs, :shipments, :costs
 
   validates :invoice_state,
             presence: true,

@@ -1,0 +1,19 @@
+<div class='well'>
+  <div class='form-group'>
+    <%= f.label :type, 'Cost Type', class: 'control-label' %>
+    <%= f.text_field :type, class: 'form-control' %>
+  </div>
+
+  <div class='form-group'>
+    <%= f.label :description, 'Description', class: 'control-label' %>
+    <%= f.text_area :description, class: 'form-control' %>
+  </div>
+
+  <div class='form-group'>
+    <%= f.label :amount, 'Amount', class: 'control-label' %>
+    <div class='input-group'>
+      <div class='input-group-addon'>$</div>
+      <%= f.text_field :amount, class: 'form-control' %>
+    </div>
+  </div>
+</div>

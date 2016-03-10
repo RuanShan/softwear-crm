@@ -26,6 +26,8 @@ class LineItem < ActiveRecord::Base
   belongs_to :job, touch: true, inverse_of: :line_items
   has_one :cost, as: :costable
 
+  accepts_nested_attributes_for :cost
+
   validates :description, presence: true, unless: :imprintable?
   validates :name, presence: true, unless: :imprintable?
   validates :quantity, presence: true
