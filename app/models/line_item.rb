@@ -67,6 +67,7 @@ class LineItem < ActiveRecord::Base
 
       where li.imprintable_object_type = "ImprintableVariant"
       and j.jobbable_type = "Order"
+      and o.deleted_at is null
       and (
         not exists (
           select costs.id from costs
