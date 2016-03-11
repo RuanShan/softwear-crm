@@ -221,6 +221,7 @@ feature 'Payments management', js: true, payment_spec: true, retry: 2 do
           amount: 100.00
         )
       ).to exist
+      expect(page).to have_link("show_#{Payment.last.id}") #last payment created was this one!
     end
 
     feature 'customer payments', customer: true do
@@ -262,6 +263,17 @@ feature 'Payments management', js: true, payment_spec: true, retry: 2 do
             cc_transaction: 'abc123' # pn_ref from gateway stuf success
           )
         ).to exist
+      end
+
+      scenario 'A customer can view a payment receipt' do
+        visit customer_order_path(order.customer_key)
+        toggle_dashboard
+        click_link("Print Receipts")
+        expect(page).to have_link "Return To Order"
+        expect(page).to have_text "Payment Receipt ##{order.payments.first.id}"
+
+        click_link("Return To Order")
+        expect(page).to have_text "Order ##{order.id}"
       end
 
       scenario 'A customer sees errors for trying to pay too much (and can correct)', retry: 3 do

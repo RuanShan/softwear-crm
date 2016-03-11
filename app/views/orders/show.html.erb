@@ -8,3 +8,9 @@
 </div>
 
 <%= render 'orders/show' %>
+
+<p style="page-break-after:always;"></p>
+
+<% @order.payments.each do |payment| %>
+  <%= render 'payments/receipt', payment: payment %>
+<% end %>
