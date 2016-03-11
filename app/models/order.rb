@@ -373,7 +373,7 @@ class Order < ActiveRecord::Base
 
   def total_cost
     costs.pluck(:amount).compact.reduce(0, :+) +
-    jobs.includes(:costs).flat_map(&:costs).compact.reduce(0, :+)
+    jobs.includes(:costs).flat_map(&:costs).compact.map(&:amount).reduce(0, :+)
   end
 
   def id=(new_id)

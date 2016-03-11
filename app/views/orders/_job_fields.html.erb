@@ -4,6 +4,9 @@
   <h3>Job: <%= f.object.name %></h3>
 
   <div class='list-group'>
+  </div>
+
+  <div class='list-group'>
     <%= f.fields_for :standard_line_items do |ff| %>
       <%= render 'orders/standard_line_item_fields', f: ff %>
     <% end %>

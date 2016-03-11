@@ -2,15 +2,15 @@ require 'spec_helper'
 include LineItemHelpers
 
 feature 'Costs Management', js: true do
-  let!(:order_1) { create(:order_with_job) }
-  let!(:order_2) { create(:order_with_job) }
-  let(:job_1)    { order_1.jobs.first }
-  let(:job_2)    { order_2.jobs.first }
+  given!(:order_1) { create(:order_with_job) }
+  given!(:order_2) { create(:order_with_job) }
+  given(:job_1)    { order_1.jobs.first }
+  given(:job_2)    { order_2.jobs.first }
 
-  let!(:white) { create(:valid_color, name: 'white') }
-  let!(:shirt) { create(:valid_imprintable) }
-  let!(:blue) { create(:valid_color, name: 'blue') }
-  let!(:pants) { create(:valid_imprintable) }
+  given!(:white) { create(:valid_color, name: 'white') }
+  given!(:shirt) { create(:valid_imprintable) }
+  given!(:blue) { create(:valid_color, name: 'blue') }
+  given!(:pants) { create(:valid_imprintable) }
 
   make_variants :white, :shirt, [:M, :S, :L], lazy: true
   make_variants :blue,  :pants, [:M, :S, :L], lazy: true
@@ -40,8 +40,8 @@ feature 'Costs Management', js: true do
   end
 
   context 'when there are existing costs for the shown variants' do
-    let(:new_line_item_1) { create(:imprintable_line_item, imprintable_object: white_shirt_m, job: job_2) }
-    let(:new_line_item_2) { create(:imprintable_line_item, imprintable_object: white_shirt_l, job: job_2) }
+    given(:new_line_item_1) { create(:imprintable_line_item, imprintable_object: white_shirt_m, job: job_2) }
+    given(:new_line_item_2) { create(:imprintable_line_item, imprintable_object: white_shirt_l, job: job_2) }
 
     background(:each) do
       Cost.create(
@@ -62,6 +62,45 @@ feature 'Costs Management', js: true do
 
       expect(page).to have_css "input[type=text][value='10.0']"
       expect(page).to have_css "input[type=text][value='15.0']"
+    end
+  end
+
+  feature 'on a specific order', order: true do
+    given!(:order) { create(:order_with_job) }
+    given(:job) { order.jobs.first }
+    given!(:line_item) { create(:non_imprintable_line_item, job: job) }
+
+    scenario 'a user can add costs directly to the order' do
+      visit edit_order_path(order, anchor: 'costs')
+      sleep 1
+
+      click_link '+ Order Cost'
+      fill_in 'Cost Type', with: 'Something'
+      fill_in 'Description', with: 'moni'
+      fill_in 'Amount', with: '10.50'
+      click_button 'Update Order'
+
+      sleep 1
+
+      expect(order.reload.costs.where(amount: 10.50)).to exist
+      expect(page).to have_content 'Total Cost: $10.50'
+    end
+
+    scenario 'a user can add costs to standard line items' do
+      visit edit_order_path(order, anchor: 'costs')
+      sleep 1
+
+      click_link '+ Cost'
+      fill_in 'Cost Type', with: 'Something'
+      fill_in 'Description', with: 'moni'
+      fill_in 'Amount', with: '10.50'
+      click_button 'Update Order'
+
+      sleep 1
+
+      expect(line_item.reload.cost).to_not be_nil
+      expect(line_item.reload.cost.amount.to_f).to eq 10.50
+      expect(page).to have_content 'Total Cost: $10.50'
     end
   end
 end

@@ -232,7 +232,7 @@ class OrdersController < InheritedResources::Base
   def return_to_anchor
     return 'jobs' if @order.fba?
 
-    if params[:order].try(:[], :costs_attributes)
+    if params[:order] && params[:order].to_a.flatten.any? { |x| x.to_s =~ /costs?_attributes/ }
       'costs'
     else
       'details'
