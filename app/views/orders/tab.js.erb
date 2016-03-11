@@ -1,5 +1,14 @@
-$("#<%= @tab %>").children().remove();
-$("#<%= @tab %>").append("<%=j render "orders/#{@tab}", order: @order %>");
+try {
+  $("#<%= @tab %>").children().remove();
+  $("#<%= @tab %>").append("<%=j render "orders/#{@tab}.html", order: @order %>");
 
-initializeEditable();
-initializeSelect2();
+  initializeEditable();
+  initializeSelect2();
+
+  <% if lookup_context.find_all("orders/_#{@tab}.js").any? %>
+  <%= render "orders/#{@tab}.js", order: @order %>
+  <% end %>
+}
+catch (e) {
+  console.error(e);
+}

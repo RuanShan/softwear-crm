@@ -67,18 +67,6 @@ $(window).load ->
     if window.location.hash.indexOf($(this).attr 'href') == -1
       window.location.hash = $(this).attr 'href'
 
-  $('#order-quote-ids-select2').select2
-    minimumInputLength: 0
-    ajax:
-      url:      Routes.quotes_path()
-      dataType: 'json'
-      delay:    250
-      data: (params) ->
-        q:        params.term
-        page:     params.page
-      processResults: (data, page) -> { results: data.map (q) -> { text: q.name, id: q.id } }
-      cache: true
-
   if $('.orders-edit').length > 0
     $(document).on 'change', '.shipment_shippable_type', ->
       if $(this).val() == 'Job'
