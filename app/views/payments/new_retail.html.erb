@@ -8,6 +8,7 @@
         <th>Date Created</th>
         <th>Salesperson</th>
         <th>Description</th>
+        <th>Receipt</th>
       </tr>
     </thead>
     <tbody>
@@ -19,6 +20,7 @@
             <td><%= payment.created_at.strftime('%m/%d/%Y') %></td>
             <td><%= payment.salesperson.full_name %></td>
             <td><%= payment.retail_description %></td>
+            <td><%= link_to 'View Receipt', payment, id: "show_#{payment.id}" %></td>
           </tr>
         <% end %>
         <% if @recent_retail_payments.size > 3 %>
