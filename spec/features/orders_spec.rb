@@ -182,7 +182,7 @@ feature 'Order management', order_spec: true, js: true do
     click_link "show_#{payment1.id}"
     wait_for_ajax
 
-    expect(page).to have_link "Return To Order Payments"
+    expect(page).to have_link "Return To Order"
     expect(page).to have_link "Print"
     expect(page).to have_text "Payment Receipt ##{payment1.id}"
 
