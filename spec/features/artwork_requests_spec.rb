@@ -229,6 +229,7 @@ feature 'Artwork Request Features', js: true, artwork_request_spec: true do
       context 'given an artwork request' do
         scenario 'I can reject the artwork request' do
           visit_edit_order_tab(order, 'artwork')
+          sleep 1.5
           within("#artwork-request-#{artwork_request.id}") do
             click_link "Reject Artwork Request"
             fill_in "details", with: "This is a reason"

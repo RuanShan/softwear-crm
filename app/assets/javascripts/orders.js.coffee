@@ -34,15 +34,6 @@ appendActivities = (content) ->
   else
     ajaxOrderActivities orderId
 
-@prepareShippableID = ->
-  $('.shipment_shippable_type').change ->
-    if $(this).val() == 'Job'
-      $(".shipment_shippable_id").prop('disabled', false)
-      $(".hidden_shippable_id").attr("disabled", true)
-    else
-      $(".shipment_shippable_id").prop('disabled', true)
-      $(".hidden_shippable_id").attr("disabled", false)
-
 @disableEnterOnNewImprintableLineItems = ->
   $('#new_imprintable_line_item').on 'keyup keypress', (e) ->
     code = e.keyCode or e.which
@@ -59,8 +50,6 @@ $(window).load ->
                 variants that don't exist and were removed. Please make sure
                 the line items in this order are correct. Contact
                 devteam@annarbortees.com if you can reproduce this."
-
-  prepareShippableID()
 
   # FIXME 'this is a hack, the whole thing is a hack' - Nigel
   # Edit can't redirect, meaning it can't supply an anchor, so
@@ -91,6 +80,14 @@ $(window).load ->
       cache: true
 
   if $('.orders-edit').length > 0
+    $(document).on 'change', '.shipment_shippable_type', ->
+      if $(this).val() == 'Job'
+        $(".shipment_shippable_id").prop('disabled', false)
+        $(".hidden_shippable_id").attr("disabled", true)
+      else
+        $(".shipment_shippable_id").prop('disabled', true)
+        $(".hidden_shippable_id").attr("disabled", false)
+
     $(document).on 'click', '.remove-cost', (e) ->
       $this = $(this)
       return unless $this.data('showonrmv')
