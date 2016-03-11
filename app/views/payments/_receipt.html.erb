@@ -1,12 +1,14 @@
 <div class='order-invoice' style="page-break-after: always;">
   <div class="page-heading row" style="background-color: #fff;">
     <div class="pull-left">
-      <% if @order.store.logo.file.blank? %>
-          <h1 class='pull-left'>
-            <strong><%= @order.store.name %></strong>
-          </h1>
-      <% else %>
-          <%= image_tag @order.store.logo.file.url(:thumb) %>
+      <% unless order.nil? %>
+        <% if order.store.logo.file.blank? %>
+            <h1 class='pull-left'>
+              <strong><%= order.store.name %></strong>
+            </h1>
+        <% else %>
+            <%= image_tag order.store.logo.file.url(:thumb) %>
+        <% end %>
       <% end %>
     </div>
     <div class="pull-right">
@@ -18,19 +20,21 @@
 
   <div class="box-info">
     <div class="col-xs-12">
-      <h2><strong>Order</strong> Details</h2>
+      <h2><strong>Order</strong> Details</h2> 
       <table>
         <tr>
           <th>Order Name</th>
-          <td><%= @order.name %></td>
+          <td><%= order.name rescue 'Walk-in Retail'%></td>
           <th>In Hand By Date:</th>
-          <td><%= @order.in_hand_by.strftime('%b %d, %Y, %I:%M %p')  %></td>
+          <td><%= order.in_hand_by.strftime('%b %d, %Y, %I:%M %p')\
+                  rescue "#{Time.now.strftime('%b %d, %Y, %I:%M %p')}" %></td>
         </tr>
         <tr>
           <th>Payment Terms</th>
-          <td><%= @order.terms %></td>
+          <td><%= order.terms rescue 'In hand'%></td>
           <th>Salesperson</th>
-          <td><%= @order.salesperson.full_name %></td>
+          <td><%= order.nil? ? payment.salesperson.full_name : 
+            order.salesperson.full_name rescue 'n/a' %></td>
         </tr>
       </table>
     </div>
@@ -41,24 +45,26 @@
       <table>
         <tr>
           <th>Name</th>
-          <td><%= @order.full_name %></td>
+          <td><%= order.full_name.include?("Nil") ? "n/a" : order.full_name %></td>
         </tr>
-        <% unless @order.company.blank? %>
+        <% if !order.nil? %>
             <tr>
               <th>Company</th>
-              <td><%= @order.company %></td>
+              <td><%= order.company rescue 'n/a' %></td>
             </tr>
         <% end %>
         <tr>
           <th>E-mail</th>
-          <td><%= @order.email %></td>
+          <td><%= order.email rescue 'n/a' %></td>
         </tr>
-        <% unless @order.phone_number.blank? %>
-            <tr>
-              <th>Phone Number</th>
-              <td><%= @order.phone_number %></td>
-            </tr>
-        <% end %>
+        <% if !order.nil? %>
+          <% unless order.phone_number.blank? %>
+              <tr>
+                <th>Phone Number</th>
+                <td><%= order.phone_number %></td>
+              </tr>
+          <% end %>
+        <% end %>    
       </table>
     </div>
 
@@ -67,26 +73,28 @@
       <table>
         <tr>
           <th>Delivery Method</th>
-          <td><%= @order.delivery_method %></td>
+          <td><%= order.delivery_method rescue 'Pick Up' %></td>
       </table>
-      <% @order.shipments.each do |shipment| %>
-          <dl>
-            <% if shipment.shippable_type == 'Job' %>
-                <dt>Job</dt>
-                <dd><%= shipment.shippable.name %></dd>
-            <% end %>
-            <dt>Shipping Method </dt>
-            <dd><%= shipment.shipping_method.name %></dd>
-            <dd>
-              <address>
-                <%= shipment.complete_address.join('<br />').html_safe %>
-              </address>
-            </dd>
-            <% unless shipment.tracking_number.blank? %>
-                <dt>Tracking</dt>
-                <dd><%= shipment.tracking_number %></dd>
-            <% end %>
-          </dl>
+      <% if !order.nil? %>
+        <% order.shipments.each do |shipment| %>
+            <dl>
+              <% if shipment.shippable_type == 'Job' %>
+                  <dt>Job</dt>
+                  <dd><%= shipment.shippable.name %></dd>
+              <% end %>
+              <dt>Shipping Method </dt>
+              <dd><%= shipment.shipping_method.name %></dd>
+              <dd>
+                <address>
+                  <%= shipment.complete_address.join('<br />').html_safe %>
+                </address>
+              </dd>
+              <% unless shipment.tracking_number.blank? %>
+                  <dt>Tracking</dt>
+                  <dd><%= shipment.tracking_number %></dd>
+              <% end %>
+            </dl>
+        <% end %>
       <% end %>
     </div>
   </div>

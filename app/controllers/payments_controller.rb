@@ -3,9 +3,6 @@ class PaymentsController < InheritedResources::Base
 
   before_filter :initialize_order, only: [:index, :new, :create]
 
-  def show
-    @order = @payment.order
-  end
 
   def create
     super do |success, failure|
