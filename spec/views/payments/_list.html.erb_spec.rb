@@ -13,7 +13,7 @@ describe "payments/_list", type: :view do
       expect(rendered).to have_selector("dt", text: "Payment #{payment.id}")
       expect(rendered).to have_selector("dd.date", text: payment.created_at.strftime('%a, %b %d, %Y %I:%M%p'))
       expect(rendered).to have_selector("dd.amount", text: number_to_currency(payment.amount))
-      expect(rendered).to have_link("Print Receipt")
+      expect(rendered).to have_link("show_#{payment.id}")
     end
   end
 
