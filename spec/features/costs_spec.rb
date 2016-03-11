@@ -70,6 +70,10 @@ feature 'Costs Management', js: true do
     given(:job) { order.jobs.first }
     given!(:line_item) { create(:non_imprintable_line_item, job: job) }
 
+    let!(:white) { create(:valid_color, name: 'white') }
+    let!(:shirt) { create(:valid_imprintable) }
+    make_variants :white, :shirt, [:M, :S, :L]
+
     scenario 'a user can add costs directly to the order' do
       visit edit_order_path(order, anchor: 'costs')
       sleep 1
@@ -101,6 +105,41 @@ feature 'Costs Management', js: true do
       expect(line_item.reload.cost).to_not be_nil
       expect(line_item.reload.cost.amount.to_f).to eq 10.50
       expect(page).to have_content 'Total Cost: $10.50'
+    end
+
+    scenario 'a user can add costs to imprintable line items' do
+      visit edit_order_path(order, anchor: 'costs')
+      sleep 1
+
+      find(".line-item-#{white_shirt_s_item.id}-cost input[type=text]").set 20.15
+      find(".line-item-#{white_shirt_m_item.id}-cost input[type=text]").set 5.15
+      find(".line-item-#{white_shirt_l_item.id}-cost input[type=text]").set 5.00
+      click_button 'Update Order'
+
+      sleep 1
+
+      expect(white_shirt_s_item.cost).to_not be_nil
+      expect(white_shirt_m_item.cost).to_not be_nil
+      expect(white_shirt_l_item.cost).to_not be_nil
+
+      expect(white_shirt_s_item.cost.amount.to_f).to eq 20.15
+      expect(white_shirt_m_item.cost.amount.to_f).to eq 5.15
+      expect(white_shirt_l_item.cost.amount.to_f).to eq 5.00
+
+      expect(page).to have_content 'Total Cost: $30.30'
+    end
+
+    scenario 'a user can remove an order cost' do
+      order.costs.create(type: 'Test Cost', description: ':(', amount: 10.0)
+
+      visit edit_order_path(order, anchor: 'costs')
+      sleep 1
+
+      expect(page).to have_content 'Total Cost: $10.00'
+      click_link '- Cost'
+      click_button 'Update Order'
+      sleep 1
+      expect(page).to have_content 'Total Cost: $0.00'
     end
   end
 end

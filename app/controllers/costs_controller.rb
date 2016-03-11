@@ -6,7 +6,7 @@ class CostsController < InheritedResources::Base
   def mass_create
     query = <<-SQL
       insert into costs
-      (costable_type,costable_id,amount,type,description,created_at,updated_at)
+      (costable_type,costable_id,amount,type,description,owner_id,created_at,updated_at)
 
       values
     SQL
@@ -19,7 +19,7 @@ class CostsController < InheritedResources::Base
       query += '('
       query += [
         '"LineItem"', line_item_id, value, '"Imprintable"', '"Cost of imprintables"',
-        %("#{now}"), %("#{now}")
+        current_user.id, %("#{now}"), %("#{now}")
       ].join(',')
       query += '),'
 
@@ -34,6 +34,7 @@ class CostsController < InheritedResources::Base
 
     query[-1] = '' # Lob off trailing ','
 
+    Cost.where(costable_type: 'LineItem', costable_id: line_item_ids).destroy_all
     Cost.connection.execute(query)
     ImprintableVariant.enqueue_update_last_costs(line_item_ids)
 

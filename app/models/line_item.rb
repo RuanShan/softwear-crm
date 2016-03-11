@@ -320,6 +320,14 @@ class LineItem < ActiveRecord::Base
     end
   end
 
+  def identifier
+    "#{imprintable_variant.brand.try(:name) || '<no brand>'} #{imprintable_variant.style_catalog_no}: #{imprintable_variant.color.name} #{imprintable_variant.size.display_value}"
+  end
+
+  def imprintable_and_color
+    "#{imprintable_variant.brand.try(:name) || '<no brand>'} #{imprintable_variant.style_catalog_no}: #{imprintable_variant.color.name}"
+  end
+
   private
 
   def set_sort_order

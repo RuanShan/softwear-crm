@@ -4,6 +4,17 @@
   <h3>Job: <%= f.object.name %></h3>
 
   <div class='list-group'>
+    <%# Since we have limited options as far as grouping is concerned with %>
+    <%# nested_form, we're gonna sorta group these "as we go". A tad ugly but oh well. %>
+    <% @_imprintable = nil %>
+
+    <div><div>
+      <%= f.fields_for :imprintable_line_items do |ff| %>
+        <%= render 'orders/imprintable_line_item_fields', f: ff %>
+      <% end %>
+    <div class='clearfix'></div>
+    </div><div class='clearfix'></div></div>
+    <div class='clearfix'></div>
   </div>
 
   <div class='list-group'>
