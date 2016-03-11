@@ -1,14 +1,31 @@
 <div class='<%= local_assigns[:container] %>'>
   <div class='col-sm-10'>
-    <div class='form-group'>
-      <%= f.label :type, 'Cost Type', class: 'control-label' %>
-      <%= f.text_field :type, class: 'form-control' %>
-    </div>
+    <%= f.hidden_field :owner_id, value: current_user.id %>
 
-    <div class='form-group'>
-      <%= f.label :description, 'Description', class: 'control-label' %>
-      <%= f.text_area :description, class: 'form-control' %>
-    </div>
+    <% if local_assigns[:detailed] %>
+      <div class='form-group'>
+        <%= f.label :type, 'Cost Type', class: 'control-label' %>
+        <%= f.text_field :type, class: 'form-control' %>
+      </div>
+
+      <div class='form-group'>
+        <%= f.label :description, 'Description', class: 'control-label' %>
+        <%= f.text_area :description, class: 'form-control' %>
+      </div>
+
+      <div class='form-group'>
+        <%= f.label :owner, 'Cost Applies To', class: 'control-label' %>
+        <%= f.select :description, options_from_collection_for_select(User.all, :id, :full_name, f.object.owner_id || current_user.id), {}, class: 'form-control select2' %>
+      </div>
+
+      <div class='form-group'>
+        <%= f.label :time, 'Time', class: 'control-label' %>
+        <div class='input-group'>
+          <%= f.number_field :time, class: 'form-control' %>
+          <div class='input-group-addon'>Minutes</div>
+        </div>
+      </div>
+    <% end %>
 
     <div class='form-group'>
       <%= f.label :amount, 'Amount', class: 'control-label' %>

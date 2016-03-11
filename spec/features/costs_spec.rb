@@ -95,8 +95,6 @@ feature 'Costs Management', js: true do
       sleep 1
 
       click_link '+ Cost'
-      fill_in 'Cost Type', with: 'Something'
-      fill_in 'Description', with: 'moni'
       fill_in 'Amount', with: '10.50'
       click_button 'Update Order'
 

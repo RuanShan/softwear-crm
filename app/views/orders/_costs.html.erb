@@ -19,7 +19,7 @@
         <div class='col-sm-6 cost-fields-container'>
           <h3><strong>Order</strong> costs</h3>
           <%= f.fields_for :costs do |ff| %>
-            <%= render 'orders/cost_fields', f: ff, container: 'well' %>
+            <%= render 'orders/cost_fields', f: ff, container: 'well', detailed: true %>
           <% end %>
           <%= f.link_to_add '+ Order Cost', :costs, class: 'btn btn-success' %>
         </div>
