@@ -17,7 +17,7 @@ class Shipment < ActiveRecord::Base
   
   validates :shippable, presence: true, if: :persisted?
   validates :name, :address_1, :city, :state, :zipcode, presence: true
-
+  #validates :time_in_transit, numericality: { greater_than: 0 }
   before_validation :assign_proper_status
   after_save do
     shippable.try(:check_if_shipped!)
