@@ -61,15 +61,18 @@ class LineItem < ActiveRecord::Base
     sql_results = ActiveRecord::Base.connection.execute <<-SQL
       select #{fields.keys.join(', ')} from line_items li
 
-      join imprintable_variants iv on (iv.id = li.imprintable_object_id)
+      join imprintable_variants iv on (iv.id = li.imprintable_object_id and iv.deleted_at is null)
       join sizes  s  on (s.id = iv.size_id)
       join colors c  on (c.id = iv.color_id)
-      join jobs   j  on (j.id = li.job_id)
+      join jobs   j  on (j.id = li.job_id and j.deleted_at is null)
       join orders o  on (o.id = j.jobbable_id)
 
       where li.imprintable_object_type = "ImprintableVariant"
       and j.jobbable_type = "Order"
       and o.deleted_at is null
+      and iv.deleted_at is null
+      and li.deleted_at is null
+
       and (
         not exists (
           select costs.id from costs
