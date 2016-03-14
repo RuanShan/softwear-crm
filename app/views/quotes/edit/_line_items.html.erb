@@ -1,6 +1,5 @@
 <% quote.imprintable_jobs.each do |job| %>
 
-
     <%= form_for job, html: { id: "job-#{job.id}", class: 'job-form-to-be-saved' }, remote: true, builder: LancengFormBuilder do |f| %>
 
       <div id="edit-quote-job-<%= job.id %>" class="quote-job-entry container-fluid" data-job-id='<%=job.id%>'>
