@@ -53,7 +53,8 @@ feature 'Costs Management', js: true do
         amount: 15.00
       )
 
-      ImprintableVariant.update_last_costs([white_shirt_m_item.id, white_shirt_l_item.id])
+      white_shirt_m.update_column :last_cost_amount, 10.00
+      white_shirt_l.update_column :last_cost_amount, 15.00
     end
 
     scenario 'the fields for line items of those variants already filled out' do
