@@ -191,6 +191,16 @@ class OrdersController < InheritedResources::Base
     render layout: 'no_overlay'
   end
 
+  def check_cancelation
+    @order = Order.find(params[:id])
+    if current_user.role?(:sales_manager, :developer)
+      @order.canceled = true
+      render
+    else
+      @sales_managers = User.all.select { |u| u.role?(:sales_manager) }
+      render 'not_allowed_to_cancel'
+    end
+  end
 
   def send_to_production
     @order = Order.find(params[:id])

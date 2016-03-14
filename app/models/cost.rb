@@ -3,6 +3,8 @@ class Cost < ActiveRecord::Base
 
   self.inheritance_column = nil
 
+  SELECTABLE_TYPES = ['Salesperson', 'Artist']
+
   belongs_to_user_called :owner
   belongs_to :costable, polymorphic: true
 

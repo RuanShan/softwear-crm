@@ -45,6 +45,12 @@
       <%= @order.warnings.active.any? ? "<span class='badge'>#{@order.warnings.active.size}</span>".html_safe : '' %>
     <% end %>
 
+    <% unless @order.canceled? %>
+      <%= link_to check_cancelation_order_path(@order), class: 'btn btn-danger', remote: true do %>
+        <i class='fa fa-ban'></i> Cancel Order
+      <% end %>
+    <% end %>
+
   </div>
 
   <div class="page-heading animated fadeInDownBig pull-left">

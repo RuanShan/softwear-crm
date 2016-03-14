@@ -1,0 +1,5 @@
+<button class='btn btn-default' data-dismiss='modal'>Close</button>
+<%= form_for @order do |f| %>
+  <%= f.hidden_field :canceled, value: true %>
+  <%= f.submit 'Cancel Order', class: 'btn btn-warning' %>
+<% end %>

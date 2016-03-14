@@ -151,6 +151,10 @@ class Order < ActiveRecord::Base
   validates :in_hand_by, presence: true
   validates :invoice_reject_reason, presence: true, if: :invoice_rejected?
 
+  validate :must_have_salesperson_cost, if: :canceled?
+  validate :must_have_artist_cost,      if: :canceled?
+  validate :must_have_private_comment,  if: :canceled?
+
   before_create { self.delivery_method ||= 'Ship to multiple locations' if fba? }
   after_initialize -> (o) { o.production_state = 'pending' if o.respond_to?(:production_state) && o.production_state.blank? }
   after_initialize -> (o) { o.invoice_state = 'pending' if o.respond_to?(:invoice_state) && o.invoice_state.blank? }
@@ -1018,5 +1022,28 @@ class Order < ActiveRecord::Base
     end
 
     nuke.(self)
+  end
+
+  # == Cancelation requirements: ==
+
+  def must_have_salesperson_cost
+    unless costs.where(type: 'Salesperson').exists?
+      errors.add(:cancelation, "A salesperson cost must be filled out.")
+    end
+  end
+
+  def must_have_artist_cost
+    unless costs.where(type: 'Artist').exists?
+      errors.add(:cancelation, "An artist cost must be filled out.")
+    end
+  end
+
+  def must_have_private_comment
+    unless private_comments.exists?
+      errors.add(
+        :cancelation,
+        "The order must have at least one private comment."
+      )
+    end
   end
 end
