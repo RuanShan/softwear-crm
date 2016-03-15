@@ -1,19 +1,27 @@
 <tr id="order_<%= order.id %>">
   <td><%= order.id %></td>
   <td>
+    <% if order.canceled? %>
+      <span class="label label-danger">Canceled</span>
+    <% end %>
     <% if order.fba? %>
       <span class="label label-warning">FBA</span>
     <% end %>
-    <%= order.name %><br>
-    <% unless order.fba? %>
-      <%= order.firstname %> <%= order.lastname %><br>
-      <%= order.email %><br />
-    <% end %>
-    <b>In Hand By</b> <%= order.in_hand_by.try(:strftime, "%a, %b %d, %I:%M%p") || 'NOT SET' %><br />
-    <% unless order.fba? %>
-      Customer URL:<br />
-      <%= link_to customer_order_url(order.customer_key),  customer_order_path(order.customer_key), target: "_blank" %>
-    <% end %>
+
+    <span class="<%= 'canceled' if order.canceled? %>"><%= order.name %></span>
+    <br />
+
+    <div class='<%= "canceled" if order.canceled? %>'>
+      <% unless order.fba? %>
+        <%= order.firstname %> <%= order.lastname %><br>
+        <%= order.email %><br />
+      <% end %>
+      <b>In Hand By</b> <%= order.in_hand_by.try(:strftime, "%a, %b %d, %I:%M%p") || 'NOT SET' %><br />
+      <% unless order.fba? %>
+        Customer URL:<br />
+        <%= link_to customer_order_url(order.customer_key),  customer_order_path(order.customer_key), target: "_blank" %>
+      <% end %>
+    </div>
   </td>
   <td>
     <%= order.salesperson.try(:full_name) || 'No user' %>

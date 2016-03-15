@@ -191,6 +191,16 @@ class OrdersController < InheritedResources::Base
     render layout: 'no_overlay'
   end
 
+  def check_cancelation
+    @order = Order.find(params[:id])
+    if current_user.role?(:sales_manager, :developer)
+      @order.canceled = true
+      render
+    else
+      @sales_managers = User.of_role('sales_manager')
+      render 'not_allowed_to_cancel'
+    end
+  end
 
   def send_to_production
     @order = Order.find(params[:id])
@@ -242,7 +252,8 @@ class OrdersController < InheritedResources::Base
   def permitted_params
     costs_attributes = [
       :id, :_destroy, :amount, :type, :description, :costable_type, :costable_id,
-      :time, :owner_id
+      :time, :owner_id,
+      type: []
     ]
 
     params.permit(
@@ -258,7 +269,7 @@ class OrdersController < InheritedResources::Base
         :delivery_method, :phone_number, :commission_amount,
         :store_id, :salesperson_id, :total, :shipping_price, :artwork_state,
         :freshdesk_proof_ticket_id, :softwear_prod_id, :production_state, :phone_number_extension,
-        :freshdesk_proof_ticket_id, :softwear_prod_id, :production_state,
+        :freshdesk_proof_ticket_id, :softwear_prod_id, :production_state, :canceled,
 
         quote_ids: [],
         costs_attributes: costs_attributes,
