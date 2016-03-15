@@ -51,7 +51,7 @@ class LineItem < ActiveRecord::Base
 
   def self.in_need_of_cost(limit = nil, offset = nil)
     fields = %w(
-      li.id li.quantity li.imprintable_object_id iv.color_id iv.imprintable_id s.display_value
+      li.id sum(li.quantity) li.imprintable_object_id iv.color_id iv.imprintable_id s.display_value
       s.name c.name o.id iv.last_cost_amount
     )
       .map
@@ -70,6 +70,7 @@ class LineItem < ActiveRecord::Base
       where li.imprintable_object_type = "ImprintableVariant"
       and j.jobbable_type = "Order"
       and o.deleted_at is null
+      and iv.deleted_at is null
       and (
         not exists (
           select costs.id from costs
@@ -85,21 +86,25 @@ class LineItem < ActiveRecord::Base
         )
       )
 
+      group by iv.id
       order by o.id, s.sort_order
 
       #{"limit  #{limit}"  if limit}
       #{"offset #{offset}" if offset}
     SQL
 
+    if block_given? && limit && sql_results.size == limit
+      yield limit
+    end
+
     line_items_by_i_id = sql_results.map do |r|
       OpenStruct.new(
         id:             r[fields['li.id']],
-        quantity:       r[fields['li.quantity']],
+        quantity:       r[fields['sum(li.quantity)']],
         imprintable_id: r[fields['iv.imprintable_id']],
         color_id:       r[fields['iv.color_id']],
         size_name:      r[fields['s.display_value']] || r[fields['s.name']],
         color_name:     r[fields['c.name']],
-        order_id:       r[fields['o.id']],
         last_cost:      r[fields['iv.last_cost_amount']],
         imprintable_variant_id: r[fields['li.imprintable_object_id']]
       )
