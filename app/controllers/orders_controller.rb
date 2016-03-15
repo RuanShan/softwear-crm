@@ -254,7 +254,8 @@ class OrdersController < InheritedResources::Base
           ],
           shipments_attributes: [
             :name, :address_1, :city, :state, :zipcode, :shipped_by_id,
-            :shippable_type, :shippable_id, :id, :_destroy, :shipping_method_id
+            :shippable_type, :shippable_id, :id, :_destroy, :time_in_transit,
+            :shipping_method_id
           ]
         ]
       ]

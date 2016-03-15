@@ -121,6 +121,7 @@ class FBA
               state:     address.state,
               zipcode:   address.zipcode,
               country:   address.country,
+              time_in_transit: 3,
               shipped_by_id:      options[:shipped_by_id],
               shipping_method_id: ShippingMethod.where(name: ShippingMethod::FBA).pluck(:id).first
             }
