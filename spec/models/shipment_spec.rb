@@ -2,11 +2,13 @@ require 'spec_helper'
 
 describe Shipment do
   describe 'Validations' do
-    it {is_expected.to validate_presence_of :name }
-    it {is_expected.to validate_presence_of :city }
-    it {is_expected.to validate_presence_of :state }
-    it {is_expected.to validate_presence_of :address_1 }
-    it {is_expected.to validate_presence_of :zipcode }
+    it { is_expected.to validate_presence_of :name }
+    it { is_expected.to validate_presence_of :city }
+    it { is_expected.to validate_presence_of :state }
+    it { is_expected.to validate_presence_of :address_1 }
+    it { is_expected.to validate_presence_of :zipcode }
+    it { is_expected.to validate_presence_of :time_in_transit }
+    it { is_expected.to validate_numericality_of(:time_in_transit).is_greater_than(0) }
   end
 
   describe '#status' do
