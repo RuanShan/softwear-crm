@@ -141,7 +141,6 @@ feature 'FBA Order management', fba_spec: true, story_103: true, js: true, retry
       click_button 'Next'
       sleep ci? ? 3 : 1
       find('.big-submit-button').click
-      byebug
       sleep 3
 
       order = Order.fba.where(name: "Scooba Shirt Scooba Sweater - 1 Shipping Location")
