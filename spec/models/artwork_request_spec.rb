@@ -109,12 +109,12 @@ describe ArtworkRequest, artwork_request_spec: true do
         artwork_request.update_column :state, :pending_manager_approval
       end
 
-      specify 'trains are created based on relevant imprints when approved', butt: true do
+      specify 'trains are created based on relevant imprints when approved (one per type)' do
         expect(Production::Ar3Train).to_not receive(:create)
         expect(Production::DigitizationTrain).to_not receive(:create)
         expect(Production::ScreenTrain).to receive(:create)
           .with(order_id: order.softwear_prod_id, crm_artwork_request_id: artwork_request.id)
-          .twice
+          .once
 
         artwork_request.approved_by = create(:user)
         artwork_request.approved
