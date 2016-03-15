@@ -252,7 +252,8 @@ class OrdersController < InheritedResources::Base
   def permitted_params
     costs_attributes = [
       :id, :_destroy, :amount, :type, :description, :costable_type, :costable_id,
-      :time, :owner_id
+      :time, :owner_id,
+      type: []
     ]
 
     params.permit(

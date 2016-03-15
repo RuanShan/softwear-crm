@@ -141,6 +141,22 @@ module OrderHelper
     hidden_field_tag('job_attributes[]', fba.to_h.to_json)
   end
 
+  def order_cost_options(cost = nil)
+    options = ""
+
+    Cost::SELECTABLE_TYPES.each do |cost_type|
+      options += content_tag(:option, cost_type, value: cost_type, selected: cost.try(:type) == cost_type)
+    end
+
+    if cost && !cost.type.blank? && !Cost::SELECTABLE_TYPES.include?(cost.type)
+      options += content_tag(:option, cost.type, value: cost.type, selected: true)
+    end
+
+    options += content_tag(:option, "... or enter your own", value: '', disabled: true)
+
+    options.html_safe
+  end
+
   # HACK/DEBUG very similar to the fix in quote_helper.rb. Sometimes line items have
   # imprintable variant IDs that don't belong to imprintable variants
   # orders.js.coffee uses this span.
