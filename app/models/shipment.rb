@@ -17,6 +17,8 @@ class Shipment < ActiveRecord::Base
   
   validates :shippable, presence: true, if: :persisted?
   validates :name, :address_1, :city, :state, :zipcode, presence: true
+  validates :name, :address_1, :city, :state, :zipcode, :time_in_transit, presence: true
+  validates :time_in_transit,  numericality: { greater_than: 0 }
 
   before_validation :assign_proper_status
   after_save do
@@ -35,10 +37,6 @@ class Shipment < ActiveRecord::Base
 
   def complete_address
     [name, company, attn, address_1, address_2, address_3, "#{city}, #{state} #{zipcode}", country].reject(&:blank?)
-  end
-
-  def time_in_transit
-    super || 0.0
   end
 
   def order
