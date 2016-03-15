@@ -22,12 +22,13 @@ feature 'shipment management' do
       fill_in 'Name',            with: 'Someone'
       fill_in 'Company',         with: 'Ann Arbor Tees'
       fill_in 'Attn',            with: 'wtf?'
-      fill_in 'Address',       with: '123 whatever st.'
+      fill_in 'Address',         with: '123 whatever st.'
       fill_in 'City',            with: 'Ann Arbor'
       fill_in 'State',           with: 'Michigan'
       fill_in 'Zipcode',         with: '48104'
       fill_in 'Country',         with: 'USA'
       fill_in 'Notes',           with: 'Notes here'
+      fill_in 'Time in transit', with: 2
 
       click_button 'Create Shipment'
       sleep 10
@@ -55,6 +56,7 @@ feature 'shipment management' do
       expect(shipment.zipcode).to eq '48104'
       expect(shipment.country).to eq 'USA'
       expect(shipment.notes).to eq 'Notes here'
+      expect(shipment.time_in_transit).to eq 2
     end
 
     scenario 'a user can add a shipment to a job' do
@@ -71,6 +73,7 @@ feature 'shipment management' do
       fill_in 'State',           with: 'Michigan'
       fill_in 'Zipcode',         with: '48104'
       fill_in 'Country',         with: 'USA'
+      fill_in 'Time in transit', with: 2
 
       click_button 'Create Shipment'
       sleep 2
@@ -81,6 +84,7 @@ feature 'shipment management' do
       shipment = order.all_shipments.first
 
       expect(shipment.name).to eq 'Job Shipment Somebody'
+      expect(shipment.time_in_transit).to eq 2
     end
   end
 end
