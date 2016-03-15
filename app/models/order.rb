@@ -181,7 +181,7 @@ class Order < ActiveRecord::Base
   # subtotal will be changed when a line item price is changed and it calls recalculate_subtotal on the order.
   before_save :recalculate_payment_state
   before_save :recalculate_coupons, if: :subtotal_changed?
-  enqueue :create_production_order, queue: 'api'
+  enqueue :create_production_order, :cancel_production_order, queue: 'api'
   after_save :enqueue_create_production_order, if: :ready_for_production?
   after_save :create_invoice_approval_activity, if: :invoice_state_changed?
   before_save :set_all_states_to_canceled!, if: :just_canceled?
@@ -1047,7 +1047,16 @@ class Order < ActiveRecord::Base
     update_column :invoice_state, 'canceled'
     update_column :production_state, 'canceled'
     update_column :payment_state, 'Canceled'
+    enqueue_cancel_production_order if production?
   end
+
+  def cancel_production_order
+    return unless production?
+
+    production.canceled = true
+    production.save!
+  end
+  warn_on_failure_of :cancel_production_order
 
   # == Cancelation requirements: ==
 

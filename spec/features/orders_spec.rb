@@ -358,8 +358,16 @@ feature 'Order management', order_spec: true, js: true do
           expect(order.notification_state).to eq 'notification_canceled'
         end
 
-        scenario 'canceling the order sets all train states to canceled' do
-          raise "TODO IMPLEMENT ME"
+        scenario 'canceling the order also cancels its production order' do
+          prod_order = create(:production_order, softwear_crm_id: order.id)
+          order.update_column :softwear_prod_id, prod_order.id
+          expect_any_instance_of(Production::Order).to receive(:canceled=).with(true)
+
+          visit edit_order_path(order)
+
+          click_link 'Cancel Order'
+          sleep 1.5
+          click_button "Cancel Order"
         end
       end
     end
