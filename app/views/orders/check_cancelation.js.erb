@@ -1,9 +1,13 @@
+try {
 showContentModal({
-  title: "Order cancelation",
-  body: $("<%= render 'cancelation_status', order: @order %>"),
+  title: $("<strong class='text-danger'>Order cancelation</strong>"),
+  body: $("<%=j render 'cancelation_status', order: @order %>"),
 <% if @order.valid? %>
-  footer: $("<%= render 'cancel_order_form', order: @order %>")
+  footer: $("<%=j render 'cancel_order_form', order: @order %>")
 <% else %>
   footer: $("<button class='btn btn-default' data-dismiss='modal'>Close</button>")
 <% end %>
 });
+} catch(e) {
+  console.log(e);
+}

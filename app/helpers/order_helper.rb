@@ -19,6 +19,7 @@ module OrderHelper
       when 'Awaiting Payment' then 'label-danger'
       when 'Payment Terms Met' then 'label-warning'
       when 'Payment Complete' then 'label-success'
+      when 'Canceled' then 'label-danger'
       else nil
       end
     elsif style_type == 'alert'
@@ -38,6 +39,7 @@ module OrderHelper
       when 'pending' then 'label-warning'
       when 'approved' then 'label-success'
       when 'rejected' then 'label-danger'
+      when 'canceled' then 'label-danger'
       else nil
       end
     end
@@ -48,6 +50,7 @@ module OrderHelper
       case status
       when 'pending_artwork_requests' then 'label-danger'
       when 'in_production' then 'label-success'
+      when 'artwork_canceled' then 'label-danger'
       else 'label-warning'
       end
     end
@@ -62,6 +65,7 @@ module OrderHelper
       when 'notified' then 'label-warning'
       when 'picked_up' then 'label-success'
       when 'shipped' then 'label-success'
+      when 'notification_canceled' then 'label-danger'
       else nil
       end
     end
@@ -73,6 +77,7 @@ module OrderHelper
       when 'pending' then 'label-danger'
       when 'in_production' then 'label-warning'
       when 'complete' then 'label-success'
+      when 'canceled' then 'label-danger'
       else nil
       end
     end

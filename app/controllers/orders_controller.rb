@@ -197,7 +197,7 @@ class OrdersController < InheritedResources::Base
       @order.canceled = true
       render
     else
-      @sales_managers = User.all.select { |u| u.role?(:sales_manager) }
+      @sales_managers = User.of_role('sales_manager')
       render 'not_allowed_to_cancel'
     end
   end
@@ -268,7 +268,7 @@ class OrdersController < InheritedResources::Base
         :delivery_method, :phone_number, :commission_amount,
         :store_id, :salesperson_id, :total, :shipping_price, :artwork_state,
         :freshdesk_proof_ticket_id, :softwear_prod_id, :production_state, :phone_number_extension,
-        :freshdesk_proof_ticket_id, :softwear_prod_id, :production_state,
+        :freshdesk_proof_ticket_id, :softwear_prod_id, :production_state, :canceled,
 
         quote_ids: [],
         costs_attributes: costs_attributes,

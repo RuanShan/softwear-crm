@@ -58,10 +58,13 @@
       Edit <strong>Order #<%= @order.id %></strong>
     </h1>
     <h2>
+      <% if @order.canceled? %>
+        <span class="label label-danger">Canceled</span>
+      <% end %>
       <% if @order.fba? %>
         <span class="label label-warning">FBA</span>
       <% end %>
-      <%= @order.name %>
+      <span class="<%= 'canceled' if @order.canceled %>"><%= @order.name %></span>
     </h2>
     <% unless @order.fba? %>
       Customer URL: <%= link_to customer_order_url(@order.customer_key),  customer_order_path(@order.customer_key), target: "_blank" %>
@@ -98,7 +101,7 @@
         <span class="label <%= get_style_from_invoice_state(@order.invoice_state)%>"><%= @order.invoice_state.humanize %></span>
         <br />
 
-        <% unless @order.invoice_state == 'approved' %>
+        <% if !@order.canceled? && @order.invoice_state != 'approved' %>
           <%= form_for @order do |f| %>
             <%= f.hidden_field :invoice_state, value: 'approved' %>
             <%= button_tag 'Approve Invoice', class: 'btn btn-sm btn-success margin-top-10' %>
@@ -111,7 +114,7 @@
         <br />
           <% if @order.production_url && @order.production_state != 'pending' %>
             <%= link_to 'View in Production', @order.production_url, target: :_blank, class: 'btn btn-sm btn-success margin-top-10' %>
-          <% else %>
+          <% elsif !@order.canceled? %>
             <%= link_to 'Send to Production', send_to_production_order_path(@order), method: :post, class: 'btn btn-sm btn-danger margin-top-10', title: 'Karsten only', data: { toggle: 'tooltip' }  %>
           <% end %>
       </td>

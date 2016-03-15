@@ -42,7 +42,9 @@ class Order < ActiveRecord::Base
       fba?
     end
 
-    reference :salesperson
+    boolean :canceled
+
+    # reference :salesperson
   end
 
   tracked by_current_user
@@ -52,11 +54,12 @@ class Order < ActiveRecord::Base
   VALID_INVOICE_STATES = [
     'pending',
     'approved',
-    'rejected'
+    'rejected',
+    'canceled'
   ]
 
   VALID_PRODUCTION_STATES = %w(
-    pending in_production complete
+    pending in_production complete canceled
   )
 
   VALID_PAYMENT_TERMS = [
@@ -79,7 +82,8 @@ class Order < ActiveRecord::Base
   VALID_PAYMENT_STATUSES = [
     'Awaiting Payment',
     'Payment Terms Met',
-    'Payment Terms Pending'
+    'Payment Terms Pending',
+    'canceled'
   ]
 
   VALID_PROOF_STATES = [
@@ -87,7 +91,8 @@ class Order < ActiveRecord::Base
     :pending,
     :submitted_to_customer,
     :rejected,
-    :approved
+    :approved,
+    :canceled
   ]
 
 
@@ -179,6 +184,7 @@ class Order < ActiveRecord::Base
   enqueue :create_production_order, queue: 'api'
   after_save :enqueue_create_production_order, if: :ready_for_production?
   after_save :create_invoice_approval_activity, if: :invoice_state_changed?
+  before_save :set_all_states_to_canceled!, if: :just_canceled?
 
   alias_method :comments, :all_comments
   alias_method :comments=, :all_comments=
@@ -212,6 +218,10 @@ class Order < ActiveRecord::Base
 
     event :shipped do
       transition any => :shipped
+    end
+
+    event :notification_canceled do
+      transition any => :notification_canceled
     end
   end
 
@@ -307,6 +317,9 @@ class Order < ActiveRecord::Base
       transition :ready_for_production => :in_production
     end
 
+    event :artwork_canceled do
+      transition any => :artwork_canceled
+    end
   end
 
   # Use method_missing to catch calls to recalculate_* (for subtotal, tax, etc)
@@ -335,6 +348,10 @@ class Order < ActiveRecord::Base
   def recalculate_all!
     recalculate_all
     save!
+  end
+
+  def just_canceled?
+    canceled_changed? && canceled? && !canceled_was
   end
 
   def jobs_attributes=(attrs)
@@ -1022,6 +1039,14 @@ class Order < ActiveRecord::Base
     end
 
     nuke.(self)
+  end
+
+  def set_all_states_to_canceled!
+    update_column :artwork_state, 'artwork_canceled'
+    update_column :notification_state, 'notification_canceled'
+    update_column :invoice_state, 'canceled'
+    update_column :production_state, 'canceled'
+    update_column :payment_state, 'Canceled'
   end
 
   # == Cancelation requirements: ==
