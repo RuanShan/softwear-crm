@@ -44,7 +44,7 @@ class Order < ActiveRecord::Base
 
     boolean :canceled
 
-    # reference :salesperson
+    reference :salesperson
   end
 
   tracked by_current_user
