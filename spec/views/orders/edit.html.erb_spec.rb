@@ -4,7 +4,12 @@ describe 'orders/edit.html.erb', order_spec: true do
   login_user
 
   let!(:order) { create(:order) }
-  before(:each) { assign :order, order}
+  before(:each) {}
+  before(:each) do
+    assign :order, order
+    allow(view).to receive(:collection_url).and_return orders_path
+    allow(view).to receive(:resource).and_return order
+  end
 
   it 'displays the order name and ID' do
     params[:id] = order.id
