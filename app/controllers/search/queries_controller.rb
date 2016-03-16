@@ -155,7 +155,7 @@ module Search
     #
     # Hopefully that makes sense!
     #
-    # UPDATE none of this makes sense. Sorry folks.
+    # UPDATE none of this makes any sense. Sorry folks.
     def compose_search_proc(search)
       default_fulltext = search['fulltext']
 
@@ -234,6 +234,9 @@ module Search
           base_scope.fulltext field
           applied_fulltext = true
           next
+        elsif num == 'order_by'
+          base_scope.order_by field[0], field[1]
+          next
         end
 
         args = [model, base_scope, field, context]
@@ -302,7 +305,7 @@ module Search
     def models_of(search_params)
       case search_params
         when Hash
-          search_params.keys.reject { |k| k == 'fulltext' }
+          search_params.keys.reject { |k| k == 'fulltext' || k == 'order_by' }
         when Query
           search_params.models.map(&:name)
         else
