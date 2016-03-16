@@ -368,6 +368,7 @@ feature 'Order management', order_spec: true, js: true do
           click_link 'Cancel Order'
           sleep 1.5
           click_button "Cancel Order"
+          sleep 1
         end
       end
     end
