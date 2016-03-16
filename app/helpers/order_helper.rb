@@ -104,7 +104,7 @@ module OrderHelper
         options[:class] += ' remote-nav-tab'
         begin
           options[:data][:url] = "#{collection_url}/#{resource.id}/tab/#{tag}"
-        rescue ActiveRecord::RecordNotFoundError => _
+        rescue ActiveRecord::RecordNotFound => _
           options[:data][:url] = "#{collection_url}/tab/#{tag}"
         end
         options[:data][:tab] = tag

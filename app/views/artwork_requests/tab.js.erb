@@ -1,0 +1,13 @@
+try {
+  $("#<%= @tab %>").children().remove();
+  $("#<%= @tab %>").append("<%=j render "artwork_requests/#{@tab}.html", { @tab.to_sym => @tab_content } %>");
+
+  initializeAll();
+
+  <% if lookup_context.find_all("artwork_requests/_#{@tab}.js").any? %>
+    <%= render "artwork_requests/#{@tab}.js", @tab => @tab_content %>
+  <% end %>
+}
+catch (e) {
+  console.error(e);
+}

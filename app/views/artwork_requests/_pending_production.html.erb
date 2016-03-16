@@ -1,0 +1,13 @@
+<% if pending_production.empty? %>
+  
+  <p class="alert alert-success col-xs-12">
+    No artworks are currently pending production
+  </p>
+<% else %> 
+  <h2 class="alert alert-warning">
+    There are currently <span class='pending-proofs-count'><%= pending_production.count %> 
+    </span> artworks pending production
+  </h2>
+
+  <%= render 'proofs/order_table', orders: pending_production %>
+<% end %>

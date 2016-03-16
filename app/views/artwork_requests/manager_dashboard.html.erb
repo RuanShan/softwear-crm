@@ -14,27 +14,27 @@
                 <% end %>
               </li>
               <li>
-                <%= nav_tab(:pending_artwork) do %>
+                <%= nav_tab(:pending_artwork, remote: true) do %>
                   <i class="fa fa-tasks"></i> Pending Artwork
                 <% end %>
               </li>
               <li>
-                <%= nav_tab(:pending_manager_approval) do %>
+                <%= nav_tab(:pending_manager_approval, remote: true) do %>
                   <i class="fa fa-tasks"></i> Pending Manager Approval
                 <% end %>
               </li>
               <li>
-                <%= nav_tab(:ready_to_proof) do %>
+                <%= nav_tab(:ready_to_proof, remote: true) do %>
                   <i class="fa fa-tasks"></i> Pending Proofs or Submission
                 <% end %>
               </li>
               <li>
-                <%= nav_tab(:proofs_awaiting_approval) do %>
+                <%= nav_tab(:proofs_awaiting_approval, remote: true) do %>
                   <i class="fa fa-tasks"></i> Proofs Awaiting Approval
                 <% end %>
               </li>
               <li>
-                <%= nav_tab(:pending_production) do %>
+                <%= nav_tab(:pending_production, remote: true) do %>
                   <i class="fa fa-tasks"></i> Pending Production
                 <% end %>
               </li>
@@ -56,80 +56,24 @@
               </div>
 
               <div class="tab-pane animated fadeInRight" id="pending_artwork">
-                <% if @pending_artwork.empty? %>
-                  <p class="alert alert-success col-xs-12">
-                    No artwork requests are currently pending artworkg
-                  </p>
-                <% else %> 
-                  
-                  <h2 class="alert alert-warning">
-                    There are currently <span class='pending-artwork-count'><%= @pending_artwork.count %> 
-                    </span>artwork requests pending
-                  </h2>
-
-                   <%= render partial: 'table', locals: { artwork_requests: @pending_artwork } %>
-                 <% end %>
+                <%# artwork_requests/pending_artwork %>
               </div>
 
               <div class="tab-pane animated  fadeInRight" id="pending_manager_approval">
-                <% if @pending_manager_approval.empty? %>
-                  
-                  <p class="alert alert-success col-xs-12">
-                    No artwork requests are currently pending artwork approval
-                  </p>
-                <% else %> 
-                  <h2 class="alert alert-warning">
-                    There are currently <span class='pending-manager-approval-count'><%= @pending_manager_approval.count %> 
-                    </span>Artwork requests pending
-                  </h2>
-                   <%= render 'table', artwork_requests: @pending_manager_approval %>
-                 <% end %>
+                <%# artwork_requests/pending_manager_approval %>
               </div>
               
               <div class="tab-pane animated  fadeInRight" id="ready_to_proof">
-                <% if @ready_to_proof.empty? %>
-                  
-                  <p class="alert alert-success col-xs-12">
-                    No orders are currently ready to proof
-                  </p>
-                <% else %> 
-                  <h2 class="alert alert-warning">
-                    There are currently <span class='pending-proofs-count'><%= @ready_to_proof.count %> 
-                    </span> pending proof or proof submission
-                  </h2>
-                   <%= render 'proofs/order_table', orders: @ready_to_proof %>
-                 <% end %>
+                <%# artwork_requests/ready_to_proof %>
               </div>
               
               <div class="tab-pane animated  fadeInRight" id="proofs_awaiting_approval">
-                <% if @proofs_awaiting_approval.empty? %>
-                  
-                  <p class="alert alert-success col-xs-12">
-                    No artwork proofs currently awaiting approval
-                  </p>
-                <% else %> 
-                  <h2 class="alert alert-warning">
-                    There are currently <span class='pending-proofs-count'><%= @proofs_awaiting_approval.count %> 
-                    </span> proofs awaiting approval
-                  </h2>
-                   <%= render 'proofs/order_table', orders: @proofs_awaiting_approval %>
-                 <% end %>
+                <%# artwork_requests/proofs_awaiting_approval %>
               </div>
 
               <div class="tab-pane animated  fadeInRight" id="pending_production">
-                <% if @pending_production.empty? %>
-                  
-                  <p class="alert alert-success col-xs-12">
-                    No artworks are currently pending production
-                  </p>
-                <% else %> 
-                  <h2 class="alert alert-warning">
-                    There are currently <span class='pending-proofs-count'><%= @pending_production.count %> 
-                    </span> artworks pending production
-                  </h2>
-                   <%= render 'proofs/order_table', orders: @pending_production %>
-                 <% end %>
-               </div>
+                <%# artwork_requests/pending_production %>
+              </div>
 
             </div>
         </div>
