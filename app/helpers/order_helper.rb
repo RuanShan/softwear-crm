@@ -92,7 +92,7 @@ module OrderHelper
     end
   end
 
-  def order_tab(tag, options = {}, &block)
+  def nav_tab(tag, options = {}, &block)
     options[:class] ||= ''
 
     if options.delete(:disabled)
@@ -101,8 +101,12 @@ module OrderHelper
       options[:data] = { toggle: 'tab' }
 
       if options.delete(:remote)
-        options[:class] += ' remote-order-tab'
-        options[:data][:id] = @order.id
+        options[:class] += ' remote-nav-tab'
+        begin
+          options[:data][:url] = "#{collection_url}/#{resource.id}/tab/#{tag}"
+        rescue ActiveRecord::RecordNotFoundError => _
+          options[:data][:url] = "#{collection_url}/tab/#{tag}"
+        end
         options[:data][:tab] = tag
       end
     end

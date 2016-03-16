@@ -90,6 +90,9 @@ class ArtworkRequestsController < InheritedResources::Base
     end.results
   end
 
+  def tab
+  end
+
   protected
 
   def set_current_action

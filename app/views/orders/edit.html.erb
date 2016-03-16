@@ -154,48 +154,48 @@
       <div class="box-info full">
           <ul class="nav nav-tabs nav-justified">
             <li class="active">
-              <%= order_tab(:jobs) do %>
+              <%= nav_tab(:jobs) do %>
                 <i class="fa fa-tasks"></i> Jobs
               <% end %>
             </li>
             <li>
-              <%= order_tab(:details, remote: true) do %>
+              <%= nav_tab(:details, remote: true) do %>
                 <i class="fa fa-shopping-cart"></i> Details
               <% end %>
             </li>
             <li>
-              <%= order_tab(:payments, disabled: @order.fba?, remote: true) do %>
+              <%= nav_tab(:payments, disabled: @order.fba?, remote: true) do %>
                 <i class="fa fa-money"></i> Payments
               <% end %>
             </li>
             <li>
-              <%= order_tab(:shipments, remote: true) do %>
+              <%= nav_tab(:shipments, remote: true) do %>
                 <i class="fa fa-archive"></i> Shipments
               <% end %>
             </li>
             <li>
-              <%= order_tab(:artwork, remote: !@order.imported_from_admin?) do %>
+              <%= nav_tab(:artwork, remote: !@order.imported_from_admin?) do %>
                 <i class="fa fa-picture-o"></i> Artwork
               <% end %>
             </li>
             <li>
-              <%= order_tab(:proofs, remote: !@order.imported_from_admin?) do %>
+              <%= nav_tab(:proofs, remote: !@order.imported_from_admin?) do %>
                 <i class="fa fa-file-text-o"></i> Proofs
               <% end %>
               </a>
             </li>
             <li>
-              <%= order_tab(:comments, remote: true) do %>
+              <%= nav_tab(:comments, remote: true) do %>
                 <i class="fa fa-bars"></i> Comments
               <% end %>
             </li>
             <li>
-              <%= order_tab(:timeline) do %>
+              <%= nav_tab(:timeline) do %>
                 <i class="fa fa-clock-o"></i> Timeline
               <% end %>
             </li>
             <li>
-              <%= order_tab(:costs, remote: true) do %>
+              <%= nav_tab(:costs, remote: true) do %>
                 <i class="fa fa-dollar"></i> Costs
               <% end %>
               </a>

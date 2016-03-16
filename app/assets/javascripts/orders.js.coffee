@@ -98,17 +98,6 @@ $(window).load ->
           body:  $(body)
           footer: $('<button class="btn btn-default" data-dismiss="modal">Close</button>')
 
-    $('.remote-order-tab').click (e) ->
-      $this = $(this)
-      return if $this.data('loaded')
-
-      $.ajax
-        url:       "/orders/#{$this.data('id')}/tab/#{$this.data('tab')}"
-        method:    'get'
-        dataType: 'script'
-
-      $this.data('loaded', true)
-
     # TODO instead of Nigel's 'hack' 
     # possibly create a show for Job that would present relevant info
     if window.location.hash != ''

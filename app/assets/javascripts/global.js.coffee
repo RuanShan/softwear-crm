@@ -125,6 +125,17 @@ $(document).ready ->
     $('.hide-loading-spinner').on 'click', $('#loading').fadeOut("slow")
     event.preventDefault()
 
+  $('.remote-nav-tab').click (e) ->
+    $this = $(this)
+    return if $this.data('loaded')
+
+    $.ajax
+      url:       $this.data('url')
+      method:    'get'
+      dataType: 'script'
+
+    $this.data('loaded', true)
+
 
 $(document).ajaxStart ->
   unless window.noSpinner

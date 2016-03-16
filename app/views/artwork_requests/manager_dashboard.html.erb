@@ -9,34 +9,34 @@
         <div class="box-info full">
             <ul class="nav nav-tabs nav-justified">
               <li class="active">
-                <a href="#unassigned" data-toggle="tab">
+                <%= nav_tab(:unassigned) do %>
                   <i class="fa fa-tasks"></i> Unassigned
-                </a>
+                <% end %>
               </li>
               <li>
-                <a href="#pending_artwork" data-toggle="tab">
+                <%= nav_tab(:pending_artwork) do %>
                   <i class="fa fa-tasks"></i> Pending Artwork
-                </a>
+                <% end %>
               </li>
               <li>
-                <a href="#pending_manager_approval" data-toggle="tab">
+                <%= nav_tab(:pending_manager_approval) do %>
                   <i class="fa fa-tasks"></i> Pending Manager Approval
-                </a>
+                <% end %>
               </li>
               <li>
-                <a href="#ready_to_proof" data-toggle="tab">
+                <%= nav_tab(:ready_to_proof) do %>
                   <i class="fa fa-tasks"></i> Pending Proofs or Submission
-                </a>
+                <% end %>
               </li>
               <li>
-                <a href="#proofs_awaiting_approval" data-toggle="tab">
+                <%= nav_tab(:proofs_awaiting_approval) do %>
                   <i class="fa fa-tasks"></i> Proofs Awaiting Approval
-                </a>
+                <% end %>
               </li>
               <li>
-                <a href="#pending_production" data-toggle="tab">
+                <%= nav_tab(:pending_production) do %>
                   <i class="fa fa-tasks"></i> Pending Production
-                </a>
+                <% end %>
               </li>
             </ul>
 

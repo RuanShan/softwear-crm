@@ -46,6 +46,9 @@ CrmSoftwearcrmCom::Application.routes.draw do
     member do
       post 'transition(/:state_machine(/:transition))' => :state, as: :transition
     end
+    collection do
+      get 'tab/:tab' => :tab, as: :tab
+    end
   end
 
   get 'proofing_manager_dashboard', to: 'artwork_requests#manager_dashboard', as: :proofing_manager_dashboard
