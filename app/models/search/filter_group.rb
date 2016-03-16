@@ -6,10 +6,11 @@ module Search
     # 's' is the secret DSL object that captures our block contexts.
     # We call all_of or any_of on it, depending on how this group is
     # configured.
-    def apply(s, base)
+    def apply(s, base, &block)
       s.send(of_func) do
         filters.each do |filter|
-          filter.apply(self, base)
+          filter.apply(self, base, &block)
+          block.call(filter) if block
         end
       end
     end

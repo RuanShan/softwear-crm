@@ -36,6 +36,10 @@ class Order < ActiveRecord::Base
       balance != 0
     end
 
+    double :balance_amount do
+      balance
+    end
+
     date :in_hand_by
 
     boolean :fba do
@@ -45,6 +49,7 @@ class Order < ActiveRecord::Base
     boolean :canceled
 
     reference :salesperson
+    integer :salesperson_id
   end
 
   tracked by_current_user

@@ -1,6 +1,6 @@
 $(window).load ->
   $('.js-clear-btn').click ->
-    document.getElementById("js_search").value = "";
+    document.getElementById("js_search").value = ""
 
   deleteSearchQuery = ->
     $this = $(this)
@@ -86,3 +86,16 @@ $(window).load ->
       $form.find('.target_path').val document.URL
 
       $form.submit()
+
+  $('.sortable-table-header').click ->
+    console.log 'TODO ......'
+    # search[model_name][order_by] should be an array somehow
+    searchForm = $('.search-form')
+    modelName  = searchForm.data('model')
+    field      = $(this).data('field')
+    ordering   = $(this).data('ordering')
+
+    searchForm
+      .append("<input type=hidden value='#{field}' name='search[#{modelName}][order_by][]'></input>")
+      .append("<input type=hidden value='#{ordering}' name='search[#{modelName}][order_by][]'></input>")
+      .submit()

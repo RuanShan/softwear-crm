@@ -3,10 +3,23 @@ module FormHelper
     options[:class] ||= ''
 
     values.each do |v|
-      # TODO: join?
       options[:class] << ' ' unless options[:class].empty?
       options[:class] << v
       options.merge!(@common_attrs) unless @common_attrs.nil?
+    end
+  end
+
+  def sorted_th(field, text = nil, options = {})
+    if text.is_a?(Hash)
+      options = text
+    else
+      text ||= field.to_s.titleize
+    end
+
+    content_tag(:th, options) do
+      link_to text, "#sort_#{field}",
+        data: { field: field, ordering: 'desc' },
+        class: 'sortable-table-header'
     end
   end
 
@@ -38,6 +51,11 @@ module FormHelper
       search_path
     end
     options[:id] ||= "#{model.name.underscore}_search"
+    add_class options, 'search-form'
+
+    options[:data] ||= {}
+    options[:data][:model] = model.name.underscore
+
     form_tag(action, options) { output }
   end
 

@@ -66,6 +66,7 @@ module Search
         query_model = query_models[i]
         base_scope  = nil
         text        = fulltext_from_args(args, query_model)
+        has_sort    = false
 
         model.search do
           # Phrase filter requires the base scope so it can add
@@ -83,14 +84,18 @@ module Search
           end
 
           if query_model && query_model.filter
-            query_model.filter.apply(self, base_scope)
+            query_model.filter.apply(self, base_scope) do |filter|
+              has_sort = true if filter.filter_type.is_a?(Search::SortFilter)
+            end
           end
 
           paginate page: options[:page] || 1, per_page: model.default_per_page
-          # Only order by ID if it happens to be indexed
-          begin
-            order_by :id, :desc
-          rescue Sunspot::UnrecognizedFieldError => _
+          unless has_sort
+            begin
+              order_by :id, :desc
+              # Only order by ID if it happens to be indexed (and we didn't already order_by)
+            rescue Sunspot::UnrecognizedFieldError => _
+            end
           end
 
           instance_eval(&block) if block_given?
