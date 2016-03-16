@@ -121,8 +121,10 @@ feature 'Quotes management', quote_spec: true, js: true, retry: 3 do
       fill_in 'Quote Name', with: 'Quote Name'
       find('#quote_quote_source').find("option[value='Other']").click
       sleep 1
-      fill_in 'Quote Valid Until Date', with: (2.days.from_now).strftime('%m/%d/%Y %I:%M %p')
-      fill_in 'Estimated Delivery Date', with: (1.days.from_now).strftime('%m/%d/%Y %I:%M %p')
+      expect(page).to have_content value_time(thirty_days_from_now_at_5)
+      expect(page).to have_content value_time(fourteen_days_from_now_at_5) 
+      #fill_in 'Quote Valid Until Date', with: (2.days.from_now).strftime('%m/%d/%Y %I:%M %p')
+      #fill_in 'Estimated Delivery Date', with: (1.days.from_now).strftime('%m/%d/%Y %I:%M %p')
       click_button 'Next'
       sleep 0.5
 
@@ -360,7 +362,7 @@ feature 'Quotes management', quote_spec: true, js: true, retry: 3 do
       click_button 'OK'
       sleep 1.5
       visit edit_quote_path quote
-
+     
       expect(page).to have_content '10'
       expect(page).to have_content '12.55'
     end

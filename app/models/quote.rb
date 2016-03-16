@@ -781,7 +781,7 @@ class Quote < ActiveRecord::Base
   end
 
   def set_default_valid_until_date
-    self.valid_until_date ||= 30.days.from_now
+    self.valid_until_date ||= 30.days.from_now 
     self.estimated_delivery_date ||= 14.days.from_now
   end
 
