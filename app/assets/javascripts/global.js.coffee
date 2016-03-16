@@ -177,3 +177,9 @@ $(document).ajaxStop ->
 @thenRemove = ($element) ->
   $element.prop 'data-fading-out', true
   -> $element.remove()
+
+@initializeAll = ->
+  initializeEditable()
+  initializeDateTimePicker()
+  initializeSelect2()
+  styleCheckboxes()
