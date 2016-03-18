@@ -20,13 +20,13 @@ module Search
     end
 
     # Find the filter for the given field recursively within this group.
-    def find_field(field)
+    def find_field(field, &block)
       filters.each do |f|
         if f.type.is_a?(FilterGroup)
-          result = f.type.find_field(field)
+          result = f.type.find_field(field, &block)
           return result if result
-        else
-          return f if f.field.to_sym == field.name.to_sym
+        elsif !f.type.is_a?(SortFilter)
+          return f if f.field.to_sym == field.name.to_sym && (!block_given? || yield(f))
         end
       end
 

@@ -41,10 +41,6 @@ module Search
             model.search do
               instance_eval(&block)
               paginate page: options[:page] || 1, per_page: model.default_per_page
-
-              # Hopefully we don't end up with a sort filter AND these options.
-              # As far as I can tell, these options don't actually show up anywhere...
-              order_by options[:sort], options[:ordering] if options[:sort]
             end
           end
           @searches.flatten.compact

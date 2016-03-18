@@ -31,7 +31,7 @@ module Search
 
     # You can pass either field_name, model_name
     # or an instance of Search::Field.
-    def filter_for(*args)
+    def filter_for(*args, &block)
       field = field_from_args(args)
 
       return nil if field.nil?
@@ -45,9 +45,11 @@ module Search
       filter = query_model.filter
 
       if filter.type.is_a?(FilterGroup)
-        return filter.type.find_field(field)
+        return filter.type.find_field(field, &block)
       else
-        return filter if filter.field.to_sym == field.name.to_sym
+        if filter.field.to_sym == field.name.to_sym && filter.filter_type_type != 'Search::SortFilter'
+          return filter if (!block_given? || yield(filter))
+        end
       end
       nil
     end

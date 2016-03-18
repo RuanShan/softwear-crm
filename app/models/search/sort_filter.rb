@@ -2,6 +2,8 @@ module Search
   class SortFilter < ActiveRecord::Base
     include FilterType
 
+    low_priority_filter_type
+
     def apply(s, base)
       f = field
       v = value # asc or desc

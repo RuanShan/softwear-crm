@@ -8,7 +8,7 @@ class OrdersController < InheritedResources::Base
   def index
     super do
       @current_action = 'orders#index'
-      @orders = Order.all.page(params[:page])
+      @orders = Order.all.order(created_at: :desc).page(params[:page])
     end
   end
 

@@ -19,7 +19,7 @@ class Order < ActiveRecord::Base
     end
 
     [
-      :firstname, :lastname, :email, :terms,
+      :firstname, :lastname, :email, :terms, :name,
       :delivery_method, :company, :phone_number, :artwork_state,
       :payment_status, :invoice_state, :production_state,
       :notification_state,  :salesperson_full_name

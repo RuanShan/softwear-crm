@@ -38,6 +38,21 @@ Sunspot::DSL::Fields.class_eval do
   end
 end
 
+Sunspot::Rails::Adapters::ActiveRecordDataAccessor.class_eval do
+  # The default implementation of this just grabs @clazz.all - which might include
+  # an ordering which would override the search's ordering... So we go off of
+  # unscoped and test for deleted_at if applicable, since that's the only important
+  # thing that tends to be in the default scope.
+  def load_all(ids)
+    r = @clazz.unscoped
+    r = r.where(deleted_at: nil) if @clazz.column_names.include?(:deleted_at)
+    r = r.includes(@include)     if @include
+    r = r.select(@select)        if @select
+    Rails.logger.debug "LOADING ALL FOR SUNSPOT!"
+    r.where(@clazz.primary_key => ids)
+  end
+end
+
 require_relative 'sunspot_custom_types'
 require Rails.root + 'lib/util/generic_decorators.rb'
 # Eager load all the models so that the search data is readily available
