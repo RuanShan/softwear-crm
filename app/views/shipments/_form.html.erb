@@ -19,7 +19,7 @@
         {},
         class: 'select2 shipment_shippable_id', style: 'width: 100%;' %>
     <% else %>
-      <%= f.hidden_field :shippable_id, value: order.id, class: "hidden_shippable_id" %>
+      <%= f.hidden_field :shippable_id, value: order.try(:id) || @order.try(:id) || shipment.order.id, class: "hidden_shippable_id" %>
       <%= f.select :shippable_id,
         options_from_collection_for_select(order.jobs.all, :id, :name, f.object.try(:shippable_id).try(:to_s)),
         {label: 'Job'},
