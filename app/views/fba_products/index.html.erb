@@ -24,10 +24,10 @@
     <table class='table table-hover table-striped'>
       <thead>
         <tr>
-          <th>ID</th>
-          <th>Name</th>
-          <th>Master SKU</th>
-          <th>Child SKUs</th>
+          <%= sorted_th :id, 'ID' %>
+          <%= sorted_th :name %>
+          <%= sorted_th :sku, 'Master SKU' %>
+          <%= sorted_th :child_sku_count, 'Child SKUs'  %>
           <th>Actions</th>
         </tr>
       </thead>
