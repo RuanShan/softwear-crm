@@ -40,7 +40,7 @@ class LineItemsController < InheritedResources::Base
   def show
     super do |format|
       format.html do
-        redirect_to order_path(
+        redirect_to edit_order_path(
           @line_item.order,
           anchor: "jobs-#{@line_item.job.id}-line_item-#{@line_item.id}"
         )

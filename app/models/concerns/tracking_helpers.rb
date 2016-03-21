@@ -29,6 +29,13 @@ module TrackingHelpers
         "#{name.underscore}.#{activity_name}"
       end
 
+      def without_tracking
+        public_activity_off
+        yield
+      ensure
+        public_activity_on
+      end
+
       protected
       ### Helper methods for #tracked parameters ###
 

@@ -399,7 +399,7 @@ class Payment < ActiveRecord::Base
   end
 
   def recalculate_order_fields
-    order.try(:recalculate_payment_total!)
+    Order.without_tracking { order.try(:recalculate_payment_total!) }
   end
 
   def calculate_sales_tax_amount

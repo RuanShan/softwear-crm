@@ -154,12 +154,14 @@ class Discount < ActiveRecord::Base
   end
 
   def recalculate_order_fields
-    order.try(:recalculate_coupons) if coupon?
+    Order.without_tracking do
+      order.try(:recalculate_coupons) if coupon?
 
-    if discountable_type == 'Payment'
-      order.try(:recalculate_payment_total!)
-    else
-      order.try(:recalculate_discount_total!)
+      if discountable_type == 'Payment'
+        order.try(:recalculate_payment_total!)
+      else
+        order.try(:recalculate_discount_total!)
+      end
     end
   end
 end

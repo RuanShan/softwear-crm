@@ -362,10 +362,12 @@ class LineItem < ActiveRecord::Base
   end
 
   def recalculate_order_fields
-    if order
-      order.recalculate_subtotal
-      order.recalculate_taxable_total
-      order.save!
+    Order.without_tracking do
+      if order
+        order.recalculate_subtotal
+        order.recalculate_taxable_total
+        order.save!
+      end
     end
   end
 end

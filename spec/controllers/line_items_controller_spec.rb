@@ -9,6 +9,7 @@ describe LineItemsController, line_item_spec: true do
   describe '#create', create: true do
     context 'with an imprintable_id and a color_id' do
       let!(:job) { create(:job) }
+      let(:order) { job.order }
       let!(:white) { create(:valid_color, name: 'white') }
       let!(:shirt) { create(:valid_imprintable) }
       let(:activities) { PublicActivity::Activity.where(trackable_type: 'LineItem') }
@@ -105,8 +106,10 @@ describe LineItemsController, line_item_spec: true do
 
   describe '#update' do
     context 'with params in a format of line_item[id[field_name[value]]]' do
-      let!(:line_item_1) { create :non_imprintable_line_item }
-      let!(:line_item_2) { create :non_imprintable_line_item }
+      let!(:job) { create(:job) }
+      let(:order) { job.order }
+      let!(:line_item_1) { create :non_imprintable_line_item, job: job }
+      let!(:line_item_2) { create :non_imprintable_line_item, job: job }
       let(:id1) { line_item_1.id }
       let(:id2) { line_item_2.id }
 
@@ -141,6 +144,12 @@ describe LineItemsController, line_item_spec: true do
       it 'does not send an email, because the order is not in production' do
         expect(OrderMailer).to_not receive(:imprintable_line_items_changed)
         put :update, params_hash
+      end
+
+      it 'does not result in any order activities being created', pa_spam: true do
+        PublicActivity.with_tracking do
+          expect { put :update, params_hash }.to_not change { order.activities.reload.size }
+        end
       end
     end
 

@@ -67,7 +67,7 @@ feature 'Line Items management', line_item_spec: true, js: true do
     visit edit_order_path(order.id, anchor: 'jobs')
     sleep 1
 
-    find("#line_item_#{line_item.id}_quantity").set -4
+    find("#line_item_#{line_item.id}_quantity").set(-4)
     sleep 1
     find('.update-line-items').click
     sleep 1
@@ -75,7 +75,7 @@ feature 'Line Items management', line_item_spec: true, js: true do
     first('[data-dismiss="modal"]').click
 
     expect(page).to have_content "Quantity cannot be negative"
-    expect(line_item.reload.quantity).to_not eq -4
+    expect(line_item.reload.quantity).to_not eq(-4)
 
     find("#line_item_#{line_item.id}_quantity").set 2
     sleep 1
@@ -228,11 +228,10 @@ feature 'Line Items management', line_item_spec: true, js: true do
     end
   end
 
-  context 'editing an imprintable line-item' do 
+  context 'editing an imprintable line item' do 
+    let!(:line_item) { LineItem.create_imprintables(job, shirt, white).sample }
  
     scenario 'user sees updated quantity total' do 
-      line_item = LineItem.create_imprintables(job, shirt, white).sample
-
       visit edit_order_path(order.id, anchor: 'jobs')
       sleep 1
 
@@ -242,6 +241,21 @@ feature 'Line Items management', line_item_spec: true, js: true do
       sleep 1
     
       expect(page).to have_css(".imprintable-line-item-total", text: "20")
+    end
+
+    scenario 'it does not create a ton of order activities', pa_spam: true do
+      PublicActivity.with_tracking do
+        expect do
+          visit edit_order_path(order.id, anchor: 'jobs')
+          sleep 1
+
+          find("#line_item_#{line_item.id}_quantity").set 20
+          sleep 1
+          find('.update-line-items').click
+          sleep 1
+        end
+          .to_not change { order.activities.reload.size }
+      end
     end
   end
 
