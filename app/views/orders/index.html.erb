@@ -25,12 +25,12 @@
     <table class="table table-hover table-striped">
       <thead>
         <tr>
-          <th style="width: 30px">ID</th>
-          <th>Order</th>
-          <th>Salesperson</th>
+          <%= sorted_th :id, 'ID', style: { width: '30px' } %>
+          <%= sorted_th :name, 'Order' %>
+          <%= sorted_th :salesperson_id, 'Salesperson' %>
           <th>Status</th>
-          <th>Total</th>
-          <th>Balance</th>
+          <%= sorted_th :total %>
+          <%= sorted_th :balance_amount, 'Balance' %>
           <th>Actions</th>
         </tr>
       </thead>

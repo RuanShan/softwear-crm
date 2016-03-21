@@ -19,26 +19,6 @@ class ImprintableVariant < ActiveRecord::Base
     )
   end
 
-  def self.update_last_costs(line_item_ids)
-    LineItem.includes(:cost).where(id: line_item_ids).find_each do |line_item| 
-      next unless line_item.imprintable_object_type == 'ImprintableVariant'
-
-      ImprintableVariant
-        .where(id: line_item.imprintable_object_id)
-        .update_all(last_cost_amount: line_item.cost.amount)
-    end
-  end
-
-  if Rails.env.production?
-    def self.enqueue_update_last_costs(line_item_ids)
-      delay.update_last_costs(line_item_ids)
-    end
-  else
-    class << self
-      alias_method :enqueue_update_last_costs, :update_last_costs
-    end
-  end
-
   def brand_id
     imprintable.brand_id
   end

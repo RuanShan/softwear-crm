@@ -46,6 +46,9 @@ CrmSoftwearcrmCom::Application.routes.draw do
     member do
       post 'transition(/:state_machine(/:transition))' => :state, as: :transition
     end
+    collection do
+      get 'tab/:tab' => :tab, as: :tab
+    end
   end
 
   get 'proofing_manager_dashboard', to: 'artwork_requests#manager_dashboard', as: :proofing_manager_dashboard
@@ -122,6 +125,7 @@ CrmSoftwearcrmCom::Application.routes.draw do
       get :imprintable_order_sheets, as: :imprintable_order_sheets
       get :order_report, as: :order_report
       get 'state/:state_machine' => :state,  as: :state
+      get :check_cancelation
       post 'transition/(:state_machine/:transition)' => :state, as: :transition
       post :send_to_production
     end

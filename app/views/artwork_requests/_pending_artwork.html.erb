@@ -1,0 +1,13 @@
+<% if pending_artwork.empty? %>
+  <p class="alert alert-success col-xs-12">
+    No artwork requests are currently pending artworkg
+  </p>
+<% else %> 
+
+  <h2 class="alert alert-warning">
+    There are currently <span class='pending-artwork-count'><%= pending_artwork.count %> 
+    </span>artwork requests pending
+  </h2>
+
+  <%= render partial: 'table', locals: { artwork_requests: pending_artwork } %>
+<% end %>

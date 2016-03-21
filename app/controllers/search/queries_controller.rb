@@ -1,12 +1,11 @@
 module Search
   class QueriesController < ApplicationController
-    # Funkify gives us auto_currying, which is used to keep our context
-    # in a clean manner when dealing with Sunspot DSL procs.
-    # "clean"..
     include Funkify
 
     before_action :permit_params
     skip_before_filter :verify_authenticity_token
+
+    helper_method :collection
 
     def create
       begin
@@ -37,11 +36,10 @@ module Search
       @query.update_attributes query_params
       QueryBuilder.build(@query, &compose_search_proc(params[:search]))
 
-      # #update is currently not actually used
       if @query.valid?
-        render text: 'ok'
+        redirect_to search_path(id: @query.id)
       else
-        render text: 'not ok'
+        render text: 'failed to update'
       end
     end
 
@@ -81,6 +79,10 @@ module Search
       end
     end
 
+    def collection
+      @collection
+    end
+
     private
 
     def assign_search_from_query
@@ -96,11 +98,7 @@ module Search
     def assign_search_from_data
       session[:last_search] = params[:search]
       @search = QueryBuilder.search(
-        {
-          page: params[:page],
-          sort: params[:sort],
-          ordering: params[:ordering]
-        },
+        { page: params[:page] },
         &compose_search_proc(params[:search])
       )
     end
@@ -118,6 +116,7 @@ module Search
         plural = models.first.underscore.pluralize
         locals = permitted_locals_for(models.first)
 
+        @collection = @search.first.results
         instance_variable_set "@#{plural}", @search.first.results
         @search_result_count = @search.first.results.total_entries
         destination = "#{plural}/index.#{format}"
@@ -155,7 +154,7 @@ module Search
     #
     # Hopefully that makes sense!
     #
-    # UPDATE none of this makes sense. Sorry folks.
+    # UPDATE none of this makes any sense. Sorry folks.
     def compose_search_proc(search)
       default_fulltext = search['fulltext']
 
@@ -234,6 +233,9 @@ module Search
           base_scope.fulltext field
           applied_fulltext = true
           next
+        elsif num == 'order_by'
+          base_scope.order_by field[0], field[1]
+          next
         end
 
         args = [model, base_scope, field, context]
@@ -302,7 +304,7 @@ module Search
     def models_of(search_params)
       case search_params
         when Hash
-          search_params.keys.reject { |k| k == 'fulltext' }
+          search_params.keys.reject { |k| k == 'fulltext' || k == 'order_by' }
         when Query
           search_params.models.map(&:name)
         else

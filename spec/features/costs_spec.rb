@@ -53,7 +53,8 @@ feature 'Costs Management', js: true do
         amount: 15.00
       )
 
-      ImprintableVariant.update_last_costs([white_shirt_m_item.id, white_shirt_l_item.id])
+      white_shirt_m.update_column :last_cost_amount, 10.00
+      white_shirt_l.update_column :last_cost_amount, 15.00
     end
 
     scenario 'the fields for line items of those variants already filled out' do
@@ -74,19 +75,20 @@ feature 'Costs Management', js: true do
     let!(:shirt) { create(:valid_imprintable) }
     make_variants :white, :shirt, [:M, :S, :L]
 
-    scenario 'a user can add costs directly to the order' do
+    scenario 'a user can add costs directly to the order', order_cost: true do
       visit edit_order_path(order, anchor: 'costs')
       sleep 1
 
       click_link '+ Order Cost'
-      fill_in 'Cost Type', with: 'Something'
+      all('.order-costs span.select2-container').first.click
+      all('.select2-results__option').first.click
       fill_in 'Description', with: 'moni'
       fill_in 'Amount', with: '10.50'
       click_button 'Update Order'
 
       sleep 1
 
-      expect(order.reload.costs.where(amount: 10.50)).to exist
+      expect(order.reload.costs.where(amount: 10.50, type: 'Salesperson')).to exist
       expect(page).to have_content 'Total Cost: $10.50'
     end
 

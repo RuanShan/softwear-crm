@@ -1,0 +1,13 @@
+<% if pending_manager_approval.empty? %>
+  
+  <p class="alert alert-success col-xs-12">
+    No artwork requests are currently pending artwork approval
+  </p>
+<% else %> 
+  <h2 class="alert alert-warning">
+    There are currently <span class='pending-manager-approval-count'><%= pending_manager_approval.count %> 
+    </span>Artwork requests pending
+  </h2>
+
+  <%= render 'table', artwork_requests: pending_manager_approval %>
+<% end %>

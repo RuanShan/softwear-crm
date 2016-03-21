@@ -41,8 +41,6 @@ module Search
             model.search do
               instance_eval(&block)
               paginate page: options[:page] || 1, per_page: model.default_per_page
-
-              order_by options[:sort], options[:ordering] if options[:sort]
             end
           end
           @searches.flatten.compact
@@ -224,6 +222,15 @@ module Search
       else
         raise SearchException, "Phrase filters can currently only handle 1 field"
       end
+    end
+
+    def order_by(field, ordering = nil)
+      filter = Filter.new(
+        SortFilter,
+        field: field,
+        value: ordering || 'desc'
+      )
+      @group.filters << filter
     end
 
     def method_missing(name, *args, &block)

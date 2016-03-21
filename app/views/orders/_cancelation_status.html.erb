@@ -1,0 +1,24 @@
+<div>
+<% if order.valid? %>
+  Order #<%= order.id %> &quot;<%= order.name %>&quot;
+  is ready to be canceled. Are you sure you want to do this?
+<% else %>
+  <% if order.errors[:cancelation].any? %>
+    The following criteria must be met before canceling the order:
+
+    <ul>
+      <% order.errors[:cancelation].each do |message| %>
+        <li><%= message %></li>
+      <% end %>
+    </ul>
+  <% else %>
+    Miscellaneous errors preventing cancelation:
+
+    <ul>
+      <% order.errors.full_messages.each do |message| %>
+        <li><%= message %></li>
+      <% end %>
+    </ul>
+  <% end %>
+<% end %>
+</div>

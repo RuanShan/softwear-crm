@@ -1,6 +1,47 @@
 class ArtworkRequestsController < InheritedResources::Base
   include StateMachine
 
+  TAB_CONTENT = {
+    unassigned: lambda do
+      ArtworkRequest.search do
+        with :state, :unassigned
+      end.results
+        .reject(&:deleted_at)
+    end,
+
+    pending_artwork: lambda do
+      ArtworkRequest.search do
+        with :state, [:pending_artwork, :artwork_rejected]
+      end.results
+        .reject(&:deleted_at)
+    end,
+
+    pending_manager_approval: lambda do
+      ArtworkRequest.search do
+        with :state, :pending_manager_approval
+      end.results
+        .reject(&:deleted_at)
+    end,
+
+    ready_to_proof: lambda do
+      Order.search do
+        with :artwork_state, [:pending_proofs, :pending_manager_approval, :pending_proof_submission]
+      end.results
+    end,
+
+    proofs_awaiting_approval: lambda do
+      Order.search do
+        with :artwork_state, :pending_customer_approval
+      end.results
+    end,
+
+    pending_production: lambda do
+      Order.search do
+        with :artwork_state, :ready_for_production
+      end.results
+    end
+  }
+
   before_filter :assign_order
   before_filter :format_deadline, only: [:create, :update]
   before_filter :set_current_action
@@ -62,32 +103,16 @@ class ArtworkRequestsController < InheritedResources::Base
   end
 
   def manager_dashboard
-    @unassigned = ArtworkRequest.search do
-      with :state, :unassigned
-    end.results
-      .reject(&:deleted_at)
+    @unassigned = TAB_CONTENT[:unassigned].call
+  end
 
-    @pending_artwork = ArtworkRequest.search do
-      with :state, [:pending_artwork, :artwork_rejected]
-    end.results
-      .reject(&:deleted_at)
+  def tab
+    @tab = params[:tab]
+    @tab_content = TAB_CONTENT[@tab.to_sym].call
 
-    @pending_manager_approval = ArtworkRequest.search do
-      with :state, :pending_manager_approval
-    end.results
-      .reject(&:deleted_at)
-
-    @ready_to_proof = Order.search do
-      with :artwork_state, [:pending_proofs, :pending_manager_approval, :pending_proof_submission]
-    end.results
-
-    @proofs_awaiting_approval = Order.search do
-      with :artwork_state, :pending_customer_approval
-    end.results
-
-    @pending_production = Order.search do
-      with :artwork_state, :ready_for_production
-    end.results
+    respond_to do |format|
+      format.js
+    end
   end
 
   protected

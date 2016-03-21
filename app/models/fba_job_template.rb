@@ -14,8 +14,11 @@ class FbaJobTemplate < ActiveRecord::Base
 
   searchable do
     text :name, :job_name
+    string :name
+    string :job_name
     boolean :needs_artwork
     boolean :needs_proof
+    integer :imprint_count
     integer :id
   end
 
@@ -40,6 +43,10 @@ class FbaJobTemplate < ActiveRecord::Base
 
     attrs[:description] = "FBA #{name} proof mockup"
     super(attrs)
+  end
+
+  def imprint_count
+    fba_imprint_templates.size
   end
 
   def imprints_attributes

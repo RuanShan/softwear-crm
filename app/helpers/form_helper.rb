@@ -3,10 +3,102 @@ module FormHelper
     options[:class] ||= ''
 
     values.each do |v|
-      # TODO: join?
       options[:class] << ' ' unless options[:class].empty?
       options[:class] << v
       options.merge!(@common_attrs) unless @common_attrs.nil?
+    end
+  end
+
+  def last_search
+    session[:last_search]
+  end
+
+  def assure_search_value(filter)
+    assure = filter.filter_type_type.constantize.method(:assure_value)
+    assure.call(filter.value)
+  end
+
+  def last_sort_ordering(model_name, field)
+    return nil if last_search.nil?
+
+    model_name = model_name.downcase
+
+    if last_search.is_a?(Hash)
+      o = last_search[model_name].try(:[], 'order_by')
+      if o.blank?
+        nil
+      else
+        o[1] if o[0].to_sym == field
+      end
+
+    elsif last_search.is_a?(String) && last_search =~ /\d+/
+      query = Search::Query.find_by(id: last_search)
+      return if query.nil?
+
+      model = query.query_models.find_by(name: model_name)
+      # Just gonna assume that the filter is a group...
+      find_sort_filter = lambda do |filter|
+        case filter.filter_type
+        when Search::FilterGroup
+          filter.filter_type.filters.each { |f| find_sort_filter.(f) }
+        when Search::SortFilter
+          return filter.filter_type
+        end
+      end
+
+      sort_filter = model.filter.filters.where(filter_type_type: 'Search::SortFilter').first
+
+      if !sort_filter.nil? && sort_filter.field.to_sym == field.to_sym
+        sort_filter.value
+      end
+    end
+  end
+
+  def next_sort_ordering(last_ordering)
+    case last_ordering
+    when nil    then 'desc'
+    when 'desc' then 'asc'
+    when 'asc'  then nil
+    else
+      nil
+    end
+  end
+
+  # Gives you a th tag with a caret for sorting ascending or descending. This
+  # assumes that there is also a search form from #search_form_for on the page.
+  def sorted_th(field, text = nil, options = {})
+    if text.is_a?(Hash)
+      options = text
+    else
+      text ||= field.to_s.titleize
+    end
+    model_name = options[:model_name] || collection.first.try(:class).try(:name)
+
+    last_sort_order = last_sort_ordering(model_name, field)
+    case last_sort_order
+    when nil    then caret = ''
+    when 'desc' then caret = content_tag(:i, '', class: "fa fa-angle-down")
+    when 'asc'  then caret = content_tag(:i, '', class: "fa fa-angle-up")
+    end
+
+    data = {
+      field: field,
+      ordering: next_sort_ordering(last_sort_order),
+    }
+    data.merge!('last-ordering' => last_sort_order) unless last_sort_order.blank?
+
+    content_tag(:th, options) do
+      link_to(
+        "#sort_#{field}",
+        data: data,
+        class: "sortable-table-header #{'table-header-sorting' unless caret.blank?}"
+      ) do
+        if caret.blank?
+          text
+        else
+          (text + " " + content_tag(:strong, caret).html_safe).html_safe
+        end
+      end
     end
   end
 
@@ -26,7 +118,7 @@ module FormHelper
     options = args.last.is_a?(Hash) ?  args.last : {}
 
     builder = SearchFormBuilder.new(
-      model, query, self, @current_user, session[:last_search]
+      model, query, self, @current_user, last_search
     )
 
     output = capture(builder, &block)
@@ -38,6 +130,11 @@ module FormHelper
       search_path
     end
     options[:id] ||= "#{model.name.underscore}_search"
+    add_class options, 'search-form'
+
+    options[:data] ||= {}
+    options[:data][:model] = model.name.underscore
+
     form_tag(action, options) { output }
   end
 

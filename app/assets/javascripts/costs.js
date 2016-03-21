@@ -1,14 +1,14 @@
+function initCostTypeSelect(context) {
+  context.find('.cost-type-select').select2({
+    maximumSelectionLength: 1,
+    tags: true
+  });
+}
+
 $(function() {
-  if ($('#mass-cost-form').length > 0) {
+  $(document).on('nested:fieldAdded:costs', function() {
+    initCostTypeSelect($(this));
+  });
 
-    // When multiple line items correspond to one imprintable variant,
-    // assume they are of the same size (only if multi-input is checked).
-    $('input.cost-amount').on('input', function() {
-      if (!$('#multi_input')[0].checked)
-        return;
-      var $this = $(this);
-
-      $('.iv-'+$this.data('iv')+'-cost').val($this.val());
-    });
-  }
+  initCostTypeSelect($('.order-costs'));
 });

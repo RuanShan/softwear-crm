@@ -1,0 +1,13 @@
+<% if ready_to_proof.empty? %>
+  
+  <p class="alert alert-success col-xs-12">
+    No orders are currently ready to proof
+  </p>
+<% else %> 
+  <h2 class="alert alert-warning">
+    There are currently <span class='pending-proofs-count'><%= ready_to_proof.count %> 
+    </span> pending proof or proof submission
+  </h2>
+
+  <%= render 'proofs/order_table', orders: ready_to_proof %>
+<% end %>

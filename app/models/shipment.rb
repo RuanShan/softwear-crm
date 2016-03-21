@@ -17,6 +17,8 @@ class Shipment < ActiveRecord::Base
   
   validates :shippable, presence: true, if: :persisted?
   validates :name, :address_1, :city, :state, :zipcode, presence: true
+  validates :name, :address_1, :city, :state, :zipcode, :time_in_transit, presence: true
+  validates :time_in_transit,  numericality: { greater_than: 0 }
 
   before_validation :assign_proper_status
   after_save do
@@ -35,10 +37,6 @@ class Shipment < ActiveRecord::Base
 
   def complete_address
     [name, company, attn, address_1, address_2, address_3, "#{city}, #{state} #{zipcode}", country].reject(&:blank?)
-  end
-
-  def time_in_transit
-    super || 0.0
   end
 
   def order
@@ -81,16 +79,24 @@ class Shipment < ActiveRecord::Base
     else
       return if shippable.nil?
 
+      train_state = 'pending_packing'
+      if shipped?
+        train_state = 'pending_shipment'
+        if [carrier, service, tracking_number, shipped_at, shipped_by_id].none?(&:blank)
+          train_state = 'shipped'
+        end
+      end
+
       train = Production::ShipmentTrain.create(
         softwear_crm_id: id,
-        # NOTE this assumes "Order" and "Job" are named the same in Production and CRM
         shipment_holder_type: shippable_type,
         shipment_holder_id:   shippable.softwear_prod_id,
-        state:                shipped? ? 'pending_packing' : 'shipped',
+        state:                train_state,
         tracking:             tracking_number,
         shipped_at:           shipped_at,
         carrier:              carrier,
-        service:              service
+        service:              service,
+        shipped_by_id:        shipped_by_id
       )
     end
 

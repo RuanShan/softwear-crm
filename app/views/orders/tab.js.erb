@@ -2,8 +2,7 @@ try {
   $("#<%= @tab %>").children().remove();
   $("#<%= @tab %>").append("<%=j render "orders/#{@tab}.html", order: @order %>");
 
-  initializeEditable();
-  initializeSelect2();
+  initializeAll();
 
   <% if lookup_context.find_all("orders/_#{@tab}.js").any? %>
   <%= render "orders/#{@tab}.js", order: @order %>

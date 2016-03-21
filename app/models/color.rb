@@ -13,6 +13,9 @@ class Color < ActiveRecord::Base
 
   searchable do
     text :name, :sku, :map
+    string :name
+    string :map
+    string :sku
     integer :id
   end
 

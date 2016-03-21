@@ -61,7 +61,7 @@
     <h3>New <strong>Shipment</strong></h3>
 
     <div id='new-shipment-form'>
-      <%= render 'shipments/form', shipment: Shipment.new, order: order %>
+      <%= render 'shipments/form', shipment: Shipment.new, order: (order.is_a?(Job) ? order.order : order) %>
     </div>
   </div>
 </div>

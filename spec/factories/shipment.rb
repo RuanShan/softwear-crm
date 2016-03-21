@@ -5,6 +5,7 @@ FactoryGirl.define do
     city "A City"
     state "MI"
     zipcode "A Zipcode"
+    time_in_transit 1.0
     shipping_method { |s| s.association(:shipping_method) }
     shippable {|s| s.association(:order) }
     

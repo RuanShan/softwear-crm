@@ -48,6 +48,11 @@ FactoryGirl.define do
     value '"test"'
   end
 
+  factory :filter_type_sort, class: Search::SortFilter do
+    field 'created_at'
+    value 'desc'
+  end
+
   factory :filter_type_group, class: Search::FilterGroup do
     all true
   end

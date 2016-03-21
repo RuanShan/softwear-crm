@@ -19,7 +19,7 @@ class Order < ActiveRecord::Base
     end
 
     [
-      :firstname, :lastname, :email, :terms,
+      :firstname, :lastname, :email, :terms, :name,
       :delivery_method, :company, :phone_number, :artwork_state,
       :payment_status, :invoice_state, :production_state,
       :notification_state,  :salesperson_full_name
@@ -36,13 +36,20 @@ class Order < ActiveRecord::Base
       balance != 0
     end
 
+    double :balance_amount do
+      balance
+    end
+
     date :in_hand_by
 
     boolean :fba do
       fba?
     end
 
+    boolean :canceled
+
     reference :salesperson
+    integer :salesperson_id
   end
 
   tracked by_current_user
@@ -52,11 +59,12 @@ class Order < ActiveRecord::Base
   VALID_INVOICE_STATES = [
     'pending',
     'approved',
-    'rejected'
+    'rejected',
+    'canceled'
   ]
 
   VALID_PRODUCTION_STATES = %w(
-    pending in_production complete
+    pending in_production complete canceled
   )
 
   VALID_PAYMENT_TERMS = [
@@ -79,7 +87,8 @@ class Order < ActiveRecord::Base
   VALID_PAYMENT_STATUSES = [
     'Awaiting Payment',
     'Payment Terms Met',
-    'Payment Terms Pending'
+    'Payment Terms Pending',
+    'canceled'
   ]
 
   VALID_PROOF_STATES = [
@@ -87,7 +96,8 @@ class Order < ActiveRecord::Base
     :pending,
     :submitted_to_customer,
     :rejected,
-    :approved
+    :approved,
+    :canceled
   ]
 
 
@@ -151,6 +161,10 @@ class Order < ActiveRecord::Base
   validates :in_hand_by, presence: true
   validates :invoice_reject_reason, presence: true, if: :invoice_rejected?
 
+  validate :must_have_salesperson_cost, if: :canceled?
+  validate :must_have_artist_cost,      if: :canceled?
+  validate :must_have_private_comment,  if: :canceled?
+
   before_create { self.delivery_method ||= 'Ship to multiple locations' if fba? }
   after_initialize -> (o) { o.production_state = 'pending' if o.respond_to?(:production_state) && o.production_state.blank? }
   after_initialize -> (o) { o.invoice_state = 'pending' if o.respond_to?(:invoice_state) && o.invoice_state.blank? }
@@ -172,9 +186,10 @@ class Order < ActiveRecord::Base
   # subtotal will be changed when a line item price is changed and it calls recalculate_subtotal on the order.
   before_save :recalculate_payment_state
   before_save :recalculate_coupons, if: :subtotal_changed?
-  enqueue :create_production_order, queue: 'api'
+  enqueue :create_production_order, :cancel_production_order, queue: 'api'
   after_save :enqueue_create_production_order, if: :ready_for_production?
   after_save :create_invoice_approval_activity, if: :invoice_state_changed?
+  before_save :set_all_states_to_canceled!, if: :just_canceled?
 
   alias_method :comments, :all_comments
   alias_method :comments=, :all_comments=
@@ -208,6 +223,10 @@ class Order < ActiveRecord::Base
 
     event :shipped do
       transition any => :shipped
+    end
+
+    event :notification_canceled do
+      transition any => :notification_canceled
     end
   end
 
@@ -303,6 +322,9 @@ class Order < ActiveRecord::Base
       transition :ready_for_production => :in_production
     end
 
+    event :artwork_canceled do
+      transition any => :artwork_canceled
+    end
   end
 
   # Use method_missing to catch calls to recalculate_* (for subtotal, tax, etc)
@@ -331,6 +353,10 @@ class Order < ActiveRecord::Base
   def recalculate_all!
     recalculate_all
     save!
+  end
+
+  def just_canceled?
+    canceled_changed? && canceled? && !canceled_was
   end
 
   def jobs_attributes=(attrs)
@@ -1018,5 +1044,45 @@ class Order < ActiveRecord::Base
     end
 
     nuke.(self)
+  end
+
+  def set_all_states_to_canceled!
+    update_column :artwork_state, 'artwork_canceled'
+    update_column :notification_state, 'notification_canceled'
+    update_column :invoice_state, 'canceled'
+    update_column :production_state, 'canceled'
+    update_column :payment_state, 'Canceled'
+    enqueue_cancel_production_order if production?
+  end
+
+  def cancel_production_order
+    return unless production?
+
+    production.canceled = true
+    production.save!
+  end
+  warn_on_failure_of :cancel_production_order
+
+  # == Cancelation requirements: ==
+
+  def must_have_salesperson_cost
+    unless costs.where(type: 'Salesperson').exists?
+      errors.add(:cancelation, "A salesperson cost must be filled out.")
+    end
+  end
+
+  def must_have_artist_cost
+    unless costs.where(type: 'Artist').exists?
+      errors.add(:cancelation, "An artist cost must be filled out.")
+    end
+  end
+
+  def must_have_private_comment
+    unless private_comments.exists?
+      errors.add(
+        :cancelation,
+        "The order must have at least one private comment."
+      )
+    end
   end
 end

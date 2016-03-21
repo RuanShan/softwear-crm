@@ -1,0 +1,10 @@
+<div>
+If you really need this order canceled, ask a sales manager:
+<ul>
+  <% sales_managers.each do |manager| %>
+    <li>
+      <%= manager.full_name %>
+    </li>
+  <% end %>
+</ul>
+</div>

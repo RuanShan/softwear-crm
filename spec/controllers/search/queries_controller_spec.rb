@@ -97,6 +97,16 @@ describe Search::QueriesController, search_spec: true do
         }}}
   end
 
+  let(:test_params_with_order_by) do
+    {search: {
+        fulltext: 'test',
+        order: {
+            '1' => { lastname: 'Johnson' },
+            order_by: ['commission_amount', 'asc']
+        }}
+    }
+  end
+
   let(:query) { create(:search_query) }
   let(:order_model) do
     create(:query_order_model, query: query, default_fulltext: 'success')
@@ -232,6 +242,20 @@ describe Search::QueriesController, search_spec: true do
             expect(Sunspot.session).to have_search_params(:with) {
               without(:commission_amount).greater_than(15.00)
             }
+          end
+        end
+
+        context 'and order_by', order_by: true do
+          it 'applies order_by with the two array values of the param' do
+            get :search, test_params_with_order_by
+            expect(response).to be_ok
+
+            expect(assigns[:search].first)
+              .to be_a Sunspot::Search::StandardSearch
+
+            expect(Sunspot.session).to be_a_search_for Order
+            expect(Sunspot.session)
+              .to have_search_params(:order_by, 'commission_amount', 'asc')
           end
         end
 
