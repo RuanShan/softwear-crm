@@ -76,7 +76,7 @@ module FormHelper
     model_name = options[:model_name] || (defined?(collection) && collection.first.try(:class).try(:name))
     if model_name.nil?
       Rails.logger.error "No model name specified for sorted_th."
-      return
+      return content_tag(:th, text, options)
     end
 
     last_sort_order = last_sort_ordering(model_name, field)
