@@ -1,5 +1,6 @@
 class SomeSunspotIndexings < ActiveRecord::Migration
   def up
+    return if Rails.env.test?
     Sunspot.index Color.all
     puts "Reindexed colors"
     Sunspot.index FbaJobTemplate.all

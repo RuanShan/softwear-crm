@@ -316,7 +316,7 @@ describe Search::QueriesController, search_spec: true do
         expect(Search::QueryModel.count).to eq 1
 
         put :update, test_params.merge(id: query.id, query: {name: 'new name'})
-        expect(response).to be_ok
+        expect(response.status).to eq 302
 
         expect(assigns[:query]).to eq query
         expect(Search::QueryModel.count).to eq 1
