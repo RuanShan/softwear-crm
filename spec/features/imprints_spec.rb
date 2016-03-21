@@ -23,7 +23,7 @@ feature 'Imprints Management', imprint_spec: true, js: true do
 
   given(:imprint) { create(:blank_imprint, job_id: job.id, print_location_id: print_location1.id) }
 
-  scenario 'user can add a new imprint to a job', retry: 1 do
+  scenario 'user can add a new imprint to a job', retry: 3 do
     visit edit_order_path(order.id, anchor: 'jobs')
     wait_for_ajax
 
@@ -36,7 +36,7 @@ feature 'Imprints Management', imprint_spec: true, js: true do
     expect(all('.editing-imprint').count).to be > 1
     sleep 1
     find('.update-imprints').click
-    sleep 1
+    sleep 1.5
     expect(Imprint.where(job_id: job.id, print_location_id: print_location2.id)).to exist
   end
 

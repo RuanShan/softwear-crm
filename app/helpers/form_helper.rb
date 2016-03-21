@@ -65,14 +65,19 @@ module FormHelper
   end
 
   # Gives you a th tag with a caret for sorting ascending or descending. This
-  # assumes that there is also a search form from #search_form_for on the page.
+  # assumes that there is also a search form from #search_form_for somewhere
+  # on the page.
   def sorted_th(field, text = nil, options = {})
     if text.is_a?(Hash)
       options = text
     else
       text ||= field.to_s.titleize
     end
-    model_name = options[:model_name] || collection.first.try(:class).try(:name)
+    model_name = options[:model_name] || (defined?(collection) && collection.first.try(:class).try(:name))
+    if model_name.nil?
+      Rails.logger.error "No model name specified for sorted_th."
+      return
+    end
 
     last_sort_order = last_sort_ordering(model_name, field)
     case last_sort_order
