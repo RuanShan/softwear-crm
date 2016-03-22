@@ -16,6 +16,15 @@ feature 'Quote Requests Management', js: true, quote_request_spec: true do
     expect(page).to have_selector('.box-info')
   end
 
+  scenario 'A user can see when the quote was submitted' do
+    visit quote_requests_path
+    click_link "View Quote Request"
+
+    #page should have both the Quote Submitted At
+    # AND the time it was created at
+    expect(page).to have_text("Quote Submitted At: #{value_time(quote_request.created_at)}")
+  end
+
   scenario 'A user can quickly filter quote requests by status', js: true, story_709: true do
     quote_request.update_attributes! status: 'assigned'
     quote_request_2.update_attributes! status: 'pending'
