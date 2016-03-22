@@ -1,11 +1,11 @@
 <div class='hidden-print text-right animated fadeInDownBig row'>
   <br clear="all" />
-  <% if @payment.order.nil? %>
+  <% if payment.order.nil? %>
     <%= link_to new_payment_path, class: 'btn btn-primary' do %>
       <i class="glyphicon glyphicon-circle-arrow-left"></i> Return To Payments
     <% end %>
   <% else %>
-    <%= link_to edit_order_path(@payment.order_id, anchor: 'payments'), class: 'btn btn-primary' do %>
+    <%= link_to edit_order_path(payment.order_id, anchor: 'payments'), class: 'btn btn-primary' do %>
       <i class="glyphicon glyphicon-circle-arrow-left"></i> Return To Order
     <% end %>
   <% end %>
@@ -14,4 +14,4 @@
     <% end %>
 </div>
 
-<%= render 'payments/receipt', payment: @payment, order: @payment.order %>
+<%= render 'payments/receipt', payment: payment, order: payment.order %>
