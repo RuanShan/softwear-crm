@@ -13,9 +13,9 @@
     </thead>
     <tbody>
       <% if @recent_retail_payments.empty? %>
-
+        <strong>No recent payments!</strong>
       <% else %>
-        <% @recent_retail_payments.limit(3).each do |payment| %>
+        <% @recent_retail_payments.reverse_order.limit(10).each do |payment| %>
           <tr>
             <td><%= payment.created_at.strftime('%m/%d/%Y') %></td>
             <td><%= payment.salesperson.full_name %></td>
@@ -23,12 +23,12 @@
             <td><%= link_to 'View Receipt', payment, id: "show_#{payment.id}" %></td>
           </tr>
         <% end %>
-        <% if @recent_retail_payments.size > 3 %>
-          <tr><td>...</td></tr>
-        <% end %>
       <% end %>
     </tbody>
   </table>
+    <% if @recent_retail_payments.size > 10 %>
+      <p class="alert alert-warning"><b>These are ONLY the 10 most recent payments</b></p>
+    <% end %>
 </div>
 
 <%= render 'shared/modal_errors', object: @payment %>

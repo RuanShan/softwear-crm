@@ -12,6 +12,10 @@ feature 'Payments management', js: true, payment_spec: true, retry: 2 do
   given(:cc_payment) { create(:credit_card_payment, amount: 10, order_id: order.id) }
   given(:pp_payment) { create(:paypal_payment, amount: 10, order_id: order.id) }
 
+  11.times do |n|
+    given!("retail#{n+1}") { create(:retail_payment, created_at: 1.year.ago + n.months) }
+  end
+
   # No ci because interacting with the dashboard appears to not work there.
   scenario 'A salesperson can visit the payments tab from root', no_ci: true do
     visit root_path
@@ -22,6 +26,14 @@ feature 'Payments management', js: true, payment_spec: true, retry: 2 do
     find(:css, "a[href='#payments']").click
     wait_for_ajax
     expect(current_url).to match((edit_order_path order.id) + '#payments')
+  end
+
+  scenario 'A salesperson can visit the payments tab and not see more than 10 retail payments', js: true do
+    visit new_payment_path
+    expect(page).to_not have_content "#{retail1.created_at.strftime('%m/%d/%Y')}"
+    #if page has These are only more payments, but they're old..., 
+    #it indicates there are more than 10 payments
+    expect(page).to have_content "These are ONLY the 10 most recent payments"
   end
 
   scenario 'A salesperson can toggle a payment type', story_274: true do
