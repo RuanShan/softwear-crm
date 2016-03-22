@@ -3,7 +3,7 @@ namespace :warnings do
 
     # Invoice approval warnings
     begin
-      orders = Order.where("terms != 'Fulfilled by Amazon' and in_hand_by > ? and in_hand_by < ?", 7.business_days.ago.strftime("%Y-%m-%d"), 7.business_days.from_now.strftime("%Y-%m-%d"))
+      orders = Order.where("terms != 'Fulfilled by Amazon' and terms != 'canceled' and in_hand_by > ? and in_hand_by < ?", 7.business_days.ago.strftime("%Y-%m-%d"), 7.business_days.from_now.strftime("%Y-%m-%d"))
       orders.each do |o|
         if o.invoice_should_be_approved_by_now? && o.invoice_state != 'approved'
           puts "Issuing invoice warning for order #{o.id} #{o.name}"
@@ -51,7 +51,7 @@ namespace :warnings do
 
     # artwork_requests warning
     begin
-      orders = Order.where("terms != 'Fulfilled by Amazon' and in_hand_by > ? and in_hand_by < ?", 7.business_days.ago.strftime("%Y-%m-%d"), 7.business_days.from_now.strftime("%Y-%m-%d"))
+      orders = Order.where("terms != 'Fulfilled by Amazon' and terms != 'canceled' and in_hand_by > ? and in_hand_by < ?", 7.business_days.ago.strftime("%Y-%m-%d"), 7.business_days.from_now.strftime("%Y-%m-%d"))
       orders.each do |o|
         if o.missing_artwork_requests?
           puts "Issuing invoice warning for order #{o.id} #{o.name}"
@@ -73,7 +73,7 @@ namespace :warnings do
 
     # shipments warning
     begin
-      orders = Order.where("terms != 'Fulfilled by Amazon' and in_hand_by > ? and in_hand_by < ?", 7.business_days.ago.strftime("%Y-%m-%d"), 7.business_days.from_now.strftime("%Y-%m-%d"))
+      orders = Order.where("terms != 'Fulfilled by Amazon' and terms != 'canceled' and in_hand_by > ? and in_hand_by < ?", 7.business_days.ago.strftime("%Y-%m-%d"), 7.business_days.from_now.strftime("%Y-%m-%d"))
       orders.each do |o|
         if (o.delivery_method == 'Ship to one location' || o.delivery_method == 'Ship to multiple locations') &&
             o.shipments.empty?
