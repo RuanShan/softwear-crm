@@ -38,7 +38,7 @@ feature 'Order management', order_spec: true, js: true do
     wait_for_ajax
 
     fill_in 'Name', with: 'Whatever this should be'
-    fill_in 'In Hand By Date', with: '12/25/2025 12:00 AM'
+    #fill_in 'In Hand By Date', with: '12/25/2025 12:00 AM'
     select User.find(order.salesperson_id).full_name, from: 'Salesperson'
     wait_for_ajax
     select order.store.name, from: 'Store'
@@ -52,8 +52,13 @@ feature 'Order management', order_spec: true, js: true do
     sleep 1
     click_button 'Submit'
     sleep 1
+    
 
     expect(Order.where(firstname: 'Guy')).to exist
+
+    #asserts that the in_hand_by date is defaulted by today at 5pm.
+    order = Order.find_by(firstname: 'Guy')
+    expect(value_time(order.in_hand_by)).to eq(value_time(now_at_5))
   end
 
   scenario 'an order with a line item that has a bad imprintable variant removes it and informs the user', retry: 4, bugfix: true do

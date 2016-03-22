@@ -17,6 +17,8 @@ $(window).load ->
   $(document).on 'select2:open', ->
     $('.select2-dropdown').css 'z-index', '9999999'
 
+  initializeDateTimePicker()
+
 @initializeSelect2 = (opts) ->
   scope = $('body')
   if opts isnt undefined and opts.scope
@@ -151,6 +153,10 @@ $(document).ajaxStop ->
 @disableFor = (element, ms) ->
   $(element).attr 'disabled', 'disabled'
   after ms, -> $(element).removeAttr 'disabled'
+
+now = new Date()
+initial = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 17, 0)
+$.fn.datetimepicker.defaults.defaultDate = initial
 
 @initializeDateTimePicker = ->
   $(".js-datetimepicker").datetimepicker()

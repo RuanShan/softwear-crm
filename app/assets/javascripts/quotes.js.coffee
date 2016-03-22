@@ -41,12 +41,15 @@ jQuery ->
     window.print()
     return false
 
-  $('.js-datetimepicker').datetimepicker({ 
-    widgetPositioning: {
-      horizontal: 'left',
-      vertical: 'bottom'
-    }
-  });
+ # now = new Date()
+ # initial = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 17, 0)
+ # $('.js-datetimepicker').datetimepicker({
+ #   widgetPositioning: {
+ #     horizontal: 'left',
+ #     vertical: 'bottom'
+ #   },
+ #   defaultDate: initial
+ # })
 
 
 @invalidMsg = (textbox) ->
