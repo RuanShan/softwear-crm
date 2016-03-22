@@ -71,6 +71,7 @@ class LineItem < ActiveRecord::Base
       and j.jobbable_type = "Order"
       and o.deleted_at is null
       and iv.deleted_at is null
+      and li.deleted_at is null
       and (
         not exists (
           select costs.id from costs
