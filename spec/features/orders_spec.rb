@@ -3,6 +3,7 @@ include ApplicationHelper
 
 feature 'Order management', order_spec: true, js: true do
   given!(:valid_user) { create(:user) }
+  given(:sales_manager) { create(:user, first_name: 'Sales', last_name: 'Man') }
   background(:each) { sign_in_as valid_user }
 
   given!(:order) { create(:order) }
@@ -102,7 +103,7 @@ feature 'Order management', order_spec: true, js: true do
         expect(OrderQuote.count).to eq(0)
 #       fail the form
         click_button 'Next'
-        date_array = DateTime.current.to_s.split(/\W|T/)
+        _date_array = DateTime.current.to_s.split(/\W|T/)
         sleep 0.5
         click_button 'Submit'
 #       expect failure
@@ -285,6 +286,97 @@ feature 'Order management', order_spec: true, js: true do
     visit orders_path
     expect(page).to have_text(customer_order_path(order.customer_key))
     # Clicking that link opens a new tab which confuses capybara
+  end
+
+  context 'cancelation', cancel: true do
+    context 'without the sales_manager role' do
+      background do
+        allow(valid_user).to receive(:role?).and_return false
+        allow(User).to receive(:of_role) { |*r| [(sales_manager if r.map(&:to_s).include?('sales_manager'))].compact }
+      end
+
+      scenario 'a user can see the list of sales managers when canceling the order (but cannot cancel it)' do
+        expect(order).to be_valid
+        visit edit_order_path(order)
+
+        click_link 'Cancel Order'
+        sleep 1.5
+
+        expect(page).to have_content "If you really need this order canceled, ask a sales manager:"
+        expect(page).to have_content sales_manager.full_name
+      end
+    end
+
+    context 'with the sales_manager role' do
+      background do
+        allow(valid_user).to receive(:role?) { |*r| r.map(&:to_s).include?('sales_manager') }
+      end
+
+      context 'when no cancelation criteria is met' do
+        scenario 'a sales manager can see what tasks need to be performed' do
+          visit edit_order_path(order)
+
+          click_link 'Cancel Order'
+          sleep 1.5
+
+          expect(page).to have_content "A salesperson cost must be filled out"
+          expect(page).to have_content "An artist cost must be filled out"
+          expect(page).to have_content "The order must have at least one private comment"
+        end
+      end
+
+      context 'when there is a comment and a sales/artist cost' do
+        background do
+          order.private_comments.create!(title: "We suck", comment: "love to waste moni")
+          order.costs.create!(type: 'Salesperson', amount: 5.00, time: 10.00)
+          order.costs.create!(type: 'Artist', amount: 5.00, time: 10.00)
+        end
+
+        scenario 'a sales manager can cancel the order' do
+          visit edit_order_path(order)
+
+          click_link 'Cancel Order'
+          sleep 1.5
+
+          expect(page).to have_content "ready to be canceled"
+          expect(page).to have_content "Are you sure"
+
+          click_button "Cancel Order"
+          sleep 2
+
+          expect(order.reload).to be_canceled
+        end
+
+        scenario 'canceling the order sets all order states to canceled' do
+          visit edit_order_path(order)
+
+          click_link 'Cancel Order'
+          sleep 1.5
+          click_button "Cancel Order"
+          sleep 2
+
+          order.reload
+          expect(order.invoice_state).to eq 'canceled'
+          expect(order.production_state).to eq 'canceled'
+          expect(order.payment_state).to eq 'Canceled'
+          expect(order.artwork_state).to eq 'artwork_canceled'
+          expect(order.notification_state).to eq 'notification_canceled'
+        end
+
+        scenario 'canceling the order also cancels its production order' do
+          prod_order = create(:production_order, softwear_crm_id: order.id)
+          order.update_column :softwear_prod_id, prod_order.id
+          expect_any_instance_of(Production::Order).to receive(:canceled=).with(true)
+
+          visit edit_order_path(order)
+
+          click_link 'Cancel Order'
+          sleep 1.5
+          click_button "Cancel Order"
+          sleep 1
+        end
+      end
+    end
   end
 
   context 'search', search: true, no_ci: true  do

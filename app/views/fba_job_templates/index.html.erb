@@ -43,10 +43,10 @@
     <table class='table table-hover table-striped'>
       <thead>
         <tr>
-          <th>ID</th>
-          <th>Unique Name</th>
-          <th>Job Name</th>
-          <th>Imprints</th>
+          <%= sorted_th :id, 'ID' %>
+          <%= sorted_th :name, 'Unique Name' %>
+          <%= sorted_th :job_name, 'Job Name' %>
+          <%= sorted_th :imprint_count, 'Imprints' %>
           <th>Actions</th>
         </tr>
       </thead>
@@ -60,7 +60,7 @@
             <td>
               <span data-toggle='tooltip' title="<%= fba_job_template.fba_imprint_templates.map(&:name).join(', ') %>">
                 <%= fba_job_template.fba_imprint_templates.size %>
-              </span
+              </span>
             </td>
             <td>
               <div class='btn-group btn-group-xs'>

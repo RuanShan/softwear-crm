@@ -145,7 +145,7 @@ class Imprintable < ActiveRecord::Base
 
   before_save :discontinue_imprintable, if: :discontinued?
   after_save :assign_sizing_chart_assetable
-  after_initialize { self.tag ||= "Not Specified" }
+  after_initialize { (self.tag ||= "Not Specified" rescue nil) }
 
   def self.find(param)
     unscoped.where(deleted_at: nil).find(param)

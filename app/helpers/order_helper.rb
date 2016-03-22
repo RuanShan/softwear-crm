@@ -19,6 +19,7 @@ module OrderHelper
       when 'Awaiting Payment' then 'label-danger'
       when 'Payment Terms Met' then 'label-warning'
       when 'Payment Complete' then 'label-success'
+      when 'Canceled' then 'label-danger'
       else nil
       end
     elsif style_type == 'alert'
@@ -38,6 +39,7 @@ module OrderHelper
       when 'pending' then 'label-warning'
       when 'approved' then 'label-success'
       when 'rejected' then 'label-danger'
+      when 'canceled' then 'label-danger'
       else nil
       end
     end
@@ -48,6 +50,7 @@ module OrderHelper
       case status
       when 'pending_artwork_requests' then 'label-danger'
       when 'in_production' then 'label-success'
+      when 'artwork_canceled' then 'label-danger'
       else 'label-warning'
       end
     end
@@ -62,6 +65,7 @@ module OrderHelper
       when 'notified' then 'label-warning'
       when 'picked_up' then 'label-success'
       when 'shipped' then 'label-success'
+      when 'notification_canceled' then 'label-danger'
       else nil
       end
     end
@@ -73,6 +77,7 @@ module OrderHelper
       when 'pending' then 'label-danger'
       when 'in_production' then 'label-warning'
       when 'complete' then 'label-success'
+      when 'canceled' then 'label-danger'
       else nil
       end
     end
@@ -87,12 +92,23 @@ module OrderHelper
     end
   end
 
-  def order_tab(tag, disabled = false, &block)
-    options = {}
-    if disabled
-      options[:class] = 'no-click'
+  def nav_tab(tag, options = {}, &block)
+    options[:class] ||= ''
+
+    if options.delete(:disabled)
+      options[:class] += 'no-click'
     else
       options[:data] = { toggle: 'tab' }
+
+      if options.delete(:remote)
+        options[:class] += ' remote-nav-tab'
+        begin
+          options[:data][:url] = "#{collection_url}/#{resource.id}/tab/#{tag}"
+        rescue ActiveRecord::RecordNotFound => _
+          options[:data][:url] = "#{collection_url}/tab/#{tag}"
+        end
+        options[:data][:tab] = tag
+      end
     end
 
     link_to("##{tag}", options, &block)
@@ -127,6 +143,22 @@ module OrderHelper
 
   def render_fba_data(fba)
     hidden_field_tag('job_attributes[]', fba.to_h.to_json)
+  end
+
+  def order_cost_options(cost = nil)
+    options = ""
+
+    Cost::SELECTABLE_TYPES.each do |cost_type|
+      options += content_tag(:option, cost_type, value: cost_type, selected: cost.try(:type) == cost_type)
+    end
+
+    if cost && !cost.type.blank? && !Cost::SELECTABLE_TYPES.include?(cost.type)
+      options += content_tag(:option, cost.type, value: cost.type, selected: true)
+    end
+
+    options += content_tag(:option, "... or enter your own", value: '', disabled: true)
+
+    options.html_safe
   end
 
   # HACK/DEBUG very similar to the fix in quote_helper.rb. Sometimes line items have

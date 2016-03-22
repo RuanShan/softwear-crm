@@ -1,0 +1,5 @@
+showContentModal({
+  title: "You do not have permission to cancel orders",
+  body: $("<%=j render 'no_cancel', order: @order, sales_managers: @sales_managers %>"),
+  footer: $("<button class='btn btn-default' data-dismiss='modal'>Close</button>")
+});

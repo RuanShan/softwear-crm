@@ -8,18 +8,14 @@ class OrdersController < InheritedResources::Base
   def index
     super do
       @current_action = 'orders#index'
-      @orders = Order.all.page(params[:page])
+      @orders = Order.all.order(created_at: :desc).page(params[:page])
     end
   end
 
   def update
     super do |success, failure|
       success.html do
-        if @order.fba?
-          redirect_to edit_order_path(params[:id], anchor: 'jobs')
-        else
-          redirect_to edit_order_path(params[:id], anchor: 'details')
-        end
+        redirect_to edit_order_path(params[:id], anchor: return_to_anchor)
       end
       failure.html do
         assign_activities
@@ -57,6 +53,15 @@ class OrdersController < InheritedResources::Base
       @current_action = 'orders#edit'
       @shipping_methods = grab_shipping_methods
       assign_activities
+    end
+  end
+
+  def tab
+    @order = Order.find(params[:id])
+    @tab   = params[:tab]
+
+    respond_to do |format|
+      format.js
     end
   end
 
@@ -186,6 +191,16 @@ class OrdersController < InheritedResources::Base
     render layout: 'no_overlay'
   end
 
+  def check_cancelation
+    @order = Order.find(params[:id])
+    if current_user.role?(:sales_manager, :developer)
+      @order.canceled = true
+      render
+    else
+      @sales_managers = User.of_role('sales_manager')
+      render 'not_allowed_to_cancel'
+    end
+  end
 
   def send_to_production
     @order = Order.find(params[:id])
@@ -224,7 +239,23 @@ class OrdersController < InheritedResources::Base
     end
   end
 
+  def return_to_anchor
+    return 'jobs' if @order.fba?
+
+    if params[:order] && params[:order].to_a.flatten.any? { |x| x.to_s =~ /costs?_attributes/ }
+      'costs'
+    else
+      'details'
+    end
+  end
+
   def permitted_params
+    costs_attributes = [
+      :id, :_destroy, :amount, :type, :description, :costable_type, :costable_id,
+      :time, :owner_id,
+      type: []
+    ]
+
     params.permit(
       :packing_slips, :page,
       :fba_jobs,
@@ -238,9 +269,10 @@ class OrdersController < InheritedResources::Base
         :delivery_method, :phone_number, :commission_amount,
         :store_id, :salesperson_id, :total, :shipping_price, :artwork_state,
         :freshdesk_proof_ticket_id, :softwear_prod_id, :production_state, :phone_number_extension,
-        :freshdesk_proof_ticket_id, :softwear_prod_id, :production_state,
+        :freshdesk_proof_ticket_id, :softwear_prod_id, :production_state, :canceled,
 
         quote_ids: [],
+        costs_attributes: costs_attributes,
         jobs_attributes: [
           :id, :name, :jobbable_id, :jobbable_type, :description, :_destroy,
           :shipping_location, :shipping_location_size, :sort_order, :fba_job_template_id,
@@ -254,8 +286,21 @@ class OrdersController < InheritedResources::Base
           ],
           shipments_attributes: [
             :name, :address_1, :city, :state, :zipcode, :shipped_by_id,
-            :shippable_type, :shippable_id, :id, :_destroy, :shipping_method_id,
-            :time_in_transit
+            :shippable_type, :shippable_id, :id, :_destroy, :time_in_transit,
+            :shipping_method_id
+          ],
+
+          standard_line_items_attributes: [
+            :imprintable_object_id, :imprintable_object_type, :id,
+            :line_itemable_id, :line_itemable_type, :quantity,
+            :unit_price, :decoration_price, :imprintable_price,
+            cost_attributes: costs_attributes
+          ],
+          imprintable_line_items_attributes: [
+            :imprintable_object_id, :imprintable_object_type, :id,
+            :line_itemable_id, :line_itemable_type, :quantity,
+            :unit_price, :decoration_price, :imprintable_price,
+            cost_attributes: costs_attributes
           ]
         ]
       ]

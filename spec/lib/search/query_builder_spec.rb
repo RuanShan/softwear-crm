@@ -1,7 +1,6 @@
 require 'spec_helper'
 
 describe Search::QueryBuilder, search_spec: true do
-
   describe '#search' do
     it 'just performs Sunspot searches, but allows the on(ModelName) syntax' do
       search = Search::QueryBuilder.search do
@@ -167,6 +166,23 @@ describe Search::QueryBuilder, search_spec: true do
         expect(group.filters.count).to eq 1
         expect(group.filters.first.type).to be_a Search::PhraseFilter
         expect(group.filters.first.value).to eq 'Excellent'
+      end
+
+      it 'should add a sort filter for order_by', sort_filter: true do
+        query = Search::QueryBuilder.build do
+          on(Order) do
+            order_by :created_at, :asc
+          end
+        end.query
+
+        order_model = query.query_models.first
+        expect(order_model.filter.type).to be_a Search::FilterGroup
+
+        group = order_model.filter.type
+        expect(group.filters.count).to eq 1
+        expect(group.filters.first.type).to be_a Search::SortFilter
+        expect(group.filters.first.field).to eq 'created_at'
+        expect(group.filters.first.value).to eq 'asc'
       end
 
       it 'should be able to build a search with many filters' do

@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160308190536) do
+ActiveRecord::Schema.define(version: 20160318220900) do
 
   create_table "activities", force: :cascade do |t|
     t.integer  "trackable_id",   limit: 4
@@ -308,11 +308,11 @@ ActiveRecord::Schema.define(version: 20160308190536) do
 
   create_table "fba_spreadsheet_uploads", force: :cascade do |t|
     t.boolean  "done"
-    t.text     "spreadsheet",       limit: 65535
+    t.text     "spreadsheet",       limit: 4294967295
     t.text     "processing_errors", limit: 65535
     t.string   "filename",          limit: 191
-    t.datetime "created_at",                      null: false
-    t.datetime "updated_at",                      null: false
+    t.datetime "created_at",                           null: false
+    t.datetime "updated_at",                           null: false
   end
 
   create_table "freshdesk_local_contacts", force: :cascade do |t|
@@ -390,13 +390,14 @@ ActiveRecord::Schema.define(version: 20160308190536) do
   add_index "imprintable_stores", ["imprintable_id", "store_id"], name: "index_imprintable_stores_on_imprintable_id_and_store_id", using: :btree
 
   create_table "imprintable_variants", force: :cascade do |t|
-    t.integer  "imprintable_id", limit: 4
+    t.integer  "imprintable_id",   limit: 4
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.integer  "size_id",        limit: 4
-    t.integer  "color_id",       limit: 4
+    t.integer  "size_id",          limit: 4
+    t.integer  "color_id",         limit: 4
     t.datetime "deleted_at"
-    t.decimal  "weight",                   precision: 10, scale: 1
+    t.decimal  "weight",                     precision: 10, scale: 1
+    t.decimal  "last_cost_amount",           precision: 10, scale: 2
   end
 
   add_index "imprintable_variants", ["deleted_at"], name: "index_imprintable_variants_on_deleted_at", using: :btree
@@ -647,8 +648,9 @@ ActiveRecord::Schema.define(version: 20160308190536) do
     t.decimal  "discount_total",                             precision: 10, scale: 2
     t.decimal  "payment_total",                              precision: 10, scale: 2
     t.boolean  "imported_from_admin"
-    t.string   "phone_number_extension",    limit: 191
     t.string   "payment_state",             limit: 191
+    t.string   "phone_number_extension",    limit: 191
+    t.boolean  "canceled"
   end
 
   add_index "orders", ["deleted_at"], name: "index_orders_on_deleted_at", using: :btree
@@ -897,6 +899,12 @@ ActiveRecord::Schema.define(version: 20160308190536) do
     t.string  "value_type", limit: 191
   end
 
+  create_table "search_sort_filters", force: :cascade do |t|
+    t.string  "field",  limit: 191
+    t.boolean "negate"
+    t.string  "value",  limit: 191
+  end
+
   create_table "search_string_filters", force: :cascade do |t|
     t.string  "field",  limit: 191
     t.boolean "negate"
@@ -1026,6 +1034,46 @@ ActiveRecord::Schema.define(version: 20160308190536) do
   end
 
   add_index "user_attributes", ["user_id"], name: "index_user_attributes_on_user_id", using: :btree
+
+  create_table "users", force: :cascade do |t|
+    t.string   "email",                        limit: 191, default: "", null: false
+    t.string   "encrypted_password",           limit: 191, default: "", null: false
+    t.string   "reset_password_token",         limit: 191
+    t.datetime "reset_password_sent_at"
+    t.datetime "remember_created_at"
+    t.integer  "sign_in_count",                limit: 4,   default: 0,  null: false
+    t.datetime "current_sign_in_at"
+    t.datetime "last_sign_in_at"
+    t.string   "current_sign_in_ip",           limit: 191
+    t.string   "last_sign_in_ip",              limit: 191
+    t.string   "confirmation_token",           limit: 191
+    t.datetime "confirmed_at"
+    t.datetime "confirmation_sent_at"
+    t.string   "unconfirmed_email",            limit: 191
+    t.integer  "failed_attempts",              limit: 4,   default: 0,  null: false
+    t.string   "unlock_token",                 limit: 191
+    t.datetime "locked_at"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.string   "first_name",                   limit: 191
+    t.string   "last_name",                    limit: 191
+    t.datetime "deleted_at"
+    t.integer  "store_id",                     limit: 4
+    t.string   "authentication_token",         limit: 191
+    t.string   "freshdesk_email",              limit: 191
+    t.string   "freshdesk_password",           limit: 191
+    t.string   "encrypted_freshdesk_password", limit: 191
+    t.string   "insightly_api_key",            limit: 191
+    t.integer  "profile_picture_id",           limit: 4
+    t.integer  "signature_id",                 limit: 4
+  end
+
+  add_index "users", ["authentication_token"], name: "index_users_on_authentication_token", using: :btree
+  add_index "users", ["confirmation_token"], name: "index_users_on_confirmation_token", unique: true, using: :btree
+  add_index "users", ["deleted_at"], name: "index_users_on_deleted_at", using: :btree
+  add_index "users", ["email"], name: "index_users_on_email", unique: true, using: :btree
+  add_index "users", ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true, using: :btree
+  add_index "users", ["unlock_token"], name: "index_users_on_unlock_token", unique: true, using: :btree
 
   create_table "warning_emails", force: :cascade do |t|
     t.string  "model",     limit: 191

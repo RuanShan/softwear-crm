@@ -15,6 +15,8 @@ CrmSoftwearcrmCom::Application.routes.draw do
       resources :brands, :colors
       resources :imprintable_groups
       post 'update_imprintable_variants'
+      get 'costs', to: 'costs#mass_new'
+      post 'costs', to: 'costs#mass_create'
 
       resources :sizes do
         collection do
@@ -30,7 +32,7 @@ CrmSoftwearcrmCom::Application.routes.draw do
 
   get 'tags/:tag', to: 'imprintables#index', as: :tag
 
-  resources :brands, :colors
+  resources :brands, :colors, :costs
   resources :artworks do
     collection do
       get 'select'
@@ -43,6 +45,9 @@ CrmSoftwearcrmCom::Application.routes.draw do
   resources :artwork_requests do
     member do
       post 'transition(/:state_machine(/:transition))' => :state, as: :transition
+    end
+    collection do
+      get 'tab/:tab' => :tab, as: :tab
     end
   end
 
@@ -115,10 +120,12 @@ CrmSoftwearcrmCom::Application.routes.draw do
 
   resources :orders do
     member do
+      get 'tab/:tab' => :tab, as: :tab
       get 'production_dashboard', as: 'production_dashboard'
       get :imprintable_order_sheets, as: :imprintable_order_sheets
       get :order_report, as: :order_report
       get 'state/:state_machine' => :state,  as: :state
+      get :check_cancelation
       post 'transition/(:state_machine/:transition)' => :state, as: :transition
       post :send_to_production
     end

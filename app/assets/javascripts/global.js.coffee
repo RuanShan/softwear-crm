@@ -127,6 +127,17 @@ $(document).ready ->
     $('.hide-loading-spinner').on 'click', $('#loading').fadeOut("slow")
     event.preventDefault()
 
+  $('.remote-nav-tab').click (e) ->
+    $this = $(this)
+    return if $this.data('loaded')
+
+    $.ajax
+      url:       $this.data('url')
+      method:    'get'
+      dataType: 'script'
+
+    $this.data('loaded', true)
+
 
 $(document).ajaxStart ->
   unless window.noSpinner
@@ -184,3 +195,8 @@ $.fn.datetimepicker.defaults.defaultDate = initial
   $element.prop 'data-fading-out', true
   -> $element.remove()
 
+@initializeAll = ->
+  initializeEditable()
+  initializeDateTimePicker()
+  initializeSelect2()
+  styleCheckboxes()

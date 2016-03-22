@@ -1,0 +1,29 @@
+<% current_imprintable = [f.object.imprintable_id, f.object.imprintable_variant.color_id] %>
+
+<% if current_imprintable.hash != @_imprintable.hash %>
+    </div>
+    <div class='clearfix'></div>
+  </div>
+  <div class='list-group-item'>
+    <h4><%= f.object.imprintable_and_color %></h4>
+
+    <div>
+      <% @_imprintable = current_imprintable %>
+
+    <div class='pull-left' style='margin-right: 5px; max-width: 50px;'>
+      <h5><strong>Size:</strong></h5>
+      <h5><strong>Cost$:</strong></h5>
+    </div>
+<% end %>
+
+<div class='pull-left line-item-<%= f.object.id %>-cost' style='margin-right: 5px; max-width: 65px;'>
+  <h5 class='text-center'><strong><%= f.object.imprintable_variant.size.display_value %></strong></h5>
+
+  <% f.object.cost ||= Cost.new(type: 'Imprintable', description: 'Cost of imprintables', amount: f.object.imprintable_variant.last_cost_amount) %>
+
+  <%= f.fields_for :cost do |ff| %>
+    <div class='input-group'>
+      <%= ff.text_field :amount, class: 'form-control' %>
+    </div>
+  <% end %>
+</div>

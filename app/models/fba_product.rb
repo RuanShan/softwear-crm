@@ -8,10 +8,17 @@ class FbaProduct < ActiveRecord::Base
 
   searchable do
     text :name, :sku, :fba_sku_skus
+    string :name
+    string :sku
+    integer :child_sku_count
     integer :id
   end
 
   def spreadsheet=
+  end
+
+  def child_sku_count
+    fba_skus.size
   end
 
   def fba_sku_skus

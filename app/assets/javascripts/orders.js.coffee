@@ -34,15 +34,6 @@ appendActivities = (content) ->
   else
     ajaxOrderActivities orderId
 
-@prepareShippableID = ->
-  $('.shipment_shippable_type').change ->
-    if $(this).val() == 'Job'
-      $(".shipment_shippable_id").prop('disabled', false)
-      $(".hidden_shippable_id").attr("disabled", true)
-    else
-      $(".shipment_shippable_id").prop('disabled', true)
-      $(".hidden_shippable_id").attr("disabled", false)
-
 @disableEnterOnNewImprintableLineItems = ->
   $('#new_imprintable_line_item').on 'keyup keypress', (e) ->
     code = e.keyCode or e.which
@@ -60,8 +51,6 @@ $(window).load ->
                 the line items in this order are correct. Contact
                 devteam@annarbortees.com if you can reproduce this."
 
-  prepareShippableID()
-
   # FIXME 'this is a hack, the whole thing is a hack' - Nigel
   # Edit can't redirect, meaning it can't supply an anchor, so
   # we use data from the error modal to know which tab to switch 
@@ -78,6 +67,83 @@ $(window).load ->
     if window.location.hash.indexOf($(this).attr 'href') == -1
       window.location.hash = $(this).attr 'href'
 
+  if $('.orders-edit').length > 0
+    $(document).on 'change', '.shipment_shippable_type', ->
+      if $(this).val() == 'Job'
+        $(".shipment_shippable_id").prop('disabled', false)
+        $(".hidden_shippable_id").attr("disabled", true)
+      else
+        $(".shipment_shippable_id").prop('disabled', true)
+        $(".hidden_shippable_id").attr("disabled", false)
+
+    $(document).on 'click', '.remove-cost', (e) ->
+      $this = $(this)
+      return unless $this.data('showonrmv')
+      $this.closest('.cost-fields-container').find($this.data('showonrmv')).show()
+
+    $(document).on 'click', '.hide-on-click', (e) ->
+      $(this).hide()
+
+    $('.order-freshdesk-link').click (e) ->
+      links = $(this).data('links')
+      if links.length > 1
+        e.preventDefault()
+        body = "<ul>"
+        for link in links
+          body += "<li><a href='"+link+"'>"+link+"</a></li>"
+        body += "</ul>"
+
+        showContentModal
+          title: $("<strong>"+$(this).data('ordername') + " Freshdesk tickets</strong>")
+          body:  $(body)
+          footer: $('<button class="btn btn-default" data-dismiss="modal">Close</button>')
+
+    # TODO instead of Nigel's 'hack' 
+    # possibly create a show for Job that would present relevant info
+    if window.location.hash != ''
+      dashIndex = window.location.hash.indexOf '-'
+      target = window.location.hash
+      data = null
+      if dashIndex > 0
+        data = target.split '-'
+        target = data[0]
+
+      tab = $("a[href='#{target}']")
+      tab.trigger $.Event('click')
+
+      # If data.length > 1, the url might look like: /orders/1/edit#jobs-2
+      # In which case, we want to scroll to the entry for job with ID 2.
+      if data && data.length > 1
+        after 500, ->
+          if target == '#jobs'
+            shined = false
+                                  # Remember, data[0] is target
+            $('.scroll-y').scrollTo $("#job-#{data[1]}").find('.job-title'),{
+              duration: 1000,
+              offsetTop: 100}, ->
+                # If data.length > 3,
+                # the url might look like: /orders/3/edit#jobs-4-line_item-10
+                # In which case, we want to shine the line item with id 10.
+                if data.length > 3 and not shined
+                  if data[2] is 'line_item'
+                    tryShineLineItem = ($lineItem) ->
+                      if $lineItem.length == 0
+                        false
+                      else
+                        shine $lineItem, null, 2000; true
+
+                    tryShineLineItem($ "#line-item-#{data[3]}") or 
+                      tryShineLineItem($("#edit-line-item-#{data[3]}")
+                                       .parentsUntil('.row').parent())
+                    shined = true
+
+                  else if data[2] is 'imprint'
+                    $imprint = $(".imprint-entry[data-id='#{data[3]}'] *")
+                    $('.scroll-y').scrollTo $imprint,{
+                      duration: 700
+                      offsetTop: 300}, ->
+                        shine $imprint, false, 2000
+                        shined = true
   $('#order-quote-ids-select2').select2
     minimumInputLength: 0
     ajax:
@@ -150,5 +216,3 @@ $(window).load ->
                     offsetTop: 300}, ->
                       shine $imprint, false, 2000
                       shined = true
-
-

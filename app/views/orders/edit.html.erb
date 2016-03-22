@@ -1,6 +1,6 @@
 <%= render_error_modal_for @order %>
 
-<div class="row-fluid">
+<div class="row-fluid orders-edit">
   <div class="pull-left">
       <%= profile_picture_of @order.salesperson, style: 'display: inline;' %>
   </div>
@@ -42,7 +42,13 @@
 
     <%= link_to order_warnings_path(@order.id), class: 'btn btn-warning' do %>
       <i class="fa fa-exclamation-triangle"></i> Warnings
-      <%= @order.warnings.active.any? ? "(#{@order.warnings.active.size})" : '' %>
+      <%= @order.warnings.active.any? ? "<span class='badge'>#{@order.warnings.active.size}</span>".html_safe : '' %>
+    <% end %>
+
+    <% unless @order.canceled? %>
+      <%= link_to check_cancelation_order_path(@order), class: 'btn btn-danger', remote: true do %>
+        <i class='fa fa-ban'></i> Cancel Order
+      <% end %>
     <% end %>
 
   </div>
@@ -52,10 +58,13 @@
       Edit <strong>Order #<%= @order.id %></strong>
     </h1>
     <h2>
+      <% if @order.canceled? %>
+        <span class="label label-danger">Canceled</span>
+      <% end %>
       <% if @order.fba? %>
         <span class="label label-warning">FBA</span>
       <% end %>
-      <%= @order.name %>
+      <span class="<%= 'canceled' if @order.canceled %>"><%= @order.name %></span>
     </h2>
     <% unless @order.fba? %>
       Customer URL: <%= link_to customer_order_url(@order.customer_key),  customer_order_path(@order.customer_key), target: "_blank" %>
@@ -92,7 +101,7 @@
         <span class="label <%= get_style_from_invoice_state(@order.invoice_state)%>"><%= @order.invoice_state.humanize %></span>
         <br />
 
-        <% unless @order.invoice_state == 'approved' %>
+        <% if !@order.canceled? && @order.invoice_state != 'approved' %>
           <%= form_for @order do |f| %>
             <%= f.hidden_field :invoice_state, value: 'approved' %>
             <%= button_tag 'Approve Invoice', class: 'btn btn-sm btn-success margin-top-10' %>
@@ -105,7 +114,7 @@
         <br />
           <% if @order.production_url && @order.production_state != 'pending' %>
             <%= link_to 'View in Production', @order.production_url, target: :_blank, class: 'btn btn-sm btn-success margin-top-10' %>
-          <% else %>
+          <% elsif !@order.canceled? %>
             <%= link_to 'Send to Production', send_to_production_order_path(@order), method: :post, class: 'btn btn-sm btn-danger margin-top-10', title: 'Karsten only', data: { toggle: 'tooltip' }  %>
           <% end %>
       </td>
@@ -145,45 +154,51 @@
       <div class="box-info full">
           <ul class="nav nav-tabs nav-justified">
             <li class="active">
-              <%= order_tab(:jobs) do %>
+              <%= nav_tab(:jobs) do %>
                 <i class="fa fa-tasks"></i> Jobs
               <% end %>
             </li>
             <li>
-              <%= order_tab(:details) do %>
+              <%= nav_tab(:details, remote: true) do %>
                 <i class="fa fa-shopping-cart"></i> Details
               <% end %>
             </li>
             <li>
-              <%= order_tab(:payments, @order.fba?) do %>
+              <%= nav_tab(:payments, disabled: @order.fba?, remote: true) do %>
                 <i class="fa fa-money"></i> Payments
               <% end %>
             </li>
             <li>
-              <%= order_tab(:shipments) do %>
+              <%= nav_tab(:shipments, remote: true) do %>
                 <i class="fa fa-archive"></i> Shipments
               <% end %>
             </li>
             <li>
-              <%= order_tab(:artwork) do %>
+              <%= nav_tab(:artwork, remote: !@order.imported_from_admin?) do %>
                 <i class="fa fa-picture-o"></i> Artwork
               <% end %>
             </li>
             <li>
-              <%= order_tab(:proofs) do %>
+              <%= nav_tab(:proofs, remote: !@order.imported_from_admin?) do %>
                 <i class="fa fa-file-text-o"></i> Proofs
               <% end %>
               </a>
             </li>
             <li>
-              <%= order_tab(:comments) do %>
+              <%= nav_tab(:comments, remote: true) do %>
                 <i class="fa fa-bars"></i> Comments
               <% end %>
             </li>
             <li>
-              <%= order_tab(:timeline) do %>
+              <%= nav_tab(:timeline) do %>
                 <i class="fa fa-clock-o"></i> Timeline
               <% end %>
+            </li>
+            <li>
+              <%= nav_tab(:costs, remote: true) do %>
+                <i class="fa fa-dollar"></i> Costs
+              <% end %>
+              </a>
             </li>
           </ul>
 
@@ -209,35 +224,35 @@
             </div>
 
             <div class="tab-pane animated  fadeInRight" id="details">
-              <%= render partial: 'details', locals: { order: @order } %>
+              <%# remote orders/details %>
             </div>
 
             <div class="tab-pane animated fadeInRight" id="payments">
-              <%= render partial: 'payments/payments', locals: { order: @order }%>
+              <%# remote payments/payments %>
             </div>
 
             <div class="tab-pane animated fadeInRight" id="shipments">
-              <%= render partial: 'shipments', locals: { order: @order } %>
+              <%# remote orders/shipments %>
             </div>
 
             <div class="tab-pane animated fadeInRight" id="artwork">
-             <% if @order.imported_from_admin %>
-                <%= render 'artwork_tab_disabled', message: "There was no artwork concept in this version." %>
-             <% else %>
-                <%= render 'artwork_requests/list',  order: @order %>
+             <% if @order.imported_from_admin? %>
+               <%= render 'artwork_tab_disabled', message: "There was no artwork concept in this version." %>
              <% end %>
             </div>
 
             <div class="tab-pane animated fadeInRight" id="proofs">
-             <% if @order.imported_from_admin %>
+             <% if @order.imported_from_admin? %>
                <%= render 'admin_proofs', order: @order %>
-             <% else %>
-               <%= render partial: 'proofs/list', locals: { order: @order } %>
              <% end %>
             </div>
 
+            <div class="tab-pane animated fadeInRight" id="costs">
+              <%# remote orders/costs %>
+            </div>
+
             <div class="tab-pane animated fadeInRight" id="comments">
-                <%= render 'comments', order: @order %>
+              <%# remote orders/comments %>
             </div>
           </div>
       </div>

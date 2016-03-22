@@ -16,15 +16,13 @@ $(document).ready ->
       ajax.done ->
         styleCheckboxes()
 
-  $("a.reject-artwork-request").click (event) ->
+  $(document).on 'click', "a.reject-artwork-request", (event) ->
     event.preventDefault()
     $("div.reject-artwork-request[data-id='"+$(this).data('id')+"']").show()
     $("h3[data-id='"+$(this).data('id')+"']").text($(this).text())
     form = $("form.reject-artwork-request-form[data-id='"+$(this).data('id')+"']")
     form.find(".transition").val($(this).data('transition'))
 
-  $("a.reject-cancel").click (event) ->
+  $(document).on 'click', "a.reject-cancel", (event) ->
     event.preventDefault()
     $(this).closest('div.reject-artwork-request').hide()
-
-

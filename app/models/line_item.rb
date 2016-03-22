@@ -22,8 +22,11 @@ class LineItem < ActiveRecord::Base
   scope :taxable, -> { where(taxable: true) }
 
   belongs_to :imprintable_object, polymorphic: true
+  has_one :variant_imprintable, through: :imprintable_object, source: :imprintable
   belongs_to :job, touch: true, inverse_of: :line_items
   has_one :cost, as: :costable
+
+  accepts_nested_attributes_for :cost
 
   validates :description, presence: true, unless: :imprintable?
   validates :name, presence: true, unless: :imprintable?
@@ -36,7 +39,7 @@ class LineItem < ActiveRecord::Base
   validates :imprintable_object_type, inclusion: {
     in: ['Imprintable', nil], message: 'must be "Imprintable"' }, if: :quote?
   validates :imprintable_object_type, inclusion: {
-    in: ['ImprintableVariant', nil], message: 'must be "Imprintable Variant"' }, if: :order?
+    in: ['ImprintableVariant', nil], message: 'must be "ImprintableVariant"' }, if: :order?
   validates :imprintable_object_id, uniqueness: {
     scope: [:job_id], message: 'is a duplicate in this group' }, if: :imprintable_and_in_job?
 
@@ -45,6 +48,77 @@ class LineItem < ActiveRecord::Base
   after_update :enqueue_update_production_quantities, if: :order_in_production?
   after_save :recalculate_order_fields
   after_destroy :recalculate_order_fields
+
+  def self.in_need_of_cost(limit = nil, offset = nil)
+    fields = %w(
+      li.id sum(li.quantity) li.imprintable_object_id iv.color_id iv.imprintable_id s.display_value
+      s.name c.name o.id iv.last_cost_amount
+    )
+      .map
+      .with_index { |f, i| [f, i] }
+      .to_h
+
+    sql_results = ActiveRecord::Base.connection.execute <<-SQL
+      select #{fields.keys.join(', ')} from line_items li
+
+      join imprintable_variants iv on (iv.id = li.imprintable_object_id)
+      join sizes  s  on (s.id = iv.size_id)
+      join colors c  on (c.id = iv.color_id)
+      join jobs   j  on (j.id = li.job_id)
+      join orders o  on (o.id = j.jobbable_id)
+
+      where li.imprintable_object_type = "ImprintableVariant"
+      and j.jobbable_type = "Order"
+      and o.deleted_at is null
+      and iv.deleted_at is null
+      and (
+        not exists (
+          select costs.id from costs
+          where costs.costable_type = "LineItem"
+          and   costs.costable_id = li.id
+        )
+        or
+        exists (
+          select costs.id from costs
+          where costs.costable_type = "LineItem"
+          and   costs.costable_id = li.id
+          and   (costs.amount = 0 or costs.amount = null)
+        )
+      )
+
+      group by iv.id
+      order by o.id, s.sort_order
+
+      #{"limit  #{limit}"  if limit}
+      #{"offset #{offset}" if offset}
+    SQL
+
+    if block_given? && limit && sql_results.size == limit
+      yield limit
+    end
+
+    line_items_by_i_id = sql_results.map do |r|
+      OpenStruct.new(
+        id:             r[fields['li.id']],
+        quantity:       r[fields['sum(li.quantity)']],
+        imprintable_id: r[fields['iv.imprintable_id']],
+        color_id:       r[fields['iv.color_id']],
+        size_name:      r[fields['s.display_value']] || r[fields['s.name']],
+        color_name:     r[fields['c.name']],
+        last_cost:      r[fields['iv.last_cost_amount']],
+        imprintable_variant_id: r[fields['li.imprintable_object_id']]
+      )
+    end
+      .group_by(&:imprintable_id)
+
+    imprintables = Imprintable.where(id: line_items_by_i_id.keys)
+
+    line_items_by_imprintable = {}
+    imprintables.each do |imprintable|
+      line_items_by_imprintable[imprintable] = line_items_by_i_id[imprintable.id].group_by(&:color_id)
+    end
+    line_items_by_imprintable
+  end
 
   def self.create_imprintables(job, imprintable, color, options = {})
     new_imprintables(job, imprintable, color, options)
@@ -251,6 +325,14 @@ class LineItem < ActiveRecord::Base
     end
   end
 
+  def identifier
+    "#{imprintable_variant.brand.try(:name) || '<no brand>'} #{imprintable_variant.style_catalog_no}: #{imprintable_variant.color.name} #{imprintable_variant.size.display_value}"
+  end
+
+  def imprintable_and_color
+    "#{imprintable_variant.brand.try(:name) || '<no brand>'} #{imprintable_variant.style_catalog_no}: #{imprintable_variant.color.name}"
+  end
+
   private
 
   def set_sort_order
@@ -280,10 +362,12 @@ class LineItem < ActiveRecord::Base
   end
 
   def recalculate_order_fields
-    if order
-      order.recalculate_subtotal
-      order.recalculate_taxable_total
-      order.save!
+    Order.without_tracking do
+      if order
+        order.recalculate_subtotal
+        order.recalculate_taxable_total
+        order.save!
+      end
     end
   end
 end

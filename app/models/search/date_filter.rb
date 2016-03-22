@@ -3,6 +3,15 @@ module Search
     include NumberFilterType
     belongs_to_search_type :date
 
+    def self.assure_value(value)
+      return '' if value.blank?
+      begin
+        value.to_datetime.strftime('%m/%d/%Y %l:%M %p %Z')
+      rescue ArgumentError => _e
+        value
+      end
+    end
+
     def value=(new_value)
       return super unless new_value.is_a?(String)
 

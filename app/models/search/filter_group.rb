@@ -6,10 +6,11 @@ module Search
     # 's' is the secret DSL object that captures our block contexts.
     # We call all_of or any_of on it, depending on how this group is
     # configured.
-    def apply(s, base)
+    def apply(s, base, &block)
       s.send(of_func) do
         filters.each do |filter|
-          filter.apply(self, base)
+          filter.apply(self, base, &block)
+          block.call(filter) if block
         end
       end
     end
@@ -19,13 +20,13 @@ module Search
     end
 
     # Find the filter for the given field recursively within this group.
-    def find_field(field)
+    def find_field(field, &block)
       filters.each do |f|
         if f.type.is_a?(FilterGroup)
-          result = f.type.find_field(field)
+          result = f.type.find_field(field, &block)
           return result if result
-        else
-          return f if f.field.to_sym == field.name.to_sym
+        elsif !f.type.is_a?(SortFilter)
+          return f if f.field.to_sym == field.name.to_sym && (!block_given? || yield(f))
         end
       end
 

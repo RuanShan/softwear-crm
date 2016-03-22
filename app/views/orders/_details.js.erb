@@ -1,0 +1,20 @@
+$('#order-quote-ids-select2').select2({
+  minimumInputLength: 0,
+  ajax: {
+    url:      Routes.quotes_path(),
+    dataType: 'json',
+    delay:    250,
+    data: function(params) {
+      return {
+        q:    params.term,
+        page: params.page
+      }
+    },
+    processResults: function(data, page) {
+      return {
+        results: data.map(function(q) { return { text: q.name, id: q.id }; })
+      };
+    },
+    cache: true
+  }
+});

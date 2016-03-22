@@ -433,53 +433,68 @@ class ArtworkRequest < ActiveRecord::Base
     failed_imprint_methods = {}
 
     count = 0
+    created_digital = false
+    created_screen  = false
+    created_emb     = false
 
     imprints.each do |imprint|
       case imprint.imprint_method.name
       when /Digital\s+Print/
-        count += 1
-        unless Production::Ar3Train.create(
-          order_id: order.softwear_prod_id,
-          crm_artwork_request_id: id
-        ).try(:persisted?)
+        unless created_digital
+          count += 1
+          unless Production::Ar3Train.create(
+            order_id: order.softwear_prod_id,
+            crm_artwork_request_id: id
+          ).try(:persisted?)
 
-          failed_imprint_methods['Digital Print'] = true
+            failed_imprint_methods['Digital Print'] = true
+          end
+
+          created_digital = true
         end
 
       when /Screen\s+Print/
-        count += 1
-        screen_train = Production::ScreenTrain.create(
-          order_id: order.softwear_prod_id,
-          crm_artwork_request_id: id
-        )
+        unless created_screen
+          count += 1
+          screen_train = Production::ScreenTrain.create(
+            order_id: order.softwear_prod_id,
+            crm_artwork_request_id: id
+          )
 
-        if screen_train.try(:persisted?)
+          if screen_train.try(:persisted?)
 
-          if order.fba? && imprint.production_exists?
-            imprint.production.screen_train_id = screen_train.id
+            if order.fba? && imprint.production_exists?
+              imprint.production.screen_train_id = screen_train.id
 
-            unless imprint.production.save
-              order.issue_warning(
-                "ArtworkRequest#create_trains",
-                "Couldn't add screen train ##{screen_train.id} to imprint "\
-                "##{imprint.softwear_prod_id} (CRM##{imprint.id})\n\n"\
-                "#{imprint.production.errors.full_messages.join("\n")}"
-              )
+              unless imprint.production.save
+                order.issue_warning(
+                  "ArtworkRequest#create_trains",
+                  "Couldn't add screen train ##{screen_train.id} to imprint "\
+                  "##{imprint.softwear_prod_id} (CRM##{imprint.id})\n\n"\
+                  "#{imprint.production.errors.full_messages.join("\n")}"
+                )
+              end
             end
+
+          else
+            failed_imprint_methods['Screen Print'] = true
           end
 
-        else
-          failed_imprint_methods['Screen Print'] = true
+          created_screen = true
         end
 
       when /Embroidery/
-        count += 1
-        unless Production::DigitizationTrain.create(
-          order_id: order.softwear_prod_id,
-          crm_artwork_request_id: id
-        ).try(:persisted?)
+        unless created_emb
+          count += 1
+          unless Production::DigitizationTrain.create(
+            order_id: order.softwear_prod_id,
+            crm_artwork_request_id: id
+          ).try(:persisted?)
 
-          failed_imprint_methods['Embroidery'] = true
+            failed_imprint_methods['Embroidery'] = true
+          end
+
+          created_emb = true
         end
       end
     end

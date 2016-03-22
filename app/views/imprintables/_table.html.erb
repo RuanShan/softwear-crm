@@ -3,10 +3,10 @@
     <table class="table table-hover" id="imprintables_list">
       <thead>
         <tr>
-          <th>Standard Offering</th>
-          <th>ID</th>
-          <th>Imprintable</th>
-          <th>Upcharge</th>
+          <%= sorted_th :standard_offering %>
+          <%= sorted_th :id, 'ID' %>
+          <%= sorted_th :name, 'Imprintable' %>
+          <%= sorted_th :base_price, 'Upcharge' %>
           <th>Description</th>
           <th id="actions" style="width: 120px;">Actions</th>
         </tr>

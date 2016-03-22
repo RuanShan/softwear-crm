@@ -3,8 +3,8 @@ module Search
     include FilterType
     belongs_to_search_type :string
 
-    def assure_value(value)
-      if /^\[.*\]$/ =~ value
+    def self.assure_value(value)
+      if value.is_a?(String) && /^\[.*\]$/ =~ value
         JSON.parse(value)
       else
         value

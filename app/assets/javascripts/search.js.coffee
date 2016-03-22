@@ -1,6 +1,6 @@
 $(window).load ->
   $('.js-clear-btn').click ->
-    document.getElementById("js_search").value = "";
+    document.getElementById("js_search").value = ""
 
   deleteSearchQuery = ->
     $this = $(this)
@@ -86,3 +86,31 @@ $(window).load ->
       $form.find('.target_path').val document.URL
 
       $form.submit()
+
+  # We want to add hidden fields for any existing search orderings
+  $('.sortable-table-header[data-last-ordering]').each ->
+    searchForm = $('.search-form')
+    modelName  = searchForm.data('model')
+    searchForm.find('.search-ordering').remove()
+
+    field    = $(this).data('field')
+    ordering = $(this).data('last-ordering')
+    return if ordering is null or ordering is undefined
+
+    searchForm
+      .append("<input class='search-ordering' type=hidden value='#{field}'    name='search[#{modelName}][order_by][]'></input>")
+      .append("<input class='search-ordering' type=hidden value='#{ordering}' name='search[#{modelName}][order_by][]'></input>")
+
+  $('.sortable-table-header').click ->
+    searchForm = $('.search-form')
+    modelName  = searchForm.data('model')
+    field      = $(this).data('field')
+    ordering   = $(this).data('ordering')
+    if ordering is null or ordering is undefined
+      searchForm.submit()
+    else
+      searchForm.find('.search-ordering').remove()
+      searchForm
+        .append("<input class='search-ordering' type=hidden value='#{field}'    name='search[#{modelName}][order_by][]'></input>")
+        .append("<input class='search-ordering' type=hidden value='#{ordering}' name='search[#{modelName}][order_by][]'></input>")
+        .submit()

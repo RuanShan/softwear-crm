@@ -79,16 +79,24 @@ class Shipment < ActiveRecord::Base
     else
       return if shippable.nil?
 
+      train_state = 'pending_packing'
+      if shipped?
+        train_state = 'pending_shipment'
+        if [carrier, service, tracking_number, shipped_at, shipped_by_id].none?(&:blank)
+          train_state = 'shipped'
+        end
+      end
+
       train = Production::ShipmentTrain.create(
         softwear_crm_id: id,
-        # NOTE this assumes "Order" and "Job" are named the same in Production and CRM
         shipment_holder_type: shippable_type,
         shipment_holder_id:   shippable.softwear_prod_id,
-        state:                shipped? ? 'pending_packing' : 'shipped',
+        state:                train_state,
         tracking:             tracking_number,
         shipped_at:           shipped_at,
         carrier:              carrier,
-        service:              service
+        service:              service,
+        shipped_by_id:        shipped_by_id
       )
     end
 
