@@ -121,8 +121,6 @@ feature 'Quotes management', quote_spec: true, js: true, retry: 3 do
       fill_in 'Quote Name', with: 'Quote Name'
       find('#quote_quote_source').find("option[value='Other']").click
       sleep 1
-      expect(page).to have_content value_time(thirty_days_from_now_at_5)
-      expect(page).to have_content value_time(fourteen_days_from_now_at_5) 
       #fill_in 'Quote Valid Until Date', with: (2.days.from_now).strftime('%m/%d/%Y %I:%M %p')
       #fill_in 'Estimated Delivery Date', with: (1.days.from_now).strftime('%m/%d/%Y %I:%M %p')
       click_button 'Next'
@@ -133,6 +131,12 @@ feature 'Quotes management', quote_spec: true, js: true, retry: 3 do
 
       sleep 1
       expect(page).to have_content 'Quote was successfully created.'
+     
+      #asserts that default time is set to 30/14 days from now, at 5pm. 
+      quote = Quote.find_by(email: "test@spec.com")
+      expect(value_time(quote.estimated_delivery_date)).to eq(value_time(fourteen_days_from_now_at_5))
+      expect(value_time(quote.valid_until_date)).to eq(value_time(thirty_days_from_now_at_5))
+
     end
   end
 
