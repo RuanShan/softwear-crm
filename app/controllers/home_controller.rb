@@ -9,6 +9,11 @@ class HomeController < ApplicationController
       with(:state, :artwork_request_rejected)
       with(:salesperson_full_name,  current_user.full_name)
     end.results
+
+    @pending_quote_requests = QuoteRequest.search do
+      with(:status, 'assigned')
+      with(:salesperson_id,  current_user.id)
+    end.results
   end
 
   def undock

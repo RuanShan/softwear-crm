@@ -1,57 +1,92 @@
 <div class="page-heading">
   <h1>Dashboard For <%= @current_user.full_name %></h1>
 </div>
+
 <div class="col-sm-6">
-  <% if @rejected_artwork_requests.empty? %>
-      <div class="alert alert-success">
-        <h3>None of your Artwork Requests have been rejected</h3>
-        <p>The art staff appreciates you!</p>
-      </div>
-  <% else %>
-      <div class="alert alert-danger">
-        <h3>You have artwork requests that have been rejected</h3>
+  <div class="box-info">
+    <h2>Rejected Artwork Requests</h2>
+    <% if @rejected_artwork_requests.empty? %>
+        <div class="alert alert-success">
+          <p>
+            <b>None of your Artwork Requests have been rejected</b>
+            The art staff appreciates you!
+          </p>
+        </div>
+    <% else %>
+        <div class="alert alert-danger">
+          <h3>You have artwork requests that have been rejected</h3>
+        </div>
         <ul>
           <% @rejected_artwork_requests.each do |ar| %>
               <li><%= link_to ar.order.name, [edit_order_path(ar.order), "#artworks"].join %>
               </li>
           <% end %>
         </ul>
-      </div>
-  <% end %>
+    <% end %>
+  </div>
 </div>
 
 <div class="col-sm-6">
+  <div class="box-info">
+    <h2>Orders with Warnings</h2>
     <% if @order_warnings.empty? %>
-      <div class="alert alert-success">
-        <h3>None of your orders have warnings</h3>
-        <p>Pat yourself on the back, <%= @current_user.first_name %>!</p>
-      </div>
+        <div class="alert alert-success">
+          <p><b>None of your orders have warnings</b>
+            Pat yourself on the back, <%= @current_user.first_name %>!</p>
+        </div>
     <% else %>
-      <div class="alert alert-danger">
-        <h3>You have orders with warnings that need to be addressed</h3>
+        <div class="alert alert-danger">
+          <h3>You have orders with warnings that need to be addressed</h3>
+        </div>
         <ul>
           <% @order_warnings.each do |o| %>
-            <% if o.warnings_count == 0
-              Sunspot.index o
-              next
-             end %>
-            <li><%= link_to "#{o.name} (#{pluralize(o.warnings_count, 'warning')})", order_warnings_path(o, active_only: 'true') %>
-          </li>
-        <% end %>
+              <% if o.warnings_count == 0
+                   Sunspot.index o
+                   next
+                 end %>
+              <li><%= link_to "#{o.name} (#{pluralize(o.warnings_count, 'warning')})", order_warnings_path(o, active_only: 'true') %>
+              </li>
+          <% end %>
         </ul>
-      </div>
     <% end %>
+  </div>
 </div>
 
-<% if !current_user.pending_quote_requests.empty? %>
-    <div class="box-info row clear">
-      <h2 class='heading'>
-        <%= filter_quote_requests(current_user) %>
-        Quote Requests Assigned to You
-      </h2>
-      <div id='quote-request-list' class='no-pagination'>
-        <%= render partial: 'quote_requests/table', locals: { quote_requests: quote_requests_for(current_user) } %>
+<% if current_user.is_in_sales? %>
+    <div class="col-sm-12">
+      <div class="box-info">
+        <h2>Pending Quote Requests Assigned To You</h2>
+
+        <div class="additional-btn">
+          Show your quote requests: <%= filter_quote_requests(current_user) %>
+        </div>
+        <div id='quote-request-list' class="no-pagination">
+          <% if @pending_quote_requests.empty? %>
+              <div class=" alert alert-success">
+                <p>You're all caught up on your quote requests! Now go and close on those quotes.</p>
+              </div>
+          <% else %>
+              <%= render partial: 'quote_requests/table', locals: {quote_requests: quote_requests_for(current_user)} %>
+          <% end %>
+        </div>
       </div>
     </div>
 <% end %>
+
+<% if current_user.is_in_sales? && !Rails.env.test? %>
+    <div class="col-sm-12">
+      <div class="box-info">
+        <h2>Sales Stats Dashboard</h2>
+
+        <div class="additional-btn">
+          <%= link_to 'https://www.periscopedata.com/shared/87e7708c-980a-4be9-98ab-317c2e1bcaa5',
+                      target: '_new', class: 'additional-icon' do %>
+              <i class="fa fa-dashboard"></i> Open In New Window
+          <% end %>
+        </div>
+        <iframe id="ifm" src="https://www.periscopedata.com/shared/87e7708c-980a-4be9-98ab-317c2e1bcaa5?embed=true" style="height: 400px; width: 100%"></iframe>
+      </div>
+    </div>
+<% end %>
+
 
