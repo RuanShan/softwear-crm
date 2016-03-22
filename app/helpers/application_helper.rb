@@ -17,6 +17,21 @@ module ApplicationHelper
     end
   end
 
+  def fourteen_days_from_now_at_5
+    future_date = 14.days.from_now
+    DateTime.new(future_date.year, future_date.month, future_date.day, 17, 0, 0)
+  end
+
+  def thirty_days_from_now_at_5
+    future_date = 30.days.from_now
+    DateTime.new(future_date.year, future_date.month, future_date.day, 17, 0, 0)
+  end
+
+  def now_at_5
+    now = DateTime.now
+    DateTime.new(now.year, now.month, now.day, 17, 0, 0)
+  end
+
   def trackable_link_or_unavailable(activity, attribute=:name)
     return "Which has since been removed" if activity.trackable.nil?
     return link_to activity.trackable.send(attribute), activity.trackable

@@ -142,7 +142,7 @@ feature 'FBA Order management', fba_spec: true, story_103: true, js: true, retry
       sleep ci? ? 3 : 1
       find('.big-submit-button').click
       sleep 3
-
+    
       order = Order.fba.where(name: "Scooba Shirt Scooba Sweater - 1 Shipping Location")
       expect(order).to exist
       expect(page).to have_content "Edit Order ##{order.first.id}"
