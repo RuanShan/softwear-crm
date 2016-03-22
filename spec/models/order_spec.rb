@@ -205,11 +205,68 @@ describe Order, order_spec: true do
     end
   end
 
-  # TODO implement this
-  describe 'get_salesperson_id'
+  describe '#duplicate!', dup: true do
+    let!(:new_salesperson) { create(:alternate_user) }
+    let!(:order) { create(:order_with_job) }
+    let(:job) { order.jobs.first }
+    let!(:imprint) { create(:valid_imprint, job: job) }
+    let!(:artwork_request) { create(:artwork_request, imprints: [imprint], ink_colors: [create(:valid_ink_color)], salesperson: order.salesperson) }
+    subject { order.duplicate! new_salesperson }
 
-  # TODO implement this
-  describe 'get_store_id'
+    before { subject.reload }
+
+    it 'returns a new, persisted order with most detail fields copied from the original' do
+      expect(subject).to be_persisted
+      expect(subject.email).to eq order.email
+      expect(subject.firstname).to eq order.firstname
+      expect(subject.lastname).to eq order.lastname
+      expect(subject.company).to eq order.company
+      expect(subject.twitter).to eq order.twitter
+      expect(subject.name).to eq "#{order.name} - Clone"
+      expect(subject.po).to eq order.po
+      expect(subject.terms).to eq order.terms
+      expect(subject.tax_exempt).to eq order.tax_exempt
+      expect(subject.tax_id_number).to eq order.tax_id_number
+      expect(subject.delivery_method).to eq order.delivery_method
+      expect(subject.phone_number).to eq order.phone_number
+      expect(subject.commission_amount).to eq order.commission_amount
+      expect(subject.store_id).to eq order.store_id
+      expect(subject.shipping_price).to eq order.shipping_price
+      expect(subject.softwear_prod_id).to be_nil
+      expect(subject.customer_key).to_not eq order.customer_key
+    end
+
+    it 'accepts a new salesperson as an argument' do
+      expect(subject.salesperson).to eq new_salesperson
+    end
+
+    it 'copies jobs, imprints, and line items' do
+      expect(subject.jobs.size).to eq order.jobs.size
+      expect(subject.imprints.size).to eq order.imprints.size
+    end
+
+    it 'copies artwork requests and properly associates them with the new imprints' do
+      expect(subject.imprints.first.artwork_requests.size).to eq 1
+      expect(subject.imprints.first.artwork_requests.first.id).to_not eq order.imprints.first.artwork_requests.first.id
+    end
+
+    context 'with multiple jobs and imprints' do
+      let!(:other_job) { create(:job, jobbable: order) }
+      let!(:other_imprint) { create(:valid_imprint, job: other_job, print_location: imprint.print_location) }
+
+      before do
+        artwork_request.imprint_ids << other_imprint.id
+        artwork_request.save!
+        expect(artwork_request.imprints.size).to eq 2
+      end
+
+      it 'works' do
+        expect { subject }.to_not raise_error
+        expect(subject.jobs.size).to eq 2
+        expect(subject.imprints.size).to eq 2
+      end
+    end
+  end
 
   describe '#line_items' do
     let!(:order) { create :order }

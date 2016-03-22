@@ -128,6 +128,7 @@ CrmSoftwearcrmCom::Application.routes.draw do
       get :check_cancelation
       post 'transition/(:state_machine/:transition)' => :state, as: :transition
       post :send_to_production
+      post :clone
     end
 
     resources :comments

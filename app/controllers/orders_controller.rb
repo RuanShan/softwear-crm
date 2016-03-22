@@ -98,6 +98,30 @@ class OrdersController < InheritedResources::Base
     end
   end
 
+  def clone
+    @order = Order.find(params[:id])
+    begin
+      @new_order = @order.duplicate! current_user
+    rescue ActiveRecord::RecordInvalid => e
+      @order.issue_warning(
+        "Cloning",
+        "Validation error: #{e.message}\n\n#{e.backtrace.map{ |b| "* #{b}" }.join("\n")}"
+      )
+
+      flash[:error] = "Validation error: #{e.message}.\nA warning has been created with detailed information."
+      redirect_to edit_order_path(@order)
+      return
+    end
+
+    if @new_order.persisted?
+      flash[:success] = "Successfully cloned order ##{params[:id]} into order ##{@new_order.id}!"
+      redirect_to edit_order_path(@new_order)
+    else
+      flash[:error] = "Unable to clone order ##{@order.id}: #{@order.errors.full_messages.join(', ')}"
+      redirect_to edit_order_path(@order)
+    end
+  end
+
   def destroy
     @order = Order.find(params[:id])
     @order.destroy_recursively

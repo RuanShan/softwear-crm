@@ -51,6 +51,14 @@
       <% end %>
     <% end %>
 
+    <%= link_to clone_order_path(@order),
+      method: :post,
+      class: 'btn btn-default',
+      data: { confirm: "Create a copy of order ##{@order.id}?" } do %>
+
+      <i class="fa fa-files-o"></i> Clone
+    <% end %>
+
   </div>
 
   <div class="page-heading animated fadeInDownBig pull-left">
