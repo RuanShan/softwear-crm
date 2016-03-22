@@ -36,6 +36,15 @@
 
     <div class='row'>
       <div class='col-sm-2'>
+        <strong>Quote Submitted At:</strong>
+      </div>
+      <div class='col-sm-10'>
+        <%= value_time(@quote_request.created_at) %>
+      </div>
+    </div>
+
+    <div class='row'>
+      <div class='col-sm-2'>
         <strong>Salesperson:</strong>
       </div>
       <div class='col-sm-10'>
