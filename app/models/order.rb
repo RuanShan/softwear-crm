@@ -609,21 +609,25 @@ class Order < ActiveRecord::Base
     new_order = dup
     case new_salesperson
     when Fixnum, String then new_order.salesperson_id = new_salesperson
-    when nil
+    when nil # do nothing
     else new_order.salesperson = new_salesperson
     end
-    new_order.salesperson = new_salesperson if new_salesperson
-    new_order.name = "#{name} - Clone"
-    new_order.in_hand_by = 1.week.from_now
+    new_order.name             = "#{name} - Clone"
+    new_order.in_hand_by       = 1.week.from_now
     new_order.softwear_prod_id = nil
+    new_order.invoice_state    = 'pending'
+    new_order.production_state = 'pending'
 
     new_order.save!
+
     jobs.each do |job|
       new_job = job.dup
       new_job.jobbable = new_order
       new_job.softwear_prod_id = nil
 
       new_job.save!
+      new_job.imprints.destroy_all if new_order.fba?
+
       job.imprints.each do |imprint|
         new_imprint = imprint.dup
         new_imprint.softwear_prod_id = nil
@@ -636,7 +640,10 @@ class Order < ActiveRecord::Base
           new_artwork_request.ink_color_ids = artwork_request.ink_color_ids
           new_artwork_request.salesperson = new_order.salesperson
           new_artwork_request.imprints = [new_imprint]
+          new_artwork_request.state = 'unassigned'
+          new_artwork_request.softwear_prod_id = nil
           new_artwork_request.save!
+          new_artwork_request.artworks = artwork_request.artworks
         end
       end
 
@@ -650,6 +657,10 @@ class Order < ActiveRecord::Base
     end
 
     new_order.reload
+
+  rescue ActiveRecord::RecordInvalid => _
+    new_order.destroy_recursively if new_order.persisted?
+    raise
   end
 
   def name_and_numbers

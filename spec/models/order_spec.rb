@@ -208,12 +208,10 @@ describe Order, order_spec: true do
   describe '#duplicate!', dup: true do
     let!(:new_salesperson) { create(:alternate_user) }
     let!(:order) { create(:order_with_job) }
-    let(:job) { order.jobs.first }
+    let!(:job) { order.jobs.first }
     let!(:imprint) { create(:valid_imprint, job: job) }
     let!(:artwork_request) { create(:artwork_request, imprints: [imprint], ink_colors: [create(:valid_ink_color)], salesperson: order.salesperson) }
-    subject { order.duplicate! new_salesperson }
-
-    before { subject.reload }
+    subject { order.reload.duplicate! new_salesperson }
 
     it 'returns a new, persisted order with most detail fields copied from the original' do
       expect(artwork_request.imprints.size).to eq 1
@@ -256,6 +254,10 @@ describe Order, order_spec: true do
       let!(:other_imprint) { create(:valid_imprint, job: other_job, print_location: imprint.print_location) }
 
       before do
+        expect(other_job.order).to eq order
+        expect(job.order).to eq order
+        order.reload
+        expect(order.jobs.size).to eq 2
         expect(artwork_request.imprints.size).to eq 1
         artwork_request.imprints << other_imprint
         artwork_request.save!
@@ -263,10 +265,10 @@ describe Order, order_spec: true do
       end
 
       it 'works' do
-        expect(order.jobs.size).to eq 2
-        expect { subject.reload }.to_not raise_error
-        expect(subject.jobs.size).to eq 2
+        expect { subject }.to_not raise_error
+        expect(subject.reload.jobs.size).to eq 2
         expect(subject.imprints.size).to eq 2
+        expect(subject.artwork_requests.first.state).to eq 'unassigned'
       end
     end
   end
