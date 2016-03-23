@@ -171,33 +171,33 @@ module ApplicationHelper
     else
       text = "#{activity.trackable_type.underscore.humanize} ##{activity.trackable.id}"
       return text unless url
-      return link_to(text, url, options) if url  
+      return link_to(text, url, options) if url
     end
   end
-  
+
   def activity_recipient_or_removed(activity, url=nil, options = {})
     if activity.recipient.nil?
       "#{activity.recipient_type.underscore.humanize } that has since been removed"
     else
       text = "#{activity.recipient_type.underscore.humanize} ##{activity.recipient.id}"
       return text unless url
-      return link_to(text, url, options) if url  
+      return link_to(text, url, options) if url
     end
   end
-  
+
   def activity_owner_or_removed(activity, url=nil, options = {})
     if activity.owner.nil?
       "A since deleted user"
     else
       text = activity.owner.full_name
       return text unless url
-      return link_to(text, url, options) if url  
+      return link_to(text, url, options) if url
     end
   end
 
   def prepend_with_article(string)
-    %w(a e i o u).include?(string.downcase.first) ? "an #{self}" : "a #{self}" 
-  end 
+    %w(a e i o u).include?(string.downcase.first) ? "an #{self}" : "a #{self}"
+  end
 
   def can_charge_card?
     !Setting.payflow_login.blank? && !Setting.payflow_password.blank?

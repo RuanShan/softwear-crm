@@ -562,7 +562,7 @@ class Order < ActiveRecord::Base
     return 0 if tax_exempt?
     return 0 if discount_total >= taxable_total
 
-    (taxable_total - discount_total(exclude_discounts)) * tax_rate
+    ((taxable_total - discount_total(exclude_discounts)) * tax_rate).round(2)
   end
   alias_method :tax_excluding_discounts, :tax
 

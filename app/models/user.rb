@@ -1,16 +1,5 @@
 class User < Softwear::Auth::Model
   CUSTOMER_EMAIL = "customer@softwearcrm.com"
-  SALES_MANAGERS = %w(
-    ricky@annarbortees.com
-    jack@annarbortees.com
-    jerry@annarbortees.com
-    nate@annarbortees.com
-    michael@annarbortees.com
-    chantal@annarbortees.com
-    kenny@annarbortees.com
-    nigel@annarbortees.com
-    shannon@annarbortees.com
-  )
 
   has_many :orders,         foreign_key: 'salesperson_id'
   has_many :quote_requests, foreign_key: 'salesperson_id'
@@ -36,8 +25,12 @@ class User < Softwear::Auth::Model
     )
   end
 
+  def is_in_sales?
+    self.role?('sales_manager') || self.role?('salesperson')
+  end
+
   def sales_manager?
-    SALES_MANAGERS.include?(email) || Rails.env.test?
+    self.role?('sales_manager') || Rails.env.test?
   end
 
   def customer?
