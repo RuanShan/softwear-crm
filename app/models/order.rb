@@ -1102,6 +1102,7 @@ class Order < ActiveRecord::Base
     end
 
     nuke.(self)
+    Sunspot.index self
   end
 
   def set_all_states_to_canceled!
