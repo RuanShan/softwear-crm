@@ -216,6 +216,7 @@ describe Order, order_spec: true do
     before { subject.reload }
 
     it 'returns a new, persisted order with most detail fields copied from the original' do
+      expect(artwork_request.imprints.size).to eq 1
       expect(subject).to be_persisted
       expect(subject.email).to eq order.email
       expect(subject.firstname).to eq order.firstname
@@ -250,18 +251,20 @@ describe Order, order_spec: true do
       expect(subject.imprints.first.artwork_requests.first.id).to_not eq order.imprints.first.artwork_requests.first.id
     end
 
-    context 'with multiple jobs and imprints' do
+    context 'with multiple jobs and imprints', mar: true do
       let!(:other_job) { create(:job, jobbable: order) }
       let!(:other_imprint) { create(:valid_imprint, job: other_job, print_location: imprint.print_location) }
 
       before do
-        artwork_request.imprint_ids << other_imprint.id
+        expect(artwork_request.imprints.size).to eq 1
+        artwork_request.imprints << other_imprint
         artwork_request.save!
         expect(artwork_request.imprints.size).to eq 2
       end
 
       it 'works' do
-        expect { subject }.to_not raise_error
+        expect(order.jobs.size).to eq 2
+        expect { subject.reload }.to_not raise_error
         expect(subject.jobs.size).to eq 2
         expect(subject.imprints.size).to eq 2
       end
