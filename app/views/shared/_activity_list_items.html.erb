@@ -1,7 +1,13 @@
 <% if activities %>
   <% activities.each do |activity| %>
-    <% cache("activity_#{activity.id}") do  %>
-      <%= render partial: 'shared/activity_list_item', locals: { activity: activity } %>
+    <% begin %>
+      <% cache("activity_#{activity.id}") do  %>
+        <%= render partial: 'shared/activity_list_item', locals: { activity: activity } %>
+      <% end %>
+    <% rescue StandardError => e %>
+      <% Rails.logger.error "#{e.class} #{e.message}\n#{e.backtrace.join("\n")}" %>
+      ERROR <%= e.message %> <br />
+      See logs for more info.
     <% end %>
   <% end %>
 <% end %>
