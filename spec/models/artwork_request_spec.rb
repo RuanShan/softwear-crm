@@ -63,6 +63,26 @@ describe ArtworkRequest, artwork_request_spec: true do
     end
   end
 
+  describe '#create_trains', trains: true do
+    let!(:imprint) { create(:valid_imprint) }
+    let!(:ink) { create(:valid_ink_color, custom: true, name: "Custom Ink") }
+    let!(:artwork_request) { create(:valid_artwork_request, state: 'unassigned', imprints: [imprint], ink_colors: [ink]) }
+
+    context 'when an artwork request contains a custom ink color and a screen print' do
+      it 'creates a CustomInkColorTrain in its first job' do
+        allow(Production::ScreenTrain).to receive(:create).and_return double('train', persisted: true)
+
+        allow_any_instance_of(Imprint).to receive(:imprint_method)
+          .and_return double('ImprintMethod', name: "Screen Print")
+
+        expect(Production::CustomInkColorTrain).to receive(:create)
+          .with(hash_including name: 'Custom Ink')
+
+        artwork_request.create_trains
+      end
+    end
+  end
+
   describe 'callbacks'  do
     describe 'after_save' do
       let(:artwork_request) { create(:valid_artwork_request, state: 'unassigned') }

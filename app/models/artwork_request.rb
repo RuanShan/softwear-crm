@@ -436,6 +436,14 @@ class ArtworkRequest < ActiveRecord::Base
     created_digital = false
     created_screen  = false
     created_emb     = false
+    created_ink     = false
+
+    custom_ink_colors = ink_colors.where(custom: true)
+
+    unless custom_ink_colors.exists?
+      # Only create an ink color train if we have custom ink
+      created_ink = true
+    end
 
     imprints.each do |imprint|
       case imprint.imprint_method.name
@@ -481,6 +489,23 @@ class ArtworkRequest < ActiveRecord::Base
           end
 
           created_screen = true
+        end
+
+        unless created_ink
+          custom_ink_colors.each do |ink_color|
+            count += 1
+            ink_color_train = Production::CustomInkColorTrain.create(
+              job_id: imprint.job.softwear_prod_id,
+              name: ink_color.name,
+              notes: jobs.size >= 2 ? "This train applies to an imprint group" : ""
+            )
+
+            unless ink_color_train.try(:persisted?)
+              failed_imprint_methods['Screen Train (Custom Ink)'] = true
+            end
+          end
+
+          created_ink = true
         end
 
       when /Embroidery/
