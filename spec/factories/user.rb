@@ -6,6 +6,7 @@ FactoryGirl.define do
       first_name 'Test_First'
       sequence(:last_name) { |n| "Test_Last_#{n}" }
       sequence(:email) { |n| "user_email_#{n}@hotmail.com" }
+      roles []
 
       initialize_with do
         new(

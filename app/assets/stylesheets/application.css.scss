@@ -130,6 +130,11 @@ blockquote.freshdesk_quote {
   max-width: 10em;
 }
 
+.dashboard-div {
+  overflow: auto;
+  height: 300px;
+}
+
 @import "font-awesome-sprockets";
 @import "font-awesome";
 @import "jquery.minicolors";
