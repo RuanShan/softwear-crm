@@ -1,6 +1,6 @@
 <% if activity.trackable_type %>
   <p>
-  Refunded payment of <%= activity.trackable.amount %>
+  Refunded payment of <%= activity.trackable.try(:amount) || '$<unknown>' %>
   <% if activity.recipient && activity.recipient != activity.trackable %>
     to
     <%= activity.recipient_type.underscore.humanize.downcase %>
