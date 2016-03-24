@@ -1,5 +1,5 @@
 class ArtworkRequestImprint < ActiveRecord::Base
-  belongs_to :artwork_request
+  belongs_to :artwork_request, touch: true
   belongs_to :imprint
   has_one :job, through: :imprint
 
