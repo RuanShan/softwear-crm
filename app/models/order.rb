@@ -637,11 +637,12 @@ class Order < ActiveRecord::Base
 
         imprint.artwork_requests.each do |artwork_request|
           new_artwork_request = artwork_request.dup
-          new_artwork_request.ink_color_ids = artwork_request.ink_color_ids
+          new_artwork_request.ink_color_ids = artwork_request.ink_color_ids.dup
           new_artwork_request.salesperson = new_order.salesperson
           new_artwork_request.imprints = [new_imprint]
           new_artwork_request.state = 'unassigned'
           new_artwork_request.softwear_prod_id = nil
+          new_artwork_request.save
           new_artwork_request.save!(validate: false)
           new_artwork_request.artworks = artwork_request.artworks
         end
