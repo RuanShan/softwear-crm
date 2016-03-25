@@ -24,7 +24,7 @@ class CostsController < InheritedResources::Base
         .pluck(:id)
 
       values = line_item_ids.map do |line_item_id|
-        %<("LineItem",#{line_item_id},#{value},"Imprintable","Cost of imprintables",#{current_user.id},#{now},#{now})>
+        %<("LineItem",#{line_item_id},#{value.to_f},"Imprintable","Cost of imprintables",#{current_user.id},#{now},#{now})>
       end
         .join(',')
 
