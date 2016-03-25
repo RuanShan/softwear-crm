@@ -82,6 +82,16 @@
     <%= f.check_box_with_text_field :tax_exempt, :tax_id_number, placeholder: 'Tax ID Number' %>
   </div>
 
+  <div class="form-group">
+    <%= f.label :tax_rate_percent, "Tax rate" %>
+    <%= f.error_for :tax_rate %>
+    <div class='input-group'>
+      <%= f.number_field :tax_rate_percent %>
+      <div class='input-group-addon'>%</div>
+    </div>
+    <p class="help-block">Percentage of subtotal added for sales tax</p>
+  </div>
+
   <% unless f.object.new_record? %>
   <div class="form-group">
     <%= f.label :invoice_state %>

@@ -83,6 +83,21 @@
         <% end %>
     <% end %>
 
+    <% unless sales_tax_settings.nil? %>
+      <h2>Sales Tax</h2>
+      <% sales_tax_settings.each do |key, value| %>
+          <% next if value.nil? %>
+          <%= fields_for 'sales_tax_settings[]', value do |f| %>
+            <div class="form-group">
+              <%= f.label :name, key.to_s.titleize, class: 'col-sm-2 control-label' %>
+              <div class="col-sm-10">
+                <%= f.text_field :val, class: 'form-control' %>
+              </div>
+            </div>
+          <% end %>
+      <% end %>
+    <% end %>
+
     <div class="form-group clearfix">
       <%= submit_tag 'Update' %>
     </div>

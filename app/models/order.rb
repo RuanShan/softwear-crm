@@ -122,6 +122,9 @@ class Order < ActiveRecord::Base
   accepts_nested_attributes_for :payments, :jobs, :shipments
   accepts_nested_attributes_for :costs, allow_destroy: true
 
+  validates :tax_rate,
+            presence: true,
+            numericality: { greater_than: 0 }
   validates :invoice_state,
             presence: true,
             inclusion: {
@@ -572,7 +575,15 @@ class Order < ActiveRecord::Base
   end
 
   def tax_rate
-    0.06
+    super || (self.tax_rate = Setting.default_sales_tax_rate || 0.06)
+  end
+
+  def tax_rate_percent
+    tax_rate * 100
+  end
+
+  def tax_rate_percent=(value)
+    self.tax_rate = value.to_f / 100
   end
 
   def total(exclude_discounts = [])

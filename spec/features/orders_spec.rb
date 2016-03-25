@@ -19,7 +19,7 @@ feature 'Order management', order_spec: true, js: true do
     expect(page).to have_css("tr#order_#{order.id}")
   end
 
-  scenario 'A user can create a new order' do
+  scenario 'A user can create a new order', new: true do
     visit root_path
     unhide_dashboard
     click_link 'Orders'
@@ -59,6 +59,47 @@ feature 'Order management', order_spec: true, js: true do
     #asserts that the in_hand_by date is defaulted by today at 5pm.
     order = Order.find_by(firstname: 'Guy')
     expect(value_time(order.in_hand_by)).to eq(value_time(now_at_5))
+  end
+
+  scenario 'A user can specify sales tax as a percentage', pending: "come on", new: true, tax_rate: true do
+    visit root_path
+    unhide_dashboard
+    click_link 'Orders'
+    wait_for_ajax
+    click_link 'New'
+
+    fill_in 'Email', with: 'test@example.com'
+    fill_in 'Phone number', with: '321-654-9870'
+    fill_in 'Phone number extension', with: '28'
+    fill_in 'First name', with: 'Guy'
+    fill_in 'Last name', with: 'Fieri'
+    fill_in 'Company', with: 'Probably Nothing'
+    fill_in 'Twitter', with: 'stuff'
+
+    click_button 'Next'
+    wait_for_ajax
+
+    fill_in 'Name', with: 'Whatever this should be'
+    #fill_in 'In Hand By Date', with: '12/25/2025 12:00 AM'
+    select User.find(order.salesperson_id).full_name, from: 'Salesperson'
+    wait_for_ajax
+    select order.store.name, from: 'Store'
+    select 'Half down on purchase', from: 'Payment terms'
+    sleep 0.5
+    fill_in "Tax rate", with: '7.5'
+    sleep 1
+
+    click_button 'Next'
+    sleep 1
+
+    select 'Pick up in Ypsilanti', from: 'Delivery method'
+
+    sleep 1
+    click_button 'Submit'
+    sleep 1
+
+    expect(Order.where(firstname: 'Guy')).to exist
+    expect(Order.find_by(firstname: 'Guy').tax_rate).to eq 0.075
   end
 
   scenario 'an order with a line item that has a bad imprintable variant removes it and informs the user', retry: 4, bugfix: true do

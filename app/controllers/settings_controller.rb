@@ -26,6 +26,9 @@ class SettingsController < InheritedResources::Base
      signature: Setting.find_or_create_by(name: 'paypal_signature'),
      logo_url:  Setting.find_or_create_by(name: 'payment_logo_url')
     }
+    @sales_tax_settings = {
+      default_sales_tax_rate: Setting.find_or_create_by(name: 'default_sales_tax_rate')
+    }
   end
 
   def update
@@ -34,6 +37,7 @@ class SettingsController < InheritedResources::Base
     Setting.update(params[:production_crm_settings].keys, params[:production_crm_settings].values)
     Setting.update(params[:payflow_settings].keys, params[:payflow_settings].values)
     Setting.update(params[:paypal_settings].keys, params[:paypal_settings].values)
+    Setting.update(params[:sales_tax_settings].keys, params[:sales_tax_settings].values)
     redirect_to integrated_crms_path
   end
 

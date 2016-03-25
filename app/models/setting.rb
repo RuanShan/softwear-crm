@@ -52,6 +52,17 @@ class Setting < ActiveRecord::Base
     end
   end
 
+  def self.default_sales_tax_rate
+    (
+        Setting.find_by(name: 'default_sales_tax_rate') || Setting.create(
+          name: 'default_sales_tax_rate',
+          val:  '0.06',
+          encrypted: false
+        )
+    )
+      .val.to_f
+  end
+
 private
 
   def self.configured?(records)

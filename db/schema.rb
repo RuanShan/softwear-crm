@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160318220900) do
+ActiveRecord::Schema.define(version: 20160325200530) do
 
   create_table "activities", force: :cascade do |t|
     t.integer  "trackable_id",   limit: 4
@@ -651,6 +651,7 @@ ActiveRecord::Schema.define(version: 20160318220900) do
     t.string   "phone_number_extension",    limit: 191
     t.string   "payment_state",             limit: 191
     t.boolean  "canceled"
+    t.decimal  "tax_rate",                                   precision: 10, scale: 2
   end
 
   add_index "orders", ["deleted_at"], name: "index_orders_on_deleted_at", using: :btree
