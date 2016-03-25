@@ -165,7 +165,11 @@ class ArtworkRequest < ActiveRecord::Base
   end
 
   def assigned_artist(artist)
-    update_column(:artist_id, (artist.id rescue artist))
+    if persisted?
+      update_column(:artist_id, (artist.id rescue artist))
+    else
+      self.artist_id = (artist.id rescue artist)
+    end
     super
   end
 
