@@ -395,12 +395,20 @@ class Job < ActiveRecord::Base
       new_line_item.save!
     end
 
-    unless fba?
-      imprints.each do |imprint|
-        new_imprint = imprint.dup
-        new_imprint.job = new_job
-        new_imprint.softwear_prod_id = nil
-        new_imprint.save!
+    # Dumb way to circumvent the default screen print being added to new FBA jobs.
+    new_job.imprints.destroy_all if fba?
+
+    imprints.each do |imprint|
+      new_imprint = imprint.dup
+      new_imprint.job = new_job
+      new_imprint.softwear_prod_id = nil
+      new_imprint.save!
+
+      if fba?
+        imprint.artwork_requests.each do |ar|
+          new_imprint.artwork_request_imprints.create(artwork_request_id: ar.id)
+          ar.enqueue_create_imprint_group_if_needed if production?
+        end
       end
     end
 

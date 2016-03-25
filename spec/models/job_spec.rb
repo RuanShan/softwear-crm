@@ -139,6 +139,22 @@ describe Job, job_spec: true do
       expect(subject.softwear_prod_id).to be_nil
       expect(subject.imprints.first.softwear_prod_id).to eq nil
     end
+
+    context 'for an fba job' do
+      let!(:artwork_request) { create(:valid_artwork_request, imprints: [imprint]) }
+
+      before(:each) do
+        order.update_column :terms, 'Fulfilled by Amazon'
+      end
+
+      it 'associates artwork requests with the new imprints' do
+        expect(artwork_request.reload.imprints.size).to eq 1
+        expect{subject}.to_not raise_error
+        expect(subject.imprints.size).to eq job.imprints.size
+        expect(subject.imprints.first.print_location_id).to eq job.imprints.first.print_location_id
+        expect(artwork_request.reload.imprints.uniq.size).to eq 2
+      end
+    end
   end
 
   describe 'an fba job' do
