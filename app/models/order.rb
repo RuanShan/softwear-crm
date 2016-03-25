@@ -657,6 +657,7 @@ class Order < ActiveRecord::Base
 
     end
 
+    new_order.recalculate_all!
     new_order.reload
 
   rescue ActiveRecord::RecordInvalid => _
