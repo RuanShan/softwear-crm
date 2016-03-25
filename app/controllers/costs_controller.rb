@@ -1,4 +1,6 @@
 class CostsController < InheritedResources::Base
+  skip_before_filter :verify_authenticity_token
+
   def mass_new
     # NOTE the block gets called when there were more results than the given limit.
     @line_items_by_imprintable = LineItem.in_need_of_cost(1000) { |lim| @at_limit = lim }
@@ -12,6 +14,8 @@ class CostsController < InheritedResources::Base
     params.each do |key, value|
       next unless /imprintable_variant_(?<variant_id>\d+)_cost/ =~ key.to_s
       next if value.try(:strip).blank?
+
+      value.gsub!(/\.\.+/, '.')
 
       line_item_ids = LineItem.where(
         imprintable_object_type: 'ImprintableVariant',
