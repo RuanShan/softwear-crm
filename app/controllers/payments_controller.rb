@@ -18,7 +18,7 @@ class PaymentsController < InheritedResources::Base
       failure.html { render params[:order_id] ? 'payments/new' : 'payments/new_retail' }
     end
 
-  rescue Payment::PaymentError => e
+  rescue Payment::PaymentError => _e
     # The error message will be displayed via @payment's payment_method errors
     # (check out views/customer/payments/_credit_card_form.html.erb)
     if params[:order_id]
@@ -70,6 +70,10 @@ class PaymentsController < InheritedResources::Base
       format.js
       format.html { render 'new_retail' if @order.nil? }
     end
+  end
+
+  def index
+    redirect_to action: :new
   end
 
   def undropped
