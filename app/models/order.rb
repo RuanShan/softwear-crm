@@ -1085,9 +1085,9 @@ class Order < ActiveRecord::Base
       join imprintables i on i.id = iv.imprintable_id
       join brands b on b.id = i.brand_id
       where o.id = #{self.id}
-      where o.deleted_at is not null
-      where j.deleted_at is not null
-      where li.deleted_at is not null
+      and o.deleted_at is not null
+      and j.deleted_at is not null
+      and li.deleted_at is not null
       group by iv.id
       order by o.id, i.id, c.id, s.sort_order;
     }
