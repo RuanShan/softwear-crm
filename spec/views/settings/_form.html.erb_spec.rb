@@ -12,7 +12,8 @@ describe 'settings/_form.html.erb', setting_spec: true do
       insightly_settings: nil,
       production_crm_settings: nil,
       payflow_settings: nil,
-      paypal_settings: nil
+      paypal_settings: nil,
+      sales_tax_settings: nil
   end
 
   it 'has a form with appropriate fields' do
