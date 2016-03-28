@@ -51,8 +51,8 @@ module ProductionCounterpart
         # For some reason, if we queue it instantly, sidekiq becomes one update "behind",
         # and won't update to the new value until the next update comes in.
         #
-        # That is why we delay for 1 second here.
-        self.class.delay_for(1.second, queue: 'api').update_production(id, update_production_fields)
+        # That is why we delay for 10 seconds here.
+        self.class.delay_for(10.seconds, queue: 'api').update_production(id, update_production_fields)
       end
     end
   end
