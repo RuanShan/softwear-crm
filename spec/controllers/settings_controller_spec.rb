@@ -51,7 +51,7 @@ describe SettingsController, setting_spec: true do
 
   describe 'PUT update' do
     it 'calls update' do
-      expect(Setting).to receive(:update).and_return(nil).exactly(5).times
+      expect(Setting).to receive(:update).and_return(nil).exactly(6).times
       expect(post :update, fd_settings: {}, in_settings: {}, production_crm_settings: {}, payflow_settings: {}, paypal_settings: {}, sales_tax_settings: {}).to redirect_to integrated_crms_path
     end
   end
