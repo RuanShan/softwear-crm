@@ -26,27 +26,27 @@ describe CostsController do
       end
 
       it 'creates costs for all line items of those variants' do
-        expect(white_shirt_s_item.reload.cost).to be_nil
-        expect(white_shirt_m_item.reload.cost).to be_nil
-        expect(white_shirt_l_item.reload.cost).to be_nil
-        expect(white_shirt_s_item_2.reload.cost).to be_nil
-        expect(white_shirt_m_item_2.reload.cost).to be_nil
-        expect(white_shirt_l_item_2.reload.cost).to be_nil
+        expect(white_shirt_s_item.reload.cost_amount).to be_nil
+        expect(white_shirt_m_item.reload.cost_amount).to be_nil
+        expect(white_shirt_l_item.reload.cost_amount).to be_nil
+        expect(white_shirt_s_item_2.reload.cost_amount).to be_nil
+        expect(white_shirt_m_item_2.reload.cost_amount).to be_nil
+        expect(white_shirt_l_item_2.reload.cost_amount).to be_nil
 
         post :mass_create, creation_params
         expect(flash[:error]).to be_blank
         expect(flash[:success]).to eq "Successfully added 6 costs!"
 
-        expect(Cost.where(amount: 10.5)).to exist
-        expect(Cost.where(amount: 11.5)).to exist
-        expect(Cost.where(amount: 12.5)).to exist
+        expect(Cost.where(amount: 10.5)).to_not exist
+        expect(Cost.where(amount: 11.5)).to_not exist
+        expect(Cost.where(amount: 12.5)).to_not exist
 
-        expect(white_shirt_s_item.reload.cost.amount).to eq 10.5
-        expect(white_shirt_m_item.reload.cost.amount).to eq 11.5
-        expect(white_shirt_l_item.reload.cost.amount).to eq 12.5
-        expect(white_shirt_s_item_2.reload.cost.amount).to eq 10.5
-        expect(white_shirt_m_item_2.reload.cost.amount).to eq 11.5
-        expect(white_shirt_l_item_2.reload.cost.amount).to eq 12.5
+        expect(white_shirt_s_item.reload.cost_amount).to eq 10.5
+        expect(white_shirt_m_item.reload.cost_amount).to eq 11.5
+        expect(white_shirt_l_item.reload.cost_amount).to eq 12.5
+        expect(white_shirt_s_item_2.reload.cost_amount).to eq 10.5
+        expect(white_shirt_m_item_2.reload.cost_amount).to eq 11.5
+        expect(white_shirt_l_item_2.reload.cost_amount).to eq 12.5
       end
     end
   end
