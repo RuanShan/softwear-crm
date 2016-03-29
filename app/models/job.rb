@@ -29,7 +29,6 @@ class Job < ActiveRecord::Base
   has_many :artwork_requests, through: :imprints
   has_many :imprints, dependent: :destroy, inverse_of: :job
   has_many :line_items, dependent: :destroy, inverse_of: :job
-  has_many :costs, through: :line_items, source: :cost
   has_many :shipments, as: :shippable
   has_many :proofs
   has_many :discounts, as: :discountable

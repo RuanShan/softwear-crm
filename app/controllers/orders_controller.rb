@@ -266,7 +266,7 @@ class OrdersController < InheritedResources::Base
   def return_to_anchor
     return 'jobs' if @order.fba?
 
-    if params[:order] && params[:order].to_a.flatten.any? { |x| x.to_s =~ /costs?_attributes/ }
+    if params[:order] && params[:order].to_a.flatten.any? { |x| x.to_s =~ /cost_amount/ }
       'costs'
     else
       'details'
@@ -318,12 +318,14 @@ class OrdersController < InheritedResources::Base
             :imprintable_object_id, :imprintable_object_type, :id,
             :line_itemable_id, :line_itemable_type, :quantity,
             :unit_price, :decoration_price, :imprintable_price,
+            :cost_amount,
             cost_attributes: costs_attributes
           ],
           imprintable_line_items_attributes: [
             :imprintable_object_id, :imprintable_object_type, :id,
             :line_itemable_id, :line_itemable_type, :quantity,
             :unit_price, :decoration_price, :imprintable_price,
+            :cost_amount,
             cost_attributes: costs_attributes
           ]
         ]

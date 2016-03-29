@@ -35,8 +35,8 @@ feature 'Costs Management', js: true do
     click_button 'Submit'
 
     sleep ci? ? 3 : 1
-    expect(Cost.where(amount: 12)).to exist
-    expect(Cost.where(amount: 10)).to exist
+    expect(LineItem.where(cost_amount: 12)).to exist
+    expect(LineItem.where(cost_amount: 10)).to exist
   end
 
   context 'when there are existing costs for the shown variants' do
@@ -44,14 +44,8 @@ feature 'Costs Management', js: true do
     given(:new_line_item_2) { create(:imprintable_line_item, imprintable_object: white_shirt_l, job: job_2) }
 
     background(:each) do
-      Cost.create(
-        costable: white_shirt_m_item,
-        amount: 10.00
-      )
-      Cost.create(
-        costable: white_shirt_l_item,
-        amount: 15.00
-      )
+      white_shirt_m_item.update_column :cost_amount, 10
+      white_shirt_l_item.update_column :cost_amount, 15
 
       white_shirt_m.update_column :last_cost_amount, 10.00
       white_shirt_l.update_column :last_cost_amount, 15.00
@@ -96,14 +90,12 @@ feature 'Costs Management', js: true do
       visit edit_order_path(order, anchor: 'costs')
       sleep 1
 
-      click_link '+ Cost'
-      fill_in 'Amount', with: '10.50'
+      fill_in 'Cost', with: '10.50'
       click_button 'Update Order'
 
       sleep 1
 
-      expect(line_item.reload.cost).to_not be_nil
-      expect(line_item.reload.cost.amount.to_f).to eq 10.50
+      expect(line_item.reload.cost_amount.to_f).to eq 10.50
       expect(page).to have_content 'Total Cost: $10.50'
     end
 
@@ -118,13 +110,13 @@ feature 'Costs Management', js: true do
 
       sleep 1
 
-      expect(white_shirt_s_item.cost).to_not be_nil
-      expect(white_shirt_m_item.cost).to_not be_nil
-      expect(white_shirt_l_item.cost).to_not be_nil
+      expect(white_shirt_s_item.reload.cost_amount).to_not be_nil
+      expect(white_shirt_m_item.reload.cost_amount).to_not be_nil
+      expect(white_shirt_l_item.reload.cost_amount).to_not be_nil
 
-      expect(white_shirt_s_item.cost.amount.to_f).to eq 20.15
-      expect(white_shirt_m_item.cost.amount.to_f).to eq 5.15
-      expect(white_shirt_l_item.cost.amount.to_f).to eq 5.00
+      expect(white_shirt_s_item.cost_amount.to_f).to eq 20.15
+      expect(white_shirt_m_item.cost_amount.to_f).to eq 5.15
+      expect(white_shirt_l_item.cost_amount.to_f).to eq 5.00
 
       expect(page).to have_content 'Total Cost: $30.30'
     end

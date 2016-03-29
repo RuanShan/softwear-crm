@@ -24,9 +24,6 @@ class LineItem < ActiveRecord::Base
   belongs_to :imprintable_object, polymorphic: true
   has_one :variant_imprintable, through: :imprintable_object, source: :imprintable
   belongs_to :job, touch: true, inverse_of: :line_items
-  has_one :cost, as: :costable
-
-  accepts_nested_attributes_for :cost
 
   validates :description, presence: true, unless: :imprintable?
   validates :name, presence: true, unless: :imprintable?
@@ -49,7 +46,7 @@ class LineItem < ActiveRecord::Base
   after_save :recalculate_order_fields
   after_destroy :recalculate_order_fields
 
-  def self.in_need_of_cost(limit = nil, offset = nil)
+  def self.in_need_of_cost_old_query
     fields = %w(
       li.id sum(li.quantity) li.imprintable_object_id iv.color_id iv.imprintable_id s.display_value
       s.name c.name o.id iv.last_cost_amount
@@ -58,7 +55,7 @@ class LineItem < ActiveRecord::Base
       .with_index { |f, i| [f, i] }
       .to_h
 
-    sql_results = ActiveRecord::Base.connection.execute <<-SQL
+    <<-SQL
       select #{fields.keys.join(', ')} from line_items li
 
       join imprintable_variants iv on (iv.id = li.imprintable_object_id)
@@ -86,6 +83,71 @@ class LineItem < ActiveRecord::Base
           and   (costs.amount = 0 or costs.amount = null)
         )
       )
+
+      group by iv.id
+      order by o.id, s.sort_order
+
+      limit 1000
+    SQL
+  end
+
+  def self.in_need_of_cost_query
+    fields = %w(
+      li.id sum(li.quantity) li.imprintable_object_id iv.color_id iv.imprintable_id s.display_value
+      s.name c.name o.id iv.last_cost_amount
+    )
+      .map
+      .with_index { |f, i| [f, i] }
+      .to_h
+
+    <<-SQL
+      select #{fields.keys.join(', ')} from line_items li
+
+      join imprintable_variants iv on (iv.id = li.imprintable_object_id)
+      join jobs   j on j.id = li.job_id
+      join sizes  s  on (s.id = iv.size_id)
+      join colors c  on (c.id = iv.color_id)
+      join orders o  on (o.id = j.jobbable_id)
+
+      left join costs co on (co.costable_id = li.id and co.costable_type = 'LineItem')
+      where li.imprintable_object_id is not null
+      and j.jobbable_type = 'Order'
+      and o.deleted_at  is null
+      and iv.deleted_at is null
+      and li.deleted_at is null
+      and co.id is null or co.amount = 0
+
+      group by iv.id
+      order by s.sort_order
+
+      limit 1000
+    SQL
+  end
+
+  def self.in_need_of_cost(limit = nil, offset = nil)
+    fields = %w(
+      li.id sum(li.quantity) li.imprintable_object_id iv.color_id iv.imprintable_id s.display_value
+      s.name c.name o.id iv.last_cost_amount
+    )
+      .map
+      .with_index { |f, i| [f, i] }
+      .to_h
+
+    sql_results = ActiveRecord::Base.connection.execute <<-SQL
+      select #{fields.keys.join(', ')} from line_items li
+
+      join imprintable_variants iv on (iv.id = li.imprintable_object_id)
+      join jobs   j on j.id = li.job_id
+      join sizes  s  on (s.id = iv.size_id)
+      join colors c  on (c.id = iv.color_id)
+      join orders o  on (o.id = j.jobbable_id)
+
+      where li.imprintable_object_id is not null
+      and (li.cost_amount is null or li.cost_amount = 0)
+      and j.jobbable_type = 'Order'
+      and o.deleted_at  is null
+      and iv.deleted_at is null
+      and li.deleted_at is null
 
       group by iv.id
       order by o.id, s.sort_order

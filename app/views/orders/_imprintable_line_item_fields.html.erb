@@ -19,11 +19,7 @@
 <div class='pull-left line-item-<%= f.object.id %>-cost' style='margin-right: 5px; max-width: 65px;'>
   <h5 class='text-center'><strong><%= f.object.imprintable_variant.size.display_value %></strong></h5>
 
-  <% f.object.cost ||= Cost.new(type: 'Imprintable', description: 'Cost of imprintables', amount: f.object.imprintable_variant.last_cost_amount) %>
-
-  <%= f.fields_for :cost do |ff| %>
-    <div class='input-group'>
-      <%= ff.text_field :amount, class: 'form-control' %>
-    </div>
-  <% end %>
+  <div class='input-group'>
+    <%= f.text_field :cost_amount, class: 'form-control' %>
+  </div>
 </div>

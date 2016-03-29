@@ -402,7 +402,7 @@ class Order < ActiveRecord::Base
 
   def total_cost
     costs.pluck(:amount).compact.reduce(0, :+) +
-    jobs.includes(:costs).flat_map(&:costs).compact.map(&:amount).compact.reduce(0, :+)
+    line_items.pluck(:cost_amount).compact.reduce(0, :+)
   end
 
   def id=(new_id)

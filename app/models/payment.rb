@@ -58,8 +58,8 @@ class Payment < ActiveRecord::Base
   acts_as_paranoid
 
   default_scope { order(:created_at) }
-  scope :undropped, -> { includes(:payment_drop_payments).where(payment_drop_payments: { payment_id: nil } ) }
-  scope :dropped, -> { includes(:payment_drop_payments).where.not(payment_drop_payments: { payment_id: nil } ) }
+  scope :undropped, -> { includes(:payment_drop_payments).where(payment_drop_payments: { payment_id: nil }) }
+  scope :dropped, -> { includes(:payment_drop_payments).where.not(payment_drop_payments: { payment_id: nil }) }
   scope :retail, -> { where.not(retail_description: nil) }
 
   belongs_to :order, touch: true

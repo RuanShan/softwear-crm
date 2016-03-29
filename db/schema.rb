@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160325200530) do
+ActiveRecord::Schema.define(version: 20160329191449) do
 
   create_table "activities", force: :cascade do |t|
     t.integer  "trackable_id",   limit: 4
@@ -555,6 +555,7 @@ ActiveRecord::Schema.define(version: 20160325200530) do
     t.integer  "sort_order",              limit: 4
     t.integer  "imprintable_object_id",   limit: 4
     t.string   "imprintable_object_type", limit: 191
+    t.decimal  "cost_amount",                              precision: 10, scale: 2
   end
 
   add_index "line_items", ["job_id"], name: "index_line_items_on_line_itemable_id_and_line_itemable_type", using: :btree

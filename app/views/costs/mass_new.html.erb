@@ -4,7 +4,7 @@
   <h3>All recent line items have costs!</h3>
 <% else %>
   <% if @at_limit %>
-    <h3>Found >1000 variants with costless line items - not all are being displayed.</h3>
+    <h3>Found more than <%= @at_limit %> variants with costless line items - not all are being displayed.</h3>
   <% end %>
 
   <div class='row'>
