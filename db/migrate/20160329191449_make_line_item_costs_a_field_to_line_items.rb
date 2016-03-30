@@ -4,10 +4,8 @@ end
 
 class MakeLineItemCostsAFieldToLineItems < ActiveRecord::Migration
   def up
-    begin
+    unless LineItem.column_names.map(&:to_sym).include?(:cost_amount)
       add_column :line_items, :cost_amount, :decimal, scale: 2, precision: 10
-    rescue Mysql2::Error => _e
-      puts "  cost_amount already added"
     end
 
     unless Rails.env.test?
