@@ -19,9 +19,15 @@
       <% artworks.each do |artwork| %>
         <div class='col-sm-3'>
           <div class='box-info select-artwork-entry' data-id='<%= artwork.id %>' data-src='<%= artwork.preview.file.url(:thumb) %>' data-name='<%= artwork.name %>' data-bg='<%= artwork.bg_color %>'>
-            <%= preview_artwork artwork, :thumb %>
-            <%= content_tag :h4, artwork.name %>
-          </div>
+            <% if artwork.is_image? %>
+              <%= preview_artwork artwork, :thumb %>
+              <%= content_tag :h4, artwork.name %>
+            <% else %>
+              <%= image_tag '/assets/logo.png', size: "200x200" %>
+              <%= content_tag :h6, "**No artwork preview" %>
+              <%= content_tag :h4, artwork.name %>
+            <% end %>
+          </div> 
         </div>
       <% end %>
     <% end %>

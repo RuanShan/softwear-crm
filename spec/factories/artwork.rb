@@ -5,7 +5,9 @@ FactoryGirl.define do
       name 'Artwork'
       description 'This is artwork'
       local_file_location "#{Rails.root}/spec/fixtures/images/test.psd"
-
+      tag_list ["Test", "Test2", "Test3"]
+      artist { |a| a.association(:user) }
+        
       artwork do |a|
         begin
           a.association(
@@ -19,14 +21,21 @@ FactoryGirl.define do
           )
         end
       end
+
+      factory :doc_type_preview do
+        preview do |p|
+          p.association(:valid_asset,
+                        file: File.open("#{Rails.root}/spec/fixtures/fba/PackingSlipBadSku.txt")
+          )
+        end  
+      end
+
       preview do |p|
         p.association(
           :valid_asset,
           file: File.open("#{Rails.root}/spec/fixtures/images/macho.png"),
         )
       end
-
-      artist { |a| a.association(:user) }
     end
   end
 end

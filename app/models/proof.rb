@@ -22,6 +22,7 @@ class Proof < ActiveRecord::Base
 
   validates :approve_by, presence: true
   validates :artworks, presence: true
+  before_validation :is_allowed?
 
   state_machine :state, initial: :not_ready do
 
@@ -99,4 +100,13 @@ class Proof < ActiveRecord::Base
       ]
     end
   end
+
+  private
+
+  def is_allowed?
+    mockups.each do |m|
+      m.allowed_content_type = "^image/(ai|pdf|psd|png|gif|jpeg|jpg)" if m
+    end
+  end
+
 end

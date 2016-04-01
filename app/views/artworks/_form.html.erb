@@ -38,7 +38,7 @@
       <%= f.label :tag_list, 'Tags (separated by commas)', class: 'col-sm-3 control-label' %>
 
       <div class="col-sm-9">
-        <%= f.text_field :tag_list %>
+        <%= f.text_field :tag_list, value: (artwork.show_tags unless !artwork.persisted?) %>
 
         <% if artwork.errors.include?(:tag_list) %>
           <% artwork.errors.full_messages_for(:tag_list).each do |message| %>
