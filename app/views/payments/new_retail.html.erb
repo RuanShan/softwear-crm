@@ -1,35 +1,5 @@
 <h1>Walk-in Retail Payment</h1>
 
-<div class=''>
-  <h2>Recent retail payments</h2>
-  <table class='table table-striped'>
-    <thead>
-      <tr>
-        <th>Date Created</th>
-        <th>Salesperson</th>
-        <th>Description</th>
-        <th>Receipt</th>
-      </tr>
-    </thead>
-    <tbody>
-      <% if @recent_retail_payments.empty? %>
-        <strong>No recent payments!</strong>
-      <% else %>
-        <% @recent_retail_payments.reverse_order.limit(10).each do |payment| %>
-          <tr>
-            <td><%= payment.created_at.strftime('%m/%d/%Y') %></td>
-            <td><%= payment.salesperson.full_name %></td>
-            <td><%= payment.retail_description %></td>
-            <td><%= link_to 'View Receipt', payment, id: "show_#{payment.id}" %></td>
-          </tr>
-        <% end %>
-      <% end %>
-    </tbody>
-  </table>
-    <% if @recent_retail_payments.size > 10 %>
-      <p class="alert alert-warning"><b>These are ONLY the 10 most recent payments</b></p>
-    <% end %>
-</div>
 
 <%= render 'shared/modal_errors', object: @payment %>
 
@@ -89,4 +59,35 @@
   <div class='col-sm-11 payment-dropdown'>
     <div id='payment-form' class='box-info collapse'></div>
   </div>
+</div>
+
+<div class=''>
+  <h2>Recent retail payments</h2>
+  <table class='table table-striped'>
+    <thead>
+      <tr>
+        <th>Date Created</th>
+        <th>Salesperson</th>
+        <th>Description</th>
+        <th>Receipt</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% if @recent_retail_payments.empty? %>
+        <strong>No recent payments!</strong>
+      <% else %>
+        <% @recent_retail_payments.reverse_order.limit(10).each do |payment| %>
+          <tr>
+            <td><%= payment.created_at.strftime('%m/%d/%Y') %></td>
+            <td><%= payment.salesperson.full_name %></td>
+            <td><%= payment.retail_description %></td>
+            <td><%= link_to 'View Receipt', payment, id: "show_#{payment.id}" %></td>
+          </tr>
+        <% end %>
+      <% end %>
+    </tbody>
+  </table>
+    <% if @recent_retail_payments.size > 10 %>
+      <p class="alert alert-warning"><b>These are ONLY the 10 most recent payments</b></p>
+    <% end %>
 </div>
