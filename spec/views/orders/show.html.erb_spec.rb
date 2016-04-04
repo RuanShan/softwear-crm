@@ -39,7 +39,6 @@ describe "orders/show", type: :view do
     end
 
     it "Displays the store's name at the head of the invoice" do 
-      byebug
       expect(rendered).to have_css :h1, text: "#{order.store.name}"  
     end
 
