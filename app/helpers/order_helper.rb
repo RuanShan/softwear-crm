@@ -75,7 +75,7 @@ module OrderHelper
         when 'pending_artwork_requests' then 'state-danger'
         when 'in_production' then 'state-success'
         when 'artwork_canceled' then 'state-danger'
-        else 'label-warning'
+        else 'state-warning'
       end
     end
   end

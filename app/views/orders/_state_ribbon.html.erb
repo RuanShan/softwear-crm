@@ -18,7 +18,7 @@
         <% if !order.canceled? && order.invoice_state != 'approved' %>
             <div class="order-state-action">
               <%= link_to order_path(order, order: {invoice_state: :approved}), method: :put,
-                  title: 'Approve Invoice', data: { toggle: 'tooltip', confirm: 'Are you sure you want to mark this invoice as approved?' },
+                  title: 'Approve Invoice', data: { toggle: 'tooltip', confirm: 'Are you sure you want to mark this invoice as approved?', placement: :bottom },
                   class: 'btn btn-xs btn-info' do %>
                   <i class="glyphicon glyphicon-thumbs-up"></i>
               <% end %>
@@ -34,15 +34,15 @@
         <div class="order-state-action">
           <% if order.production_url && order.production_state != 'pending' %>
               <%= link_to order.production_url, target: :_new,
-                          title: 'View in Production', data: { toggle: 'tooltip' },
+                          title: 'View in Production', data: { toggle: 'tooltip', placement: :bottom },
                           class: 'btn btn-xs btn-info' do %>
                   <i class="fa fa-cogs"></i>
               <% end %>
           <% elsif !order.canceled? %>
               <%= link_to send_to_production_order_path(order), method: :post,
-                          title: 'Send to Production (Production Manager Only)', data: { toggle: 'tooltip' },
+                          title: 'Send to Production (Production Manager Only)', data: { toggle: 'tooltip', placement: :bottom },
                           class: 'btn btn-xs btn-info' do  %>
-                  <i class="glyphicon glyphicon-circle-arrow-right"></i> <i class="fa fa-cogs"></i>
+                  <i class="glyphicon glyphicon-circle-arrow-right"></i>
               <% end %>
           <% end %>
         </div>

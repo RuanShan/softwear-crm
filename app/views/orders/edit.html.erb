@@ -5,7 +5,7 @@
 <div class="row-fluid orders-edit">
   <div class="page-heading animated fadeInDownBig">
     <div class="order-edit-salesperson">
-      <%= profile_picture_of @order.salesperson %>
+      <%= profile_picture_of @order.salesperson, title: @order.salesperson.full_name, data: {toggle: :tooltip, placement: :bottom} %>
     </div>
     <div class="order-edit-title">
       <h1>

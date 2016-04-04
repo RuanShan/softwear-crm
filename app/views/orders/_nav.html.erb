@@ -35,12 +35,20 @@
             <%= link_to '#', class: 'dropdown-toggle', data: {toggle: :dropdown}, role: :button, aria: {haspopup: true, expanded: false} do %>
                 <i class='fa fa-star'></i> Sales <span class="caret"></span>
             <% end %>
+
             <ul class="dropdown-menu">
-              <li>
-                <%= link_to "#" do %>
-                    <i class="softwear-icon-freshdesk-icon"></i> Freshdesk Sales Ticket
-                <% end %>
-              </li>
+              <% unless order.quotes.empty? %>
+                  <% order.quotes.each do |q| %>
+                    <% unless q.freshdesk_ticket_id.blank? %>
+                          <li>
+                            <%= link_to q.freshdesk_ticket_link do %>
+                                <i class="softwear-icon-freshdesk-icon"></i> Freshdesk Ticket #<%= q.freshdesk_ticket_id %>
+                            <% end %>
+                          </li>
+                    <% end %>
+                  <% end %>
+              <% end %>
+
               <% if !@order.canceled? && @order.invoice_state != 'approved' %>
                   <li>
                     <%= link_to order_path(order, order: {invoice_state: :approved}), method: :put, data: {confirm: 'Are you sure you want to mark this invoice as approved?'}  do %>
@@ -101,11 +109,13 @@
                 <i class='fa fa-picture-o'></i> Artwork <span class="caret"></span>
             <% end %>
             <ul class="dropdown-menu">
-              <li>
-                <%= link_to "#" do %>
-                    <i class="softwear-icon-freshdesk-icon"></i> Freshdesk Proof Ticket
-                <% end %>
-              </li>
+              <% unless order.freshdesk_proof_ticket_id.blank? %>
+                  <li>
+                    <%= link_to order.freshdesk_proof_ticket_link, target: :_new do %>
+                        <i class="softwear-icon-freshdesk-icon"></i> Freshdesk Proof Ticket
+                    <% end %>
+                  </li>
+              <% end %>
               <li>
                 <%= link_to "#" do %>
                     <s>Request Art Approval</s>
@@ -121,9 +131,13 @@
             <ul class="dropdown-menu">
               <li>
                 <% if @order.production_url && order.production_state != 'pending' %>
-                    <%= link_to 'View in Production', order.production_url, target: :_new %>
+                    <%= link_to order.production_url, target: :_new do %>
+                        <i class="fa fa-cogs"></i> View in Production
+                    <% end %>
                 <% elsif !@order.canceled? %>
-                    <%= link_to 'Send to Production', send_to_production_order_path(order), method: :post %>
+                    <%= link_to send_to_production_order_path(order), method: :post do  %>
+                        <i class="glyphicon glyphicon-circle-arrow-right"></i> Send to Production
+                    <% end %>
                 <% end %>
               </li>
               <li>
@@ -131,15 +145,18 @@
                     <i class="softwear-icon-t-shirt"></i> Imprintable Order Sheets
                 <% end %>
               </li>
-              <li><%= link_to 'Order Report', order_report_order_path(order) %></li>
               <li>
+                <%= link_to order_report_order_path(order) do %>
+                    <i class="fa fa-folder"></i> Order Report
+                <% end %>
+                </li>
               <li>
                 <%= link_to "#" do %>
-                    <i class="softwear-icon-t-shirt"></i> Imprintable Receiving Sheets
+                    <s><i class="softwear-icon-t-shirt"></i> Imprintable Receiving Sheets</s>
                 <% end %>
               </li>
+            </ul>
           </li>
-        </ul>
         </li>
 
         <li class="dropdown">
@@ -147,7 +164,10 @@
               <i class='fa fa-female'></i> Customer <span class="caret"></span>
           <% end %>
           <ul class="dropdown-menu">
-            <li><%= link_to 'Order Portal', customer_order_path(order.customer_key), target: '_new' %></li>
+            <li><%= link_to customer_order_path(order.customer_key), target: '_new' do %>
+              <i class="fa fa-list-alt"></i> Order Portal
+            <% end %>
+            </li>
             <li>
               <%= link_to "#" do %>
                   <s>Customer Portal</s>
