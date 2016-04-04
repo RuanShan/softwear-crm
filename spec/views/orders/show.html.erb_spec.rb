@@ -34,12 +34,12 @@ describe "orders/show", type: :view do
     
     before(:each) do 
       assign(:order, order)
+      order.store.logo.file_file_name = nil
       render
     end
-    
-    before{ allow(order.store).to receive(:logo_id) { nil } }
 
     it "Displays the store's name at the head of the invoice" do 
+      byebug
       expect(rendered).to have_css :h1, text: "#{order.store.name}"  
     end
 

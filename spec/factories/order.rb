@@ -42,10 +42,6 @@ FactoryGirl.define do
           after(:create) { |o| o.proofs << create(:valid_proof) }
         end
       end
-      
-      factory :order_with_logo do
-        store { |s| s.association(:valid_store_with_logo) }
-      end
 
       factory :fba_order do
         terms "Fulfilled by Amazon"
