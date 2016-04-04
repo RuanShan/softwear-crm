@@ -17,12 +17,10 @@
         <%= order.invoice_state.humanize.capitalize %>
         <% if !order.canceled? && order.invoice_state != 'approved' %>
             <div class="order-state-action">
-              <%= form_for order do |f| %>
-                  <%= f.hidden_field :invoice_state, value: 'approved' %>
-                  <%= link_to '#', onclick: 'form.submit();', class: 'btn btn-xs btn-info',
-                              title: 'Approve Invoice', data: { toggle: 'tooltip' }  do %>
-                      <i class="fa fa-check-square"></i>
-                  <% end %>
+              <%= link_to order_path(order, order: {invoice_state: :approved}), method: :put,
+                  title: 'Approve Invoice', data: { toggle: 'tooltip', confirm: 'Are you sure you want to mark this invoice as approved?' },
+                  class: 'btn btn-xs btn-info' do %>
+                  <i class="glyphicon glyphicon-thumbs-up"></i>
               <% end %>
             </div>
         <% end %>

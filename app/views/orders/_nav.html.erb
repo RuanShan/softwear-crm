@@ -43,9 +43,8 @@
               </li>
               <% if !@order.canceled? && @order.invoice_state != 'approved' %>
                   <li>
-                    <%= form_for @order do |f| %>
-                        <%= f.hidden_field :invoice_state, value: 'approved' %>
-                        <%= link_to 'Approve Invoice', "#" %>
+                    <%= link_to order_path(order, order: {invoice_state: :approved}), method: :put, data: {confirm: 'Are you sure you want to mark this invoice as approved?'}  do %>
+                        <i class="glyphicon glyphicon-thumbs-up"></i> Approve Invoice
                     <% end %>
                   </li>
               <% end %>
@@ -66,9 +65,9 @@
                   <% end %>
 
                   <li>
-                    <%= link_to transition_order_path(@order, :notification_state,  :picked_up), remote: true,
-                                method: :post, data: { confirm: 'Are you sure you want to mark this order as picked up?'} do %>
-                        <i class="glyphicon glyphicon-thumbs-up"></i> Mark Picked Up
+                    <%= link_to transition_order_path(@order, :notification_state, :picked_up), remote: true,
+                                method: :post, data: {confirm: 'Are you sure you want to mark this order as picked up?'} do %>
+                        <i class="fa fa-truck"></i> Mark Picked Up
                     <% end %>
                   </li>
               <% end %>
@@ -128,8 +127,8 @@
                 <% end %>
               </li>
               <li>
-                <%= link_to  imprintable_order_sheets_order_path(order) do %>
-                <i class="softwear-icon-t-shirt"></i> Imprintable Order Sheets
+                <%= link_to imprintable_order_sheets_order_path(order) do %>
+                    <i class="softwear-icon-t-shirt"></i> Imprintable Order Sheets
                 <% end %>
               </li>
               <li><%= link_to 'Order Report', order_report_order_path(order) %></li>
@@ -139,23 +138,23 @@
                     <i class="softwear-icon-t-shirt"></i> Imprintable Receiving Sheets
                 <% end %>
               </li>
-              </li>
-            </ul>
           </li>
+        </ul>
+        </li>
 
-          <li class="dropdown">
-            <%= link_to '#', class: 'dropdown-toggle', data: {toggle: :dropdown}, role: :button, aria: {haspopup: true, expanded: false} do %>
-                <i class='fa fa-female'></i> Customer <span class="caret"></span>
-            <% end %>
-            <ul class="dropdown-menu">
-              <li><%= link_to 'Order Portal', customer_order_path(order.customer_key), target: '_new' %></li>
-              <li>
-                <%= link_to "#" do %>
-                    <s>Customer Portal</s>
-                <% end %>
-              </li>
-            </ul>
-          </li>
+        <li class="dropdown">
+          <%= link_to '#', class: 'dropdown-toggle', data: {toggle: :dropdown}, role: :button, aria: {haspopup: true, expanded: false} do %>
+              <i class='fa fa-female'></i> Customer <span class="caret"></span>
+          <% end %>
+          <ul class="dropdown-menu">
+            <li><%= link_to 'Order Portal', customer_order_path(order.customer_key), target: '_new' %></li>
+            <li>
+              <%= link_to "#" do %>
+                  <s>Customer Portal</s>
+              <% end %>
+            </li>
+          </ul>
+        </li>
         </ul>
       </div>
     </div>
