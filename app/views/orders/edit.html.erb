@@ -1,144 +1,35 @@
 <%= render_error_modal_for @order %>
 
+<%= render 'orders/nav', order: @order, active: 'edit' %>
+
 <div class="row-fluid orders-edit">
-  <div class="pull-left">
-      <%= profile_picture_of @order.salesperson, style: 'display: inline;' %>
-  </div>
-
-  <div class="pull-right text-right">
-    <%= link_to order_report_order_path(@order), class: 'btn btn-primary',
-                'data-action' => 'show' do %>
-        <i class="glyphicon glyphicon-list-alt"></i> Order Report
-    <% end %>
-
-    <%= link_to imprintable_order_sheets_order_path(@order), class: 'btn btn-primary',
-                'data-action' => 'show' do %>
-        <i class="softwear-icon-t-shirt"></i> Imprintable Sheets
-    <% end %>
-
-    <%= link_to order_path(@order), class: 'btn btn-primary',
-      data: {action: :show, toggle: :tooltip, title: 'Printable Invoice', placement: :bottom } do %>
-        <i class="fa fa-print"></i>
-    <% end %>
-
-    <% unless @order.notification_state == 'picked_up' %>
-      <span ".edit-notification-buttons">
-      <% unless @order.fba? %>
-        <%= link_to state_order_path(@order, :notification_state), remote: true,
-          data: {toggle: :tooltip, :title => 'Notify Customer', placement: :bottom},
-          class: 'btn btn-primary'  do %>
-            <i class="glyphicon glyphicon-phone-alt"></i>
+  <div class="page-heading animated fadeInDownBig">
+    <div class="order-edit-salesperson">
+      <%= profile_picture_of @order.salesperson, title: @order.salesperson.full_name, data: {toggle: :tooltip, placement: :bottom} %>
+    </div>
+    <div class="order-edit-title">
+      <h1>
+        <% if @order.canceled? %>
+            <span class="label label-danger">Canceled</span>
         <% end %>
-      <% end %>
-
-      <%= link_to transition_order_path(@order, :notification_state,  :picked_up), remote: true,
-        method: :post, data: { toggle: :tooltip, title: 'Mark Picked Up', placement: :bottom,
-        confirm: 'Are you sure you want to mark this order as picked up?'},
-        class: 'btn btn-primary' do %>
-          <i class="glyphicon glyphicon-thumbs-up"></i>
+        <% if @order.fba? %>
+            <span class="label label-warning">FBA</span>
         <% end %>
-      </span>
-    <% end %>
-
-    <%= link_to order_warnings_path(@order.id), class: 'btn btn-warning' do %>
-      <i class="fa fa-exclamation-triangle"></i> Warnings
-      <%= @order.warnings.active.any? ? "<span class='badge'>#{@order.warnings.active.size}</span>".html_safe : '' %>
-    <% end %>
-
-    <% unless @order.canceled? %>
-      <%= link_to check_cancelation_order_path(@order), class: 'btn btn-danger', remote: true do %>
-        <i class='fa fa-ban'></i> Cancel Order
-      <% end %>
-    <% end %>
-
-    <%= link_to clone_order_path(@order),
-      method: :post,
-      class: 'btn btn-default',
-      data: { confirm: "Create a copy of order ##{@order.id}?" } do %>
-
-      <i class="fa fa-files-o"></i> Clone
-    <% end %>
-
-  </div>
-
-  <div class="page-heading animated fadeInDownBig pull-left">
-    <h1>
-      Edit <strong>Order #<%= @order.id %></strong>
-    </h1>
-    <h2>
-      <% if @order.canceled? %>
-        <span class="label label-danger">Canceled</span>
-      <% end %>
-      <% if @order.fba? %>
-        <span class="label label-warning">FBA</span>
-      <% end %>
-      <span class="<%= 'canceled' if @order.canceled %>"><%= @order.name %></span>
-    </h2>
-    <% unless @order.fba? %>
-      Customer URL: <%= link_to customer_order_url(@order.customer_key),  customer_order_path(@order.customer_key), target: "_blank" %>
-    <% end %>
+        <span class="<%= 'canceled' if @order.canceled %>"><%= @order.name %></span>
+        <br/>
+        <span class="small">
+        In Hand By: <%= display_date(@order.in_hand_by) %>
+        </span>
+      </h1>
+    </div>
   </div>
 </div>
-<br clear="all" />
-<table class="table table-condensed">
-  <thead>
-    <% unless @order.fba? %>
-      <th>Payment State
-      </th>
-    <% end %>
-    <th>Invoice State
-    </th>
-    <th>Production State
-    </th>
-    <th>Artwork State
-    </th>
-    <% unless @order.fba? %>
-      <th>Notification State
-      </th>
-    <% end %>
-  </thead>
-  <tbody>
-    <tr id="order_<%= @order.id %>">
-      <% unless @order.fba? %>
-        <td class='payment-state'>
-          <span class="label <%= get_style_from_status(@order.payment_status)%>"><%= @order.payment_status %></span>
-        </td>
-      <% end %>
 
-      <td class='invoice-state'>
-        <span class="label <%= get_style_from_invoice_state(@order.invoice_state)%>"><%= @order.invoice_state.humanize %></span>
-        <br />
+<br clear="all"/>
 
-        <% if !@order.canceled? && @order.invoice_state != 'approved' %>
-          <%= form_for @order do |f| %>
-            <%= f.hidden_field :invoice_state, value: 'approved' %>
-            <%= button_tag 'Approve Invoice', class: 'btn btn-sm btn-success margin-top-10' %>
-          <% end %>
-        <% end %>
-      </td>
-
-      <td class='production-state'>
-        <span class="label <%= get_style_from_production_state(@order.production_state)%>"><%= @order.production_state.humanize %></span>
-        <br />
-          <% if @order.production_url && @order.production_state != 'pending' %>
-            <%= link_to 'View in Production', @order.production_url, target: :_blank, class: 'btn btn-sm btn-success margin-top-10' %>
-          <% elsif !@order.canceled? %>
-            <%= link_to 'Send to Production', send_to_production_order_path(@order), method: :post, class: 'btn btn-sm btn-danger margin-top-10', title: 'Karsten only', data: { toggle: 'tooltip' }  %>
-          <% end %>
-      </td>
-
-      <td class='artwork-state'>
-        <span class="label label-primary <%= get_style_from_artwork_state(@order.artwork_state) %>"><%=  @order.artwork_state.humanize %></span>
-      </td>
-
-      <% unless @order.fba? %>
-        <td class='notification-state'>
-          <span class="label <%= get_style_from_notification_state(@order.notification_state)%>"><%= @order.notification_state.humanize %></span>
-        </td>
-      <% end %>
-    </tr>
-  </tbody>
-</table>
+<div id="order_<%= @order.id %>_states">
+    <%= render 'state_ribbon', order: @order %>
+</div>
 
 <% if @order.invoice_rejected? %>
   <div class='alert alert-danger'>

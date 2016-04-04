@@ -649,8 +649,8 @@ ActiveRecord::Schema.define(version: 20160329191449) do
     t.decimal  "discount_total",                             precision: 10, scale: 2
     t.decimal  "payment_total",                              precision: 10, scale: 2
     t.boolean  "imported_from_admin"
-    t.string   "phone_number_extension",    limit: 191
     t.string   "payment_state",             limit: 191
+    t.string   "phone_number_extension",    limit: 191
     t.boolean  "canceled"
     t.decimal  "tax_rate",                                   precision: 10, scale: 2
   end

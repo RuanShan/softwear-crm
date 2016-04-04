@@ -14,8 +14,8 @@ describe 'orders/edit.html.erb', order_spec: true do
   it 'displays the order name and ID' do
     params[:id] = order.id
     render
-    expect(rendered).to have_css 'h1', text: "Order ##{order.id}"
-    expect(rendered).to have_css 'h2', text: order.name
+    expect(rendered).to have_css '.navbar-brand', text: "Order ##{order.id}"
+    expect(rendered).to have_css 'h1', text: order.name
   end
 
   it 'has a link to "Order Report"  on the top right' do
@@ -23,10 +23,10 @@ describe 'orders/edit.html.erb', order_spec: true do
     expect(rendered).to have_link('Order Report')
   end
 
-  it 'displays the jobs tab by default' do 
+  it 'displays the jobs tab by default' do
     render
     expect(rendered).to have_css("li.active", text: 'Jobs')
-    expect(rendered).to have_css("#jobs.active")  
+    expect(rendered).to have_css("#jobs.active")
   end
 
   context 'when imported_from_admin' do

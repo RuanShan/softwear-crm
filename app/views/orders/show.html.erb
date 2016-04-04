@@ -1,11 +1,4 @@
-<div class='hidden-print text-right'>
-  <%= link_to edit_order_path(@order), class: 'btn btn-primary' do %>
-      <i class="fa fa-edit"></i> Edit
-  <% end %>
-  <%= link_to '#', class: 'btn btn-success', id: 'print-button' do  %>
-      <i class="fa fa-print"></i> Print
-  <% end %>
-</div>
+<%= render 'orders/nav', order: @order, active: 'show' %>
 
 <%= render 'orders/show' %>
 
