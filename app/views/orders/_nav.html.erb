@@ -1,0 +1,150 @@
+<div id="order_nav" class="row hidden-print">
+  <nav class="navbar navbar-default">
+    <div class="container-fluid">
+      <div class="navbar-header">
+        <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+          <span class="sr-only">Toggle navigation</span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+        <a class="navbar-brand" href="#">Order #<%= order.id %></a>
+      </div>
+
+      <!-- Collect the nav links, forms, and other content for toggling -->
+      <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+        <ul class="nav navbar-nav navbar-right">
+          <li class="<%= active == 'edit' ? "active" : '' %>">
+            <%= link_to edit_order_path(order) do %>
+                <i class="glyphicon glyphicon-edit"></i> Edit
+            <% end %>
+          </li>
+          <li class="<%= active == 'show' ? "active" : '' %>">
+            <%= link_to order_path(order) do %>
+                <i class="fa fa-print"></i> Invoice
+            <% end %>
+          </li>
+          <li class="<%= active == 'warnings' ? "active" : '' %>">
+            <%= link_to order_warnings_path(@order.id) do %>
+                <i class="fa fa-exclamation-triangle"></i>
+                Warnings <%= @order.warnings.active.any? ? "<span class='label label-danger new-circle'>#{@order.warnings.active.size}</span>".html_safe : '' %>
+            <% end %>
+          </li>
+
+          <li class="dropdown">
+            <%= link_to '#', class: 'dropdown-toggle', data: {toggle: :dropdown}, role: :button, aria: {haspopup: true, expanded: false} do %>
+                <i class='fa fa-star'></i> Sales <span class="caret"></span>
+            <% end %>
+            <ul class="dropdown-menu">
+              <% if !@order.canceled? && @order.invoice_state != 'approved' %>
+                  <li>
+                    <%= form_for @order do |f| %>
+                        <%= f.hidden_field :invoice_state, value: 'approved' %>
+                        <%= link_to 'Approve Invoice', "#" %>
+                    <% end %>
+                  </li>
+              <% end %>
+
+              <% unless @order.notification_state == 'picked_up' %>
+                  <% unless @order.fba? %>
+                      <li>
+                        <%= link_to state_order_path(@order, :notification_state), remote: true do %>
+                            <i class="fa fa-phone"></i> Notify Customer
+                        <% end %>
+                      </li>
+                  <% end %>
+
+                  <li>
+                    <%= link_to transition_order_path(@order, :notification_state,  :picked_up), remote: true,
+                                method: :post, data: { confirm: 'Are you sure you want to mark this order as picked up?'} do %>
+                        <i class="glyphicon glyphicon-thumbs-up"></i> Mark Picked Up
+                    <% end %>
+                  </li>
+              <% end %>
+              <li role="separator" class="divider"></li>
+
+              <% unless @order.canceled? %>
+                  <li>
+                    <%= link_to check_cancelation_order_path(@order), remote: true,
+                                data: {confirm: 'Are you sure you watn to cancel this order?'} do %>
+                        <i class='fa fa-ban'></i> Cancel Order
+                    <% end %>
+                  </li>
+              <% end %>
+              <li>
+                <%= link_to clone_order_path(@order),
+                            method: :post,
+                            data: {confirm: "Create a copy of order ##{@order.id}?"} do %>
+
+                    <i class="fa fa-files-o"></i> Clone
+                <% end %>
+              </li>
+            </ul>
+          </li>
+
+          <li class="dropdown">
+            <%= link_to '#', class: 'dropdown-toggle', data: {toggle: :dropdown}, role: :button, aria: {haspopup: true, expanded: false} do %>
+                <i class='fa fa-gears'></i> Production <span class="caret"></span>
+            <% end %>
+            <ul class="dropdown-menu">
+              <li>
+                <% if @order.production_url && order.production_state != 'pending' %>
+                    <%= link_to 'View in Production', order.production_url, target: :_new %>
+                <% elsif !@order.canceled? %>
+                    <%= link_to 'Send to Production', send_to_production_order_path(order), method: :post %>
+                <% end %>
+              </li>
+              <li><%= link_to 'Imprintable Order Sheets', imprintable_order_sheets_order_path(order) %></li>
+              <li><%= link_to 'Order Report', order_report_order_path(order) %></li>
+              <li>
+                <%= link_to "#" do %>
+                    <s>Imprintable Receiving Sheets</s>
+                <% end %>
+              </li>
+            </ul>
+          </li>
+
+          <li class="dropdown">
+            <%= link_to '#', class: 'dropdown-toggle', data: {toggle: :dropdown}, role: :button, aria: {haspopup: true, expanded: false} do %>
+                <i class='fa fa-female'></i> Customer <span class="caret"></span>
+            <% end %>
+            <ul class="dropdown-menu">
+              <li><%= link_to 'Order Portal', customer_order_path(order.customer_key), target: '_new' %></li>
+              <li>
+                <%= link_to "#" do %>
+                    <s>Customer Portal</s>
+                <% end %>
+              </li>
+              <li role="separator" class="divider"></li>
+              <li>
+                <%= link_to "#" do %>
+                    <s>Request Invoice Approval</s>
+                <% end %>
+              </li>
+              <li>
+                <%= link_to "#" do %>
+                    <s>Request Payment</s>
+                <% end %>
+              </li>
+              <li>
+                <%= link_to "#" do %>
+                    <s>Request Art Approval</s>
+                <% end %>
+              </li>
+              <li>
+                <%= link_to "#" do %>
+                    <s>Notify for Pickup</s>
+                <% end %>
+              </li>
+              <li>
+                <%= link_to "#" do %>
+                    <s>Request Payment</s>
+                <% end %>
+              </li>
+            </ul>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+</div>

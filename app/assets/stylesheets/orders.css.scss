@@ -199,3 +199,40 @@ ul.shipments-list {
 .order-step-1 {
   min-height: 400px;
 }
+
+.order-edit-salesperson {
+  padding: 10px;
+  float: left;
+
+  .profile-pic {
+    width: 60px;
+  }
+}
+
+.order-edit-title {
+  padding: 10px 0;
+  float: left;
+}
+
+.navbar-orders {
+  background-color: #f8f8f8;
+  border: none;
+}
+
+.navbar-orders .navbar-nav > li > a {
+  color: #777;
+}
+
+.navbar-orders .navbar-nav > .active > a,
+.navbar-orders .navbar-nav > .active > a:hover,
+.navbar-orders .navbar-nav > .active > a:focus {
+  color: #555555;
+  background-color: #E5E9EC;
+  border-bottom: none;
+}
+.navbar-orders .navbar-nav > .open > a,
+.navbar-orders .navbar-nav > .open > a:hover,
+.navbar-orders .navbar-nav > .open > a:focus {
+  color: #555555;
+  background-color: #fafafa;
+}
