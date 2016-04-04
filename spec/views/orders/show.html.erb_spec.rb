@@ -2,6 +2,7 @@ require 'spec_helper'
 
 describe "orders/show", type: :view do
   
+  let(:order_without_logo) { build_stubbed(:order_with_logo) }
   let(:order) { build_stubbed(:order) }
   let(:pickup_order) { build_stubbed(:order, delivery_method: "Pickup in Ann Arbor") }
 
@@ -11,6 +12,7 @@ describe "orders/show", type: :view do
       assign(:order, order)
       render
     }
+
 
     it 'should display the disclaimer' do
       expect(rendered).to have_text "* Arrival date varies by carrier" 
@@ -35,6 +37,8 @@ describe "orders/show", type: :view do
       assign(:order, order)
       render
     end
+    
+    before{ allow(order.store).to receive(:logo_id) { nil } }
 
     it "Displays the store's name at the head of the invoice" do 
       expect(rendered).to have_css :h1, text: "#{order.store.name}"  
