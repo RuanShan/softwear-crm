@@ -36,6 +36,11 @@
                 <i class='fa fa-star'></i> Sales <span class="caret"></span>
             <% end %>
             <ul class="dropdown-menu">
+              <li>
+                <%= link_to "#" do %>
+                    <i class="softwear-icon-freshdesk-icon"></i> Freshdesk Sales Ticket
+                <% end %>
+              </li>
               <% if !@order.canceled? && @order.invoice_state != 'approved' %>
                   <li>
                     <%= form_for @order do |f| %>
@@ -44,6 +49,12 @@
                     <% end %>
                   </li>
               <% end %>
+
+              <li>
+                <%= link_to "#" do %>
+                    <s><i class="fa fa-list"></i> Request Invoice Approval</s>
+                <% end %>
+              </li>
 
               <% unless @order.notification_state == 'picked_up' %>
                   <% unless @order.fba? %>
@@ -61,12 +72,16 @@
                     <% end %>
                   </li>
               <% end %>
+              <li>
+                <%= link_to "#" do %>
+                    <s><i class="fa fa-money"></i> Request Payment</s>
+                <% end %>
+              </li>
               <li role="separator" class="divider"></li>
 
               <% unless @order.canceled? %>
                   <li>
-                    <%= link_to check_cancelation_order_path(@order), remote: true,
-                                data: {confirm: 'Are you sure you watn to cancel this order?'} do %>
+                    <%= link_to check_cancelation_order_path(@order), remote: true, id: 'order_cancel' do %>
                         <i class='fa fa-ban'></i> Cancel Order
                     <% end %>
                   </li>
@@ -87,6 +102,16 @@
                 <i class='fa fa-picture-o'></i> Artwork <span class="caret"></span>
             <% end %>
             <ul class="dropdown-menu">
+              <li>
+                <%= link_to "#" do %>
+                    <i class="softwear-icon-freshdesk-icon"></i> Freshdesk Proof Ticket
+                <% end %>
+              </li>
+              <li>
+                <%= link_to "#" do %>
+                    <s>Request Art Approval</s>
+                <% end %>
+              </li>
             </ul>
           </li>
 
@@ -102,12 +127,18 @@
                     <%= link_to 'Send to Production', send_to_production_order_path(order), method: :post %>
                 <% end %>
               </li>
-              <li><%= link_to 'Imprintable Order Sheets', imprintable_order_sheets_order_path(order) %></li>
+              <li>
+                <%= link_to  imprintable_order_sheets_order_path(order) do %>
+                <i class="softwear-icon-t-shirt"></i> Imprintable Order Sheets
+                <% end %>
+              </li>
               <li><%= link_to 'Order Report', order_report_order_path(order) %></li>
               <li>
+              <li>
                 <%= link_to "#" do %>
-                    <s>Imprintable Receiving Sheets</s>
+                    <i class="softwear-icon-t-shirt"></i> Imprintable Receiving Sheets
                 <% end %>
+              </li>
               </li>
             </ul>
           </li>
@@ -121,32 +152,6 @@
               <li>
                 <%= link_to "#" do %>
                     <s>Customer Portal</s>
-                <% end %>
-              </li>
-              <li role="separator" class="divider"></li>
-              <li>
-                <%= link_to "#" do %>
-                    <s>Request Invoice Approval</s>
-                <% end %>
-              </li>
-              <li>
-                <%= link_to "#" do %>
-                    <s>Request Payment</s>
-                <% end %>
-              </li>
-              <li>
-                <%= link_to "#" do %>
-                    <s>Request Art Approval</s>
-                <% end %>
-              </li>
-              <li>
-                <%= link_to "#" do %>
-                    <s>Notify for Pickup</s>
-                <% end %>
-              </li>
-              <li>
-                <%= link_to "#" do %>
-                    <s>Request Payment</s>
                 <% end %>
               </li>
             </ul>

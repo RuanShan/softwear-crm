@@ -52,7 +52,7 @@ feature 'Order management', order_spec: true, js: true do
     sleep 1
     click_button 'Submit'
     sleep 1
-    
+
 
     expect(Order.where(firstname: 'Guy')).to exist
 
@@ -222,10 +222,10 @@ feature 'Order management', order_spec: true, js: true do
     wait_for_ajax
     click_link 'Payments'
     wait_for_ajax
-    
-    expect(page).to have_link "show_#{payment1.id}" 
-    expect(page).to have_link "show_#{payment2.id}" 
-    
+
+    expect(page).to have_link "show_#{payment1.id}"
+    expect(page).to have_link "show_#{payment2.id}"
+
     click_link "show_#{payment1.id}"
     wait_for_ajax
 
@@ -238,10 +238,10 @@ feature 'Order management', order_spec: true, js: true do
 
     click_link "show_#{payment2.id}"
     wait_for_ajax
-    
+
     expect(page).to have_text "Payment Receipt ##{payment2.id}"
   end
-  
+
   scenario 'user edits an existing order', no_ci: true do
     visit edit_order_path order
     wait_for_ajax
@@ -280,14 +280,15 @@ feature 'Order management', order_spec: true, js: true do
   scenario 'user can attempt to notify customer, and take note of what happened', story_913: true do
     PublicActivity.with_tracking do
       visit edit_order_path(order)
-      find('.glyphicon-phone-alt').click
+      click_link 'Sales'
+      click_link 'Notify Customer'
       sleep(0.5)
       select('Attempted', from: 'What did you do?')
       fill_in('And what are the details?',  with: 'Left Voicemail')
       click_button('Update Notification state')
       sleep(1)
       find("button[data-dismiss='modal']").click
-      expect(page).to have_selector("#order_#{order.id} > .notification-state", text: 'Attempted')
+      expect(page).to have_selector("#order_#{order.id}_states .notification-state", text: 'Attempted')
       click_link "Timeline"
       sleep(0.3)
       expect(page).to have_content "changed order notification_state from pending to attempted via transition attempted with the details Left Voicemail"
@@ -297,14 +298,15 @@ feature 'Order management', order_spec: true, js: true do
   scenario 'user can notify customer and update state', story_913: true do
     PublicActivity.with_tracking do
       visit edit_order_path(order)
-      find('.glyphicon-phone-alt').click
+      click_link 'Sales'
+      click_link 'Notify Customer'
       sleep(0.5)
       select('Notified', from: 'What did you do?')
       fill_in('And what are the details?', with:  'Spoke over the phone')
       click_button('Update Notification state')
       sleep(1)
       find("button[data-dismiss='modal']").click
-      expect(page).to have_selector("#order_#{order.id} > .notification-state", text: 'Notified')
+      expect(page).to have_selector("#order_#{order.id}_states .notification-state", text: 'Notified')
       click_link "Timeline"
       sleep(0.3)
       expect(page).to have_content 'changed order notification_state from pending to notified via transition notified with the details Spoke over the phone'
@@ -313,13 +315,14 @@ feature 'Order management', order_spec: true, js: true do
 
   scenario 'user can mark order as picked up', story_913: true do
     visit edit_order_path(order)
-      PublicActivity.with_tracking do
-      find('.glyphicon-thumbs-up').click
+    PublicActivity.with_tracking do
+      click_link 'Sales'
+      click_link 'Mark Picked Up'
       sleep(0.5)
       page.driver.browser.switch_to.alert.accept
       sleep(1)
       find("button[data-dismiss='modal']").click
-      expect(page).to have_selector("#order_#{order.id} > .notification-state", text: 'Picked up')
+      expect(page).to have_selector("#order_#{order.id}_states .notification-state", text: 'Picked up')
     end
   end
 
@@ -340,7 +343,8 @@ feature 'Order management', order_spec: true, js: true do
         expect(order).to be_valid
         visit edit_order_path(order)
 
-        click_link 'Cancel Order'
+        click_link 'Sales'
+        find("#order_cancel").click
         sleep 1.5
 
         expect(page).to have_content "If you really need this order canceled, ask a sales manager:"
@@ -357,7 +361,8 @@ feature 'Order management', order_spec: true, js: true do
         scenario 'a sales manager can see what tasks need to be performed' do
           visit edit_order_path(order)
 
-          click_link 'Cancel Order'
+          click_link 'Sales'
+          find("#order_cancel").click
           sleep 1.5
 
           expect(page).to have_content "A salesperson cost must be filled out"
@@ -376,7 +381,8 @@ feature 'Order management', order_spec: true, js: true do
         scenario 'a sales manager can cancel the order' do
           visit edit_order_path(order)
 
-          click_link 'Cancel Order'
+          click_link 'Sales'
+          find("#order_cancel").click
           sleep 1.5
 
           expect(page).to have_content "ready to be canceled"
@@ -391,7 +397,8 @@ feature 'Order management', order_spec: true, js: true do
         scenario 'canceling the order sets all order states to canceled' do
           visit edit_order_path(order)
 
-          click_link 'Cancel Order'
+          click_link 'Sales'
+          find("#order_cancel").click
           sleep 1.5
           click_button "Cancel Order"
           sleep 2
@@ -411,7 +418,8 @@ feature 'Order management', order_spec: true, js: true do
 
           visit edit_order_path(order)
 
-          click_link 'Cancel Order'
+          click_link 'Sales'
+          find("#order_cancel").click
           sleep 1.5
           click_button "Cancel Order"
           sleep 1

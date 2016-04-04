@@ -27,7 +27,9 @@
 
 <br clear="all"/>
 
-<%= render 'state_ribbon', order: @order %>
+<div id="order_<%= @order.id %>_states">
+    <%= render 'state_ribbon', order: @order %>
+</div>
 
 <% if @order.invoice_rejected? %>
   <div class='alert alert-danger'>

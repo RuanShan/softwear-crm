@@ -1,11 +1,11 @@
 <% if @successful_transition %>
-  $("#order_<%= @order.id %> > .<%= @machine.gsub('_', '-') %>").html("<%= j render('orders/state', which: @machine, state: @order.send(@machine)) %>");
-  
+  $("#order_<%= @order.id %>_states").html("<%= j render('orders/state_ribbon', order: @order) %>");
+
   <% if @machine.to_s == 'notification_state' && @order.send(@machine).to_s == 'picked_up' %>
     $("#order_<%= @order.id %>  .notification-buttons").hide();
     $(".edit-notification-buttons").hide();
   <% end %>
-  
+
   setupContentModal(function($contentModal) {
     $contentModal.find('.modal-content').addClass('modal-content-success');
   });

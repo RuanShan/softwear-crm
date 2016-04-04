@@ -123,29 +123,30 @@ feature 'FBA Order management', fba_spec: true, story_103: true, js: true, retry
     background { scuba_doitdeeper_shirt; scuba_doitdeeper_sweater }
 
     scenario 'a user can create an FBA order with the jobs, line items, and shipments specified by a packing slip', create: true do
-      visit new_fba_orders_path
-      fill_in 'Deadline', with: '12/25/2025 12:00 AM'
+      expect {
+        visit new_fba_orders_path
+        fill_in 'Deadline', with: '12/25/2025 12:00 AM'
 
-      click_button 'Next'
-      sleep 1
-      click_link 'Upload Packing Slip(s)'
-      sleep 1
-      drop_in_dropzone multi_packing_slip_path
-      sleep ci? ? 3 : 1
-      click_button "close-packing-slip-modal"
-      wait_for_ajax
+        click_button 'Next'
+        sleep 1
+        click_link 'Upload Packing Slip(s)'
+        sleep 1
+        drop_in_dropzone multi_packing_slip_path
+        sleep ci? ? 3 : 1
+        click_button "close-packing-slip-modal"
+        wait_for_ajax
 
-      expect(page).to have_content 'PackingSlipMulti.txt'
-      expect(page).to have_content 'Jobs and line items will be added'
+        expect(page).to have_content 'PackingSlipMulti.txt'
+        expect(page).to have_content 'Jobs and line items will be added'
 
-      click_button 'Next'
-      sleep ci? ? 3 : 1
-      find('.big-submit-button').click
-      sleep 3
-    
+        click_button 'Next'
+        sleep ci? ? 3 : 1
+        find('.big-submit-button').click
+        sleep 3
+      }.to change{ Order.fba.count }.from(0).to(1)
+
       order = Order.fba.where(name: "Scooba Shirt Scooba Sweater - 1 Shipping Location")
       expect(order).to exist
-      expect(page).to have_content "Edit Order ##{order.first.id}"
       expect(page).to have_content 'Scooba Shirt Scooba Sweater - 1 Shipping Location'
       order = order.first
       expect(

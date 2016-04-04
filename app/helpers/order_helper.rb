@@ -51,6 +51,14 @@ module OrderHelper
       when 'canceled' then 'label-danger'
       else nil
       end
+    elsif style_type == 'state'
+      case status
+        when 'pending' then 'state-warning'
+        when 'approved' then 'state-success'
+        when 'rejected' then 'state-danger'
+        when 'canceled' then 'state-danger'
+        else nil
+      end
     end
   end
 
@@ -62,6 +70,13 @@ module OrderHelper
       when 'artwork_canceled' then 'label-danger'
       else 'label-warning'
       end
+    elsif style_type == 'state'
+      case status
+        when 'pending_artwork_requests' then 'state-danger'
+        when 'in_production' then 'state-success'
+        when 'artwork_canceled' then 'state-danger'
+        else 'label-warning'
+      end
     end
   end
 
@@ -69,13 +84,23 @@ module OrderHelper
   def get_style_from_notification_state(status, style_type = 'label')
     if style_type == 'label'
       case status
-      when 'pending' then 'label-danger'
-      when 'attempted' then 'label-danger'
-      when 'notified' then 'label-warning'
-      when 'picked_up' then 'label-success'
-      when 'shipped' then 'label-success'
-      when 'notification_canceled' then 'label-danger'
-      else nil
+        when 'pending' then 'label-danger'
+        when 'attempted' then 'label-danger'
+        when 'notified' then 'label-warning'
+        when 'picked_up' then 'label-success'
+        when 'shipped' then 'label-success'
+        when 'notification_canceled' then 'label-danger'
+        else nil
+      end
+    elsif style_type == 'state'
+      case status
+        when 'pending' then 'state-danger'
+        when 'attempted' then 'state-danger'
+        when 'notified' then 'state-warning'
+        when 'picked_up' then 'state-success'
+        when 'shipped' then 'state-success'
+        when 'notification_canceled' then 'state-danger'
+        else nil
       end
     end
   end
@@ -88,6 +113,14 @@ module OrderHelper
       when 'complete' then 'label-success'
       when 'canceled' then 'label-danger'
       else nil
+      end
+    elsif style_type == 'state'
+      case status
+        when 'pending' then 'state-danger'
+        when 'in_production' then 'state-warning'
+        when 'complete' then 'state-success'
+        when 'canceled' then 'state-danger'
+        else nil
       end
     end
   end

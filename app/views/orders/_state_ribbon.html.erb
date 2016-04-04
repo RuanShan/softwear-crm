@@ -2,7 +2,7 @@
   <div class="order-state-ribbon">
     <div class='state-box'>
       <H5>Payment</H5>
-      <div class='state <%= get_style_from_status(order.payment_status, 'state')%>'>
+      <div class='state <%= get_style_from_status(order.payment_status, 'state')%> payment-state'>
         <% if order.fba? %>
             N/A
         <% else %>
@@ -13,7 +13,7 @@
 
     <div class='state-box'>
       <H5>Invoice</H5>
-      <div class='state <%= get_style_from_invoice_state(@order.invoice_state, 'state')%>'>
+      <div class='state <%= get_style_from_invoice_state(@order.invoice_state, 'state')%> invoice-state'>
         <%= order.invoice_state.humanize.capitalize %>
         <% if !order.canceled? && order.invoice_state != 'approved' %>
             <div class="order-state-action">
@@ -31,7 +31,7 @@
 
     <div class='state-box'>
       <H5>Production</H5>
-      <div class='state <%= get_style_from_production_state(@order.production_state, 'state')%>'>
+      <div class='state <%= get_style_from_production_state(@order.production_state, 'state')%> production-state'>
         <%= order.production_state.humanize.capitalize %>
         <div class="order-state-action">
           <% if order.production_url && order.production_state != 'pending' %>
@@ -53,14 +53,14 @@
 
     <div class='state-box'>
       <H5>Artwork</H5>
-      <div class='state <%= get_style_from_artwork_state(@order.artwork_state, 'state')%>'>
+      <div class='state <%= get_style_from_artwork_state(@order.artwork_state, 'state')%> artwork-state'>
         <%= order.human_artwork_state_name.capitalize %>
       </div>
     </div>
 
     <div class='state-box'>
       <H5>Notification</H5>
-      <div class='state <%= get_style_from_notification_state(@order.notification_state, 'state')%>'>
+      <div class='state <%= order.fba? ? 'state-success' : get_style_from_notification_state(@order.notification_state, 'state') %> notification-state'>
         <% if order.fba? %>
             N/A
         <% else %>

@@ -292,16 +292,21 @@ ul.shipments-list {
 .state {
 
   padding: 0.5em;
+}
 
-  .state-danger {
-    background-color: #f0ad4e;
-    color: #fff;
-  }
+.state.state-danger {
+  background-color: #d9534f;
+  color: #fff;
+}
 
-  .state-warning {
-    background-color: #d9534f;
-    color: #fff;
-  }
+.state.state-warning {
+  background-color: #f0ad4e;
+  color: #fff;
+}
+
+.state.state-success {
+  background-color: #5cb85c;
+  color: #fff;
 }
 
 .order-state-action {
