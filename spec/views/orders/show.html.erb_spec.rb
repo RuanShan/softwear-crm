@@ -2,7 +2,6 @@ require 'spec_helper'
 
 describe "orders/show", type: :view do
   
-  let(:order_without_logo) { build_stubbed(:order_with_logo) }
   let(:order) { build_stubbed(:order) }
   let(:pickup_order) { build_stubbed(:order, delivery_method: "Pickup in Ann Arbor") }
 
