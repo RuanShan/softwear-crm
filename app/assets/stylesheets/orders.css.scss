@@ -219,6 +219,24 @@ ul.shipments-list {
   border: none;
 }
 
+@media (max-width: 767px) {
+  .navbar-orders {
+
+    button.navbar-toggle {
+      padding: 15px 15px;
+      border-radius: 0;
+      color: #1B1E24;
+      background: #A5B2BC;
+      margin-right: 0px;
+      margin-top: 0px;
+      margin-bottom: 0px;
+      border: none;
+      font-size: 14px;
+    }
+
+  }
+}
+
 .navbar-orders .navbar-nav > li > a {
   color: #777;
 }
@@ -235,4 +253,61 @@ ul.shipments-list {
 .navbar-orders .navbar-nav > .open > a:focus {
   color: #555555;
   background-color: #fafafa;
+}
+
+.order-state-ribbon {
+  width: 100%;
+  background-color: #fff;
+  margin-bottom: 10px;
+}
+
+@media (max-width: 767px) {
+  .order-state-ribbon .state-box {
+    background-color: #fff;
+  }
+}
+
+@media (min-width: 768px) {
+  .order-state-ribbon .state-box {
+    width: 20%;
+    float: left;
+    background-color: #fff;
+  }
+}
+
+.state-box h5 {
+  font-weight: bold;
+  text-align: center;
+  margin: 0;
+  padding: 0.5em;
+  width: 100%;
+  background-color: #000000;
+  color: #FFFFFF;
+}
+
+.state-box .state {
+  text-align: center;
+}
+
+.state {
+
+  padding: 0.5em;
+
+  .state-danger {
+    background-color: #f0ad4e;
+    color: #fff;
+  }
+
+  .state-warning {
+    background-color: #d9534f;
+    color: #fff;
+  }
+}
+
+.order-state-action {
+  float: right;
+//  a {
+//    padding: 2px 5px;
+//    background-color: #
+//  }
 }

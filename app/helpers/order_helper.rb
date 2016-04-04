@@ -30,6 +30,15 @@ module OrderHelper
       when 'Payment Complete' then 'alert-success'
       else nil
       end
+    elsif style_type == 'state'
+      case status
+        when 'Payment Terms Pending' then 'state-danger'
+        when 'Awaiting Payment' then 'state-danger'
+        when 'Payment Terms Met' then 'state-warning'
+        when 'Payment Complete' then 'state-success'
+        when 'Canceled' then 'state-danger'
+        else nil
+      end
     end
   end
 
