@@ -628,6 +628,7 @@ class Order < ActiveRecord::Base
     new_order.softwear_prod_id = nil
     new_order.invoice_state    = 'pending'
     new_order.production_state = 'pending'
+    new_order.artwork_state = 'pending_manager_approval'
 
     new_order.save!(validate: false)
 
@@ -668,7 +669,7 @@ class Order < ActiveRecord::Base
 
     end
 
-    new_order.recalculate_all!
+    new_order.reload.recalculate_all!
     new_order.reload
 
   rescue ActiveRecord::RecordInvalid => _
