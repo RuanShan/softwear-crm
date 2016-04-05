@@ -76,7 +76,7 @@ class Payment < ActiveRecord::Base
 
   validates :store, :payment_method, :amount, :salesperson_id, presence: true
   validates :pp_transaction_id, presence: true, uniqueness: true,
-               if: -> p { p.payment_method == 4 || p.payment_method == 7 }
+               if: -> p { p.payment_method == 4 }
   validates :t_name, :t_company_name, :tf_number, presence: true, if: -> p { p.payment_method == 5 }
   validates :t_name, :t_company_name, :t_description, presence: true, if: -> p { p.payment_method == 6 }
   validates :cc_number, :cc_name, presence: true, if: :credit_card?

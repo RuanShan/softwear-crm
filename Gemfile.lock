@@ -647,6 +647,3 @@ DEPENDENCIES
   wkhtmltopdf-binary
   x-editable-rails
   yaml_db!
-
-BUNDLED WITH
-   1.11.2
