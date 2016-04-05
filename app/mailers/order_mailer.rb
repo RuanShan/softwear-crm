@@ -3,6 +3,7 @@ class OrderMailer < ActionMailer::Base
     mail(
       from:    'noreply@softwearcrm.com',
       to:      order.salesperson.email,
+      bcc:     ['salesmanagers@annarbortees.com'],
       subject: %<Order Invoice ##{order.id} "#{order.name}" has been Rejected>,
       body:    "#{order.full_name}'s reason: #{order.invoice_reject_reason}\n\n#{link}"
     )
@@ -12,6 +13,7 @@ class OrderMailer < ActionMailer::Base
     mail(
       from:    'noreply@softwearcrm.com',
       to:      order.salesperson.email,
+      bcc:     ['salesmanagers@annarbortees.com'],
       subject: %(Order Invoice ##{order.id} "#{order.name}" has been Approved),
       body:    "Good job!\n\n#{link}"
     )
