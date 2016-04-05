@@ -1,7 +1,8 @@
 <%= render 'artwork_tab_disabled', message: "Below are proofs imported from that software." %>
+<h2>Proofs Imported from Admin</h2>
 
 <% order.admin_proofs.each do |ap| %>
-  <div class='col-sm-12'>
+  <div class='col-sm-6 col-sm-12'>
     <div class="panel panel-default">
       <div class="panel-heading">
         <h3 class="panel-title">
@@ -13,7 +14,7 @@
           <% if ap.thumbnail_url.blank? %>
             View full image
           <% else %>
-            <%= image_tag(ap.thumbnail_url) %>
+            <%= image_tag(ap.thumbnail_url, class: 'img img-responsive') %>
           <% end %>
         <% end %>
         <dl>
