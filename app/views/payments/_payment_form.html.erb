@@ -32,7 +32,7 @@
       <%= f.text_field :check_dl_no, label: 'Customer Drivers License' %>
       <%= f.text_field :check_phone_no, label: 'Customer Phone Number' %>
 
-    <% elsif english_payment_method == 'PayPal' || payment_method == 'Wire Transfer' %>
+    <% elsif english_payment_method == 'PayPal' || english_payment_method == 'Wire Transfer' %>
       <%= f.text_field :pp_transaction_id, label: 'Transaction ID' %>
 
     <% elsif english_payment_method == 'Trade First' %>
