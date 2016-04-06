@@ -629,6 +629,7 @@ class Order < ActiveRecord::Base
     new_order.invoice_state    = 'pending'
     new_order.production_state = 'pending'
     new_order.artwork_state = 'pending_manager_approval'
+    new_order.notification_state = 'pending'
 
     new_order.save!(validate: false)
 
