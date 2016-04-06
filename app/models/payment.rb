@@ -12,7 +12,7 @@ class Payment < ActiveRecord::Base
     string :display_payment_method
 
     boolean :undropped do
-      payment_drop_payments.blank?
+      pending_drop
     end
 
     integer :id
@@ -334,6 +334,10 @@ class Payment < ActiveRecord::Base
     VALID_PAYMENT_METHODS[payment_method]
   end
 
+  def pending_drop
+    payment_drop_payments.blank? && !order.imported_from_admin?
+  end
+
   private
 
   def credit_card_is_valid
@@ -401,6 +405,7 @@ class Payment < ActiveRecord::Base
   def recalculate_order_fields
     Order.without_tracking { order.try(:recalculate_payment_total!) }
   end
+
 
   def calculate_sales_tax_amount
     return if order.nil?
