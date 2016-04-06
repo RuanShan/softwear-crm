@@ -427,7 +427,7 @@ class Order < ActiveRecord::Base
   end
 
   def all_shipments
-    jobs.map{|job| job.shipments }.concat(shipments.to_a).flatten
+    jobs.flat_map{|job| job.shipments }.concat(shipments.to_a)
   end
 
   def all_discounts(reload = false)
@@ -749,6 +749,16 @@ class Order < ActiveRecord::Base
     artwork_requests.uniq(&:id).each do |artwork_request|
       artwork_request.create_trains
       artwork_request.create_imprint_group_if_needed
+    end
+
+    all_shipments.each(&:create_train)
+
+    case delivery_method
+    when 'Pick up in Ann Arbor'
+      StageForPickupTrain.create(order_id: softwear_prod_id)
+    when 'Pick up in Ypsilanti'
+      StoreDeliveryTrain.create(order_id: softwear_prod_id)
+    else
     end
   end
 
