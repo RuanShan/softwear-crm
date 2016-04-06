@@ -48,7 +48,7 @@ class Order < ActiveRecord::Base
 
     boolean :canceled
 
-    reference :salesperson
+    # reference :salesperson
     integer :salesperson_id
   end
 

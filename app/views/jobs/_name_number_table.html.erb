@@ -1,4 +1,18 @@
 <div class="slimScrollDiv" id="js-name-number-table-<%=(local_assigns[:job] || @job).try(:id) || '-1'%>">
+  <% if local_assigns[:job] && (mismatched = job.mismatched_name_number_quantities).present?  %>
+    <br />
+    <div class="alert alert-warning"><strong>
+      Quantities of name/numbers don't match for:
+      <% mismatched.each do |mismatch| %>
+        <div>
+          <%= mismatch.variant.full_name %>
+          &times;<%= mismatch.line_item_quantity %>,
+          Name/Numbers &times;<%= mismatch.name_number_count %>
+        </div>
+      <% end %>
+    </strong></div>
+  <% end %>
+
   <div class="table-scroll">
     <div class="table-responsive">
       <table data-sortable class="table table-hover table-striped" data-sortable-initialized="true">
@@ -13,8 +27,7 @@
         </thead>
 
         <tbody>
-          <% name_numbers = job.name_number_imprints.flat_map{ |i| i.name_numbers } %>
-          <% name_numbers.each do |nn| %>
+          <% job.name_numbers.each do |nn| %>
             <tr>
               <td><%= nn.imprint.name %></td>
               <td><%= nn.imprintable_variant.full_name %></td>
