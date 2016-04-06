@@ -454,6 +454,17 @@ class Job < ActiveRecord::Base
       return false
     end
 
+    if prod_job.order_id.blank?
+      prod_job.order_id = order.softwear_prod_id
+      unless prod_job.save
+        order.issue_warning(
+          "Dangling Production Job",
+          "Unable to assign order ID to production job. The job will be left dangling without an "\
+          "order and can be properly attached by a developer. Sorry for the inconvenience."
+        )
+      end
+    end
+
     update_column :softwear_prod_id, prod_job.id
 
     prod_job.imprints.each do |prod_imprint|
