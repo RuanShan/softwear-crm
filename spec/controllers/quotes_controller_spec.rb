@@ -54,4 +54,22 @@ describe QuotesController, js: true, quote_spec: true do
       expect(response).to render_template('show')
     end
   end
+
+  describe 'POST create' do
+    let!(:quote_request) { create(:quote_request) }
+    let(:quote_attributes) do
+      attributes_for(:valid_quote, name: "The New Quote", salesperson_id: valid_user.id, store_id: create(:valid_store).id)
+        .merge(quote_request_ids: [quote_request.id])
+    end
+    let(:quote) { Quote.find_by name: "The New Quote" }
+
+    it 'fires the "quoted" quote request activity on any given quote requests' do
+      PublicActivity.with_tracking do
+        post :create, quote: quote_attributes
+
+        expect(quote_request.activities.reload).to_not be_empty
+        expect(quote_request.activities.where('`key` LIKE "%quoted%"').where(created_at: quote_request.created_at)).to exist
+      end
+    end
+  end
 end

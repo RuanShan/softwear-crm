@@ -6,7 +6,10 @@ class QuotesController < InheritedResources::Base
 
   def create
     super do |success, failure|
-      success.html { redirect_to edit_quote_path(@quote) }
+      success.html do
+        @quote.fire_quote_request_quoted_activity(current_user)
+        redirect_to edit_quote_path(@quote)
+      end
       failure.html { render 'new' }
     end
   end

@@ -1,0 +1,14 @@
+<% if activity.trackable_type %>
+  <% if activity.trackable %>
+    <div>
+      Quote Request <%= link_to "##{activity.trackable_id}", activity.trackable %> quoted
+      <% if activity.recipient %>
+        into Quote <%= link_to "##{activity.recipient_id}", activity.recipient %>
+      <% end %>
+    </div>
+  <% else %>
+    A quote request was quoted at this time
+  <% end %>
+<% else %>
+  GHOST QUOTE REQUEST
+<% end %>

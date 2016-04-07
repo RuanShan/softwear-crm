@@ -592,6 +592,19 @@ class Quote < ActiveRecord::Base
     end
   end
 
+  def fire_quote_request_quoted_activity(current_user = nil)
+    return if quote_request_ids.empty?
+
+    quote_requests.each do |quote_request|
+      quote_request.create_activity(
+        :quoted,
+        recipient: self,
+        owner: current_user
+      )
+        .tap { |a| a.update_column(:created_at, quote_request.created_at) }
+    end
+  end
+
 =begin
  Here are the field names as of june 4 2015:
 
