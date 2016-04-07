@@ -38,7 +38,7 @@
                           class: 'btn btn-xs btn-info' do %>
                   <i class="fa fa-cogs"></i>
               <% end %>
-          <% elsif !order.canceled? %>
+          <% elsif !order.canceled? && order.production_state != 'complete' %>
               <%= link_to send_to_production_order_path(order), method: :post,
                           title: 'Send to Production (Production Manager Only)', data: { toggle: 'tooltip', placement: :bottom },
                           class: 'btn btn-xs btn-info' do  %>
