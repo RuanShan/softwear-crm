@@ -605,6 +605,8 @@ class Quote < ActiveRecord::Base
     end
   end
 
+  warn_on_failure_of :fire_quote_request_quoted_activity
+
 =begin
  Here are the field names as of june 4 2015:
 
