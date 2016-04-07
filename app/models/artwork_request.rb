@@ -65,7 +65,7 @@ class ArtworkRequest < ActiveRecord::Base
   validate :imprints_are_all_the_same_imprint_method
   validate :imprints_are_all_from_different_jobs
 
-  enqueue :create_imprint_group_if_needed, :create_trains, queue: 'api'
+  enqueue :create_imprint_group_if_needed, :create_freshdesk_proof_ticket, :create_trains, queue: 'api'
 
   after_create :enqueue_create_freshdesk_proof_ticket, unless: :fba? if Rails.env.production?
   after_save :enqueue_create_imprint_group_if_needed
@@ -345,12 +345,6 @@ class ArtworkRequest < ActiveRecord::Base
     end
   end
 
-  def enqueue_create_freshdesk_proof_ticket
-    return if order.fba?
-
-    delay(queue: 'api').create_freshdesk_proof_ticket if
-            (should_access_third_parties? && order.freshdesk_proof_ticket_id.blank?)
-  end
   warn_on_failure_of :enqueue_create_freshdesk_proof_ticket
 
   def has_freshdesk_proof_ticket?(current_user)
@@ -378,6 +372,7 @@ class ArtworkRequest < ActiveRecord::Base
   end
 
   def create_freshdesk_proof_ticket
+    return unless should_access_third_parties? && order.freshdesk_proof_ticket_id.blank?
     return if freshdesk.nil? || !order.freshdesk_proof_ticket_id.blank?
 
     requester_info = {
