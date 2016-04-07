@@ -19,6 +19,17 @@ namespace :quote_requests do
     )
   end
 
+  desc "Calls #fire_quote_request_quoted_activity on all old quotes"
+  task create_quoted_activities: :environment do
+    Quote.joins(:quote_requests).find_each do |quote|
+      begin
+        quote.fire_quote_request_quoted_activity(quote.salesperson)
+        puts "Quote ##{quote.id} SUCCESS"
+      rescue StandardError => e
+        puts "Quote ##{quote.id} ERROR #{e.class}: #{e.message}"
+      end
+    end
+  end
 
   desc 'Connect to worpress db and add pending quotes to database'
   task import_from_wordpress: :environment do
