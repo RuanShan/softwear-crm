@@ -15,6 +15,7 @@ FactoryGirl.define do
 
       factory :name_number_imprint_method do
         name 'Name/Number'
+        name_number true
       end
 
       factory :dtg_imprint_method do

@@ -33,7 +33,30 @@ describe LineItem, line_item_spec: true do
         it { is_expected.to allow_value(0).for :quantity }
         it { is_expected.to_not allow_value(-4).for :quantity }
       end
+    
+      context 'in a job with line items' do
+        let!(:white) { create(:valid_color, name: 'white') }
+        let!(:shirt) { create(:valid_imprintable) }
+
+        make_variants :white, :shirt, [:S, :M, :L]
+
+        let!(:job) { create(:order_job) }
+        subject { white_shirt_s_item }
+        let(:variant) { subject.imprintable_object }
+        let!(:imprint) { create(:imprint_with_name_number, job_id: subject.job_id) }
+        let(:name_number) { create(:name_number, imprintable_variant_id: variant.id, imprint_id: imprint.id) }
+
+        it 'should be >= amount of name/numbers' do
+          subject.update_column :quantity, 1
+          name_number
+          expect(subject).to be_valid
+
+          subject.quantity = 0
+          expect(subject).to_not be_valid
+        end
+      end
     end
+  
 
     context 'when imprintable_object is nil' do
       before :each do

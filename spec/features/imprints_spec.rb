@@ -187,10 +187,11 @@ feature 'Imprints Management', imprint_spec: true, js: true do
     end
   end
 
-  context 'when a name and number imprint is present' do
+  context 'when a name and number imprint is present', name_number: true do
     given(:imprint_two) { create(:blank_imprint, job_id: job.id, print_location_id: print_location4.id, name_number: true) }
     given!(:name_number) { create(:name_number, imprint: imprint_two) }
     given!(:line_item) { create(:imprintable_line_item) }
+    given(:variant) { ImprintableVariant.find(line_item.imprintable_variant_id) }
 
     background(:each) do
       job.line_items = [ line_item ]
@@ -218,9 +219,8 @@ feature 'Imprints Management', imprint_spec: true, js: true do
     end
 
     scenario 'a user can add names and numbers to a table, when a name and number imprint is present', name_number_spec: true, story_190: true do
-      # select imprintable_variant from variant select field
       select imprint_two.name, from: 'name_number_imprint_id'
-      select ImprintableVariant.find(line_item.imprintable_variant_id).full_name, from: 'name_number_imprintable_variant_id'
+      select variant.full_name, from: 'name_number_imprintable_variant_id'
       fill_in 'name_number_name', with: 'Test name'
       fill_in 'name_number_number', with: 'Test number'
       click_button 'Save Name number'
@@ -232,6 +232,32 @@ feature 'Imprints Management', imprint_spec: true, js: true do
 
     end
 
+    scenario 'a user sees a error when they add too many name/numbers' do
+      line_item.update_column(:quantity, 0)
+
+      select imprint_two.name, from: 'name_number_imprint_id'
+      select variant.full_name, from: 'name_number_imprintable_variant_id'
+      fill_in 'name_number_name', with: 'Billy'
+      fill_in 'name_number_number', with: '10'
+      click_button 'Save Name number'
+      wait_for_ajax
+
+      expect(NameNumber.find_by(name: 'Billy', number: '10')).to be_nil
+      # make sure the table was updated
+      expect(page).to_not have_css("#js-name-number-table-#{job.id} tbody tr td", text: /Billy/)
+
+      expect(page).to have_content(/line items, trying to add/)
+    end
+
+    scenario 'a user sees a warning when there are less name/numbers than line item quantity' do
+      line_item.update_column(:quantity, 10)
+
+      visit edit_order_path(order.id, anchor: 'jobs')
+      wait_for_ajax
+
+      expect(page).to have_content "Quantities of name/numbers don't match for: #{variant.full_name}"
+    end
+    
     scenario 'a user can remove a name/number from the list', name_number_spec: true, story_190: true do
       expect(page).to have_css("#js-name-number-table-#{job.id} tbody tr td", text: /#{imprint_two.name}/)
       find("#destroy-name-number-#{ name_number.id }").click

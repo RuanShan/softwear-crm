@@ -7,7 +7,7 @@ class NameNumbersController < InheritedResources::Base
     super do |success, failure|
       success.js
       failure.js do
-        flash[:error] = 'There was an error creating the name/number'
+        @error = "Errors: #{@name_number.errors.full_messages.join(', ')}"
       end
     end
   end

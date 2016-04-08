@@ -12,9 +12,9 @@ describe NameNumbersController, js: true, name_number_spec: true, story_190: tru
 
   describe 'POST create' do
     context 'when failing' do
-      it 'flashes a message when there is an error' do
+      it 'sets an error variable to be flashed later' do
         post :create, { job_id: job.id, format: 'js' }
-        expect(flash[:error]).to_not be_nil
+        expect(assigns(:error)).to include("Errors")
       end
     end
 
