@@ -388,10 +388,7 @@ class ArtworkRequest < ActiveRecord::Base
           ticket_type: 'Proofing Convo',
           subject: "Your Ann Arbor T-Shirt Company Order Proof(s) for \"#{order.name}\" ##{order.id} Are Ready",
           custom_field: {
-            FD_PROOF_CREATION_STATUS => 'Proof(s) Not Ready',
-            FD_NO_OF_DECORATIONS_FIELD => order.imprints.count,
-            FD_NO_OF_PROOFS => order.jobs.count,
-            FD_ORDER_QTY => order.jobs.map(&:imprintable_line_items_total).inject(:+)
+            FD_PROOF_CREATION_STATUS => 'Proof(s) Not Ready'
           }
         }
          .merge(requester_info)

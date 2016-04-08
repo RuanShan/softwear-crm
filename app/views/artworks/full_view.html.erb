@@ -1,1 +1,5 @@
-<%= image_tag @artwork.preview.file.url(params[:style] || :original), style: "background-color: #{@artwork.bg_color}" %>
+<% if @artwork.preview.file_content_type.include?("image") %>
+  <%= image_tag @artwork.preview.file.url(params[:style] || :original), style: "background-color: #{@artwork.bg_color}" %>
+<% else %>
+  <%= image_tag "/assets/logo.png" %>
+<% end %>

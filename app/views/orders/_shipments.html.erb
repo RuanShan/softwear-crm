@@ -17,7 +17,7 @@
                   <dt>Shipping Method </dt>
                   <dd><%= shipment.shipping_method.name %></dd>
                   <dt>Tracking</dt>
-                  <dd><%= shipment.tracking_number %> (<%= link_to "Tracking Website", shipment.shipping_method.tracking_url %>)</dd>
+                  <dd><%= shipment.tracking_number %> (<%= link_to "Tracking Website", shipment.tracking_url, target: '_blank' %>)</dd>
                   <dt>Shipped By</dt>
                   <dd>
                     <%= shipment.shipped_by.try(:full_name) || 'no one' %>

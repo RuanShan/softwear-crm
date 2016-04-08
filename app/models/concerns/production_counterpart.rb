@@ -113,6 +113,9 @@ module ProductionCounterpart
 
     @production.save!
     @production = nil
+
+  rescue
+    raise unless Rails.env.development?
   end
 
   def destroy_production

@@ -3,6 +3,7 @@ include ApplicationHelper
 
 feature 'Artwork Features', js: true, artwork_spec: true do
   given!(:artwork) { create(:valid_artwork) }
+  given!(:doc_art) { create(:doc_type_preview) }
   given!(:valid_user) { create(:alternate_user) }
   before(:each) { sign_in_as(valid_user) }
 
@@ -19,27 +20,68 @@ feature 'Artwork Features', js: true, artwork_spec: true do
     expect(page).to have_css("tr#artwork-row-#{artwork.id}")
   end
 
-  scenario 'A user can create an Artwork from the Artwork List', busted: true, retry: 2, no_ci: true do
-    artwork_count = Artwork.count
-    visit artworks_path
-    find("a[href='/artworks/new']").click
+  scenario 'A user can view a list of Artworks and only see thumbs for image types' do
+    if ci?
+      visit artworks_path
+    else
+      visit root_path
+      unhide_dashboard
+      click_link 'Artwork'
+      click_link 'Artwork List'
+    end
 
-    fill_in 'Name', with: 'Rspec Artwork'
-    find(:css, 'textarea#artwork_description').set('description')
-    fill_in 'Tags (separated by commas)', with: 'these,are,the,tags'
-    fill_in 'Local file location', with: 'C:\some\windows\path\lol'
-    find('#artwork_artwork_attributes_file', visible: false).set '/spec/fixtures/images/test.psd'
-    find(:css, "textarea#artwork_artwork_attributes_description").set('description')
-    find('#artwork_preview_attributes_file', visible: false).set '/spec/fixtures/images/macho.png'
-    find(:css, "textarea#artwork_preview_attributes_description").set('description')
+    expect(page).to have_css("tr[id^='artwork']", count: 2)
+    expect(page).to have_css("img[src^='/system/']", count: 1)
+   
+  end
+  
+  context 'A user can create an Artwork from the Artwork List', busted: true, retry: 2, no_ci: true do
+    
+    scenario 'A user can upload an image file' do
+      artwork_count = Artwork.count
+      visit artworks_path
+      find("a[href='/artworks/new']").click
 
-    click_button 'Create Artwork'
+      fill_in 'Name', with: 'Rspec Artwork'
+      find(:css, 'textarea#artwork_description').set('description')
+      fill_in 'Tags (separated by commas)', with: 'these,are,the,tags'
+      fill_in 'Local file location', with: 'C:\some\windows\path\lol'
+      find('#artwork_artwork_attributes_file', visible: false).set "#{Rails.root}/spec/fixtures/images/macho.png"
+      find(:css, "textarea#artwork_artwork_attributes_description").set('description')
+      find('#artwork_preview_attributes_file', visible: false).set "#{Rails.root}/spec/fixtures/images/macho.png"
+      find(:css, "textarea#artwork_preview_attributes_description").set('description')
 
-    sleep 1
-    find(:css, 'button.close').click
-    expect(page).to have_css("tr#artwork-row-#{artwork.id}")
-    sleep 1 if ci?
-    expect(Artwork.count).to eq artwork_count + 1
+      click_button 'Create Artwork'
+
+      sleep 1
+      #find(:css, 'button.close').click
+      expect(page).to have_css("tr#artwork-row-#{artwork.id}")
+      sleep 1 if ci?
+      expect(Artwork.count).to eq artwork_count + 1
+    end
+
+    scenario 'A user can upload a text file' do
+      artwork_count = Artwork.count
+      visit artworks_path
+      find("a[href='/artworks/new']").click
+
+      fill_in 'Name', with: 'Rspec Artwork'
+      find(:css, 'textarea#artwork_description').set('description')
+      fill_in 'Tags (separated by commas)', with: 'these,are,the,tags'
+      fill_in 'Local file location', with: 'C:\some\windows\path\lol'
+      find('#artwork_artwork_attributes_file', visible: false).set "#{Rails.root}/spec/fixtures/fba/PackingSlipBadSku.txt"
+      find(:css, "textarea#artwork_artwork_attributes_description").set('description')
+      find('#artwork_preview_attributes_file', visible: false).set "#{Rails.root}/spec/fixtures/fba/PackingSlipBadSku.txt"
+      find(:css, "textarea#artwork_preview_attributes_description").set('description')
+
+      click_button 'Create Artwork'
+
+      sleep 1
+      find(:css, 'button.close').click
+      expect(page).to have_css("tr#artwork-row-#{artwork.id}")
+      sleep 1 if ci?
+      expect(Artwork.count).to eq artwork_count + 1
+    end
   end
 
   scenario 'A user can edit and update an Artwork from the Artwork List', no_ci: true, retry: 4, story_692: true do

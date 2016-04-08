@@ -9,5 +9,8 @@ FactoryGirl.define do
       name 'Ann Arbor Tees Delivery'
     end
 
+    factory :tracking_number_shipping do
+      tracking_url 'http://www.tracking-site.com/:tracking_number'
+    end
   end
 end

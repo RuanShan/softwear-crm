@@ -45,6 +45,7 @@
       <div class="form-group box-info full job-name-number-info">
         <% if job.imprints.name_number.any? %>
           <%= render 'jobs/name_number_form', job: job %>
+        
           <%= render 'jobs/name_number_table', job: job %>
         <% end %>
       </div>

@@ -44,7 +44,22 @@ feature 'Proof Features', js: true, proof_spec: true, retry: 3 do
     }.to change{ Proof.count }.by(1)
   end
 
-  scenario 'A user can edit and update an Proof from the Proof List', story_692: true do
+  scenario 'A user cannot add a text file mockup to a proof', no_ci: true do
+      visit_edit_order_tab(order, 'proofs')
+      click_link "Add Proof"
+      fill_in 'proof_approve_by', with: '01/23/1992 8:55 PM'
+      find('#proof_approve_by').native.send_keys(:return)
+      within("div[data-artwork-id='#{artwork.id}']") do
+        find(:css, "div.icheckbox_minimal-grey").click
+      end
+      click_link "Add Mockup"
+      find("input[type='file']").set "#{Rails.root}/spec/fixtures/fba/PackingSlipBadSku.txt"
+      fill_in "Description", with: "This is a test for doc type mockups"
+      click_button 'Create Proof'
+      expect(page).to have_text("Mockups file must be proper file format")
+  end 
+
+  scenario 'A user can edit and update a Proof from the Proof List', story_692: true do
     visit_edit_order_tab(order, 'proofs')
     within("#proof-#{proof.id}") do
       click_link 'Edit'

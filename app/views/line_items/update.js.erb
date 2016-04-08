@@ -3,6 +3,9 @@
     var $container = $("#edit-line-item-<%= line_item.id %>");
     var handler = errorHandlerFrom($container, 'line_item', $container, <%= line_item.id %>);
 
+    $('#js-name-number-table-<%=line_item.job_id%>').replaceWith("<%= j(render partial: 'jobs/name_number_table',
+                                                                      locals: { job: line_item.job.reload }).html_safe %>");
+
     <% if line_item.valid? %>
       if ($container.hasClass('editing-line-item')) {
         $container.removeClass('editing-line-item');
