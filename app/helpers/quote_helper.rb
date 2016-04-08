@@ -20,6 +20,16 @@ module QuoteHelper
       .select { |li| !li['group_name'].nil? }
   end
 
+  def get_quote_state_style(state)
+    case state
+      when 'pending' then 'label-default'
+      when 'sent_to_customer' then 'label-warning'
+      when 'won' then 'label-success'
+      when 'lost' then 'label-danger'
+      else 'label-primary'
+    end
+  end
+
   def first_step_with_error(quote)
     steps = []
     without_id = lambda do |field|

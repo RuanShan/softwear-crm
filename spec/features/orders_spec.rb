@@ -353,6 +353,8 @@ feature 'Order management', order_spec: true, js: true do
     end
 
     context 'with the sales_manager role' do
+      given(:quote) { create(:valid_quote, orders: [order]) }
+
       background do
         allow(valid_user).to receive(:role?) { |*r| r.map(&:to_s).include?('sales_manager') }
       end
@@ -423,6 +425,19 @@ feature 'Order management', order_spec: true, js: true do
           sleep 1.5
           click_button "Cancel Order"
           sleep 1
+        end
+
+        scenario 'canceling the order "loses" its quotes' do
+          quote
+          visit edit_order_path(order)
+
+          click_link 'Sales'
+          find("#order_cancel").click
+          sleep 1.5
+          click_button "Cancel Order"
+          sleep 2
+
+          expect(quote.reload.state).to eq("lost")
         end
       end
     end

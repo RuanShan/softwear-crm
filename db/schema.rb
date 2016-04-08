@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160408202951) do
+ActiveRecord::Schema.define(version: 20160408204225) do
 
   create_table "activities", force: :cascade do |t|
     t.integer  "trackable_id",   limit: 4
@@ -829,6 +829,7 @@ ActiveRecord::Schema.define(version: 20160408202951) do
     t.integer  "insightly_opportunity_profile_id", limit: 4
     t.decimal  "insightly_bid_amount",                         precision: 10, scale: 2
     t.integer  "insightly_whos_responsible_id",    limit: 4
+    t.string   "state",                            limit: 191
   end
 
   create_table "sample_locations", force: :cascade do |t|

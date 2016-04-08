@@ -42,4 +42,13 @@
   <div id="email-form-container">
     <%= render 'form', {object: @object, email: @email} %>
   </div>
+
+  <% if @object.is_a?(Quote) %>
+    <div>
+      <%= form_for @object do |f| %>
+        <%= f.hidden_field :state_event, value: :send_to_customer %>
+        <%= f.submit "Mark as sent to customer", class: "btn btn-primary" %>
+      <% end %>
+    </div>
+  <% end %>
 </div>

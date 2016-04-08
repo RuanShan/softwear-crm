@@ -91,6 +91,7 @@ class Quote < ActiveRecord::Base
   has_many :line_items, through: :jobs
 
   validates :email, presence: true, email: true
+  validates :state, presence: true
   validates :estimated_delivery_date, presence: true
   validates :first_name, presence: true
   validates :quote_source, presence: true
@@ -114,6 +115,21 @@ class Quote < ActiveRecord::Base
   alias_method :public_notes=, :public_comments=
   alias_method :private_notes, :private_comments
   alias_method :private_notes=, :private_comments=
+
+
+  state_machine :state, initial: :pending do
+    event :send_to_customer do
+      transition :pending => :sent_to_customer
+    end 
+
+    event :won do
+      transition :sent_to_customer => :won
+    end
+
+    event :lost do
+      transition any - :lost => :lost
+    end
+  end
 
   def all_activities
     PublicActivity::Activity.where( '
