@@ -3,8 +3,8 @@
   <td><%= artwork.id %></td>
   <td><%= artwork.name %></td>
   <td>
-    <% if artwork.preview %>
-      <%= link_to(preview_artwork(artwork, :thumb), full_view_artwork_path(artwork), target: :_new) %>
+    <% if artwork.preview && artwork.is_image? %>
+      <%= link_to(preview_artwork(artwork, :thumb), full_view_artwork_path(artwork), target: :_blank) %>
     <% else %>
       (no preview)
     <% end %>
@@ -16,7 +16,7 @@
       (no artwork file)
     <% end %>
   </td>
-  <td><%= artwork.tag_list.join(', ') %></td>
+  <td><%= artwork.show_tags %></td>
   <td><%= artwork.artist.full_name %></td>
   <td><%= artwork.description %></td>
   <% end %>

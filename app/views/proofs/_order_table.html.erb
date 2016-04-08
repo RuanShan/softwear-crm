@@ -55,8 +55,10 @@
                 </h4>
 
                 <% proof.mockups.each do |mockup| %>
-                  <%= link_to(image_tag(mockup.file.url(:thumb)), mockup.file.url, target: "_blank") %><br />
-                  <%= link_to "View", mockup.file.url %><br /><br />
+                  <% if mockup.file_content_type =~ /image/ %>
+                    <%= link_to(image_tag(mockup.file.url(:thumb)), mockup.file.url, target: "_blank") %><br />
+                    <%= link_to "View", mockup.file.url %><br /><br />
+                  <% end %>
                 <% end %>
 
                 <h4>Artworks
@@ -64,8 +66,10 @@
 
                 <% proof.artworks.each do |artwork| %>
                   <div class="pull-left">
-                    <%= link_to(image_tag(artwork.preview.file.url(:thumb)), artwork.preview.file.url, target: "_blank") %><br />
-                    <%= link_to "View", artwork.preview.file.url %><br /><br />
+                    <% if artwork.preview.file_content_type =~ /image/ %>
+                      <%= link_to(image_tag(artwork.preview.file.url(:thumb)), artwork.preview.file.url, target: "_blank") %><br />
+                      <%= link_to "View", artwork.preview.file.url %><br /><br />
+                    <% end %>
                   </div>
                 <% end %>
                 <br clear="all" />

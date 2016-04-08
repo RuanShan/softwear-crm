@@ -12,6 +12,7 @@ describe "orders/show", type: :view do
       render
     }
 
+
     it 'should display the disclaimer' do
       expect(rendered).to have_text "* Arrival date varies by carrier" 
     end
@@ -33,6 +34,7 @@ describe "orders/show", type: :view do
     
     before(:each) do 
       assign(:order, order)
+      order.store.logo.file_file_name = nil
       render
     end
 

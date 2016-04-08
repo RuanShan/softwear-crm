@@ -8,6 +8,7 @@ feature 'FBA Job Tempaltes management', js: true do
   given!(:imprint_method_2) { print_location_2.imprint_method }
   given(:fba_job_template) { create(:fba_job_template_with_imprint) }
   given(:mockup_file_path) { "#{Rails.root}/spec/fixtures/images/test-mockup.png" }
+  given(:mockup_doc_path) { "#{Rails.root}/spec/fixtures/fba/PackingSlipBadSku.txt"}
 
   given!(:valid_user) { create(:alternate_user) }
   background(:each) { sign_in_as(valid_user) }

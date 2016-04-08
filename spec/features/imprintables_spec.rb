@@ -336,4 +336,13 @@ feature 'Imprintables management', imprintable_spec: true, slow: true do
     end
   end
 
+  feature 'Cannot add text files as photos', no_ci: true do
+    scenario 'A user cannot add a text file as an imprintable_photo' do
+      visit edit_imprintable_path imprintable.id
+      click_link "Add Photo"
+      find("input[type='file']").set "#{Rails.root}/spec/fixtures/fba/PackingSlipBadSku.txt"
+      click_button "Update Imprintable"
+      expect(page).to have_content "Imprintable photos asset file must be proper file format"
+    end
+  end
 end
