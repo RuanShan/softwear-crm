@@ -25,6 +25,23 @@ describe Shipment do
     end
   end
 
+  describe '#tracking_url' do
+    let(:shipment_with_number) { create(:shipment_with_tracking_number_shipping_url) } 
+    let(:shipment) { create(:shipment) }
+
+    context 'shipping_method tracking_url contains :tracking_number' do
+      it 'should replace the :tracking_number in the url with shipments tracking_number' do
+        expect(shipment_with_number.tracking_url).to eq("http://www.tracking-site.com/#{shipment_with_number.tracking_number}") 
+      end
+    end
+
+    context 'shipping_method tracking_url doesn\'t contain :tracking_number' do
+      it 'should just return the shipping_method tracking_url' do
+        expect(shipment.tracking_url).to eq(shipment.shipping_method.tracking_url)
+      end
+    end 
+  end
+
   describe 'when status gets changed to shipped', story_1076: true do
     subject { create(:shipment) }
 
