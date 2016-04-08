@@ -12,6 +12,11 @@ FactoryGirl.define do
     factory :ann_arbor_tees_delivery_shipment do 
       shipping_method { |s| s.association(:ann_arbor_tees_shipping_method) }
     end
+
+    factory :shipment_with_tracking_number_shipping_url do
+      tracking_number 12345678910
+      shipping_method { |s| s.association(:tracking_number_shipping) }
+    end
   end
 
 end

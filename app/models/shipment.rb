@@ -27,6 +27,10 @@ class Shipment < ActiveRecord::Base
   enqueue :create_train, queue: 'api'
   after_create :enqueue_create_train, if: :order_in_production?
 
+  def tracking_url
+    shipping_method.tracking_url.gsub(':tracking_number', "#{tracking_number}")
+  end
+  
   def shipped?
     status == 'shipped'
   end
@@ -67,6 +71,7 @@ class Shipment < ActiveRecord::Base
 
   def create_train
     return if production?
+    return if Rails.env.development?
     error = nil
 
     case shipping_method.name

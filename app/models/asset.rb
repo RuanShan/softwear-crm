@@ -25,18 +25,25 @@ class Asset < ActiveRecord::Base
     has_attached_file :file,
                       styles: { icon: ['100x100#'], thumb: ['200x200>'], medium: ['250x250>'], large: ['500x500>'], signature: ['300x300>'] }
   else
+    styles = lambda do |a|
+      if a.content_type =~ /^image/
+        { icon: ['100x100#'], thumb: ['200x200>'], medium: ['250x250>'], large: ['500x500>'], signature: ['300x300>'] } 
+      else
+        {}
+      end
+    end
     has_attached_file :file,
                       path: path,
                       url: url,
                       s3_protocol: Rails.env.production? ? :https : :http,
-                      styles: { icon: ['100x100#'], thumb: ['200x200>'], medium: ['250x250>'], large: ['500x500>'], signature: ['300x300>'] }
+                      styles: styles
   end
   validates_attachment :file,
             size: { less_than: 120.megabytes },
-    content_type: { content_type: ->(_, a) { Regexp.new(a.allowed_content_type) } },
               if: :content_type_restricted?
 
   validates_attachment :file, presence: true, unless: :model_can_be_blank?
+  validate :content_type_is_valid
 
   do_not_validate_attachment_file_type :file, unless: :content_type_restricted?
 
@@ -53,6 +60,13 @@ class Asset < ActiveRecord::Base
   end
 
   private
+
+  def content_type_is_valid
+    return if allowed_content_type.nil?
+    unless file.content_type =~ Regexp.new(allowed_content_type)
+      errors.add(:file, "must be proper file format")
+    end
+  end
   
   def model_can_be_blank?
     assetable_type == 'Store'

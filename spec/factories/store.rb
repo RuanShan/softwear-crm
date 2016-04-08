@@ -14,6 +14,7 @@ FactoryGirl.define do
       country 'USA' 
       phone '800-555-1212'
       sales_email 'sales@softwearcrm.com'
+      logo { |l| l.association(:valid_asset) }
     end
 
     initialize_with { Store.find_or_create_by(name: name) }

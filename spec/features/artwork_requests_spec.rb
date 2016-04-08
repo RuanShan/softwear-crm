@@ -43,13 +43,26 @@ feature 'Artwork Request Features', js: true, artwork_request_spec: true do
   # NOTE this fails in CI for absolutely no reason
   scenario 'A user can edit an artwork request', no_ci: true do
     visit "/orders/#{order.id}/edit#artwork"
-    find("a[href='/orders/1/artwork_requests/#{artwork_request.id}/edit']").click
+    find("a[href='/orders/#{order.id}/artwork_requests/#{artwork_request.id}/edit']").click
     fill_in 'Description', with: 'edited'
     select 'Normal', from: 'Priority'
     click_button 'Update Artwork request'
     sleep 1
     find(:css, "button.close").click
     expect(ArtworkRequest.where(description: 'edited')).to exist
+  end
+
+  scenario 'A user can add a text file attachment to an artwork request', no_ci: true do
+    visit "/orders/#{order.id}/edit#artwork"
+    find("a[href='/orders/#{order.id}/artwork_requests/#{artwork_request.id}/edit']").click
+    click_link 'Add Attachment'
+    sleep 15
+    find("input[type='file']").set "#{Rails.root}/spec/fixtures/fba/PackingSlipBadSku.txt"
+    find("textarea[name^='artwork_request[assets_attributes]']").set("Doc type")
+    click_button 'Update Artwork request'
+    sleep 1
+    find(:css, "button.close").click
+    expect(Asset.where(description: 'Doc type')).to exist
   end
 
   scenario 'A user can delete an artwork request' do
