@@ -335,7 +335,11 @@ class Payment < ActiveRecord::Base
   end
 
   def pending_drop
-    payment_drop_payments.blank? && !order.imported_from_admin?
+    if order.blank?
+      payment_drop_payments.blank?
+    else
+      payment_drop_payments.blank? && !order.imported_from_admin?
+    end
   end
 
   private
