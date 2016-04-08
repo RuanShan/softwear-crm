@@ -163,6 +163,7 @@ class Order < ActiveRecord::Base
   validates :terms, presence: true
   validates :in_hand_by, presence: true
   validates :invoice_reject_reason, presence: true, if: :invoice_rejected?
+  validates :fee_description, presence: true, if: :fee_present?
 
   validate :must_have_salesperson_cost, if: :canceled?
   validate :must_have_artist_cost,      if: :canceled?
@@ -400,6 +401,10 @@ class Order < ActiveRecord::Base
     super(sorted_jobs)
   end
 
+  def fee_present?
+    !fee.nil? && fee != 0
+  end
+
   def total_cost
     costs.pluck(:amount).compact.reduce(0, :+) +
     line_items.pluck(:cost_amount).compact.reduce(0, :+)
@@ -586,8 +591,17 @@ class Order < ActiveRecord::Base
     self.tax_rate = value.to_f / 100
   end
 
+  def fee_percent
+    return 0 if fee.nil?
+    fee * 100
+  end
+
+  def fee_percent=(value)
+    self.fee = value.to_f / 100
+  end
+
   def total(exclude_discounts = [])
-    t = subtotal + tax_excluding_discounts(exclude_discounts) + shipping_price
+    t = subtotal + subtotal * (fee || 0) + tax_excluding_discounts(exclude_discounts) + shipping_price
     if exclude_discounts == :all
       return t
     else
