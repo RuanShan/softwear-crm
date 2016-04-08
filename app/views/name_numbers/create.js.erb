@@ -2,6 +2,6 @@
 $('#js-name-number-table-<%=@job.id%>').replaceWith("<%= j(render partial: 'jobs/name_number_table',
                                locals: { job: @job }).html_safe %>");
 
-<% if @name_number.errors.any? %>
-  $("#flashModal").modal();
+<% if @error %>
+  errorModal("<%= @error %>");
 <% end %>

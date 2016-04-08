@@ -17,7 +17,7 @@ describe 'jobs/_name_number_table.html.erb', imprint_spec: true, name_number_spe
   context 'when populated with a valid name/number' do
     let!(:name_number) { create(:name_number) }
     it 'displays the proper information, as well as a delete button' do
-      expect_any_instance_of(Job).to receive_message_chain(:name_number_imprints, :flat_map).and_return([name_number])
+      expect_any_instance_of(Job).to receive(:name_numbers).and_return([name_number])
       expect_any_instance_of(Imprint).to receive(:name).and_return('imprint name')
       expect_any_instance_of(ImprintableVariant).to receive(:full_name).and_return('imprintable name')
 

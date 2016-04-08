@@ -1,6 +1,6 @@
 <% if show_breakdown %>
 <div class="col-xs-12" style="page-break-after: always">
-  <% order.jobs.map{|j| j.name_number_imprints }.flatten.each do |imprint| %>
+  <% order.jobs.flat_map{|j| j.name_number_imprints }.each do |imprint| %>
     <h3>Number Breakdown for <%= imprint.name %>
     </h3>
     <% if imprint.number_count.empty? %>

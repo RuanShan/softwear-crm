@@ -229,7 +229,43 @@ feature 'Line Items management', line_item_spec: true, js: true do
   end
 
   context 'editing an imprintable line item' do 
-    let!(:line_item) { LineItem.create_imprintables(job, shirt, white).sample }
+    given!(:line_item) { LineItem.create_imprintables(job, shirt, white).sample }
+    given(:variant) { line_item.imprintable_object }
+
+    context 'with name/numbers present', name_number: true do
+      given!(:imprint) { create(:imprint_with_name_number, job_id: line_item.job_id) }
+      given(:name_number) { create(:name_number, imprintable_variant_id: variant.id, imprint_id: imprint.id) }
+
+      background(:each) do
+        line_item.update_column(:quantity, 1)
+        name_number
+      end
+
+      scenario 'user sees warning when setting quantity greater than name/number amount' do 
+        visit edit_order_path(order.id, anchor: 'jobs')
+        sleep 1
+
+        expect(page).to_not have_content "Quantities of name/numbers don't match"
+        find("#line_item_#{line_item.id}_quantity").set 20
+        sleep 1
+        find('.update-line-items').click
+        sleep 1
+        expect(page).to have_content "Quantities of name/numbers don't match"
+      end
+
+      scenario 'user sees error when setting quantity less than name/number amount' do
+        visit edit_order_path(order.id, anchor: 'jobs')
+        sleep 1
+
+        find("#line_item_#{line_item.id}_quantity").set 0
+        sleep 1
+        find('.update-line-items').click
+        sleep 1
+
+        expect(page).to have_content "(0) is less than the amount of name/numbers (1)"
+        expect(line_item.reload.quantity).to_not eq 0
+      end
+    end
  
     scenario 'user sees updated quantity total' do 
       visit edit_order_path(order.id, anchor: 'jobs')

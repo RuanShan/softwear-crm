@@ -24,6 +24,7 @@ class LineItem < ActiveRecord::Base
   belongs_to :imprintable_object, polymorphic: true
   has_one :variant_imprintable, through: :imprintable_object, source: :imprintable
   belongs_to :job, touch: true, inverse_of: :line_items
+  has_many :name_numbers, -> li { where(imprintable_variant_id: li.imprintable_object_id) }, through: :job
 
   validates :description, presence: true, unless: :imprintable?
   validates :name, presence: true, unless: :imprintable?
@@ -40,11 +41,30 @@ class LineItem < ActiveRecord::Base
   validates :imprintable_object_id, uniqueness: {
     scope: [:job_id], message: 'is a duplicate in this group' }, if: :imprintable_and_in_job?
 
+  validate :quantity_isnt_less_than_name_number_quantity, if: :order?
+
   before_validation :set_sort_order, if: :markup_or_option?
   enqueue :update_production_quantities, queue: 'api'
   after_update :enqueue_update_production_quantities, if: :order_in_production?
   after_save :recalculate_order_fields
   after_destroy :recalculate_order_fields
+
+
+  def quantity_isnt_less_than_name_number_quantity
+    return if name_numbers.empty?
+
+    mismatch = job
+      .mismatched_name_number_quantities(:<, add_line_items: self)
+      .find { |m| m.variant.id == imprintable_object_id }
+
+    if mismatch.present?
+      errors.add(
+        :quantity,
+        "(#{quantity}) is less than the amount of name/numbers (#{mismatch.name_number_count}) "\
+        "for #{imprintable_object.full_name}"
+      )
+    end
+  end
 
   def self.in_need_of_cost_old_query
     fields = %w(
@@ -386,6 +406,9 @@ class LineItem < ActiveRecord::Base
     unless errors.empty?
       order.issue_warning("Production API", errors.join("\n"))
     end
+
+  rescue
+    raise unless Rails.env.development?
   end
 
   def identifier

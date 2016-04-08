@@ -34,6 +34,7 @@ class Job < ActiveRecord::Base
   has_many :discounts, as: :discountable
   has_many :print_locations, through: :imprints
   has_many :imprint_methods, through: :print_locations
+  has_many :name_numbers, through: :imprints
 
   has_many :imprintable_line_items, -> { where imprintable_object_type: 'ImprintableVariant' }, class_name: 'LineItem'
   has_many :standard_line_items, -> { where imprintable_object_type: nil }, class_name: 'LineItem'
@@ -49,6 +50,38 @@ class Job < ActiveRecord::Base
 
   validate :assure_name_and_description, on: :create
   validates :name, uniqueness: { scope: [:jobbable_id] }, if: ->(j) { j.jobbable_type == 'Order' && j.jobbable_id }
+
+  def mismatched_name_number_quantities(matcher = :>, options = {})
+    mismatch = Struct.new(:variant, :line_item_quantity, :name_number_count)
+    mismatched = []
+
+    line_items = imprintable_line_items.to_a
+    add_line_items = Array(options[:add_line_items]).compact
+
+    unless add_line_items.empty?
+      add_line_item_ids = add_line_items.map(&:id)
+      line_items.reject! { |li| add_line_item_ids.include?(li.id) }
+      line_items += add_line_items
+    end
+
+    line_items.each do |line|
+      quantity = line.quantity
+      name_numbers = NameNumber.where(imprintable_variant_id: line.imprintable_object_id)
+      name_numbers += Array(options[:add_name_numbers])
+        .compact
+        .select { |n| n.imprintable_variant_id == line.imprintable_object_id }
+    
+      if quantity.send(matcher, name_numbers.size)
+        mismatched << mismatch.new(
+          line.imprintable_object,
+          line.quantity,
+          name_numbers.size
+        )
+      end
+    end
+
+    mismatched
+  end
 
   def id_and_name
     "##{id} #{name}"
