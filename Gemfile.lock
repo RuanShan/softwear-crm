@@ -17,9 +17,9 @@ GIT
 
 GIT
   remote: git://github.com/AnnArborTees/dumpsync.git
-  revision: 8244088c7f9c5647b941ae2268c1045ba5e03ac9
+  revision: 1e7679caa94137e42f6af640e80b59e505d44ee3
   specs:
-    dumpsync (0.0.1)
+    dumpsync (0.0.2)
 
 GIT
   remote: git://github.com/AnnArborTees/endpoint_stub.git
