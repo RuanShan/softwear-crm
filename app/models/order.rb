@@ -118,6 +118,7 @@ class Order < ActiveRecord::Base
   has_many :job_discounts, through: :jobs, source: :discounts, dependent: :destroy
   has_many :admin_proofs, dependent: :destroy
   has_many :costs, as: :costable
+  has_many :name_numbers, through: :imprints
 
   accepts_nested_attributes_for :payments, :jobs, :shipments
   accepts_nested_attributes_for :costs, allow_destroy: true
@@ -679,10 +680,7 @@ class Order < ActiveRecord::Base
   end
 
   def name_and_numbers
-    jobs.map{|j|  j.name_number_imprints
-      .flat_map{ |i| i.name_numbers } }
-      .flatten
-      .sort { |x, y| x.imprint_id <=> y.imprint_id }
+    name_numbers.joins(:brand).joins(:size).order('brands.name, sizes.sort_order')
   end
 
   def create_production_order(options = {})
