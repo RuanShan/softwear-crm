@@ -959,4 +959,17 @@ describe Quote, quote_spec: true do
       expect(Quote.new.estimated_delivery_date).to be < 15.days.from_now
     end
   end
+
+  describe 'quote transitions' do
+    let(:quote) { create(:valid_quote, state: 'sent_to_customer') }
+    let(:order) { create(:order) }
+
+    context 'when an order is associated with a quote' do
+      it 'should have the state won' do
+        expect(quote.state).to eq("sent_to_customer") 
+        OrderQuote.create!(order_id: order.id, quote_id: quote.id)
+        expect(quote.reload.state).to eq("won") 
+      end
+    end 
+  end
 end

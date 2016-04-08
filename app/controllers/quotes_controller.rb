@@ -172,7 +172,7 @@ class QuotesController < InheritedResources::Base
     params.permit(
       :imprintables,
       quote: [
-        :imprintables,
+        :imprintables, :state_event,
         :email, :informal, :phone_number, :first_name, :last_name, :company,
         :twitter, :name, :valid_until_date, :estimated_delivery_date,
         :salesperson_id, :store_id, :shipping, :quote_source, :freshdesk_ticket_id,

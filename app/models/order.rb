@@ -1138,6 +1138,10 @@ class Order < ActiveRecord::Base
     update_column :production_state, 'canceled'
     update_column :payment_state, 'Canceled'
     enqueue_cancel_production_order if production?
+
+    quotes.each do |q|
+      q.update_column :state, 'lost'
+    end
   end
 
   def cancel_production_order
