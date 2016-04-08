@@ -58,7 +58,7 @@
               <% end %>
             </li>
             <li>
-              <%= nav_tab(:details, remote: true) do %>
+              <%= nav_tab(:details, remote: @return_anchor != 'details') do %>
                 <i class="fa fa-shopping-cart"></i> Details
               <% end %>
             </li>
@@ -123,7 +123,9 @@
             </div>
 
             <div class="tab-pane animated  fadeInRight" id="details">
-              <%# remote orders/details %>
+              <% if @return_anchor == 'details' %>
+                <%= render 'details', order: @order %>
+              <% end %>
             </div>
 
             <div class="tab-pane animated fadeInRight" id="payments">

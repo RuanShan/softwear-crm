@@ -15,10 +15,12 @@ class OrdersController < InheritedResources::Base
   def update
     super do |success, failure|
       success.html do
-        redirect_to edit_order_path(params[:id], anchor: return_to_anchor)
+        @return_anchor = return_to_anchor
+        redirect_to edit_order_path(params[:id], anchor: @return_anchor)
       end
       failure.html do
         assign_activities
+        @return_anchor = 'details'
         render action: :edit, anchor: 'details'
       end
     end
@@ -289,8 +291,8 @@ class OrdersController < InheritedResources::Base
         :email, :firstname, :lastname,
         :company, :twitter, :name, :po,
         :in_hand_by, :terms, :tax_exempt, :tax_rate, :tax_rate_percent,
-        :tax_id_number, :redo_reason, :invoice_state,
-        :delivery_method, :phone_number, :commission_amount,
+        :fee_percent, :tax_id_number, :redo_reason, :invoice_state,
+        :fee_description, :delivery_method, :phone_number, :commission_amount,
         :store_id, :salesperson_id, :total, :shipping_price, :artwork_state,
         :freshdesk_proof_ticket_id, :softwear_prod_id, :production_state, :phone_number_extension,
         :freshdesk_proof_ticket_id, :softwear_prod_id, :production_state, :canceled,

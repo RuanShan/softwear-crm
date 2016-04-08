@@ -92,6 +92,18 @@
     <p class="help-block">Percentage of subtotal added for sales tax</p>
   </div>
 
+  <div class="form-group">
+    <%= f.label :fee_percent, 'Fee' %>
+    <%= f.error_for :fee %>
+    <div class='input-group'>
+      <%= f.number_field :fee_percent %>
+      <div class='input-group-addon'>%</div>
+    </div>
+    <%= f.label :fee_description %>
+    <%= f.error_for :fee_description %>
+    <%= f.text_field :fee_description %>
+  </div>
+
   <% unless f.object.new_record? %>
   <div class="form-group">
     <%= f.label :invoice_state %>

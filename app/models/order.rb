@@ -164,6 +164,7 @@ class Order < ActiveRecord::Base
   validates :terms, presence: true
   validates :in_hand_by, presence: true
   validates :invoice_reject_reason, presence: true, if: :invoice_rejected?
+  validates :fee_description, presence: true, if: :fee_present?
 
   validate :must_have_salesperson_cost, if: :canceled?
   validate :must_have_artist_cost,      if: :canceled?
@@ -401,6 +402,10 @@ class Order < ActiveRecord::Base
     super(sorted_jobs)
   end
 
+  def fee_present?
+    !fee.nil? && fee != 0
+  end
+
   def total_cost
     costs.pluck(:amount).compact.reduce(0, :+) +
     line_items.pluck(:cost_amount).compact.reduce(0, :+)
@@ -587,8 +592,17 @@ class Order < ActiveRecord::Base
     self.tax_rate = value.to_f / 100
   end
 
+  def fee_percent
+    return 0 if fee.nil?
+    fee * 100
+  end
+
+  def fee_percent=(value)
+    self.fee = value.to_f / 100
+  end
+
   def total(exclude_discounts = [])
-    t = subtotal + tax_excluding_discounts(exclude_discounts) + shipping_price
+    t = subtotal + subtotal * (fee || 0) + tax_excluding_discounts(exclude_discounts) + shipping_price
     if exclude_discounts == :all
       return t
     else
@@ -631,6 +645,7 @@ class Order < ActiveRecord::Base
     new_order.production_state = 'pending'
     new_order.artwork_state = 'pending_manager_approval'
     new_order.notification_state = 'pending'
+    new_order.imported_from_admin = false
 
     new_order.save!(validate: false)
 
@@ -649,16 +664,18 @@ class Order < ActiveRecord::Base
 
         new_imprint.save!(validate: false)
 
-        imprint.artwork_requests.each do |artwork_request|
-          new_artwork_request = artwork_request.dup
-          new_artwork_request.ink_color_ids = artwork_request.ink_color_ids.dup
-          new_artwork_request.salesperson = new_order.salesperson
-          new_artwork_request.imprints = [new_imprint]
-          new_artwork_request.state = 'unassigned'
-          new_artwork_request.softwear_prod_id = nil
-          new_artwork_request.save
-          new_artwork_request.save!(validate: false)
-          new_artwork_request.artworks = artwork_request.artworks
+        unless imported_from_admin?
+          imprint.artwork_requests.each do |artwork_request|
+            new_artwork_request = artwork_request.dup
+            new_artwork_request.ink_color_ids = artwork_request.ink_color_ids.dup
+            new_artwork_request.salesperson = new_order.salesperson
+            new_artwork_request.imprints = [new_imprint]
+            new_artwork_request.state = 'unassigned'
+            new_artwork_request.softwear_prod_id = nil
+            new_artwork_request.save
+            new_artwork_request.save!(validate: false)
+            new_artwork_request.artworks = artwork_request.artworks
+          end
         end
       end
 
