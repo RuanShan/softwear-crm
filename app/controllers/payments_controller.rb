@@ -2,7 +2,7 @@ class PaymentsController < InheritedResources::Base
   include Activity
 
   before_filter :initialize_order, only: [:index, :new, :create]
-
+  before_filter :initialize_recent_retail_payments, only: [:create, :new]
 
   def create
     super do |success, failure|
@@ -65,7 +65,6 @@ class PaymentsController < InheritedResources::Base
   def new
     super do |format|
       @payment = Payment.new(payment_method: params[:payment_method])
-      @recent_retail_payments = Payment.retail.order(id: :desc) if @order.nil?
 
       format.js
       format.html { render 'new_retail' if @order.nil? }
@@ -91,6 +90,10 @@ class PaymentsController < InheritedResources::Base
 
   def initialize_order
     @order = Order.find(params[:order_id]) if params[:order_id]
+  end
+
+  def initialize_recent_retail_payments
+    @recent_retail_payments = Payment.retail.order(id: :desc) if @order.nil?
   end
 
   def permitted_params
