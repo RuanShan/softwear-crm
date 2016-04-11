@@ -152,7 +152,7 @@ feature 'Quotes management', quote_spec: true, js: true, retry: 3 do
     click_button "Mark as sent to customer"
     sleep 1
     expect(quote.reload.state).to eq("sent_to_customer")
-    expect(page).to have_content("State: sent to customer")
+    expect(page).to have_content("Status: sent to customer")
   end
 
   scenario 'A user can edit a quote', story_151: true, edit: true, story_692: true, retry: 3, no_ci: true do
