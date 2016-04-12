@@ -66,11 +66,14 @@ class Job < ActiveRecord::Base
 
     line_items.each do |line|
       quantity = line.quantity
-      name_numbers = NameNumber.where(imprintable_variant_id: line.imprintable_object_id)
+      name_numbers = line.job.name_numbers.where(imprintable_variant_id: line.imprintable_object_id)
       name_numbers += Array(options[:add_name_numbers])
         .compact
         .select { |n| n.imprintable_variant_id == line.imprintable_object_id }
-    
+   
+
+
+
       if quantity.send(matcher, name_numbers.size)
         mismatched << mismatch.new(
           line.imprintable_object,
