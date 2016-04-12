@@ -41,15 +41,15 @@
           <td><%= @order.salesperson.full_name %></td>
         </tr>
       </table>
-      <!-- if delivery method is ship, it shows disclaimer --> 
+      <!-- if delivery method is ship, it shows disclaimer -->
       <% unless !@order.delivery_method.include?("Ship") %>
         <div>
           <br />
           <p class="alert alert-warning"><strong>
-            * Arrival date varies by carrier and shipping method. 
-            If you need a guaranteed arrival date, be sure you 
-            and your salesperson have chosen the proper carrier 
-            and method to meet your needs. 
+            * Arrival date varies by carrier and shipping method.
+            If you need a guaranteed arrival date, be sure you
+            and your salesperson have chosen the proper carrier
+            and method to meet your needs.
           </strong></p>
         </div>
       <% end %>
@@ -79,7 +79,7 @@
               <td><%= @order.phone_number %>
                  <% unless @order.phone_number_extension.blank? %>
                    <strong> Ext </strong><%= @order.phone_number_extension %>
-                 <% end %>   
+                 <% end %>
               </td>
             </tr>
         <% end %>
@@ -199,6 +199,14 @@
           <td><strong>Tax:</strong></td>
           <td class="text-right"><%= number_to_currency(@order.tax) %></td>
         </tr>
+
+        <% if @order.fee_present? %>
+            <tr id="fee">
+              <td colspan='2'></td>
+              <td><strong>Fee (<%= @order.fee_description %>):</strong></td>
+              <td class="text-right"><%= number_to_currency(@order.total_fee) %></td>
+            </tr>
+        <% end %>
 
         <% if @order.shipping_price > 0 %>
             <tr id="shipping">

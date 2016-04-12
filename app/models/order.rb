@@ -601,8 +601,12 @@ class Order < ActiveRecord::Base
     self.fee = value.to_f / 100
   end
 
+  def total_fee
+    subtotal * (fee || 0)
+  end
+
   def total(exclude_discounts = [])
-    t = subtotal + subtotal * (fee || 0) + tax_excluding_discounts(exclude_discounts) + shipping_price
+    t = subtotal + total_fee + tax_excluding_discounts(exclude_discounts) + shipping_price
     if exclude_discounts == :all
       return t
     else
