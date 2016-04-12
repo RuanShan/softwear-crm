@@ -86,7 +86,7 @@
     <%= f.label :tax_rate_percent, "Tax rate" %>
     <%= f.error_for :tax_rate %>
     <div class='input-group'>
-      <%= f.number_field :tax_rate_percent %>
+      <%= f.number_field :tax_rate_percent, step: '.01' %>
       <div class='input-group-addon'>%</div>
     </div>
     <p class="help-block">Percentage of subtotal added for sales tax</p>
@@ -96,7 +96,7 @@
     <%= f.label :fee_percent, 'Fee' %>
     <%= f.error_for :fee %>
     <div class='input-group'>
-      <%= f.number_field :fee_percent %>
+      <%= f.number_field :fee_percent, step: '.01' %>
       <div class='input-group-addon'>%</div>
     </div>
     <%= f.label :fee_description %>
