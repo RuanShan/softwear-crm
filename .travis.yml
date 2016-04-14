@@ -13,7 +13,7 @@ before_install:
   - 'eval "$(ssh-agent -s)"'
   - ssh-add SoftWEAR-MockBot.pem travis_id_rsa
   - "ssh -T git@github.com || :"
-  - sudo apt-get install libmysql-ruby libmysqlclient-dev ruby-dev libappindicator1 fonts-liberation lsb-base=4.1 libstdc++6=4.8.0
+  - sudo apt-get install libmysql-ruby libmysqlclient-dev ruby-dev libappindicator1 fonts-liberation
   - gem update bundler
   - gem install softwear-lib -i ~/.rvm/rubies/rbx-2.5.2/gems --no-ri --no-rdoc
   - gem install eventmachine -i ~/.rvm/rubies/rbx-2.5.2/gems -v 1.0.3 --no-ri --no-rdoc
@@ -21,8 +21,8 @@ before_install:
   - mkdir ~/chromedriver
   - unzip chromedriver_linux64.zip -d ~/chromedriver
   - rm chromedriver_linux64.zip
-  - wget https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
-  - sudo dpkg -i google-chrome-stable_current_amd64.deb
+  - wget http://security.ubuntu.com/ubuntu/pool/universe/c/chromium-browser/chromium-browser-l10n_49.0.2623.108-0ubuntu0.14.04.1.1113_all.deb --output-file=chrome.deb
+  - sudo dpkg -i chrome.deb
 
 before_script:
   - |
