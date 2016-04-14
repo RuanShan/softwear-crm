@@ -17,10 +17,6 @@ before_install:
   - gem update bundler
   - gem install softwear-lib -i ~/.rvm/rubies/rbx-2.5.2/gems --no-ri --no-rdoc
   - gem install eventmachine -i ~/.rvm/rubies/rbx-2.5.2/gems -v 1.0.3 --no-ri --no-rdoc
-  - wget http://security.ubuntu.com/ubuntu/pool/universe/c/chromium-browser/chromium-browser_37.0.2062.120-0ubuntu0.12.04.2_amd64.deb
-  - sudo dpkg -i chromium-browser_37.0.2062.120-0ubuntu0.12.04.2_amd64.deb
-  - wget http://security.ubuntu.com/ubuntu/pool/universe/c/chromium-browser/chromium-chromedriver_34.0.1847.116-0ubuntu2_amd64.deb
-  - sudo dpkg -i chromium-chromedriver_34.0.1847.116-0ubuntu2_amd64.deb
 
 before_script:
   - |
