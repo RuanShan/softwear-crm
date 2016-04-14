@@ -90,10 +90,12 @@ RSpec.configure do |config|
   config.alias_it_should_behave_like_to :it_can, 'can'
 
   Capybara.register_driver :selenium do |app|
-    args = ['--no-default-browser-check', '--no-sandbox', '--no-first-run', '--disable-default-apps']
-    client = Selenium::WebDriver::Remote::Http::Default.new
-    client.timeout = 360
-    Capybara::Selenium::Driver.new(app, browser: :chrome, args: args, http_client: client)
+    unless ci?
+      args = ['--no-default-browser-check', '--no-sandbox', '--no-first-run', '--disable-default-apps']
+      client = Selenium::WebDriver::Remote::Http::Default.new
+      client.timeout = 360
+      Capybara::Selenium::Driver.new(app, browser: :chrome, args: args, http_client: client)
+    end
   end
 
   config.define_derived_metadata(file_path: %r(/spec/controllers/)) do |meta|

@@ -36,7 +36,7 @@ class Payment < ActiveRecord::Base
     5 => [:t_name, :t_company_name, :tf_number],
     6 => [:t_name, :t_company_name, :t_description],
     7 => [:pp_transaction_id],
-    8 => [:cc_name, :cc_company, :cc_number, :cc_transaction],
+    8 => [:cc_name, :cc_company, :cc_number, :cc_transaction, :pp_ref],
   }
 
   CREDIT_CARD_TYPES = {
@@ -257,12 +257,14 @@ class Payment < ActiveRecord::Base
       credit_card,
 
       order_id: id, # "invoice" id
-      description: description
+      description: description,
+      comment: order_id
     )
 
     if result.success?
       # NOTE pn_ref is basically the transaction ID from Payflow
       self.cc_transaction = result.params['pn_ref']
+      self.pp_ref = result.params['pp_ref']
       true
     else
       msg = "- Failed to charge card: #{result.message}"

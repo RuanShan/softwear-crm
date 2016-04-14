@@ -17,12 +17,6 @@ before_install:
   - gem update bundler
   - gem install softwear-lib -i ~/.rvm/rubies/rbx-2.5.2/gems --no-ri --no-rdoc
   - gem install eventmachine -i ~/.rvm/rubies/rbx-2.5.2/gems -v 1.0.3 --no-ri --no-rdoc
-  - wget http://chromedriver.storage.googleapis.com/2.15/chromedriver_linux64.zip
-  - mkdir ~/chromedriver
-  - unzip chromedriver_linux64.zip -d ~/chromedriver
-  - rm chromedriver_linux64.zip
-  - wget https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
-  - sudo dpkg -i google-chrome-stable_current_amd64.deb
 
 before_script:
   - |
