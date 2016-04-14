@@ -21,8 +21,8 @@ before_install:
   - mkdir ~/chromedriver
   - unzip chromedriver_linux64.zip -d ~/chromedriver
   - rm chromedriver_linux64.zip
-  - wget http://security.ubuntu.com/ubuntu/pool/universe/c/chromium-browser/chromium-browser-l10n_49.0.2623.108-0ubuntu0.14.04.1.1113_all.deb --output-file=chrome.deb
-  - sudo dpkg -i chrome.deb
+  - wget http://security.ubuntu.com/ubuntu/pool/universe/c/chromium-browser/chromium-browser-l10n_49.0.2623.108-0ubuntu0.14.04.1.1113_all.deb
+  - sudo dpkg -i chromium-browser-l10n_49.0.2623.108-0ubuntu0.14.04.1.1113_all.deb
 
 before_script:
   - |
