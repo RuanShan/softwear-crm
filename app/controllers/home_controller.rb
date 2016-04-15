@@ -9,6 +9,7 @@ class HomeController < ApplicationController
       with(:state, :artwork_request_rejected)
       with(:salesperson_full_name,  current_user.full_name)
     end.results
+      .reject { |ar| ar.order.nil? }
 
     @pending_quote_requests = QuoteRequest.search do
       with(:status, 'assigned')
