@@ -1,0 +1,26 @@
+<% order.jobs.each_with_index do |job, index| %>
+  <div class="imprintable-order-sheet-job" style="page-break-after: always">
+    <p class="text-center">Imprintable Receiving Sheet - Printed on <%= Time.now.strftime("%a, %b %d %Y") %><br />
+    <strong> <%= order.fba? ? "FBA " : '' %>Order:</strong> <%= order.full_name %> - <%= order.name %><br />
+    <strong>Salesperson:</strong> <%= order.salesperson.full_name %><br />
+    Job: <%= index + 1 %> of <%= order.jobs.size %> - #<%= job.id %> - <%= job.name %><br />
+    <span class="h2"><%= job.imprintable_line_items_total %> Total Pieces</span></p>
+
+    <% job.sort_line_items(order).tap do |sorted_line_items| %>
+      <% unless sorted_line_items.empty? %>
+        <% sorted_line_items.each do |imprintable_name, by_color| %>
+          <% by_color.each do |color_name, line_items| %>
+            <%= render 'line_items/imprintable_order_sheets_aggregate_row',
+              imprintable: imprintable_name,
+              color:       color_name,
+              line_items:  line_items,
+              signature:   "Inventoried By:"
+            %>
+          <% end # by_color %>
+        <% end #sorted_line_items %>
+      <% end #unless_sorted  %>
+    <% end #sort_line_items %>
+  </div>
+  <p class="breakhere">
+  </p>
+<% end %>

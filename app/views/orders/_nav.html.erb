@@ -141,18 +141,18 @@
                 <% end %>
               </li>
               <li>
-                <%= link_to imprintable_order_sheets_order_path(order) do %>
+                <%= link_to imprintable_sheets_order_path(order, view: "Order")  do %>
                     <i class="softwear-icon-t-shirt"></i> Imprintable Order Sheets
+                <% end %>
+              </li>
+              <li>
+                <%= link_to imprintable_sheets_order_path(order, view: "Receiving") do %>
+                    <i class="softwear-icon-t-shirt"></i> Imprintable Receiving Sheets
                 <% end %>
               </li>
               <li>
                 <%= link_to order_report_order_path(order) do %>
                     <i class="fa fa-folder"></i> Order Report
-                <% end %>
-                </li>
-              <li>
-                <%= link_to "#" do %>
-                    <s><i class="softwear-icon-t-shirt"></i> Imprintable Receiving Sheets</s>
                 <% end %>
               </li>
             </ul>

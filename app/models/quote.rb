@@ -25,6 +25,7 @@ class Quote < ActiveRecord::Base
     integer :id
     time :valid_until_date
     time :estimated_delivery_date
+    string :state
   end
 
   QUOTE_SOURCES = [

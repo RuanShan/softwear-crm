@@ -122,7 +122,7 @@ CrmSoftwearcrmCom::Application.routes.draw do
     member do
       get 'tab/:tab' => :tab, as: :tab
       get 'production_dashboard', as: 'production_dashboard'
-      get :imprintable_order_sheets, as: :imprintable_order_sheets
+      get :imprintable_sheets, as: :imprintable_sheets
       get :order_report, as: :order_report
       get 'state/:state_machine' => :state,  as: :state
       get :check_cancelation

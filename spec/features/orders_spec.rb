@@ -19,6 +19,47 @@ feature 'Order management', order_spec: true, js: true do
     expect(page).to have_css("tr#order_#{order.id}")
   end
 
+  context 'Imprintable Sheets' do
+    given!(:job) { create(:job, jobbable_id: order.id) }
+    given!(:line_item) { create(:imprintable_line_item) }
+   
+    before(:each) do
+      order.jobs << job
+      order.jobs.first.line_items << line_item
+    end
+    
+    scenario 'A user can view only imprintable order sheets' do
+      visit edit_order_path(order)
+      sleep 1
+      click_link "Production"
+      sleep 1
+      click_link "Imprintable Order Sheets"
+      sleep 1
+      expect(page).to have_content("Ordered By:")
+      expect(page).to_not have_content("Inventoried By:")
+    end
+
+    scenario 'A user can view only imprintable receiving sheets' do
+      visit edit_order_path(order)
+      sleep 1
+      click_link "Production"
+      sleep 1
+      click_link "Imprintable Receiving Sheets"
+      sleep 1
+      expect(page).to_not have_content("Ordered By:")
+      expect(page).to have_content("Inventoried By:")
+    end
+
+    scenario 'A user can view both imprintable order/receiving sheets' do
+      visit orders_path
+      sleep 1
+      find("a[href='/orders/#{order.id}/imprintable_sheets?view=Both']").click
+      sleep 1
+      expect(page).to have_content("Ordered By:")
+      expect(page).to have_content("Inventoried By:")
+    end
+  end
+
   scenario 'A user can create a new order', new: true do
     visit root_path
     unhide_dashboard

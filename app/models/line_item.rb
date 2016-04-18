@@ -49,6 +49,17 @@ class LineItem < ActiveRecord::Base
   after_save :recalculate_order_fields
   after_destroy :recalculate_order_fields
 
+  def self.merge_quantities(all_line_items)
+    all_line_items.group_by { |li| li.imprintable_variant.size_id }.map do |h|
+      size_id, line_items = h
+
+      OpenStruct.new(
+        id:           line_items.map(&:id),
+        quantity:     line_items.map(&:quantity).reduce(0, :+),
+        size_display: Size.find(size_id).display_value
+      )
+    end
+  end
 
   def quantity_isnt_less_than_name_number_quantity
     return if name_numbers.empty?
@@ -64,84 +75,6 @@ class LineItem < ActiveRecord::Base
         "for #{imprintable_object.full_name}"
       )
     end
-  end
-
-  def self.in_need_of_cost_old_query
-    fields = %w(
-      li.id sum(li.quantity) li.imprintable_object_id iv.color_id iv.imprintable_id s.display_value
-      s.name c.name o.id iv.last_cost_amount
-    )
-      .map
-      .with_index { |f, i| [f, i] }
-      .to_h
-
-    <<-SQL
-      select #{fields.keys.join(', ')} from line_items li
-
-      join imprintable_variants iv on (iv.id = li.imprintable_object_id)
-      join sizes  s  on (s.id = iv.size_id)
-      join colors c  on (c.id = iv.color_id)
-      join jobs   j  on (j.id = li.job_id)
-      join orders o  on (o.id = j.jobbable_id)
-
-      where li.imprintable_object_type = "ImprintableVariant"
-      and j.jobbable_type = "Order"
-      and o.deleted_at is null
-      and iv.deleted_at is null
-      and li.deleted_at is null
-      and (
-        not exists (
-          select costs.id from costs
-          where costs.costable_type = "LineItem"
-          and   costs.costable_id = li.id
-        )
-        or
-        exists (
-          select costs.id from costs
-          where costs.costable_type = "LineItem"
-          and   costs.costable_id = li.id
-          and   (costs.amount = 0 or costs.amount = null)
-        )
-      )
-
-      group by iv.id
-      order by o.id, s.sort_order
-
-      limit 1000
-    SQL
-  end
-
-  def self.in_need_of_cost_query
-    fields = %w(
-      li.id sum(li.quantity) li.imprintable_object_id iv.color_id iv.imprintable_id s.display_value
-      s.name c.name o.id iv.last_cost_amount
-    )
-      .map
-      .with_index { |f, i| [f, i] }
-      .to_h
-
-    <<-SQL
-      select #{fields.keys.join(', ')} from line_items li
-
-      join imprintable_variants iv on (iv.id = li.imprintable_object_id)
-      join jobs   j on j.id = li.job_id
-      join sizes  s  on (s.id = iv.size_id)
-      join colors c  on (c.id = iv.color_id)
-      join orders o  on (o.id = j.jobbable_id)
-
-      left join costs co on (co.costable_id = li.id and co.costable_type = 'LineItem')
-      where li.imprintable_object_id is not null
-      and j.jobbable_type = 'Order'
-      and o.deleted_at  is null
-      and iv.deleted_at is null
-      and li.deleted_at is null
-      and co.id is null or co.amount = 0
-
-      group by iv.id
-      order by s.sort_order
-
-      limit 1000
-    SQL
   end
 
   def self.in_need_of_cost(limit = nil, offset = nil)
