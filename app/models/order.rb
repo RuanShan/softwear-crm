@@ -340,6 +340,7 @@ class Order < ActiveRecord::Base
       super
     end
   end
+  
   def method_missing(method_name, *args, &block)
     if /^recalculate_(?<field_to_recalc>\w+)!?$/ =~ method_name.to_s && respond_to?(field_to_recalc)
       send "#{field_to_recalc}=", send("calculate_#{field_to_recalc}", *args)
@@ -1103,27 +1104,75 @@ class Order < ActiveRecord::Base
   end
   warn_on_failure_of :setup_art_for_fba
 
+  def tib_query
+    fields = %w(
+      li.id li.quantity b.name c.name s.display_value
+    )
+      .map
+      .with_index { |f, i| [f, i] }
+      .to_h
+
+    <<-SQL
+      select #{fields.keys.join(', ')} from line_items li
+
+      join jobs                 j  on (j.id = li.job_id and j.jobbable_type = 'Order')
+      join imprintable_variants iv on (iv.id = li.imprintable_object_id)
+      join colors               c  on (c.id = iv.color_id)
+      join sizes                s  on (s.id = iv.size_id)
+      join imprintables         i  on (i.id = iv.imprintable_id)
+      join brands               b  on (b.id = i.brand_id)
+
+      and li.imprintable_object_type = "ImprintableVariant"
+      and j.deleted_at is not null
+      and li.deleted_at is not null
+
+      order by i.id, c.id, s.sort_order
+    SQL
+  end
 
   def total_imprintable_breakdown
-    query = %{
-      select iv.id imprintable_object_id, li.imprintable_object_type imprintable_object_type, sum(quantity) quantity
-      from orders o
-      join jobs j on (o.id = j.jobbable_id and j.jobbable_type = 'order')
-      join line_items li on (li.job_id = j.id and imprintable_object_id is not null)
-      join imprintable_variants iv on (li.imprintable_object_id = iv.id and imprintable_object_type = 'imprintablevariant' and quantity > 0)
-      join colors c on c.id = iv.color_id
-      join sizes s on s.id = iv.size_id
-      join imprintables i on i.id = iv.imprintable_id
-      join brands b on b.id = i.brand_id
-      where o.id = #{self.id}
+    fields = %w(
+      li.id li.quantity b.name c.name s.display_value
+    )
+      .map
+      .with_index { |f, i| [f, i] }
+      .to_h
+
+    sql_results = ActiveRecord::Base.connection.execute <<-SQL
+      select #{fields.keys.join(', ')} from line_items li
+
+      join jobs                 j  on (j.id = li.job_id and j.jobbable_type = 'Order')
+      join orders               o  on (o.id = j.jobbable_id)
+      join imprintable_variants iv on (iv.id = li.imprintable_object_id)
+      join colors               c  on (c.id = iv.color_id)
+      join sizes                s  on (s.id = iv.size_id)
+      join imprintables         i  on (i.id = iv.imprintable_id)
+      join brands               b  on (b.id = i.brand_id)
+
+      where o.id = #{id}
+      and li.imprintable_object_type = "ImprintableVariant"
       and o.deleted_at is not null
       and j.deleted_at is not null
       and li.deleted_at is not null
-      group by iv.id
-      order by o.id, i.id, c.id, s.sort_order;
-    }
-    by_imprintable = LineItem.find_by_sql(query).group_by{ |li| li.imprintable_object.imprintable.name }
-    by_imprintable.each{|key, val| by_imprintable[key] = val.map.group_by{|x| x.imprintable_object.color.name } }
+
+      order by o.id, i.id, c.id, s.sort_order
+    SQL
+
+    all_line_items = sql_results.map do |r|
+      OpenStruct.new(
+        id:             r[fields['li.id']],
+        quantity:       r[fields['li.quantity']],
+        brand_name:     r[fields['b.name']],
+        color_name:     r[fields['c.name']],
+        size_display:   r[fields['s.display_value']]
+      )
+    end
+
+    by_imprintable = all_line_items.group_by(&:brand_name)
+    by_imprintable.each do |brand_name, line_items|
+      by_imprintable[brand_name] = line_items.group_by(&:color_name)
+    end
+    by_imprintable
   end
 
   def destroy_recursively

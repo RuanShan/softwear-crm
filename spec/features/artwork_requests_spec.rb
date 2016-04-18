@@ -56,7 +56,7 @@ feature 'Artwork Request Features', js: true, artwork_request_spec: true do
     visit "/orders/#{order.id}/edit#artwork"
     find("a[href='/orders/#{order.id}/artwork_requests/#{artwork_request.id}/edit']").click
     click_link 'Add Attachment'
-    sleep 15
+    sleep 1
     find("input[type='file']").set "#{Rails.root}/spec/fixtures/fba/PackingSlipBadSku.txt"
     find("textarea[name^='artwork_request[assets_attributes]']").set("Doc type")
     click_button 'Update Artwork request'

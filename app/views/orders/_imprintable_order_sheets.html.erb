@@ -1,0 +1,20 @@
+<div class="imprintable-order-sheet-job" style="page-break-after: always">
+  <p class="text-center">Imprintable Order Sheet - Printed on <%= Time.now.strftime("%a, %b %d %Y") %><br />
+  <strong> <%= order.fba? ? "FBA " : '' %>Order:</strong> <%= order.full_name %> - <%= order.name %><br />
+  <strong>Salesperson:</strong> <%= order.salesperson.full_name %><br />
+
+  <% Job.sort_line_items(order.jobs, order).tap do |sorted_line_items| %>
+    <% unless sorted_line_items.empty? %>
+      <% sorted_line_items.each do |imprintable_name, by_color| %>
+        <% by_color.each do |color_name, line_items| %>
+          <%= render 'line_items/imprintable_order_sheets_aggregate_row',
+            imprintable: imprintable_name,
+            color:       color_name,
+            line_items:  LineItem.merge_quantities(line_items),
+            signature:   "Ordered By:"
+          %>
+        <% end %>
+      <% end %>
+    <% end %>
+  <% end %>
+</div>

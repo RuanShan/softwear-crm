@@ -1,0 +1,20 @@
+<div class='hidden-print text-right animated fadeInDownBig row'>
+  <br clear="all" />
+  <%= link_to edit_order_path(@order), class: 'btn btn-primary' do %>
+      <i class="glyphicon glyphicon-circle-arrow-left"></i> Return To Order
+  <% end %>
+  <%= link_to '#', class: 'btn btn-success print-page' do  %>
+      <i class="fa fa-print"></i> Print
+  <% end %>
+</div>
+
+<% if params[:view].nil? || params[:view].include?("Both") %>
+  <%= render 'imprintable_order_sheets', order: @order %>
+  <%= render 'imprintable_receiving_sheets', order: @order %>
+<% elsif params[:view].include? "Receiving" %>
+  <%= render 'imprintable_receiving_sheets', order: @order %>
+<% else %>
+  <%= render 'imprintable_order_sheets', order: @order %>
+<% end %>
+
+<%= render('name_numbers/table', {order: @order, show_breakdown: true}) if @order.imprints.name_number.any? %>

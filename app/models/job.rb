@@ -365,11 +365,11 @@ class Job < ActiveRecord::Base
     # like this, I feel it reads much better with #(), or even #[].
   end
 
-  def sort_line_items(order_instance = nil)
+  def self.sort_line_items(jobs, order_instance = nil)
     result = {}
 
     LineItem
-      .where(job_id: id)
+      .where(job_id: jobs.map(&:id))
       .where.not(imprintable_object_id: nil).each do |line_item|
         if line_item.imprintable_variant.nil?
           (order_instance || order).bad_variant_ids << line_item.imprintable_object_id
@@ -388,6 +388,10 @@ class Job < ActiveRecord::Base
 
     result.values.each { |by_color| by_color.values.each(&:sort!) }
     result
+  end
+
+  def sort_line_items(order_instance = nil)
+    Job.sort_line_items([self], order_instance)
   end
 
   def standard_line_items
