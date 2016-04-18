@@ -775,9 +775,9 @@ class Order < ActiveRecord::Base
 
     case delivery_method
     when 'Pick up in Ann Arbor'
-      StageForPickupTrain.create(order_id: softwear_prod_id)
+      Production::StageForPickupTrain.create(order_id: softwear_prod_id)
     when 'Pick up in Ypsilanti'
-      StoreDeliveryTrain.create(order_id: softwear_prod_id)
+      Production::StoreDeliveryTrain.create(order_id: softwear_prod_id)
     else
     end
   end
