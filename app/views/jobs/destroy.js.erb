@@ -1,19 +1,21 @@
-disableFor('#delete-job-<%= @job.id %>', 1000);
+<% if @job %>
+  disableFor('#delete-job-<%= @job.id %>', 1000);
 
-<% if @job.deleted_at || @job.jobbable_type == 'Quote' %>
+  <% if @job.deleted_at || @job.jobbable_type == 'Quote' %>
 
-  $("#job-<%= @job.id %>").fadeOut(
-    500,
+    $("#job-<%= @job.id %>").fadeOut(
+      500,
 
-    function() {
-      updateOrderTimeline();
-      $("#job-<%= @job.id %>").remove();
-    }
-  );
-  $(".destroy-job-<%= @job.id %>").remove();
+      function() {
+        updateOrderTimeline();
+        $("#job-<%= @job.id %>").remove();
+      }
+    );
+    $(".destroy-job-<%= @job.id %>").remove();
 
-<% else %>
+  <% else %>
 
-  errorModal("Errors: <%= j @job.errors.full_messages.join(', ') %>");
+    errorModal("Errors: <%= j @job.errors.full_messages.join(', ') %>");
 
+  <% end %>
 <% end %>
