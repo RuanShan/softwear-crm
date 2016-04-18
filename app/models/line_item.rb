@@ -61,6 +61,16 @@ class LineItem < ActiveRecord::Base
     end
   end
 
+  def self.get_total_pieces(order)
+    total_pieces = 0
+    order.jobs.each do |j|
+      total_pieces += j.imprintable_line_items_total 
+    end 
+
+    return total_pieces 
+  end
+    
+
   def quantity_isnt_less_than_name_number_quantity
     return if name_numbers.empty?
 

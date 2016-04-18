@@ -7,6 +7,8 @@ feature 'Order management', order_spec: true, js: true do
   background(:each) { sign_in_as valid_user }
 
   given!(:order) { create(:order) }
+  given!(:job) { create(:job, jobbable_id: order.id) }
+  given!(:line_item) { create(:imprintable_line_item) }
   given!(:payment1) { create(:valid_payment, order: order) }
   given!(:payment2) { create(:valid_payment, order: order) }
 
@@ -19,9 +21,24 @@ feature 'Order management', order_spec: true, js: true do
     expect(page).to have_css("tr#order_#{order.id}")
   end
 
+  context 'Order Report' do
+    before(:each) do
+      order.jobs << job
+      order.jobs.first.line_items << line_item
+    end
+    
+    scenario 'a user can view the total counts on the top of the order report' do
+      visit edit_order_path(order)
+      sleep 1
+      click_link "Production"
+      sleep 1
+      click_link "Order Report"
+      sleep 1
+      expect(page).to have_css("strong", text: "#{LineItem::get_total_pieces(order)}")
+    end
+  end
+
   context 'Imprintable Sheets' do
-    given!(:job) { create(:job, jobbable_id: order.id) }
-    given!(:line_item) { create(:imprintable_line_item) }
    
     before(:each) do
       order.jobs << job
