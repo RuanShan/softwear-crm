@@ -14,6 +14,10 @@ class Order < ActiveRecord::Base
     text :name, :email, :firstname, :lastname, :invoice_state, :proof_state, :artwork_state,
          :company, :twitter, :terms, :delivery_method, :salesperson_full_name, :customer_key
 
+    text :id do
+      self[:id].to_s
+    end
+
     text :jobs do
       jobs.map { |j| "#{j.name} #{j.description}" }
     end
@@ -30,7 +34,6 @@ class Order < ActiveRecord::Base
     double :commission_amount
 
     integer :warnings_count
-    integer :id
 
     boolean :balance do
       balance != 0
