@@ -514,6 +514,15 @@ feature 'Order management', order_spec: true, js: true do
       expect(Sunspot.session).to have_search_params(:with, :invoice_state, ['pending'])
     end
 
+    scenario 'user can search by order id' do
+      fill_in "Search Terms", with: "#{order.id}"
+      sleep 1
+      click_button "Search"
+
+      expect(Sunspot.session).to be_a_search_for Order
+      expect(Sunspot.session).to have_search_params(:fulltext, "#{order.id}")
+    end
+
     scenario 'user can filter on payment status', story_914: true do
       find("[id$=payment_status]").select 'Payment Terms Met'
       click_button 'Search'
