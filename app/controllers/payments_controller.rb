@@ -80,6 +80,7 @@ class PaymentsController < InheritedResources::Base
       with(:undropped, true)
       with(:store_id, params[:store_id]) if params[:store_id]
       paginate(:page => 1, :per_page => 1000)
+    end.results
     respond_to do |format|
       format.js
     end
