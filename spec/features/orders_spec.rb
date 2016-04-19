@@ -119,7 +119,7 @@ feature 'Order management', order_spec: true, js: true do
     expect(value_time(order.in_hand_by)).to eq(value_time(now_at_5))
   end
 
-  xscenario 'A user can specify sales tax as a percentage', pending: "come on", new: true, tax_rate: true do
+  scenario 'A user can specify sales tax as a percentage', new: true, tax_rate: true do
     visit root_path
     unhide_dashboard
     click_link 'Orders'

@@ -169,7 +169,7 @@ class LineItem < ActiveRecord::Base
       end
       upcharge ||= 0
 
-      imprintable_price += upcharge
+      imprintable_price = upcharge.zero? ? imprintable_price : upcharge 
 
       LineItem.new(
         imprintable_object_type: 'ImprintableVariant',
