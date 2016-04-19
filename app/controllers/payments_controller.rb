@@ -79,8 +79,7 @@ class PaymentsController < InheritedResources::Base
     @payments = Payment.search do
       with(:undropped, true)
       with(:store_id, params[:store_id]) if params[:store_id]
-    end.results
-
+      paginate(:page => 1, :per_page => 1000)
     respond_to do |format|
       format.js
     end
