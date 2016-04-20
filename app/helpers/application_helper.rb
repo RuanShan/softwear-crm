@@ -209,6 +209,10 @@ module ApplicationHelper
     !Setting.paypal_signature.blank?
   end
 
+  def init_address_autocomplete
+    javascript_tag "initAddressAutocomplete();"
+  end
+
   def options_with_data_attr(collection, val_method, text_method, selected, data_attrs)
     buf = ''.html_safe
 

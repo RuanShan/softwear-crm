@@ -1,11 +1,10 @@
 try {
-  $("#<%= @tab %>").children().remove();
-  $("#<%= @tab %>").append("<%=j render "orders/#{@tab}.html", order: @order %>");
+  $("#<%= @tab %>").html("<%=j render "orders/#{@tab}.html", order: @order %>");
 
   initializeAll();
 
   <% if lookup_context.find_all("orders/_#{@tab}.js").any? %>
-  <%= render "orders/#{@tab}.js", order: @order %>
+    <%= render "orders/#{@tab}.js", order: @order %>
   <% end %>
 }
 catch (e) {

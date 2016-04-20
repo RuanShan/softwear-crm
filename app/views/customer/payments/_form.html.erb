@@ -43,6 +43,8 @@
         <div class='row'>
           <div class='col-sm-8'>
             <strong>Pay with Credit Card</strong>
+
+            <%= render 'customer/payments/address_form', payment: payment, order: order, f: f %>
             <%= render 'customer/payments/credit_card_form', payment: payment, order: order, f: f %>
 
             <%= f.submit 'Apply Payment', class: 'btn btn-success', id: 'submit_payment_button',
@@ -60,6 +62,7 @@
 
       <% else %>
 
+        <%= render 'customer/payments/address_form', payment: payment, order: order, f: f %>
         <%= render 'customer/payments/credit_card_form', payment: payment, order: order, f: f %>
 
         <%= f.submit 'Apply Payment', class: 'btn btn-success', id: 'submit_payment_button',
