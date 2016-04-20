@@ -91,7 +91,6 @@
         <% end %>
 
         <% unless job.standard_line_items.empty? %>
-          <% byebug %>
           <%= render partial: 'line_items/standard_view', locals: {
             line_items: job.standard_line_items
           } %>
