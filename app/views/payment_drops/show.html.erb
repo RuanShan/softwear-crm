@@ -78,46 +78,7 @@
   <div class="col-sm-8" style="page-break-before: always">
     <div class="box-info">
       <h3>Payment Breakdown</h3>
-      <table class="table-striped table table-responsive table-condensed">
-        <thead>
-            <tr>
-              <th>
-                Order
-              </th>
-              <th>
-                Method
-              </th>
-              <th>
-                Amount
-              </th>
-            </tr>
-        </thead>
-        <% @payment_drop.payments.each do |payment| %>
-            <tr>
-              <td>
-                <%= link_to("##{payment.order.id} #{payment.order.name}", payment.order) rescue 'n/a' %>
-              </td>
-              <td>
-                <%= payment.display_payment_method %>
-                <dl>
-                  <% %w(cc_name cc_transaction pp_transaction_id t_company_name tf_number).each do |field| %>
-                      <% unless payment.send(field).blank? %>
-                          <% /^\w\w?_(?<field_display>.+)$/ =~ field.to_s %>
-                          <dt><%= field_display.try(:humanize) %></dt>
-                          <dd class="<%= field.to_s.gsub('_', '-') %>"><%= payment.send(field) || '<blank>' %></dd>
-                      <% end %>
-                  <% end %>
-                </dl>
-              </td>
-              <td>
-                <%= payment.salesperson.full_name %>
-              </td>
-              <td>
-                <%= number_to_currency payment.amount %>
-              </td>
-            </tr>
-        <% end %>
-      </table>
+        <%= render 'payment_drops/payments', payment_drop: @payment_drop %>
     </div>
   </div>
 </div>

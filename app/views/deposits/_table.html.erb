@@ -1,0 +1,51 @@
+<div class="box-info full">
+  <div class="table-responsive">
+    <table class="table table-hover" id="payment_drops_list">
+      <thead>
+      <tr>
+        <th>ID</th>
+        <th>Date</th>
+        <th>Deposited By</th>
+        <th>Deposit Location</th>
+        <th>Amount</th>
+        <th>Actions</th>
+      </tr>
+      </thead>
+
+      <tbody>
+      <% deposits.each do |deposit| %>
+          <tr id="<%= model_table_row_id deposit %>">
+            <td><%= deposit.id %></td>
+            <td><%= display_time deposit.created_at %></td>
+            <td><%= deposit.depositor.full_name %></td>
+            <td><%= deposit.deposit_location %></td>
+            <td>
+              <table>
+                <tr>
+                  <th>Cash:</th>
+                  <td><%= deposit.cash_included %></td>
+                </tr>
+                <tr>
+                  <th>Check:</th>
+                  <td><%= deposit.check_included %></td>
+                </tr>
+                <tr>
+                  <th>Total:</th>
+                  <td><%= deposit.total_included %></td>
+                </tr>
+              </table>
+              <%= number_to_currency deposit.total_amount %>
+            </td>
+            <td>
+              <div class="btn-group btn-group-xs">
+                <%= link_to deposit, class: 'btn btn-primary' do %>
+                    <i class="fa fa-eye"></i>
+                <% end %>
+              </div>
+            </td>
+          </tr>
+      <% end %>
+      </tbody>
+    </table>
+  </div>
+</div>

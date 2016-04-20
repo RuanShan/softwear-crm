@@ -158,9 +158,12 @@
         <% end %>
 
         <% if current_user.sales_manager? %>
-          <%= content_tag :li, class:('active' if current_action == 'in_store_credits') do %>
+          <%= content_tag :li, class:('active' if current_action == 'payment_drops') do %>
             <%= link_to payment_drops_path do %><i class="fa fa-dollar"></i> Payment Drops<% end %>
           <% end %>
+            <%= content_tag :li, class:('active' if current_action == 'deposits') do %>
+                <%= link_to deposits_path do %><i class="fa fa-dollar"></i> Deposits<% end %>
+            <% end %>
         <% end %>
       <% end %>
     <% end %>

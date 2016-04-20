@@ -1,0 +1,22 @@
+<div class="page-heading animated fadeInDownBig col-lg-9 clear">
+  <h1>Deposit <small>Make a bank deposit of a batch of payment drops</small></h1>
+</div>
+
+<div class="jumbotron clear">
+  <h3>
+    <%= @undeposited_payment_drops.count %> Payment Drops Are Ready To Be Deposited
+  </h3>
+  <h4>Cash: <%= number_to_currency @undeposited_cash %></h4>
+  <h4>Check: <%= number_to_currency @undeposited_check %></h4>
+  <%= link_to new_deposit_path, class: 'btn btn-primary' do  %>
+      <i class="glyphicon glyphicon-plus-sign"></i> New Deposit
+  <% end %>
+</div>
+
+<%= paginate @deposits %>
+
+<div class="box-info row clear">
+  <%= render partial: 'table', locals: { deposits: @deposits } %>
+</div>
+
+<%= paginate @deposits %>
