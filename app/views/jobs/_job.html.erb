@@ -77,19 +77,21 @@
             <% sorted_line_items.each do |_imprintable_name, by_color| %>
               <% by_color.each do |color_name, line_items| %>
                 <%= render partial: 'line_items/imprintable_edit',
-                           locals: { color_name: color_name,
-                                     style_name: line_items.first.style_name,
-                                     style_catalog_no: line_items.first.style_catalog_no,
-                                     description: line_items.first.description,
-                                     line_items: line_items,
-                                     class_name: 'Job',
-                                     show_prices: !job.jobbable.try(:fba?) } %>
+                           locals: { color_name:        color_name,
+                                     style_name:        line_items.first.style_name,
+                                     style_catalog_no:  line_items.first.style_catalog_no,
+                                     description:       line_items.first.description,
+                                     line_items:        line_items,
+                                     class_name:        'Job',
+                                     show_prices:       !job.jobbable.try(:fba?) } 
+                                   %>
               <% end %>
             <% end %>
           <% end %>
         <% end %>
 
         <% unless job.standard_line_items.empty? %>
+          <% byebug %>
           <%= render partial: 'line_items/standard_view', locals: {
             line_items: job.standard_line_items
           } %>

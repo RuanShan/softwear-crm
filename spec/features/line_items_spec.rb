@@ -2,13 +2,14 @@ require 'spec_helper'
 include LineItemHelpers
 
 feature 'Line Items management', line_item_spec: true, js: true do
+  given!(:variant) { create(:valid_imprintable_variant) }
   given!(:order) { create(:order_with_job) }
   given(:job) { order.jobs.first }
 
   given!(:white) { create(:valid_color, name: 'white') }
   given!(:shirt) { create(:valid_imprintable) }
 
-  make_variants :white, :shirt, [:S, :M, :L], not: [:line_items, :job]
+  make_variants :white, :shirt, [:S, :M, :L, :XL, :XXL, :XXXL], not: [:line_items, :job]
 
   given(:brand) { shirt.brand }
 
@@ -151,6 +152,60 @@ feature 'Line Items management', line_item_spec: true, js: true do
 
     ['s', 'm', 'l'].each do |s|
       expect(page).to have_css '.imprintable-line-item-input > label', text: send('size_'+s).display_value, count: 1
+    end
+  end
+
+  context 'Line Item pricing' do
+    given!(:sizexl) { create(:valid_size, display_value: "XL", upcharge_group: "base_price") }
+    given!(:sizexxl) { create(:valid_size, display_value: "2XL", upcharge_group: "xxl_price") }
+    given!(:color) { create(:valid_color) }                      
+    given!(:imprintable) { create(:valid_imprintable) }
+    given!(:variant1) { create(:associated_imprintable_variant,
+             imprintable_id: imprintable.id, size_id: sizexl.id,
+             color_id: color.id) }
+    given!(:variant2) { create(:associated_imprintable_variant,
+             imprintable_id: imprintable.id, size_id: sizexxl.id,
+             color_id: color.id) }
+    
+    scenario 'when adding line items the correct prices are displayed' do
+      visit edit_order_path(order.id, anchor: "jobs")
+      sleep 1
+      click_link "Add Line Item"
+
+      within('.line-item-form') do
+        sleep 1.5
+        choose 'Yes'
+        sleep 1.5
+        select imprintable.brand.name, from: 'Brand'
+        sleep 1.5
+        select imprintable.style_name, from: 'Imprintable'
+        sleep 1.5
+        select color.name, from: 'Color'
+        sleep 1.5
+        expect(page).to have_content imprintable.style_name
+        expect(page).to have_content imprintable.style_description
+        fill_in 'decoration_price', with: '2.30'
+      end
+
+      sleep 1
+      sleep 1
+
+      find('#line-item-submit').click
+      sleep 1
+
+      #created 2 line items, XL and XXL
+      xl_line_item_price = LineItem.first.imprintable_price.to_f #9.99  
+      xxl_line_item_price = LineItem.second.imprintable_price.to_f#10.0
+
+      #converts 10.0 to 10.00 
+      xxl_line_item_price = ('%.2f' % xxl_line_item_price)
+
+      within('.edit-line-item-row') do
+        expect(page).to have_css "input[value='#{xl_line_item_price}']"
+        expect(page).to have_css "input[value='#{xxl_line_item_price}']"
+      end
+
+      expect(xxl_line_item_price.to_f > xl_line_item_price).to be_truthy
     end
   end
 

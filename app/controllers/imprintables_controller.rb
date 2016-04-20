@@ -131,12 +131,9 @@ class ImprintablesController < InheritedResources::Base
     end
   end
 
-
   def set_variants_hash
     @imprintable.create_variants_hash
   end
-
-
 
   def permitted_params
     params.permit(
