@@ -1,0 +1,74 @@
+<div class="page-heading animated fadeInDownBig row">
+  <h1>Deposit #<%= @deposit.id %></h1>
+</div>
+
+<div class="row clear">
+  <div class="col-xs-4">
+    <div class="box-info">
+      <h2>Details</h2>
+      <dl>
+        <dt>Depositor:</dt>
+        <dd><%= @deposit.depositor.full_name %></dd>
+      </dl>
+      <dl>
+        <dt>Deposit Location:</dt>
+        <dd><%= @deposit.deposit_location %></dd>
+      </dl>
+      <dl>
+        <dt>Deposit ID:</dt>
+        <dd><%= @deposit.deposit_id %></dd>
+      </dl>
+      <dl>
+        <dt>Created On:</dt>
+        <dd><%= display_date @deposit.created_at %></dd>
+      </dl>
+    </div>
+
+    <div class="box-info">
+      <h2>Total Included</h2>
+      <table>
+        <tr>
+          <th>Cash:</th>
+          <td><%= number_to_currency @deposit.cash_included %></td>
+        </tr>
+        <tr>
+          <th>Check:</th>
+          <td><%= number_to_currency @deposit.check_included %></td>
+        </tr>
+        <tr>
+          <th>Total:</th>
+          <td><%= number_to_currency @deposit.total_included %></td>
+        </tr>
+      </table>
+    </div>
+
+    <div class="box-info">
+      <h2>Expected Total Included</h2>
+      <table>
+        <tr>
+          <th>Cash:</th>
+          <td><%= number_to_currency @deposit.total_expected_cash %></td>
+        </tr>
+        <tr>
+          <th>Check:</th>
+          <td><%= number_to_currency @deposit.total_expected_check %></td>
+        </tr>
+        <tr>
+          <th>Total:</th>
+          <td><%= number_to_currency @deposit.expected_total_included %></td>
+        </tr>
+      </table>
+    </div>
+  </div>
+
+  <div class="col-xs-8">
+
+    <div class="box-info">
+      <% @deposit.payment_drops.each do |payment_drop| %>
+          <h2>Payment Drop #<%= payment_drop.id %></h2>
+          <%= render 'payment_drops/payments', payment_drop: payment_drop %>
+      <% end %>
+    </div>
+  </div>
+</div>
+

@@ -1,0 +1,48 @@
+<%= render 'shared/modal_errors', object: deposit %>
+<div class="row clear">
+  <div class="col-xs-6">
+    <h3>Details</h3>
+
+    <div class="box-info">
+      <%= bootstrap_form_for deposit do |f| %>
+          <div class="form-group">
+            <%= f.label :payment_drops, class: 'control-label' %>
+            <% (@undeposited_payment_drops + deposit.payment_drops).uniq.each do |payment_drop| %>
+                <div class="checkbox">
+                  <%= check_box_tag "deposit[payment_drop_ids][]", payment_drop.id,
+                                    deposit.payment_drops.include?(payment_drop),
+                                    id: "deposit_payment_drop_ids_#{payment_drop.id}",
+                                    class: 'undeposited-payment-drop',
+                                    data: {'cash-included' => payment_drop.cash_included,
+                                           'check-included' => payment_drop.check_included} %>
+                  Payment Drop #<%= payment_drop.id %>, Cash: <%= number_to_currency payment_drop.cash_included %>
+                  , Check: <%= number_to_currency payment_drop.check_included %>
+                </div>
+            <% end %>
+          </div>
+
+          <%= f.number_field :cash_included, value: (deposit.cash_included || 0.0), prepend: "$", step: '.01', help: 'The exact cash amount on the deposit' %>
+          <%= f.number_field :check_included, value: (deposit.check_included || 0.0), prepend: "$", step: '.01', help: 'The exact check amount on the deposit' %>
+          <%= f.text_area :difference_reason,
+                          help: 'Why is there a difference between what is
+                              expected based on the payment drops and what you entered above' %>
+          <%= f.text_field :deposit_location, help: 'What bank and branch did you deposit this at' %>
+          <%= f.text_field :deposit_id, label: 'Deposit ID' %>
+          <%= f.select :depositor_id, User.all.map { |x| [x.full_name, x.id] }, selected: (deposit.depositor_id || current_user.id), label: 'Deposited by' %>
+
+          <%= f.submit class: 'btn btn-primary' %>
+      <% end %>
+    </div>
+  </div>
+
+  <div class="col-sm-6">
+    <h3>Expected Totals</h3>
+
+    <div class="box-info">
+      <h3>Expected Cash: <span id="expected_cash"><%= number_to_currency deposit.total_expected_cash %></span></h3>
+
+      <h3>Expected Check: <span id="expected_cash"><%= number_to_currency deposit.total_expected_cash %></span></h3>
+      <%= button_tag 'Calculate', class: 'btn btn-success calculate-undeposited' %>
+    </div>
+  </div>
+</div>

@@ -1,4 +1,4 @@
-<%= render 'shared/modal_errors', object: store %>
+
 
 <%= bootstrap_form_for store do |f| %>
   <%= f.text_field :name %>
@@ -11,7 +11,7 @@
   <%= f.text_field :phone %>
   <%= f.text_field :sales_email %>
   <%= f.fields_for :logo, multipart: true do |ff| %>
-    <%= ff.file_field :file, label: 'Logo' %> 
+    <%= ff.file_field :file, label: 'Logo' %>
     <%= ff.text_field :description, label: 'Alternate text' %>
   <% end %>
   <%= f.submit  class: 'btn btn-info' %>

@@ -131,4 +131,8 @@ module FormHelpers
     # page.execute_script("$('##{field[:id]}').val(#{option_value})")
     # page.execute_script("$('##{field[:id]}').trigger('liszt:updated').trigger('change')")
   end
+
+  def icheck(item_id)
+    find("label[for='#{item_id}'] .icheckbox_minimal-grey").click
+  end
 end

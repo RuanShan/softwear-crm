@@ -6,10 +6,13 @@ class PaymentDrop < ActiveRecord::Base
   acts_as_paranoid
   paginates_per 20
 
+
+
   CASH_PAYMENT_METHOD = 1
   CHECK_PAYMENT_METHOD = 3
 
   belongs_to :store
+  belongs_to :deposit
   belongs_to_user_called :salesperson
   has_many :payment_drop_payments, dependent: :destroy
   has_many :payments, through: :payment_drop_payments
@@ -21,8 +24,21 @@ class PaymentDrop < ActiveRecord::Base
   accepts_nested_attributes_for :payment_drop_payments, allow_destroy: true
 
   default_scope -> { order(created_at: :desc) }
+  scope :undeposited, -> {where(deposit_id: nil)}
+  scope :deposited, -> {where.not(deposit_id: nil)}
 
   after_save -> { payments.each{|p| Sunspot.index(p) } }
+
+
+  searchable do
+    boolean :deposited do |x|
+      x.deposited?
+    end
+  end
+
+  def name
+    "Payment Drop #{id}, Cash: #{cash_included}, Check: #{check_included}"
+  end
 
   def total_amount
     payments
@@ -40,8 +56,8 @@ class PaymentDrop < ActiveRecord::Base
 
   def total_amount_for_payment_method(payment_method)
     payments.where(payment_method: payment_method)
-        .map{|x| x.amount}
-        .reduce(0, :+)
+      .map{|x| x.amount}
+      .reduce(0, :+)
   end
 
   def included_matches_total?
@@ -68,6 +84,18 @@ class PaymentDrop < ActiveRecord::Base
       cash_included: cash_included,
       check_included: check_included
     }.merge(payment_totals_hash)
+  end
+
+  def deposited?
+    !deposit_id.blank?
+  end
+
+  def self.undeposited_cash
+    self.undeposited.sum(:cash_included)
+  end
+
+  def self.undeposited_check
+    self.undeposited.sum(:check_included)
   end
 
 end

@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160414181428) do
+ActiveRecord::Schema.define(version: 20160418195245) do
 
   create_table "activities", force: :cascade do |t|
     t.integer  "trackable_id",   limit: 4
@@ -211,6 +211,18 @@ ActiveRecord::Schema.define(version: 20160414181428) do
     t.integer  "quote_request_id", limit: 4
     t.datetime "created_at",                   null: false
     t.datetime "updated_at",                   null: false
+  end
+
+  create_table "deposits", force: :cascade do |t|
+    t.decimal  "cash_included",                   precision: 10, scale: 2
+    t.decimal  "check_included",                  precision: 10, scale: 2
+    t.text     "difference_reason", limit: 65535
+    t.string   "deposit_location",  limit: 191
+    t.string   "deposit_id",        limit: 191
+    t.integer  "depositor_id",      limit: 4
+    t.datetime "deleted_at"
+    t.datetime "created_at"
+    t.datetime "updated_at"
   end
 
   create_table "discounts", force: :cascade do |t|
@@ -679,6 +691,7 @@ ActiveRecord::Schema.define(version: 20160414181428) do
     t.datetime "created_at",                                                  null: false
     t.datetime "updated_at",                                                  null: false
     t.decimal  "check_included",                     precision: 10, scale: 2
+    t.integer  "deposit_id",        limit: 4
   end
 
   add_index "payment_drops", ["salesperson_id"], name: "index_payment_drops_on_salesperson_id", using: :btree

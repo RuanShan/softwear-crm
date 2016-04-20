@@ -113,6 +113,7 @@ CrmSoftwearcrmCom::Application.routes.draw do
       collection { get :search }
     end
     resources :payment_drops, except: :destroy
+    resources :deposits
   end
 
   get 'payments/undropped', to: 'payments#undropped'
@@ -193,7 +194,7 @@ CrmSoftwearcrmCom::Application.routes.draw do
   namespace 'search' do
     resources :queries
   end
-  
+
   get '/search', to: 'search/queries#search', as: :search
 
   resources :sales_reports, only: [:index, :create]
