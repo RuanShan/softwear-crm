@@ -13,9 +13,11 @@ before_install:
   - 'eval "$(ssh-agent -s)"'
   - ssh-add SoftWEAR-MockBot.pem travis_id_rsa
   - "ssh -T git@github.com || :"
+  - sudo apt-get update
+  - subo apd-get install upstart
   - yes | sudo apt-get install libmysql-ruby libmysqlclient-dev ruby-dev libappindicator1 fonts-liberation
   - wget http://http.us.debian.org/debian/pool/main/l/lsb/lsb-base_9.20160110_all.deb
-  - sudo dpkg --auto-deconfigure -i lsb-base_9.20160110_all.deb
+  - sudo dpkg -i lsb-base_9.20160110_all.deb
   - wget http://launchpadlibrarian.net/167360399/lsb-base_4.1+Debian11ubuntu6_all.deb
   - sudo dpkg -i lsb-base_4.1+Debian11ubuntu6_all.deb
   - gem update bundler
