@@ -53,6 +53,7 @@ class Order < ActiveRecord::Base
 
     reference :salesperson
     integer :salesperson_id
+    integer :id
   end
 
   tracked by_current_user
