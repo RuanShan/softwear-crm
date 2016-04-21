@@ -174,6 +174,7 @@ class Job < ActiveRecord::Base
   def self.create_trains_from_artwork_request(job_id, artwork_request_id)
     Job.find(job_id).create_trains_from_artwork_request(ArtworkRequest.find(artwork_request_id))
   end
+
   def create_trains_from_artwork_request(artwork_request)
     return unless production?
 

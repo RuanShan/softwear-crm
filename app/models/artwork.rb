@@ -1,4 +1,5 @@
 class Artwork < ActiveRecord::Base
+  include TrackingHelpers
   include Softwear::Auth::BelongsToUser
 
   acts_as_paranoid
@@ -13,6 +14,8 @@ class Artwork < ActiveRecord::Base
     end
     integer :id
   end
+
+  tracked by_current_user
 
   after_initialize :initialize_assets
 
