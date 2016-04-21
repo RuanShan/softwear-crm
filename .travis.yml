@@ -14,20 +14,9 @@ before_install:
   - ssh-add SoftWEAR-MockBot.pem travis_id_rsa
   - "ssh -T git@github.com || :"
   - sudo apt-get update
-  - yes | sudo apt-get remove --auto-remove upstart-sysv
   - yes | sudo apt-get install libmysql-ruby libmysqlclient-dev ruby-dev libappindicator1 fonts-liberation
-  - wget http://http.us.debian.org/debian/pool/main/l/lsb/lsb-base_9.20160110_all.deb
-  - sudo dpkg -i lsb-base_9.20160110_all.deb
-  - wget http://launchpadlibrarian.net/167360399/lsb-base_4.1+Debian11ubuntu6_all.deb
-  - sudo dpkg -i lsb-base_4.1+Debian11ubuntu6_all.deb
   - gem update bundler
   - gem install eventmachine -i ~/.rvm/rubies/rbx-2.5.2/gems -v 1.0.3 --no-ri --no-rdoc
-  - wget http://chromedriver.storage.googleapis.com/2.15/chromedriver_linux64.zip
-  - mkdir ~/chromedriver
-  - unzip chromedriver_linux64.zip -d ~/chromedriver
-  - rm chromedriver_linux64.zip
-  - wget https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
-  - sudo dpkg -i google-chrome-stable_current_amd64.deb
 
 before_script:
   - |
