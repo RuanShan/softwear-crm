@@ -32,3 +32,8 @@
     <%= link_to 'Click to enlarge', artwork.preview.file.url, target: '_blank' %>
   </div>
 </div>
+
+<div class="row">
+  <h4>Artwork History</h4>
+  <%= render partial: 'shared/activities', locals: { activities: artwork.activities } %>
+</div>

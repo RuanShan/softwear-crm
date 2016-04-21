@@ -1,0 +1,10 @@
+<% if activity.trackable_type %>
+  <% if activity.owner %>
+    <%= activity.owner.full_name rescue "User Removed" %>
+  <% else %>
+      who has since been removed
+  <% end %>
+    has updated "<%= activity.trackable.name %>"
+<% else %>
+  a deleted artwork
+<% end %>

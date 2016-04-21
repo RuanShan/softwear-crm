@@ -6,6 +6,54 @@ feature 'Artwork Features', js: true, artwork_spec: true do
   given!(:doc_art) { create(:doc_type_preview) }
   given!(:valid_user) { create(:alternate_user) }
   before(:each) { sign_in_as(valid_user) }
+  
+  context 'Artwork Activities' do
+
+    before(:each) do
+      PublicActivity.with_tracking do
+        visit artworks_path
+        sleep 1
+        click_link "Add Artwork"
+        sleep 1
+        fill_in "Name", with: "This is a new artwork"
+        find(:css, 'textarea#artwork_description').set('new description')
+        fill_in 'Tags (separated by commas)', with: 'these,are,the,new,tags'
+        fill_in 'Local file location', with: 'C:\some\windows\path\lol'
+        find('#artwork_artwork_attributes_file', visible: false).set "#{Rails.root}/spec/fixtures/images/macho.png"
+        find(:css, "textarea#artwork_artwork_attributes_description").set('description')
+        find('#artwork_preview_attributes_file', visible: false).set "#{Rails.root}/spec/fixtures/images/macho.png"
+        find(:css, "textarea#artwork_preview_attributes_description").set('description')
+
+        click_button 'Create Artwork'
+        sleep 2
+        find(:css, "button[type='button'][class='close']").click
+      end 
+    end
+
+    scenario 'A user can create an artwork and see the activity in the show modal' do
+      new_artwork = Artwork.find_by(name: "This is a new artwork")
+      
+      find(:css, "a[href='/artworks/#{new_artwork.id}?disable_buttons=true']").click 
+      sleep 1
+      expect(page).to have_content "created Artwork"
+    end
+
+    scenario 'A user can update an artwork and see the activity in the show modal' do
+      new_artwork = Artwork.find_by(name: "This is a new artwork")
+      
+      PublicActivity.with_tracking do
+        new_artwork.description = "This is an alternate desc"
+        new_artwork.save
+      end
+
+      find(:css, "a[href='/artworks/#{new_artwork.id}?disable_buttons=true']").click 
+      sleep 1
+
+      expect(page).to have_content "created Artwork"
+      expect(page).to have_content "has updated \"#{new_artwork.name}\""
+    end
+
+  end
 
   scenario 'A user can view a list of Artworks' do
     if ci?
