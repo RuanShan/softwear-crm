@@ -14,7 +14,7 @@ before_install:
   - ssh-add SoftWEAR-MockBot.pem travis_id_rsa
   - "ssh -T git@github.com || :"
   - sudo apt-get update
-  - sudo apt-get install libmysql-ruby libmysqlclient-dev ruby-dev libappindicator1 fonts-liberation libstdc++6 lsb-base | yes
+  - yes | sudo apt-get install libmysql-ruby libmysqlclient-dev ruby-dev libappindicator1 fonts-liberation libstdc++6 lsb-base
   - gem update bundler
   - gem install eventmachine -i ~/.rvm/rubies/rbx-2.5.2/gems -v 1.0.3 --no-ri --no-rdoc
   - wget http://chromedriver.storage.googleapis.com/2.15/chromedriver_linux64.zip
