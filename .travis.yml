@@ -17,6 +17,13 @@ before_install:
   - yes | sudo apt-get install libmysql-ruby libmysqlclient-dev ruby-dev libappindicator1 fonts-liberation
   - gem update bundler
   - gem install eventmachine -i ~/.rvm/rubies/rbx-2.5.2/gems -v 1.0.3 --no-ri --no-rdoc
+  - wget http://chromedriver.storage.googleapis.com/2.15/chromedriver_linux64.zip
+  - mkdir ~/chromedriver
+  - unzip chromedriver_linux64.zip -d ~/chromedriver
+  - wget -q -O - https://dl-ssl.google.com/linux/linux_signing_key.pub | sudo apt-key add -
+  - sudo sh -c 'echo "deb http://dl.google.com/linux/chrome/deb/ stable main" >> /etc/apt/sources.list.d/google.list'
+  - sudo apt-get update
+  - sudo apt-get install google-chrome-stable
 
 before_script:
   - |
