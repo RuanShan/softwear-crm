@@ -13,8 +13,11 @@ before_install:
   - 'eval "$(ssh-agent -s)"'
   - ssh-add SoftWEAR-MockBot.pem travis_id_rsa
   - "ssh -T git@github.com || :"
-  - sudo apt-get update
-  - yes | sudo apt-get install libmysql-ruby libmysqlclient-dev ruby-dev libappindicator1 fonts-liberation libstdc++6 lsb-base
+  - yes | sudo apt-get install libmysql-ruby libmysqlclient-dev ruby-dev libappindicator1 fonts-liberation
+  - wget http://http.us.debian.org/debian/pool/main/l/lsb/lsb-base_9.20160110_all.deb
+  - sudo dpkg -i lsb-base_9.20160110_all.deb
+  - wget http://http.us.debian.org/debian/pool/main/g/gcc-4.8/libstdc++-4.8-dev_4.8.4-1_amd64.deb
+  - sudo dpkg -i libstdc++-4.8-dev_4.8.4-1_amd64.deb
   - gem update bundler
   - gem install eventmachine -i ~/.rvm/rubies/rbx-2.5.2/gems -v 1.0.3 --no-ri --no-rdoc
   - wget http://chromedriver.storage.googleapis.com/2.15/chromedriver_linux64.zip
