@@ -46,6 +46,7 @@
       <%= f.text_area :t_description, label: 'Description of traded goods' %>
 
     <% elsif english_payment_method == 'Credit Card' %>
+      <%= render 'customer/payments/address_form', payment: @payment, order: @order, f: f %>
       <%= render 'customer/payments/credit_card_form', payment: @payment, order: @order, f: f %>
     <% end %>
 

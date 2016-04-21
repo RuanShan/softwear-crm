@@ -18,6 +18,10 @@ class Payment < ActiveRecord::Base
     integer :id
   end
 
+  COUNTRY_NAMES = {
+    'US' => 'United States'
+  }
+
   VALID_PAYMENT_METHODS = {
     1 => 'Cash',
     8 => 'Credit Card',
@@ -36,7 +40,7 @@ class Payment < ActiveRecord::Base
     5 => [:t_name, :t_company_name, :tf_number],
     6 => [:t_name, :t_company_name, :t_description],
     7 => [:pp_transaction_id],
-    8 => [:cc_name, :cc_company, :cc_number, :cc_transaction, :pp_ref],
+    8 => [:cc_name, :cc_company, :cc_number, :cc_transaction, :pp_ref, :billing_address],
   }
 
   CREDIT_CARD_TYPES = {
@@ -80,6 +84,7 @@ class Payment < ActiveRecord::Base
   validates :t_name, :t_company_name, :tf_number, presence: true, if: -> p { p.payment_method == 5 }
   validates :t_name, :t_company_name, :t_description, presence: true, if: -> p { p.payment_method == 6 }
   validates :cc_number, :cc_name, presence: true, if: :credit_card?
+  validates :address1, :city, :state, :country, presence: true, if: :credit_card? unless Rails.env.test?
   validate :amount_doesnt_overflow_order_balance
   validate :amount_greater_than_zero
   validate :credit_card_is_valid, if: :credit_card?
@@ -111,6 +116,14 @@ class Payment < ActiveRecord::Base
     when 'Credit Card' then cc_transaction
     when 'PayPal'      then pp_transaction_id
     else nil
+    end
+  end
+
+  def billing_address
+    if address1.blank?
+      "<none>"
+    else
+      "#{address1}, #{city}, #{state}, #{COUNTRY_NAMES[country] || country}"
     end
   end
 
@@ -258,7 +271,18 @@ class Payment < ActiveRecord::Base
 
       order_id: id, # "invoice" id
       description: description,
-      comment: order_id
+      comment: order_id,
+
+      billing_address: {
+        name:     order.try(:full_name) || cc_name,
+        company:  order.try(:company),
+        address1: address1,
+        city:     city,
+        state:    state,
+        country:  country,
+        zip:      zipcode,
+        phone:    order.try(:phone_number)
+      }
     )
 
     if result.success?

@@ -159,7 +159,8 @@ module Customer
 
     def permitted_params
       params.permit(payment: [:amount, :store_id, :salesperson_id, :order_id, :cc_name, :payment_method,
-                              :cc_company, :cc_number, :cc_type, :cc_expiration, :cc_cvc])
+                              :cc_company, :cc_number, :cc_type, :cc_expiration, :cc_cvc,
+                              :address1, :city, :state, :zipcode, :country])
     end
   end
 end

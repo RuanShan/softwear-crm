@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160418195245) do
+ActiveRecord::Schema.define(version: 20160420190928) do
 
   create_table "activities", force: :cascade do |t|
     t.integer  "trackable_id",   limit: 4
@@ -650,9 +650,9 @@ ActiveRecord::Schema.define(version: 20160418195245) do
     t.decimal  "shipping_price",                             precision: 10, scale: 2, default: 0.0
     t.string   "invoice_state",             limit: 191
     t.string   "production_state",          limit: 191
-    t.integer  "softwear_prod_id",          limit: 4
     t.string   "notification_state",        limit: 191
     t.integer  "freshdesk_proof_ticket_id", limit: 4
+    t.integer  "softwear_prod_id",          limit: 4
     t.string   "artwork_state",             limit: 191
     t.string   "customer_key",              limit: 191
     t.text     "invoice_reject_reason",     limit: 16777215
@@ -724,6 +724,11 @@ ActiveRecord::Schema.define(version: 20160418195245) do
     t.text     "retail_description", limit: 16777215
     t.decimal  "sales_tax_amount",                    precision: 10, scale: 2
     t.string   "pp_ref",             limit: 191
+    t.string   "address1",           limit: 191
+    t.string   "city",               limit: 191
+    t.string   "state",              limit: 191
+    t.string   "country",            limit: 191
+    t.string   "zipcode",            limit: 191
   end
 
   create_table "platen_hoops", force: :cascade do |t|
@@ -825,8 +830,8 @@ ActiveRecord::Schema.define(version: 20160418195245) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.decimal  "shipping",                                     precision: 10, scale: 2
-    t.datetime "initialized_at"
     t.string   "quote_source",                     limit: 191
+    t.datetime "initialized_at"
     t.string   "freshdesk_ticket_id",              limit: 191
     t.boolean  "informal"
     t.integer  "insightly_category_id",            limit: 4
