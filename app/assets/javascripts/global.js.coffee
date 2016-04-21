@@ -104,7 +104,7 @@ $(document).ready ->
 
   $(document).on 'click', '.js-remove-fields', (event) ->
     $(this).prev('input[type=hidden]').val('1')
-    $(this).closest('.js-eemoveable').hide()
+    $(this).closest('.js-removeable').hide()
     event.preventDefault()
 
   $(document).on 'click', '.js-add-fields', (event) ->
