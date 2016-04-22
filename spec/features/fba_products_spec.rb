@@ -1,7 +1,7 @@
 require 'spec_helper'
 include LineItemHelpers
 
-feature 'FBA Products management', js: true do
+feature 'FBA Products management', js: true, slow: true do
   given!(:fba_job_template) { create(:fba_job_template_with_imprint) }
 
   given!(:shirt) { create(:associated_imprintable) }

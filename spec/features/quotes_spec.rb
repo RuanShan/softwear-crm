@@ -3,7 +3,7 @@ include ApplicationHelper
 require 'email_spec'
 require_relative '../../app/controllers/jobs_controller'
 
-feature 'Quotes management', quote_spec: true, js: true, retry: 3 do
+feature 'Quotes management', slow: true, quote_spec: true, js: true, retry: 3 do
   given!(:valid_user) { create(:alternate_user, insightly_api_key: "insight") }
   background(:each) { sign_in_as(valid_user) }
 

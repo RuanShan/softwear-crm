@@ -1,7 +1,7 @@
 require 'spec_helper'
 include GeneralHelpers
 
-feature 'Imprints Management', imprint_spec: true, js: true do
+feature 'Imprints Management', slow: true, imprint_spec: true, js: true do
   given!(:valid_user) { create(:user) }
   background(:each) { sign_in_as valid_user }
 

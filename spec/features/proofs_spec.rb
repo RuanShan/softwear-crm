@@ -1,7 +1,7 @@
 require 'spec_helper'
 include ApplicationHelper
 
-feature 'Proof Features', js: true, proof_spec: true, retry: 3 do
+feature 'Proof Features', slow: true, js: true, proof_spec: true, retry: 3 do
   given!(:artwork_request) { create(:valid_artwork_request_with_artwork) }
   given!(:order) { create(:order_with_proofs) }
   given!(:proof) { order.proofs.first }

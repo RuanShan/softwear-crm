@@ -1,7 +1,7 @@
 require 'spec_helper'
 include LineItemHelpers
 
-feature 'Line Items management', line_item_spec: true, js: true do
+feature 'Line Items management', slow: true, line_item_spec: true, js: true do
   given!(:variant) { create(:valid_imprintable_variant) }
   given!(:order) { create(:order_with_job) }
   given(:job) { order.jobs.first }

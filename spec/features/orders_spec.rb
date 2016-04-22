@@ -1,7 +1,7 @@
 require 'spec_helper'
 include ApplicationHelper
 
-feature 'Order management', order_spec: true, js: true do
+feature 'Order management', slow: true, order_spec: true, js: true do
   given!(:valid_user) { create(:user) }
   given(:sales_manager) { create(:user, first_name: 'Sales', last_name: 'Man') }
   background(:each) { sign_in_as valid_user }
