@@ -59,8 +59,10 @@ Gemfile.lock
 # ignore everything in the public/assets folder
 /public/assets/*
 
-# vim swp files
+# text editor garbage
 *.swp
+*.sublime-project
+*.sublime-workspace
 
 # i dont know what this file is lol
 dump.rdb
