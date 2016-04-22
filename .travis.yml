@@ -39,14 +39,6 @@ before_script:
   - bundle exec rake db:schema:load
 
 env:
-  - SPECS_TO_RUN="~js"
-  - SPECS_TO_RUN="js"
-
-script: xvfb-run --server-args="-screen 0, 1024x768x24" bundle exec rspec --color -t ~no_ci -t $SPECS_TO_RUN -f d
-
-after_success: bundle exec softwear-deploy
-
-env:
   global:
     - WWW_DOMAIN=annarbortees.com
     - HUB_APP_NAME=softwear-crm
@@ -54,3 +46,10 @@ env:
     - AUTH_SERVER_ENDPOINT=hub.softwearcrm.com:2900
     - TOKEN_CIPHER_KEY="aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaEEEEEEEEEEEEEEEEEEEEEEEEEEEe"
     - TOKEN_CIPHER_IV="aaaaaaaaaaaaaa2aaaaaaaaaaaaaaaaaaaaaaEEEEEEEEEEEEEEEEEEEEEEEEEEEe"
+  matrix:
+    - SPECS_TO_RUN="~js"
+    - SPECS_TO_RUN="js"
+
+script: xvfb-run --server-args="-screen 0, 1024x768x24" bundle exec rspec --color -t ~no_ci -t $SPECS_TO_RUN -f d
+
+after_success: bundle exec softwear-deploy
