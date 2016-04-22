@@ -14,12 +14,14 @@ before_install:
   - ssh-add SoftWEAR-MockBot.pem travis_id_rsa
   - "ssh -T git@github.com || :"
   - sudo apt-get update
-  - yes | sudo apt-get install libmysql-ruby libmysqlclient-dev ruby-dev libappindicator1 fonts-liberation chromium-browser=40.0.2214.0
+  - yes | sudo apt-get install libmysql-ruby libmysqlclient-dev ruby-dev libappindicator1 fonts-liberation
   - gem update bundler
   - gem install eventmachine -i ~/.rvm/rubies/rbx-2.5.2/gems -v 1.0.3 --no-ri --no-rdoc
   - wget http://chromedriver.storage.googleapis.com/2.15/chromedriver_linux64.zip
   - mkdir ~/chromedriver
   - unzip chromedriver_linux64.zip -d ~/chromedriver
+  - wget http://security.ubuntu.com/ubuntu/pool/universe/c/chromium-browser/chromium-browser_41.0.2272.76-0ubuntu1.1134_amd64.deb
+  - sudo dpkg -i chromium-browser_41.0.2272.76-0ubuntu1.1134_amd64.deb
 
 before_script:
   - |
