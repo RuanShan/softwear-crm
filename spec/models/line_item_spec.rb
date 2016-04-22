@@ -148,16 +148,16 @@ describe LineItem, line_item_spec: true do
       it 'offsets the imprintable price by the matching upcharge group' do
         line_items = LineItem.new_imprintables(job, imprintable, color, imprintable_price: 10.00)
 
-        expect(line_items.first.imprintable_price).to eq 10.00 + 5.00
-        expect(line_items.last.imprintable_price).to eq 10.00 + 10.00
+        expect(line_items.first.imprintable_price).to eq 5.00
+        expect(line_items.last.imprintable_price).to eq 10.00
       end
 
       it 'offsets 6xl groups with the highest existing upcharge' do
         size_xxl.update_column :upcharge_group, 'xxxxl_price'
         line_items = LineItem.new_imprintables(job, imprintable, color, imprintable_price: 10.00)
 
-        expect(line_items.first.imprintable_price).to eq 10.00 + 5.00
-        expect(line_items.last.imprintable_price).to eq 10.00 + 10.00
+        expect(line_items.first.imprintable_price).to eq 5.00
+        expect(line_items.last.imprintable_price).to eq 10.00
       end
     end
   end
