@@ -17,7 +17,7 @@ before_install:
   - yes | sudo apt-get install libmysql-ruby libmysqlclient-dev ruby-dev libappindicator1 fonts-liberation
   - gem update bundler
   - gem install eventmachine -i ~/.rvm/rubies/rbx-2.5.2/gems -v 1.0.3 --no-ri --no-rdoc
-  - wget http://chromedriver.storage.googleapis.com/2.1/chromedriver_linux64.zip
+  - wget http://chromedriver.storage.googleapis.com/2.11/chromedriver_linux64.zip
   - mkdir ~/chromedriver
   - unzip chromedriver_linux64.zip -d ~/chromedriver
   - wget http://security.ubuntu.com/ubuntu/pool/universe/c/chromium-browser/chromium-browser_37.0.2062.120-0ubuntu0.12.04.2_amd64.deb
