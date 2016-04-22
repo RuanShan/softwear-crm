@@ -13,7 +13,6 @@ before_install:
   - 'eval "$(ssh-agent -s)"'
   - ssh-add SoftWEAR-MockBot.pem travis_id_rsa
   - "ssh -T git@github.com || :"
-  - sudo apt-get update
   - yes | sudo apt-get install libmysql-ruby libmysqlclient-dev ruby-dev libappindicator1 fonts-liberation
   - gem update bundler
   - gem install eventmachine -i ~/.rvm/rubies/rbx-2.5.2/gems -v 1.0.3 --no-ri --no-rdoc
@@ -39,7 +38,13 @@ before_script:
   - bundle exec rake db:create
   - bundle exec rake db:schema:load
 
-script: xvfb-run --server-args="-screen 0, 1024x768x24" bundle exec rspec --color -t ~no_ci -f d && bundle exec softwear-deploy
+  env:
+    - SPECS_TO_RUN="~js"
+    - SPECS_TO_RUN="js"
+
+script: xvfb-run --server-args="-screen 0, 1024x768x24" bundle exec rspec --color -t ~no_ci -t $SPECS_TO_RUN -f d
+
+after_success: bundle exec softwear-deploy
 
 env:
   global:
