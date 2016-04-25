@@ -1,0 +1,20 @@
+<%= render_error_modal_for @contact %>
+
+<div class="row-fluid contacts-edit">
+  <div class="page-heading animated fadeInDownBig">
+    <div class="pull-right">
+      <%= link_to new_crm_contact_path, class: 'btn btn-success' do %>
+          <i class="fa fa-user"></i> New
+      <% end %>&nbsp;
+
+      <%= link_to crm_contact_path(@contact), class: 'btn btn-primary' do %>
+          <i class="fa fa-user"></i> Show
+      <% end %>
+    </div>
+    <h1>
+      Edit Contact "<%= @contact.full_name %>
+    </h1>
+  </div>
+</div>
+
+<%= render 'form', contact: @contact %>

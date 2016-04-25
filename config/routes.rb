@@ -231,4 +231,8 @@ CrmSoftwearcrmCom::Application.routes.draw do
     end
   end
 
+  namespace 'crm' do
+    resources :contacts
+  end
+
 end

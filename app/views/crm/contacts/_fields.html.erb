@@ -1,0 +1,22 @@
+<%= f.text_field :first_name %>
+<%= f.text_field :last_name %>
+
+<% if  f.object.new_record? %>
+    <%= f.fields_for :primary_email do |ff| %>
+        <%= render 'crm/contacts/email_fields', f: ff, exclude_primary: true  %>
+    <% end %>
+
+    <%= f.fields_for :primary_phone do |ff| %>
+        <%= render 'crm/contacts/phone_fields', f: ff, exclude_primary: true %>
+    <% end %>
+<% else %>
+    <%= f.fields_for :emails do |ff| %>
+        <%= render 'crm/contacts/email_fields', f: ff%>
+    <% end %>
+    <%= link_to_add_fields("<i class='fa fa-plus'></i> Add Email".html_safe, f, :emails) %>
+
+    <%= f.fields_for :phones do |ff| %>
+        <%= render 'crm/contacts/phone_fields', f: ff%>
+    <% end %>
+    <%= link_to_add_fields("<i class='fa fa-plus'></i> Add Phone Number".html_safe, f, :phones) %>
+<% end %>

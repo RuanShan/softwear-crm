@@ -1,0 +1,40 @@
+<div class="row-fluid contacts-show">
+  <div class="page-heading animated fadeInDownBig">
+    <div class="pull-right">
+      <%= link_to new_crm_contact_path, class: 'btn btn-success' do %>
+          <i class="fa fa-user"></i> New
+      <% end %>&nbsp;
+
+      <%= link_to edit_crm_contact_path(@contact), class: 'btn btn-warning' do %>
+          <i class="fa fa-user"></i> Edit
+      <% end %>
+    </div>
+    <h1>
+      Contact "<%= @contact.full_name %>
+    </h1>
+  </div>
+</div>
+
+<div class="row">
+  <div class="col-sm-6">
+    <div class="box-info full">
+        <h2>Emails</h2>
+          <ul>
+            <% @contact.emails.each do |email| %>
+                <li><%= email.address %> <%= "(Primary)" if email.primary? %></li>
+            <% end %>
+          </ul>
+      <h2>Phone Numbers</h2>
+      <ul>
+        <% @contact.phones.each do |phone| %>
+            <li><%= phone.full_number %> <%= "(Primary)" if phone.primary? %></li>
+        <% end %>
+      </ul>
+    </div>
+  </div>
+  <div class="col-sm-6">
+    <div class="box-info full">
+      <h2>History</h2>
+    </div>
+  </div>
+</div>

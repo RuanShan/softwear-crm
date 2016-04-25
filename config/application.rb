@@ -64,5 +64,11 @@ module CrmSoftwearcrmCom
       }
     end
 
+
+    config.generators do |g|
+      g.factory_girl true
+      g.factory_girl dir: 'spec/factories'
+    end
+
   end
 end
