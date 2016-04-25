@@ -1,79 +1,83 @@
 language: ruby
 rvm:
-- ruby-2.1.2
+  - ruby-2.1.2
 install:
-- bundle install --without production
+  - bundle install --without production
 before_install:
-- openssl aes-256-cbc -K $encrypted_bd442a2c0fdc_key -iv $encrypted_bd442a2c0fdc_iv
-  -in travis-ssh.tar.enc -out travis-ssh.tar -d
-- tar xvf travis-ssh.tar
-- sudo chmod 600 SoftWEAR-MockBot.pem
-- sudo chmod 600 travis_id_rsa
-- eval "$(ssh-agent -s)"
-- ssh-add SoftWEAR-MockBot.pem travis_id_rsa
-- 'ssh -T git@github.com || :'
-- yes | sudo apt-get install libmysql-ruby libmysqlclient-dev ruby-dev libappindicator1
-  fonts-liberation
-- gem update bundler
-- gem install eventmachine -i ~/.rvm/rubies/rbx-2.5.2/gems -v 1.0.3 --no-ri --no-rdoc
-- wget http://chromedriver.storage.googleapis.com/2.11/chromedriver_linux64.zip
-- mkdir ~/chromedriver
-- unzip chromedriver_linux64.zip -d ~/chromedriver
-- wget http://security.ubuntu.com/ubuntu/pool/universe/c/chromium-browser/chromium-browser_37.0.2062.120-0ubuntu0.12.04.2_amd64.deb
-- sudo dpkg -i chromium-browser_37.0.2062.120-0ubuntu0.12.04.2_amd64.deb
+  - openssl aes-256-cbc -K $encrypted_bd442a2c0fdc_key -iv $encrypted_bd442a2c0fdc_iv
+  - in travis-ssh.tar.enc -out travis-ssh.tar -d
+  - tar xvf travis-ssh.tar
+  - sudo chmod 600 SoftWEAR-MockBot.pem
+  - sudo chmod 600 travis_id_rsa
+  - eval "$(ssh-agent -s)"
+  - ssh-add SoftWEAR-MockBot.pem travis_id_rsa
+  - 'ssh -T git@github.com || :'
+  - yes | sudo apt-get install libmysql-ruby libmysqlclient-dev ruby-dev libappindicator1 fonts-liberation
+  - gem update bundler
+  - gem install eventmachine -i ~/.rvm/rubies/rbx-2.5.2/gems -v 1.0.3 --no-ri --no-rdoc
+  - wget http://chromedriver.storage.googleapis.com/2.11/chromedriver_linux64.zip
+  - mkdir ~/chromedriver
+  - unzip chromedriver_linux64.zip -d ~/chromedriver
+  - wget http://security.ubuntu.com/ubuntu/pool/universe/c/chromium-browser/chromium-browser_37.0.2062.120-0ubuntu0.12.04.2_amd64.deb
+  - sudo dpkg -i chromium-browser_37.0.2062.120-0ubuntu0.12.04.2_amd64.deb
+
 before_script:
-- |
-  cat <<END >> config/database.yml
-    test:
-      adapter: mysql2
-      database: crm_test
-      username: travis
-    production:
-      adapter: mysql2
-      database: crm_test
-      username: travis
-  END
-- export PATH=$PATH:~/chromedriver
-- bundle exec rake db:create
-- bundle exec rake db:schema:load
-- curl -Lo travis_after_all.py https://raw.github.com/dmakhno/travis_after_all/master/travis_after_all.py
+  - |
+    cat <<END >> config/database.yml
+      test:
+        adapter: mysql2
+        database: crm_test
+        username: travis
+      production:
+        adapter: mysql2
+        database: crm_test
+        username: travis
+    END
+  - export PATH=$PATH:~/chromedriver
+  - bundle exec rake db:create
+  - bundle exec rake db:schema:load
+  - curl -Lo travis_after_all.py https://raw.github.com/dmakhno/travis_after_all/master/travis_after_all.py
+  
 env:
   global:
-  - WWW_DOMAIN=annarbortees.com
-  - HUB_APP_NAME=softwear-crm
-  - SOFTWEAR_HUB_URL=http://hub.softwearcrm.com
-  - AUTH_SERVER_ENDPOINT=hub.softwearcrm.com:2900
-  - TOKEN_CIPHER_KEY="aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaEEEEEEEEEEEEEEEEEEEEEEEEEEEe"
-  - TOKEN_CIPHER_IV="aaaaaaaaaaaaaa2aaaaaaaaaaaaaaaaaaaaaaEEEEEEEEEEEEEEEEEEEEEEEEEEEe"
-  - secure: SFIRwJj+MUUpiH83hVtTgfjSrGcGVElPlwNsWrXA61pvM5FLmLY5NqX4Jzcy1HgM2reTqx9tbUXlb9S00pPSIGBElqFDZFs0eSsXHmo28Bn67OBztLma3PaWKnU5A7meMFRNkF5B9b2bqX9Sz0nKHutS224aqhgulAvPVZ6zlYE=
+    - WWW_DOMAIN=annarbortees.com
+    - HUB_APP_NAME=softwear-crm
+    - SOFTWEAR_HUB_URL=http://hub.softwearcrm.com
+    - AUTH_SERVER_ENDPOINT=hub.softwearcrm.com:2900
+    - TOKEN_CIPHER_KEY="aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaEEEEEEEEEEEEEEEEEEEEEEEEEEEe"
+    - TOKEN_CIPHER_IV="aaaaaaaaaaaaaa2aaaaaaaaaaaaaaaaaaaaaaEEEEEEEEEEEEEEEEEEEEEEEEEEEe"
+    - secure: SFIRwJj+MUUpiH83hVtTgfjSrGcGVElPlwNsWrXA61pvM5FLmLY5NqX4Jzcy1HgM2reTqx9tbUXlb9S00pPSIGBElqFDZFs0eSsXHmo28Bn67OBztLma3PaWKnU5A7meMFRNkF5B9b2bqX9Sz0nKHutS224aqhgulAvPVZ6zlYE=
   matrix:
-  - SPECS_TO_RUN="-t ~js"
-  - SPECS_TO_RUN="-t js  -t ~slow"
-  - SPECS_TO_RUN="-t slow"
-script: xvfb-run --server-args="-screen 0, 1024x768x24" bundle exec rspec --color
-  -t ~no_ci $SPECS_TO_RUN -f d
+    - SPECS_TO_RUN="-t ~js"
+    - SPECS_TO_RUN="-t js  -t ~slow"
+    - SPECS_TO_RUN="-t slow"
+
+script: xvfb-run --server-args="-screen 0, 1024x768x24" bundle exec rspec --color -t ~no_ci $SPECS_TO_RUN -f d
+
 after_script:
-- echo leader=$BUILD_LEADER status=$BUILD_AGGREGATE_STATUS
+  - echo leader=$BUILD_LEADER status=$BUILD_AGGREGATE_STATUS
+
 after_failure:
-- python travis_after_all.py https://api.travis-ci.com
-- export $(cat .to_export_back)
-- |
-  if [ "$BUILD_LEADER" = "YES" ]; then
-    if [ "$BUILD_AGGREGATE_STATUS" = "others_failed" ]; then
-      echo "All jobs failed"
-    else
-      echo "Some jobs failed"
+  - python travis_after_all.py https://api.travis-ci.com
+  - export $(cat .to_export_back)
+  - |
+    if [ "$BUILD_LEADER" = "YES" ]; then
+      if [ "$BUILD_AGGREGATE_STATUS" = "others_failed" ]; then
+        echo "All jobs failed"
+      else
+        echo "Some jobs failed"
+      fi
     fi
-  fi
 after_success:
-- python travis_after_all.py https://api.travis-ci.com
-- export $(cat .to_export_back)
-- |
-  if [ "$BUILD_LEADER" = "YES" ]; then
-    if [ "$BUILD_AGGREGATE_STATUS" = "others_succeeded" ]; then
-      echo "All jobs succeeded. DEPLOYING"
-      bundle exec softwear-deploy
-    else
-      echo "Some jobs failed"
+  - python travis_after_all.py https://api.travis-ci.com
+  - cat .to_export_back
+  - export $(cat .to_export_back)
+  - |
+    if [ "$BUILD_LEADER" = "YES" ]; then
+      if [ "$BUILD_AGGREGATE_STATUS" = "others_succeeded" ]; then
+        echo "All jobs succeeded. DEPLOYING"
+        bundle exec softwear-deploy
+      else
+        echo "Some jobs failed"
+      fi
     fi
-  fi

@@ -715,7 +715,7 @@ class Order < ActiveRecord::Base
     end
 
     # NOTE make sure the permitted params in Production match up with this
-    prod_order = Production::Order.post_raw(
+    prod_order_attributes = {
       softwear_crm_id:    id,
       deadline:           in_hand_by,
       name:               name,
@@ -724,7 +724,16 @@ class Order < ActiveRecord::Base
       has_imprint_groups: false,
 
       jobs_attributes: production_jobs_attributes
-    )
+    }
+
+    prod_order = Production::Order.where(softwear_crm_id: id).first
+
+    if prod_order.blank?
+      prod_order = Production::Order.post_raw(prod_order_attributes)
+    else
+      prod_order.jobs.each(&:destroy)
+      prod_order.update_attributes(prod_order_attributes)
+    end
 
     update_column :softwear_prod_id, prod_order.id
     update_column :production_state, :in_production unless prod_order.id.nil?

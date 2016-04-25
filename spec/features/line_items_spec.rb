@@ -284,7 +284,7 @@ feature 'Line Items management', slow: true, line_item_spec: true, js: true do
   end
 
   context 'editing an imprintable line item' do 
-    given!(:line_item) { LineItem.create_imprintables(job, shirt, white).sample }
+    given!(:line_item) { white_shirt_s_item }
     given(:variant) { line_item.imprintable_object }
 
     context 'with name/numbers present', name_number: true do
