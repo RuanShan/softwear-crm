@@ -40,7 +40,10 @@
       <% end %>
     <% end %>
 
-    <%= content_tag :li, class: ('active' if current_url.include?('fba') || @order.try(:fba?)) do %>
+    <%= content_tag :li, class: ('active' if current_url.include?('orders') && !current_url.include?('fba') && !@order.try(:fba?)) do %>
+        <%= link_to crm_contacts_path do %><i class="fa fa-users"></i> Contacts<% end %>
+    <% end %>
+        <%= content_tag :li, class: ('active' if current_url.include?('fba') || @order.try(:fba?)) do %>
       <a href="#fakelink"><i class="fa fa-truck"></i><i class="fa fa-angle-double-down i-right"></i> FBA Orders</a>
 
       <%= content_tag :ul, class: ('visible' if current_url.include?('fba') || @order.try(:fba?)) do %>

@@ -1,0 +1,14 @@
+<div class="row js-removeable clearfix email-fields" data-email-id="<%= f.object.id %>">
+  <div class="col-xs-9">
+    <%= f.text_field :address, label: 'E-mail', class: 'email-address' %>
+  </div>
+  <div class="col-xs-2">
+    <%= f.check_box(:primary, class: 'email-primary') %>
+  </div>
+  <div class="col-xs-1">
+    <% unless f.object.primary? %>
+        <%= f.hidden_field :_destroy %>
+        <%= link_to 'x', '#', class: 'btn btn-danger js-remove-fields' %>
+    <% end %>
+  </div>
+</div>
