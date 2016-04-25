@@ -1,11 +1,13 @@
 <div>
-  <%= link_to 'hide address fields', 'javascript:toggleAddressFields()', id: 'toggle-address-fields' %>
+
 
   <div class='address_autocomplete_container hidden form-group'>
     <%= label_tag "address_autocomplete", "Billing Address" %>
     <%= text_field_tag "address_autocomplete", "", placeholder: "Full Address", class: 'form-control' %>
     <%= init_address_autocomplete %>
   </div>
+
+  <%= link_to 'hide address fields', 'javascript:toggleAddressFields()', id: 'toggle-address-fields' %>
 
   <div class='individual-address-fields row form-group'>
     <div class='col-sm-12'>

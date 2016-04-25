@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160420190928) do
+ActiveRecord::Schema.define(version: 20160421022203) do
 
   create_table "activities", force: :cascade do |t|
     t.integer  "trackable_id",   limit: 4
@@ -205,6 +205,44 @@ ActiveRecord::Schema.define(version: 20160420190928) do
 
   add_index "coupons", ["code"], name: "index_coupons_on_code", using: :btree
 
+  create_table "crm_contacts", force: :cascade do |t|
+    t.string   "first_name", limit: 191
+    t.string   "last_name",  limit: 191
+    t.string   "twitter",    limit: 191
+    t.string   "state",      limit: 191
+    t.integer  "tier",       limit: 4
+    t.datetime "created_at",             null: false
+    t.datetime "updated_at",             null: false
+  end
+
+  add_index "crm_contacts", ["first_name"], name: "index_crm_contacts_on_first_name", using: :btree
+  add_index "crm_contacts", ["last_name"], name: "index_crm_contacts_on_last_name", using: :btree
+  add_index "crm_contacts", ["state"], name: "index_crm_contacts_on_state", using: :btree
+  add_index "crm_contacts", ["tier"], name: "index_crm_contacts_on_tier", using: :btree
+  add_index "crm_contacts", ["twitter"], name: "index_crm_contacts_on_twitter", using: :btree
+
+  create_table "crm_emails", force: :cascade do |t|
+    t.string   "address",    limit: 191
+    t.integer  "contact_id", limit: 4
+    t.boolean  "primary"
+    t.datetime "created_at",             null: false
+    t.datetime "updated_at",             null: false
+  end
+
+  add_index "crm_emails", ["address"], name: "index_crm_emails_on_address", using: :btree
+
+  create_table "crm_phones", force: :cascade do |t|
+    t.string   "number",     limit: 191
+    t.string   "extension",  limit: 191
+    t.integer  "contact_id", limit: 4
+    t.boolean  "primary"
+    t.datetime "created_at",             null: false
+    t.datetime "updated_at",             null: false
+  end
+
+  add_index "crm_phones", ["contact_id"], name: "index_crm_phones_on_contact_id", using: :btree
+  add_index "crm_phones", ["number"], name: "index_crm_phones_on_number", using: :btree
+
   create_table "customer_uploads", force: :cascade do |t|
     t.string   "filename",         limit: 191
     t.string   "url",              limit: 191
@@ -320,11 +358,11 @@ ActiveRecord::Schema.define(version: 20160420190928) do
 
   create_table "fba_spreadsheet_uploads", force: :cascade do |t|
     t.boolean  "done"
-    t.text     "spreadsheet",       limit: 65535
+    t.text     "spreadsheet",       limit: 4294967295
     t.text     "processing_errors", limit: 65535
     t.string   "filename",          limit: 191
-    t.datetime "created_at",                      null: false
-    t.datetime "updated_at",                      null: false
+    t.datetime "created_at",                           null: false
+    t.datetime "updated_at",                           null: false
   end
 
   create_table "freshdesk_local_contacts", force: :cascade do |t|
@@ -529,6 +567,8 @@ ActiveRecord::Schema.define(version: 20160420190928) do
 
   add_index "jobs", ["deleted_at"], name: "index_jobs_on_deleted_at", using: :btree
   add_index "jobs", ["fba_job_template_id"], name: "index_jobs_on_fba_job_template_id", using: :btree
+  add_index "jobs", ["jobbable_id"], name: "index_jobs_jobbable_id", using: :btree
+  add_index "jobs", ["jobbable_type"], name: "index_jobs_jobbable_type", using: :btree
 
   create_table "line_item_groups", force: :cascade do |t|
     t.string   "name",        limit: 191
@@ -661,8 +701,8 @@ ActiveRecord::Schema.define(version: 20160420190928) do
     t.decimal  "discount_total",                             precision: 10, scale: 2
     t.decimal  "payment_total",                              precision: 10, scale: 2
     t.boolean  "imported_from_admin"
-    t.string   "phone_number_extension",    limit: 191
     t.string   "payment_state",             limit: 191
+    t.string   "phone_number_extension",    limit: 191
     t.boolean  "canceled"
     t.decimal  "tax_rate",                                   precision: 10, scale: 4
     t.decimal  "fee",                                        precision: 10, scale: 4

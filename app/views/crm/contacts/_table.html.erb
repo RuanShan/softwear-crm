@@ -1,0 +1,36 @@
+
+<div class="box-info full clear">
+  <div class="table-responsive">
+    <table class="table table-hover table-striped" id="contacts">
+      <thead>
+      <tr>
+        <%= sorted_th :id, 'ID', style: { width: '30px' } %>
+        <%= sorted_th :name, 'Full Name' %>
+        <%= sorted_th :state, 'State' %>
+        <th>Actions</th>
+      </tr>
+      </thead>
+
+      <tbody>
+      <% contacts.each do |contact| %>
+          <tr id="contact_<%= contact.id %>">
+            <td><%= link_to contact.id, contact %></td>
+            <td><%= contact.full_name %></td>
+            <td><%= contact.human_state_name %></td>
+            <td>
+              <%= link_to edit_crm_contact_path(contact) do %>
+                Edit
+              <% end %>
+              <%= link_to edit_crm_contact_path(contact) do %>
+                  Show
+              <% end %>
+              <%= link_to crm_contact_path(contact), method: :delete, data: { confirm: 'Are you sure' } do %>
+                  Destroy
+              <% end %>
+            </td>
+          </tr>
+      <% end %>
+      </tbody>
+    </table>
+  </div>
+</div>
