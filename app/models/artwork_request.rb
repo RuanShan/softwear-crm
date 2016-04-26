@@ -69,6 +69,7 @@ class ArtworkRequest < ActiveRecord::Base
 
   after_create :enqueue_create_freshdesk_proof_ticket, unless: :fba? if Rails.env.production?
   after_save :enqueue_create_imprint_group_if_needed
+  before_save :should_unassign?
   before_save :transition_to_assigned, if: :should_assign?
 
   attr_accessor :current_user
@@ -88,6 +89,7 @@ class ArtworkRequest < ActiveRecord::Base
 
     before_transition on: :unassigned_artist do |artwork_request|
       artwork_request.update_column(:artist_id, nil)
+      artwork_request.index
     end
 
     after_transition on: :reject_artwork_request do |artwork_request|
@@ -174,6 +176,21 @@ class ArtworkRequest < ActiveRecord::Base
     rescue Exception => _e
     end
     super
+  end
+
+  def transition_to_assigned
+    assigned_artist(artist)
+  end
+
+  def should_assign?
+    artist_id_was.nil? && artist_id_changed? && state == 'unassigned'
+  end
+
+  def should_unassign?
+    if (artist_id.nil? && artist_id_changed? && state != 'unassigned')
+      self.state = :unassigned
+      self.index 
+    end
   end
 
   def name
@@ -406,14 +423,6 @@ class ArtworkRequest < ActiveRecord::Base
 
   def has_approved_proof?
     proofs.where(state: 'customer_approved').exists?
-  end
-
-  def transition_to_assigned
-    assigned_artist(artist)
-  end
-
-  def should_assign?
-    artist_id_was.nil? && artist_id_changed? && state == 'unassigned'
   end
 
   def imprints_are_all_the_same_imprint_method
