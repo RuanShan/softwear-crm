@@ -69,7 +69,7 @@ feature 'Order management', slow: true, order_spec: true, js: true do
 
     scenario 'A user can view both imprintable order/receiving sheets' do
       visit orders_path
-      sleep 1
+      sleep 2
       find("a[href='/orders/#{order.id}/imprintable_sheets?view=Both']").click
       sleep 1
       expect(page).to have_content("Ordered By:")
