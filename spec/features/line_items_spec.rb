@@ -9,7 +9,7 @@ feature 'Line Items management', slow: true, line_item_spec: true, js: true do
   given!(:white) { create(:valid_color, name: 'white') }
   given!(:shirt) { create(:valid_imprintable) }
 
-  make_variants :white, :shirt, [:S, :M, :L, :XL, :XXL, :XXXL], not: [:line_items, :job]
+  make_variants :white, :shirt, [:S, :M, :L, :XL, :XXL, :XXXL], not: [:line_items]
 
   given(:brand) { shirt.brand }
 
@@ -63,7 +63,7 @@ feature 'Line Items management', slow: true, line_item_spec: true, js: true do
   end
 
   scenario 'user sees errors when inputting bad info for an imprintable line item, and they go away when fixed', story_818: true do
-    line_item = LineItem.create_imprintables(job, shirt, white).sample
+    line_item = white_shirt_m_item
 
     visit edit_order_path(order.id, anchor: 'jobs')
     sleep 1
@@ -121,7 +121,7 @@ feature 'Line Items management', slow: true, line_item_spec: true, js: true do
     expect(page).to have_content shirt.style_name
     expect(page).to have_content shirt.style_catalog_no
     expect(page).to have_content shirt.description
-    expect(page).to have_css 'input[value="2.30"]'
+    expect(find_field('decoration_price').value).to eq '2.30'
   end
 
   scenario 'user cannot add duplicate imprintable line items' do
@@ -151,7 +151,7 @@ feature 'Line Items management', slow: true, line_item_spec: true, js: true do
     end
 
     ['s', 'm', 'l'].each do |s|
-      expect(page).to have_css '.imprintable-line-item-input > label', text: send('size_'+s).display_value, count: 1
+      expect(page).to have_css '.imprintable-line-item-input > label', text: send('size_'+s).display_value
     end
   end
 
@@ -200,7 +200,7 @@ feature 'Line Items management', slow: true, line_item_spec: true, js: true do
       #converts 10.0 to 10.00 
       xxl_line_item_price = ('%.2f' % xxl_line_item_price)
 
-      within('.edit-line-item-row') do
+      within(all('.edit-line-item-row').last) do
         expect(page).to have_css "input[value='#{xl_line_item_price}']"
         expect(page).to have_css "input[value='#{xxl_line_item_price}']"
       end
@@ -284,24 +284,29 @@ feature 'Line Items management', slow: true, line_item_spec: true, js: true do
   end
 
   context 'editing an imprintable line item' do 
-    given!(:line_item) { white_shirt_s_item }
-    given(:variant) { line_item.imprintable_object }
+    given(:variant) { white_shirt_s_item.imprintable_object }
 
     context 'with name/numbers present', name_number: true do
-      given!(:imprint) { create(:imprint_with_name_number, job_id: line_item.job_id) }
+      given!(:imprint) { create(:imprint_with_name_number, job_id: job.id) }
       given(:name_number) { create(:name_number, imprintable_variant_id: variant.id, imprint_id: imprint.id) }
 
+      # make_variants :white, :shirt, [:S, :M, :L, :XL, :XXL, :XXXL], not: [:line_items]
       background(:each) do
-        line_item.update_column(:quantity, 1)
+        white_shirt_s_item.update_column(:quantity, 1)
+        white_shirt_m_item.update_column(:quantity, 0)
+        white_shirt_l_item.update_column(:quantity, 0)
+        white_shirt_xl_item.update_column(:quantity, 0)
+        white_shirt_xxl_item.update_column(:quantity, 0)
+        white_shirt_xxxl_item.update_column(:quantity, 0)
         name_number
       end
 
-      scenario 'user sees warning when setting quantity greater than name/number amount' do 
+      scenario 'user sees warning when setting quantity greater than name/number amount', borke: true do 
         visit edit_order_path(order.id, anchor: 'jobs')
-        sleep 1
+        sleep 2
 
         expect(page).to_not have_content "Quantities of name/numbers don't match"
-        find("#line_item_#{line_item.id}_quantity").set 20
+        find("#line_item_#{white_shirt_s_item.id}_quantity").set 200
         sleep 1
         find('.update-line-items').click
         sleep 1
@@ -312,13 +317,13 @@ feature 'Line Items management', slow: true, line_item_spec: true, js: true do
         visit edit_order_path(order.id, anchor: 'jobs')
         sleep 1
 
-        find("#line_item_#{line_item.id}_quantity").set 0
+        find("#line_item_#{white_shirt_s_item.id}_quantity").set 0
         sleep 1
         find('.update-line-items').click
         sleep 1
 
         expect(page).to have_content "(0) is less than the amount of name/numbers (1)"
-        expect(line_item.reload.quantity).to_not eq 0
+        expect(white_shirt_s_item.reload.quantity).to_not eq 0
       end
     end
  
@@ -326,12 +331,12 @@ feature 'Line Items management', slow: true, line_item_spec: true, js: true do
       visit edit_order_path(order.id, anchor: 'jobs')
       sleep 1
 
-      find("#line_item_#{line_item.id}_quantity").set 20
+      find("#line_item_#{white_shirt_s_item.id}_quantity").set 20
       sleep 1
       find('.update-line-items').click
       sleep 1
     
-      expect(page).to have_css(".imprintable-line-item-total", text: "20")
+      expect(page).to have_css(".imprintable-line-item-total", text: "35")
     end
 
     scenario 'it does not create a ton of order activities', pa_spam: true do
@@ -340,7 +345,7 @@ feature 'Line Items management', slow: true, line_item_spec: true, js: true do
           visit edit_order_path(order.id, anchor: 'jobs')
           sleep 1
 
-          find("#line_item_#{line_item.id}_quantity").set 20
+          find("#line_item_#{white_shirt_s_item.id}_quantity").set 20
           sleep 1
           find('.update-line-items').click
           sleep 1
