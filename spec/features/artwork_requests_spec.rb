@@ -26,6 +26,44 @@ feature 'Artwork Request Features', js: true, artwork_request_spec: true do
     expect(page).to have_css('div.artwork-request-list')
   end
 
+  context 'Unassigning artwork' do
+   
+    #before moving unassigned, must set it to pending_artwork 
+    background do
+      visit artwork_requests_path
+      find("a[href='/orders/#{artwork_request.id}/artwork_requests/#{artwork_request.id}/edit']").click
+      find("#artwork_request_artist_id").select "#{valid_user.last_name}" 
+      sleep 1
+      expect(artwork_request.artist_id).to be_nil
+      expect(artwork_request.state).to eq("unassigned")
+      click_button "Update Artwork request"
+      artwork_request.reload
+      expect(artwork_request.artist_id).to_not be_nil
+      expect(artwork_request.state).to eq("pending_artwork")
+    end
+
+    scenario 'A user can unassign an artist and have the request move to unassigned' do
+      visit proofing_manager_dashboard_path
+      expect(page).to have_content("No artwork requests are currently unassigned")
+      visit artwork_requests_path
+      find("a[href='/orders/#{artwork_request.id}/artwork_requests/#{artwork_request.id}/edit']").click
+      find("#artwork_request_artist_id").select nil
+      sleep 1
+      click_button "Update Artwork request"
+      artwork_request.reload
+      expect(artwork_request.state).to eq("unassigned")
+      expect(artwork_request.artist_id).to be_nil
+      sleep 1
+
+      allow_any_instance_of(SunspotMatchers::SunspotSearchSpy).to\
+      receive(:results) { Kaminari.paginate_array([artwork_request]).page(1).per(20) }  
+    
+      visit proofing_manager_dashboard_path
+      expect(page).to have_content("There are currently "\
+       "#{ArtworkRequest.where(state: "unassigned").count} artwork requests unassigned")
+    end
+  end
+
   scenario 'A user can view a list of artwork requests from the root path via Artwork' do
     visit root_path
     if ci?
