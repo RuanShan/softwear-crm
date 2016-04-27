@@ -418,17 +418,34 @@ feature 'Order management', slow: true, order_spec: true, js: true do
         allow(valid_user).to receive(:role?) { |*r| r.map(&:to_s).include?('sales_manager') }
       end
 
-      context 'when no cancelation criteria is met' do
-        scenario 'a sales manager can see what tasks need to be performed' do
-          visit edit_order_path(order)
+      context 'when no cancelation criteria is met', nocrit: true do
+        context 'and the order has an artwork request' do
+          scenario 'a sales manager can see what tasks need to be performed, including artist cost' do
+            create(:job, jobbable: order, imprints: [create(:valid_imprint, artwork_requests: [create(:valid_artwork_request)])])
+            visit edit_order_path(order)
 
-          click_link 'Sales'
-          find("#order_cancel").click
-          sleep 1.5
+            click_link 'Sales'
+            find("#order_cancel").click
+            sleep 1.5
 
-          expect(page).to have_content "A salesperson cost must be filled out"
-          expect(page).to have_content "An artist cost must be filled out"
-          expect(page).to have_content "The order must have at least one private comment"
+            expect(page).to have_content "A salesperson cost must be filled out"
+            expect(page).to have_content "An artist cost must be filled out"
+            expect(page).to have_content "The order must have at least one private comment"
+          end
+        end
+
+        context 'and the order does not have an artwork request' do
+          scenario 'a sales manager can see what tasks need to be performed, excluding artist cost' do
+            visit edit_order_path(order)
+
+            click_link 'Sales'
+            find("#order_cancel").click
+            sleep 1.5
+
+            expect(page).to have_content "A salesperson cost must be filled out"
+            expect(page).to_not have_content "An artist cost must be filled out"
+            expect(page).to have_content "The order must have at least one private comment"
+          end
         end
       end
 
