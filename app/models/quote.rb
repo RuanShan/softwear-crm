@@ -404,19 +404,28 @@ class Quote < ActiveRecord::Base
   end
 
   def assign_from_quote_request(quote_request)
-    if /(?<qr_first>\w+)\s+(?<qr_last>\w+)/ =~ quote_request.name
-      self.contact.f.first_name = qr_first
-      self.contact.f.last_name  = qr_last
+
+    if Crm::Email.exists?(address: quote_request.email)
+      contact = Crm::Email.find_by(address: quote_request.email)
     else
-      self.contact.f.first_name = quote_request.name
+      contact = Crm::Contact.new
+
+      if /(?<qr_first>\w+)\s+(?<qr_last>\w+)/ =~ quote_request.name
+        contact.first_name = qr_first
+        contact.last_name  = qr_last
+      else
+        contact.first_name = quote_request.name
+      end
+
+      contact.primary_email.address  ||= quote_request.email
+      contact.primary_phone.number   ||= (quote_request.phone_number? ? quote_request.phone_number : '000-000-0000')
     end
 
-    self.email               ||= quote_request.email
-    self.qty                 ||= quote_request.approx_quantity
-    self.phone_number        ||= quote_request.phone_number if quote_request.phone_number
-    self.company             ||= quote_request.organization if quote_request.organization
-    self.quote_source        ||= 'Online Form'
-    self.freshdesk_ticket_id ||= quote_request.freshdesk_ticket_id
+    self.contact = contact
+    self.qty                    ||= quote_request.approx_quantity
+    self.company                ||= quote_request.organization if quote_request.organization
+    self.quote_source           ||= 'Online Form'
+    self.freshdesk_ticket_id    ||= quote_request.freshdesk_ticket_id
 
     if quote_request.date_needed
       self.deadline_is_specified = true

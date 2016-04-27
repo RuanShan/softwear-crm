@@ -166,7 +166,7 @@ feature 'Quotes management', slow: true, quote_spec: true, redo: 3 do
           receive(:total_entries) { Crm::Contact.count }
         end
 
-        scenario 'I can create a quote using an existing contact', js: true do
+        scenario 'I can create a quote using an existing contact', js: true, no_ci: true do
           visit new_quote_path
 
           expect {
@@ -388,6 +388,7 @@ feature 'Quotes management', slow: true, quote_spec: true, redo: 3 do
           click_button 'OK'
           visit edit_quote_path quote
           click_link 'Timeline'
+          sleep 2
           expect(page).to have_content 'Mr. Money'
           expect(page).to have_content 'Cash'
           expect(page).to have_content 'www.mrmoney.com'
@@ -880,7 +881,7 @@ feature 'Quotes management', slow: true, quote_spec: true, redo: 3 do
           expect(quote.reload.contact.first_name).to eq('Simba')
         end
 
-        scenario 'I can change the contact by searching for a new one', js: true do
+        scenario 'I can change the contact by searching for a new one', js: true, no_ci: true do
           click_link 'Change Contact'
           click_link 'Search Existing Contacts'
           fill_in 'contact_search_terms', with: 'User name'
