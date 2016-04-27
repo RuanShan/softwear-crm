@@ -10,7 +10,10 @@ class QuotesController < InheritedResources::Base
         @quote.fire_quote_request_quoted_activity(current_user)
         redirect_to edit_quote_path(@quote)
       end
-      failure.html { render 'new' }
+      failure.html {
+        byebug
+        render 'new'
+      }
     end
   end
 

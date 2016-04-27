@@ -14,7 +14,6 @@ class Crm::Contact < ActiveRecord::Base
 
   has_many :emails, ->{order(primary: :desc)}, class_name: 'Crm::Email'
   has_many :phones, ->{order(primary: :desc)}, class_name: 'Crm::Phone'
-  has_many :orders
   has_many :quotes
 
   has_one :primary_email, ->{ where(primary: true) }, class_name: 'Crm::Email'

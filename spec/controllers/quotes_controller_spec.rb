@@ -57,8 +57,9 @@ describe QuotesController, js: true, quote_spec: true do
 
   describe 'POST create' do
     let!(:quote_request) { create(:quote_request) }
+    let!(:contact) { create(:crm_contact) }
     let(:quote_attributes) do
-      attributes_for(:valid_quote, name: "The New Quote", salesperson_id: valid_user.id, store_id: create(:valid_store).id)
+      attributes_for(:valid_quote, name: "The New Quote", salesperson_id: valid_user.id, store_id: create(:valid_store).id, contact_id: contact.id)
         .merge(quote_request_ids: [quote_request.id])
     end
     let(:quote) { Quote.find_by name: "The New Quote" }
