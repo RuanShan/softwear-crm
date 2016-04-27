@@ -152,6 +152,27 @@ describe Quote, quote_spec: true do
           expect(subject.reload.insightly_opportunity_id).to eq 123
         end
 
+        context 'when an error is raised once' do
+          it 'retries' do
+            subject = create :valid_quote
+            dummy_insightly = Object.new
+            subject.insightly_pipeline_id = 10
+            allow(subject).to receive(:insightly_description).and_return 'desc'
+            allow(subject).to receive(:insightly_bid_amount).and_return 15
+            allow(subject).to receive(:insightly_stage_id).and_return 1
+            call_count = 0
+            allow(subject).to receive(:insightly_category_id) { call_count += 1; call_count == 1 ? raise("fail") : 3 }
+
+            allow(dummy_insightly).to receive(:create_opportunity)
+              .and_return(double('Opportunity', opportunity_id: 123))
+
+            allow(subject).to receive(:insightly).and_return dummy_insightly
+
+            expect { subject.create_insightly_opportunity }.to_not raise_error
+            expect(subject.reload.insightly_opportunity_id).to eq 123
+          end
+        end
+
         context 'given an insightly_whos_responsible_id', story_670: true do
           let!(:responsible_user) { create(:alternate_user, email: 'testguy@annarbortees.com') }
 
