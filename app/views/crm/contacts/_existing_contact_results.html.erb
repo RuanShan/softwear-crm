@@ -1,4 +1,4 @@
-<table class="table-striped table table-condensed">
+<table class="table-striped table table-condensed table-responsive">
   <thead>
     <th>ID</th>
     <th>Name</th>
@@ -10,7 +10,7 @@
   <% contacts.each do |contact| %>
     <tr id="contact_result_<%= contact.id %>">
       <td><%= contact.id %></td>
-      <td><%= contact.full_name %></td>
+      <td><%= label_tag "contact_select_#{contact.id}", contact.full_name %></td>
       <td><%= raw contact.emails.map(&:address).join('<br />') %></td>
       <td><%= raw contact.phones.map(&:number).join('<br />') %></td>
       <td>

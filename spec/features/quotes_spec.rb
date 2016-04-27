@@ -166,7 +166,7 @@ feature 'Quotes management', slow: true, quote_spec: true, redo: 3 do
           receive(:total_entries) { Crm::Contact.count }
         end
 
-        scenario 'I can create a quote using an existing contact', js: true do
+        scenario 'I can create a quote using an existing contact', current: true, js: true do
           visit new_quote_path
 
           expect {
@@ -174,9 +174,7 @@ feature 'Quotes management', slow: true, quote_spec: true, redo: 3 do
             fill_in 'contact_search_terms', with: 'User name'
             click_link 'Search Contacts'
             sleep 0.5
-            within("#contact_result_#{contact.id}") do
-              find("[name='contact_select']").click
-            end
+            choose contact.full_name
 
             click_button 'Next'
             sleep 0.5
