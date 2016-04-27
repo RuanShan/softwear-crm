@@ -195,7 +195,7 @@ class LineItemsController < InheritedResources::Base
   end
 
   def create_imprintable
-    @line_items = LineItem.new_imprintables(
+    @line_items = LineItem.create_imprintables(
       @line_itemable,
       params[:imprintable_id],
       params[:color_id],

@@ -187,15 +187,14 @@ feature 'Line Items management', slow: true, line_item_spec: true, js: true do
         fill_in 'decoration_price', with: '2.30'
       end
 
-      sleep 1
-      sleep 1
+      sleep 2
 
       find('#line-item-submit').click
       sleep 1
 
-      #created 2 line items, XL and XXL
-      xl_line_item_price = LineItem.first.imprintable_price.to_f #9.99  
-      xxl_line_item_price = LineItem.second.imprintable_price.to_f#10.0
+      #finds line items, XL and XXL
+      xl_line_item_price = LineItem.find_by(imprintable_object_id: variant1.id).imprintable_price.to_f #9.99  
+      xxl_line_item_price = LineItem.find_by(imprintable_object_id: variant2.id).imprintable_price.to_f#10.0
 
       #converts 10.0 to 10.00 
       xxl_line_item_price = ('%.2f' % xxl_line_item_price)
