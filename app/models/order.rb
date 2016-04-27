@@ -365,6 +365,13 @@ class Order < ActiveRecord::Base
     save!
   end
 
+  def complete?
+    payment_state    == 'Payment Terms Met' &&
+    invoice_state    == 'approved'          &&
+    production_state == 'complete'          &&
+    artwork_state    == 'in_production'
+  end
+
   def just_canceled?
     canceled_changed? && canceled? && !canceled_was
   end
@@ -892,6 +899,8 @@ class Order < ActiveRecord::Base
   end
 
   def prod_api_confirm_job_counts
+    return if complete? || canceled?
+
     if jobs.count != production.jobs.count
       message = "API Job counts don't match for CRM(#{id})=#{jobs.count} PRODUCTION(#{softwear_prod_id})=#{production.jobs.count}"
       logger.error message
@@ -906,6 +915,8 @@ class Order < ActiveRecord::Base
   end
 
   def prod_api_confirm_shipment
+    return if complete? || canceled?
+
     case delivery_method
     when 'Pick up in Ann Arbor'
       unless production.post_production_trains.map(&:train_class).include?("stage_for_pickup_train")
@@ -974,6 +985,8 @@ class Order < ActiveRecord::Base
   end
 
   def prod_api_confirm_artwork_preprod
+    return if complete? || canceled?
+
     unless screen_print_artwork_requests.empty?
       screen_train_count = production.pre_production_trains.map(&:train_class).delete_if{|x| x != 'screen_train' }.count
       unless screen_train_count == screen_print_artwork_requests.count
