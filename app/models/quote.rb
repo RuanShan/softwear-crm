@@ -115,7 +115,6 @@ class Quote < ActiveRecord::Base
   alias_method :private_notes, :private_comments
   alias_method :private_notes=, :private_comments=
 
-
   state_machine :state, initial: :pending do
     event :send_to_customer do
       transition :pending => :sent_to_customer
@@ -210,36 +209,6 @@ class Quote < ActiveRecord::Base
     end
   end
 
-  def formatted_phone_number
-    if phone_number
-      area_code    = phone_number[0, 3]
-      middle_three = phone_number[3, 3]
-      last_four    = phone_number[6, 4]
-      "#{area_code}-#{middle_three}-#{last_four}"
-    end
-  end
-
-
-  def format_phone_for_contact
-    num = phone_number
-    return "000-000-0000" if(num.nil? || num.blank?)
-
-    num.gsub!(/\D/, '')
-
-    if num.length == 11 && num[0] == '1'
-      num
-    elsif num.length == 10
-      num = '1' + num
-    elsif num.length >= 7 && num.length <= 9
-      dif = num.length - 7
-      if dif != 0
-        num = num.slice(dif, 7)
-      end
-      num = '1734' + num
-    end
-
-    "#{num.slice(1, 3)}-#{num.slice(4, 3)}-#{num.slice(7, 4)}"
-  end
 
   def formal?
     !informal?
@@ -260,6 +229,10 @@ class Quote < ActiveRecord::Base
 
   def phone_number
     contact.phone_number
+  end
+
+  def formatted_phone_number
+    "+1-#{phone_number}"
   end
 
   def has_line_items?
@@ -432,10 +405,10 @@ class Quote < ActiveRecord::Base
 
   def assign_from_quote_request(quote_request)
     if /(?<qr_first>\w+)\s+(?<qr_last>\w+)/ =~ quote_request.name
-      selcontact.f.first_name = qr_first
-      selcontact.f.last_name  = qr_last
+      self.contact.f.first_name = qr_first
+      self.contact.f.last_name  = qr_last
     else
-      se.contact.f.first_name = quote_request.name
+      self.contact.f.first_name = quote_request.name
     end
 
     self.email               ||= quote_request.email
@@ -606,7 +579,7 @@ class Quote < ActiveRecord::Base
 
   def insightly_contact_links
     if quote_requests.empty?
-      contact = create_insightly_contact(
+      i_contact = create_insightly_contact(
         first_name:   contact.first_name,
         last_name:    contact.last_name,
         email:        contact.email,
@@ -614,10 +587,10 @@ class Quote < ActiveRecord::Base
         organization: company
       )
 
-      if contact
+      if i_contact
         c = []
-        c << { contact_id: contact.contact_id }
-        contact.links.select{ |l| l.key?('organisation_id') }.each do |l|
+        c << { contact_id: i_contact.contact_id }
+        i_contact.links.select{ |l| l.key?('organisation_id') }.each do |l|
           c << { organisation_id: l['organisation_id'] }
         end
         c
@@ -813,12 +786,32 @@ class Quote < ActiveRecord::Base
       changed_attrs = self.attribute_names.select{ | attr| self.send("#{attr}_changed?")}
       changed_attrs.each do |attr|
       hash[attr] = {
-        "old" => self.send("#{attr}_was"), # self.name_was , # self.name_was
-        "new" => self.send("#{attr}")  # self.name
+        "old" => self.send("#{attr}_was"),
+        "new" => self.send("#{attr}")  #
       }
       end
     end
    hash
+  end
+
+  def self.format_phone_for_contact(num)
+    return "000-000-0000" if(num.nil? || num.blank?)
+
+    num.gsub!(/\D/, '')
+
+    if num.length == 11 && num[0] == '1'
+      num
+    elsif num.length == 10
+      num = '1' + num
+    elsif num.length >= 7 && num.length <= 9
+      dif = num.length - 7
+      if dif != 0
+        num = num.slice(dif, 7)
+      end
+      num = '1734' + num
+    end
+
+    "#{num.slice(1, 3)}-#{num.slice(4, 3)}-#{num.slice(7, 4)}"
   end
 
   private

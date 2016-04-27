@@ -7,7 +7,7 @@ class RefactorQuotesToUseContacts < ActiveRecord::Migration
         email = Crm::Email.find_by(address: quote[:email])
         quote.update_attributes(contact_id: email.contact_id)
       else
-        phone_number = quote.format_phone_for_contact
+        phone_number = Quote.format_phone_for_contact(quote[:phone_number])
         phone_number = '000-000-0000' if phone_number == '--'
 
         contact = Crm::Contact.new(

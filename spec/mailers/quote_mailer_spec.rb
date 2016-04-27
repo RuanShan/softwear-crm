@@ -6,22 +6,8 @@ describe QuoteMailer, quote_spec: true do
 
   let(:user) { build_stubbed(:alternate_user) }
   let(:store) { build_stubbed(:valid_store) }
-  let(:quote) do
-    Quote.new(
-      email: 'from@from_something.com',
-      phone_number: '2489256080',
-      first_name: 'dave',
-      last_name: 'suckstorff',
-      company: 'Ann Arbor T-Shirt Company',
-      twitter: 'dsuckstorff',
-      name: 'Quote name',
-      valid_until_date: Time.now + 1.day,
-      estimated_delivery_date: Time.now + 1.day,
-      salesperson_id: user.id,
-      store_id: store.id,
-      shipping: 14.50
-    )
-  end
+  let(:quote) { create(:valid_quote) }
+
   let(:hash) do
     {
       quote: quote,
