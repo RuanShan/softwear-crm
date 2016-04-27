@@ -28,17 +28,17 @@ namespace :travis do
         case job.state
         when 'failed', 'errored'
           what_to_do = :dont_deploy
-          puts "A job failed"
+          puts "Job ##{job.number} failed"
           break
         when 'started', 'received'
           what_to_do = :wait
-          puts "A job is still in progress - wating 2 minutes"
+          puts "Job ##{job.number} is still in progress - wating 2 minutes"
           break
         when 'passed'
           what_to_do = :deploy
           puts "Job ##{job.number} looks good"
         else
-          puts "UNKNOWN JOB STATE: #{job.state}"
+          puts "JOB ##{job.number} UNKNOWN STATE: #{job.state.inspect}"
           what_to_do = :dont_deploy
         end
       end

@@ -115,7 +115,7 @@ describe Order, order_spec: true do
         allow_any_instance_of(ArtworkRequest).to receive(:create_trains)
       end
 
-      it 'creates a Softwear Production order', create_production_order: true do
+      it 'creates a Softwear Production order', create_production_order: true, retry: 5 do
         [order, job_1, job_2, imprint_1_1, imprint_1_2, imprint_2_1].each do |record|
           expect(record.reload.softwear_prod_id).to be_nil
         end

@@ -741,9 +741,6 @@ class Order < ActiveRecord::Base
       if options[:force]
         prod_order.jobs.each(&:destroy)
         prod_order.update_attributes(prod_order_attributes)
-      else
-        update_column :softwear_prod_id, prod_order.id
-        return
       end
     end
 
