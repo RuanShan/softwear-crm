@@ -166,7 +166,7 @@ feature 'Quotes management', slow: true, quote_spec: true, redo: 3 do
           receive(:total_entries) { Crm::Contact.count }
         end
 
-        scenario 'I can create a quote using an existing contact', current: true, js: true do
+        scenario 'I can create a quote using an existing contact', js: true do
           visit new_quote_path
 
           expect {
@@ -203,8 +203,6 @@ feature 'Quotes management', slow: true, quote_spec: true, redo: 3 do
     end
 
     context 'with an existing quote' do
-
-
       scenario 'I can mark as "sent to customer"', js: false do
         visit edit_quote_path quote
         click_link "Mark as sent to customer"
@@ -855,6 +853,58 @@ feature 'Quotes management', slow: true, quote_spec: true, redo: 3 do
         sleep 2
         expect(page).to have_content 'Quote was successfully updated.'
         expect(quote.reload.markups_and_options_job.line_items.where(name: 'nice')).to exist
+      end
+
+      context 'if I want to change contact info' do
+        let!(:a_different_contact){ create(:crm_contact) }
+
+        before do
+          allow_any_instance_of(SunspotMatchers::SunspotSearchSpy).to\
+          receive(:results) { Kaminari.paginate_array(Crm::Contact.all.to_a).page(1).per(10) }
+
+          allow_any_instance_of(Kaminari::PaginatableArray).to\
+          receive(:total_entries) { Crm::Contact.count }
+
+          visit edit_quote_path(quote)
+          click_link 'Details'
+          sleep(0.5)
+        end
+
+        scenario 'I can edit the existing contact', js: true do
+          click_link 'Edit Contact'
+          within('#edit_contact_content') do
+            fill_in 'First name', with: 'Simba'
+          end
+          click_button 'Save'
+          sleep 1
+          expect(quote.reload.contact.first_name).to eq('Simba')
+        end
+
+        scenario 'I can change the contact by searching for a new one', js: true do
+          click_link 'Change Contact'
+          click_link 'Search Existing Contacts'
+          fill_in 'contact_search_terms', with: 'User name'
+          click_link 'Search Contacts'
+          sleep 0.5
+          choose a_different_contact.full_name
+          click_button 'Save'
+          expect(quote.reload.contact).to eq(a_different_contact)
+        end
+
+        scenario 'I can change the contact by creating a new one', js: true do
+          old_contact = quote.contact
+          click_link 'Change Contact'
+          expect{
+            within('#new_contact_content') do
+              fill_in 'First name', with: 'Capy'
+              fill_in 'Last name', with: 'Bara'
+              fill_in 'E-mail', with: 'test@spec.com'
+              fill_in 'Phone', with: '555-555-1212'
+            end
+            click_button 'Save'
+          }.to change{ Crm::Contact.count }.by(1)
+          expect(quote.reload.contact).to_not eq(old_contact)
+        end
       end
     end
   end
