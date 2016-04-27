@@ -143,6 +143,17 @@ class OrdersController < InheritedResources::Base
     end
   end
 
+  def approve_all_art
+    @order = Order.find(params[:id])
+    @order.approve_all_art
+    #@order.save
+    respond_to do |format|
+      format.html { redirect_to edit_order_path(@order) }
+      format.js { render }
+    end 
+
+  end
+
   def fba
     @current_action = 'orders#fba'
     @orders = Order.fba.page(params[:page])
@@ -291,12 +302,12 @@ class OrdersController < InheritedResources::Base
         :id, :imported_from_admin,
         :email, :firstname, :lastname,
         :company, :twitter, :name, :po,
-        :in_hand_by, :terms, :tax_exempt, :tax_rate, :tax_rate_percent,
         :fee_percent, :tax_id_number, :redo_reason, :invoice_state,
-        :fee_description, :delivery_method, :phone_number, :commission_amount,
+        :in_hand_by, :terms, :tax_exempt, :tax_rate, :tax_rate_percent,
         :store_id, :salesperson_id, :total, :shipping_price, :artwork_state,
-        :freshdesk_proof_ticket_id, :softwear_prod_id, :production_state, :phone_number_extension,
+        :fee_description, :delivery_method, :phone_number, :commission_amount,
         :freshdesk_proof_ticket_id, :softwear_prod_id, :production_state, :canceled,
+        :freshdesk_proof_ticket_id, :softwear_prod_id, :production_state, :phone_number_extension,
 
         quote_ids: [],
         costs_attributes: costs_attributes,

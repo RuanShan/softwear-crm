@@ -1,6 +1,6 @@
 class ImprintsController < InheritedResources::Base
   include BatchUpdate
-
+  respond_to :html, :js
   belongs_to :job, shallow: true
 
   %i(create destroy).each do |action|
@@ -28,9 +28,8 @@ class ImprintsController < InheritedResources::Base
       super do |format|
         format.html do
           render partial: 'imprints/imprint',
-                 locals: { job: Job.find(params[:job_id]) }
+                 job: Job.find(params[:job_id])
         end
-
         format.js
       end
     end

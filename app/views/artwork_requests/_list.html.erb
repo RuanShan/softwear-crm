@@ -7,7 +7,6 @@
       <% end %>
     <% end %>   
     
-    
     <% if order.can_artwork_complete? %>
       <%= link_to transition_order_path(order, :artwork_state, :artwork_complete ), method: :post, class: 'btn btn-primary' do %>
         <i class='glyphicon glyphicon-check'></i> Mark Artwork Complete
@@ -23,6 +22,12 @@
     <%= link_to new_artwork_path(back_to: (edit_order_path(order, anchor: 'artwork') if order)), class: 'btn btn-primary' do %>
       <i class='fa fa-picture-o'></i> Upload New Artwork
     <% end %>
+
+    <% if order.all_artworks_ready? %>
+      <%= link_to approve_all_art_order_path(order), method: :post, class: 'btn btn-success' do %>
+        <i class='fa fa-picture-o'></i> Approve All Artwork
+      <% end %>
+    <% end %>  
   </div>
   
   <% if order.missing_artwork_requests? %>

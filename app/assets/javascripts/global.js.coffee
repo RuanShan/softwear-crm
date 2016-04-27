@@ -10,6 +10,8 @@ Dropzone.options.jsPackingSlipForm =
 
 $.fn.modal.Constructor.prototype.enforceFocus = ->
 
+#$('a[data-remote],input[data-remote]')
+
 $(window).load ->
   $("#flashModal").modal "show"
   $("#errorsModal").modal "show"

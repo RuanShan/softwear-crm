@@ -147,8 +147,7 @@ class LineItem < ActiveRecord::Base
   end
 
   def self.create_imprintables(job, imprintable, color, options = {})
-    new_imprintables(job, imprintable, color, options)
-      .each(&:save!)
+    new_imprintables(job, imprintable, color, options).each(&:save!)
   end
 
   def self.new_imprintables(job, imprintable, color, options = {})
@@ -165,10 +164,10 @@ class LineItem < ActiveRecord::Base
       while (upcharge.nil? || upcharge.zero?) && upcharge_group =~ /^x+l/
         upcharge_group = upcharge_group[1..-1]
         upcharge_group = 'base_price' if upcharge_group == 'xl_price'
-        upcharge = variant.imprintable.send(upcharge_group)
+        upcharge       = variant.imprintable.send(upcharge_group)
       end
+      
       upcharge ||= 0
-
       imprintable_price = upcharge.zero? ? imprintable_price : upcharge 
 
       LineItem.new(

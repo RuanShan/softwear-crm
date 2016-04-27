@@ -29,7 +29,6 @@ var shineEditingIn = function ($container) {
 
   <% end %>
 <% end %>
-
 <% @new_imprints.try(:each) do |new_imprint| %>
 
   var $container = $(".imprint-entry[data-id='<%= new_imprint.attributes_key %>']");
@@ -42,7 +41,7 @@ var shineEditingIn = function ($container) {
     $container.attr('data-id', <%= new_imprint.id %>);
     $container.find('.js-print-location-select').attr(
       'name', "imprint[<%= new_imprint.id %>[print_location_id]]"
-    );
+      );
     var $name_number = $container.find('.js-name-number-format-fields');
     $name_number.replaceWith("<%=j render 'imprints/name_number_fields', imprint: new_imprint.record, imprint_method_name: new_imprint.imprint_method.name %>");
     shineEditingIn($container);
@@ -64,5 +63,8 @@ var shineEditingIn = function ($container) {
 
   <%= update_order_timeline(@job.order) %>
 
+    $ ->
+      $("a[data-remote]").on "ajax:success", (e, data, status, xhr) ->
+      alert "The article was updated."
   registerImprintEvents($('body'));
 <% end %>

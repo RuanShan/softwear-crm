@@ -165,7 +165,7 @@ class ArtworkRequest < ActiveRecord::Base
     end
 
   end
-
+  
   def assigned_artist(artist)
     begin
       if persisted?
@@ -243,6 +243,7 @@ class ArtworkRequest < ActiveRecord::Base
   def artwork_names
     artworks.pluck(:name).join(', ')
   end
+
   def artwork_descriptions
     artworks.pluck(:description).join(', ')
   end
@@ -438,6 +439,7 @@ class ArtworkRequest < ActiveRecord::Base
   end
 
   def create_trains
+    return if Rails.env.development?
     failed_imprint_methods = {}
 
     count = 0
@@ -470,7 +472,7 @@ class ArtworkRequest < ActiveRecord::Base
         end
 
       when /Screen\s+Print/
-        unless created_screen
+        unless created_screen 
           count += 1
           screen_train = Production::ScreenTrain.create(
             order_id: order.softwear_prod_id,
@@ -609,6 +611,7 @@ class ArtworkRequest < ActiveRecord::Base
     Production::ScreenTrain.where(crm_artwork_request_id: id).each(&:destroy)
     Production::DigitizationTrain.where(crm_artwork_request_id: id).each(&:destroy)
   end
+
   def destroy_trains
     self.class.destroy_trains(id)
   end

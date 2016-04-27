@@ -203,6 +203,7 @@ class LineItemsController < InheritedResources::Base
       decoration_price:  params[:decoration_price]
     )
 
+
     return create_imprintable_failure unless @line_items.all?(&:valid?)
     create_imprintable_success
   end
@@ -222,6 +223,7 @@ class LineItemsController < InheritedResources::Base
       partial: 'shared/modal_errors',
       locals: { object: @line_items.reject(&:valid?).first }
     )
+    
     errors = @line_items.map{ |l| l.errors.full_messages }.flatten.uniq
 
     respond_to do |format|
@@ -232,9 +234,11 @@ class LineItemsController < InheritedResources::Base
           modal: modal_html
         }
       end
+      
       format.html do
         redirect_to root_path
       end
+      
       format.js { render locals: { success: false } }
     end
   end

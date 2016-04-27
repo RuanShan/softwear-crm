@@ -336,6 +336,21 @@ class Order < ActiveRecord::Base
     end
   end
 
+  def all_artworks_ready?
+    unless artwork_requests.empty? 
+       artwork_requests.each do |ar|
+         return false if ar.state != "pending_manager_approval"
+       end
+    end
+  end
+
+  def approve_all_art
+    self.artwork_requests.each do |ar|
+      ar.state = "manager_approved"
+      ar.save
+    end
+  end
+
   # Use method_missing to catch calls to recalculate_* (for subtotal, tax, etc)
   def respond_to?(method_name)
     if /^re(?<calc_method>calculate_\w+)!?$/ =~ method_name.to_s
