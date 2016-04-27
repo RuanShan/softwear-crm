@@ -13,12 +13,10 @@ namespace :travis do
     job_id   = ENV['TRAVIS_JOB_ID']
 
     if build_id.blank?
-      puts "Expected TRAVIS_BUILD_ID environment variable to be present."
-      next
+      fail "Expected TRAVIS_BUILD_ID environment variable to be present."
     end
     if job_id.blank?
-      puts "Expected TRAVIS_JOB_ID environment variable to be present."
-      next
+      fail "Expected TRAVIS_JOB_ID environment variable to be present."
     end
 
     build = Travis::Build.find(build_id)
@@ -49,12 +47,11 @@ namespace :travis do
       when :deploy
         exec 'bundle exec softwear-deploy'
       when :dont_deploy
-        raise "Not all jobs passed - not deploying"
+        fail "Not all jobs passed - not deploying"
       when :wait
         sleep 2.minutes
       else
-        raise "do what? #{what_to_do.inspect}"
-        break
+        fail "do what? #{what_to_do.inspect}"
       end
     end
   end
