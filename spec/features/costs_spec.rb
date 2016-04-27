@@ -77,13 +77,12 @@ feature 'Costs Management', js: true do
       all('.order-costs span.select2-container').first.click
       all('.select2-results__option').first.click
       fill_in 'Description', with: 'moni'
-      fill_in 'Amount', with: '10.50'
+      fill_in 'Time', with: '5'
       click_button 'Update Order'
 
       sleep 1
 
-      expect(order.reload.costs.where(amount: 10.50, type: 'Salesperson')).to exist
-      expect(page).to have_content 'Total Cost: $10.50'
+      expect(order.reload.costs.where(time: 5, type: 'Salesperson')).to exist
     end
 
     scenario 'a user can add costs to standard line items' do
