@@ -1,3 +1,5 @@
+<%= render 'quotes/nav', quote: @quote, active: 'show' %>
+
 <div class="page-heading animated fadeInDownBig row">
   <div class="pull-left">
     <h1><strong>Ann Arbor T-Shirt Company Quote</strong> #<%= @quote.id %></h1>
@@ -5,27 +7,8 @@
   </div>
 
   <div class='pull-right hidden-print'>
-    <%= link_to edit_quote_path(@quote), class: 'btn btn-primary' do %>
-        <i class="fa fa-edit"></i> Edit &nbsp;
-    <% end %>
     <%= link_to '#', class: 'btn btn-success', id: 'print-button' do  %>
-        <i class="fa fa-print"></i> Print
-    <% end %>
-    <%= link_to new_quote_emails_path(@quote, freshdesk: true), class: 'btn btn-success' do  %>
-        <i class="fa fa-envelope"></i> Prepare for FreshDesk
-    <% end %>
-    <% unless @quote.insightly_opportunity_id.blank? %>
-        <%= link_to  @quote.insightly_opportunity_link, class: 'btn btn-warning',
-                     'data-action' => 'new', 'data-toggle' => 'tooltip', 'title' => 'Insightly Opportunity', target: '_blank' do %>
-            <i class="softwear-icon-insightly-icon"></i> Insightly Opportunity
-        <% end %>
-    <% end %>
-
-    <% unless @quote.freshdesk_ticket_id.blank? %>
-        <%= link_to  @quote.freshdesk_ticket_link, class: 'btn btn-success',
-                    'data-action' => 'new', 'data-toggle' => 'tooltip', 'title' => 'Freshdesk Ticket', target: '_blank' do %>
-            <i class="softwear-icon-freshdesk-icon"></i> Freshdesk Ticket
-        <% end %>
+        <i class="fa fa-print"></i>
     <% end %>
   </div>
 </div>

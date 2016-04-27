@@ -10,9 +10,9 @@ describe Quote, quote_spec: true do
 
   describe 'Relationships', story_74: true, story_79: true do
     it { is_expected.to belong_to(:store) }
+    it { is_expected.to belong_to(:contact).class_name('Crm::Contact') }
     it { is_expected.to have_many(:emails) }
     it { is_expected.to have_many(:jobs) }
-    # it { is_expected.to have_and_belong_to_many(:quote_requests) }
   end
 
   describe 'Validations' do
@@ -298,6 +298,10 @@ describe Quote, quote_spec: true do
         end
       end
     end
+  end
+
+  describe 'Other' do
+    it { is_expected.to accept_nested_attributes_for(:contact) }
   end
 
   describe 'callbacks' do
@@ -966,10 +970,10 @@ describe Quote, quote_spec: true do
 
     context 'when an order is associated with a quote' do
       it 'should have the state won' do
-        expect(quote.state).to eq("sent_to_customer") 
+        expect(quote.state).to eq("sent_to_customer")
         OrderQuote.create!(order_id: order.id, quote_id: quote.id)
-        expect(quote.reload.state).to eq("won") 
+        expect(quote.reload.state).to eq("won")
       end
-    end 
+    end
   end
 end

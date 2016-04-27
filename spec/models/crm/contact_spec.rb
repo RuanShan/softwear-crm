@@ -4,8 +4,8 @@ describe Crm::Contact, type: :model do
   describe 'Relationships' do
     it { is_expected.to have_many :emails }
     it { is_expected.to have_many :phones }
-    # it { is_expected.to have_many :orders }
-    # it { is_expected.to have_many :quotes }
+    it { is_expected.to have_many :orders }
+    it { is_expected.to have_many :quotes }
   end
 
   describe 'Validations' do

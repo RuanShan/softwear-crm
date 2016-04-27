@@ -113,13 +113,15 @@ module Search
 
     def render_for(models, format)
       if models.size == 1
-        plural = models.first.underscore.pluralize
+        plural = models.first.split("::").last.underscore.pluralize
         locals = permitted_locals_for(models.first)
 
         @collection = @search.first.results
         instance_variable_set "@#{plural}", @search.first.results
         @search_result_count = @search.first.results.total_entries
-        destination = "#{plural}/index.#{format}"
+
+        path =  models.first.split("::").map(&:underscore).join("/").pluralize
+        destination = "#{path}/index.#{format}"
 
         render destination, locals: locals
       else
@@ -295,7 +297,7 @@ module Search
     def actual_model_of(model)
       case model
       when Symbol, String
-        Kernel.const_get(model.camelize)
+        Kernel.const_get(model.split("::").map(&:camelize).join("::"))
       when Class
         model
       end

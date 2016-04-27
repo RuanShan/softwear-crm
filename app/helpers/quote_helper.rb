@@ -13,6 +13,26 @@ module QuoteHelper
     end
   end
 
+  def get_style_from_state(state, style_type = 'label')
+    if style_type == 'label'
+      case state
+        when 'pending' then 'label-warning'
+        when 'sent_to_customer' then 'label-primary'
+        when 'won' then 'label-success'
+        when 'lost' then 'label-danger'
+        else nil
+      end
+    elsif style_type == 'state'
+      case state
+        when 'pending' then 'state-warning'
+        when 'sent_to_customer' then 'state-primary'
+        when 'won' then 'state-success'
+        when 'lost' then 'state-danger'
+        else nil
+      end
+    end
+  end
+
   def line_items_from_last_attempt
     return nil unless session[:last_quote_line_items].try(:values)
     session[:last_quote_line_items]

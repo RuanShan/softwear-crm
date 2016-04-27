@@ -1,114 +1,48 @@
-<div class="form-group hide">
-  <%= f.label :quote_request_ids, 'Quote Requests' %>
+<div class="hide">
   <% qr_ids = !quote_request_id.nil? ? quote_request_id : quote.quote_request_ids %>
-  <%= f.select :quote_request_ids, [qr_ids], {}, { name: 'quote[quote_request_ids][]' } %>
+  <%= f.select :quote_request_ids, [qr_ids], {}, { name: 'quote[quote_request_ids][]', label: 'Quote Requests' } %>
 </div>
 
-<div class="form-group">
-  <%= f.label :name, 'Quote Name' %>
-  <%= f.error_for :name %>
-  <%= f.text_field :name %>
+<%= f.text_field :name, label: 'Quote Name' %>
+
+<%= f.select :informal,
+    options_for_select({"Yes" => true, "No" => false}, f.object.informal),
+  label: 'Informal quote?'%>
+
+<%= f.select :quote_source, Quote::QUOTE_SOURCES, include_blank: true %>
+
+<%= f.number_field :shipping, step: '.01', prepend: '$'  %>
+
+<div class="js-datetimepicker">
+  <%= f.text_field :valid_until_date,
+                   value: value_time(thirty_days_from_now_at_5),
+                   label: 'Quote Valid Until Date',
+                   append: raw('<span class="glyphicon glyphicon-calendar"></span>')   %>
 </div>
 
-<div class="form-group">
-  <%= f.label :informal, 'Informal quote?' %>
-  <%= f.error_for :informal %>
-  <%= f.select :informal,
-    options_for_select({"Yes" => true, "No" => false}, f.object.informal) %>
+<%= f.select :deadline_is_specified,
+            options_for_select({"Yes" => true, "No" => false}, f.object.deadline_is_specified),
+            label: 'Did the Customer Request a Specific Deadline?' %>
+
+<%= f.select :is_rushed,
+                options_for_select({"No" => false, "Yes" => true}, f.object.is_rushed),
+                label: 'Is this a rush job?' %>
+
+<div class="js-datetimepicker">
+<%= f.text_field :estimated_delivery_date,
+                 value: value_time(fourteen_days_from_now_at_5),
+                 label: (f.object.deadline_is_specified? ? 'Delivery Date' : 'Estimated Delivery Date'),
+                 append: raw('<span class="glyphicon glyphicon-calendar"></span>') %>
 </div>
 
-<div class="form-group">
-  <%= f.label :quote_source %>
-  <%= f.error_for :quote_source %>
-  <%= f.select :quote_source, Quote::QUOTE_SOURCES, include_blank: true %>
-</div>
+<%= f.select :salesperson_id,
+            options_for_select(User.all.map{ |u| [u.full_name, u.id] },
+            quote.id ? quote.salesperson_id : current_user.id ), label: 'Salesperson' %>
 
-<div class="form-group">
-  <%= f.label :shipping %>
-  <%= f.error_for :shipping %>
+<%= f.select :store_id,
+            options_for_select(Store.order(:name).map{ |s| [s.name, s.id] },
+            quote.id ? quote.store_id : current_user.store_id ), label: 'Store' %>
 
-  <div class="input-group">
-    <span class="input-group-addon">$</span>
-    <%= f.text_field :shipping %>
-  </div>
-</div>
+<%= f.number_field :qty, label:  'Estimated Quantity of Pieces'  %>
 
-<div class="form-group">
-  <%= f.label :valid_until_date, 'Quote Valid Until Date' %>
-  <%= f.error_for :valid_until_date %>
-
-  <div class="input-group date js-datetimepicker">
-    <%= f.text_field :valid_until_date,  
-      value: value_time(thirty_days_from_now_at_5),
-      class: 'form-control'  
-    %>
-
-    <span class="input-group-addon">
-      <span class="glyphicon glyphicon-calendar"></span>
-    </span>
-  </div>
-</div>
-
-<div class="form-group">
-  <%= f.label :deadline_is_specified, 'Did the Customer Request a Specific Deadline?' %>
-  <%= f.error_for :deadline_is_specified %>
-  <%= f.select :deadline_is_specified,
-    options_for_select({"Yes" => true, "No" => false}, f.object.deadline_is_specified) %>
-</div>
-
-<div class="form-group">
-  <%= f.label :is_rushed, 'Is this a rush job?' %>
-  <%= f.error_for :is_rushed %>
-  <%= f.select :is_rushed,
-    options_for_select({"No" => false, "Yes" => true}, f.object.is_rushed) %>
-</div>
-
-<div class="form-group">
-  <% if f.object.deadline_is_specified? %>
-    <%= f.label :estimated_delivery_date, 'Delivery Date' %>
-  <% else %>
-    <%= f.label :estimated_delivery_date, 'Estimated Delivery Date' %>
-  <% end %>
-  <%= f.error_for :estimated_delivery_date %>
-
-  <div class="input-group date js-datetimepicker">
-    <%= f.text_field :estimated_delivery_date,  
-      value: value_time(fourteen_days_from_now_at_5),
-      class: 'form-control'  
-    %>
-
-    <span class="input-group-addon">
-      <span class="glyphicon glyphicon-calendar"></span>
-    </span>
-  </div>
-</div>
-
-<div class="form-group">
-  <%= f.label :salesperson_id, 'Salesperson' %>
-  <%= f.error_for :salesperson_id %>
-  <%= f.select :salesperson_id,
-                options_for_select(User.all.map{ |u| [u.full_name, u.id] },
-                                   quote.id ? quote.salesperson_id : current_user.id ) %>
-</div>
-
-<div class="form-group">
-  <%= f.label :store_id, 'Store' %>
-  <%= f.error_for :store_id %>
-  <%= f.select :store_id,
-                options_for_select(Store.order(:name).map{ |s| [s.name, s.id] },
-                                   quote.id ? quote.store_id : current_user.store_id ) %>
-</div>
-
-
-<div class="form-group">
-  <%= f.label :qty, 'Estimated Quantity of Pieces' %>
-  <%= f.error_for :qty %>
-  <%= f.number_field :qty %>
-</div>
-
-
-<div class="form-group">
-  <%= f.label :freshdesk_ticket_id, 'Freshdesk Ticket ID' %>
-  <%= f.error_for :freshdesk_ticket_id %>
-  <%= f.text_field :freshdesk_ticket_id %>
-</div>
+<%= f.text_field :freshdesk_ticket_id, label: 'Freshdesk Ticket ID' %>

@@ -1,0 +1,28 @@
+<div class="row-fluid">
+  <div class="state-ribbon">
+    <div class='single-state-box'>
+      <H5>Quote State</H5>
+      <div class='state <%= get_style_from_state(quote.state, 'state') %> quote-state'>
+        <%= quote.human_state_name.capitalize %>
+      </div>
+    </div>
+  </div>
+</div>
+<p class="text-center">
+  <% if @quote.can_send_to_customer? %>
+      <%= link_to quote_path(@quote, quote: {state_event: :send_to_customer}),
+                  method: :put , class: 'btn-sm btn-primary',
+                  data: { confirm: 'Are you sure the quote has been sent to the customer?' } do %>
+          <span class="fa fa-envelope"></span> Mark as sent to customer
+      <% end %>
+  <% end %>
+  &nbsp;
+  <% if @quote.can_lost? %>
+      <%= link_to quote_path(@quote, quote: {state_event: :lost}),
+                  method: :put , class: 'btn-sm btn-danger',
+                  data: { confirm: 'Are you sure you have given up all hope and are ready to mark this lost?' } do %>
+          <span class="fa fa-frown-o"></span> Mark as lost
+      <% end %>
+  <% end %>
+</p>
+<br clear="all"/>

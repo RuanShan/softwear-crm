@@ -13,10 +13,10 @@
     <%= f.fields_for :emails do |ff| %>
         <%= render 'crm/contacts/email_fields', f: ff%>
     <% end %>
-    <%= link_to_add_fields("<i class='fa fa-plus'></i> Add Email".html_safe, f, :emails) %>
+    <%= link_to_add_fields("<i class='fa fa-plus'></i> Add Email".html_safe, f, :emails, 'crm/contacts/email_fields') %>
 
     <%= f.fields_for :phones do |ff| %>
         <%= render 'crm/contacts/phone_fields', f: ff%>
     <% end %>
-    <%= link_to_add_fields("<i class='fa fa-plus'></i> Add Phone Number".html_safe, f, :phones) %>
+    <%= link_to_add_fields("<i class='fa fa-plus'></i> Add Phone Number".html_safe, f, :phones, 'crm/contacts/phone_fields') %>
 <% end %>

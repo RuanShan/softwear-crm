@@ -1,4 +1,17 @@
 class Crm::Contact < ActiveRecord::Base
+
+  searchable do
+    text :first_name, :last_name, :twitter
+
+    text :phone_numbers do
+      phones.map { |phone| phone.number}
+    end
+
+    text :emails do
+      emails.map { |email| email.address}
+    end
+  end
+
   has_many :emails, ->{order(primary: :desc)}, class_name: 'Crm::Email'
   has_many :phones, ->{order(primary: :desc)}, class_name: 'Crm::Phone'
   has_many :orders
@@ -7,7 +20,7 @@ class Crm::Contact < ActiveRecord::Base
   has_one :primary_email, ->{ where(primary: true) }, class_name: 'Crm::Email'
   has_one :primary_phone, ->{ where(primary: true) }, class_name: 'Crm::Phone'
 
-  validates :first_name, :last_name, presence: true
+  validates :first_name, presence: true
   validates :primary_email, :primary_phone, presence: true
 
   accepts_nested_attributes_for :emails, allow_destroy: true

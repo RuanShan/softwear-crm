@@ -15,16 +15,14 @@ class Quote < ActiveRecord::Base
   get_insightly_api_key_from { salesperson.try(:insightly_api_key) }
 
   searchable do
-    text :name, :email, :first_name, :last_name,
-         :company, :twitter
-
-    string :last_name
+    text :company
     string :salesperson_name
     string(:store_name) { |q| q.store.try(:name) }
     string :name
     integer :id
     time :valid_until_date
     time :estimated_delivery_date
+    string :state
     string :state
   end
 
@@ -82,6 +80,7 @@ class Quote < ActiveRecord::Base
   belongs_to_user_called :salesperson
   belongs_to_user_called :insightly_whos_responsible
   belongs_to :store
+  belongs_to :contact, class_name: 'Crm::Contact'
   has_many :email_templates
   has_many :emails, as: :emailable, dependent: :destroy
   has_many :quote_request_quotes
@@ -91,10 +90,9 @@ class Quote < ActiveRecord::Base
   has_many :jobs, as: :jobbable
   has_many :line_items, through: :jobs
 
-  validates :email, presence: true, email: true
+  validates :contact, presence: true
   validates :state, presence: true
   validates :estimated_delivery_date, presence: true
-  validates :first_name, presence: true
   validates :quote_source, presence: true
   validates :salesperson_id, presence: true
   validates :store, presence: true
@@ -107,6 +105,9 @@ class Quote < ActiveRecord::Base
   after_create :enqueue_create_insightly_opportunity
   after_initialize :set_default_valid_until_date
   after_initialize  :initialize_time
+  after_initialize :initialize_contact
+
+  accepts_nested_attributes_for :contact
 
   alias_method :comments, :all_comments
   alias_method :comments=, :all_comments=
@@ -121,7 +122,7 @@ class Quote < ActiveRecord::Base
   state_machine :state, initial: :pending do
     event :send_to_customer do
       transition :pending => :sent_to_customer
-    end 
+    end
 
     event :won do
       transition :sent_to_customer => :won
@@ -217,8 +218,30 @@ class Quote < ActiveRecord::Base
       area_code    = phone_number[0, 3]
       middle_three = phone_number[3, 3]
       last_four    = phone_number[6, 4]
-      "(#{area_code}) #{middle_three}-#{last_four}"
+      "#{area_code}-#{middle_three}-#{last_four}"
     end
+  end
+
+
+  def format_phone_for_contact
+    num = phone_number
+    return "000-000-0000" if(num.nil? || num.blank?)
+
+    num.gsub!(/\D/, '')
+
+    if num.length == 11 && num[0] == '1'
+      num
+    elsif num.length == 10
+      num = '1' + num
+    elsif num.length >= 7 && num.length <= 9
+      dif = num.length - 7
+      if dif != 0
+        num = num.slice(dif, 7)
+      end
+      num = '1734' + num
+    end
+
+    "#{num.slice(1, 3)}-#{num.slice(4, 3)}-#{num.slice(7, 4)}"
   end
 
   def formal?
@@ -231,7 +254,15 @@ class Quote < ActiveRecord::Base
   end
 
   def full_name
-    "#{first_name} #{last_name}"
+    contact.full_name
+  end
+
+  def email
+    contact.email
+  end
+
+  def phone_number
+    contact.phone_number
   end
 
   def has_line_items?
@@ -404,10 +435,10 @@ class Quote < ActiveRecord::Base
 
   def assign_from_quote_request(quote_request)
     if /(?<qr_first>\w+)\s+(?<qr_last>\w+)/ =~ quote_request.name
-      self.first_name = qr_first
-      self.last_name  = qr_last
+      self.contact.first_name = qr_first
+      self.contact.last_name  = qr_last
     else
-      self.first_name = quote_request.name
+      self.contact.first_name = quote_request.name
     end
 
     self.email               ||= quote_request.email
@@ -579,10 +610,10 @@ class Quote < ActiveRecord::Base
   def insightly_contact_links
     if quote_requests.empty?
       contact = create_insightly_contact(
-        first_name:   first_name,
-        last_name:    last_name,
-        email:        email,
-        phone_number: phone_number,
+        first_name:   contact.first_name,
+        last_name:    contact.last_name,
+        email:        contact.email,
+        phone_number: contact.phone_number,
         organization: company
       )
 
@@ -813,7 +844,7 @@ class Quote < ActiveRecord::Base
   end
 
   def set_default_valid_until_date
-    self.valid_until_date ||= 30.days.from_now 
+    self.valid_until_date ||= 30.days.from_now
     self.estimated_delivery_date ||= 14.days.from_now
   end
 
@@ -858,5 +889,9 @@ class Quote < ActiveRecord::Base
   def subtract_dates(time_one, time_two)
     return 'An email hasn\'t been sent yet!' unless time_two
     distance_of_time_in_words(time_one, time_two)
+  end
+
+  def initialize_contact
+    build_contact if contact.nil?
   end
 end
