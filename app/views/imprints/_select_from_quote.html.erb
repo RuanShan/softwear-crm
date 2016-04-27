@@ -1,0 +1,28 @@
+<%= form_tag imprint_from_quotes_path(job.id), remote: true do %>
+  <% quotes.each do |quote| %>
+    <h3>Quote: <%= quote.name %></h3>
+    <hr />
+
+    <% quote.jobs.each do |job| %>
+      <h4>Group: <%= job.name %></h4>
+      <div class='help-block'> <%= job.description %> </div>
+
+      <ul>
+        <% job.imprints.each do |imprint| %>
+          <li>
+            <%= check_box_tag 'imprint_ids[]', imprint.id.to_s, false, id: "imprint_id_#{imprint.id}" %>
+
+            <label for="imprint_id_<%= imprint.id %>">
+              <%= imprint.imprint_method.name %> <%= imprint.print_location.name %>
+              <% unless imprint.description.blank? %>
+                &quot;<%= imprint.description %>&quot;
+              <% end %>
+            </label>
+          </li>
+        <% end %>
+      </ul>
+    <% end %>
+  <% end %>
+
+  <%= button_tag "Submit", type: 'submit', class: 'btn btn-primary' %>
+<% end %>

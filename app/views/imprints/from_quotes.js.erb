@@ -1,0 +1,5 @@
+showContentModal({
+  title:  "Copy Imprints from Quote to Order",
+  body:   $("<%=j render 'select_from_quote', quotes: @quotes, job: @job %>"),
+  footer: $("<button class='btn btn-info' id='add-all-imprints'>Add All</button> <button data-dismiss='modal' class='btn btn-defaut'>Cancel</button>")
+});

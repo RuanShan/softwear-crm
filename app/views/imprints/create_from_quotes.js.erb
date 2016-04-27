@@ -1,0 +1,15 @@
+$('#contentModal').modal('hide');
+$("#job-<%= @job.id %>").replaceWith("<%=j render 'jobs/job', job: @job %>");
+registerJobEvents($("#job-<%= @job.id %>"));
+
+<% unless @failed_imprints.empty? %>
+  var errorMessage = "<ul>"
+
+  <% @failed_imprints.each do |imprint| %>
+    errorMessage += "<li><%= imprint.imprint_method.name %> <%= imprint.print_location.name %> &quot;<%= imprint.description %>&quot;: <%= imprint.errors.full_messages.join(', ') %></li>";
+  <% end %>
+
+  errorMessage += "</ul>";
+
+  errorModal($(errorMessage), {title: $("<strong>The following imprints didn't make it in:</strong>")});
+<% end %>

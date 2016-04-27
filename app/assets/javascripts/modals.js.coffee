@@ -26,7 +26,6 @@ $(document).ready ->
     $contentModal.data 'open', true
 
 ##
-# TODO ensure comment formatting if it exists
 # Quick and easy way to show the content modal!
 #
 # Valid options include: 'title', 'body', 'footer', and 'force'

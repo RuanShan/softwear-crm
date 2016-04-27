@@ -157,6 +157,15 @@ feature 'Imprints Management', slow: true, imprint_spec: true, js: true do
     expect(Imprint.where(job_id: job.id)).to_not exist
   end
 
+  context 'when the order has quotes associated with it' do
+    order.quotes << create(:vaild_quote)
+    visit edit_order_path(order.id, anchor: 'jobs')
+    wait_for_ajax
+
+    find('.imprint-from-quote').click
+    raise "TODO"
+  end
+
   context 'name number selecting' do
     before(:each) do
       Capybara.ignore_hidden_elements = false

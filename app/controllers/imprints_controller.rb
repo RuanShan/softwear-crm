@@ -36,6 +36,33 @@ class ImprintsController < InheritedResources::Base
     end
   end
 
+  def from_quotes
+    @job = Job.find(params[:job_id])
+    @quotes = Quote.where(id: JSON.parse(params[:quote_ids]))
+
+    respond_to do |format|
+      format.js
+    end
+  end
+
+  def create_from_quotes
+    @job = Job.find(params[:job_id])
+    @failed_imprints = []
+
+    params[:imprint_ids].each do |imprint_id|
+      imprint = Imprint.find(imprint_id)
+
+      new_imprint = imprint.dup
+      new_imprint.softwear_prod_id = nil
+      new_imprint.job_id = @job.id
+      @failed_imprints << new_imprint unless new_imprint.save
+    end
+
+    respond_to do |format|
+      format.js
+    end
+  end
+
   def show
     super do |format|
       format.html do

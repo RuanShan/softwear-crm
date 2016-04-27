@@ -9,6 +9,8 @@ CrmSoftwearcrmCom::Application.routes.draw do
 
   get 'imprints/ink_colors', to: 'imprints#ink_colors', as: :imprint_ink_colors
   get 'imprints/new', to: 'imprints#new', as: :new_imprint
+  get  'jobs/:job_id/imprints/from_quotes', to: 'imprints#from_quotes', as: :imprint_from_quotes
+  post 'jobs/:job_id/imprints/from_quotes', to: 'imprints#create_from_quotes'
 
   resources :imprintables do
     collection do
