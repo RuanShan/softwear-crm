@@ -195,7 +195,7 @@ class LineItemsController < InheritedResources::Base
   end
 
   def create_imprintable
-    @line_items = LineItem.create_imprintables(
+    @line_items = LineItem.new_imprintables(
       @line_itemable,
       params[:imprintable_id],
       params[:color_id],
@@ -203,7 +203,7 @@ class LineItemsController < InheritedResources::Base
       decoration_price:  params[:decoration_price]
     )
 
-    return create_imprintable_failure unless @line_items.all?(&:valid?)
+    return create_imprintable_failure unless @line_items.all?(&:save)
     create_imprintable_success
   end
 

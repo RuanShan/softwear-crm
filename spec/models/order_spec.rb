@@ -122,6 +122,7 @@ describe Order, order_spec: true do
 
         allow(order).to receive(:payment_status).and_return 'Payment Terms Met'
         order.invoice_state = 'approved'
+        expect(order).to receive(:create_production_order).and_call_original
         order.save!
 
         %w(order job_1 job_2).each do |record|
