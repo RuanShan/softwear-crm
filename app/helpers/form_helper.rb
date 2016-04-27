@@ -180,7 +180,7 @@ module FormHelper
 
   def batch_fields_for(object, options = {}, &block)
     builder = BatchFormBuilder.new(
-        object.class.name.underscore, object, self, options
+        object.class.name.underscore.gsub("/", "::"), object, self, options
       )
     return builder unless block_given?
 

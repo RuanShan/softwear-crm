@@ -16,17 +16,16 @@
           <tr id="contact_<%= contact.id %>">
             <td><%= link_to contact.id, contact %></td>
             <td><%= contact.full_name %></td>
-            <td><%= contact.human_state_name %></td>
+            <td><%= contact.human_state_name.capitalize %></td>
             <td>
-              <%= link_to edit_crm_contact_path(contact) do %>
-                Edit
-              <% end %>
-              <%= link_to edit_crm_contact_path(contact) do %>
-                  Show
-              <% end %>
-              <%= link_to crm_contact_path(contact), method: :delete, data: { confirm: 'Are you sure' } do %>
-                  Destroy
-              <% end %>
+              <div class="btn-group btn-group-xs">
+                  <%= link_to edit_crm_contact_path(contact), class: 'btn btn-primary' do %>
+                      <i class="glyphicon glyphicon-eye-open"></i>
+                  <% end %>
+                  <%= link_to edit_crm_contact_path(contact), class: 'btn btn-warning'  do %>
+                      <i class="fa fa-eye"></i>
+                  <% end %>
+              </div>
             </td>
           </tr>
       <% end %>

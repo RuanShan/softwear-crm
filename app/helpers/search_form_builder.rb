@@ -313,7 +313,7 @@ class SearchFormBuilder
   end
 
   def model_name
-    @model.name.underscore
+    @model.name.underscore.gsub("/", "::")
   end
 
   def process_options(field_name, options)

@@ -1,13 +1,14 @@
-<%= f.text_field :first_name %>
-<%= f.text_field :last_name %>
+<% disabled = false unless defined?(disabled) %>
+<%= f.text_field :first_name, disabled: disabled %>
+<%= f.text_field :last_name, disabled: disabled %>
 
 <% if  f.object.new_record? %>
     <%= f.fields_for :primary_email do |ff| %>
-        <%= render 'crm/contacts/email_fields', f: ff, exclude_primary: true  %>
+        <%= render 'crm/contacts/email_fields', f: ff, exclude_primary: true, disabled: disabled  %>
     <% end %>
 
     <%= f.fields_for :primary_phone do |ff| %>
-        <%= render 'crm/contacts/phone_fields', f: ff, exclude_primary: true %>
+        <%= render 'crm/contacts/phone_fields', f: ff, exclude_primary: true, disabled: disabled %>
     <% end %>
 <% else %>
     <%= f.fields_for :emails do |ff| %>

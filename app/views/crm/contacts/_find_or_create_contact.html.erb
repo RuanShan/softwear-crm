@@ -11,7 +11,7 @@
   <% end %>
   <%= content_tag :li, role: :presentation, id: 'search_existing_contacts_link', style: display_contact_content_or_not('search_existing_contacts_link', f.object.contact)  do %>
       <%= link_to "#" do %>
-          <i class="glyphicon glyphicon-search"></i> Search existing contacts
+          <i class="glyphicon glyphicon-search"></i> Search Existing Contacts
       <% end %>
   <% end %>
   <%= content_tag :li, role: :presentation, id: 'change_contact_link', style: display_contact_content_or_not('change_contact_link', f.object.contact) do %>
@@ -77,7 +77,7 @@
   <% else %>
       <% f.object.contact = Crm::Contact.new %>
       <%= f.fields_for :contact do |ff| %>
-          <%= render 'crm/contacts/fields', f: ff %>
+          <%= render 'crm/contacts/fields', f: ff, disabled: true %>
       <% end %>
   <% end %>
 </div>

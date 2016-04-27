@@ -1,25 +1,16 @@
 <div class="row-fluid contacts-index">
   <div class="page-heading animated fadeInDownBig">
-    <%= link_to new_crm_contact_path, class: 'btn btn-success pull-right' do %>
-        <i class="fa fa-user"></i> New
-    <% end %>
       <h1>
         Contacts
       </h1>
   </div>
 </div>
 
-<br clear="all" />
-
-<div>
-  <%= render partial: 'crm/contacts/search' %>
-</div>
-
-<%= clearfix %>
-
-<%= paginate @contacts %>
+<%= render partial: 'crm/contacts/search' %>
 
 <%= search_results_count %>
+
+<%= paginate @contacts %>
 
 <%= render 'crm/contacts/table', contacts: @contacts %>
 

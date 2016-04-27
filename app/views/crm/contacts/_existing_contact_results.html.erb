@@ -8,7 +8,7 @@
   </thead>
   <tbody>
   <% contacts.each do |contact| %>
-    <tr>
+    <tr id="contact_result_<%= contact.id %>">
       <td><%= contact.id %></td>
       <td><%= contact.full_name %></td>
       <td><%= raw contact.emails.map(&:address).join('<br />') %></td>

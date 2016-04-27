@@ -53,8 +53,8 @@ $ ->
     contactSearch()
 
   $('#contact_search_terms').on 'keypress', (e) ->
-    event.preventDefault()
     if e.keyCode == 13
+      event.preventDefault()
       contactSearch()
 
   $('#create_new_contact_link > a').click (event) ->

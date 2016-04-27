@@ -35,12 +35,9 @@ class Quote < ActiveRecord::Base
   ]
 
   STEP_1_FIELDS = [
-    :email,
-    :phone_number,
-    :first_name,
-    :last_name,
-    :company,
-    :twitter
+    :contact,
+    :contact_id,
+    :company
   ]
   STEP_2_FIELDS = [
     :name,
@@ -435,10 +432,10 @@ class Quote < ActiveRecord::Base
 
   def assign_from_quote_request(quote_request)
     if /(?<qr_first>\w+)\s+(?<qr_last>\w+)/ =~ quote_request.name
-      self.contact.first_name = qr_first
-      self.contact.last_name  = qr_last
+      selcontact.f.first_name = qr_first
+      selcontact.f.last_name  = qr_last
     else
-      self.contact.first_name = quote_request.name
+      se.contact.f.first_name = quote_request.name
     end
 
     self.email               ||= quote_request.email
