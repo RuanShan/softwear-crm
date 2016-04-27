@@ -1262,6 +1262,8 @@ class Order < ActiveRecord::Base
   end
 
   def must_have_artist_cost
+    return if artwork_requests.empty?
+
     unless costs.where(type: 'Artist').exists?
       errors.add(:cancelation, "An artist cost must be filled out.")
     end
