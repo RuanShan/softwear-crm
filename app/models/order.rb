@@ -731,8 +731,13 @@ class Order < ActiveRecord::Base
     if prod_order.blank?
       prod_order = Production::Order.post_raw(prod_order_attributes)
     else
-      prod_order.jobs.each(&:destroy)
-      prod_order.update_attributes(prod_order_attributes)
+      if options[:force]
+        prod_order.jobs.each(&:destroy)
+        prod_order.update_attributes(prod_order_attributes)
+      else
+        update_column :softwear_prod_id, prod_order.id
+        return
+      end
     end
 
     update_column :softwear_prod_id, prod_order.id

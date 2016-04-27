@@ -35,7 +35,7 @@ before_script:
   - export PATH=$PATH:~/chromedriver
   - bundle exec rake db:create
   - bundle exec rake db:schema:load
-  - curl -Lo travis_after_all.py https://raw.github.com/dmakhno/travis_after_all/master/travis_after_all.py
+# - curl -Lo travis_after_all.py https://raw.github.com/dmakhno/travis_after_all/master/travis_after_all.py
   
 env:
   global:
@@ -49,34 +49,6 @@ env:
   matrix:
     - SPECS_TO_RUN="-t ~js"
     - SPECS_TO_RUN="-t js  -t ~slow"
-    - SPECS_TO_RUN="-t slow"
+    - SPECS_TO_RUN="-t slow && bundle exec rake travis:deploy_on_success"
 
-script: xvfb-run --server-args="-screen 0, 1024x768x24" bundle exec rspec --color -t ~no_ci $SPECS_TO_RUN -f d
-
-after_script:
-  - echo leader=$BUILD_LEADER status=$BUILD_AGGREGATE_STATUS
-
-after_failure:
-  - python travis_after_all.py https://api.travis-ci.com
-  - export $(cat .to_export_back)
-  - |
-    if [ "$BUILD_LEADER" = "YES" ]; then
-      if [ "$BUILD_AGGREGATE_STATUS" = "others_failed" ]; then
-        echo "All jobs failed"
-      else
-        echo "Some jobs failed"
-      fi
-    fi
-after_success:
-  - python travis_after_all.py https://api.travis-ci.com
-  - cat .to_export_back
-  - export $(cat .to_export_back)
-  - |
-    if [ "$BUILD_LEADER" = "YES" ]; then
-      if [ "$BUILD_AGGREGATE_STATUS" = "others_succeeded" ]; then
-        echo "All jobs succeeded. DEPLOYING"
-        bundle exec softwear-deploy
-      else
-        echo "Some jobs failed"
-      fi
-    fi
+script: xvfb-run --server-args="-screen 0, 1024x768x24" bundle exec rspec --color -t ~no_ci -f d $SPECS_TO_RUN
