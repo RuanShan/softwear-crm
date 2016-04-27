@@ -358,11 +358,11 @@ ActiveRecord::Schema.define(version: 20160421022203) do
 
   create_table "fba_spreadsheet_uploads", force: :cascade do |t|
     t.boolean  "done"
-    t.text     "spreadsheet",       limit: 4294967295
+    t.text     "spreadsheet",       limit: 65535
     t.text     "processing_errors", limit: 65535
     t.string   "filename",          limit: 191
-    t.datetime "created_at",                           null: false
-    t.datetime "updated_at",                           null: false
+    t.datetime "created_at",                      null: false
+    t.datetime "updated_at",                      null: false
   end
 
   create_table "freshdesk_local_contacts", force: :cascade do |t|
@@ -567,8 +567,6 @@ ActiveRecord::Schema.define(version: 20160421022203) do
 
   add_index "jobs", ["deleted_at"], name: "index_jobs_on_deleted_at", using: :btree
   add_index "jobs", ["fba_job_template_id"], name: "index_jobs_on_fba_job_template_id", using: :btree
-  add_index "jobs", ["jobbable_id"], name: "index_jobs_jobbable_id", using: :btree
-  add_index "jobs", ["jobbable_type"], name: "index_jobs_jobbable_type", using: :btree
 
   create_table "line_item_groups", force: :cascade do |t|
     t.string   "name",        limit: 191
@@ -701,8 +699,8 @@ ActiveRecord::Schema.define(version: 20160421022203) do
     t.decimal  "discount_total",                             precision: 10, scale: 2
     t.decimal  "payment_total",                              precision: 10, scale: 2
     t.boolean  "imported_from_admin"
-    t.string   "payment_state",             limit: 191
     t.string   "phone_number_extension",    limit: 191
+    t.string   "payment_state",             limit: 191
     t.boolean  "canceled"
     t.decimal  "tax_rate",                                   precision: 10, scale: 4
     t.decimal  "fee",                                        precision: 10, scale: 4
