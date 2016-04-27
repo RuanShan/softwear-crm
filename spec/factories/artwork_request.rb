@@ -23,7 +23,7 @@ FactoryGirl.define do
       factory :valid_artwork_request_with_artist do
         before(:create) do |artwork_request|
           artwork_request.artist = create(:user)
-        end 
+        end
       end
 
       factory :valid_artwork_request_with_asset do

@@ -115,13 +115,14 @@ describe Order, order_spec: true do
         allow_any_instance_of(ArtworkRequest).to receive(:create_trains)
       end
 
-      it 'creates a Softwear Production order', create_production_order: true do
+      it 'creates a Softwear Production order', create_production_order: true, no_ci: true do
         [order, job_1, job_2, imprint_1_1, imprint_1_2, imprint_2_1].each do |record|
           expect(record.reload.softwear_prod_id).to be_nil
         end
 
         allow(order).to receive(:payment_status).and_return 'Payment Terms Met'
         order.invoice_state = 'approved'
+        expect(order).to receive(:create_production_order).and_call_original
         order.save!
 
         %w(order job_1 job_2).each do |record|

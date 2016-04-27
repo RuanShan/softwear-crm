@@ -156,7 +156,6 @@ class LineItem < ActiveRecord::Base
       param_record_id(imprintable),
       param_record_id(color)
     )
-
     imprintable_variants.map do |variant|
       imprintable_price = options[:imprintable_price].to_f || variant.imprintable.base_price.to_f
       upcharge_group    = variant.size.upcharge_group || 'base_price'

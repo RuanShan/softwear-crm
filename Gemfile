@@ -107,6 +107,7 @@ group :test do
   gem 'endpoint_stub', github: 'AnnArborTees/endpoint_stub', branch: 'master'
 end
 
+gem 'travis', group: [:test, :development]
 gem 'listjs-rails'
 gem 'markitup-rails'
 gem 'acts_as_commentable'

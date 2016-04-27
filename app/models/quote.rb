@@ -5,6 +5,7 @@ require 'action_view'
 class Quote < ActiveRecord::Base
   include TrackingHelpers
   include IntegratedCrms
+  include Retry
   include ActionView::Helpers::DateHelper
   include Softwear::Auth::BelongsToUser
 
@@ -443,33 +444,41 @@ class Quote < ActiveRecord::Base
   def create_freshdesk_ticket
     return if freshdesk.nil? || !freshdesk_ticket_id.blank?
 
-    if quote_requests.where.not(freshdesk_contact_id: nil).empty?
-      requester_info = {
-        email: email,
-        phone: format_phone(phone_number),
-        name: full_name
-      }
-    else
-      requester_info = {
-        requester_id: quote_requests.where.not(freshdesk_contact_id: nil).first.freshdesk_contact_id
-      }
+    ticket = nil
+    retry_n_times(5, delay: 2.minutes) do
+      if quote_requests.where.not(freshdesk_contact_id: nil).empty?
+        requester_info = {
+          email: email,
+          phone: format_phone(phone_number),
+          name: full_name
+        }
+      else
+        requester_info = {
+          requester_id: quote_requests.where.not(freshdesk_contact_id: nil).first.freshdesk_contact_id
+        }
+      end
+
+      ticket = JSON.parse(freshdesk.post_tickets(
+          helpdesk_ticket: {
+            source: 2,
+            group_id: freshdesk_group_id(salesperson),
+            ticket_type: 'Lead',
+            subject: "Your Quote \"#{self.name}\" (##{self.id}) from the #{salesperson.store.try(:name) || 'Ann Arbor T-shirt Company'}",
+            custom_field: { FD_QUOTE_ID_FIELD => id },
+            description_html: freshdesk_description(quote_requests)
+          }
+           .merge(requester_info)
+        ))
+        .try(:[], 'helpdesk_ticket')
+
+      self.freshdesk_ticket_id = ticket.try(:[], 'display_id')
+      save(validate: false)
     end
 
-    ticket = JSON.parse(freshdesk.post_tickets(
-        helpdesk_ticket: {
-          source: 2,
-          group_id: freshdesk_group_id(salesperson),
-          ticket_type: 'Lead',
-          subject: "Your Quote \"#{self.name}\" (##{self.id}) from the #{salesperson.store.try(:name) || 'Ann Arbor T-shirt Company'}",
-          custom_field: { FD_QUOTE_ID_FIELD => id },
-          description_html: freshdesk_description(quote_requests)
-        }
-         .merge(requester_info)
-      ))
-      .try(:[], 'helpdesk_ticket')
+    warnings.where(source: ['Quote#create_freshdesk_ticket', 'Quote#enqueue_create_freshdesk_ticket']).each do |w|
+      w.dismiss(salesperson)
+    end
 
-    self.freshdesk_ticket_id = ticket.try(:[], 'display_id')
-    save(validate: false)
     ticket
   end
   warn_on_failure_of :create_freshdesk_ticket, raise_anyway: true
@@ -540,36 +549,44 @@ class Quote < ActiveRecord::Base
   def create_insightly_opportunity
     return if insightly.nil? || !insightly_opportunity_id.blank?
 
-    unless insightly_whos_responsible_id.nil?
-      /(?<name_part>[\w\.-]+)@/ =~ insightly_whos_responsible.email
-      unless name_part.nil?
-        responsible_user = insightly.get_users(
-          '$filter' => "startswith(EMAIL_ADDRESS, '#{name_part}')"
-        ).first
+    op = nil
+    retry_n_times(5, delay: Rails.env.test? ? 1.second : 5.minutes) do
+      unless insightly_whos_responsible_id.nil?
+        /(?<name_part>[\w\.-]+)@/ =~ insightly_whos_responsible.email
+        unless name_part.nil?
+          responsible_user = insightly.get_users(
+            '$filter' => "startswith(EMAIL_ADDRESS, '#{name_part}')"
+          ).first
+        end
       end
+
+      Rails.logger.error "INSIGHTLYOP START creating insightly opportunity with name #{name}"
+      op = insightly.create_opportunity(
+        opportunity: {
+          opportunity_name:    name,
+          opportunity_state:   'Open',
+          opportunity_details: insightly_description,
+          probability:         insightly_probability.to_i,
+          bid_currency:        'USD',
+          bid_amount:          insightly_bid_amount.to_i,
+          forecast_close_date: (created_at + 3.days).strftime('%F %T'),
+          pipeline_id:         insightly_pipeline_id,
+          stage_id:            insightly_stage_id,
+          category_id:         insightly_category_id,
+          customfields:        insightly_customfields,
+          links:               insightly_contact_links,
+        }
+          .merge(responsible_user ? { responsible_user_id: responsible_user.user_id } : {})
+      )
+      self.insightly_opportunity_id = op.opportunity_id
+      save(validate: false)
+      Rails.logger.error "INSIGHTLYOP END creating insightly opportunity with name #{name}"
     end
 
-    Rails.logger.error "INSIGHTLYOP START creating insightly opportunity with name #{name}"
-    op = insightly.create_opportunity(
-      opportunity: {
-        opportunity_name:    name,
-        opportunity_state:   'Open',
-        opportunity_details: insightly_description,
-        probability:         insightly_probability.to_i,
-        bid_currency:        'USD',
-        bid_amount:          insightly_bid_amount.to_i,
-        forecast_close_date: (created_at + 3.days).strftime('%F %T'),
-        pipeline_id:         insightly_pipeline_id,
-        stage_id:            insightly_stage_id,
-        category_id:         insightly_category_id,
-        customfields:        insightly_customfields,
-        links:               insightly_contact_links,
-      }
-        .merge(responsible_user ? { responsible_user_id: responsible_user.user_id } : {})
-    )
-    self.insightly_opportunity_id = op.opportunity_id
-    save(validate: false)
-    Rails.logger.error "INSIGHTLYOP END creating insightly opportunity with name #{name}"
+    warnings.where(source: ["Quote#enqueue_create_insightly_opportunity", "Quote#create_insightly_opportunity"]).each do |w|
+      w.dismiss(salesperson)
+    end
+
     op
   end
   warn_on_failure_of :create_insightly_opportunity, raise_anyway: true

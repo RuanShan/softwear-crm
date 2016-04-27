@@ -365,6 +365,13 @@ class Order < ActiveRecord::Base
     save!
   end
 
+  def complete?
+    payment_state    == 'Payment Terms Met' &&
+    invoice_state    == 'approved'          &&
+    production_state == 'complete'          &&
+    artwork_state    == 'in_production'
+  end
+
   def just_canceled?
     canceled_changed? && canceled? && !canceled_was
   end
@@ -715,7 +722,7 @@ class Order < ActiveRecord::Base
     end
 
     # NOTE make sure the permitted params in Production match up with this
-    prod_order = Production::Order.post_raw(
+    prod_order_attributes = {
       softwear_crm_id:    id,
       deadline:           in_hand_by,
       name:               name,
@@ -724,7 +731,18 @@ class Order < ActiveRecord::Base
       has_imprint_groups: false,
 
       jobs_attributes: production_jobs_attributes
-    )
+    }
+
+    prod_order = Production::Order.where(softwear_crm_id: id).first
+
+    if prod_order.blank?
+      prod_order = Production::Order.post_raw(prod_order_attributes)
+    else
+      if options[:force]
+        prod_order.jobs.each(&:destroy)
+        prod_order.update_attributes(prod_order_attributes)
+      end
+    end
 
     update_column :softwear_prod_id, prod_order.id
     update_column :production_state, :in_production unless prod_order.id.nil?
@@ -899,6 +917,8 @@ class Order < ActiveRecord::Base
   end
 
   def prod_api_confirm_job_counts
+    return if complete? || canceled?
+
     if jobs.count != production.jobs.count
       message = "API Job counts don't match for CRM(#{id})=#{jobs.count} PRODUCTION(#{softwear_prod_id})=#{production.jobs.count}"
       logger.error message
@@ -913,6 +933,8 @@ class Order < ActiveRecord::Base
   end
 
   def prod_api_confirm_shipment
+    return if complete? || canceled?
+
     case delivery_method
     when 'Pick up in Ann Arbor'
       unless production.post_production_trains.map(&:train_class).include?("stage_for_pickup_train")
@@ -981,6 +1003,8 @@ class Order < ActiveRecord::Base
   end
 
   def prod_api_confirm_artwork_preprod
+    return if complete? || canceled?
+
     unless screen_print_artwork_requests.empty?
       screen_train_count = production.pre_production_trains.map(&:train_class).delete_if{|x| x != 'screen_train' }.count
       unless screen_train_count == screen_print_artwork_requests.count
@@ -1256,6 +1280,8 @@ class Order < ActiveRecord::Base
   end
 
   def must_have_artist_cost
+    return if artwork_requests.empty?
+
     unless costs.where(type: 'Artist').exists?
       errors.add(:cancelation, "An artist cost must be filled out.")
     end

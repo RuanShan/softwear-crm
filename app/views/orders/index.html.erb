@@ -37,6 +37,7 @@
 
       <tbody>
         <% @orders.each do |order| %>
+          <% next if order.deleted_at.present? %>
           <%= render partial: 'orders/table_entry', locals: { order: order } %>
         <% end %>
       </tbody>
