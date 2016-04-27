@@ -35,7 +35,6 @@ before_script:
   - export PATH=$PATH:~/chromedriver
   - bundle exec rake db:create
   - bundle exec rake db:schema:load
-# - curl -Lo travis_after_all.py https://raw.github.com/dmakhno/travis_after_all/master/travis_after_all.py
   
 env:
   global:
@@ -49,6 +48,13 @@ env:
   matrix:
     - SPECS_TO_RUN="-t ~js"
     - SPECS_TO_RUN="-t js  -t ~slow"
-    - SPECS_TO_RUN="-t slow && bundle exec rake travis:deploy_on_success"
+    - SPECS_TO_RUN="-t slow" DEPLOY=true
 
 script: xvfb-run --server-args="-screen 0, 1024x768x24" bundle exec rspec --color -t ~no_ci -f d $SPECS_TO_RUN
+
+after_success:
+  - |
+    if [ $DEPLOY = "true" ]
+      then
+        bundle exec rake travis:deploy_on_success
+    fi
