@@ -143,17 +143,6 @@ class OrdersController < InheritedResources::Base
     end
   end
 
-  def approve_all_art
-    @order = Order.find(params[:id])
-    @order.approve_all_art
-    #@order.save
-    respond_to do |format|
-      format.html { redirect_to edit_order_path(@order) }
-      format.js { render }
-    end 
-
-  end
-
   def fba
     @current_action = 'orders#fba'
     @orders = Order.fba.page(params[:page])

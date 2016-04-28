@@ -39,6 +39,77 @@ feature 'Order management', slow: true, order_spec: true, js: true do
     end
   end
 
+  context 'Artwork Requests' do
+
+    given!(:imprint_method_and_color1) { create(:valid_imprint_method_with_color_and_location) }
+    given!(:imprint_method_and_color2) { create(:valid_imprint_method_with_color_and_location) }
+    given!(:imprint1) { create(:valid_imprint, job: job, imprint_method: imprint_method_and_color1) }
+    given!(:imprint2) { 
+      create(:valid_imprint, description: '1-CB', job: job, imprint_method: imprint_method_and_color2) 
+    }
+    given!(:artwork_request1) { create(:valid_artwork_request_with_artwork) }
+    given!(:artwork_request2) { create(:valid_artwork_request_with_artwork) }
+
+    before do
+      order.jobs << job
+      order.jobs.first.imprints << imprint1
+      order.jobs.first.imprints << imprint2
+      order.jobs.first.imprints.first.artwork_requests << artwork_request1
+      order.jobs.first.imprints.second.artwork_requests << artwork_request2
+    end
+
+    scenario 'a user can approve all artwork requests' do
+      
+      visit edit_order_artwork_request_path(order, artwork_request1) 
+
+      select(order.salesperson.full_name, from: 'Artist')
+      click_button "Update Artwork request" 
+      sleep 1
+      
+      visit edit_order_artwork_request_path(order, artwork_request2) 
+
+      select(order.salesperson.full_name, from: 'Artist')
+      click_button "Update Artwork request" 
+      sleep 1
+
+      expect(artwork_request1.reload.state).to eq("pending_artwork")
+      expect(artwork_request2.reload.state).to eq("pending_artwork")
+
+      visit edit_order_path(order)
+      find("a[href='#artwork']").click
+      sleep 1
+
+      within("div[id='artwork-request-#{artwork_request1.id}']") do
+        accept_alert do
+          click_link "Mark Artwork Added"
+        end
+      end
+
+      visit edit_order_path(order)
+      find("a[href='#artwork']").click
+      sleep 1
+
+      within("div[id='artwork-request-#{artwork_request2.id}']") do
+        accept_alert do
+          click_link "Mark Artwork Added"
+        end
+      end
+
+      visit edit_order_path(order)
+      find("a[href='#artwork']").click
+      sleep 1
+
+      expect(artwork_request1.reload.state).to eq("pending_manager_approval")
+      expect(artwork_request2.reload.state).to eq("pending_manager_approval")
+
+      expect(page).to have_content("Approve All Artwork")
+      click_link "Approve All Artwork"
+
+      expect(artwork_request1.reload.valid?).to be_truthy
+      expect(artwork_request1.state).to eq("manager_approved")
+    end
+  end
+
   context 'Imprintable Sheets' do
    
     before(:each) do
