@@ -13,7 +13,7 @@ module QuoteHelper
     end
   end
 
-  def get_style_from_state(state, style_type = 'label')
+  def get_quote_style_from_state(state, style_type = 'label')
     if style_type == 'label'
       case state
         when 'pending' then 'label-warning'
