@@ -13,10 +13,9 @@ describe 'quotes/index.html.erb', quote_spec: true do
 
   it 'Should have a table header with appropriate headings' do
     expect(rendered).to have_css('th', text: 'Name')
-    expect(rendered).to have_css('th', text: 'Valid Until')
+    expect(rendered).to have_css('th', text: 'State')
     expect(rendered).to have_css('th', text: 'Est. Delivery Date')
     expect(rendered).to have_css('th', text: 'Salesperson')
-    expect(rendered).to have_css('th', text: 'Store')
   end
 
   it 'should have a tbody with the quote information' do

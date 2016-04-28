@@ -13,7 +13,7 @@ describe 'artwork_requests/show/_basic_details.html.erb', artwork_request_spec: 
     expect(rendered).to have_css(:dt, text: 'State')
     expect(rendered).to have_css(:dd, text: artwork_request.state )
     expect(rendered).to have_css(:dt, text: 'Imprint Method')
-    expect(rendered).to have_css(:dd, text: artwork_request.imprint_method_names.map(&:id_and_name).join(', ') )
+    expect(rendered).to have_css(:dd, text: artwork_request.imprint_method_names.join(', ') )
     expect(rendered).to have_css(:dt, text: 'Max Print Area')
     expect(rendered).to have_css(:dd, text: artwork_request.max_print_area(artwork_request.print_location) )
     expect(rendered).to have_css(:dt, text: 'Ink Colors')

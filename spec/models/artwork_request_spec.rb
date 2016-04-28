@@ -181,11 +181,15 @@ describe ArtworkRequest, artwork_request_spec: true do
     let!(:prod_order) { create(:production_order) }
     let!(:order) { create(:order) }
 
+    let!(:imprint_method) { create(:valid_imprint_method) }
+    let!(:print_location_1) { create(:valid_print_location, imprint_method: imprint_method) }
+    let!(:print_location_2) { create(:valid_print_location, imprint_method: imprint_method) }
+
     let!(:job_1) { create(:job, jobbable: order) }
-    let!(:imprint_1_1) { create(:valid_imprint, job: job_1) }
+    let!(:imprint_1_1) { create(:valid_imprint, job: job_1, print_location: print_location_1) }
 
     let!(:job_2) { create(:job, jobbable: order) }
-    let!(:imprint_2_1) { create(:valid_imprint, job: job_2) }
+    let!(:imprint_2_1) { create(:valid_imprint, job: job_2, print_location: print_location_2) }
 
     let!(:artwork_request) do
       create(
