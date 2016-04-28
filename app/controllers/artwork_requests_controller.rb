@@ -126,6 +126,8 @@ class ArtworkRequestsController < InheritedResources::Base
         req.index
       end
     end
+
+    flash[:success] = "All artwork requests successfully updated"
     
     respond_to do |format|
       format.html { redirect_to edit_order_path(@order, anchor: 'artwork') }

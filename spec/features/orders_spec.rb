@@ -50,7 +50,7 @@ feature 'Order management', slow: true, order_spec: true, js: true do
     given!(:artwork_request1) { create(:valid_artwork_request_with_artwork) }
     given!(:artwork_request2) { create(:valid_artwork_request_with_artwork) }
 
-    before do
+    before :each do
       order.jobs << job
       order.jobs.first.imprints << imprint1
       order.jobs.first.imprints << imprint2
@@ -58,7 +58,7 @@ feature 'Order management', slow: true, order_spec: true, js: true do
       order.jobs.first.imprints.second.artwork_requests << artwork_request2
     end
 
-    scenario 'a user can approve all artwork requests' do
+    scenario 'a user can approve all artwork requests once they are all in the "pending_manager_approval" state' do
       
       visit edit_order_artwork_request_path(order, artwork_request1) 
 
@@ -78,6 +78,9 @@ feature 'Order management', slow: true, order_spec: true, js: true do
       visit edit_order_path(order)
       find("a[href='#artwork']").click
       sleep 1
+
+      #will not have button available if all art reqs aren't in the proper state
+      expect(page).to_not have_css("form[action='/artwork_requests/#{order.id}/approve_all']")
 
       within("div[id='artwork-request-#{artwork_request1.id}']") do
         accept_alert do
@@ -102,11 +105,14 @@ feature 'Order management', slow: true, order_spec: true, js: true do
       expect(artwork_request1.reload.state).to eq("pending_manager_approval")
       expect(artwork_request2.reload.state).to eq("pending_manager_approval")
 
-      expect(page).to have_content("Approve All Artwork")
-      click_link "Approve All Artwork"
+      #all artwork requests are in the proper state, so can approve all at once
+      expect(page).to have_css("form[action='/artwork_requests/#{order.id}/approve_all']")
+      click_button "Approve All Artwork"
+      expect(page).to have_content("All artwork requests successfully updated")
 
       expect(artwork_request1.reload.valid?).to be_truthy
-      expect(artwork_request1.state).to eq("manager_approved")
+      expect(artwork_request1.reload.state).to eq("manager_approved")
+      expect(artwork_request2.reload.state).to eq("manager_approved")
     end
   end
 
