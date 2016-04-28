@@ -157,14 +157,43 @@ feature 'Imprints Management', slow: true, imprint_spec: true, js: true do
     expect(Imprint.where(job_id: job.id)).to_not exist
   end
 
-  context 'when the order has quotes associated with it', no_ci: true do
+  context 'when the order has quotes associated with it', from_quote: true do
+    given!(:quote_job) { create(:quote_job) }
+    given!(:imprint) { create(:valid_imprint, job: quote_job) }
+    given(:quote) { quote_job.jobbable }
+
+    background :each do
+      order.quotes << quote
+    end
+
     scenario 'imprints can be added from those quotes' do
-      order.quotes << create(:vaild_quote)
       visit edit_order_path(order.id, anchor: 'jobs')
       wait_for_ajax
 
       find('.imprint-from-quote').click
-      raise "TODO"
+      wait_for_ajax
+
+      check "imprint_id_#{imprint.id}"
+      click_button 'Submit'
+      wait_for_ajax
+
+      expect(page).to have_selector ".js-print-location-select"
+      expect(order.reload.imprints.map(&:print_location_id)).to eq [imprint.print_location_id]
+    end
+
+    scenario 'a user can press "Check all" to check all imprints' do
+      visit edit_order_path(order.id, anchor: 'jobs')
+      wait_for_ajax
+
+      find('.imprint-from-quote').click
+      wait_for_ajax
+
+      click_button 'Check all'
+      click_button 'Submit'
+      wait_for_ajax
+
+      expect(page).to have_selector ".js-print-location-select"
+      expect(order.reload.imprints.map(&:print_location_id)).to eq [imprint.print_location_id]
     end
   end
 

@@ -6,7 +6,11 @@ registerJobEvents($("#job-<%= @job.id %>"));
   var errorMessage = "<ul>"
 
   <% @failed_imprints.each do |imprint| %>
-    errorMessage += "<li><%= imprint.imprint_method.name %> <%= imprint.print_location.name %> &quot;<%= imprint.description %>&quot;: <%= imprint.errors.full_messages.join(', ') %></li>";
+    errorMessage += "<li>";
+    errorMessage += "<%= imprint.imprint_method.try(:name) || '<print method missing>' %>";
+    errorMessage += "<%= imprint.print_location.try(:name) || '<print location missing>' %>";
+    errorMessage += "&quot;<%= imprint.description %>&quot;: <%= imprint.errors.full_messages.join(', ') %>";
+    errorMessage += "</li>";
   <% end %>
 
   errorMessage += "</ul>";

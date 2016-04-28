@@ -1,5 +1,16 @@
 showContentModal({
   title:  "Copy Imprints from Quote to Order",
   body:   $("<%=j render 'select_from_quote', quotes: @quotes, job: @job %>"),
-  footer: $("<button class='btn btn-info' id='add-all-imprints'>Add All</button> <button data-dismiss='modal' class='btn btn-defaut'>Cancel</button>")
+  footer: $("<button class='btn btn-info' id='add-all-imprints'>Check all</button> <button data-dismiss='modal' class='btn btn-defaut'>Cancel</button>")
+});
+
+$('#add-all-imprints').click(function() {
+  var checkBoxes = $(".imprint-from-quote-check");
+  var allChecked = true;
+  checkBoxes.each(function() {
+    if (!this.checked)
+      allChecked = false;
+  });
+
+  checkBoxes.prop('checked', !allChecked);
 });

@@ -4,7 +4,7 @@ FactoryGirl.define do
 
     factory :valid_imprint do
       job { |j| j.association(:job) }
-      print_location { |p| p.association(:print_location) }
+      print_location { |p| p.association(:valid_print_location) }
 
       factory :imprint_without_job do
         job nil
