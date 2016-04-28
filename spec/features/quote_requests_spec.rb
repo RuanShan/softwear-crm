@@ -132,8 +132,6 @@ feature 'Quote Requests Management', js: true, quote_request_spec: true do
     end
 
     scenario 'A user can create a Quote from a Quote Request', story_79: true, story_195: true, create_quote: true, story_692: true do
-      expect(page).to have_css("#quote_email[value='#{quote_request.email}']")
-
       click_button 'Next'
       sleep 0.5
 

@@ -10,17 +10,13 @@ describe Quote, quote_spec: true do
 
   describe 'Relationships', story_74: true, story_79: true do
     it { is_expected.to belong_to(:store) }
+    it { is_expected.to belong_to(:contact).class_name('Crm::Contact') }
     it { is_expected.to have_many(:emails) }
     it { is_expected.to have_many(:jobs) }
-    # it { is_expected.to have_and_belong_to_many(:quote_requests) }
   end
 
   describe 'Validations' do
-    it { is_expected.to validate_presence_of(:email) }
-    it { is_expected.to allow_value('test@example.com').for :email }
-    it { is_expected.to_not allow_value('not_an-email').for :email }
     it { is_expected.to validate_presence_of(:estimated_delivery_date) }
-    it { is_expected.to validate_presence_of(:first_name) }
     it { is_expected.to validate_presence_of(:quote_source) }
     it { is_expected.to validate_presence_of(:store) }
     it { is_expected.to validate_presence_of(:valid_until_date) }
@@ -82,11 +78,11 @@ describe Quote, quote_spec: true do
             expect(dummy_insightly).to receive(:create_contact)
               .with(
                 contact: {
-                  first_name: subject.first_name,
-                  last_name: subject.last_name,
+                  first_name: subject.contact.first_name,
+                  last_name: subject.contact.last_name,
                   contactinfos: [
-                    { type: 'EMAIL', detail: subject.email },
-                    { type: 'PHONE', detail: subject.phone_number }
+                    { type: 'EMAIL', detail: subject.contact.email },
+                    { type: 'PHONE', detail: subject.contact.phone_number }
                   ],
                   links: [{ organisation_id: 1 }]
                 }
@@ -119,7 +115,7 @@ describe Quote, quote_spec: true do
         end
 
         it 'can create an opportunity in Insightly', story_514: true do
-          subject = create :valid_quote
+          subject = create(:valid_quote)
           dummy_insightly = Object.new
           subject.insightly_pipeline_id = 10
           allow(subject).to receive(:insightly_description).and_return 'desc'
@@ -321,6 +317,10 @@ describe Quote, quote_spec: true do
     end
   end
 
+  describe 'Other' do
+    it { is_expected.to accept_nested_attributes_for(:contact) }
+  end
+
   describe 'callbacks' do
     context 'when supplied with an initialized at time' do
       it 'sets initialized_at to the supplied time', story_86: true do
@@ -487,13 +487,9 @@ describe Quote, quote_spec: true do
     end
 
     describe '#activity_updated_quote_fields_hash', story_600: true do
-      let(:quote) { create(:valid_quote, first_name: 'Bob', is_rushed: false) }
+      let!(:quote) { create(:valid_quote, is_rushed: false) }
       let(:success_hash) {
           {
-            "first_name" => {
-              "old" => "Bob",
-              "new" => "Jim"
-            },
             "is_rushed" => {
               "old" => false,
               "new" => true
@@ -507,7 +503,6 @@ describe Quote, quote_spec: true do
       end
 
       it 'analyzes the quote and returns a hash of fields that have changed', story: '600' do
-        quote.first_name = 'Jim'
         quote.is_rushed = true
         expect(quote.activity_parameters_hash).to eq(success_hash)
       end
@@ -848,7 +843,7 @@ describe Quote, quote_spec: true do
               },
               description_html: anything,
               email: quote.email,
-              phone: quote.format_phone(quote.phone_number),
+              phone: quote.formatted_phone_number,
               name: quote.full_name
             })
             .and_return({ helpdesk_ticket: { display_id: 2981 } }.to_json)
@@ -859,19 +854,11 @@ describe Quote, quote_spec: true do
       end
     end
 
-    describe '#formatted_phone_number' do
-      let(:quote) { build_stubbed(:blank_quote, phone_number: '7342742659') }
-
-      it 'returns the phone number formatted as (xxx) xxx-xxxx' do
-        expect(quote.formatted_phone_number).to eq('(734) 274-2659')
-      end
-    end
-
     describe 'full_name' do
-      let(:quote) { build_stubbed(:blank_quote, first_name: 'First', last_name: 'Last') }
+      let(:quote) { build_stubbed(:valid_quote) }
 
-      it 'returns the first name and last name separated by a whitespace' do
-        expect(quote.full_name).to eq("#{quote.first_name} #{quote.last_name}")
+      it 'returns the contact full_name' do
+        expect(quote.full_name).to eq("#{quote.contact.full_name}")
       end
     end
 
@@ -987,10 +974,10 @@ describe Quote, quote_spec: true do
 
     context 'when an order is associated with a quote' do
       it 'should have the state won' do
-        expect(quote.state).to eq("sent_to_customer") 
+        expect(quote.state).to eq("sent_to_customer")
         OrderQuote.create!(order_id: order.id, quote_id: quote.id)
-        expect(quote.reload.state).to eq("won") 
+        expect(quote.reload.state).to eq("won")
       end
-    end 
+    end
   end
 end

@@ -1,0 +1,22 @@
+<table class="table-striped table table-condensed table-responsive">
+  <thead>
+    <th>ID</th>
+    <th>Name</th>
+    <th>Email Addresses</th>
+    <th>Phone Numbers</th>
+    <th></th>
+  </thead>
+  <tbody>
+  <% contacts.each do |contact| %>
+    <tr id="contact_result_<%= contact.id %>">
+      <td><%= contact.id %></td>
+      <td><%= label_tag "contact_select_#{contact.id}", contact.full_name %></td>
+      <td><%= raw contact.emails.map(&:address).join('<br />') %></td>
+      <td><%= raw contact.phones.map(&:number).join('<br />') %></td>
+      <td>
+        <%= radio_button_tag 'contact_select', contact.id %>
+      </td>
+    </tr>
+  <% end %>
+  </tbody>
+</table>

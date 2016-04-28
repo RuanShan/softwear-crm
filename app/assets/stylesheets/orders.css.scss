@@ -200,7 +200,7 @@ ul.shipments-list {
   min-height: 400px;
 }
 
-.order-edit-salesperson {
+.order-edit-salesperson, .quote-edit-salesperson {
   padding: 10px;
   float: left;
 
@@ -209,18 +209,18 @@ ul.shipments-list {
   }
 }
 
-.order-edit-title {
+.order-edit-title, .quote-edit-title {
   padding: 10px 0;
   float: left;
 }
 
-.navbar-orders {
+.navbar-orders,.navbar-quotes {
   background-color: #f8f8f8;
   border: none;
 }
 
 @media (max-width: 767px) {
-  .navbar-orders {
+  .navbar-orders, .navbar-quotes {
 
     button.navbar-toggle {
       padding: 15px 15px;
@@ -255,27 +255,31 @@ ul.shipments-list {
   background-color: #fafafa;
 }
 
-.order-state-ribbon {
+.state-ribbon {
   width: 100%;
   background-color: #fff;
   margin-bottom: 10px;
 }
 
 @media (max-width: 767px) {
-  .order-state-ribbon .state-box {
+  .state-ribbon .state-box {
     background-color: #fff;
   }
 }
 
 @media (min-width: 768px) {
-  .order-state-ribbon .state-box {
+  .state-ribbon .state-box {
     width: 20%;
     float: left;
     background-color: #fff;
   }
 }
 
-.state-box h5 {
+.state-ribbon .single-state-box {
+  background-color: #fff;
+}
+
+.state-box h5, .single-state-box h5 {
   font-weight: bold;
   text-align: center;
   margin: 0;
@@ -285,17 +289,21 @@ ul.shipments-list {
   color: #FFFFFF;
 }
 
-.state-box .state {
+.state-box .state, .single-state-box .state {
   text-align: center;
 }
 
 .state {
-
   padding: 0.5em;
 }
 
 .state.state-danger {
   background-color: #d9534f;
+  color: #fff;
+}
+
+.state.state-primary {
+  background-color: #337ab7;
   color: #fff;
 }
 

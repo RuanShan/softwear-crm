@@ -37,12 +37,12 @@ module ApplicationHelper
     return link_to activity.trackable.send(attribute), activity.trackable
   end
 
-  def link_to_add_fields(name, f, association)
+  def link_to_add_fields(name, f, association, partial = nil)
     new_object = f.object.send(association).new
-
     id = new_object.object_id
     fields = f.fields_for(association, new_object, child_index: id) do |builder|
-      render("#{association.to_s.singularize}_fields", f: builder, object: new_object)
+      render((partial.nil? ? "#{association.to_s.singularize}_fields" : partial),
+             f: builder, object: new_object)
     end
     link_to(name, '#', class: 'btn btn-info js-add-fields',
             data: { id: id, fields: fields.gsub("\n", '') })
@@ -266,4 +266,46 @@ module ApplicationHelper
 
     buf
   end
+
+  def contact_emails(contact)
+    content_tag :ul do
+      contact.emails.map do |email|
+        email.primary? ? content_tag(:li, "#{email.address} (Primary)") :
+          content_tag(:li, "#{email.address}")
+      end.join.html_safe
+    end.html_safe
+  end
+
+  def contact_phone_numbers(contact)
+    content_tag :ul do
+      contact.phones.map do |phone|
+        phone.primary? ? content_tag(:li, "#{phone.full_number} (Primary)") :
+          content_tag(:li, "#{phone.full_number}")
+      end.join.html_safe
+    end.html_safe
+  end
+
+  def display_contact_content_or_not(which, contact)
+    case which
+      when 'existing_contact'
+        "display: none" if contact.new_record?
+      when 'search_contact_content'
+        "display: none"
+      when 'new_contact_content'
+        "display: none" unless contact.new_record?
+      when 'create_new_contact_link'
+        "display: none"
+      when 'edit_current_contact_link'
+        "display: none" if contact.new_record?
+      when 'search_existing_contacts_link'
+        "display: none" if !contact.new_record?
+      when 'change_contact_link'
+        "display: none" if contact.new_record?
+      when 'cancel_contact_changes_link'
+        "display: none"
+      else
+        ""
+    end
+  end
+
 end

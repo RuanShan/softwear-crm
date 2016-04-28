@@ -344,7 +344,7 @@ class Order < ActiveRecord::Base
       super
     end
   end
-  
+
   def method_missing(method_name, *args, &block)
     if /^recalculate_(?<field_to_recalc>\w+)!?$/ =~ method_name.to_s && respond_to?(field_to_recalc)
       send "#{field_to_recalc}=", send("calculate_#{field_to_recalc}", *args)
@@ -893,6 +893,27 @@ class Order < ActiveRecord::Base
 
   def warnings_count
     warnings.active.count
+  end
+
+  def format_phone_for_contact
+    num = phone_number
+    return "000-000-0000" if(num.nil? || num.blank?)
+
+    num.gsub!(/\D/, '')
+
+    if num.length == 11 && num[0] == '1'
+      num
+    elsif num.length == 10
+      num = '1' + num
+    elsif num.length >= 7 && num.length <= 9
+      dif = num.length - 7
+      if dif != 0
+        num = num.slice(dif, 7)
+      end
+      num = '1734' + num
+    end
+
+    "#{num.slice(1, 3)}-#{num.slice(4, 3)}-#{num.slice(7, 4)}"
   end
 
   def prod_api_confirm_job_counts

@@ -2,14 +2,9 @@
   <div class="pull-left">
     <h1>Quotes <small> View and edit quotes</small></h1>
   </div>
-  <div class="pull-right">
-    <%= link_to new_quote_path, class: 'btn btn-success' do  %>
-        <i class="fa fa-plus"></i> New Quote
-    <% end %>
-  </div>
 </div>
 
-<div class="col-sm-8 col-sm-offset-2 col-xs-12">
+<div>
   <%= render 'quotes/search' %>
 </div>
 

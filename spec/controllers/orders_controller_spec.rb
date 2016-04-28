@@ -14,17 +14,17 @@ describe OrdersController, order_spec: true do
         get :new, quote_id: quote.id
         expect(assigns(:order).email).to eq(quote.email)
         expect(assigns(:order).phone_number).to eq(quote.phone_number)
-        expect(assigns(:order).firstname).to eq(quote.first_name)
-        expect(assigns(:order).lastname).to eq(quote.last_name)
+        expect(assigns(:order).firstname).to eq(quote.contact.first_name)
+        expect(assigns(:order).lastname).to eq(quote.contact.last_name)
         expect(assigns(:order).company).to eq(quote.company)
-        expect(assigns(:order).twitter).to eq(quote.twitter)
+        expect(assigns(:order).twitter).to eq(quote.contact.twitter)
         expect(assigns(:order).name).to eq(quote.name)
         expect(assigns(:order).store_id).to eq(quote.store_id)
       end
 
     end
   end
-  
+
   describe 'GET #fba', story_103: true do
     it 'renders index where terms = Fulfilled by Amazon' do
       expect(Order).to receive(:fba).and_call_original

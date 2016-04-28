@@ -1,7 +1,7 @@
 require 'spec_helper'
 include ApplicationHelper
 
-feature 'Payment Drops management', payment_drop_spec: true do
+feature 'Payment Drops management', payment_drop_spec: true, retry: 3 do
   given!(:valid_user) { create(:user) }
   given!(:store) { create(:valid_store) }
   given!(:payment_drop) {
@@ -40,7 +40,7 @@ feature 'Payment Drops management', payment_drop_spec: true do
           sleep 1.5
         }.to change{ PaymentDrop.count }.by(1)
       end
-      
+
       scenario 'I can see an undropped retail payment', retail_payment: true do
         create(:retail_payment, retail_description: 'What is up my man')
 

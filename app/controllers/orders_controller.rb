@@ -38,11 +38,11 @@ class OrdersController < InheritedResources::Base
         session[:quote_id] = params[:quote_id]
         @order = Order.new(
           email: quote.email,
-          phone_number: quote.phone_number,
-          firstname: quote.first_name,
-          lastname: quote.last_name,
+          phone_number: quote.contact.phone_number,
+          firstname: quote.contact.first_name,
+          lastname: quote.contact.last_name,
           company: quote.company,
-          twitter: quote.twitter,
+          twitter: quote.contact.twitter,
           name: quote.name,
           store_id: quote.store_id
         )

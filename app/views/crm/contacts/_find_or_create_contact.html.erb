@@ -1,0 +1,83 @@
+<ul class="nav nav-pills">
+  <%= content_tag :li, role: :presentation, id: 'create_new_contact_link', style: display_contact_content_or_not('create_new_contact_link', f.object.contact) do %>
+      <%= link_to "#" do %>
+          <i class="glyphicon glyphicon-user"></i> Create New Contact
+      <% end %>
+  <% end %>
+  <%= content_tag :li, role: :presentation, id: 'edit_current_contact_link', style: display_contact_content_or_not('edit_current_contact_link', f.object.contact) do %>
+      <%= link_to "#" do %>
+          <i class="glyphicon glyphicon-edit"></i> Edit Contact
+      <% end %>
+  <% end %>
+  <%= content_tag :li, role: :presentation, id: 'search_existing_contacts_link', style: display_contact_content_or_not('search_existing_contacts_link', f.object.contact)  do %>
+      <%= link_to "#" do %>
+          <i class="glyphicon glyphicon-search"></i> Search Existing Contacts
+      <% end %>
+  <% end %>
+  <%= content_tag :li, role: :presentation, id: 'change_contact_link', style: display_contact_content_or_not('change_contact_link', f.object.contact) do %>
+      <%= link_to "#" do %>
+          <i class="glyphicon glyphicon-user"></i> Change Contact
+      <% end %>
+  <% end %>
+  <%= content_tag :li, role: :presentation, id: 'cancel_contact_changes_link', style: display_contact_content_or_not('cancel_contact_changes_link', f.object.contact) do %>
+      <%= link_to "#" do %>
+          <i class="fa fa-undo"></i> Cancel Contact Changes
+      <% end %>
+  <% end %>
+</ul>
+
+<% unless f.object.contact.new_record? %>
+    <div id="existing_contact_content" style="<%= display_contact_content_or_not('existing_contact', f.object.contact) %>">
+      <h3><strong>Contact</strong> Details</h3>
+      <b>Name</b>
+      <ul>
+        <li><%= f.object.contact.full_name %></li>
+      </ul>
+
+      <b>Emails</b>
+      <%= contact_emails(f.object.contact) %>
+
+      <b>Phone Numbers</b>
+      <%= contact_phone_numbers(f.object.contact) %>
+    </div>
+<% end %>
+
+<div id="search_contact_content" style="<%= display_contact_content_or_not('search_contact_content', f.object.contact) %>">
+  <h3><strong>Contact</strong> Search</h3>
+    <div class="form-group">
+      <div class="input-group">
+        <%= text_field_tag "contact[q]", '', class: 'form-control', placeholder: 'Contact Search Terms', id: 'contact_search_terms' %>
+        <div class="input-group-addon btn"><%= link_to "Search Contacts", "#", id: 'contact_search'  %></div>
+      </div>
+      <%= f.hidden_field :contact_id, disabled: true, id: 'search_contact_form_id' %>
+    </div>
+    <div id="results">
+      <div class="alert alert-info">
+        Search for a name, e-mail, or phone number using the form
+      </div>
+    </div>
+</div>
+
+<% unless f.object.contact.new_record? %>
+    <div id="edit_contact_content" style="<%= display_contact_content_or_not('new_contact_content', f.object.contact) %>">
+      <h3><strong>Edit</strong> Contact</h3>
+      <%= f.fields_for :contact do |ff| %>
+          <%= render 'crm/contacts/fields', f: ff %>
+      <% end %>
+    </div>
+<% end %>
+
+
+<div id="new_contact_content" style="<%= display_contact_content_or_not('new_contact_content', f.object.contact) %>">
+  <h3><strong>New</strong> Contact</h3>
+  <% if f.object.new_record? %>
+      <%= f.fields_for :contact do |ff| %>
+          <%= render 'crm/contacts/fields', f: ff %>
+      <% end %>
+  <% else %>
+      <% f.object.contact = Crm::Contact.new %>
+      <%= f.fields_for :contact do |ff| %>
+          <%= render 'crm/contacts/fields', f: ff, disabled: true %>
+      <% end %>
+  <% end %>
+</div>

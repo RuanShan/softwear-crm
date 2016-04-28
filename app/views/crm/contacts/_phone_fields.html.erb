@@ -1,12 +1,14 @@
+<% disabled = false unless defined?(disabled) %>
+
 <div class="row js-removeable clearfix phone-fields" data-phone-id="<%= f.object.id %>">
   <div class="col-xs-6">
-    <%= f.text_field :number, label: 'Phone', class: 'phone-number format-phone' %>
+    <%= f.text_field :number, label: 'Phone', class: 'phone-number format-phone', disabled: disabled %>
   </div>
   <div class="col-xs-3">
-    <%= f.text_field :extension, class: 'phone-extension' %>
+    <%= f.text_field :extension, class: 'phone-extension', disabled: disabled %>
   </div>
   <div class="col-xs-2">
-    <%= f.check_box(:primary, class: 'phone-primary') %>
+    <%= f.check_box(:primary, class: 'phone-primary', disabled: disabled) %>
   </div>
   <div class="col-xs-1">
     <% unless f.object.primary? %>

@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160421022203) do
+ActiveRecord::Schema.define(version: 20160425210718) do
 
   create_table "activities", force: :cascade do |t|
     t.integer  "trackable_id",   limit: 4
@@ -855,10 +855,10 @@ ActiveRecord::Schema.define(version: 20160421022203) do
   end
 
   create_table "quotes", force: :cascade do |t|
-    t.string   "email",                            limit: 191
-    t.string   "phone_number",                     limit: 191
-    t.string   "first_name",                       limit: 191
-    t.string   "last_name",                        limit: 191
+    t.string   "deprecated_email",                 limit: 191
+    t.string   "deprecated_phone_number",          limit: 191
+    t.string   "deprecated_first_name",            limit: 191
+    t.string   "deprecated_last_name",             limit: 191
     t.string   "company",                          limit: 191
     t.string   "twitter",                          limit: 191
     t.string   "name",                             limit: 191
@@ -887,6 +887,7 @@ ActiveRecord::Schema.define(version: 20160421022203) do
     t.decimal  "insightly_bid_amount",                         precision: 10, scale: 2
     t.integer  "insightly_whos_responsible_id",    limit: 4
     t.string   "state",                            limit: 191
+    t.integer  "contact_id",                       limit: 4
   end
 
   create_table "sample_locations", force: :cascade do |t|

@@ -26,7 +26,7 @@ feature 'Order management', slow: true, order_spec: true, js: true do
       order.jobs << job
       order.jobs.first.line_items << line_item
     end
-    
+
     scenario 'a user can view the total counts on the top of the order report' do
       visit edit_order_path(order)
       sleep 1
@@ -39,12 +39,12 @@ feature 'Order management', slow: true, order_spec: true, js: true do
   end
 
   context 'Imprintable Sheets' do
-   
+
     before(:each) do
       order.jobs << job
       order.jobs.first.line_items << line_item
     end
-    
+
     scenario 'A user can view only imprintable order sheets' do
       visit edit_order_path(order)
       sleep 1
@@ -178,8 +178,10 @@ feature 'Order management', slow: true, order_spec: true, js: true do
 
   context 'involving quotes' do
     given!(:quote) { create(:valid_quote) }
+
     background(:each) do
-      visit edit_quote_path quote.id
+      visit edit_quote_path quote
+      click_link 'Sales'
       click_link 'Create Order from Quote'
       click_button 'Next'
     end
@@ -195,7 +197,7 @@ feature 'Order management', slow: true, order_spec: true, js: true do
       sleep 0.5
       click_button 'Submit'
       expect(page).to have_content 'Order was successfully created.'
-      expect(Order.where(firstname: quote.first_name)).to exist
+      expect(Order.where(firstname: quote.contact.first_name)).to exist
     end
 
     context 'when failing to fill the order form properly' do

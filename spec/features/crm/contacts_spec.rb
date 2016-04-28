@@ -10,9 +10,21 @@ feature 'Contacts Management', contact_spec: true do
     feature 'given contacts exist' do
       given!(:contact) { create(:crm_contact) }
 
-      scenario 'I can see a list of all contacts' do
+
+      scenario 'I can see a list of all contacts', js: true do
         visit root_path
+
+        allow_any_instance_of(SunspotMatchers::SunspotSearchSpy).to\
+          receive(:results) { Kaminari.paginate_array(Crm::Contact.all.to_a).page(1).per(10) }
+
+        allow_any_instance_of(Kaminari::PaginatableArray).to\
+          receive(:total_entries) { Crm::Contact.count }
+
         click_link 'Contacts'
+        within "#nav_contacts_menu" do
+          click_link 'List'
+        end
+
         expect(page).to have_css('table#contacts')
         expect(page).to have_css("tr#contact_#{contact.id}")
       end
@@ -67,8 +79,9 @@ feature 'Contacts Management', contact_spec: true do
 
     scenario 'I can create a new contact with good inputs' do
       expect {
-        visit crm_contacts_path
-        within('.contacts-index') do
+        visit root_path
+        click_link 'Contacts'
+        within "#nav_contacts_menu" do
           click_link 'New'
         end
         fill_in "First name", with: 'Sample'
