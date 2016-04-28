@@ -358,11 +358,11 @@ ActiveRecord::Schema.define(version: 20160425210718) do
 
   create_table "fba_spreadsheet_uploads", force: :cascade do |t|
     t.boolean  "done"
-    t.text     "spreadsheet",       limit: 4294967295
+    t.text     "spreadsheet",       limit: 65535
     t.text     "processing_errors", limit: 65535
     t.string   "filename",          limit: 191
-    t.datetime "created_at",                           null: false
-    t.datetime "updated_at",                           null: false
+    t.datetime "created_at",                      null: false
+    t.datetime "updated_at",                      null: false
   end
 
   create_table "freshdesk_local_contacts", force: :cascade do |t|
@@ -567,8 +567,6 @@ ActiveRecord::Schema.define(version: 20160425210718) do
 
   add_index "jobs", ["deleted_at"], name: "index_jobs_on_deleted_at", using: :btree
   add_index "jobs", ["fba_job_template_id"], name: "index_jobs_on_fba_job_template_id", using: :btree
-  add_index "jobs", ["jobbable_id"], name: "index_jobs_jobbable_id", using: :btree
-  add_index "jobs", ["jobbable_type"], name: "index_jobs_jobbable_type", using: :btree
 
   create_table "line_item_groups", force: :cascade do |t|
     t.string   "name",        limit: 191
@@ -690,9 +688,9 @@ ActiveRecord::Schema.define(version: 20160425210718) do
     t.decimal  "shipping_price",                             precision: 10, scale: 2, default: 0.0
     t.string   "invoice_state",             limit: 191
     t.string   "production_state",          limit: 191
+    t.integer  "softwear_prod_id",          limit: 4
     t.string   "notification_state",        limit: 191
     t.integer  "freshdesk_proof_ticket_id", limit: 4
-    t.integer  "softwear_prod_id",          limit: 4
     t.string   "artwork_state",             limit: 191
     t.string   "customer_key",              limit: 191
     t.text     "invoice_reject_reason",     limit: 16777215
@@ -701,8 +699,8 @@ ActiveRecord::Schema.define(version: 20160425210718) do
     t.decimal  "discount_total",                             precision: 10, scale: 2
     t.decimal  "payment_total",                              precision: 10, scale: 2
     t.boolean  "imported_from_admin"
-    t.string   "payment_state",             limit: 191
     t.string   "phone_number_extension",    limit: 191
+    t.string   "payment_state",             limit: 191
     t.boolean  "canceled"
     t.decimal  "tax_rate",                                   precision: 10, scale: 4
     t.decimal  "fee",                                        precision: 10, scale: 4
@@ -870,8 +868,8 @@ ActiveRecord::Schema.define(version: 20160425210718) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.decimal  "shipping",                                     precision: 10, scale: 2
-    t.string   "quote_source",                     limit: 191
     t.datetime "initialized_at"
+    t.string   "quote_source",                     limit: 191
     t.string   "freshdesk_ticket_id",              limit: 191
     t.boolean  "informal"
     t.integer  "insightly_category_id",            limit: 4
@@ -887,7 +885,6 @@ ActiveRecord::Schema.define(version: 20160425210718) do
     t.decimal  "insightly_bid_amount",                         precision: 10, scale: 2
     t.integer  "insightly_whos_responsible_id",    limit: 4
     t.string   "state",                            limit: 191
-    t.integer  "contact_id",                       limit: 4
   end
 
   create_table "sample_locations", force: :cascade do |t|

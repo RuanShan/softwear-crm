@@ -30,28 +30,28 @@ class Proof < ActiveRecord::Base
     # Callbacks
     #########################
     after_transition on: :ready do |proof|
-      proof.order.proofs_ready unless proof.order.proofs.map{|p| p.state }.include?('not_ready')
+      proof.order.proofs_ready unless proof.order.proofs.map{ |p| p.state }.include?('not_ready')
     end
 
     after_transition on: :manager_approved do |proof|
-      proof.order.proofs_manager_approved unless proof.order.proofs.map{|p| p.state }.include?('pending_manager_approval')
+      proof.order.proofs_manager_approved unless proof.order.proofs.map{ |p| p.state }.include?('pending_manager_approval')
     end
 
     after_transition on: :emailed_customer do |proof|
-      proof.order.emailed_customer_proofs unless proof.order.proofs.map{|p| p.state }.include?('pending_customer_submission')
+      proof.order.emailed_customer_proofs unless proof.order.proofs.map{ |p| p.state }.include?('pending_customer_submission')
     end
 
     after_transition on: :customer_approved do |proof|
-      proof.order.proofs_customer_approved unless proof.order.proofs.map{|p| p.state }.include?('pending_customer_approval')
+      proof.order.proofs_customer_approved unless proof.order.proofs.map{ |p| p.state }.include?('pending_customer_approval')
     end
 
-    after_transition on: :customer_rejected do |proof|
-      proof.order.proofs_customer_rejected
-    end
+   #after_transition on: :customer_rejected do |proof|
+   #  proof.order.proofs_customer_rejected
+   #end
 
-    after_transition on: :manager_rejected do |proof|
-      proof.order.proofs_manager_rejected
-    end
+   #after_transition on: :manager_rejected do |proof|
+   #  proof.order.proofs_manager_rejected 
+   #end
 
     ############################
     # Transitions

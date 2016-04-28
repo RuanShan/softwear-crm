@@ -70,9 +70,6 @@ class Job < ActiveRecord::Base
       name_numbers += Array(options[:add_name_numbers])
         .compact
         .select { |n| n.imprintable_variant_id == line.imprintable_object_id }
-   
-
-
 
       if quantity.send(matcher, name_numbers.size)
         mismatched << mismatch.new(

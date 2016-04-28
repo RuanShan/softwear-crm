@@ -26,6 +26,7 @@ feature 'Proof Features', slow: true, js: true, proof_spec: true, retry: 3 do
       find("a[href='/orders/#{order.id}/edit']").click
       find("a[href='#proofs']").click
     end
+
     expect(page).to have_css('div.proof-list')
     expect(page).to have_css("div#proof-#{proof.id}")
   end
@@ -98,10 +99,27 @@ feature 'Proof Features', slow: true, js: true, proof_spec: true, retry: 3 do
         background { order.artwork_requests.each{|x| x.assigned_artist(valid_user) } }
 
         context "given a proof that is 'not_ready' and the order#artwork_state is 'pending_proofs'" do
-          background do
+          background :each do
             order.update_attribute(:artwork_state, :pending_proofs)
             proof.update_attribute(:state, :not_ready)
             allow_any_instance_of(Order).to receive(:missing_proofs?) { false }
+          end
+
+          scenario 'I can mark a proof as "rejected_by_manager" without also changing the other proofs' do
+            #adding another proof to order.proofs
+            order.proofs << create(:valid_proof)
+            
+            visit edit_order_path(order, anchor: 'proofs')
+            sleep 1
+            within("div[id='proof-#{order.proofs.first.id}']") do
+              accept_alert do
+                click_link "Manager Rejected" 
+              end
+            end
+            sleep 1
+
+            expect(order.proofs.first.reload.state).to eq("manager_rejected")
+            expect(order.proofs.second.reload.state).to_not eq("manager_rejected")
           end
 
           scenario 'I can mark all proofs as ready' do
