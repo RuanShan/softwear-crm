@@ -359,7 +359,7 @@ feature 'Quotes management', slow: true, quote_spec: true, redo: 3 do
         end
       end
 
-      scenario 'When I add a markup/upcharge it is tracked in the timeline', js: true, story_600: true, story_692: true do
+      scenario 'When I add a markup/upcharge it is tracked in the timeline', js: true, story_600: true, story_692: true, no_ci: true do
         PublicActivity.with_tracking do
           imprintable_group; imprint_method_1; imprint_method_2
           visit edit_quote_path quote
