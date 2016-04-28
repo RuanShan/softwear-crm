@@ -8,70 +8,70 @@ module OrderHelper
     when 'payment_state' then get_style_from_status(state, style_type)
     when 'artwork_state' then get_style_from_artwork_state(state, style_type)
     else
-      'label-primary'
+      "#{style_type}-primary"
     end
   end
 
   def get_style_from_status(status, style_type = 'label')
     if style_type == 'label'
-      case status
+      case status.to_s
       when 'Payment Terms Pending' then 'label-danger'
       when 'Awaiting Payment' then 'label-danger'
       when 'Payment Terms Met' then 'label-warning'
       when 'Payment Complete' then 'label-success'
       when 'Canceled' then 'label-danger'
-      else nil
+      else 'label-default'
       end
     elsif style_type == 'alert'
-      case status
+      case status.to_s
       when 'Payment Terms Pending' then 'alert-danger'
       when 'Awaiting Payment' then 'alert-danger'
       when 'Payment Terms Met' then 'alert-warning'
       when 'Payment Complete' then 'alert-success'
-      else nil
+      else 'alert-default'
       end
     elsif style_type == 'state'
-      case status
+      case status.to_s
         when 'Payment Terms Pending' then 'state-danger'
         when 'Awaiting Payment' then 'state-danger'
         when 'Payment Terms Met' then 'state-warning'
         when 'Payment Complete' then 'state-success'
         when 'Canceled' then 'state-danger'
-        else nil
+        else 'state-default'
       end
     end
   end
 
   def get_style_from_invoice_state(status, style_type = 'label')
     if style_type == 'label'
-      case status
+      case status.to_s
       when 'pending' then 'label-warning'
       when 'approved' then 'label-success'
       when 'rejected' then 'label-danger'
       when 'canceled' then 'label-danger'
-      else nil
+      else 'label-default'
       end
     elsif style_type == 'state'
-      case status
+      case status.to_s
         when 'pending' then 'state-warning'
         when 'approved' then 'state-success'
         when 'rejected' then 'state-danger'
         when 'canceled' then 'state-danger'
-        else nil
+        else 'state-default'
       end
     end
   end
 
   def get_style_from_artwork_state(status, style_type = 'label')
     if style_type == 'label'
-      case status
+      case status.to_s
       when 'pending_artwork_requests' then 'label-danger'
       when 'in_production' then 'label-success'
       when 'artwork_canceled' then 'label-danger'
       else 'label-warning'
       end
     elsif style_type == 'state'
-      case status
+      case status.to_s
         when 'pending_artwork_requests' then 'state-danger'
         when 'in_production' then 'state-success'
         when 'artwork_canceled' then 'state-danger'
@@ -90,7 +90,7 @@ module OrderHelper
         when 'picked_up' then 'label-success'
         when 'shipped' then 'label-success'
         when 'notification_canceled' then 'label-danger'
-        else nil
+        else 'label-default'
       end
     elsif style_type == 'state'
       case status
@@ -100,27 +100,27 @@ module OrderHelper
         when 'picked_up' then 'state-success'
         when 'shipped' then 'state-success'
         when 'notification_canceled' then 'state-danger'
-        else nil
+        else 'state-default'
       end
     end
   end
 
   def get_style_from_production_state(status, style_type = 'label')
     if style_type == 'label'
-      case status
+      case status.to_s
       when 'pending' then 'label-danger'
       when 'in_production' then 'label-warning'
       when 'complete' then 'label-success'
       when 'canceled' then 'label-danger'
-      else nil
+      else 'label-default'
       end
     elsif style_type == 'state'
-      case status
+      case status.to_s
         when 'pending' then 'state-danger'
         when 'in_production' then 'state-warning'
         when 'complete' then 'state-success'
         when 'canceled' then 'state-danger'
-        else nil
+        else 'state-default'
       end
     end
   end

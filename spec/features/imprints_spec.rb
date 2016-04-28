@@ -157,13 +157,15 @@ feature 'Imprints Management', slow: true, imprint_spec: true, js: true do
     expect(Imprint.where(job_id: job.id)).to_not exist
   end
 
-  context 'when the order has quotes associated with it' do
-    order.quotes << create(:vaild_quote)
-    visit edit_order_path(order.id, anchor: 'jobs')
-    wait_for_ajax
+  context 'when the order has quotes associated with it', no_ci: true do
+    scenario 'imprints can be added from those quotes' do
+      order.quotes << create(:vaild_quote)
+      visit edit_order_path(order.id, anchor: 'jobs')
+      wait_for_ajax
 
-    find('.imprint-from-quote').click
-    raise "TODO"
+      find('.imprint-from-quote').click
+      raise "TODO"
+    end
   end
 
   context 'name number selecting' do
