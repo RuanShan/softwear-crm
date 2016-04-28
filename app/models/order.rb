@@ -337,11 +337,12 @@ class Order < ActiveRecord::Base
   end
 
   def all_artworks_ready?
-    unless artwork_requests.empty? 
-       artwork_requests.each do |ar|
-         return false if ar.state != "pending_manager_approval"
-       end
+    good_states = ["pending_manager_approval", "manager_approved"]
+    unless artwork_requests.empty?
+      reqs = artwork_requests.flat_map(&:state).uniq.reverse # will start with pending, then manager if good
+      return (reqs.count == 2 && reqs.to_a == good_states) || (reqs.count == 1 && reqs.first == good_states.first)
     end
+    return false
   end
 
   def approve_all_art
@@ -375,6 +376,7 @@ class Order < ActiveRecord::Base
       send "re#{method_name}"
     end
   end
+
   def recalculate_all!
     recalculate_all
     save!

@@ -94,19 +94,10 @@
         <% end %>
 
         <% if artwork_request.can_approved? %>
-          <% if artwork_request.multiple_artworks? %>
-            <% byebug %>
-            <%= link_to transition_artwork_request_path(artwork_request, :state, :approved),
-              method: :post, class: 'btn btn-success', data: {action: :update, toggle: :tooltip,
-              title: 'Approve'} do %>
-              <i class="glyphicon glyphicon-thumbs-up"></i> Approve All Artworks
-            <% end %>
-          <% else %>
-            <%= link_to transition_artwork_request_path(artwork_request, :state, :approved),
-              method: :post, class: 'btn btn-success', data: {action: :update, toggle: :tooltip,
-              title: 'Approve'} do %>
-              <i class="glyphicon glyphicon-thumbs-up"></i> Approve Artwork
-            <% end %>
+          <%= link_to transition_artwork_request_path(artwork_request, :state, :approved),
+            method: :post, class: 'btn btn-success', data: {action: :update, toggle: :tooltip,
+            title: 'Approve'} do %>
+            <i class="glyphicon glyphicon-thumbs-up"></i> Approve Artwork
           <% end %>
         <% end %>
 

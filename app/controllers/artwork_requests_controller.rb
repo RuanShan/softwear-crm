@@ -42,7 +42,7 @@ class ArtworkRequestsController < InheritedResources::Base
     end
   }
 
-  before_filter :assign_order
+  before_filter :assign_order 
   before_filter :format_deadline, only: [:create, :update]
   before_filter :set_current_action
 
@@ -112,6 +112,23 @@ class ArtworkRequestsController < InheritedResources::Base
 
     respond_to do |format|
       format.js
+    end
+  end
+
+  def approve_all
+    @order = Order.find(params[:id]) 
+    @artwork_requests = @order.artwork_requests
+   
+    @artwork_requests.each do |req|
+      if req.can_approved? 
+        req.approved_by = current_user
+        req.approved!
+        req.index
+      end
+    end
+    
+    respond_to do |format|
+      format.html { redirect_to edit_order_path(@order, anchor: 'artwork') }
     end
   end
 

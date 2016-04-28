@@ -45,6 +45,7 @@ CrmSoftwearcrmCom::Application.routes.draw do
   resources :artwork_requests do
     member do
       post 'transition(/:state_machine(/:transition))' => :state, as: :transition
+      post 'approve_all'
     end
     collection do
       get 'tab/:tab' => :tab, as: :tab

@@ -24,8 +24,10 @@
     <% end %>
 
     <% if order.all_artworks_ready? %>
-      <%= link_to approve_all_art_order_path(order), method: :post, class: 'btn btn-success' do %>
-        <i class='fa fa-picture-o'></i> Approve All Artwork
+      <%= form_tag approve_all_artwork_request_path (order) do %>
+        <%= submit_tag "Approve All Artwork", class: "btn btn-success" do %> 
+          <i class='fa fa-picture-o'></i> Approve All Artwork
+        <% end %>
       <% end %>
     <% end %>  
   </div>

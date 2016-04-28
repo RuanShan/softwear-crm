@@ -165,10 +165,6 @@ class ArtworkRequest < ActiveRecord::Base
     end
 
   end
- 
-  def multiple_artworks?
-    artworks.count > 1 
-  end
 
   def assigned_artist(artist)
     begin
