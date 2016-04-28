@@ -7,7 +7,7 @@ class LineItemsController < InheritedResources::Base
   def new
     super do |format|
       # @line_item = @line_itemable.line_items.new
-      @line_itemable = Job.find(params[:job_id])
+      @job = @line_itemable = Job.find(params[:job_id])
 
       format.html { render partial: 'create_modal' }
       format.js { render locals: { standard_only: params[:standard_only] } }
@@ -146,6 +146,40 @@ class LineItemsController < InheritedResources::Base
       format.html do
         redirect_to params[:done_path] || root_path
       end
+    end
+  end
+
+  def create_from_quotes
+    @job = Job.find(params[:job_id])
+    @succeeded_line_items = []
+    @failed_line_items = []
+
+    params[:line_items].each do |line_item_id, attrs|
+      next unless attrs[:included]
+
+      quote_line_item = LineItem.find(line_item_id)
+      raise "Expected non-variant imprintable line item" unless quote_line_item.imprintable_object_type == "Imprintable"
+      raise "Expected color ID to be present" if attrs[:color_id].blank?
+
+      line_items = LineItem.new_imprintables(
+        @job,
+        quote_line_item.imprintable_object_id,
+        attrs[:color_id],
+        imprintable_price: attrs[:imprintable_price],
+        decoration_price:  attrs[:decoration_price]
+      )
+
+      line_items.each do |line_item|
+        if line_item.save
+          @succeeded_line_items << line_item
+        else
+          @failed_line_items << line_item
+        end
+      end
+    end
+
+    respond_to do |format|
+      format.js
     end
   end
 

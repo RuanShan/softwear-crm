@@ -31,7 +31,7 @@ feature 'Line Items management', slow: true, line_item_spec: true, js: true do
     expect(page).to have_content 'Add'
 
     within('.line-item-form') do
-      choose 'No'
+      choose 'Non-imprintable'
       sleep 1
       fill_in 'Name', with: 'New Item'
       fill_in 'Description', with: 'Insert deeply descriptive text here'
@@ -53,13 +53,55 @@ feature 'Line Items management', slow: true, line_item_spec: true, js: true do
 
     first('.add-line-item').click
     sleep 1
-    choose 'No'
+    choose 'Non-imprintable'
     sleep 1
     find('#line-item-submit').click
     sleep 1
 
     expect(page).to have_content "Unit price can't be blank"
     expect(page).to have_content "Quantity can't be blank"
+  end
+
+  context 'when the order has quotes associated with it', from_quote: true do
+    given!(:quote_job) { create(:quote_job, line_items: [line_item_1, line_item_2]) }
+    given(:quote) { quote_job.jobbable }
+
+    given!(:line_item_1) { create(:imprintable_quote_line_item, tier: 3, imprintable_object: shirt) }
+    given!(:line_item_2) { create(:imprintable_quote_line_item, tier: 3, imprintable_object: hat) }
+
+    background :each do
+      order.quotes << quote
+    end
+
+    scenario 'user can add a set of line items for an imprintable from a quote' do
+      visit edit_order_path(order.id, anchor: 'jobs')
+      sleep 1
+      click_link 'Add Line Item'
+      sleep 1
+      expect(page).to have_content 'Add'
+
+      within('.line-item-form') do
+        sleep 1.5
+        choose 'From quote'
+        sleep 1.5
+        check "line_items_#{line_item_1.id}_included"
+        select2 'white', from: '.li-from-quote-select-color'
+        find('.dec-price').set '2.30'
+      end
+
+      find('#line-item-submit').click
+      sleep 1
+
+      expect(LineItem.where(job_id: order.jobs.first.id, imprintable_object_id: white_shirt_s.id)).to exist
+      expect(LineItem.where(job_id: order.jobs.first.id, imprintable_object_id: white_shirt_m.id)).to exist
+      expect(LineItem.where(job_id: order.jobs.first.id, imprintable_object_id: white_shirt_l.id)).to exist
+
+      expect(page).to have_content shirt.style_name
+      expect(page).to have_content shirt.style_catalog_no
+      expect(page).to have_content shirt.description
+
+      expect(page).to_not have_selector '#lineItemModal'
+    end
   end
 
   scenario 'user sees errors when inputting bad info for an imprintable line item, and they go away when fixed', story_818: true do
@@ -97,7 +139,7 @@ feature 'Line Items management', slow: true, line_item_spec: true, js: true do
 
     within('.line-item-form') do
       sleep 1.5
-      choose 'Yes'
+      choose 'Imprintable'
       sleep 1.5
       select brand.name, from: 'Brand'
       sleep 1.5
@@ -135,7 +177,7 @@ feature 'Line Items management', slow: true, line_item_spec: true, js: true do
 
       within('.line-item-form') do
         sleep 1.5
-        choose 'Yes'
+        choose 'Imprintable'
         sleep 1.5
         select brand.name, from: 'Brand'
         sleep 1.5
@@ -174,7 +216,7 @@ feature 'Line Items management', slow: true, line_item_spec: true, js: true do
 
       within('.line-item-form') do
         sleep 1.5
-        choose 'Yes'
+        choose 'Imprintable'
         sleep 1.5
         select imprintable.brand.name, from: 'Brand'
         sleep 1.5
@@ -218,7 +260,7 @@ feature 'Line Items management', slow: true, line_item_spec: true, js: true do
 
     within('.line-item-form') do
       sleep(1)
-      choose 'Yes'
+      choose 'Imprintable'
       sleep 1
       select brand.name, from: 'Brand'
       sleep 1
@@ -239,7 +281,7 @@ feature 'Line Items management', slow: true, line_item_spec: true, js: true do
     expect(page).to have_content 'Add'
 
     within('.line-item-form') do
-      choose 'Yes'
+      choose 'Imprintable'
       sleep 1
       select hat_brand.name, from: 'Brand'
       sleep 1

@@ -2,7 +2,7 @@ var $button = $("#add-line-item-for-<%= @line_itemable.id %>");
 
 disableFor($button, 1000);
 
-$modal = $("<%=j render partial: 'create_modal', locals: { standard_only: local_assigns[:standard_only] } %>");
+$modal = $("<%=j render partial: 'create_modal', locals: { standard_only: local_assigns[:standard_only], job: @job } %>");
 $('body').append($modal);
 
 try {

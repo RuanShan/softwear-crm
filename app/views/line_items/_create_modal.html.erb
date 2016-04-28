@@ -18,14 +18,13 @@
 
         <% else %>
 
-          Imprintable?
-
           <%= radio_button_tag :is_imprintable, 'yes' %>
-          <%= label_tag :is_imprintable_yes, 'Yes' %>
+          <%= label_tag :is_imprintable_yes, 'Imprintable' %>
+          <%= radio_button_tag :is_imprintable, 'quote' %>
+          <%= label_tag :is_imprintable_quote, 'From quote' %>
           <%= radio_button_tag :is_imprintable, 'no' %>
-          <%= label_tag :is_imprintable_no, 'No' %>
+          <%= label_tag :is_imprintable_no, 'Non-imprintable' %>
 
-          <% # TODO inline CSS %>
           <div id="li-standard-form" style='display: none;'>
             <%= render partial: 'standard_form',
                        locals: { hide_submit: true } %>
@@ -34,6 +33,11 @@
           <div id="li-imprintable-form" style='display: none;'>
             <%= render partial: 'imprintable_form',
                        locals: { hide_submit: true } %>
+          </div>
+
+          <div id="li-from-quote-form" style='display: none;'>
+            <%= render partial: 'from_quote_form',
+                       locals: { hide_submit: true, job: job } %>
           </div>
 
         <% end %>

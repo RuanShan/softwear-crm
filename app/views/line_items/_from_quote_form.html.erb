@@ -1,0 +1,87 @@
+<% if job.order.quotes.any? %>
+  <%= form_tag line_items_from_quote_path(job.id), remote: true, id: "line-items-from-quote-form" do |f| %>
+    <% job.order.quotes.each do |quote| %>
+      <h3>Quote: <%= quote.name %></h3>
+      <hr />
+
+      <% quote.jobs.each do |group| %>
+        <h4>Group: <%= group.name %></h4>
+        <div class='help-block'><%= group.description %></div>
+
+        <table class="table">
+          <thead>
+            <tr>
+              <th>Tier</th>
+              <th>Imprintable</th>
+              <th>Add</th>
+            </tr>
+          </thead>
+
+          <tbody>
+            <% Imprintable::TIERS.each do |tier_num, tier| %>
+              <% if (line_items = group.imprintable_line_items_for_tier(tier)).any? %>
+                <% tier_displayed = false %>
+
+                <% line_items.each do |line_item| %>
+                  <tr>
+                    <td><%= (tier_displayed = true; tier) unless tier_displayed %></td>
+                    <td><%= label_tag "line_items[#{line_item.id}][included]", line_item.imprintable_object.name %></td>
+                    <td>
+                      <%= check_box_tag "line_items[#{line_item.id}][included]", '1', false, class: "include-line-item",
+                            data: {
+                              id:             line_item.id,
+                              name:           line_item.imprintable_object.name,
+                              imprintable_id: line_item.imprintable_object_id,
+                            }
+                      %>
+                    </td>
+                  </tr>
+                <% end %>
+              <% end %>
+            <% end %>
+          </tbody>
+        </table>
+      <% end %>
+    <% end %>
+
+    <h4>Added:</h4>
+    <div id="line-item-from-quote-zone">
+      <% job.order.quotes.each do |quote| %>
+        <% quote.line_items.each do |line_item| %>
+          <% field_name = -> f { "line_items[#{line_item.id}][#{f}]" } %>
+
+          <div id='line-item-from-quote-<%= line_item.id %>' style="display: none;">
+            <div class='panel panel-default'>
+              <div class='panel-heading'>
+                <%= line_item.imprintable.name %>
+                <a href='#' class='remove-added-from-quote-li btn btn-xs btn-danger pull-right' data-id='<%= line_item.id %>'>&times;</a>
+              </div>
+
+              <div class='panel-body'>
+                <div class='row'>
+                  <div class='col-sm-6'>
+                    <%= label_tag field_name[:color_id], "Color", class: 'control-label' %>
+                    <%= select_tag field_name[:color_id],
+                      options_from_collection_for_select(line_item.imprintable.colors, :id, :name),
+                      class: 'select2 li-from-quote-select-color',
+                      style: 'width: 100%;' %>
+                  </div>
+
+                  <div class='col-sm-6'>
+                    <p>Decoration Price: $<%= number_field_tag field_name[:decoration_price], 0.00,
+                                                    class: 'form-control dec-price', style: 'width: 100px; display: inline;' %></p>
+                    <p>Imprintable Price: $<%= number_field_tag field_name[:imprintable_price],
+                                                    line_item.imprintable.base_price || 0.00,
+                                                    class: 'form-control imp-price', style: 'width: 100px; display: inline;' %></p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        <% end %>
+      <% end %>
+    </div>
+  <% end %>
+<% else %>
+  <div class='alert alert-danger'>This order has no quotes</div>
+<% end %>

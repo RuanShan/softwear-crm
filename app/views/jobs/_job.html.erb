@@ -25,7 +25,7 @@
         <%= render partial: 'imprints/imprints', locals: { job: job } %>
 
         <div class="form-group box-info">
-          <div class="col-sm-<%= job.order.quotes.any? ? '3' : '4' %>">
+          <div class="col-sm-3">
             <%= link_to new_job_imprint_path(job),
                         class: 'btn btn-info btn-lg btn-block add-imprint',
                         method: :get, remote: true do %>
@@ -33,17 +33,20 @@
             <% end %>
 
           </div>
-          <% if job.order.quotes.any? %>
-            <div class="col-sm-3">
-              <%= link_to imprint_from_quotes_path(job.id, quote_ids: job.order.quote_ids.to_json),
-                          class: 'btn btn-primary btn-lg btn-block imprint-from-quote',
-                          method: :get, remote: true do %>
-                <i class="fa fa-quote-left"></i> From Quote
-              <% end %>
 
-            </div>
+          <%= content_tag :div,
+                class: 'col-sm-3',
+                title: job.order.quotes.empty? ? "This order has no quotes" : nil,
+                data: { toggle: job.order.quotes.empty? ? "tooltip" : nil } do %>
+            <%= link_to imprint_from_quotes_path(job.id, quote_ids: job.order.quote_ids.to_json),
+                        class: 'btn btn-primary btn-lg btn-block imprint-from-quote',
+                        disabled: job.order.quotes.empty?,
+                        method: :get, remote: true do %>
+              <i class="fa fa-quote-left"></i> From Quote
+            <% end %>
           <% end %>
-          <div class="col-sm-4 col-sm-offset-<%= job.order.quotes.any? ? '2' : '4' %>">
+
+          <div class="col-sm-4 col-sm-offset-2">
             <%= button_tag class: 'btn btn-info btn-lg btn-block update-imprints' do %>
               <i class="fa fa-pagelines"></i> Update Imprints
             <% end %>

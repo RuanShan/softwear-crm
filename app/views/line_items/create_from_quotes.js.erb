@@ -1,0 +1,7 @@
+$('#lineItemModal').modal('hide');
+$("#job-<%= @job.id %>").replaceWith("<%=j render 'jobs/job', job: @job %>");
+registerJobEvents($("#job-<%= @job.id %>"));
+
+<% if @failed_line_items.present? %>
+  errorModal($("<%= @failed_line_items.flat_map { |li| li.errors.full_messages }.uniq.join('<br />') %>"));
+<% end %>

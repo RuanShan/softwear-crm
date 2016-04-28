@@ -186,6 +186,7 @@ CrmSoftwearcrmCom::Application.routes.draw do
   end
 
   post   'line_items', to: 'line_items#create'
+  post   'jobs/:job_id/line_items/from_quotes', to: 'line_items#create_from_quotes', as: :line_items_from_quote
   get    'line_item/select_options', to: 'line_items#select_options'
   put    'line_items/update', to: 'line_items#update'
   patch  'line_items/update', to: 'line_items#update'

@@ -15,11 +15,14 @@
     $out = null
     $in = null
     if $(this).val() is 'yes'
-      $out = $('#li-standard-form')
+      $out = $('#li-standard-form,#li-from-quote-form')
       $in  = $('#li-imprintable-form')
-    else
-      $out = $('#li-imprintable-form')
+    else if $(this).val() is 'no'
+      $out = $('#li-imprintable-form,#li-from-quote-form')
       $in  = $('#li-standard-form')
+    else if $(this).val() is 'quote'
+      $out = $('#li-imprintable-form,#li-standard-form')
+      $in  = $('#li-from-quote-form')
 
     $out.fadeOut 400, ->
       errorHandler.clear() if errorHandler != null
@@ -115,6 +118,20 @@
   handleImprintableForm $('#li-imprintable-form')
   $lineItemModal.modal 'show'
   $lineItemModal.find('#is_imprintable_no').prop('checked', false)
+
+  fromQuoteForm = $("#line-items-from-quote-form")
+  if fromQuoteForm.length > 0
+    fromQuoteForm.find('.li-from-quote-select-color').select2();
+
+    $('.include-line-item').on 'change', ->
+      id = $(this).data('id')
+      if this.checked
+        $("#line-item-from-quote-#{id}").show();
+      else
+        $("#line-item-from-quote-#{id}").hide();
+
+    $('.remove-added-from-quote-li').on 'click', ->
+      $(".include-line-item[data-id='#{$(this).data('id')}']").prop('checked', false).trigger('change')
 
 @imprintableEditEntryChanged = ($this) ->
   console.log("LE GASP")
