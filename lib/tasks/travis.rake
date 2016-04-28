@@ -25,6 +25,8 @@ namespace :travis do
       what_to_do = :dont_deploy
 
       build.reload.jobs.each do |job|
+        next if job.id.to_i == job_id.to_i
+
         case job.state
         when 'failed', 'errored'
           what_to_do = :dont_deploy
