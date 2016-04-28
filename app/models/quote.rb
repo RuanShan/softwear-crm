@@ -16,15 +16,11 @@ class Quote < ActiveRecord::Base
   get_insightly_api_key_from { salesperson.try(:insightly_api_key) }
 
   searchable do
-    text :company
-    string :salesperson_name
-    string(:store_name) { |q| q.store.try(:name) }
-    string :name
+    text :company, :full_name, :name, :state, :salesperson_name
+
     integer :id
     time :valid_until_date
-    time :estimated_delivery_date
-    string :state
-    string :state
+    date :estimated_delivery_date
   end
 
   QUOTE_SOURCES = [

@@ -1,9 +1,30 @@
 
 <%= search_form_for Quote, class: 'form-horizontal' do |s| %>
 
-    <div class="form-group">
+    <div class="form-group ">
       <div class="col-sm-12">
         <%= s.fulltext id: 'js_search', placeholder: 'Search Terms', class: 'form-control' %>
+      </div>
+    </div>
+
+    <div class='row form-group'>
+      <div class="col-sm-6">
+        <%= s.select :salesperson_full_name, User.all.map{|x| x.full_name }, multiple: true %>
+      </div>
+
+      <div class="col-sm-6">
+        <%= s.select :state, Quote.state_machines[:state].states.map{|s| s.name.to_s}, multiple: true %>
+      </div>
+    </div>
+
+    <div class='row form-group'>
+
+      <div class="col-sm-6">
+        <%= s.text_field :estimated_delivery_date, greater_than: true, placeholder: 'Estimated delivery after...', class: 'js-datetimepicker' %>
+      </div>
+
+      <div class="col-sm-6">
+        <%= s.text_field :estimated_delivery_date, less_than: true, placeholder: 'Estimated delivery before...', class: 'js-datetimepicker' %>
       </div>
     </div>
 
