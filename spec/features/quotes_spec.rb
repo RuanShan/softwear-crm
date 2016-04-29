@@ -396,7 +396,7 @@ feature 'Quotes management', slow: true, quote_spec: true, redo: 3 do
         end
       end
 
-      scenario 'When I add line item groups it is tracked in the timeline', js: true, story_600: true do
+      scenario 'When I add line item groups it is tracked in the timeline', no_ci: true, js: true, story_600: true do
         PublicActivity.with_tracking do
           imprintable_group; imprint_method_1; imprint_method_2
           visit edit_quote_path quote
@@ -422,7 +422,7 @@ feature 'Quotes management', slow: true, quote_spec: true, redo: 3 do
         end
       end
 
-      scenario 'When I change an existing line item it is tracked in the timeline', js: true, story_600: true do
+      scenario 'When I change an existing line item it is tracked in the timeline', no_ci: true, js: true, story_600: true do
         PublicActivity.with_tracking do
           imprintable_group; imprint_method_1; imprint_method_2
 

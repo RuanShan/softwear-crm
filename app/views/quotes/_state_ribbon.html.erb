@@ -2,7 +2,7 @@
   <div class="state-ribbon">
     <div class='single-state-box'>
       <H5>Quote State</H5>
-      <div class='state <%= get_style_from_state(quote.state, 'state') %> quote-state'>
+      <div class='state <%= get_style_from_quote_state(quote.state, 'state') %> quote-state'>
         <%= quote.human_state_name.capitalize %>
       </div>
     </div>
