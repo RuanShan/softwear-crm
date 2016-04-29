@@ -21,6 +21,7 @@ class Crm::Phone < ActiveRecord::Base
   private
 
   def reformat_number
+    number ||= '000-000-0000'
     unless /\d{3}-\d{3}-\d{4}/.match(number)
       number.insert(6, '-').insert(3, '-')
     end

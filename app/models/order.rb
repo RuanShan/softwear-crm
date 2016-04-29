@@ -435,6 +435,7 @@ class Order < ActiveRecord::Base
   def ready_for_production?
     return if production?
 
+    !canceled? &&
     (payment_status == 'Payment Terms Met' ||
     payment_status == 'Payment Complete' || fba?) &&
     invoice_state  == 'approved'
@@ -717,6 +718,8 @@ class Order < ActiveRecord::Base
   end
 
   def create_production_order(options = {})
+    return if canceled?
+
     if options[:force] == false && !softwear_prod_id.nil?
       raise "Attempted to create a duplicate production order."
     end
