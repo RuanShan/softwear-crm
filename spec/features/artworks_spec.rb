@@ -55,6 +55,7 @@ feature 'Artwork Features', js: true, artwork_spec: true do
 
   end
 
+
   scenario 'A user can view a list of Artworks' do
     if ci?
       visit artworks_path

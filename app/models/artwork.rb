@@ -12,7 +12,10 @@ class Artwork < ActiveRecord::Base
     text :tag_list do
       tag_list.map(&:to_s)
     end
-    integer :id
+    
+    text :id do
+      self[:id].to_s
+    end
   end
 
   tracked by_current_user
