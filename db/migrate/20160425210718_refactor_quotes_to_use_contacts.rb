@@ -1,6 +1,6 @@
 class RefactorQuotesToUseContacts < ActiveRecord::Migration
   def change
-#    add_column :quotes, :contact_id, :integer, index: true
+    add_column :quotes, :contact_id, :integer, index: true
 
     Quote.all.each do |quote|
       if Crm::Email.exists?(address: quote[:email])
