@@ -1,0 +1,31 @@
+<div class='row'>
+  <div class="well">
+    <div class='pull-right'>
+      <%= f.link_to_remove "&times;".html_safe, class: 'btn btn-danger' %>
+    </div>
+
+    <div class='form-group'>
+      <%= f.label :name, 'Option Type', class: 'control-label' %>
+      <%= f.text_field :name, class: 'form-control' %>
+    </div>
+
+    <div class='form-group'>
+      <%= f.label :options, 'Options', class: 'col-sm-2 control-label' %>
+
+      <div class='col-sm-10'>
+        <% f.fields_for :option_values do |ff| %>
+          <div class='col-sm-10'>
+            <%= ff.text_field :value, class: 'form-control' %>
+          </div>
+          <div class='col-sm-2'>
+            <%= ff.link_to_remove "&times;".html_safe, class: 'btn btn-danger' %>
+          </div>
+        <% end %>
+
+        <%= f.link_to_add "<i class='fa fa-plus'></i> Add Option".html_safe, :option_values, class: 'btn btn-primary' %>
+      </div>
+    </div>
+
+    <div class='clearfix'></div>
+  </div>
+</div>

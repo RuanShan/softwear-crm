@@ -21,6 +21,8 @@ class Imprint < ActiveRecord::Base
   has_many :artwork_requests, through: :artwork_request_imprints
   has_many :proofs, -> (i) { where(job_id: i.job_id) }, through: :artwork_requests
   has_many :artworks, through: :proofs
+  has_many :imprint_option_values, class_name: "Pricing::ImprintOptionValue"
+  has_many :option_values, through: :imprint_option_values
 
   # validates :job, presence: true
   validates :print_location, presence: true, uniqueness: { scope: :job_id }, if: :job_id

@@ -25,13 +25,13 @@ class ImprintMethodsController < InheritedResources::Base
            locals: { print_locations: @print_locations, name: params[:name] }
   end
 
-protected
+  protected
 
   def set_current_action
     @current_action = 'imprint_methods'
   end
 
-private
+  private
 
   def permitted_params
     params.permit(
@@ -44,6 +44,12 @@ private
           :name, :max_height, :max_width, :imprint_method_id, :id,
           :ideal_width, :ideal_height, :platen_hoop_id, :popularity,
           :_destroy,
+        ],
+        option_types_attributes: [
+          :id, :name, :_destroy,
+          option_values_attributes: [
+            :id, :value, :_destroy,
+          ]
         ]
       ]
     )

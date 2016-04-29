@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160425210718) do
+ActiveRecord::Schema.define(version: 20160429195628) do
 
   create_table "activities", force: :cascade do |t|
     t.integer  "trackable_id",   limit: 4
@@ -778,6 +778,28 @@ ActiveRecord::Schema.define(version: 20160425210718) do
     t.datetime "created_at",                                      null: false
     t.datetime "updated_at",                                      null: false
   end
+
+  create_table "pricing_imprint_option_values", force: :cascade do |t|
+    t.integer "imprint_id",              limit: 4
+    t.integer "pricing_option_value_id", limit: 4
+  end
+
+  add_index "pricing_imprint_option_values", ["imprint_id"], name: "index_pricing_imprint_option_values_on_imprint_id", using: :btree
+  add_index "pricing_imprint_option_values", ["pricing_option_value_id"], name: "index_pricing_imprint_option_values_on_pricing_option_value_id", using: :btree
+
+  create_table "pricing_option_types", force: :cascade do |t|
+    t.integer "imprint_method_id", limit: 4
+    t.string  "name",              limit: 191
+  end
+
+  add_index "pricing_option_types", ["imprint_method_id"], name: "index_pricing_option_types_on_imprint_method_id", using: :btree
+
+  create_table "pricing_option_values", force: :cascade do |t|
+    t.integer "option_type_id", limit: 4
+    t.string  "value",          limit: 191
+  end
+
+  add_index "pricing_option_values", ["option_type_id"], name: "index_pricing_option_values_on_option_type_id", using: :btree
 
   create_table "print_location_imprintables", force: :cascade do |t|
     t.integer  "imprintable_id",       limit: 4

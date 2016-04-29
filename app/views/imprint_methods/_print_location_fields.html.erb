@@ -1,4 +1,4 @@
-<div class="js-removeable clearfix">
+<div class="clearfix">
   <div class="col-xs-11">
     <br clear="all">
 
@@ -53,9 +53,7 @@
   </div>
 
   <div class="col-xs-1">
-    <%= f.hidden_field :_destroy %>
-
-    <%= link_to 'x', '#', class: 'btn btn-danger js-remove-fields pull-right' %>
+    <%= f.link_to_remove '&times;'.html_safe, class: 'btn btn-danger' %>
   </div>
 
   <br clear="all">
