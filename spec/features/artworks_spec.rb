@@ -2,10 +2,19 @@ require 'spec_helper'
 include ApplicationHelper
 
 feature 'Artwork Features', js: true, artwork_spec: true do
+  given!(:order) { create(:order_with_job) }
+  given!(:imprint) { create(:valid_imprint) }
+  given!(:request) { create(:valid_artwork_request) }
   given!(:artwork) { create(:valid_artwork) }
   given!(:doc_art) { create(:doc_type_preview) }
   given!(:valid_user) { create(:alternate_user) }
-  before(:each) { sign_in_as(valid_user) }
+
+  before :each do
+    sign_in_as(valid_user)
+    order.jobs.first.imprints << imprint
+    order.jobs.first.imprints.first.artwork_requests << request
+    artwork.artwork_requests << request
+  end
   
   context 'Artwork Activities' do
 
@@ -55,6 +64,18 @@ feature 'Artwork Features', js: true, artwork_spec: true do
 
   end
 
+  scenario 'A user can click on the order link and visit the edit order page' do
+    other_order = artwork.artwork_requests.first.order
+    
+    visit artworks_path
+    expect(page).to have_link "Order #{other_order.id}"
+    sleep 1
+    click_link "Order #{other_order.id}"
+    sleep 1
+    expect(page).to have_content "Order ##{other_order.id}"
+    expect(page).to have_content "#{other_order.name}"
+  end
+  
   scenario 'A user can view a list of Artworks' do
     if ci?
       visit artworks_path

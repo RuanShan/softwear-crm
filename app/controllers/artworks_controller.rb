@@ -6,7 +6,11 @@ class ArtworksController < InheritedResources::Base
 
   def index
     super do |format|
-      @artworks = Artwork.all.page(params[:page])
+
+      #sorts on created_at descending
+      @artworks = Artwork.order(:created_at).all.reverse_order
+      @artworks = @artworks.page(params[:page])
+      
       @artwork_request = params[:artwork_request_id].nil? ? nil : ArtworkRequest.find(params[:artwork_request_id])
 
       format.js{ render(locals: { artwork_request: @artwork_request }) }
@@ -21,6 +25,7 @@ class ArtworksController < InheritedResources::Base
       @artworks = Artwork.search do
         fulltext params[:q]
         paginate page: params[:page] || 1, per_page: per_page
+        order_by :created_at, :desc
       end
         .results
     else
