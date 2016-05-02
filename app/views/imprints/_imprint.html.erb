@@ -26,7 +26,7 @@
                                  :name,
                                  local_assigns[:imprint_method].try(:id) ||
                                  local_assigns[:imprint].try(:imprint_method).try(:id)
-          ),
+                         ),
                         include_blank: true,
                         id: "imprint_method_select_#{ id }",
                         class: 'form-control js-imprint-method-select' %>
@@ -49,7 +49,8 @@
                                    else
                                       "imprint[#{id}][print_location_id]"
                                    end,
-                             default: local_assigns[:imprint].try(:print_location).try(:id) } %>
+                             default: local_assigns[:imprint].try(:print_location).try(:id),
+                             selected_options: local_assigns[:imprint].try(:selected_option_values) } %>
       </div>
 
 

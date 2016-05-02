@@ -30,9 +30,9 @@ feature 'Imprints Management', slow: true, imprint_spec: true, js: true do
     sleep 1
     first('.add-imprint').click
     sleep 1
-    find('.js-imprint-method-select').select imprint_method2.name
+    select2 imprint_method2.name, from: "#imprint_method_select_-1"
     sleep 1
-    find('.js-print-location-select').select print_location2.name
+    select2 print_location2.name, from: 'Print location'
     expect(all('.editing-imprint').count).to be > 1
     sleep 1
     find('.update-imprints').click
@@ -47,9 +47,9 @@ feature 'Imprints Management', slow: true, imprint_spec: true, js: true do
     sleep 1
     first('.add-imprint').click
     sleep 1
-    find('.js-imprint-method-select').select imprint_method2.name
+    select2 imprint_method2.name, from: "#imprint_method_select_-1"
     sleep 1
-    find('.js-print-location-select').select print_location2.name
+    select2 print_location2.name, from: 'Print location'
     sleep 1
     find('.js-imprint-description').set 'Here ye here ye'
     expect(all('.editing-imprint').count).to be > 1
@@ -66,9 +66,9 @@ feature 'Imprints Management', slow: true, imprint_spec: true, js: true do
     sleep 1
     first('.add-imprint').click
     sleep 1
-    find('.js-imprint-method-select').select imprint_method2.name
+    select2 imprint_method2.name, from: "#imprint_method_select_-1"
     sleep 1
-    find('.js-print-location-select').select print_location2.name
+    select2 print_location2.name, from: 'Print location'
     expect(all('.editing-imprint').count).to be > 1
 
     find('.imprints-container').click
@@ -81,9 +81,9 @@ feature 'Imprints Management', slow: true, imprint_spec: true, js: true do
     visit edit_order_path(order.id, anchor: 'jobs')
     wait_for_ajax
 
-    find('.js-imprint-method-select').select imprint_method2.name
+    select2 imprint_method2.name, from: "#imprint_method_select_#{imprint.id}"
     sleep 1.5
-    find('.js-print-location-select').select print_location2.name
+    select2 print_location2.name, from: 'Print location'
 
     expect(all('.editing-imprint').size).to be > 1
 
@@ -93,6 +93,32 @@ feature 'Imprints Management', slow: true, imprint_spec: true, js: true do
 
     sleep 1.5
     expect(Imprint.where(job_id: job.id, print_location_id: print_location2.id)).to exist
+  end
+
+  context 'when option types are defined for the selected imprint method' do
+    let!(:imprint_method) { imprint.imprint_method }
+
+    let!(:option_type_1) { create(:option_type, name: 'Type1', options: ['Value1', 'Value2'], imprint_method_id: imprint_method.id) }
+    let!(:option_type_2) { create(:option_type, name: 'Type2', options: ['Value3', 'Value4'], imprint_method_id: imprint_method.id) }
+
+    let(:type_1_value_1) { option_type_1.option_values[0] }
+    let(:type_2_value_1) { option_type_2.option_values[0] }
+    let(:type_1_value_2) { option_type_1.option_values[0] }
+    let(:type_2_value_2) { option_type_2.option_values[0] }
+
+    scenario 'user can select values from those option types' do
+      visit edit_order_path(order.id, anchor: 'jobs')
+      wait_for_ajax
+
+      select2 type_1_value_2.value, from: option_type_1.name
+      select2 type_2_value_2.value, from: option_type_2.name
+
+      find('.update-imprints').click
+      wait_for_ajax
+      sleep 0.5
+
+      expect(imprint.reload.option_value_ids).to eq [type_1_value_2.id, type_2_value_2.id]
+    end
   end
 
   scenario 'user can add and edit an imprint method, and update them both' do
@@ -105,14 +131,14 @@ feature 'Imprints Management', slow: true, imprint_spec: true, js: true do
     sleep 1.5
 
     within('.imprint-entry[data-id="-1"]') do
-      find('.js-imprint-method-select').select imprint_method2.name
-      find('.js-print-location-select').select print_location2.name
+      select2 imprint_method2.name, from: "#imprint_method_select_-1"
+      select2 print_location2.name, from: "#imprint_-1_print_location_id"
     end
     sleep 1.5
 
     within(".imprint-entry[data-id='#{job.imprints.first.id}']") do
-      find('.js-imprint-method-select').select imprint_method3.name
-      find('.js-print-location-select').select print_location3.name
+      select2 imprint_method3.name, from: "#imprint_method_select_#{imprint.id}"
+      select2 print_location3.name, from: "#imprint_#{imprint.id}_print_location_id"
     end
     sleep 1.5
 
@@ -133,9 +159,9 @@ feature 'Imprints Management', slow: true, imprint_spec: true, js: true do
     sleep 2
 
     within '.imprint-entry[data-id="-1"]' do
-      find('.js-imprint-method-select').select 'Digital'
+      select2 'Digital', from: "#imprint_method_select_-1"
       sleep 2
-      find('.js-print-location-select').select 'Front'
+      select2 'Front', from: "#imprint_-1_print_location_id"
     end
 
     sleep 2
@@ -242,7 +268,7 @@ feature 'Imprints Management', slow: true, imprint_spec: true, js: true do
       wait_for_ajax
     end
 
-    scenario 'a user can add name/number to a previously not name/number imprint without refreshing', bugfix: true do
+    scenario 'a user can add name/number to a previously not name/number imprint without refreshing', brkoen: true, bugfix: true do
       imprint_two.update_column :name_number, false
       visit edit_order_path(order.id, anchor: 'jobs')
 

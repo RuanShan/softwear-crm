@@ -12,7 +12,7 @@
       field
     else
       if resourceId
-        "#{resourceName}[#{resourceId}[#{field}]]"
+        "#{resourceName}[#{resourceId}][#{field}]"
       else
         "#{resourceName}[#{field}]"
   findFieldElementFor = (field) ->
@@ -39,22 +39,26 @@
       $field = findFieldElementFor field
       
       if $field.length == 0
-        #console.log "Couldn't find field #{field} (name #{getParamName(field)})"
+        console.log "Couldn't find field #{field} (name #{getParamName(field)})"
         continue
       
       # Create the error message div
       $errorMsgDiv = $ '<div/>',
         class: 'error'
         for:   getParamName(field)
+
       # Place it before the input field
       $field.before $errorMsgDiv
+
       # Wrap the input field to make it red
       $field.wrap $('<div/>', class: 'field_with_errors') unless $field.data('no-wrap')
+
       # Populate error message div with messages
       for error in fieldErrors
         $errorMsgDiv.append $ '<p/>',
           class: 'text-danger'
           text:  "#{capitalize field} #{error}"
+
     # Show the modal
     $modal.modal 'show' unless $modal is null
 
@@ -71,7 +75,7 @@
 @errorHandlerFrom = (element, resourceName, $form, resourceId) ->
   $element = $(element)
   handler = $element.data 'error-handler'
-  if typeof handler is 'undefined'
+  if handler is undefined
     handler = ErrorHandler(resourceName, $form, resourceId)
     $element.data 'error-handler', handler
 

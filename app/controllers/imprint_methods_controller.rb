@@ -18,11 +18,12 @@ class ImprintMethodsController < InheritedResources::Base
   end
 
   def print_locations
-    @imprint_method = ImprintMethod.find params[:imprint_method_id]
+    @imprint_method = ImprintMethod.find(params[:imprint_method_id])
+    @imprint = Imprint.find(params[:imprint_id]) if params[:imprint_id] && params[:imprint_id].to_i > -1
     @print_locations = @imprint_method.print_locations
 
     render partial: 'print_locations_select',
-           locals: { print_locations: @print_locations, name: params[:name] }
+           locals: { print_locations: @print_locations, name: params[:name], selected_options: @imprint.try(:selected_option_values) }
   end
 
   protected

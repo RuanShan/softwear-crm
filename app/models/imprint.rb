@@ -28,11 +28,40 @@ class Imprint < ActiveRecord::Base
   validates :print_location, presence: true, uniqueness: { scope: :job_id }, if: :job_id
 
   after_save :touch_associations
+  after_save :assign_pending_selected_option_values
 
   scope :name_number, -> { where(name_number: true) }
 
+  def description_in_quotes
+    if description.blank?
+      ""
+    else
+      %("#{description}")
+    end
+  end
+
   def name
-    "#{imprint_method.try(:name) || 'n\a'} - #{print_location.try(:name) || 'n\a'} - #{description}"
+    "#{imprint_method.try(:name) || 'n\a'} - #{print_location.try(:name) || 'n\a'} #{description_in_quotes}"
+  end
+
+  def selected_option_values(force = false)
+    return @pending_selected_option_values if @pending_selected_option_values && !force
+
+    result = {}
+
+    option_values.each do |option_value|
+      result[option_value.option_type_id.to_i] = option_value
+    end
+
+    @pending_selected_option_values = result
+  end
+
+  def selected_option_values=(values)
+    @pending_selected_option_values = values
+  end
+
+  def changed?
+    super || (@pending_selected_option_values.present? && [@pending_selected_option_values.values - option_value_ids].length != 0)
   end
 
   def equipment_sanitizing?
@@ -85,6 +114,22 @@ class Imprint < ActiveRecord::Base
   def touch_associations
     artwork_requests.update_all(updated_at: Time.now)
     proofs.update_all(updated_at: Time.now) 
+  end
+
+  def assign_pending_selected_option_values
+    return if @pending_selected_option_values.nil?
+
+    imprint_option_values.destroy_all
+    @pending_selected_option_values.each do |_option_type_id, option_value|
+      case option_value
+      when String, Fixnum then option_value_id = option_value
+      else                     option_value_id = option_value.id
+      end
+
+      imprint_option_values.create(option_value_id: option_value_id)
+    end
+
+    @pending_selected_option_values = nil
   end
 
 end
