@@ -1,59 +1,67 @@
 <tr id="artwork-row-<%= artwork.id %>">
   <% cache(["_row", artwork]) do %>
-  <td><%= artwork.id %></td>
-  <td><%= artwork.name %></td>
-  <td>
-    <% if artwork.preview && artwork.is_image? %>
-      <%= link_to(preview_artwork(artwork, :thumb), full_view_artwork_path(artwork), target: :_blank) %>
-    <% else %>
-      (no preview)
-    <% end %>
-  </td>
-  <td>
-    <% if artwork.preview %>
-      <%= link_to 'Download File', artwork.artwork.file.url %>
-    <% else %>
-      (no artwork file)
-    <% end %>
-  </td>
-  <td><%= artwork.show_tags %></td>
-  <td><%= artwork.artist.full_name %></td>
-  <td><%= artwork.description %></td>
+    <td><%= artwork.id %></td>
+    <td>
+      <dl>
+        <dt>Name:</dt><dd><%= artwork.name %></dd>
+        <dt>Description:</dt><dd><%= artwork.description %></dd>
+        <dt>Artist:</dt><dd><%= artwork.artist.full_name %></dd>
+        <dt>Tags:</dt><dd><%= artwork.show_tags %></dd>
+      </dl>
+    </td>
+    <td>
+      <dl>
+        <dd>
+          <% if artwork.preview && artwork.is_image? %>
+            <%= link_to(preview_artwork(artwork, :thumb), full_view_artwork_path(artwork), target: :_blank) %>
+          <% else %>
+            (no preview)
+          <% end %>
+        </dd>
+        <dd>
+          <% if artwork.preview %>
+            <%= link_to 'Download File', artwork.artwork.file.url %>
+          <% else %>
+            (no artwork file)
+          <% end %>
+        </dd>
+      </dl>
+    </td>
+    <td>
+      <dl>
+        <% artwork.artwork_requests.each do |req| %>
+          <% if req.order %>
+            <dd><%= link_to "Order #{req.order.id}", edit_order_path(req.order) %></dd>
+          <% end %>
+        <% end %>
+      </dl>
+    </td>
   <% end %>
   <td>
     <div class="btn-group btn-group-xs">
       <% if artwork_request.nil? %>
-
         <%= link_to edit_artwork_path(artwork), class: 'btn btn-default',
                     'data-toggle' => 'tooltip', 'title' => 'Edit' do %>
           <i class="fa fa-edit"></i>
         <% end %>
-
         <%= link_to "#{artwork_path(artwork)}?disable_buttons=true",
                     class: 'btn btn-default', remote: true,
                     'data-toggle' => 'tooltip', 'title' => 'Show' do %>
           <i class="fa fa-eye"></i>
         <% end %>
-
         <%= link_to artwork_path(artwork), class: 'btn btn-default',
                     method: :delete, remote: true,
                     'data-action' => 'destroy', 'data-toggle' => 'tooltip', 'title' => 'Destroy' do %>
           <i class="fa fa-times"></i>
         <% end %>
-
       <% else %>
-
         <% if artwork_request.artwork_ids.empty? or !artwork_request.artwork_ids.include?(artwork.id)  %>
-
           <%= link_to artwork_request_path(artwork_id: artwork.id, id: artwork_request.id),
                       class: 'btn btn-primary', method: :put, remote: true do %>
             Add
           <% end %>
-
         <% else %>
-
           <span class="btn btn-success">Already Added</span>
-
         <% end %>
       <% end %>
     </div>
