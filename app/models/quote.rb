@@ -403,7 +403,7 @@ class Quote < ActiveRecord::Base
   def assign_from_quote_request(quote_request)
 
     if Crm::Email.exists?(address: quote_request.email)
-      contact = Crm::Email.find_by(address: quote_request.email)
+      contact = Crm::Email.find_by(address: quote_request.email).contact
     else
       contact = Crm::Contact.new
 
