@@ -54,7 +54,7 @@
 
 
 
-      <% if (local_assigns[:imrpint_method] || local_assigns[:imprint].try(:imprint_method)).try(:name_number?) %>
+      <% if (local_assigns[:imprint_method].try(:name_number?) || local_assigns[:imprint].try(:imprint_method)).try(:name_number?) %>
       <div class='name-number-checkbox'>
       <% else %>
       <div class='name-number-checkbox hidden'>
