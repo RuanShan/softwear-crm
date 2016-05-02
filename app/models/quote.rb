@@ -813,7 +813,11 @@ class Quote < ActiveRecord::Base
       }
       end
     end
-   hash
+    hash
+
+  rescue StandardError => e
+    hash[:error] = e
+    hash
   end
 
   def self.format_phone_for_contact(num)
