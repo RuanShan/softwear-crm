@@ -134,6 +134,8 @@ class Imprint < ActiveRecord::Base
 
     imprint_option_values.destroy_all
     @pending_selected_option_values.each do |_option_type_id, option_value|
+      next if option_value.blank?
+
       case option_value
       when String, Fixnum then option_value_id = option_value
       else                     option_value_id = option_value.id
