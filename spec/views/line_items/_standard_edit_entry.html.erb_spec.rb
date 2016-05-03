@@ -10,16 +10,16 @@ describe '/line_items/_standard_edit_entry.html.erb', line_item_spec: true, stor
   it 'should render input fields for name, description, taxable, quantity,
        unit_price, and url, all with the line_item id in the name' do
 		expect(rendered)
-      .to have_css "*[name='line_item[#{line_item.id}[name]]']"
+      .to have_css "*[name='line_item[#{line_item.id}][name]']"
     expect(rendered)
-      .to have_css "*[name='line_item[#{line_item.id}[description]]']"
+      .to have_css "*[name='line_item[#{line_item.id}][description]']"
 		expect(rendered)
-      .to have_css "*[name='line_item[#{line_item.id}[taxable]]']"
+      .to have_css "*[name='line_item[#{line_item.id}][taxable]']"
 		expect(rendered)
-      .to have_css "*[name='line_item[#{line_item.id}[quantity]]']"
+      .to have_css "*[name='line_item[#{line_item.id}][quantity]']"
 		expect(rendered)
-      .to have_css "*[name='line_item[#{line_item.id}[unit_price]]']"
+      .to have_css "*[name='line_item[#{line_item.id}][unit_price]']"
     expect(rendered)
-    .to have_css "*[name='line_item[#{line_item.id}[url]]']"
+      .to have_css "*[name='line_item[#{line_item.id}][url]']"
   end
 end
