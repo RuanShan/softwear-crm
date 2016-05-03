@@ -7,6 +7,8 @@ module Pricing
 
     accepts_nested_attributes_for :option_values, allow_destroy: true
 
+    validates :imprint_method_id, presence: true
+
     after_save :assign_pending_options
 
     def options

@@ -32,16 +32,29 @@ class Imprint < ActiveRecord::Base
 
   scope :name_number, -> { where(name_number: true) }
 
-  def description_in_quotes
-    if description.blank?
-      ""
-    else
-      %("#{description}")
-    end
-  end
-
   def name
-    "#{imprint_method.try(:name) || 'n\a'} - #{print_location.try(:name) || 'n\a'} #{description_in_quotes}"
+    return @name unless @name.blank? || changed?
+
+    n = "#{imprint_method.try(:name) || 'n\a'} - #{print_location.try(:name) || 'n\a'}"
+
+    if option_values.any?
+      n << ' ('
+      last_i = option_values.size - 1
+
+      option_values.each_with_index do |option_value, i|
+        n << option_value.display
+        unless i == last_i
+          n << ', '
+        end
+      end
+      n << ')'
+    end
+
+    if description.present?
+      n << %( "#{description}")
+    end
+
+    @name = n
   end
 
   def selected_option_values(force = false)
@@ -73,7 +86,7 @@ class Imprint < ActiveRecord::Base
   end
 
   def name_changed?
-    description_changed?
+    description_changed? || @pending_selected_option_values.present?
   end
 
   def job_and_name

@@ -45,6 +45,22 @@ describe Imprint, imprint_spec: true do
     it 'returns a string of imprint_method.name - print_location.name "description"' do
       expect(subject.name).to eq("IM name - PL name \"1CF\"")
     end
+
+    context 'with option values' do
+      let!(:option_type_1) { create(:option_type, name: 'Type1', options: ['Value1', 'Value2']) }
+      let!(:option_type_2) { create(:option_type, name: 'Type2', options: ['Value3', 'Value4']) }
+
+      let(:type_1_value_1) { option_type_1.option_values[0] }
+      let(:type_2_value_1) { option_type_2.option_values[0] }
+
+      before(:each) do
+        subject.option_values << type_1_value_1
+      end
+      
+      it 'includes them in parentheses' do
+        expect(subject.name).to eq "IM name - PL name (Type1: Value1) \"1CF\""
+      end
+    end
   end
 
   context 'Option Values', option_values: true do
