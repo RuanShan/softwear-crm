@@ -16,8 +16,10 @@
       <%= label_tag option_type_name, option_type.name %>
       <%= select_tag option_type_name,
             options_from_collection_for_select(
-              option_type.option_values, :id, :value, local_assigns[:selected_options].try(:[], option_type.id.to_i).try(:id)
+              option_type.option_values, :id, :value,
+              local_assigns[:selected_options].try(:[], option_type.id.to_i).try(:id)
             ),
+            include_blank: true,
             class: "form-control select-option-value-#{option_type.name.dasherize} js-select-option-value"
       %>
     <% end %>

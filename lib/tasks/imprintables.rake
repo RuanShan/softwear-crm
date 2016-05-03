@@ -244,7 +244,7 @@ namespace :imprintables do
 
         if variant_id != current_variant_id
           puts "Loading costs for #{ImprintableVariant.find(variant_id).full_name}..."
-          variant_id = current_variant_id
+          current_variant_id = variant_id
         end
 
         count += LineItem.where(
