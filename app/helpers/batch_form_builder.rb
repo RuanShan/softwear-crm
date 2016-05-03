@@ -32,7 +32,7 @@ class BatchFormBuilder < LancengFormBuilder
   private
 
   def field_name(field)
-    "#{@object_name}[#{current_id}[#{field}]]"
+    "#{@object_name}[#{current_id}][#{field}]"
   end
 
   def current_id

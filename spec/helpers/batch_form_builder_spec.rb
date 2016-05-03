@@ -16,9 +16,9 @@ describe 'BatchFormBuilder', helper_spec: true do
         f.send(input_type, :name)
       end
 
-      it 'should assign input names in the format of [object[id[field]]]' do
+      it 'should assign input names in the format of object[id][field]' do
         expect(f.send(input_type, :name))
-          .to include 'name="dummy_object[2[name]]"'
+          .to include 'name="dummy_object[2][name]"'
       end
     end
   end

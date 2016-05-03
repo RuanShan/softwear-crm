@@ -302,7 +302,7 @@ feature 'Line Items management', slow: true, line_item_spec: true, js: true do
       find('.line-item-button[title="Edit"]').click
       sleep 1
 
-      fill_in "line_item[#{non_imprintable.id}[name]]", with: 'New name!'
+      fill_in "line_item[#{non_imprintable.id}][name]", with: 'New name!'
 
       find('.update-line-items').click
       sleep 1
@@ -403,7 +403,7 @@ feature 'Line Items management', slow: true, line_item_spec: true, js: true do
 
     find('.line-item-button[title="Edit"]').click
     sleep 1
-    fill_in "line_item[#{non_imprintable.id}[quantity]]", with: ''
+    fill_in "line_item[#{non_imprintable.id}][quantity]", with: ''
 
     first('.update-line-items').click
     sleep 1
