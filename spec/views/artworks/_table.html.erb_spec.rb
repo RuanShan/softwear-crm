@@ -7,14 +7,10 @@ describe 'artworks/_table.html.erb', artwork_spec: true do
     render partial: 'artworks/table', locals: { artworks: artworks }
   end
 
-  it 'has table with id, name, artwork, art file, tags, created by, description, and actions' do
+  it 'has table with appropriate table headers' do
     expect(rendered).to have_selector('th', text: 'ID')
-    expect(rendered).to have_selector('th', text: 'Name')
     expect(rendered).to have_selector('th', text: 'Artwork')
     expect(rendered).to have_selector('th', text: 'Art File')
-    expect(rendered).to have_selector('th', text: 'Tags')
-    expect(rendered).to have_selector('th', text: 'Created By')
-    expect(rendered).to have_selector('th', text: 'Description')
     expect(rendered).to have_selector('th', text: 'Actions')
   end
 

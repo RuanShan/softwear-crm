@@ -433,7 +433,7 @@ class Order < ActiveRecord::Base
   end
 
   def ready_for_production?
-    return if production?
+    return if production? || imported_from_admin?
 
     !canceled? &&
     (payment_status == 'Payment Terms Met' ||

@@ -10,7 +10,7 @@ describe ArtworksController, js: true, artwork_spec: true do
   describe 'GET index' do
     it 'assigns @artworks, @artwork_request, and renders index.js.erb' do
       get :index, id: artwork.id, artwork_request: nil, format: 'js'
-      expect(assigns[:artworks]).to eq Artwork.all.page
+      expect(assigns[:artworks].map(&:id)).to eq Artwork.all.page.map(&:id)
       expect(assigns[:artwork_request]).to eq nil
       expect(response).to render_template('index')
     end

@@ -23,8 +23,10 @@ describe ArtistMailer do
       expect(mailer.body.encoded).to match(artwork_request.salesperson.full_name)
     end
 
-    it 'assigns @artwork_request' do
-      expect(mailer.body.encoded).to include(artwork_request.imprints.first.name)
+    it 'displays imprint info' do
+      expect(mailer.body.encoded).to include(artwork_request.imprints.first.imprint_method.name)
+      expect(mailer.body.encoded).to include(artwork_request.imprints.first.print_location.name)
+      expect(mailer.body.encoded).to include(artwork_request.imprints.first.description)
     end
 
     it 'assigns @action_name' do
