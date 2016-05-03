@@ -1,32 +1,27 @@
 <div class="form-group">
-  <%= f.label.error.text_field :email, placeholder: 'Email' %>
+  <%= f.text_field :deprecated_email, placeholder: 'Email', label: 'Email' %>
 </div>
 
 <div class="form-group">
-  <%= f.label.error.text_field :phone_number, class: 'format-phone' %>
+  <%= f.text_field :deprecated_phone_number, class: 'format-phone', label: 'Phone number' %>
 </div>
 
 <div class="form-group">
-  <%= f.label.error.text_field :phone_number_extension %>
+  <%= f.text_field :phone_number_extension, label: 'Phone number extension' %>
 </div>
 
 <div class="form-group">
-  <%= f.label('First name').error.text_field :firstname, placeholder: 'First Name' %>
+  <%= f.text_field :deprecated_firstname, placeholder: 'First Name', label: 'First name' %>
 </div>
 
 <div class="form-group">
-  <%= f.label('Last name').error.text_field :lastname, placeholder: 'Last Name' %>
+  <%= f.text_field :deprecated_lastname, placeholder: 'Last Name', label: 'Last name' %>
 </div>
 
 <div class="form-group">
-  <%= f.label.error.text_field :company, placeholder: 'Company' %>
+  <%= f.text_field :company, placeholder: 'Company' %>
 </div>
 
 <div class="form-group">
-  <%= f.label.error_for :twitter %>
-
-  <div class="input-group">
-    <span class="input-group-addon">@</span>
-    <%= f.text_field :twitter, placeholder: 'twitteralias' %>
-  </div>
+  <%= f.text_field :deprecated_twitter, placeholder: 'twitteralias', prepend: '@', label: 'Twitter' %>
 </div>

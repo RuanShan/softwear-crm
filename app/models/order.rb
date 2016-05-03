@@ -107,6 +107,7 @@ class Order < ActiveRecord::Base
 
   belongs_to_user_called :salesperson
   belongs_to :store
+  belongs_to :contact, class_name: 'Crm::Contact'
   has_many :jobs, as: :jobbable, dependent: :destroy, inverse_of: :jobbable
   has_many :line_items, through: :jobs, source: :line_items
   has_many :artwork_requests, through: :jobs, dependent: :destroy
@@ -154,15 +155,9 @@ class Order < ActiveRecord::Base
             presence: true,
             email: true,
             unless: :fba?
-  validates :firstname, presence: true, unless: :fba?
-  validates :lastname, presence: true, unless: :fba?
+  # validates :firstname, presence: true, unless: :fba?
+  # validates :lastname, presence: true, unless: :fba?
   validates :name, presence: true
-  validates :phone_number,
-            format: {
-              with: /\d{3}-\d{3}-\d{4}/,
-              message: 'is incorrectly formatted, use 000-000-0000'
-            },
-            unless: :fba?
   validates :salesperson_id, presence: true
   validates :store, presence: true
   validates :terms, presence: true
@@ -497,6 +492,33 @@ class Order < ActiveRecord::Base
     return 'rejected' if !missing_artwork_requests? && missing_approved_proofs?
     return 'approved' unless missing_approved_proofs?
   end
+
+  # ====== Contact delegations =======
+  def email
+    return deprecated_email if contact.nil?
+    contact.primary_email.address
+  end
+
+  def firstname
+    return deprecated_firstname if contact.nil?
+    contact.first_name
+  end
+
+  def lastname
+    return deprecated_lastname if contact.nil?
+    contact.last_name
+  end
+
+  def twitter
+    return deprecated_twitter if contact.nil?
+    contact.twitter
+  end
+
+  def phone_number
+    return deprecated_phone_number if contact.nil?
+    contact.primary_phone.number
+  end
+  # ====== End of contact delegations =======
 
   def full_name
     "#{firstname} #{lastname}"

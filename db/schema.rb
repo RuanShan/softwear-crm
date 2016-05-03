@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160503161739) do
+ActiveRecord::Schema.define(version: 20160503200745) do
 
   create_table "activities", force: :cascade do |t|
     t.integer  "trackable_id",   limit: 4
@@ -668,11 +668,11 @@ ActiveRecord::Schema.define(version: 20160503161739) do
   end
 
   create_table "orders", force: :cascade do |t|
-    t.string   "email",                     limit: 191
-    t.string   "firstname",                 limit: 191
-    t.string   "lastname",                  limit: 191
+    t.string   "deprecated_email",          limit: 191
+    t.string   "deprecated_firstname",      limit: 191
+    t.string   "deprecated_lastname",       limit: 191
     t.string   "company",                   limit: 191
-    t.string   "twitter",                   limit: 191
+    t.string   "deprecated_twitter",        limit: 191
     t.string   "name",                      limit: 191
     t.string   "po",                        limit: 191
     t.datetime "in_hand_by"
@@ -681,7 +681,7 @@ ActiveRecord::Schema.define(version: 20160503161739) do
     t.string   "tax_id_number",             limit: 191
     t.string   "delivery_method",           limit: 191
     t.datetime "deleted_at"
-    t.string   "phone_number",              limit: 191
+    t.string   "deprecated_phone_number",   limit: 191
     t.datetime "created_at"
     t.datetime "updated_at"
     t.decimal  "commission_amount",                          precision: 10, scale: 2
@@ -707,8 +707,10 @@ ActiveRecord::Schema.define(version: 20160503161739) do
     t.decimal  "tax_rate",                                   precision: 10, scale: 4
     t.decimal  "fee",                                        precision: 10, scale: 4
     t.string   "fee_description",           limit: 191
+    t.integer  "contact_id",                limit: 4
   end
 
+  add_index "orders", ["contact_id"], name: "index_orders_on_contact_id", using: :btree
   add_index "orders", ["deleted_at"], name: "index_orders_on_deleted_at", using: :btree
 
   create_table "payment_drop_payments", force: :cascade do |t|

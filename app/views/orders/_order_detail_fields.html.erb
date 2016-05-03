@@ -1,144 +1,93 @@
 <div class="form-group">
-  <%= f.label :name, 'Order Name' %>
-  <%= f.error_for :name %>
-  <%= f.text_field :name, placeholder: 'Title used internally by company' %>
+  <%= f.text_field :name, placeholder: 'Title used internally by company', label: 'Order Name' %>
 </div>
 
 <% unless f.object.fba? %>
 
   <div class="form-group">
-    <%= f.label :po, 'P.O. Number' %>
-    <%= f.error_for :po %>
-    <%= f.text_field :po, placeholder: 'Purchase Order if required by customer' %>
+    <%= f.text_field :po, placeholder: 'Purchase Order if required by customer', label: 'P.O. Number' %>
   </div>
 <% end %>
 
-<div class="form-group">
-  <%= f.label :in_hand_by, 'In Hand By Date' %>
-  <%= f.error_for :in_hand_by %>
-  <div class="input-group date js-datetimepicker">
-    <%= f.text_field :in_hand_by,
-      value:       value_time(f.object.in_hand_by) || value_time(now_at_5),
-      placeholder: 'In Hand By',
-      class: 'form-control'
-    %>
-    <span class="input-group-addon">
-      <span class="glyphicon glyphicon-calendar"></span>
-    </span>
-  </div>
+<div class="form-group js-datetimepicker date">
+  <%= f.text_field :in_hand_by,
+    value:       value_time(f.object.in_hand_by) || value_time(now_at_5),
+    placeholder: 'In Hand By',
+    class: 'form-control',
+    label: 'In Hand By Date',
+    append: '<span class="glyphicon glyphicon-calendar"></span>'.html_safe
+  %>
 </div>
 <div class="form-group">
-          <%= f.label :delivery_method %>
-          <%= f.error_for :delivery_method %>
-          <%= f.select :delivery_method, Order::VALID_DELIVERY_METHODS,
-                       include_blank: true %>
+    <%= f.select :delivery_method, Order::VALID_DELIVERY_METHODS,
+                 include_blank: true %>
 </div>
 <div class="form-group">
-  <%= f.label :salesperson_id, 'Salesperson' %>
-  <%= f.error_for :salesperson_id %>
   <% salesperson_id = f.object.get_salesperson_id(params[:id], current_user) %>
   <%= f.select :salesperson_id, options_for_select(User.all.map{ |u| [u.full_name, u.id] }, salesperson_id) %>
 </div>
 
 <div class="form-group">
-  <%= f.label :store_id, 'Store' %>
-  <%= f.error_for :store_id %>
   <% store_id = f.object.get_store_id(params[:id], current_user) %>
   <%= f.select :store_id, options_for_select(Store.order(:name).map{ |s| [s.name, s.id] }, store_id) %>
 </div>
 
 <% unless f.object.fba? %>
   <div class="form-group">
-    <div class="form-group">
-      <%= f.label :shipping_price %>
-
-      <div class="input-group">
-        <span class="input-group-addon">$</span>
-        <%= f.text_field :shipping_price %>
-      </div>
-      <p class="help-block">The Price of shipping charged to the customer</p>
-    </div>
+    <%= f.text_field :shipping_price, prepend: '$' %>
+    <p class="help-block">The Price of shipping charged to the customer</p>
   </div>
 <% end %>
 
 <% if local_assigns[:show_quotes] %>
   <div class="form-group">
-    <%= f.label :quote_ids, 'Related Quote(s)' %>
-    <%= f.error_for :quote_ids %>
-    <%= f.select :quote_ids, options_from_collection_for_select(f.object.quotes, :id, :name, f.object.quote_ids.map(&:to_s)), {}, multiple: true, id: 'order-quote-ids-select2', style: 'width: 100%;' %>
+    <%= f.select :quote_ids, options_from_collection_for_select(f.object.quotes, :id, :name, f.object.quote_ids.map(&:to_s)), {}, multiple: true, id: 'order-quote-ids-select2', style: 'width: 100%;', label: 'Related Quote(s)' %>
   </div>
 <% end %>
 
 <% unless f.object.fba? %>
   <div class="form-group">
-    <%= f.label :terms, 'Payment terms' %>
-    <%= f.error_for :terms %>
-    <%= f.select :terms, Order::VALID_PAYMENT_TERMS - ['Fulfilled by Amazon'] %>
+    <%= f.select :terms, Order::VALID_PAYMENT_TERMS - ['Fulfilled by Amazon'], label: 'Payment terms' %>
   </div>
 
   <div class="form-group">
-    <%= f.label :tax_exempt, 'Tax exempt?' %>
-    <%= f.error_for :tax_exempt %>
-    <%= f.check_box_with_text_field :tax_exempt, :tax_id_number, placeholder: 'Tax ID Number' %>
+    <%= f.check_box :tax_exempt, label: 'Tax exempt?' %>
+    <%= f.text_field :tax_id_number, placeholder: 'Tax ID Number' %>
   </div>
 
   <div class="form-group">
-    <%= f.label :tax_rate_percent, "Tax rate" %>
-    <%= f.error_for :tax_rate %>
-    <div class='input-group'>
-      <%= f.number_field :tax_rate_percent, step: '.01' %>
-      <div class='input-group-addon'>%</div>
-    </div>
+    <%= f.number_field :tax_rate_percent, step: '.01', label: 'Tax rate', append: '%' %>
     <p class="help-block">Percentage of subtotal added for sales tax</p>
   </div>
 
   <div class="form-group">
-    <%= f.label :fee_percent, 'Fee' %>
-    <%= f.error_for :fee %>
-    <div class='input-group'>
-      <%= f.number_field :fee_percent, step: '.01' %>
-      <div class='input-group-addon'>%</div>
-    </div>
-    <%= f.label :fee_description %>
-    <%= f.error_for :fee_description %>
+    <%= f.number_field :fee_percent, step: '.01', label: 'Fee', append: '%' %>
     <%= f.text_field :fee_description %>
   </div>
 
   <% unless f.object.new_record? %>
-  <div class="form-group">
-    <%= f.label :invoice_state %>
-    <%= f.error_for :invoice_state %>
-    <%= f.select :invoice_state, Order::VALID_INVOICE_STATES - ['rejected'] %>
-  </div>
+    <div class="form-group">
+      <%= f.select :invoice_state, Order::VALID_INVOICE_STATES - ['rejected'] %>
+    </div>
+    <% end %>
+
+    <div class="form-group">
+      <%= f.text_field :freshdesk_proof_ticket_id, type: :integer %>
+    </div>
   <% end %>
 
   <div class="form-group">
-    <%= f.label :freshdesk_proof_ticket_id %>
-    <%= f.error_for :freshdesk_proof_ticket_id %>
-    <%= f.text_field :freshdesk_proof_ticket_id, type: :integer %>
-  </div>
-<% end %>
-
-  <div class="form-group">
-    <%= f.label :id, 'Order ID', class: 'text-danger' %>
-    <%= f.error_for :id %>
-    <%= f.text_field :id, placeholder: Order::ID_FIELD_TEXT, title: Order::ID_FIELD_TEXT, data: { toggle: 'tooltip' } %>
+    <%= f.text_field :id, placeholder: Order::ID_FIELD_TEXT, title: Order::ID_FIELD_TEXT, data: { toggle: 'tooltip' }, label: { text: 'Order ID', class: 'text-danger' } %>
   </div>
 
   <div class="form-group">
-    <%= f.label :softwear_prod_id, 'Production Order ID', class: 'text-danger' %>
-    <%= f.error_for :softwear_prod_id %>
-    <%= f.text_field :softwear_prod_id, placeholder: Order::ID_FIELD_TEXT, title: Order::ID_FIELD_TEXT, data: { toggle: 'tooltip' } %>
+    <%= f.text_field :softwear_prod_id, placeholder: Order::ID_FIELD_TEXT, title: Order::ID_FIELD_TEXT, data: { toggle: 'tooltip' }, label: { text: 'Production Order ID', class: 'text-danger' } %>
   </div>
 
   <div class="form-group">
-          <%= f.label :production_state, class: 'text-danger' %>
-          <%= f.error_for :production_state %>
-          <%= f.select :production_state, ['pending', 'in_production', 'complete'], include_blank: true %>
+      <%= f.select :production_state, ['pending', 'in_production', 'complete'], include_blank: true, label: { class: 'text-danger' } %>
   </div>
 
   <div class="form-group">
-    <%= f.label :imported_from_admin, class: 'text-danger' %>
-    <%= f.error_for :imported_from_admin %>
-    <%= f.select :imported_from_admin, options_for_select([['Yes', 1], ['No', 0]], f.object.imported_from_admin ? 1 : 0) %>
+    <%= f.select :imported_from_admin, options_for_select([['Yes', 1], ['No', 0]], f.object.imported_from_admin ? 1 : 0), label: { class: 'text-danger' } %>
   </div>

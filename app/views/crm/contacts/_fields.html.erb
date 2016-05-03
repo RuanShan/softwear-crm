@@ -2,7 +2,7 @@
 <%= f.text_field :first_name, disabled: disabled %>
 <%= f.text_field :last_name, disabled: disabled %>
 
-<% if  f.object.new_record? %>
+<% if f.object.new_record? %>
     <%= f.fields_for :primary_email do |ff| %>
         <%= render 'crm/contacts/email_fields', f: ff, exclude_primary: true, disabled: disabled  %>
     <% end %>
