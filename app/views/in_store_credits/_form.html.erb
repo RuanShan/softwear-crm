@@ -78,7 +78,7 @@
                 <% end %>
               <% end %>
 
-              <%= f.text_field :amount, class: 'form-control' %>
+              <%= f.number_field :amount, step: 0.01, class: 'form-control' %>
 
               <p class="help-block">The dollar amount that this credit can count towards</p>
             </div>
