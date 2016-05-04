@@ -95,7 +95,7 @@ feature 'Discounts management', js: true, discount_spec: true, story_859: true d
 
       find('.line-item-button[title="Edit"]').click
       sleep 0.5
-      fill_in "line_item[#{order.jobs.first.line_items.first.id}[unit_price]]", with: '50.00'
+      fill_in "line_item[#{order.jobs.first.line_items.first.id}][unit_price]", with: '50.00'
       find('.update-line-items').click
       wait_for_ajax
       visit edit_order_path order

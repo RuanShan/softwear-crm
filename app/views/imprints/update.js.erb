@@ -1,17 +1,26 @@
-var handler;
-var shineEditingIn = function ($container) {
-  $editing = $container.find('.editing-imprint');
+try {
 
+  var handler;
+  var shineEditingIn = function ($container) {
+  var $editing = $container.find('.editing-imprint');
+
+  console.log($editing.length);
   if ($editing.length) {
     $editing.each(function() {
-      $(this).removeClass('editing-imprint');
-      $(this).find('.js-imprint-has-name-number').removeData('original-value');
-      shine($(this), true);
+      var $this = $(this);
+      var sel2  = $this.next('span.select2-container').find('.select2-selection__rendered');
+
+      $this.removeClass('editing-imprint');
+      $this.find('.js-imprint-has-name-number').removeData('original-value');
+
+      shine($this, true);
+      if (sel2.length > 0)
+        shine(sel2, false);
     });
   }
-};
+  };
 
-<% @imprints.try(:each) do |imprint| %>
+  <% @imprints.try(:each) do |imprint| %>
 
   var $container = $(".imprint-entry[data-id='<%= imprint.id %>']");
   var $printLocation = $container.find('.print-location-container');
@@ -28,9 +37,9 @@ var shineEditingIn = function ($container) {
     handler.handleErrors(<%= imprint.errors.messages.to_json.html_safe %>);
 
   <% end %>
-<% end %>
+  <% end %>
 
-<% @new_imprints.try(:each) do |new_imprint| %>
+  <% @new_imprints.try(:each) do |new_imprint| %>
 
   var $container = $(".imprint-entry[data-id='<%= new_imprint.attributes_key %>']");
   var $printLocation = $container.find('.print-location-container');
@@ -53,11 +62,11 @@ var shineEditingIn = function ($container) {
 
   <% end %>
 
-<% end %>
+  <% end %>
 
-<% if @imprints && @new_imprints %>
+  <% if @imprints && @new_imprints %>
   <% if @imprints.size + @new_imprints.size == 0 %>
-    raise "What the fuck?"
+    console.log("NO IMPRINTS UPDATED");
   <% end %>
 
   <%= update_name_number_table(@job) %>
@@ -65,4 +74,8 @@ var shineEditingIn = function ($container) {
   <%= update_order_timeline(@job.order) %>
 
   registerImprintEvents($('body'));
-<% end %>
+  <% end %>
+
+} catch(e) {
+  console.error(e);
+}

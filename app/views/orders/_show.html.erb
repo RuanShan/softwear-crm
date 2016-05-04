@@ -120,7 +120,7 @@
       <% @order.jobs.each do |job| %>
           <h2 class="invoice-job-name">
             <strong><%= job.name %></strong>: <%= job.description %><br />
-            <strong>Imprints</strong>: <%= job.imprints.map{|i| "#{i.name} (#{i.description})" }.join(", ") %>
+            <strong>Imprints</strong>: <%= job.imprints.map{|i| "#{i.name}" }.join(", ") %>
           </h2>
 
           <% job.sort_line_items(@order).tap do |sorted_line_items| %>
@@ -132,6 +132,7 @@
                   <% end #sorted_line_items %>
               <% end #unless_sorted  %>
           <% end #sort_line_items %>
+
           <% unless job.standard_line_items.empty? %>
               <table class="non-imprintables table table-condensed">
                 <thead>

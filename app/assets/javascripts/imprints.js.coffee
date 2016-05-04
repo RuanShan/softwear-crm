@@ -41,41 +41,54 @@
   ajax = $.ajax
     type: 'GET'
     url: Routes.imprint_method_print_locations_path(id)
-    data: { name: customName or "imprint[#{imprintId}[print_location_id]]" }
+    data: { name: customName or "imprint[#{imprintId}][print_location_id]", imprint_id: imprintId }
     dataType: 'html'
 
   ajax.done (response) ->
     $response = $(response)
     $printLocationContainer.children().remove()
     $printLocationContainer.append $response
-    printLocationSelected.call $response.find('select').get()
+    $selects = $response.find('select')
+    imprintSelectChanged.call $selects
+    $selects.select2()
 
   ajax.fail (jqXHR, textStatus) ->
     alert "Internal server error, oh no!"
 
-@printLocationSelected = ->
+@imprintFieldChanged = ->
   $this = $(this)
   $this.data('error-handler').clear() if $this.data 'handler'
   $this.addClass 'editing-imprint' unless $this.closest('form').data('no-editing-class')
+
+@imprintSelectChanged = ->
+  $this = $(this)
+  $this.data('error-handler').clear() if $this.data 'handler'
+
+  unless $this.closest('form').data('no-editing-class')
+    $this.addClass 'editing-imprint'
+    $this.next('span.select2-container').find('.select2-selection__rendered').addClass 'editing-imprint'
 
 @registerImprintEvents = ($parent) ->
   $parent.find('.js-delete-imprint-button').off 'click.imprint'
   $parent.find('.js-delete-imprint-button').on 'click.imprint', deleteImprint
 
   $parent.find('.js-print-location-select').off 'change.imprint'
-  $parent.find('.js-print-location-select').on 'change.imprint', printLocationSelected
+  $parent.find('.js-print-location-select').on 'change.imprint', imprintSelectChanged
+
+  $parent.find('.js-select-option-value').off 'change.imprint'
+  $parent.find('.js-select-option-value').on 'change.imprint', imprintSelectChanged
 
   $parent.find('.js-imprint-method-select').off 'change.imprint'
   $parent.find('.js-imprint-method-select').on 'change.imprint', imprintMethodSelected
 
   $parent.find('.js-name-format-field').off 'change.imprint'
-  $parent.find('.js-name-format-field').on 'change.imprint', printLocationSelected
+  $parent.find('.js-name-format-field').on 'change.imprint', imprintFieldChanged
 
   $parent.find('.js-number-format-field').off 'change.imprint'
-  $parent.find('.js-number-format-field').on 'change.imprint', printLocationSelected
+  $parent.find('.js-number-format-field').on 'change.imprint', imprintFieldChanged
 
   $parent.find('.js-imprint-description').off 'change.imprint'
-  $parent.find('.js-imprint-description').on 'change.imprint', printLocationSelected
+  $parent.find('.js-imprint-description').on 'change.imprint', imprintFieldChanged
 
   setTimeout (->
     $parent.find('.js-imprint-is-name-number').off 'change.imprint'
@@ -87,6 +100,8 @@
   ), 1
 
   styleCheckboxes $parent.find('input[type=checkbox]')
+
+  $parent.find('select').select2()
 
 
 @deleteImprint = ->
@@ -127,6 +142,5 @@
 
 $ ->
   $(document).mouseup (e) ->
-    unless $(e.target).is('.update-imprints') or $(e.target).closest('.imprint-container').length > 0
+    unless $(e.target).is('.update-imprints') or $(e.target).closest('.imprint-container').length > 0 or $(e.target).hasClass('select2-selection__rendered') or $(e.target).hasClass('select2-results__option')
       $('.update-imprints').click() if $('.editing-imprint').length isnt 0
-

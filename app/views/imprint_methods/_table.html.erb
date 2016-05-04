@@ -7,6 +7,7 @@
           <th>Name</th>
           <th>Name/Number Support</th>
           <th>Ink Colors</th>
+          <th>Pricing Options</th>
           <th>Print Locations</th>
           <th>Actions</th>
         </tr>
@@ -18,6 +19,16 @@
             <td><%= imprint_method.name %></td>
             <td><%= imprint_method.name_number? ? 'Yes' : 'No' %></td>
             <td><%= imprint_method.ink_colors.map(&:name).join(', ') %></td>
+            <td>
+              <% imprint_method.option_types.each do |option_type| %>
+                <%= option_type.name %>:
+                <ul>
+                  <% option_type.option_values.each do |option_value| %>
+                    <li><%= option_value.value %></li>
+                  <% end %>
+                </ul>
+              <% end %>
+            </td>
             <td><%= imprint_method.print_locations.map(&:name_and_popularity).join(', ') %></td>
             <td>
               <div class="btn-group btn-group-xs">

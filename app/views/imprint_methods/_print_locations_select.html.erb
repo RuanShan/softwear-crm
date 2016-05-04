@@ -1,6 +1,27 @@
 <div class="form-group">
-  <%= label_tag :print_location %>
-  <%= select_tag local_assigns[:name] || :print_location,
+  <% print_location_name = local_assigns[:name] || 'print_location' %>
+
+  <%= label_tag print_location_name, 'Print location' %>
+  <%= select_tag print_location_name,
                  options_from_collection_for_select(print_locations, :id, :name, local_assigns[:default]),
                  class: 'form-control js-print-location-select' %>
 </div>
+
+<% unless print_locations.empty? %>
+  <div class="form-group">
+    <% option_values_name = print_location_name.gsub(/print_location(_id)?/, 'selected_option_values') %>
+
+    <% print_locations.first.imprint_method.option_types.each do |option_type| %>
+      <% option_type_name = option_values_name + "[#{option_type.id}]" %>
+      <%= label_tag option_type_name, option_type.name %>
+      <%= select_tag option_type_name,
+            options_from_collection_for_select(
+              option_type.option_values, :id, :value,
+              local_assigns[:selected_options].try(:[], option_type.id.to_i).try(:id)
+            ),
+            include_blank: true,
+            class: "form-control select-option-value-#{option_type.name.dasherize} js-select-option-value"
+      %>
+    <% end %>
+  </div>
+<% end %>

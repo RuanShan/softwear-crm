@@ -433,7 +433,7 @@ class Order < ActiveRecord::Base
   end
 
   def ready_for_production?
-    return if production?
+    return if production? || imported_from_admin?
 
     !canceled? &&
     (payment_status == 'Payment Terms Met' ||
@@ -797,7 +797,7 @@ class Order < ActiveRecord::Base
       artwork_request.create_imprint_group_if_needed
     end
 
-    all_shipments.each(&:create_train)
+    all_shipments.each(&:create_train) unless fba?
 
     case delivery_method
     when 'Pick up in Ann Arbor'

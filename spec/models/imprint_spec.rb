@@ -42,8 +42,52 @@ describe Imprint, imprint_spec: true do
       allow(subject).to receive(:description) { '1CF' }
     end
 
-    it 'returns a string of imprint_method.name - print_location.name' do
-      expect(subject.name).to eq("IM name - PL name - 1CF")
+    it 'returns a string of imprint_method.name - print_location.name "description"' do
+      expect(subject.name).to eq("IM name - PL name \"1CF\"")
+    end
+
+    context 'with option values' do
+      let!(:option_type_1) { create(:option_type, name: 'Type1', options: ['Value1', 'Value2']) }
+      let!(:option_type_2) { create(:option_type, name: 'Type2', options: ['Value3', 'Value4']) }
+
+      let(:type_1_value_1) { option_type_1.option_values[0] }
+      let(:type_2_value_1) { option_type_2.option_values[0] }
+
+      before(:each) do
+        subject.option_values << type_1_value_1
+      end
+      
+      it 'includes them in parentheses' do
+        expect(subject.name).to eq "IM name - PL name (Type1: Value1) \"1CF\""
+      end
+    end
+  end
+
+  context 'Option Values', option_values: true do
+    let!(:option_type_1) { create(:option_type, name: 'Type1', options: ['Value1', 'Value2']) }
+    let!(:option_type_2) { create(:option_type, name: 'Type2', options: ['Value3', 'Value4']) }
+
+    let(:type_1_value_1) { option_type_1.option_values[0] }
+    let(:type_2_value_1) { option_type_2.option_values[0] }
+
+    describe '#selected_option_values' do
+      before(:each) do
+        imprint.option_values = [type_1_value_1, type_2_value_1]
+      end
+
+      it 'returns a hash of { type_id => value }' do
+        expect(imprint.selected_option_values).to eq(option_type_1.id => type_1_value_1, option_type_2.id => type_2_value_1)
+      end
+    end
+
+    describe '#selected_option_values=' do
+      it 'assigns option_values from a { type_id => value_or_value_id } hash once saved' do
+        expect(imprint.option_values).to be_empty
+        imprint.selected_option_values = { option_type_1.id => type_1_value_1, option_type_2.id => type_2_value_1.id }
+        expect(imprint.option_values).to be_empty
+        imprint.save!
+        expect(imprint.option_values).to eq [type_1_value_1, type_2_value_1]
+      end
     end
   end
 

@@ -228,6 +228,45 @@ namespace :imprintables do
 
   end
 
+  desc "Parse costs for imprintable line items"
+  task line_item_costs: :environment do
+    count = 0
+    current_variant_id = -1
+
+    CSV.foreach(ENV['FILE'] || 'imprintable-line-items-without-costs.csv', headers: true) do |row|
+      begin
+        value = row['cost_amount']
+        variant_id = row['imprintable_object_id']
+        next if value.try(:strip).blank? || variant_id.blank?
+
+        variant_id = variant_id.to_i
+        value.gsub!(/\.\.+/, '.')
+        value.gsub!(/\$/, '')
+
+        if variant_id != current_variant_id
+          puts "Loading costs for #{ImprintableVariant.find(variant_id).full_name}..."
+          current_variant_id = variant_id
+        end
+
+        count += LineItem.where(
+          imprintable_object_type: 'ImprintableVariant',
+          imprintable_object_id:   variant_id
+        )
+          .update_all cost_amount: value.to_f
+
+        ImprintableVariant.where(id: variant_id).update_all last_cost_amount: value
+
+      rescue StandardError => e
+        puts "====================== ERROR ============================="
+        puts "#{e.class} #{e.message}"
+        puts e.backtrace
+        puts "==================== END ERROR ==========================="
+      end
+    end
+
+    puts "Updated prices for #{count} line items."
+  end
+
   desc 'Parse standard product set sizes and colors from spreadsheet data'
   task import_sizes_and_colors_from_spreadsheet: :environment do
     CSV.foreach('tmp/size-color-info.csv', headers: true) do |row|
