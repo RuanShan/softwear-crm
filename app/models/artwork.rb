@@ -16,6 +16,8 @@ class Artwork < ActiveRecord::Base
     text :id do
       self[:id].to_s
     end
+
+    time :created_at
   end
 
   tracked by_current_user

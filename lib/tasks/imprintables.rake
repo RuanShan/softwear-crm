@@ -241,7 +241,7 @@ namespace :imprintables do
 
         variant_id = variant_id.to_i
         value.gsub!(/\.\.+/, '.')
-        value.gsub!(/$/, '')
+        value.gsub!(/\$/, '')
 
         if variant_id != current_variant_id
           puts "Loading costs for #{ImprintableVariant.find(variant_id).full_name}..."
