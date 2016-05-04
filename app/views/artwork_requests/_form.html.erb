@@ -7,7 +7,7 @@
     <%= f.select :imprint_ids, options_from_collection_for_select(order.imprints, :id, :job_and_name, f.object.imprint_ids.map(&:to_s)), {label: 'Imprints'}, multiple: true, class: 'select2', style: 'width: 100%;'  %>
 
     <%= f.select :priority, ArtworkRequest::PRIORITIES.map{ |level, label| [label, level] },
-        selected: (artwork_request.priority.nil? ? ArtworkRequest::PRIORITIES.invert['Normal']  : artwork_request.priority) %>
+        { selected: (artwork_request.priority.nil? ? ArtworkRequest::PRIORITIES.invert['Normal']  : artwork_request.priority) }, class: 'select2' %>
 
     <div id="imprint_method_print_locations_and_ink_colors">
     <% unless artwork_request.imprints.blank? %>
@@ -20,12 +20,16 @@
     <%= f.text_field :deadline, value: value_time(artwork_request.deadline), class: 'date js-datetimepicker',
       append: raw("<i class='glyphicon glyphicon-calendar'></i>") %>
 
-    <%= f.select :reorder, [["No", false], ["Yes", true]], label: 'Reorder?',
-        help: raw("Is this an <i>exact</i> reorder of a previous order?") %>
+    <%= f.select :reorder, [["No", false], ["Yes", true]],
+      {
+        label: 'Reorder?',
+        help: raw("Is this an <em>exact</em> reorder of a previous order?")
+      },
+      class: 'select2' %>
 
-    <%= f.select :exact_recreation, [["No", false], ["Yes", true]], help: "Are the descriptions and uploads"\
+    <%= f.select :exact_recreation, [["No", false], ["Yes", true]], { help: "Are the descriptions and uploads"\
       " you're providing exactly what the customer wants or do they represent ideas and approximations "\
-      " of what the customer wants?" %>
+      " of what the customer wants?" }, class: 'select2' %>
 
     <%= f.text_field :amount_paid_for_artwork, placeholder: '0.0',
       prepend: "$", label: 'Amount Paid for Artwork',
@@ -36,7 +40,7 @@
     <% unless f.object.new_record? %>
       <%= f.select :artist_id,
       options_from_collection_for_select(User.all, :id, :full_name, artwork_request.artist_id ),
-      include_blank: true %>
+      { include_blank: true }, class: 'select2' %>
     <% end %>
 
     <%= f.text_area :description %>

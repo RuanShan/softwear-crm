@@ -1,2 +1,2 @@
-<h2>Editing Artwork Request From <%= link_to "Order ##{@order.id}", order_path(@order) %> "<%= @order.name %>"</h2>
+<h2>Editing Artwork Request From <%= link_to "Order ##{@order.id}", edit_order_path(@order) %> "<%= @order.name %>"</h2>
 <%= render 'edit', { artwork_request: @artwork_request, order: @order } %>
