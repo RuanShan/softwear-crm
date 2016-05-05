@@ -206,6 +206,37 @@ describe Order, order_spec: true do
     end
   end
 
+  describe '#create_contact_from_deprecated_fields!', contact: true do
+    context 'when the order has a deprecated_email matching an existing contact' do
+      let!(:existing_contact) { create(:crm_contact, primary_email: create(:crm_email, address: 'test@annarbortees.com')) }
+      subject { create(:order, deprecated_email: 'test@annarbortees.com', contact: nil) }
+
+      it 'assigns contact ID to that existing contact' do
+        expect(subject.contact).to be_nil
+        subject.create_contact_from_deprecated_fields!
+        expect(subject.contact).to eq existing_contact
+      end
+    end
+
+    context "when the order's deprecated_email does not match an existing contact" do
+      subject { create(:order, deprecated_email: 'test@annarbortees.com', contact: nil) }
+
+      it 'creates a new contact' do
+        expect(Crm::Contact.with_email('test@annarbortees.com')).to_not exist
+        expect(subject.contact).to be_nil
+
+        subject.create_contact_from_deprecated_fields!
+
+        expect(Crm::Contact.with_email('test@annarbortees.com')).to exist
+        expect(subject.contact).to_not be_nil
+        expect(subject.contact.primary_email.address).to eq 'test@annarbortees.com'
+        expect(subject.contact.first_name).to eq subject.deprecated_firstname
+        expect(subject.contact.last_name).to eq subject.deprecated_lastname
+        expect(subject.contact.primary_phone.number).to eq subject.deprecated_phone_number
+      end
+    end
+  end
+
   describe '#duplicate!', dup: true do
     let!(:new_salesperson) { create(:alternate_user) }
     let!(:order) { create(:order_with_job) }

@@ -493,6 +493,28 @@ class Order < ActiveRecord::Base
     return 'approved' unless missing_approved_proofs?
   end
 
+  def create_contact_from_deprecated_fields!
+    if existing = Crm::Contact.with_email(deprecated_email).first
+      update_column :contact_id, existing.id
+      return
+    end
+
+    self.contact = Crm::Contact.create!(
+      first_name: deprecated_firstname,
+      last_name:  deprecated_lastname,
+      twitter:    deprecated_twitter,
+
+      primary_email_attributes: {
+        address: deprecated_email,
+        primary: true
+      },
+      primary_phone_attributes: {
+        number:  deprecated_phone_number,
+        primary: true
+      }
+    )
+  end
+
   # ====== Contact delegations =======
   def email
     return deprecated_email if contact.nil?

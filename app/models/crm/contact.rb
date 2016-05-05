@@ -12,6 +12,8 @@ class Crm::Contact < ActiveRecord::Base
     end
   end
 
+  scope :with_email, -> e { joins(:emails).where(crm_emails: { address: e }).order('`crm_emails`.`primary`') }
+
   has_many :emails, ->{order(primary: :desc)}, class_name: 'Crm::Email'
   has_many :phones, ->{order(primary: :desc)}, class_name: 'Crm::Phone'
   has_many :quotes
