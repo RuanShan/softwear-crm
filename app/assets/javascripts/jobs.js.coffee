@@ -52,7 +52,8 @@ jobCollapse = (id, collapsed) ->
   registerImprintEvents $c
 
 $(window).load ->
-  registerJobEvents($('body'))
+  if $('#jobs').length > 0 or $('#line_items').length > 0
+    registerJobEvents($('body'))
 
   # Submit editable forms when clicking outside them
   $('#jobs').on 'mouseup', (e) ->

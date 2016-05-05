@@ -52,6 +52,7 @@ $(window).load ->
       tags: true
 
     self.on 'select2:select', (e) ->
+      # unused data ..?
       data = self.select2 'data'
       self.children().each ->
         if $(this).val() is e.params.data.id
