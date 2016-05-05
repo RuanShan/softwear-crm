@@ -147,7 +147,7 @@ module FormHelper
   # model class.
   def select_search_queries(model, options={})
     return unless @current_user
-    add_class options, 'form-control', 'search-query-select'
+    add_class options, 'form-control', 'search-query-select', 'select2'
     options[:id] = "select_query_for_#{model.name.underscore}"
     select_options = content_tag(:option, "Saved Searches", value: 'nil')
 

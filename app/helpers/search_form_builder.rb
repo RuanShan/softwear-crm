@@ -165,7 +165,7 @@ class SearchFormBuilder
 
   def submit(options={})
     add_class options, 'submit', 'btn', 'btn-primary'
-    value = options[:value] || (@query ? 'Save' : 'Search')
+    value = options[:value] || (@query ? 'Save/Search' : 'Search')
 
     @template.submit_tag(value, options)
   end
