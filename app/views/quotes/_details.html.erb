@@ -2,14 +2,13 @@
   <%= bootstrap_form_for quote do |f| %>
     <div class="row">
       <div class="col-sm-6">
-
-        <%= render 'customer_detail_fields', f: f, quote: quote, email: nil, name: nil %>
-      </div>
-
-      <div class="col-sm-6">
         <h3><strong>Quote</strong> Details</h3>
 
         <%= render 'quote_detail_fields', f: f, quote: quote, quote_request_id: nil %>
+      </div>
+
+      <div class="col-sm-6">
+        <%= render 'customer_detail_fields', f: f, quote: quote, email: nil, name: nil %>
       </div>
     </div>
 

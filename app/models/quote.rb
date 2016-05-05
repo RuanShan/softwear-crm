@@ -840,6 +840,16 @@ class Quote < ActiveRecord::Base
     "#{num.slice(1, 3)}-#{num.slice(4, 3)}-#{num.slice(7, 4)}"
   end
 
+  # Without this, assigning contact_attributes with and ID AND attributes will raise an error
+  # for new orders (NOTE the same thing is implemented in quote.rb)
+  def contact_attributes=(attrs)
+    if id.blank? && attrs['id'].present?
+      self.contact_id = attrs['id']
+    else
+      super
+    end
+  end
+
   private
 
   def no_line_item_errors

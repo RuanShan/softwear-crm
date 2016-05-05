@@ -40,7 +40,7 @@
       $('body').append "Successful AJAX call: #{data}"
   return
 
-$ ->
+@initializeContacts = ->
   $('.email-primary').change ->
     if this.checked
       $(".email-primary:not(#"+$(this).id()+")").removeAttr('checked')
@@ -111,3 +111,5 @@ $ ->
     $('#search_contact_content').hide()
     toggleNewContactContent(false)
     toggleEditContactContent(false)
+
+$ initializeContacts

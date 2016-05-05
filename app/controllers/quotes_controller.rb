@@ -177,17 +177,7 @@ class QuotesController < InheritedResources::Base
         :salesperson_id, :store_id, :shipping, :quote_source, :freshdesk_ticket_id,
         :is_rushed, :qty, :deadline_is_specified, :insightly_whos_responsible_id,
         quote_request_ids: [],
-        contact_attributes: [
-          :first_name, :last_name, :twitter, :id,
-          primary_phone_attributes: [
-            :number, :extension, :primary
-          ],
-          primary_email_attributes: [
-            :address, :primary
-          ],
-          emails_attributes: [ :id, :address, :primary, :_destroy ],
-          phones_attributes: [ :id, :number, :extension, :primary, :_destroy ]
-        ],
+        contact_attributes: contact_attributes,
         line_items_attributes: [
           :name, :quantity, :taxable, :description, :id,
           :imprintable_id, :unit_price, :_destroy, :url,

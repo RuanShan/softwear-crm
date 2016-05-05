@@ -30,6 +30,20 @@ class ApplicationController < ActionController::Base
 
   protected
 
+  def contact_attributes
+    [
+      :first_name, :last_name, :twitter, :id,
+      primary_phone_attributes: [
+        :number, :extension, :primary
+      ],
+      primary_email_attributes: [
+        :address, :primary
+      ],
+      emails_attributes: [ :id, :address, :primary, :_destroy ],
+      phones_attributes: [ :id, :number, :extension, :primary, :_destroy ]
+    ]
+  end
+
   def sales_manager_only
     if current_user.nil? || !current_user.sales_manager?
       redirect_to not_allowed_path

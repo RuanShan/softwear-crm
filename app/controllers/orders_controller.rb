@@ -37,12 +37,8 @@ class OrdersController < InheritedResources::Base
 
         session[:quote_id] = params[:quote_id]
         @order = Order.new(
-          email: quote.email,
-          phone_number: quote.contact.phone_number,
-          firstname: quote.contact.first_name,
-          lastname: quote.contact.last_name,
+          contact_id: quote.contact_id,
           company: quote.company,
-          twitter: quote.contact.twitter,
           name: quote.name,
           store_id: quote.store_id
         )
@@ -289,17 +285,19 @@ class OrdersController < InheritedResources::Base
 
       order: [
         :id, :imported_from_admin,
-        :email, :firstname, :lastname,
-        :company, :twitter, :name, :po,
+        :deprecated_email, :deprecated_firstname, :deprecated_lastname,
+        :company, :deprecated_twitter, :name, :po,
         :in_hand_by, :terms, :tax_exempt, :tax_rate, :tax_rate_percent,
         :fee_percent, :tax_id_number, :redo_reason, :invoice_state,
         :fee_description, :delivery_method, :phone_number, :commission_amount,
         :store_id, :salesperson_id, :total, :shipping_price, :artwork_state,
         :freshdesk_proof_ticket_id, :softwear_prod_id, :production_state, :phone_number_extension,
         :freshdesk_proof_ticket_id, :softwear_prod_id, :production_state, :canceled,
+        :contact_id,
 
         quote_ids: [],
         costs_attributes: costs_attributes,
+        contact_attributes: contact_attributes,
         jobs_attributes: [
           :id, :name, :jobbable_id, :jobbable_type, :description, :_destroy,
           :shipping_location, :shipping_location_size, :sort_order, :fba_job_template_id,

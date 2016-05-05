@@ -21,23 +21,12 @@ describe Order, order_spec: true do
 
   describe 'Validations' do
     it { is_expected.to validate_presence_of :invoice_state }
-    it { is_expected.to validate_inclusion_of(:invoice_state)
-           .in_array Order::VALID_INVOICE_STATES }
+    it { is_expected.to validate_inclusion_of(:invoice_state).in_array Order::VALID_INVOICE_STATES }
     it { is_expected.to validate_presence_of :production_state }
-    it { is_expected.to validate_inclusion_of(:production_state)
-           .in_array Order::VALID_PRODUCTION_STATES }
+    it { is_expected.to validate_inclusion_of(:production_state).in_array Order::VALID_PRODUCTION_STATES }
     it { is_expected.to validate_presence_of :delivery_method }
-    it { is_expected.to validate_inclusion_of(:delivery_method)
-           .in_array Order::VALID_DELIVERY_METHODS }
-    it { is_expected.to validate_presence_of :email }
-    it { is_expected.to allow_value('test@example.com').for :email }
-    it { is_expected.to_not allow_value('not_an-email').for :email }
-    it { is_expected.to validate_presence_of :firstname }
-    it { is_expected.to validate_presence_of :lastname }
+    it { is_expected.to validate_inclusion_of(:delivery_method).in_array Order::VALID_DELIVERY_METHODS }
     it { is_expected.to validate_presence_of :name }
-    it { is_expected.to allow_value('123-654-9871').for :phone_number }
-    it { is_expected.to_not allow_value('135184e6').for(:phone_number)
-           .with_message('is incorrectly formatted, use 000-000-0000') }
     it { is_expected.to validate_presence_of :salesperson_id }
     it { is_expected.to validate_presence_of :store }
     it { is_expected.to validate_presence_of :terms }
@@ -115,7 +104,8 @@ describe Order, order_spec: true do
         allow_any_instance_of(ArtworkRequest).to receive(:create_trains)
       end
 
-      it 'creates a Softwear Production order', create_production_order: true, no_ci: true do
+      it 'creates a Softwear Production order', retry: 10, create_production_order: true do
+        expect(order.contact).to_not be_nil
         [order, job_1, job_2, imprint_1_1, imprint_1_2, imprint_2_1].each do |record|
           expect(record.reload.softwear_prod_id).to be_nil
         end
@@ -160,7 +150,11 @@ describe Order, order_spec: true do
 
   describe 'with a production order', story_932: true do
     let!(:prod_order) { create(:production_order) }
-    let!(:order) { create(:order, softwear_prod_id: prod_order.id, firstname: 'first', lastname: 'last') }
+    let!(:order) { create(:order, softwear_prod_id: prod_order.id) }
+
+    before(:each) do
+      order.contact.update_attributes first_name: 'first', last_name: 'last'
+    end
 
     it 'updates the name and deadline in production when changed' do
       order.name = "NEW order name"
@@ -209,7 +203,7 @@ describe Order, order_spec: true do
   describe '#create_contact_from_deprecated_fields!', contact: true do
     context 'when the order has a deprecated_email matching an existing contact' do
       let!(:existing_contact) { create(:crm_contact, primary_email: create(:crm_email, address: 'test@annarbortees.com')) }
-      subject { create(:order, deprecated_email: 'test@annarbortees.com', contact: nil) }
+      subject { create(:deprecated_order, deprecated_email: 'test@annarbortees.com', contact: nil) }
 
       it 'assigns contact ID to that existing contact' do
         expect(subject.contact).to be_nil
@@ -219,7 +213,7 @@ describe Order, order_spec: true do
     end
 
     context "when the order's deprecated_email does not match an existing contact" do
-      subject { create(:order, deprecated_email: 'test@annarbortees.com', contact: nil) }
+      subject { create(:deprecated_order, deprecated_email: 'test@annarbortees.com', contact: nil) }
 
       it 'creates a new contact' do
         expect(Crm::Contact.with_email('test@annarbortees.com')).to_not exist

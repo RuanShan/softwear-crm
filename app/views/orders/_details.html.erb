@@ -31,14 +31,10 @@
             <% end %>
           <% end %>
         <% else %>
-          <h3><strong>Contact</strong> Details</h3>
+          <%= render 'crm/contacts/find_or_create_contact', f: f %>
 
-          <% if order.imported_from_admin? %>
-            <%= render partial: 'customer_detail_fields',
-                       locals: { f: f, order: order } %>
-          <% else %>
-            <%= render 'crm/contacts/find_or_create_contact', f: f %>
-          <% end %>
+          <h3><strong>Account</strong> Details</h3>
+          <%= f.text_field :company %>
         <% end %>
       </div>
     </div>

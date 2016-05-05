@@ -127,6 +127,7 @@ class Order < ActiveRecord::Base
 
   accepts_nested_attributes_for :payments, :jobs, :shipments
   accepts_nested_attributes_for :costs, allow_destroy: true
+  accepts_nested_attributes_for :contact
 
   validates :tax_rate,
             presence: true,
@@ -172,6 +173,7 @@ class Order < ActiveRecord::Base
   before_create { self.delivery_method ||= 'Ship to multiple locations' if fba? }
   after_initialize -> (o) { o.production_state = 'pending' if o.respond_to?(:production_state) && o.production_state.blank? }
   after_initialize -> (o) { o.invoice_state = 'pending' if o.respond_to?(:invoice_state) && o.invoice_state.blank? }
+  after_initialize :initialize_contact
   after_initialize do
     next unless respond_to?(:customer_key)
     while customer_key.blank? ||
@@ -202,6 +204,7 @@ class Order < ActiveRecord::Base
 
   default_scope -> { order(created_at: :desc) }
   scope :fba, -> { where(terms: 'Fulfilled by Amazon') }
+  scope :with_first_name, -> name { joins(:contact).where(crm_contacts: { first_name: name }) }
 
   attr_accessor :bad_variant_ids
 
@@ -494,12 +497,17 @@ class Order < ActiveRecord::Base
   end
 
   def create_contact_from_deprecated_fields!
-    if existing = Crm::Contact.with_email(deprecated_email).first
-      update_column :contact_id, existing.id
+    if existing_id = Crm::Contact.with_email(deprecated_email).pluck(:id).first
+      self.contact_id = existing_id
       return
     end
 
-    self.contact = Crm::Contact.create!(
+    if deprecated_email.blank?
+      build_contact
+      return
+    end
+
+    self.contact = Crm::Contact.new(
       first_name: deprecated_firstname,
       last_name:  deprecated_lastname,
       twitter:    deprecated_twitter,
@@ -513,6 +521,14 @@ class Order < ActiveRecord::Base
         primary: true
       }
     )
+  end
+
+  def contact_attributes=(attrs)
+    if id.blank? && attrs['id'].present?
+      self.contact_id = attrs['id']
+    else
+      super
+    end
   end
 
   # ====== Contact delegations =======
@@ -547,7 +563,11 @@ class Order < ActiveRecord::Base
   end
 
   def full_name_changed?
-    firstname_changed? || lastname_changed?
+    if contact.nil?
+      firstname_changed? || lastname_changed?
+    else
+      contact.first_name_changed? || contact.last_name_changed?
+    end
   end
 
   def calculate_payment_state
@@ -1295,6 +1315,12 @@ class Order < ActiveRecord::Base
 
     nuke.(self)
     Sunspot.index self
+  end
+
+  def initialize_contact
+    return unless contact.nil?
+
+    create_contact_from_deprecated_fields!
   end
 
   def set_all_states_to_canceled!

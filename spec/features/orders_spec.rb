@@ -85,13 +85,12 @@ feature 'Order management', slow: true, order_spec: true, js: true do
     wait_for_ajax
     click_link 'New'
 
-    fill_in 'Email', with: 'test@example.com'
-    fill_in 'Phone number', with: '321-654-9870'
-    fill_in 'Phone number extension', with: '28'
+    fill_in 'E-mail', with: 'test@example.com'
+    fill_in 'Phone', with: '321-654-9870'
+    fill_in 'Extension', with: '28'
     fill_in 'First name', with: 'Guy'
     fill_in 'Last name', with: 'Fieri'
     fill_in 'Company', with: 'Probably Nothing'
-    fill_in 'Twitter', with: 'stuff'
 
     click_button 'Next'
     wait_for_ajax
@@ -112,11 +111,10 @@ feature 'Order management', slow: true, order_spec: true, js: true do
     click_button 'Submit'
     sleep 1
 
-
-    expect(Order.where(firstname: 'Guy')).to exist
+    expect(Order.with_first_name('Guy')).to exist
 
     #asserts that the in_hand_by date is defaulted by today at 5pm.
-    order = Order.find_by(firstname: 'Guy')
+    order = Order.with_first_name('Guy').first
     expect(value_time(order.in_hand_by)).to eq(value_time(now_at_5))
   end
 
@@ -127,13 +125,12 @@ feature 'Order management', slow: true, order_spec: true, js: true do
     wait_for_ajax
     click_link 'New'
 
-    fill_in 'Email', with: 'test@example.com'
-    fill_in 'Phone number', with: '321-654-9870'
-    fill_in 'Phone number extension', with: '28'
+    fill_in 'E-mail', with: 'test@example.com'
+    fill_in 'Phone', with: '321-654-9870'
+    fill_in 'Extension', with: '28'
     fill_in 'First name', with: 'Guy'
     fill_in 'Last name', with: 'Fieri'
     fill_in 'Company', with: 'Probably Nothing'
-    fill_in 'Twitter', with: 'stuff'
 
     click_button 'Next'
     wait_for_ajax
@@ -157,8 +154,8 @@ feature 'Order management', slow: true, order_spec: true, js: true do
     click_button 'Submit'
     sleep 1
 
-    expect(Order.where(firstname: 'Guy')).to exist
-    expect(Order.find_by(firstname: 'Guy').tax_rate).to eq 0.075
+    expect(Order.with_first_name('Guy')).to exist
+    expect(Order.with_first_name('Guy').first.tax_rate).to eq 0.075
   end
 
   scenario 'an order with a line item that has a bad imprintable variant removes it and informs the user', retry: 4, bugfix: true do
@@ -197,7 +194,7 @@ feature 'Order management', slow: true, order_spec: true, js: true do
       sleep 0.5
       click_button 'Submit'
       expect(page).to have_content 'Order was successfully created.'
-      expect(Order.where(firstname: quote.contact.first_name)).to exist
+      expect(Order.with_first_name(quote.contact.first_name)).to exist
     end
 
     context 'when failing to fill the order form properly' do
@@ -268,7 +265,7 @@ feature 'Order management', slow: true, order_spec: true, js: true do
     sleep 1
     click_link 'New'
 
-    fill_in 'Email', with: 'nope'
+    fill_in 'E-mail', with: 'nope'
 
     2.times { click_button 'Next'; sleep 1 }
     click_button 'Submit'
@@ -311,26 +308,30 @@ feature 'Order management', slow: true, order_spec: true, js: true do
 
     fill_in 'Name', with: 'New Title'
     select 'approved', from: 'Invoice state'
-    fill_in 'Phone number extension', with: '28'
+    click_link 'Edit Contact'
+    sleep 0.5
+    fill_in 'Extension', with: '28'
     click_button 'Save'
 
     sleep 2
     expect(Order.where(name: 'New Title')).to exist
     expect(Order.where(invoice_state: 'approved')).to exist
-    expect(Order.where(phone_number_extension: '28')).to exist
+    expect(Order.find_by(name: 'New Title').contact.primary_phone.extension.to_i).to eq 28
   end
 
   scenario 'when editing, submitting invalid information displays error content' do
     visit edit_order_path(order, anchor: 'details')
-    fill_in 'Email', with: 'bad email!'
+    click_link 'Edit Contact'
+    sleep 0.5
+    fill_in 'E-mail', with: 'bad email!'
     click_button 'Save'
 
-    expect(page).to have_content 'Email is not a valid email address'
+    expect(page).to have_content 'bad email! (Primary)'
   end
 
   scenario 'user can view updates on the timeline', timeline_spec: true do
     PublicActivity.with_tracking do
-      order.firstname = 'Newfirst'
+      order.name = 'Newfirst'
       order.save
     end
     visit edit_order_path(order)
