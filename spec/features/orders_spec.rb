@@ -198,7 +198,7 @@ feature 'Order management', slow: true, order_spec: true, js: true do
     end
 
     context 'when failing to fill the order form properly' do
-      scenario 'entries are still created in the linker table', stillcreated: true, story_248: true do
+      scenario 'entries are still created in the linker table', retry: 5, stillcreated: true, story_248: true do
         expect(OrderQuote.count).to eq(0)
 #       fail the form
         click_button 'Next'

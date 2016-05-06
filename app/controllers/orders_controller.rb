@@ -32,14 +32,15 @@ class OrdersController < InheritedResources::Base
       @current_user = current_user
       @empty = Store.all.empty?
 
-      if params.has_key? :quote_id
-        quote = Quote.find(params[:quote_id])
+      if params.has_key?(:quote_id) || session.has_key?(:quote_id)
+        quote = Quote.find(params[:quote_id] || session[:quote_id])
 
+        @quote_id = session[:quote_id] = quote.id
         @order = Order.new(
           contact_id: quote.contact_id,
-          company: quote.company,
-          name: quote.name,
-          store_id: quote.store_id
+          company:    quote.company,
+          name:       quote.name,
+          store_id:   quote.store_id
         )
         # This is necessary.. I think Order#initialize_contact is causing trouble.
         @order.contact_id = quote.contact_id
