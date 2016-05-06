@@ -104,7 +104,7 @@ describe Order, order_spec: true do
         allow_any_instance_of(ArtworkRequest).to receive(:create_trains)
       end
 
-      it 'creates a Softwear Production order', retry: 10, create_production_order: true do
+      it 'creates a Softwear Production order', no_ci: true, retry: 10, create_production_order: true do
         expect(order.contact).to_not be_nil
         [order, job_1, job_2, imprint_1_1, imprint_1_2, imprint_2_1].each do |record|
           expect(record.reload.softwear_prod_id).to be_nil
@@ -220,6 +220,7 @@ describe Order, order_spec: true do
         expect(subject.contact).to be_nil
 
         subject.create_contact_from_deprecated_fields!
+        subject.save!
 
         expect(Crm::Contact.with_email('test@annarbortees.com')).to exist
         expect(subject.contact).to_not be_nil

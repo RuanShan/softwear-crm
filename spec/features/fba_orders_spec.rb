@@ -20,16 +20,6 @@ feature 'FBA Order management', slow: true, fba_spec: true, story_103: true, js:
   end
 
 
-  # Dashboard doesn't even work on ci
-  unless ci?
-    scenario 'user can view an index of FBA orders from the sidebar' do
-      visit root_path
-      unhide_dashboard
-      click_link 'FBA Orders'
-      click_link 'List FBA Orders'
-    end
-  end
-
   given!(:shirt) { create(:associated_imprintable) }
   given!(:sweater) { create(:associated_imprintable) }
 

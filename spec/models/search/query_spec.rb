@@ -58,15 +58,15 @@ describe Search::Query, search_spec: true do
    # end
 
     context 'with models' do
-      let!(:order1) { create :order_with_job, 
+      let!(:order1) { create :deprecated_order_with_job, 
         name: 'keywordone keywordtwo', 
-        firstname: 'keywordtwo' }
-      let!(:order2) { create :order_with_job, 
+        deprecated_firstname: 'keywordtwo' }
+      let!(:order2) { create :deprecated_order_with_job, 
         name: 'keywordtwo keywordthree', 
-        firstname: 'keywordone' }
-      let!(:order3) { create :order_with_job, 
+        deprecated_firstname: 'keywordone' }
+      let!(:order3) { create :deprecated_order_with_job, 
         name: 'keywordfour', 
-        firstname: 'keywordfour' }
+        deprecated_firstname: 'keywordfour' }
       let!(:order_model) { create :query_order_model, query: subject }
       let(:job_model) { create :query_job_model, query: subject }
 

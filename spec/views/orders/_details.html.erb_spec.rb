@@ -15,7 +15,7 @@ describe 'orders/_details.html.erb_spec.rb', order_spec: true do
 
   it 'should have a save button' do
   	within_form_for Order do
-  		expect(rendered).to have_css '.submit[value="Save"]'
+  		expect(rendered).to have_css 'input[type="submit"][value="Save"]'
   	end
   end
 end

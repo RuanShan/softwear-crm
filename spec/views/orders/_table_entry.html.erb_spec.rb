@@ -6,9 +6,16 @@ describe 'orders/_table_entry.html.erb', order_spec: true do
   it 'displays Order ID, Order contact info, payment_state, invoice_state, production_state,  and total' do
     render partial: 'orders/table_entry', locals: { order: create(:order,
       name: 'o name',
-      firstname: 'o firstname',
-      lastname: 'o lastname',
-      email: 'o@email.com',
+      contact_attributes: {
+        first_name: 'o firstname',
+        last_name:  'o lastname',
+        primary_email_attributes: {
+          address: 'o@email.com'
+        },
+        primary_phone_attributes: {
+          number: '1231231233'
+        }
+      },
       terms: 'Payment Complete') }
     expect(rendered).to have_selector 'td', text: 'o name'
     expect(rendered).to have_selector 'td', text: 'o firstname'
@@ -23,11 +30,7 @@ describe 'orders/_table_entry.html.erb', order_spec: true do
 
   context 'when an order is FBA' do
     it 'renders "N/A" for payment, invoice, notification state, and prices', story_962: true do
-      render partial: 'orders/table_entry', locals: { order: create(:fba_order,
-        name: 'o name',
-        firstname: 'o firstname',
-        lastname: 'o lastname',
-        email: 'o@email.com') }
+      render partial: 'orders/table_entry', locals: { order: create(:fba_order, name: 'o name') }
       expect(rendered).to have_selector 'td', text: 'N/A', count: 5
     end
   end

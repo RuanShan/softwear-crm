@@ -8,12 +8,11 @@ describe "orders/_form.html.erb", order_spec: true do
   it 'should display all appropriate fields for creating an order' do
     order = create :order
     render!.(order)
+
   	within_form_for Order do
-  		expect(rendered).to have_field_for :email
-  		expect(rendered).to have_field_for :firstname
-  		expect(rendered).to have_field_for :lastname
+      expect(rendered).to have_selector 'a', text: 'Edit Contact'
+      expect(rendered).to have_selector 'a', text: 'Change Contact'
   		expect(rendered).to have_field_for :company
-  		expect(rendered).to have_field_for :twitter
   		expect(rendered).to have_field_for :name
   		expect(rendered).to have_field_for :po
   		expect(rendered).to have_field_for :in_hand_by
@@ -25,14 +24,6 @@ describe "orders/_form.html.erb", order_spec: true do
       expect(rendered)
         .to_not have_selector 'input[type="hidden"][name="order[quote_ids][]"]'
   	end
-  end
-
-  it 'should display errors for invalid fields' do
-    order = build :order, email: 'bad-email'
-    render!.(order)
-    within_form_for Order do
-      expect(rendered).to have_error_for :email
-    end
   end
 
   context 'given a @quote_id' do

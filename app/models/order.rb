@@ -60,6 +60,8 @@ class Order < ActiveRecord::Base
 
   ID_FIELD_TEXT = "DO NOT ENTER ANYTHING INTO THIS FIELD UNLESS YOU'RE KARSTEN"
 
+  FBA_CONTACT_EMAIL = 'fba@annarbortees.com'
+
   VALID_INVOICE_STATES = [
     'pending',
     'approved',
@@ -1320,7 +1322,24 @@ class Order < ActiveRecord::Base
   def initialize_contact
     return unless contact.nil?
 
-    create_contact_from_deprecated_fields!
+    if fba?
+      if fba_contact = Crm::Contact.joins(:primary_email).where(crm_emails: { address: FBA_CONTACT_EMAIL }).first
+        self.contact = fba_contact
+      else
+        self.contact = Crm::Contact.new(
+          first_name: 'Fulfilled by',
+          last_name: 'Amazon',
+          primary_email_attributes: {
+            address: FBA_CONTACT_EMAIL
+          },
+          primary_phone_attributes: {
+            number: '000-000-0000'
+          }
+        )
+      end
+    else
+      create_contact_from_deprecated_fields!
+    end
   end
 
   def set_all_states_to_canceled!

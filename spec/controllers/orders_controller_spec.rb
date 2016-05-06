@@ -12,12 +12,8 @@ describe OrdersController, order_spec: true do
 
       it 'sets @order to contain relevant quote data' do
         get :new, quote_id: quote.id
-        expect(assigns(:order).email).to eq(quote.email)
-        expect(assigns(:order).phone_number).to eq(quote.phone_number)
-        expect(assigns(:order).firstname).to eq(quote.contact.first_name)
-        expect(assigns(:order).lastname).to eq(quote.contact.last_name)
+        expect(assigns(:order).contact_id).to eq(quote.contact_id)
         expect(assigns(:order).company).to eq(quote.company)
-        expect(assigns(:order).twitter).to eq(quote.contact.twitter)
         expect(assigns(:order).name).to eq(quote.name)
         expect(assigns(:order).store_id).to eq(quote.store_id)
       end
@@ -82,7 +78,7 @@ describe OrdersController, order_spec: true do
           terms: 'Half down on purchase',
           tax_exempt: false,
           delivery_method: 'Ship to one location',
-          phone_number: '123-456-8456',
+          contact_id: create(:crm_contact).id,
           store_id: 1,
           salesperson_id: 1,
 

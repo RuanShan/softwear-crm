@@ -46,6 +46,7 @@ FactoryGirl.define do
     end
 
     factory :deprecated_order do
+      contact nil
       name { generate :name }
       deprecated_firstname { generate :firstname }
       deprecated_lastname { generate :lastname }

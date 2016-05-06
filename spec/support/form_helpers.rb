@@ -52,6 +52,7 @@ module FormHelpers
       css_attr = (@@model_form_context ?
                   "[name='#{@@model_form_context}[#{field_name}]']" :
                   "[name='#{field_name}']")
+
       if (@@model_form_context && /_ids/.match(field_name))
         css_attr = "[name='#{@@model_form_context}[#{field_name}][]']"
       end
@@ -91,9 +92,11 @@ module FormHelpers
   end
 
   def css_pre
-    (defined?(@@model_form_context) && @@model_form_context && @@scope_to_form ?
-      "form[class*='#{@@model_form_context}'] " :
-      "")
+    if defined?(@@model_form_context) && @@model_form_context && @@scope_to_form
+      "form[class*='#{@@model_form_context}'] "
+    else
+      ""
+    end
   end
 
   def drop_in_dropzone(file_path)

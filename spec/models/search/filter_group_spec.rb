@@ -8,17 +8,17 @@ describe Search::FilterGroup, search_spec: true do
 
   let!(:group) { build_stubbed :filter_type_group }
 
-  let!(:order1) { build_stubbed :order_with_job,
+  let!(:order1) { build_stubbed :deprecated_order_with_job,
     name: 'keywordone keywordtwo',
-    firstname: 'keywordtwo',
+    deprecated_firstname: 'keywordtwo',
     commission_amount: 50.25 }
-  let!(:order2) { build_stubbed :order_with_job,
+  let!(:order2) { build_stubbed :deprecated_order_with_job,
     name: 'keywordtwo keywordthree',
-    firstname: 'keywordone',
+    deprecated_firstname: 'keywordone',
     commission_amount: 30.15 }
-  let!(:order3) { build_stubbed :order_with_job,
+  let!(:order3) { build_stubbed :deprecated_order_with_job,
     name: 'keywordfour',
-    firstname: 'keywordfour',
+    deprecated_firstname: 'keywordfour',
     commission_amount: 10.30 }
 
   context 'when the group has filters in it' do
