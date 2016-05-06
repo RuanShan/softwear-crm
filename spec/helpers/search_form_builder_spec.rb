@@ -229,7 +229,7 @@ describe 'SearchFormBuilder', search_spec: true do
       end
 
       it 'renders a submit_tag displaying "Save"' do
-        expect(template).to receive(:submit_tag).with('Save', anything)
+        expect(template).to receive(:submit_tag).with('Save/Search', anything)
           .and_call_original
         expect(f.submit).to include 'Save'
       end
