@@ -138,7 +138,7 @@
 
             <div class="tab-pane animated fadeInRight" id="artwork">
              <% if @order.imported_from_admin? %>
-               <%= render 'artwork_tab_disabled', message: "There was no artwork concept in this version." %>
+               <%= render 'artwork_tab_disabled', order: @order, message: "There was no artwork concept in this version." %>
              <% end %>
             </div>
 

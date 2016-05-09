@@ -5,6 +5,7 @@ FactoryGirl.define do
     sequence(:name) { |n| "name_#{n}" }
 
     factory :valid_imprint_method do
+      requires_artwork true
 
       factory :valid_imprint_method_with_color_and_location do
         after(:create) do |im|

@@ -40,6 +40,27 @@ feature 'Imprints Management', slow: true, imprint_spec: true, js: true do
     expect(Imprint.where(job_id: job.id, print_location_id: print_location2.id)).to exist
   end
 
+  scenario 'user can create an imprint that does not require artwork' do
+    imprint_method2.update_column :requires_artwork, false
+    expect(order.artwork_state).to eq 'pending_artwork_requests'
+
+    visit edit_order_path(order.id, anchor: 'jobs')
+    wait_for_ajax
+
+    sleep 1
+    first('.add-imprint').click
+    sleep 1
+    select2 imprint_method2.name, from: "#imprint_method_select_-1"
+    sleep 1
+    select2 print_location2.name, from: 'Print location'
+    expect(all('.editing-imprint').count).to be > 1
+    sleep 1
+    find('.update-imprints').click
+    sleep 1.5
+    expect(Imprint.where(job_id: job.id, print_location_id: print_location2.id)).to exist
+    expect(order.reload.artwork_state).to eq 'no_artwork_required'
+  end
+
   scenario 'user can add an imprint with a description', story_853: true, retry: 1 do
     visit edit_order_path(order.id, anchor: 'jobs')
     wait_for_ajax

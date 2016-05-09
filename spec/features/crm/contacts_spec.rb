@@ -11,7 +11,7 @@ feature 'Contacts Management', contact_spec: true do
       given!(:contact) { create(:crm_contact) }
 
 
-      scenario 'I can see a list of all contacts', js: true do
+      scenario 'I can see a list of all contacts', no_ci: true, js: true do
         visit root_path
 
         allow_any_instance_of(SunspotMatchers::SunspotSearchSpy).to\

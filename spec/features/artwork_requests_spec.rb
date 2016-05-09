@@ -196,6 +196,25 @@ feature 'Artwork Request Features', js: true, artwork_request_spec: true do
         end
       end
 
+      context 'no imprints with "requires_artwork" are added to the order' do
+        background :each do
+          order.imprint_methods.uniq.each { |im| im.update_column :requires_artwork, false }
+          order.check_for_imprints_requiring_artwork!
+          order.reload
+        end
+
+        scenario 'I see a warning that states that the order does not need artwork' do
+          visit edit_order_path(order)
+          navigate_to_tab 'Artwork'
+          expect(page).to have_content "This order has no imprints that require artwork."
+        end
+
+        scenario 'The artwork state on the order is "No artwork required" in green' do
+          visit edit_order_path(order)
+          expect(page).to have_css '.artwork-state.state-success', text: "No artwork required"
+        end
+      end
+
       context 'An artwork request is rejected' do
         background{ order.artwork_requests.each{|ar| ar.update_column(:state, :artwork_request_rejected) } }
 

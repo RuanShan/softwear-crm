@@ -115,6 +115,7 @@ class Order < ActiveRecord::Base
   has_many :artwork_requests, through: :jobs, dependent: :destroy
   has_many :artworks, through: :artwork_requests
   has_many :imprints, through: :jobs
+  has_many :imprint_methods, through: :imprints
   has_many :payments
   has_many :proofs, dependent: :destroy
   has_many :order_quotes, dependent: :destroy
@@ -334,6 +335,22 @@ class Order < ActiveRecord::Base
     event :artwork_canceled do
       transition any => :artwork_canceled
     end
+
+    event :artwork_not_required do
+      transition :pending_artwork_requests => :no_artwork_required
+    end
+
+    event :add_artwork_requirement do
+      transition :no_artwork_required => :pending_artwork_requests
+    end
+  end
+
+  def check_for_imprints_requiring_artwork!
+    if imprint_methods.where(requires_artwork: true).empty?
+      artwork_not_required! if can_artwork_not_required?
+    else
+      add_artwork_requirement! if can_add_artwork_requirement?
+    end
   end
 
   # Use method_missing to catch calls to recalculate_* (for subtotal, tax, etc)
@@ -369,7 +386,16 @@ class Order < ActiveRecord::Base
     payment_state    == 'Payment Terms Met' &&
     invoice_state    == 'approved'          &&
     production_state == 'complete'          &&
-    artwork_state    == 'in_production'
+    (artwork_state == 'in_production' || artwork_state == 'no_artwork_required')
+  end
+
+  def requires_artwork?(force = false)
+    if force
+      @requires_artwork = nil
+      requires_artwork?(false)
+    else
+      @requires_artwork ||= imprint_methods.where(requires_artwork: true).exists?
+    end
   end
 
   def just_canceled?

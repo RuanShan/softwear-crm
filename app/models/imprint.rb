@@ -15,7 +15,6 @@ class Imprint < ActiveRecord::Base
   belongs_to :production, class_name: 'Production::Imprint', foreign_key: :softwear_prod_id
   has_many :name_numbers
   has_one :imprint_method, through: :print_location
-  has_one :order, through: :job
   has_many :ink_colors, through: :imprint_method
   has_many :artwork_request_imprints
   has_many :artwork_requests, through: :artwork_request_imprints
@@ -29,6 +28,7 @@ class Imprint < ActiveRecord::Base
 
   after_save :touch_associations
   after_save :assign_pending_selected_option_values
+  after_save :update_order_artwork_state, if: :order?
 
   scope :name_number, -> { where(name_number: true) }
 
@@ -93,6 +93,14 @@ class Imprint < ActiveRecord::Base
     "#{job.name_in_production} - #{name}"
   end
 
+  def order?
+    job.jobbable_type == 'Order'
+  end
+
+  def order
+    job.jobbable if job.jobbable_type == 'Order'
+  end
+
   def count
     job.imprintable_line_items_total
   end
@@ -122,6 +130,10 @@ class Imprint < ActiveRecord::Base
     end
   end
 
+  def update_order_artwork_state
+    order.check_for_imprints_requiring_artwork!
+  end
+
   private
 
   def touch_associations
@@ -146,5 +158,4 @@ class Imprint < ActiveRecord::Base
 
     @pending_selected_option_values = nil
   end
-
 end
