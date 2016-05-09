@@ -1,7 +1,12 @@
 $(window).load ->
   $('.js-clear-btn').click ->
     document.getElementById("js_search").value = ""
-
+    search_filters = document.getElementsByClassName("clearable")
+    for i in [0...search_filters.length]
+      search_filters[i].value = ""
+      if search_filters[i].tagName is 'SELECT'
+        $(search_filters[i]).trigger('change')
+  
   deleteSearchQuery = ->
     $this = $(this)
     queryId = $this.data('query-id')

@@ -7,32 +7,32 @@
     </div>
     <div class="row form-group">
       <div class="col-sm-4">
-        <%= s.select :all_categories, ImprintableCategory::VALID_CATEGORIES,
-                     nil: 'Category...', class: 'form-control' %>
+        <%= s.select :all_categories, ImprintableCategory::VALID_CATEGORIES, placeholder: "All categories...",
+                      class: 'form-control clearable' %>
       </div>
       <div class="col-sm-4">
-        <%= s.select :sizing_category, Imprintable::SIZING_CATEGORIES,
-                     id: 'filter_sizing_category' %>
+        <%= s.select :sizing_category, Imprintable::SIZING_CATEGORIES, placeholder: "Sizing category...",
+                     id: 'filter_sizing_category', class: 'clearable' %>
       </div>
       <div class="col-sm-4">
-        <%= s.yes_or_no_select :standard_offering %>
+        <%= s.yes_or_no_select :standard_offering, placeholder: "Standard offering...", class: 'clearable' %>
       </div>
     </div>
     <div class="row form-group">
       <div class="col-sm-4">
         <%= s.select :compatible_print_methods, ImprintMethod.all.pluck(:name),
-                     nil: 'Compatible with...', class: 'form-control' %>
+                     placeholder: 'Compatible with...', class: 'form-control clearable' %>
       </div>
       <div class="col-sm-4">
-        <%= s.yes_or_no_select :retail %>
+        <%= s.yes_or_no_select :retail, placeholder: "Retail?", class: 'clearable' %>
       </div>
       <div class="col-sm-4">
-        <%= s.yes_or_no_select :discontinued %>
+        <%= s.yes_or_no_select :discontinued, placeholder: "Discontinued?", class: 'clearable' %>
       </div>
     </div>
     <div class="row form-group">
       <div class='col-sm-4'>
-        <%= s.text_field :created_at, greater_than: true, placeholder: 'Created After...', class: 'js-datetimepicker' %>
+        <%= s.text_field :created_at, greater_than: true, placeholder: 'Created After...', class: 'clearable js-datetimepicker' %>
       </div>
     </div>
 

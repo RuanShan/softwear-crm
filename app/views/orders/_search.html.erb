@@ -7,47 +7,47 @@
 
   <div class='row form-group'>
     <div class="col-sm-3">
-      <%= s.select :payment_status, Order::VALID_PAYMENT_STATUSES, multiple: true %>
+      <%= s.select :payment_status, Order::VALID_PAYMENT_STATUSES, multiple: true, class: "clearable" %>
     </div>
 
     <div class="col-sm-3">
-      <%= s.select :invoice_state, Order::VALID_INVOICE_STATES, multiple: true %>
+      <%= s.select :invoice_state, Order::VALID_INVOICE_STATES, multiple: true, class: "clearable" %>
     </div>
 
     <div class="col-sm-3">
-      <%= s.select :notification_state, Order.state_machines[:notification_state].states.map { |s| s.name.to_s }, display: :humanize, multiple: true %>
+      <%= s.select :notification_state, Order.state_machines[:notification_state].states.map { |s| s.name.to_s }, display: :humanize, multiple: true, class: "clearable" %>
     </div>
   </div>
 
   <div class='row form-group'>
     <div class="col-sm-3">
-      <%= s.select :artwork_state, Order.state_machines[:artwork_state].states.map{|s| s.name.to_s}, display: :humanize, multiple: true %>
+      <%= s.select :artwork_state, Order.state_machines[:artwork_state].states.map{|s| s.name.to_s}, display: :humanize, multiple: true, class: "clearable" %>
     </div>
 
     <div class="col-sm-3">
-      <%= s.select :production_state, Order::VALID_PRODUCTION_STATES, multiple: true %>
+      <%= s.select :production_state, Order::VALID_PRODUCTION_STATES, multiple: true, class: "clearable" %>
     </div>
 
     <div class="col-sm-3">
-      <%= s.yes_or_no_select :fba, selected: @fba ? 'true' : nil %>
+      <%= s.yes_or_no_select :fba, placeholder: "Fba...", selected: (@fba ? 'true' : nil), class: "clearable" %>
     </div>
   </div>
 
   <div class='row form-group'>
     <div class='col-sm-3'>
-      <%= s.select :salesperson_full_name, User.all.map{|x| x.full_name }, multiple: true %>
+      <%= s.select :salesperson_full_name, User.all.map{|x| x.full_name }, multiple: true, class: "clearable" %>
     </div>
 
     <div class='col-sm-3'>
-      <%= s.text_field :in_hand_by, greater_than: true, placeholder: 'Deadline after...', class: 'js-datetimepicker' %>
+      <%= s.text_field :in_hand_by, greater_than: true, placeholder: 'Deadline after...', class: 'js-datetimepicker clearable' %>
     </div>
 
     <div class='col-sm-3'>
-      <%= s.text_field :in_hand_by, less_than: true, placeholder: 'Deadline before...', class: 'js-datetimepicker' %>
+      <%= s.text_field :in_hand_by, less_than: true, placeholder: 'Deadline before...', class: 'js-datetimepicker clearable' %>
     </div>
 
     <div class='col-sm-3'>
-      <%= s.yes_or_no_select :balance %>
+      <%= s.yes_or_no_select :balance, placeholder: "Balance...", class: "clearable" %>
     </div>
   </div>
 
