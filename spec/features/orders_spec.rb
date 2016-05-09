@@ -44,7 +44,7 @@ feature 'Order management', slow: true, order_spec: true, js: true do
     before(:each) do
       order.jobs << job
       order.jobs.first.line_items << line_item
-      allow(Order).to receive(:search) { double('search results', results: [other_order]) }
+      allow(Order).to receive(:search) { double('Sunspot search', results: [other_order]) }
     end
 
     scenario 'A user can view only imprintable order sheets' do
@@ -80,6 +80,7 @@ feature 'Order management', slow: true, order_spec: true, js: true do
     end
 
     scenario 'A user can view imprintable order sheets on multiple orders' do
+      expect(other_order.name).to eq 'The Other Test Order'
       visit edit_order_path(order)
       sleep 1
       click_link "Production"
@@ -89,7 +90,7 @@ feature 'Order management', slow: true, order_spec: true, js: true do
       select2 other_order.name, from: 'Include Other Orders', wait_before_click: 1.second
       sleep 1
       find('.container').click
-      sleep 3
+      sleep 2
       expect(page).to have_content "Order: #{order.full_name} - #{order.name}"
       expect(page).to have_content "Order: #{other_order.full_name} - #{other_order.name}"
       expect(page).to have_content("Ordered By:")
@@ -105,9 +106,9 @@ feature 'Order management', slow: true, order_spec: true, js: true do
       select2 other_order.name, from: 'Include Other Orders', wait_before_click: 1.second
       sleep 1
       find('.container').click
-      sleep 3
-      expect(page).to have_content "Order: #{order.full_name} - #{order.name}"
-      expect(page).to have_content "Order: #{other_order.full_name} - #{other_order.name}"
+      sleep 5
+      expect(page).to have_content "Order: #{order.reload.full_name} - #{order.name}"
+      expect(page).to have_content "Order: #{other_order.reload.full_name} - #{other_order.name}"
       expect(page).to have_content("Inventoried By:")
     end
   end

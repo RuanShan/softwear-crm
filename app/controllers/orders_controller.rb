@@ -7,7 +7,16 @@ class OrdersController < InheritedResources::Base
 
   def index
     @current_action = 'orders#index'
-    @orders = Order.all.order(created_at: :desc).page(params[:page])
+    if q = params[:q]
+      page = params[:page] || 1
+      @orders = Order.search do
+        fulltext q
+        paginate page: page
+      end
+        .results
+    else
+      @orders = Order.all.order(created_at: :desc).page(params[:page])
+    end
 
     respond_to do |format|
       format.html

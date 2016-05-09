@@ -71,9 +71,7 @@ $(window).load ->
         dataType: 'json'
         delay: 250
         data: (p) ->
-          search:
-            order:
-              fulltext: p.term
+          q:    p.term
           page: p.page
         processResults: (data, params) ->
           results:
