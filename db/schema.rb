@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160503200745) do
+ActiveRecord::Schema.define(version: 20160509160931) do
 
   create_table "activities", force: :cascade do |t|
     t.integer  "trackable_id",   limit: 4
@@ -391,12 +391,13 @@ ActiveRecord::Schema.define(version: 20160503200745) do
   end
 
   create_table "imprint_methods", force: :cascade do |t|
-    t.string   "name",        limit: 191
+    t.string   "name",             limit: 191
     t.datetime "deleted_at"
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.boolean  "deletable",               default: true
+    t.boolean  "deletable",                    default: true
     t.boolean  "name_number"
+    t.boolean  "requires_artwork"
   end
 
   add_index "imprint_methods", ["deleted_at"], name: "index_imprint_methods_on_deleted_at", using: :btree

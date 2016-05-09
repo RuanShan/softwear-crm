@@ -39,7 +39,7 @@ class ImprintMethodsController < InheritedResources::Base
       :name,
       ink_color_names: [],
       imprint_method: [
-        :name, :name_number,
+        :name, :name_number, :requires_artwork,
         ink_color_names: [],
         print_locations_attributes: [
           :name, :max_height, :max_width, :imprint_method_id, :id,

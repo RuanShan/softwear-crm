@@ -17,6 +17,10 @@ module ApplicationHelper
     end
   end
 
+  def check_or_x(bool)
+    content_tag(:i, '', class: "fa fa-#{bool ? 'check' : 'times'}")
+  end
+
   def fourteen_days_from_now_at_5
     future_date = 14.days.from_now
     DateTime.new(future_date.year, future_date.month, future_date.day, 17, 0, 0)

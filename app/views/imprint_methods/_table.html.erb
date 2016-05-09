@@ -5,7 +5,7 @@
       <thead>
         <tr>
           <th>Name</th>
-          <th>Name/Number Support</th>
+          <th>Attributes</th>
           <th>Ink Colors</th>
           <th>Pricing Options</th>
           <th>Print Locations</th>
@@ -17,7 +17,20 @@
         <% imprint_methods.each do |imprint_method| %>
           <tr id="<%= model_table_row_id imprint_method %>">
             <td><%= imprint_method.name %></td>
-            <td><%= imprint_method.name_number? ? 'Yes' : 'No' %></td>
+            <td>
+              <table class='table-bordered'>
+                <tbody>
+                  <tr>
+                    <td><%= check_or_x(imprint_method.name_number?) %></td>
+                    <td>Name/Number Support</td>
+                  </tr>
+                  <tr>
+                    <td><%= check_or_x(imprint_method.requires_artwork?) %></td>
+                    <td>Requires Artwork</td>
+                  </tr>
+                </tbody>
+              </table>
+            </td>
             <td><%= imprint_method.ink_colors.map(&:name).join(', ') %></td>
             <td>
               <% imprint_method.option_types.each do |option_type| %>
