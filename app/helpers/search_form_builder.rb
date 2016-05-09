@@ -73,6 +73,7 @@ class SearchFormBuilder
     if @model.nil?
       raise SearchException, "Cannot call select unless a model is specified"
     end
+
     preprocess_options options, field_name
 
     if options[:multiple]
@@ -80,10 +81,11 @@ class SearchFormBuilder
       options[:data] ||= {}
       options[:data][:placeholder] = "#{field_name.to_s.humanize}..."
     else
-      initial_option = options.delete(:nil) || "#{field_name.to_s.humanize}..."
-
+      initial_option = options.delete(:nil) || options[:placeholder]
       select_options =
         @template.content_tag(:option, initial_option, value: 'nil')
+      options[:data] ||= {}
+      options[:data][:placeholder] = "#{field_name.to_s.humanize}..."
     end
 
     choices.reduce(select_options, &compile_select_options(field_name, options))

@@ -535,6 +535,16 @@ feature 'Order management', slow: true, order_spec: true, js: true do
       expect(Sunspot.session).to have_search_params(:with, :invoice_state, ['pending'])
     end
 
+    scenario 'a user can clear all the search fields with the clear buton' do
+      find("[id$=invoice_state]").select 'pending'
+      click_link "Clear"
+      sleep 1
+      click_button "Search"
+
+      expect(Sunspot.session).to be_a_search_for Order
+      expect(Sunspot.session).to_not have_search_params(:with, :invoice_state, ['pending'])
+    end
+
     scenario 'user can search by order id' do
       fill_in "Search Terms", with: "#{order.id}"
       sleep 1
