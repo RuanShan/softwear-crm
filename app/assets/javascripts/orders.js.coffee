@@ -51,6 +51,18 @@ $(window).load ->
                 the line items in this order are correct. Contact
                 devteam@annarbortees.com if you can reproduce this."
 
+  if $('#cilck-to-load-order-imprintable-sheets').length > 0
+    self = $('#cilck-to-load-order-imprintable-sheets')
+    otherOrders = $('.select2-remote-orders')
+
+    self.on 'click', ->
+      if otherOrders.data('changed')
+        view = getUrlParameter('view')
+        if view == undefined
+          view = 'Both'
+
+        window.location.href = "/orders/#{self.data('order-id')}/imprintable_sheets?view=#{view}&other_ids=#{JSON.stringify(otherOrders.val())}"
+
   # FIXME 'this is a hack, the whole thing is a hack' - Nigel
   # Edit can't redirect, meaning it can't supply an anchor, so
   # we use data from the error modal to know which tab to switch 

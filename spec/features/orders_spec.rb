@@ -39,10 +39,12 @@ feature 'Order management', slow: true, order_spec: true, js: true do
   end
 
   context 'Imprintable Sheets' do
+    let(:other_order) { create(:order_with_job, name: 'The Other Test Order') }
 
     before(:each) do
       order.jobs << job
       order.jobs.first.line_items << line_item
+      allow(Order).to receive(:search) { double('search results', results: [other_order]) }
     end
 
     scenario 'A user can view only imprintable order sheets' do
@@ -68,12 +70,44 @@ feature 'Order management', slow: true, order_spec: true, js: true do
     end
 
     #no idea why this won't work on travis.  It works fine locally
-    xscenario 'A user can view both imprintable order/receiving sheets' do
+    scenario 'A user can view both imprintable order/receiving sheets', no_ci: true do
       visit orders_path
       sleep 2
       find("a[title='Imprintable Sheets']").click
       sleep 1
       expect(page).to have_content("Ordered By:")
+      expect(page).to have_content("Inventoried By:")
+    end
+
+    scenario 'A user can view imprintable order sheets on multiple orders' do
+      visit edit_order_path(order)
+      sleep 1
+      click_link "Production"
+      sleep 1
+      click_link "Imprintable Order Sheets"
+      sleep 1
+      select2 other_order.name, from: 'Include Other Orders', wait_before_click: 1.second
+      sleep 1
+      find('.container').click
+      sleep 3
+      expect(page).to have_content "Order: #{order.full_name} - #{order.name}"
+      expect(page).to have_content "Order: #{other_order.full_name} - #{other_order.name}"
+      expect(page).to have_content("Ordered By:")
+    end
+
+    scenario 'A user can view imprintable receiving sheets on multiple orders' do
+      visit edit_order_path(order)
+      sleep 1
+      click_link "Production"
+      sleep 1
+      click_link "Imprintable Receiving Sheets"
+      sleep 1
+      select2 other_order.name, from: 'Include Other Orders', wait_before_click: 1.second
+      sleep 1
+      find('.container').click
+      sleep 3
+      expect(page).to have_content "Order: #{order.full_name} - #{order.name}"
+      expect(page).to have_content "Order: #{other_order.full_name} - #{other_order.name}"
       expect(page).to have_content("Inventoried By:")
     end
   end

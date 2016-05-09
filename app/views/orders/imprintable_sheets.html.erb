@@ -1,5 +1,9 @@
 <div class='hidden-print text-right animated fadeInDownBig row'>
   <br clear="all" />
+
+  <%= label_tag :other_order_ids, "Include Other Orders" %>
+  <%= select_tag :other_order_ids, options_from_collection_for_select(@other_orders, :id, :name, @other_orders.map(&:id)), multiple: true, class: 'select2-remote-orders', style: 'width: 23em;' %>
+
   <%= link_to edit_order_path(@order), class: 'btn btn-primary' do %>
       <i class="glyphicon glyphicon-circle-arrow-left"></i> Return To Order
   <% end %>
@@ -8,13 +12,17 @@
   <% end %>
 </div>
 
-<% if params[:view].nil? || params[:view].include?("Both") %>
-  <%= render 'imprintable_order_sheets', order: @order %>
-  <%= render 'imprintable_receiving_sheets', order: @order %>
-<% elsif params[:view].include? "Receiving" %>
-  <%= render 'imprintable_receiving_sheets', order: @order %>
-<% else %>
-  <%= render 'imprintable_order_sheets', order: @order %>
-<% end %>
+<div id='cilck-to-load-order-imprintable-sheets' data-order-id="<%= @order.id %>">
+  <% ([@order] + @other_orders).each do |order| %>
+    <% if params[:view].nil? || params[:view].include?("Both") %>
+      <%= render 'imprintable_order_sheets', order: order %>
+      <%= render 'imprintable_receiving_sheets', order: order %>
+    <% elsif params[:view].include? "Receiving" %>
+      <%= render 'imprintable_receiving_sheets', order: order %>
+    <% else %>
+      <%= render 'imprintable_order_sheets', order: order %>
+    <% end %>
 
-<%= render('name_numbers/table', {order: @order, show_breakdown: true}) if @order.imprints.name_number.any? %>
+    <%= render('name_numbers/table', {order: order, show_breakdown: true}) if order.imprints.name_number.any? %>
+  <% end %>
+</div>

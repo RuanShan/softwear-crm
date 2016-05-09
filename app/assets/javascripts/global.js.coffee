@@ -60,6 +60,28 @@ $(window).load ->
 
       # self.trigger 'change'
 
+  scope.find('.select2-remote-orders').each ->
+    self = $(this)
+
+    self.select2
+      minimumInputLength: 3,
+      ajax:
+        cache: true
+        url: Routes.orders_path()
+        dataType: 'json'
+        delay: 250
+        data: (p) ->
+          search:
+            order:
+              fulltext: p.term
+          page: p.page
+        processResults: (data, params) ->
+          results:
+            data.map (d) -> { id: d.id, text: "##{d.id} #{d.name}" }
+
+    self.on 'select2:select', (e) ->
+      self.data 'changed', true
+
 @initializeEditable = ->
   $('.editable').each ->
     $(this).editable

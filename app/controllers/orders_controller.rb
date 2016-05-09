@@ -6,9 +6,12 @@ class OrdersController < InheritedResources::Base
   layout 'no_overlay', only: [:show]
 
   def index
-    super do
-      @current_action = 'orders#index'
-      @orders = Order.all.order(created_at: :desc).page(params[:page])
+    @current_action = 'orders#index'
+    @orders = Order.all.order(created_at: :desc).page(params[:page])
+
+    respond_to do |format|
+      format.html
+      format.json
     end
   end
 
@@ -207,6 +210,12 @@ class OrdersController < InheritedResources::Base
 
   def imprintable_sheets
     @order = Order.find(params[:id])
+
+    if params[:other_ids].present?
+      @other_orders = Order.where(id: JSON.parse(params[:other_ids]))
+    else
+      @other_orders = []
+    end
 
     render layout: 'no_overlay'
   end

@@ -50,7 +50,7 @@ env:
     - SPECS_TO_RUN="-t js  -t ~slow"
     - SPECS_TO_RUN="-t slow" DEPLOY=true
 
-script: xvfb-run --server-args="-screen 0, 1024x768x24" bundle exec rspec --color -t ~no_ci -f d $SPECS_TO_RUN
+script: xvfb-run --server-args="-screen 0, 1680x1050x24" bundle exec rspec --color -t ~no_ci -f d $SPECS_TO_RUN
 
 after_success:
   - |

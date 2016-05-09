@@ -238,6 +238,7 @@ namespace :imprintables do
         value = row['cost_amount']
         variant_id = row['imprintable_object_id']
         next if value.try(:strip).blank? || variant_id.blank?
+        next if value == '---'
 
         variant_id = variant_id.to_i
         value.gsub!(/\.\.+/, '.')
@@ -252,6 +253,7 @@ namespace :imprintables do
           imprintable_object_type: 'ImprintableVariant',
           imprintable_object_id:   variant_id
         )
+          .where("cost_amount is null or cost_amount = 0")
           .update_all cost_amount: value.to_f
 
         ImprintableVariant.where(id: variant_id).update_all last_cost_amount: value
