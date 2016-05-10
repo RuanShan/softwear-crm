@@ -19,7 +19,6 @@
               option_type.option_values, :id, :value,
               local_assigns[:selected_options].try(:[], option_type.id.to_i).try(:id)
             ),
-            include_blank: true,
             class: "form-control select-option-value-#{option_type.name.dasherize} js-select-option-value"
       %>
     <% end %>

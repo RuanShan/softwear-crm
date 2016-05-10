@@ -6,6 +6,7 @@ class ImprintMethod < ActiveRecord::Base
   has_many :imprint_method_ink_colors
   has_many :ink_colors, through: :imprint_method_ink_colors
   has_many :print_locations, dependent: :destroy
+  has_many :imprints, through: :print_locations
   has_many :option_types, class_name: "Pricing::OptionType"
 
   accepts_nested_attributes_for :print_locations, :option_types, allow_destroy: true

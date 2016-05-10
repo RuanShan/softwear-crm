@@ -21,10 +21,12 @@ class Imprint < ActiveRecord::Base
   has_many :proofs, -> (i) { where(job_id: i.job_id) }, through: :artwork_requests
   has_many :artworks, through: :proofs
   has_many :imprint_option_values, class_name: "Pricing::ImprintOptionValue"
+  has_many :option_types, through: :imprint_method
   has_many :option_values, through: :imprint_option_values
 
   # validates :job, presence: true
   validates :print_location, presence: true, uniqueness: { scope: :job_id }, if: :job_id
+  validate :all_option_types_are_set
 
   after_save :touch_associations
   after_save :assign_pending_selected_option_values
@@ -131,10 +133,26 @@ class Imprint < ActiveRecord::Base
   end
 
   def update_order_artwork_state
-    order.check_for_imprints_requiring_artwork!
+    order.check_for_imprints_requiring_artwork! if order
   end
 
   private
+
+  def all_option_types_are_set
+    set_values = option_values.to_a
+
+    option_types.each do |option_type|
+      if @pending_selected_option_values.present?
+        next if @pending_selected_option_values[option_type.id].present?
+      end
+
+      if set_values.any? { |v| v.option_type_id == option_type.id }
+        next
+      else
+        errors.add(option_type.name, "must be set")
+      end
+    end
+  end
 
   def touch_associations
     artwork_requests.update_all(updated_at: Time.now)

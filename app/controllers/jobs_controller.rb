@@ -97,7 +97,7 @@ class JobsController < InheritedResources::Base
     super do |format|
       format.html do
         if @job.jobbable_type == 'Order'
-          redirect_to order_path(@job.order, anchor: "jobs-#{@job.id}")
+          redirect_to edit_order_path(@job.order, anchor: "jobs-#{@job.id}")
         else
           redirect_to edit_quote_path(@job.jobbable, anchor: 'line_items')
         end
