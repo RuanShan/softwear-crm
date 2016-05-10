@@ -28,8 +28,8 @@ class Imprint < ActiveRecord::Base
   validates :print_location, presence: true, uniqueness: { scope: :job_id }, if: :job_id
   validate :all_option_types_are_set
 
-  after_save :touch_associations
   after_save :assign_pending_selected_option_values
+  after_save :touch_associations
   after_save :update_order_artwork_state, if: :order?
 
   scope :name_number, -> { where(name_number: true) }
@@ -76,7 +76,7 @@ class Imprint < ActiveRecord::Base
   end
 
   def changed?
-    super || (@pending_selected_option_values.present? && [@pending_selected_option_values.values - option_value_ids].length != 0)
+    super || @pending_selected_option_values.present?
   end
 
   def equipment_sanitizing?
@@ -143,7 +143,8 @@ class Imprint < ActiveRecord::Base
 
     option_types.each do |option_type|
       if @pending_selected_option_values.present?
-        next if @pending_selected_option_values[option_type.id].present?
+        next if @pending_selected_option_values[option_type.id].present? ||
+                @pending_selected_option_values[option_type.id.to_s].present?
       end
 
       if set_values.any? { |v| v.option_type_id == option_type.id }
@@ -157,6 +158,7 @@ class Imprint < ActiveRecord::Base
   def touch_associations
     artwork_requests.update_all(updated_at: Time.now)
     proofs.update_all(updated_at: Time.now) 
+    true
   end
 
   def assign_pending_selected_option_values
@@ -174,6 +176,7 @@ class Imprint < ActiveRecord::Base
       imprint_option_values.create(option_value_id: option_value_id)
     end
 
+    option_values.reload
     @pending_selected_option_values = nil
   end
 end

@@ -124,8 +124,8 @@ feature 'Imprints Management', slow: true, imprint_spec: true, js: true do
 
     let(:type_1_value_1) { option_type_1.option_values[0] }
     let(:type_2_value_1) { option_type_2.option_values[0] }
-    let(:type_1_value_2) { option_type_1.option_values[0] }
-    let(:type_2_value_2) { option_type_2.option_values[0] }
+    let(:type_1_value_2) { option_type_1.option_values[1] }
+    let(:type_2_value_2) { option_type_2.option_values[1] }
 
     scenario 'user can select values from those option types' do
       visit edit_order_path(order.id, anchor: 'jobs')
@@ -136,7 +136,9 @@ feature 'Imprints Management', slow: true, imprint_spec: true, js: true do
 
       find('.update-imprints').click
       wait_for_ajax
-      sleep 0.5
+      sleep 1
+      wait_for_ajax
+      sleep 2
 
       expect(imprint.reload.option_value_ids).to eq [type_1_value_2.id, type_2_value_2.id]
     end
