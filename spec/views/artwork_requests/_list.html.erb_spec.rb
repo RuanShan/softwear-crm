@@ -7,6 +7,7 @@ describe 'artwork_requests/_list.html.erb', artwork_request_spec: true do
   before(:each) do
     current_user = build_stubbed(:blank_user)
     allow(current_user).to receive(:full_name).and_return('Stone Cold Steve Austin')
+    allow(order).to receive(:requires_artwork?).and_return true
     allow(view).to receive(:current_user).and_return(current_user)
     render partial: 'artwork_requests/list', locals: { artwork_request: artwork_request, order: order }
   end

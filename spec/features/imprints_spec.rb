@@ -213,7 +213,7 @@ feature 'Imprints Management', slow: true, imprint_spec: true, js: true do
       order.quotes << quote
     end
 
-    scenario 'imprints can be added from those quotes' do
+    scenario 'imprints can be added from those quotes', retry: 3 do
       visit edit_order_path(order.id, anchor: 'jobs')
       wait_for_ajax
 

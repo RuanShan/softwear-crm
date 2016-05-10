@@ -96,7 +96,7 @@ class Imprint < ActiveRecord::Base
   end
 
   def order?
-    job.jobbable_type == 'Order'
+    job.try(:jobbable_type) == 'Order'
   end
 
   def order

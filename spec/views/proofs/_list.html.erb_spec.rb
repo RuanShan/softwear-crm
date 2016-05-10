@@ -4,6 +4,7 @@ describe 'proofs/_list.html.erb', proof_spec: true do
   let!(:order) { build_stubbed(:blank_order) }
 
   before(:each) do
+    allow(order).to receive(:requires_artwork?).and_return true
     render partial: 'proofs/list', locals: { order: order }
   end
 
