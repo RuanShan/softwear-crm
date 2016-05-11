@@ -76,6 +76,33 @@ describe Order, order_spec: true do
       end
     end
 
+    describe 'if in_hand_by is changed' do
+      context 'Order is in production' do
+        
+        before :each do
+          order.update_column(:softwear_prod_id, prod_order.id)
+          order.update_column(:production_state, "in_production")
+        end
+
+        it 'sends an email to "neworderreport@annarbortees.com" and "league@annarbortees.com"' do
+          expect(OrderMailer).to receive(:in_hand_by_changed).with(order, anything).and_call_original
+
+          order.in_hand_by = Time.now
+          order.save!
+        end
+      end
+      context 'Order is not in production' do
+        it "doesn't send an email" do
+          expect(OrderMailer).to_not receive(:in_hand_by_changed).with(order, anything)
+
+          order.in_hand_by = Time.now
+          order.save!
+          
+        end
+      end
+      
+    end
+
     specify 'updates are propagated to production', prod_sync: true do
       order.update_column :softwear_prod_id, prod_order.id
       expect(order.in_hand_by.to_date).to_not eq prod_order.deadline.to_date
