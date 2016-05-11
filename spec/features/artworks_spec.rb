@@ -29,9 +29,7 @@ feature 'Artwork Features', js: true, artwork_spec: true do
         fill_in 'Tags (separated by commas)', with: 'these,are,the,new,tags'
         fill_in 'Local file location', with: 'C:\some\windows\path\lol'
         find('#artwork_artwork_attributes_file', visible: false).set "#{Rails.root}/spec/fixtures/images/macho.png"
-        find(:css, "textarea#artwork_artwork_attributes_description").set('description')
         find('#artwork_preview_attributes_file', visible: false).set "#{Rails.root}/spec/fixtures/images/macho.png"
-        find(:css, "textarea#artwork_preview_attributes_description").set('description')
 
         click_button 'Create Artwork'
         sleep 2
@@ -116,14 +114,11 @@ feature 'Artwork Features', js: true, artwork_spec: true do
       fill_in 'Tags (separated by commas)', with: 'these,are,the,tags'
       fill_in 'Local file location', with: 'C:\some\windows\path\lol'
       find('#artwork_artwork_attributes_file', visible: false).set "#{Rails.root}/spec/fixtures/images/macho.png"
-      find(:css, "textarea#artwork_artwork_attributes_description").set('description')
       find('#artwork_preview_attributes_file', visible: false).set "#{Rails.root}/spec/fixtures/images/macho.png"
-      find(:css, "textarea#artwork_preview_attributes_description").set('description')
 
       click_button 'Create Artwork'
 
       sleep 1
-      #find(:css, 'button.close').click
       expect(page).to have_css("tr#artwork-row-#{artwork.id}")
       sleep 1 if ci?
       expect(Artwork.count).to eq artwork_count + 1
@@ -139,10 +134,7 @@ feature 'Artwork Features', js: true, artwork_spec: true do
       fill_in 'Tags (separated by commas)', with: 'these,are,the,tags'
       fill_in 'Local file location', with: 'C:\some\windows\path\lol'
       find('#artwork_artwork_attributes_file', visible: false).set "#{Rails.root}/spec/fixtures/fba/PackingSlipBadSku.txt"
-      find(:css, "textarea#artwork_artwork_attributes_description").set('description')
       find('#artwork_preview_attributes_file', visible: false).set "#{Rails.root}/spec/fixtures/fba/PackingSlipBadSku.txt"
-      find(:css, "textarea#artwork_preview_attributes_description").set('description')
-
       click_button 'Create Artwork'
 
       sleep 1

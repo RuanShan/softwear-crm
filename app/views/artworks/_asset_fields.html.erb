@@ -15,19 +15,3 @@
     <% end %>
   <% end %>
 </div>
-
-<div class="form-group">
-  <div class="row">
-    <%= f.label :description, class: 'col-sm-3 control-label' %>
-
-    <div class="col-sm-9">
-      <%= f.text_area :description, class: 'form-control', placeholder: text %>
-    </div>
-  </div>
-
-  <% if f.object.errors.include?(:description) %>
-    <% f.object.errors.full_messages_for(:description).each do |message| %>
-      <p class="text-danger"><%= message %></p>
-    <% end %>
-  <% end %>
-</div>
