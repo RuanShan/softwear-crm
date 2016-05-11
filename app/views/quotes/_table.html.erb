@@ -27,11 +27,15 @@
                 <dd><%= link_to quote.name, quote_path(quote) %></dd>
                 <br />
                 <dt>Contact</dt>
-                <dd><%= link_to quote.full_name, crm_contact_path(quote.contact) %></dd>
-                <dd><%= quote.company %></dd>
-                <dd><%= quote.email %></dd>
-                <dd><%= quote.phone_number %></dd>
-                <dd><%= quote.twitter %></dd>
+                <% if quote.contact %>
+                  <dd><%= link_to quote.full_name, crm_contact_path(quote.contact) %></dd>
+                  <dd><%= quote.company %></dd>
+                  <dd><%= quote.email %></dd>
+                  <dd><%= quote.phone_number %></dd>
+                  <dd><%= quote.twitter %></dd>
+                <% else %>
+                  <dd class='text-danger'>No Contact</dd>
+                <% end %>
               </dl>
              </td>
             <td>
