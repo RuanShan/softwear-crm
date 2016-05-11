@@ -30,6 +30,25 @@ feature 'Proof Features', slow: true, js: true, proof_spec: true, retry: 3 do
     expect(page).to have_css("div#proof-#{proof.id}")
   end
 
+  context 'Job information' do
+    scenario 'A user can see the job_id on the proof with valid job name and id' do
+      proof.update_column(:job_id, order.jobs.first.id)
+      proof.save!
+      order.save!
+      visit_edit_order_tab(order, 'proofs')
+      sleep 1
+      expect(page).to have_content("Job & ID")
+      expect(page).to have_content("#{order.jobs.first.name} - #{order.proofs.first.job_id}")
+    end
+
+    scenario 'A user can see "unassigned" - "no id" if no job information' do
+      visit_edit_order_tab(order, 'proofs')
+      sleep 1
+      expect(page).to have_content("Job & ID")
+      expect(page).to have_content("unassigned - no id")
+    end
+  end
+
   scenario 'A user can create a Proof', no_ci: true do
     expect {
       visit_edit_order_tab(order, 'proofs')
