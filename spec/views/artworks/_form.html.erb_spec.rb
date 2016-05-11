@@ -12,9 +12,8 @@ describe 'artworks/_form.html.erb', artwork_spec: true do
       expect(rendered).to have_selector('input#artwork_tag_list')
       expect(rendered).to have_selector("label[for='artwork_artwork_attributes_file']")
       expect(rendered).to have_selector("label[for='artwork_preview_attributes_file']")
-      expect(rendered).to have_selector('textarea#artwork_artwork_attributes_description')
-      expect(rendered).to have_selector('textarea#artwork_preview_attributes_description')
-
+      expect(rendered).to_not have_selector('textarea#artwork_artwork_attributes_description')
+      expect(rendered).to_not have_selector('textarea#artwork_preview_attributes_description')
     end
   end
 end
