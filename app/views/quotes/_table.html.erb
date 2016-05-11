@@ -27,7 +27,7 @@
                 <dd><%= link_to quote.name, quote_path(quote) %></dd>
                 <br />
                 <dt>Contact</dt>
-                <% if quote.contact %>
+                <% if quote.contact_id.present? %>
                   <dd><%= link_to quote.full_name, crm_contact_path(quote.contact) %></dd>
                   <dd><%= quote.company %></dd>
                   <dd><%= quote.email %></dd>
