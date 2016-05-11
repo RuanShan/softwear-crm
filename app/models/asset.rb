@@ -19,7 +19,7 @@ class Asset < ActiveRecord::Base
 
   belongs_to :assetable, polymorphic: true
 
-  validates :description, presence: true, unless: :model_can_be_blank?
+  validates :description, presence: true, unless: :model_can_be_blank_or_is_artwork?
 
   if Rails.env.test?
     has_attached_file :file,
@@ -42,7 +42,7 @@ class Asset < ActiveRecord::Base
             size: { less_than: 120.megabytes },
               if: :content_type_restricted?
 
-  validates_attachment :file, presence: true, unless: :model_can_be_blank?
+  validates_attachment :file, presence: true, unless: :model_can_be_blank_or_is_artwork?
   validate :content_type_is_valid
 
   do_not_validate_attachment_file_type :file, unless: :content_type_restricted?
@@ -67,8 +67,18 @@ class Asset < ActiveRecord::Base
       errors.add(:file, "must be proper file format")
     end
   end
+
+  def is_artwork?
+    artwork_content_type = 
+       %{(^image/(ai|pdf|psd|png|gif|jpeg|jpg)|text/plain|application/msword|application/vnd.openxmlformats-officedocument.wordprocessingml.document|application/vnd.oasis.opendocument.text)}
+    artwork_content_type = Regexp.new(artwork_content_type)
+
+    return false if file_content_type.nil?
+    return file_content_type.match(artwork_content_type)
+    end
   
-  def model_can_be_blank?
-    assetable_type == 'Store'
+  def model_can_be_blank_or_is_artwork?
+    return is_artwork? if is_artwork?
+    return assetable_type == 'Store'
   end
 end

@@ -8,7 +8,7 @@ describe 'artworks/_asset_fields.html.erb', artwork_spec: true do
     render partial: 'artworks/asset_fields', locals: { f: @f, file_constraints: 'File constraints', object: Asset.new, text: 'Text', title: 'Title' }
     within_form_for Asset do
       expect(rendered).to have_selector('input#artwork_asset_file')
-      expect(rendered).to have_selector('textarea#artwork_asset_description')
+      expect(rendered).to_not have_selector('textarea#artwork_asset_description')
     end
   end
 
