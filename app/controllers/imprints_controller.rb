@@ -107,7 +107,8 @@ class ImprintsController < InheritedResources::Base
       imprint: [
         :print_location_id, :job_id, :has_name_number, :name_number,
         :name_format, :number_format,
-        name_number: [:name, :number]
+        name_number: [:name, :number],
+        selected_option_values: []
       ]
     )
   end

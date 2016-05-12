@@ -134,6 +134,12 @@ class JobsController < InheritedResources::Base
     @job.try(:jobbable_type) == 'Quote'
   end
 
+  def job_params
+    params.require(:job).permit!
+  end
+
+  # NOTE unfortunately, selected_option_values cannot be properly permitted..
+=begin
   def permitted_params
     line_items_attributes = [
       :id, :job_id, :tier, :description, :quantity,
@@ -155,7 +161,8 @@ class JobsController < InheritedResources::Base
           imprints_attributes: [
             :id, :job_id, :description, :print_location_id,
             :number_format, :name_format,
-            :_destroy
+            :_destroy,
+            selected_option_values: [{id: :id}]
           ]
         }
           .merge(tiered_line_item_attributes)
@@ -165,4 +172,5 @@ class JobsController < InheritedResources::Base
       ],
     )
   end
+=end
 end
