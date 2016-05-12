@@ -5,6 +5,7 @@
       <hr />
 
       <% quote.jobs.each do |group| %>
+        <% next if group.name == Quote::MARKUPS_AND_OPTIONS_JOB_NAME %>
         <h4>Group: <%= group.name %></h4>
         <div class='help-block'><%= group.description %></div>
 
