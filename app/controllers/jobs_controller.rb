@@ -135,7 +135,11 @@ class JobsController < InheritedResources::Base
   end
 
   def job_params
-    params.require(:job).permit!
+    if params[:job]
+      params.require(:job).permit!
+    else
+      params[:job]
+    end
   end
 
   # NOTE unfortunately, selected_option_values cannot be properly permitted..
