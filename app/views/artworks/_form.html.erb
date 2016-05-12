@@ -104,7 +104,6 @@
       <%= render partial: 'asset_fields',
                  locals: { f: ff,
                            file_constraints: 'Must be .ai or .psd',
-                           text: 'Describe the artwork file',
                            title: 'Artwork' } %>
     <% end %>
 
@@ -120,7 +119,6 @@
       <%= render partial: 'asset_fields',
                  locals: { f: ff,
                            file_constraints: 'Must be .jpg, .png, or .gif',
-                           text: 'Describe the preview file',
                            title: 'Preview' } %>
     <% end %>
 

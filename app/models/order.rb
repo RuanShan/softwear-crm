@@ -757,7 +757,6 @@ class Order < ActiveRecord::Base
     new_order.imported_from_admin = false
 
     new_order.save!(validate: false)
-
     jobs.each do |job|
       new_job = job.dup
       new_job.jobbable = new_order
