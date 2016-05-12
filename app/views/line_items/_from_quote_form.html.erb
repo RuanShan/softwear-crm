@@ -48,6 +48,7 @@
     <div id="line-item-from-quote-zone">
       <% job.order.quotes.each do |quote| %>
         <% quote.line_items.each do |line_item| %>
+          <% next if line_item.imprintable.nil? %>
           <% field_name = -> f { "line_items[#{line_item.id}][#{f}]" } %>
 
           <div id='line-item-from-quote-<%= line_item.id %>' style="display: none;">
