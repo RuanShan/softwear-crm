@@ -37,7 +37,6 @@ class Artwork < ActiveRecord::Base
 
   validates :local_file_location,
             :name,
-            :description,
             :artwork,
             :preview, presence: true
 
@@ -74,10 +73,22 @@ class Artwork < ActiveRecord::Base
   def initialize_assets
     set_assetable = proc { |artwork| artwork.assetable = self }
     if Rails.env.test?
-      self.artwork ||= Asset.new(allowed_content_type: %{(^image/(ai|pdf|psd)|application/msword|text/plain|application/vnd.openxmlformats-officedocument.wordprocessingml.document|application/vnd.oasis.opendocument.text)}).tap(&set_assetable)
+      self.artwork ||= Asset.new(
+        allowed_content_type: %{(^image/(ai|pdf|psd)|application/msword|text/plain|application/vnd.openxmlformats-officedocument.wordprocessingml.document|application/vnd.oasis.opendocument.text)},
+        description: "Artwork"
+      )
+        .tap(&set_assetable)
     else
-      self.artwork ||= Asset.new(allowed_content_type: %{(^image/(ai|pdf|psd|png|gif|jpeg|jpg)|text/plain|application/msword|application/vnd.openxmlformats-officedocument.wordprocessingml.document|application/vnd.oasis.opendocument.text)}).tap(&set_assetable)
+      self.artwork ||= Asset.new(
+        allowed_content_type: %{(^image/(ai|pdf|psd|png|gif|jpeg|jpg)|text/plain|application/msword|application/vnd.openxmlformats-officedocument.wordprocessingml.document|application/vnd.oasis.opendocument.text)},
+        description: "Artwork"
+      )
+        .tap(&set_assetable)
     end
-    self.preview ||= Asset.new(allowed_content_type: %{(^image/(png|gif|jpeg|jpg)|text/plain|application/msword|application/vnd.openxmlformats-officedocument.wordprocessingml.document|application/vnd.oasis.opendocument.text)}).tap(&set_assetable)
+    self.preview ||= Asset.new(
+      allowed_content_type: %{(^image/(png|gif|jpeg|jpg)|text/plain|application/msword|application/vnd.openxmlformats-officedocument.wordprocessingml.document|application/vnd.oasis.opendocument.text)},
+      description: "Artwork"
+    )
+      .tap(&set_assetable)
   end
 end
