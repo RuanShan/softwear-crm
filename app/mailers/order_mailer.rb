@@ -40,4 +40,13 @@ class OrderMailer < ActionMailer::Base
       body:    %(crm: #{crm_link}\nproduction: #{prod_link})
     )
   end
+
+  def in_hand_by_changed(order, prod_link)
+    mail(
+      from:     'noreply@softwearcrm.com',
+      to:       %w(neworderreport@annarbortees.com league@annarbortees.com),
+      subject:  %([Production Change] In Hand By changed for in-production order ##{order.id} #{order.name}),
+      body:     prod_link
+    )    
+  end
 end

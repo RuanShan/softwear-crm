@@ -51,7 +51,7 @@ class Order < ActiveRecord::Base
 
     boolean :canceled
 
-    reference :salesperson
+    #reference :salesperson
     integer :salesperson_id
     integer :id
   end
@@ -198,6 +198,7 @@ class Order < ActiveRecord::Base
   enqueue :create_production_order, :cancel_production_order, queue: 'api'
   after_save :enqueue_create_production_order, if: :ready_for_production?
   after_save :create_invoice_approval_activity, if: :invoice_state_changed?
+  after_save :send_in_hand_by_email, if: :in_hand_by_changed?
   before_save :set_all_states_to_canceled!, if: :just_canceled?
 
   alias_method :comments, :all_comments
@@ -343,6 +344,12 @@ class Order < ActiveRecord::Base
     event :add_artwork_requirement do
       transition :no_artwork_required => :pending_artwork_requests
     end
+  end
+  
+  def send_in_hand_by_email
+    return unless production?
+
+    OrderMailer.in_hand_by_changed(self, production_url).deliver_now 
   end
 
   def check_for_imprints_requiring_artwork!
