@@ -214,6 +214,11 @@ class Order < ActiveRecord::Base
 
   state_machine :notification_state, :initial => :pending do
 
+    after_transition on: :shipped do 
+      byebug
+      order.send_shipment_details
+    end
+
     event :attempted do
       transition :pending => :attempted
       transition :attempted => :attempted
@@ -239,6 +244,7 @@ class Order < ActiveRecord::Base
     event :notification_canceled do
       transition any => :notification_canceled
     end
+
   end
 
   state_machine :artwork_state, :initial => :pending_artwork_requests do
