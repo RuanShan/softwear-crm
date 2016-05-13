@@ -78,10 +78,10 @@ class ArtworksController < InheritedResources::Base
                     :local_file_location, :bg_color,
                     artwork_request_ids: [],
                     artwork_attributes: [
-                      :file, :description, :id, :_destroy
+                      :file, :id, :_destroy
                     ],
                     preview_attributes: [
-                      :file, :description, :id, :_destroy
+                      :file, :id, :_destroy
                     ]
                   ])
   end

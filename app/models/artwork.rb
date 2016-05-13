@@ -74,19 +74,19 @@ class Artwork < ActiveRecord::Base
     set_assetable = proc { |artwork| artwork.assetable = self }
     if Rails.env.test?
       self.artwork ||= Asset.new(
-        allowed_content_type: %{(^image/(ai|vnd.adobe.photoshop|pdf|psd)|application/illustrator|application/msword|text/plain|application/vnd.openxmlformats-officedocument.wordprocessingml.document|application/vnd.oasis.opendocument.text)},
+        allowed_content_type: %{(^image/(ai|vnd.adobe.photoshop|pdf|psd)|.ai|application/illustrator|application/msword|text/plain|application/vnd.openxmlformats-officedocument.wordprocessingml.document|application/vnd.oasis.opendocument.text)},
         description: "Artwork"
       )
         .tap(&set_assetable)
     else
       self.artwork ||= Asset.new(
-        allowed_content_type: %{(^image/(ai|pdf|psd|png|vnd.adobe.photoshop|gif|jpeg|jpg)|application/illustrator|text/plain|application/msword|application/vnd.openxmlformats-officedocument.wordprocessingml.document|application/vnd.oasis.opendocument.text)},
+        allowed_content_type: %{(^image/(ai|pdf|psd|png|vnd.adobe.photoshop|gif|jpeg|jpg)|.ai|application/illustrator|text/plain|application/msword|application/vnd.openxmlformats-officedocument.wordprocessingml.document|application/vnd.oasis.opendocument.text)},
         description: "Artwork"
       )
         .tap(&set_assetable)
     end
     self.preview ||= Asset.new(
-      allowed_content_type: %{(^image/(png|gif|vnd.adobe.photoshop|jpeg|jpg)|application/illustrator|text/plain|application/msword|application/vnd.openxmlformats-officedocument.wordprocessingml.document|application/vnd.oasis.opendocument.text)},
+      allowed_content_type: %{(^image/(png|gif|vnd.adobe.photoshop|jpeg|jpg)|application/illustrator|.ai|text/plain|application/msword|application/vnd.openxmlformats-officedocument.wordprocessingml.document|application/vnd.oasis.opendocument.text)},
       description: "Artwork"
     )
       .tap(&set_assetable)

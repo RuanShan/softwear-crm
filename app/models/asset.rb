@@ -70,12 +70,12 @@ class Asset < ActiveRecord::Base
 
   def is_artwork?
     artwork_content_type = 
-       %{(^image/(ai|pdf|vnd.adobe.photoshop|psd|png|gif|jpeg|jpg)|text/plain|application/msword|application/vnd.openxmlformats-officedocument.wordprocessingml.document|application/vnd.oasis.opendocument.text|application/illustrator)}
+       %{(^image/(ai|pdf|vnd.adobe.photoshop|psd|png|gif|jpeg|jpg)|.ai|text/plain|application/msword|application/vnd.openxmlformats-officedocument.wordprocessingml.document|application/vnd.oasis.opendocument.text|application/illustrator)}
     artwork_content_type = Regexp.new(artwork_content_type)
 
     return false if file_content_type.nil?
     return file_content_type.match(artwork_content_type)
-    end
+  end
   
   def model_can_be_blank_or_is_artwork?
     return is_artwork? if is_artwork?
