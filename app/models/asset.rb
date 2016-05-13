@@ -70,7 +70,7 @@ class Asset < ActiveRecord::Base
 
   def is_artwork?
     artwork_content_type = 
-       %{(^image/(ai|pdf|vnd.adobe.photoshop|psd|png|gif|jpeg|jpg)|.ai|text/plain|application/msword|application/vnd.openxmlformats-officedocument.wordprocessingml.document|application/vnd.oasis.opendocument.text|application/illustrator)}
+       %{(^image/(ai|pdf|vnd.adobe.photoshop|psd|png|gif|jpeg|jpg)|application/postscript|text/plain|application/msword|application/vnd.openxmlformats-officedocument.wordprocessingml.document|application/vnd.oasis.opendocument.text|application/illustrator)}
     artwork_content_type = Regexp.new(artwork_content_type)
 
     return false if file_content_type.nil?
