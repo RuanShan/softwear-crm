@@ -747,39 +747,42 @@ class Order < ActiveRecord::Base
     when nil # do nothing
     else new_order.salesperson = new_salesperson
     end
-    new_order.name             = "#{name} - Clone"
-    new_order.in_hand_by       = 1.week.from_now
-    new_order.softwear_prod_id = nil
-    new_order.invoice_state    = 'pending'
-    new_order.production_state = 'pending'
-    new_order.artwork_state = 'pending_manager_approval'
-    new_order.notification_state = 'pending'
+    new_order.name                = "#{name} - Clone"
+    new_order.in_hand_by          = 1.week.from_now
+    new_order.softwear_prod_id    = nil
+    new_order.invoice_state       = 'pending'
+    new_order.production_state    = 'pending'
+    new_order.artwork_state       = 'pending_manager_approval'
+    new_order.notification_state  = 'pending'
     new_order.imported_from_admin = false
+    new_order.payment_total       = 0
 
     new_order.save!(validate: false)
     jobs.each do |job|
-      new_job = job.dup
-      new_job.jobbable = new_order
+      new_job                  = job.dup
+      new_job.jobbable         = new_order
       new_job.softwear_prod_id = nil
 
       new_job.save!(validate: false)
       new_job.imprints.destroy_all if new_order.fba?
 
       job.imprints.each do |imprint|
-        new_imprint = imprint.dup
-        new_imprint.softwear_prod_id = nil
-        new_imprint.job_id = new_job.id
+        new_imprint                        = imprint.dup
+        new_imprint.softwear_prod_id       = nil
+        new_imprint.job_id                 = new_job.id
+        new_imprint.selected_option_values = imprint.selected_option_values
 
         new_imprint.save!(validate: false)
 
         unless imported_from_admin?
           imprint.artwork_requests.each do |artwork_request|
-            new_artwork_request = artwork_request.dup
-            new_artwork_request.ink_color_ids = artwork_request.ink_color_ids.dup
-            new_artwork_request.salesperson = new_order.salesperson
-            new_artwork_request.imprints = [new_imprint]
-            new_artwork_request.state = 'unassigned'
+            new_artwork_request                  = artwork_request.dup
+            new_artwork_request.ink_color_ids    = artwork_request.ink_color_ids.dup
+            new_artwork_request.salesperson      = new_order.salesperson
+            new_artwork_request.imprints         = [new_imprint]
+            new_artwork_request.state            = 'unassigned'
             new_artwork_request.softwear_prod_id = nil
+
             new_artwork_request.save
             new_artwork_request.save!(validate: false)
             new_artwork_request.artworks = artwork_request.artworks
